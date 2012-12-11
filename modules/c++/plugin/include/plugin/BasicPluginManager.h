@@ -223,16 +223,24 @@ public:
             for (unsigned int i = 0; i < mDSOs.size(); ++i)
             {
 
-                std::string baseLib =
-                    sys::Path::basename(mDSOs[i]->getLibName());
+                //std::string baseLib =
+                //    sys::Path::basename(mDSOs[i]->getLibName());
 
-                if (baseLib == baseFile)
-                {
+                //if (baseLib == baseFile)
+                //{
 
                     // Give the caller a chance to exit out
-                    eh->onPluginLoadedAlready(file);
+                    //eh->onPluginLoadedAlready(file);
                     
                     // And if we are still here, we need to resume loading
+                    //dso = mDSOs[i];
+                    //loadDSO = false;
+                    //break;
+                //}
+
+                if(mDSOs[i]->getLibName() == file)
+                {
+                    // It's already loaded - don't add it
                     dso = mDSOs[i];
                     loadDSO = false;
                     break;
