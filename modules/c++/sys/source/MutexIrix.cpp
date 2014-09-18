@@ -21,7 +21,7 @@
  */
 
 
-#if defined(__sgi)
+#if defined(__sgi) && defined(_REENTRANT) && !defined(__POSIX)
 #include <ulocks.h>
 #include "sys/MutexIrix.h"
 #include "sys/SyncFactoryIrix.h"
@@ -57,5 +57,5 @@ ulock_t*& sys::MutexIrix::getNative()
     return mNative;
 }
 
-#endif // __sgi
+#endif // __sgi && _REENTRANT && !__POSIX
 

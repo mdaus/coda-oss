@@ -20,8 +20,6 @@
  *
  */
 
-#include "sys/sys_config.h"
-
 #include "sys/UTCDateTime.h"
 
 #include "sys/Conf.h"

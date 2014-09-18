@@ -25,7 +25,7 @@
 #define __SYS_THREAD_SOLARIS_MUTEX_H__
 
 
-#if defined(__sun)
+#if defined(__sun) && defined(_REENTRANT) && !defined(__POSIX)
 
 #include <thread.h>
 #include <synch.h>

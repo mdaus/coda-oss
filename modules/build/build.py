@@ -3,7 +3,6 @@ from os.path import split, isdir, isfile, exists, splitext, abspath, join, \
                     basename, dirname
 
 from waflib import Options, Utils, Logs, TaskGen
-from waflib.Options import OptionsContext
 from waflib.Configure import conf, ConfigurationContext
 from waflib.Build import BuildContext, ListContext, CleanContext, InstallContext
 from waflib.TaskGen import task_gen, feature, after, before
@@ -41,25 +40,6 @@ class CPPContext(Context.Context):
     cmd='evil'
     module_hooks = []
     
-    def recurse(self,str=None):
-        dirs = []
-        if isinstance(str, basestring):
-            if len(str) == 0:
-                return
-            else:
-                dirs = str.split()
-        else:
-            dirs = str
-        
-        if not dirs:
-            super(CPPContext, self).recurse(filter(
-                        lambda x: exists(join(self.path.abspath(), x, 'wscript')),
-                        os.walk(self.path.abspath()).next()[1]))
-        else:
-            super(CPPContext, self).recurse(filter(
-                        lambda x: exists(join(self.path.abspath(), x, 'wscript')),
-                        dirs))
-
     def safeVersion(self, version):
         return re.sub(r'[^\w]', '.', version)
     
@@ -82,6 +62,174 @@ class CPPContext(Context.Context):
         for i, s in enumerate(strs):
             sys.stderr.write("%s%s " % (Logs.colors(colors[i % len(colors)]), s))
         sys.stderr.write("%s%s" % (Logs.colors.NORMAL, os.linesep))
+        
+    # because we can't assume python 2.6
+    def __computeRelPath(self, rel, frm) :
+    
+        rel = abspath(rel)
+        frm = abspath(frm)
+
+        relList = rel.split(os.sep)
+        fromList = frm.split(os.sep)
+
+        for folder in fromList :
+            if len(relList) > 0 and relList[0] == folder :
+                relList.remove(folder)
+        return join(*relList)
+        
+    # find what should be excluded
+    def __dontDist (self, name, src, pkgExcludes, build_dir):
+
+        # if initialized to the list, it was residually appending 
+        # multiple version, so we start with an empty list
+        excludes = []
+        dist_exts = []
+        excludes.extend(COMMON_EXCLUDES)
+        dist_exts.extend(COMMON_EXCLUDES_EXT)
+
+        for ex in pkgExcludes :
+            excludes.append(join(str(self.path), ex))
+        dist_exts.extend(pkgExcludes)
+        
+        if (name.startswith(',,') or name.startswith('++') or name.startswith('.waf-1.') or \
+           (src=='.' and name == Options.lockfile) or name in excludes or name == build_dir or \
+            join(src, name) in excludes or name == "" and src in excludes):
+            return True
+        for ext in dist_exts :
+            if name.endswith(ext) :
+                return True
+
+        return False
+
+    # copy the entire directory minus certain things excluded --
+    # this takes walking over individual elements     
+    def copyTree(self, src, dst, pkgExcludes, build_dir):
+
+        if self.__dontDist("", src, pkgExcludes, build_dir):
+            return
+        
+        names = os.listdir(src)
+        if not exists(dst) :
+            os.makedirs(dst)
+
+        for name in names:
+            srcname = join(src, name)
+            dstname = join(dst, name)
+
+            # build_dir is just to safeguard the dest being in the checkout area
+            if self.__dontDist(name, src, pkgExcludes, build_dir):
+                continue
+            if isdir(srcname):
+                self.copyTree(srcname, dstname, pkgExcludes, build_dir)
+            else:
+                shutil.copy2(srcname, dstname)
+
+    def removeDuplicates(self, lst) :
+        # remove duplicates
+        if lst :
+            lst.sort()
+            last = lst[-1]
+            for i in range(len(lst)-2, -1, -1):
+                if lst[i] == '' or last == lst[i] :
+                    del lst[i]
+                else:
+                    last = lst[i]
+        return lst
+
+    def fromConfig(self, path, **overrides):
+        bld = self
+        from ConfigParser import SafeConfigParser as Parser
+        cp = Parser()
+        
+        if (type(path) != str):
+            path = path.abspath()
+        
+        if isdir(path):
+            for f in 'project.cfg module.cfg project.ini module.ini'.split():
+                configFile = join(path, f)
+                if isfile(configFile):
+                    cp.read(configFile)
+                    path = configFile
+                    break
+        elif isfile(path):
+            cp.read(path)
+        
+        sectionDict = lambda x: dict(cp.items(filter(lambda x: cp.has_section(x), [x, x.lower(), x.upper()])[0]))
+        
+        args = sectionDict('module')
+        args.update(overrides)
+        
+        if 'path' not in args:
+            if 'dir' in args:
+                args['path'] = bld.path.find_dir(args.pop('dir'))
+            else:
+                pardir = abspath(dirname(path))
+                curdir = bld.path.abspath()
+                if pardir.startswith(curdir):
+                    relDir = './%s' % pardir[len(curdir):].lstrip(os.sep)
+                    args['path'] = bld.path.find_dir(relDir)
+                else:
+                    args['path'] = bld.path
+        
+        #get the env
+        if 'env' in args:
+            env = args['env']
+        else:
+            variant = args.get('variant', bld.env['VARIANT'] or 'default')
+            env = bld.all_envs[variant]
+        
+        # do some special processing for the module
+        excludes = args.pop('exclude', None)
+        if excludes is not None:
+            if type(excludes) == str:
+                args['source_filter'] = partial(lambda x, t: basename(str(t)) not in x,
+                                                excludes.split())
+        elif 'source' in args:
+            source = args.pop('source', None)
+            if type(source) == str:
+                args['source_filter'] = partial(lambda x, t: basename(t) in x,
+                                                source.split())
+
+        try:
+            testArgs = sectionDict('tests')
+            excludes = testArgs.pop('exclude', None)
+            if excludes is not None:
+                if type(excludes) == str:
+                    args['test_filter'] = partial(lambda x, t: basename(t) not in x,
+                                                excludes.split())
+            elif 'source' in testArgs:
+                source = testArgs.pop('source', None)
+                if type(source) == str:
+                    args['test_filter'] = partial(lambda x, t: basename(t) in x,
+                                                source.split())
+        except Exception:{}
+        
+        try:
+            testArgs = sectionDict('unittests')
+            excludes = testArgs.pop('exclude', None)
+            if excludes is not None:
+                if type(excludes) == str:
+                    args['unittest_filter'] = partial(lambda x, t: basename(t) not in x,
+                                                excludes.split())
+            elif 'source' in testArgs:
+                source = testArgs.pop('source', None)
+                if type(source) == str:
+                    args['unittest_filter'] = partial(lambda x, t: basename(t) in x,
+                                                source.split())
+        except Exception:{}
+        
+        self.module(**args)
+        
+        try:
+            progArgs = sectionDict('programs')
+            files = progArgs.pop('files', '')
+            for f in files.split():
+                parts = f.split('|', 2)
+                self.program_helper(module_deps=args['name'], source=parts[0],
+                             path=args['path'],
+                             name=basename(splitext(len(parts) == 2 and parts[1] or parts[0])[0]))
+
+        except Exception:{}
 
     def install_tgt(tsk, **modArgs):
         # The main purpose this serves is to recursively copy all the wscript's
@@ -112,9 +260,9 @@ class CPPContext(Context.Context):
         else:
             variant = modArgs.get('variant', bld.env['VARIANT'] or 'default')
             env = bld.all_envs[variant]
-
+    
         modArgs = dict((k.lower(), v) for k, v in modArgs.iteritems())
-
+        
         for func in self.module_hooks:
             func(modArgs, env)
 
@@ -155,7 +303,7 @@ class CPPContext(Context.Context):
                     if env['install_source']:
                         sourceTarget = '%s_SOURCE_INSTALL' % currentLib
                         targets_to_add += [sourceTarget]
-
+        
         # this specifies that we need to check if it is a USELIB or USELIB_LOCAL
         # if MAKE_%% is defined, then it is local; otherwise, it's a uselib
         uselibCheck = modArgs.pop('uselib_check', None)
@@ -169,14 +317,14 @@ class CPPContext(Context.Context):
             targetName = '%s.%s' % (libName, self.safeVersion(libVersion))
         else:
             targetName = libName
-
+        
         allSourceExt = listify(modArgs.get('source_ext', '')) + [sourceExt]
         sourcedirs = listify(modArgs.get('source_dir', modArgs.get('sourcedir', 'source')))
         glob_patterns = []
         for dir in sourcedirs:
             for ext in allSourceExt:
                 glob_patterns.append(join(dir, '*%s' % ext))
-
+        
         #build the lib
         lib = bld(features='%s %s%s add_targets includes'% (libExeType, libExeType, env['LIB_TYPE'] or 'stlib'), includes=includes,
                 target=targetName, name=libName, export_includes=exportIncludes,
@@ -184,52 +332,33 @@ class CPPContext(Context.Context):
                 defines=defines, path=path,
                 source=path.ant_glob(glob_patterns), targets_to_add=targets_to_add)
         lib.source = filter(partial(lambda x, t: basename(str(t)) not in x, modArgs.get('source_filter', '').split()), lib.source)
-
+        
         if env['install_libs']:
             lib.install_path = installPath or env['install_libdir']
-
+        
         if not lib.source:
             lib.features = 'add_targets includes'
-
+        
         pattern = env['%s%s_PATTERN' % (libExeType, env['LIB_TYPE'] or 'stlib')]
         if libVersion is not None and sys.platform != 'win32' and Options.options.symlinks and env['install_libs'] and lib.source:
             symlinkLoc = '%s/%s' % (lib.install_path, pattern % libName)
             lib.targets_to_add.append(bld(features='symlink_as_tgt', dest=symlinkLoc, src=pattern % lib.target, name='%s-symlink' % libName))
-
+        
         if env['install_headers']:
             lib.targets_to_add.append(bld(features='install_tgt', pattern='**/*',
                                           dir=path.make_node('include'),
                                           install_path=env['install_includedir']))
-
-            # copy config headers from target dir to install dir
-            moduleName = modArgs['name']
-            installPath = moduleName.replace('.', os.sep)
-
-            d = {}
-            for line in env['header_builddir']:
-                split = line.split('=')
-                k = split[0]
-                v = join(self.bldnode.abspath(), split[1])
-                d[k] = v
-
-            if moduleName in d:
-                configFilename = getConfigFilename(moduleName)
-                targetPath = bld.root.find_dir(d[moduleName]).path_from(path)
-                moduleNode = bld.path.make_node(targetPath)
-                lib.targets_to_add.append(bld(features='install_tgt', files=[configFilename],
-                                          dir=moduleNode,
-                                          install_path=join(env['install_includedir'], installPath)))
 
         addSourceTargets(bld, env, path, lib)
 
         testNode = path.make_node('tests')
         if os.path.exists(testNode.abspath()) and not Options.options.libs_only:
             test_deps = listify(modArgs.get('test_deps', modArgs.get('module_deps', '')))
-
+            
             test_deps.append(modArgs['name'])
-
+                
             test_deps = map(lambda x: '%s-%s' % (x, lang), test_deps + listify(modArgs.get('test_uselib_local', '')) + listify(modArgs.get('test_use','')))
-
+            
             for test in testNode.ant_glob('*%s' % sourceExt):
                 if str(test) not in listify(modArgs.get('test_filter', '')):
                     testName = splitext(str(test))[0]
@@ -243,14 +372,14 @@ class CPPContext(Context.Context):
         if os.path.exists(testNode.abspath()) and not Options.options.libs_only:
             test_deps = listify(modArgs.get('unittest_deps', modArgs.get('module_deps', '')))
             test_uselib = listify(modArgs.get('unittest_uselib', uselib))
-
+            
             test_deps.append(modArgs['name'])
-
+            
             if 'INCLUDES_UNITTEST' in env:
                 includes.append(env['INCLUDES_UNITTEST'][0])
 
                 test_deps = map(lambda x: '%s-%s' % (x, lang), test_deps + listify(modArgs.get('test_uselib_local', '')) + listify(modArgs.get('test_use','')))
-
+            
                 sourceExt = {'c++':'.cpp', 'c':'.c'}.get(lang, 'cxx')
                 tests = []
                 for test in testNode.ant_glob('*%s' % sourceExt):
@@ -266,7 +395,7 @@ class CPPContext(Context.Context):
                             exe.features += ' test'
 
                         tests.append(testName)
-
+                
                 # add a post-build hook to run the unit tests
                 # I use partial so I can pass arguments to a post build hook
                 #if Options.options.unittests:
@@ -282,8 +411,8 @@ class CPPContext(Context.Context):
                         copy_to_source_dir=True))
 
         return env
-
-
+    
+    
     def plugin(self, **modArgs):
         """
         Builds a plugin (.so) and sets the install path based on the type of
@@ -295,7 +424,7 @@ class CPPContext(Context.Context):
         else:
             variant = modArgs.get('variant', bld.env['VARIANT'] or 'default')
             env = bld.all_envs[variant].derive()
-
+        
         modArgs = dict((k.lower(), v) for k, v in modArgs.iteritems())
         lang = modArgs.get('lang', 'c++')
         libExeType = {'c++':'cxx', 'c':'c'}.get(lang, 'cxx')
@@ -373,7 +502,7 @@ class CPPContext(Context.Context):
                                           install_path=env['install_includedir']))
 
         addSourceTargets(self, env, path, lib)
-
+        
         confDir = path.make_node('conf')
         if exists(confDir.abspath()):
             lib.targets_to_add.append(
@@ -398,7 +527,7 @@ class CPPContext(Context.Context):
         else:
             variant = modArgs.get('variant', bld.env['VARIANT'] or 'default')
             env = bld.all_envs[variant]
-
+        
         modArgs = dict((k.lower(), v) for k, v in modArgs.iteritems())
         lang = modArgs.get('lang', 'c++')
         libExeType = {'c++':'cxx', 'c':'c'}.get(lang, 'cxx')
@@ -414,10 +543,10 @@ class CPPContext(Context.Context):
         includes = listify(modArgs.get('includes', 'include'))
         source = listify(modArgs.get('source', '')) or None
         install_path = modArgs.get('install_path', env['install_bindir'])
-
+        
         if not source:
             source = bld.path.make_node(modArgs.get('source_dir', modArgs.get('sourcedir', 'source'))).ant_glob('*.c*', excl=modArgs.get('source_filter', ''))
-
+        
         exe = bld.program(features = 'add_targets',
                                source=source, name=progName,
                                includes=includes, defines=defines,
@@ -430,7 +559,7 @@ class CPPContext(Context.Context):
 
         return exe
 
-
+    
     def getBuildDir(self, path=None):
         """
         Returns the build dir, relative to where you currently are (bld.path)
@@ -449,14 +578,15 @@ class CPPContext(Context.Context):
         else:
             variant = modArgs.get('variant', bld.env['VARIANT'] or 'default')
             env = bld.all_envs[variant]
-
-        if 'HAVE_MATLAB' in self.env:
+        
+        if self.is_defined('HAVE_MEX_H'):
+        
             modArgs = dict((k.lower(), v) for k, v in modArgs.iteritems())
             lang = modArgs.get('lang', 'c++')
             libExeType = {'c++':'cxx', 'c':'c'}.get(lang, 'cxx')
             path = modArgs.get('path',
                                'dir' in modArgs and bld.path.find_dir(modArgs['dir']) or bld.path)
-
+                               
             #override the shlib pattern
             env = env.derive()
             shlib_pattern = '%sshlib_PATTERN' % libExeType
@@ -473,10 +603,10 @@ class CPPContext(Context.Context):
             source = modArgs.get('source', None)
             name = modArgs.get('name', None)
             targetName = modArgs.get('target', None)
-
+            
             if source:
                 name = splitext(split(source)[1])[0]
-
+            
             mex = bld(features='%s %sshlib'%(libExeType, libExeType), target=targetName or name,
                                    name=name, use=uselib_local,
                                    uselib=uselib, env=env.derive(), defines=defines,
@@ -494,10 +624,10 @@ class GlobDirectoryWalker:
         self.patterns = patterns
         self.files = []
         self.index = 0
-
+        
     def __iter__(self):
         return self.next()
-
+    
     def next(self):
         while True:
             try:
@@ -529,11 +659,11 @@ def recursiveGlob(directory, patterns=["*"]):
 def getPlatform(pwd=None, default=None):
     """ returns the platform name """
     platform = default or sys.platform
-
+    
     if platform != 'win32':
         if not pwd:
             pwd = os.getcwd()
-
+            
         locs = recursiveGlob(pwd, patterns=['config.guess'])
         for loc in locs:
             if not exists(loc): continue
@@ -557,12 +687,12 @@ import zipfile
 def unzipper(inFile, outDir):
     if not outDir.endswith(':') and not exists(outDir):
         os.mkdir(outDir)
-
+    
     zf = zipfile.ZipFile(inFile)
-
+    
     dirs = filter(lambda x: x.endswith('/'), zf.namelist())
     dirs.sort()
-
+    
     for d in filter(lambda x: not exists(x),
                     map(lambda x: join(outDir, x), dirs)):
         os.mkdir(d)
@@ -572,7 +702,7 @@ def unzipper(inFile, outDir):
         outFile.write(zf.read(name))
         outFile.flush()
         outFile.close()
-
+        
 def options(opt):
     opt.load('compiler_cc')
     opt.load('compiler_cxx')
@@ -580,12 +710,12 @@ def options(opt):
 
     if sys.version_info >= (2,5,0):
       opt.load('msvs')
-
+    
     if Options.platform == 'win32':
         opt.load('msvc')
         opt.add_option('--with-crt', action='store', choices=['MD', 'MT'],
                        dest='crt', default='MD', help='Specify Windows CRT library - MT or MD (default)')
-
+    
     opt.add_option('--packages', action='store', dest='packages',
                    help='Target packages to build (common-separated list)')
     opt.add_option('--dist-source', action='store_true', dest='dist_source', default=False,
@@ -645,20 +775,21 @@ def configureCompilerOptions(self):
 
     cxxCompiler = self.env['COMPILER_CXX']
     ccCompiler = self.env['COMPILER_CC']
-
+    
     if ccCompiler == 'msvc':
         cxxCompiler = ccCompiler
-
+        
     if not cxxCompiler or not ccCompiler:
         self.fatal('Unable to find C/C++ compiler')
-
+    
     config = {'cxx':{}, 'cc':{}}
 
     #apple
     if re.match(appleRegex, sys_platform):
         self.env.append_value('LIB_DL', 'dl')
         self.env.append_value('LIB_NSL', 'nsl')
-        self.env.append_value('LINKFLAGS_THREAD', '-pthread')
+        self.env.append_value('LIB_THREAD', 'pthread')
+        self.env.append_value('DEFINES_THREAD', '_REENTRANT')
         self.check_cc(lib='pthread', mandatory=True)
 
         config['cxx']['debug']          = '-g'
@@ -682,15 +813,17 @@ def configureCompilerOptions(self):
         config['cc']['optz_fast']      = config['cxx']['optz_fast']
         config['cc']['optz_fastest']   = config['cxx']['optz_fastest']
 
-        self.env.append_value('DEFINES', '_FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE'.split())
+        self.env.append_value('DEFINES', '_FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE __POSIX'.split())
         self.env.append_value('CFLAGS', '-fPIC -dynamiclib'.split())
 
     #linux
     elif re.match(linuxRegex, sys_platform):
         self.env.append_value('LIB_DL', 'dl')
         self.env.append_value('LIB_NSL', 'nsl')
+        self.env.append_value('LIB_THREAD', 'pthread')
+        self.env.append_value('DEFINES_THREAD', '_REENTRANT')
         self.env.append_value('LIB_MATH', 'm')
-        self.env.append_value('LINKFLAGS_THREAD', '-pthread')
+
         self.check_cc(lib='pthread', mandatory=True)
 
         warningFlags = '-Wall'
@@ -718,9 +851,9 @@ def configureCompilerOptions(self):
             self.env.append_value('CXXFLAGS', '-fPIC')
 
             # DEFINES and LINKFLAGS will apply to both gcc and g++
-            self.env.append_value('DEFINES', '_FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE'.split())
+            self.env.append_value('DEFINES', '_FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE __POSIX'.split())
             self.env.append_value('LINKFLAGS', '-Wl,-E -fPIC'.split())
-
+        
         if ccCompiler == 'gcc' or ccCompiler == 'icc':
             config['cc']['debug']          = '-g'
             config['cc']['warn']           = warningFlags.split()
@@ -734,7 +867,7 @@ def configureCompilerOptions(self):
             config['cc']['optz_fastest']   = '-O3'
 
             self.env.append_value('CFLAGS', '-fPIC'.split())
-
+    
     #Solaris
     elif re.match(solarisRegex, sys_platform):
         self.env.append_value('LIB_DL', 'dl')
@@ -745,7 +878,8 @@ def configureCompilerOptions(self):
         self.env.append_value('LIB_CRUN', 'Crun')
         self.env.append_value('LIB_CSTD', 'Cstd')
         self.check_cc(lib='thread', mandatory=True)
-
+        self.check_cc(header_name="atomic.h", mandatory=False)
+        
         warningFlags = ''
         if Options.options.warningsAsErrors:
             warningFlags = '-errwarn=%all'
@@ -769,7 +903,7 @@ def configureCompilerOptions(self):
             self.env.append_value('DEFINES', '_FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE'.split())
             self.env.append_value('CXXFLAGS', '-KPIC -instances=global'.split())
             self.env.append_value('CXXFLAGS_THREAD', '-mt')
-
+            
         if ccCompiler == 'suncc':
             (bitFlag32, bitFlag64) = getSolarisFlags(self.env['CC'][0])
             config['cc']['debug']          = '-g'
@@ -840,21 +974,22 @@ def configureCompilerOptions(self):
 
         # choose the runtime to link against
         # [/MD /MDd /MT /MTd]
-
+        
         config['cxx'].update(vars)
         config['cc'].update(vars)
 
         defines = '_CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS _FILE_OFFSET_BITS=64 ' \
                   '_LARGEFILE_SOURCE WIN32 _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN'.split()
         flags = '/UUNICODE /U_UNICODE /EHs /GR'.split()
-
+        
         self.env.append_value('DEFINES', defines)
+        self.env.append_value('DEFINES_THREAD', '_REENTRANT')
         self.env.append_value('CXXFLAGS', flags)
         self.env.append_value('CFLAGS', flags)
-
+    
     else:
         self.fatal('OS/platform currently unsupported: %s' % sys_platform)
-
+    
     #CXX
     if Options.options.warnings:
         self.env.append_value('CXXFLAGS', config['cxx'].get('warn', ''))
@@ -865,8 +1000,8 @@ def configureCompilerOptions(self):
     if Options.options.verbose:
         self.env.append_value('CXXFLAGS', config['cxx'].get('verbose', ''))
         self.env.append_value('CFLAGS', config['cc'].get('verbose', ''))
-
-
+    
+    
     # We don't really use variants right now, so keep the default environment linked to the variant.
     variant = self.env
     if Options.options.debugging:
@@ -893,7 +1028,7 @@ int main() {
     printf("0");
 #endif
     return 0; }
-'''
+'''         
         output = self.check(fragment=frag64, define_ret=True,
                             execute=1, msg='Checking for 64-bit system')
         is64Bit = bool(int(output))
@@ -924,80 +1059,117 @@ int main() {
     self.env['IS64BIT'] = is64Bit
     self.all_envs[variantName] = variant
     self.setenv(variantName)
-
+    
     self.env['VARIANT'] = variant['VARIANT'] = variantName
 
-def getConfigFilename(moduleName):
-    return moduleName.replace('.', '_') + '_config.h'
-
-def listToTuple(defines):
-    d, u = {}, []
-    for line in defines:
-        split = line.split('=')
-        k = split[0]
-
-        #v = len(split) == 2 and split[1] or ' '
-        v = ' '
-        if len(split) == 2:
-            v = split[1]
-
-        if v != 0:
-            d[k] = v
-        else:
-            u.append(k)
-    return d,u
-
-def writeConfig(conf, callback, guardTag, infile=None, outfile=None, path=None, feature=None, substDict=None):
-    if path is None:
-        path = join('include', guardTag.replace('.', os.sep))
-        tempPath = join(str(conf.path.relpath()), path)
-        conf.env.append_value('header_builddir', guardTag + '=' + tempPath)
-    if outfile is None:
-        outfile = getConfigFilename(guardTag)
-    if feature is None:
-        path = join(path,'%s'%outfile)
-
-    conf.setenv('%s_config_env'%guardTag, conf.env.derive())
-    conf.env['define_key'] = []
-    callback(conf)
-
-    bldpath = conf.bldnode.abspath()
-
-    if feature is None:
-        conf.write_config_header(configfile=path, 
-                                 guard='_%s_CONFIG_H_'%guardTag.upper().replace('.', '_'), 
-                                 top=False, env=None, defines=True, 
-                                 headers=False, remove=True)
-    else:
-        tuple = listToTuple(conf.env['DEFINES'])
-        defs = tuple[0]
-        undefs = tuple[1]
-
-        if feature is 'handleDefs':
-            handleDefsFile(input=infile, output=outfile, path=path, defs=defs, conf=conf)
-        elif feature is 'makeHeader':
-            makeHeaderFile(bldpath, output=outfile, path=path, defs=defs, undefs=undefs, chmod=None,
-                           guard='_%s_CONFIG_H_'%guardTag.upper().replace('.', '_'))
-        elif feature is 'm4subst':
-            m4substFile(input=infile, output=outfile, path=path, 
-                        dict=substDict, env=conf.env.derive(), chmod=None)
-
-    conf.setenv('')
+def configureFunctionsAndTypes(self):
+    # Look for a ton of headers
+    # TODO: Some of these can likely be removed
+    self.check_cc(header_name="inttypes.h", mandatory=False)
+    self.check_cc(header_name="unistd.h", mandatory=False)
+    self.check_cc(header_name="getopt.h", mandatory=False)
+    self.check_cc(header_name="malloc.h", mandatory=False)
+    self.check_cc(header_name="sys/time.h", mandatory=False)
+    self.check_cc(header_name="limits.h", mandatory=False)
+    self.check_cc(header_name="dlfcn.h", mandatory=False)
+    self.check_cc(header_name="fcntl.h", mandatory=False)
+    self.check_cc(header_name="check.h", mandatory=False)
+    self.check_cc(header_name="memory.h", mandatory=False)
+    self.check_cc(header_name="strings.h", mandatory=False)
+    self.check_cc(header_name="stdbool.h", mandatory=False)
+    self.check_cc(function_name='localtime_r', header_name="time.h", mandatory=False)
+    self.check_cc(function_name='gmtime_r', header_name="time.h", mandatory=False)
+    self.check_cc(function_name='mmap', header_name="sys/mman.h", mandatory=False)
+    self.check_cc(function_name='strerror', header_name="string.h", mandatory=False)
+    self.check_cc(function_name='bcopy', header_name="strings.h", mandatory=False)
+    self.check_cc(type_name='ssize_t', header_name='sys/types.h', mandatory=False)
+    self.check_cc(lib="m", mandatory=False, uselib_store='MATH')
+    self.check_cc(lib="rt", mandatory=False, uselib_store='RT')
+    self.check_cc(lib="sqrt", mandatory=False, uselib_store='SQRT')
+    self.check_cc(function_name='erf', header_name="math.h", use = "MATH", mandatory=False)
+    self.check_cc(function_name='erff', header_name="math.h", use = "MATH", mandatory=False)
+    self.check_cc(function_name='setenv', header_name="stdlib.h", mandatory=False)
+    
+    self.check_cc(function_name='gettimeofday', header_name='sys/time.h', mandatory=False)
+    if self.check_cc(lib='rt', function_name='clock_gettime', header_name='time.h', mandatory=False):
+        self.env.DEFINES.append('USE_CLOCK_GETTIME')
+    self.check_cc(function_name='BSDgettimeofday', header_name='sys/time.h', mandatory=False)
+    self.check_cc(function_name='gethrtime', header_name='sys/time.h', mandatory=False)
+    self.check_cc(function_name='getpagesize', header_name='unistd.h', mandatory=False)
+    self.check_cc(function_name='getopt', header_name='unistd.h', mandatory=False)
+    self.check_cc(function_name='getopt_long', header_name='getopt.h', mandatory=False)
+    
+    self.check_cc(fragment='#include <math.h>\nint main(){if (!isnan(3.14159)) isnan(2.7183);}',
+            define_name='HAVE_ISNAN', msg='Checking for function isnan',
+            errmsg='not found', mandatory=False)
+    
+    # Check for hrtime_t data type; some systems (AIX) seem to have
+    # a function called gethrtime but no hrtime_t!
+    frag = '''
+    #ifdef HAVE_SYS_TIME_H
+    #include <sys/time.h>
+    int main(){hrtime_t foobar;}
+    #endif
+    '''
+    self.check_cc(fragment=frag, define_name='HAVE_HRTIME_T',
+            msg='Checking for type hrtime_t', errmsg='not found', mandatory=False)
+    
+    types_str = '''
+#include <stdio.h>
+int isBigEndian()
+{
+    long one = 1;
+    return !(*((char *)(&one)));
+}
+int main()
+{
+    if (isBigEndian()) printf("bigendian=True\\n");
+    else printf("bigendian=False\\n");
+    printf("sizeof_int=%d\\n", sizeof(int));
+    printf("sizeof_short=%d\\n", sizeof(short));
+    printf("sizeof_long=%d\\n", sizeof(long));
+    printf("sizeof_long_long=%d\\n", sizeof(long long));
+    printf("sizeof_float=%d\\n", sizeof(float));
+    printf("sizeof_double=%d\\n", sizeof(double));
+    printf("sizeof_size_t=%d\\n", sizeof(size_t));
+    printf("sizeof_wchar_t=%d\\n", sizeof(wchar_t));
+    return 0;
+}
+'''
+    
+    #find out the size of some types, etc.
+    # TODO: This is not using the 32 vs. 64 bit linker flags, so if you're
+    #    building with --enable-32bit on 64 bit Linux, sizeof(size_t) will
+    #    erroneously be 8 here.
+    output = self.check(fragment=types_str, execute=1, msg='Checking system type sizes', define_ret=True)
+    t = Utils.str_to_dict(output or '')
+    for k, v in t.iteritems():
+        try:
+         v = int(v)
+        except:
+         v = v.strip()
+         if v == 'True':
+             v = True
+         elif v == 'False':
+             v = False
+        #v = eval(v)
+        self.msg(k.replace('_', ' ', 1), str(v))
+        self.define(k.upper(), v)
 
 def configure(self):
-
+    
     if self.env['DETECTED_BUILD_PY']:
         return
-
+    
     sys_platform = getPlatform(default=Options.platform)
     winRegex = r'win32'
-
+    
     path = Utils.to_list(self.path.abspath())
     if path.__len__() > 1 and sys_platform != 'win32':
         raise Errors.WafError('Path "%s" contains spaces which cannot be resolved by the system.'%self.path.abspath())
-
+    
     self.msg('Platform', sys_platform, color='GREEN')
-
+    
     # Dirty fix to get around libpath problems..
     if re.match(winRegex, sys_platform):
         real_cmd_and_log = self.cmd_and_log
@@ -1020,7 +1192,7 @@ def configure(self):
         if 'LIB' in self.environ: del self.environ['LIB']
         env_cl = os.environ.get('CL', None)
         if 'CL' in os.environ: del os.environ['CL']
-
+    
         if Options.options.enable64 or ('64' in platform.machine() and not Options.options.enable32):
             # x64 is the native 64-bit compiler, so prefer this one.  If we
             # just have VS Express though, we won't have it, so fall back on
@@ -1030,7 +1202,7 @@ def configure(self):
             # TODO: Temporary hack - see #357
             #self.env['MSVC_TARGETS'] = ['x64', 'x86_amd64']
             self.env['MSVC_TARGETS'] = ['x86_amd64', 'x64']
-
+            
             # Look for 32-bit msvc if we don't find 64-bit.
             if not Options.options.enable64:
                 self.options.check_c_compiler = self.options.check_cxx_compiler = 'msvc'
@@ -1047,7 +1219,7 @@ def configure(self):
     self.load('compiler_c')
     self.load('compiler_cxx')
     self.load('waf_unit_test')
-
+    
     # Reset cmd_and_log
     if re.match(winRegex, sys_platform):
         self.cmd_and_log = real_cmd_and_log
@@ -1070,11 +1242,12 @@ def configure(self):
         env.append_unique('DEFINES', Options.options._defs.split(','))
 
     configureCompilerOptions(self)
+    configureFunctionsAndTypes(self)
 
     env['PLATFORM'] = sys_platform
-
+    
     env['LIB_TYPE'] = Options.options.shared_libs and 'shlib' or 'stlib'
-
+    
     env['install_headers'] = Options.options.install_headers
     env['install_libs'] = Options.options.install_libs
     env['install_source'] = Options.options.install_source
@@ -1208,12 +1381,8 @@ def m4substFile(input, output, path, dict={}, env=None, chmod=None):
     m4_re = re.compile('@(\w+)@', re.M)
 
     infile = join(path.abspath(), input)
-    dir = path.relpath()
-    outfile = join(dir, output)
-
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-
+    outfile = join(path.abspath(), output)
+    
     file = open(infile, 'r')
     code = file.read()
     file.close()
@@ -1227,7 +1396,7 @@ def m4substFile(input, output, path, dict={}, env=None, chmod=None):
         names = m4_re.findall(code)
         for i in names:
             dict[i] = env.get_flat(i) or env.get_flat(i.upper())
-
+    
     file = open(outfile, 'w')
     file.write(s % dict)
     file.close()
@@ -1238,11 +1407,11 @@ def m4substFile(input, output, path, dict={}, env=None, chmod=None):
 def handleDefs(tsk):
     handleDefsFile(input=tsk.input, output=tsk.output, path=tsk.path, defs=tsk.defs, chmod=getattr(tsk, 'chmod', None))
 
-def handleDefsFile(input, output, path, defs, chmod=None, conf=None):
+def handleDefsFile(input, output, path, defs, chmod=None):
     import re
     infile = join(path.abspath(), input)
     outfile = join(path.abspath(), output)
-
+    
     file = open(infile, 'r')
     code = file.read()
     file.close()
@@ -1251,8 +1420,7 @@ def handleDefsFile(input, output, path, defs, chmod=None, conf=None):
         v = defs[k]
         if v is None:
             v = ''
-        code = re.sub(r'#undef %s(\s*\n)' % k, r'#define %s %s\1' % (k,v), code)
-        code = re.sub(r'#define %s 0(\s*\n)' % k, r'#define %s %s\1' % (k,v), code)
+        code = re.sub(r'#undef %s(\n)' % k, r'#define %s %s\1' % (k,v), code)
     code = re.sub(r'(#undef[^\n\/\**]*)(\/\*.+\*\/)?(\n)', r'/* \1 */\3', code)
     file = open(outfile, 'w')
     file.write(code)
@@ -1266,26 +1434,18 @@ def makeHeader(tsk):
                    undefs=getattr(tsk, 'undefs', None),
                    chmod=getattr(tsk, 'chmod', None),
                    guard=getattr(tsk, 'guard', '__CONFIG_H__'))
-
-def makeHeaderFile(bldpath, output, path, defs, undefs, chmod, guard):
+    
+def makeHeaderFile(output, path, defs, undefs, chmod, guard):
     outfile = join(path.abspath(), output)
     dest = open(outfile, 'w')
     dest.write('#ifndef %s\n#define %s\n\n' % (guard, guard))
-
-    # Prevent the following from making it into a config header
-    toRemove = ['PYTHONDIR', 'PYTHONARCHDIR', 'NOMINMAX', '_SCL_SECURE_NO_WARNINGS', \
-               '_CRT_SECURE_NO_WARNINGS', 'WIN32_LEAN_AND_MEAN', 'WIN32', 'NOMINMAX', \
-               '_FILE_OFFSET_BITS', '_LARGEFILE_SOURCE']
-    for item in toRemove:
-        if item in defs:
-            del defs[item]
 
     for k in defs.keys():
         v = defs[k]
         if v is None:
             v = ''
         dest.write('\n#ifndef %s\n#define %s %s\n#endif\n' % (k, k, v))
-
+    
     if undefs:
         for u in undefs:
             dest.write('\n#undef %s\n' % u)
@@ -1301,7 +1461,7 @@ def getSolarisFlags(compilerName):
     bitFlag32 = '-xtarget=generic'
     bitFlag64 = '-xtarget=generic64'
     (out, err) = subprocess.Popen([compilerName, '-flags'], stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-
+            
     for line in out.split('\n'):
         if re.match(r'-m32.*', line):
             bitFlag32 = '-m32'
@@ -1395,17 +1555,6 @@ class CPPListContext(ListContext, CPPContext):
 class CPPCleanContext(CleanContext, CPPContext):
     pass
 class CPPInstallContext(InstallContext, CPPContext):
-    pass
-class CPPConfigurationContext(ConfigurationContext, CPPContext):
-    pass
-class CPPOptionsContext(OptionsContext, CPPContext):
-    pass
-
-class CPPBaseDistcleanContext(Context.Context):
-    cmd='distclean'
-    def __init__(self,**kw):
-        super(CPPBaseDistcleanContext,self).__init__(**kw)
-class CPPDistcleanContext(CPPBaseDistcleanContext, CPPContext):
     pass
 
 class CPPMSVSGenContext(msvs_generator, CPPContext):

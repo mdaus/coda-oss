@@ -27,6 +27,8 @@
 #include "sys/Mutex.h"
 
 
+#if defined(_REENTRANT)
+
 using namespace sys;
 const int MAX_THREADS = 9;
 const int THREAD_LOOPS = 3;
@@ -70,3 +72,12 @@ int main (int argc, char* argv[])
       threads[j]->join();
    }
 }
+#else
+int main()
+{
+	std::cout << "Sorry, your implementation of sys is not thread-enabled" << std::endl;
+	return 0;
+}
+#endif
+
+

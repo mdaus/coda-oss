@@ -26,6 +26,7 @@
 
 #include "sys/Runnable.h"
 
+#if defined(_REENTRANT)
 #include <typeinfo>
 #include <iostream>
 #include "sys/SystemException.h"
@@ -279,4 +280,5 @@ private:
 };
 }
 
+#  endif
 #endif

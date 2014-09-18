@@ -21,7 +21,7 @@
  */
 
 
-#if defined(USE_NSPR_THREADS)
+#if defined(USE_NSPR_THREADS) && defined(_REENTRANT)
 #include "sys/MutexNSPR.h"
 
 sys::MutexNSPR::MutexNSPR()

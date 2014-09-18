@@ -25,6 +25,8 @@
 #define __SYS_MUTEX_INTERFACE_H__
 
 
+
+#if defined(_REENTRANT)
 #include <typeinfo>
 #include "sys/SystemException.h"
 #include "sys/Dbg.h"
@@ -73,5 +75,7 @@ public:
 };
 
 }
+
+#endif // Are we reentrant?
 
 #endif

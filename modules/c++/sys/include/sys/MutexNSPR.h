@@ -24,7 +24,7 @@
 #ifndef __SYS_NSPR_MUTEX_H__
 #define __SYS_NSPR_MUTEX_H__
 
-#if defined(USE_NSPR_THREADS)
+#if defined(USE_NSPR_THREADS) && defined(_REENTRANT)
 
 #include "sys/MutexInterface.h"
 #include <prlock.h>

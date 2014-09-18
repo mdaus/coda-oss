@@ -23,7 +23,6 @@
 #ifndef __XML_LITE_VALIDATOR_H__
 #define __XML_LITE_VALIDATOR_H__
 
-#include "xml/lite/xml_lite_config.h"
 
 #if defined(USE_XERCES)
 #  include "xml/lite/ValidatorXerces.h"
@@ -45,7 +44,10 @@ namespace lite
 typedef ValidatorLibXML Validator;
 }
 }
-#elif defined(USE_EXPAT)
+#else
+#  if !defined(USE_EXPAT)
+#    define USE_EXPAT 1
+#  endif
 #  include "xml/lite/ValidatorExpat.h"
 namespace xml
 {
@@ -54,9 +56,6 @@ namespace lite
 typedef ValidatorExpat Validator;
 }
 }
-#else
-  #error XML parser must be set at configure time
 #endif
 
 #endif
-

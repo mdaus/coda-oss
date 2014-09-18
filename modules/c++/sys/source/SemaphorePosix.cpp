@@ -20,11 +20,10 @@
  *
  */
 
-#include <sys/SemaphorePosix.h>
 
-#if defined(HAVE_PTHREAD_H) && !defined(__APPLE_CC__)
-
+#if defined(__POSIX) && defined(_REENTRANT) && !defined(__APPLE_CC__)
 #include <semaphore.h>
+#include "sys/SemaphorePosix.h"
 
 sys::SemaphorePosix::SemaphorePosix(unsigned int count)
 {

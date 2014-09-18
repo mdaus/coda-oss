@@ -21,7 +21,7 @@
  */
 
 
-#if !defined(__APPLE_CC__)
+#if defined(_REENTRANT) && !defined(__APPLE_CC__)
 #include "sys/ReadWriteMutex.h"
 
 void sys::ReadWriteMutex::lockRead()
@@ -59,4 +59,5 @@ void sys::ReadWriteMutex::unlockWrite()
 	}
 }
 
-#endif
+#endif // _REENTRANT
+

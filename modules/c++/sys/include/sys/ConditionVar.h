@@ -24,11 +24,20 @@
 #ifndef __SYS_CONDITION_VAR_H__
 #define __SYS_CONDITION_VAR_H__
 
+#  if defined(_REENTRANT)
+
 #    if defined(USE_NSPR_THREADS)
 #        include "sys/ConditionVarNSPR.h"
 namespace sys
 {
 typedef ConditionVarNSPR ConditionVar;
+}
+// If they explicitly want posix
+#    elif defined(__POSIX)
+#        include "sys/ConditionVarPosix.h"
+namespace sys
+{
+typedef ConditionVarPosix ConditionVar;
 }
 #    elif defined(WIN32)
 #        include "sys/ConditionVarWin32.h"
@@ -36,19 +45,18 @@ namespace sys
 {
 typedef ConditionVarWin32 ConditionVar;
 }
-#    elif defined(__sun)
+#    elif defined(__sun) && !defined(__POSIX)
 #        include "sys/ConditionVarSolaris.h"
 namespace sys
 {
 typedef ConditionVarSolaris ConditionVar;
 }
-#    elif defined(__sgi)
+#    elif defined(__sgi) && !defined(__POSIX)
 #        include "sys/ConditionVarIrix.h"
 namespace sys
 {
 typedef ConditionVarIrix ConditionVar;
 }
-//default to POSIX
 #    else
 #        include "sys/ConditionVarPosix.h"
 namespace sys
@@ -56,6 +64,8 @@ namespace sys
 typedef ConditionVarPosix ConditionVar;
 }
 #    endif // Which thread package?
+
+#  endif // Are we reentrant?
 
 #endif // End of header
 

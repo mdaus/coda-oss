@@ -20,11 +20,10 @@
  *
  */
 
-#include <sys/ConditionVarPosix.h>
 
-#if defined(HAVE_PTHREAD_H)
-
+#if defined(__POSIX) && defined(_REENTRANT)
 #include <pthread.h>
+#include "sys/ConditionVarPosix.h"
 
 sys::ConditionVarPosix::ConditionVarPosix() :
     mMutexOwned(new sys::MutexPosix()),
@@ -107,3 +106,4 @@ pthread_cond_t& sys::ConditionVarPosix::getNative()
 }
 
 #endif
+

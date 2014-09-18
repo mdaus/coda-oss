@@ -24,9 +24,9 @@
 #ifndef __SYS_SEMAPHORE_WIN32_H__
 #define __SYS_SEMAPHORE_WIN32_H__
 
-#if defined(WIN32)
+#if defined(WIN32) && defined(_REENTRANT)
 
-#if !defined(USE_NSPR_THREADS)
+#if !defined(USE_NSPR_THREADS) && !defined(__POSIX)
 
 #include "sys/Conf.h"
 #include "sys/SemaphoreInterface.h"

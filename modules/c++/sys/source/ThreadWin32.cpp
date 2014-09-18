@@ -21,8 +21,8 @@
  */
 
 
-#if defined(WIN32)
-#if !defined(USE_NSPR_THREADS)
+#if defined(WIN32) && defined(_REENTRANT)
+#if !defined(USE_NSPR_THREADS) && !defined(__POSIX)
 #include "sys/ThreadWin32.h"
 
 

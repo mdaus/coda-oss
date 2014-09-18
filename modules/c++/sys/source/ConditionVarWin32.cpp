@@ -21,9 +21,9 @@
  */
 
 
-#if defined(WIN32)
+#if defined(WIN32) && defined(_REENTRANT)
 
-#if !defined(USE_NSPR_THREADS)
+#if !defined(USE_NSPR_THREADS) && !defined(__POSIX)
 
 #include "sys/ConditionVarWin32.h"
 
@@ -66,7 +66,7 @@ sys::ConditionVarDataWin32::ConditionVarDataWin32():
 sys::ConditionVarDataWin32::~ConditionVarDataWin32()
 {
     CloseHandle(mWaitersAreDone);
-    CloseHandle(mSemaphore);
+	CloseHandle(mSemaphore);
     DeleteCriticalSection(&mNumWaitersCS);
 }
 
@@ -114,10 +114,6 @@ bool sys::ConditionVarDataWin32::wait(HANDLE externalMutex, double timeout)
         waitImpl(externalMutex);
         return true;
     case WAIT_TIMEOUT:
-        {
-            const ScopedCriticalSection lock(mNumWaitersCS);
-            --mNumWaiters;
-        }
         return false;
     default:
         throw sys::SystemException("SignalObjectAndWait() failed");

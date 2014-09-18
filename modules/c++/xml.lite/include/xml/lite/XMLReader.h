@@ -23,7 +23,6 @@
 #ifndef __XML_LITE_XML_READER_H__
 #define __XML_LITE_XML_READER_H__
 
-#include "xml/lite/xml_lite_config.h"
 
 #if defined(USE_XERCES)
 #  include "xml/lite/XMLReaderXerces.h"
@@ -45,7 +44,10 @@ namespace lite
 typedef XMLReaderLibXML XMLReader;
 }
 }
-#elif defined(USE_EXPAT)
+#else
+#  if !defined(USE_EXPAT)
+#    define USE_EXPAT 1
+#  endif
 #  include "xml/lite/XMLReaderExpat.h"
 namespace xml
 {
@@ -54,9 +56,6 @@ namespace lite
 typedef XMLReaderExpat XMLReader;
 }
 }
-#else
-  #error XML parser must be set at configure time
 #endif
 
 #endif
-

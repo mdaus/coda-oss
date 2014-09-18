@@ -24,7 +24,7 @@
 #ifndef __SYS_SEMAPHORE_IRIX_H__
 #define __SYS_SEMAPHORE_IRIX_H__
 
-#if defined(__sgi)
+#if defined(__sgi) && defined(_REENTRANT) && !defined(__POSIX)
 
 #include <ulocks.h>
 #include "sys/SyncFactoryIrix.h"

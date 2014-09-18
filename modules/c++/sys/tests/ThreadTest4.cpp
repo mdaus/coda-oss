@@ -22,6 +22,8 @@
 
 #include <import/sys.h>
 
+#if defined(_REENTRANT)
+
 using namespace sys;
 using namespace std;
 
@@ -139,3 +141,13 @@ int main()
     }
     return 0;
 };
+
+#else
+
+int main()
+{
+    std::cout << "sys is not Multithreaded" << std::endl;
+    return 0;
+}
+
+#endif

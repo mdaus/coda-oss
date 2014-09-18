@@ -24,6 +24,7 @@
 #ifndef __SYS_SEMAPHORE_INTERFACE_H__
 #define __SYS_SEMAPHORE_INTERFACE_H__
 
+#  if defined(_REENTRANT)
 #include <typeinfo>
 #include "sys/SystemException.h"
 
@@ -48,4 +49,5 @@ public:
 
 }
 
+#  endif
 #endif

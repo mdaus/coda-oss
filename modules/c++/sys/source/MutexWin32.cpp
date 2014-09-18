@@ -21,9 +21,9 @@
  */
 
 
-#if defined(WIN32)
+#if defined(WIN32) && defined(_REENTRANT)
 
-#if !defined(USE_NSPR_THREADS)
+#if !defined(USE_NSPR_THREADS) && !defined(__POSIX)
 
 #include "sys/MutexWin32.h"
 

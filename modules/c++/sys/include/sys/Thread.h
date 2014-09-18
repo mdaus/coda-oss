@@ -34,6 +34,7 @@
  *  because that is how it determines reentrance!
  *
  */
+#  if defined(_REENTRANT)
 
 // Netscape portable runtime
 #    if defined(USE_NSPR_THREADS)
@@ -42,19 +43,26 @@ namespace sys
 {
 typedef ThreadNSPR Thread;
 }
+// If they explicitly want posix
+#    elif defined(__POSIX)
+#        include "sys/ThreadPosix.h"
+namespace sys
+{
+typedef ThreadPosix Thread;
+}
 #    elif defined(WIN32)
 #        include "sys/ThreadWin32.h"
 namespace sys
 {
 typedef ThreadWin32 Thread;
 }
-#    elif defined(__sun)
+#    elif defined(__sun) && !defined(__POSIX)
 #        include "sys/ThreadSolaris.h"
 namespace sys
 {
 typedef ThreadSolaris Thread;
 }
-#    elif defined(__sgi)
+#    elif defined(__sgi) && !defined(__POSIX)
 #        include "sys/ThreadIrix.h"
 namespace sys
 {
@@ -68,5 +76,7 @@ namespace sys
 typedef ThreadPosix Thread;
 }
 #    endif // Which thread package?
+
+#  endif // Are we reentrant?
 
 #endif

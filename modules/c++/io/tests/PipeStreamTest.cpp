@@ -29,22 +29,18 @@ int main(int argc, char **argv)
     try
     {
         std::string cmd;
-        std::string testMessage("Scream!");
 
         if (argc > 1)
             cmd = std::string(argv[1]);
         else
-            cmd = "echo " + testMessage;
+            cmd = "echo Scream!";
 
         io::PipeStream ps(cmd);
 
         io::StandardOutStream stdo;
-        size_t ioSize = ps.streamTo(stdo);
+        ps.streamTo(stdo);
+        stdo.writeln("");
         stdo.close();
-
-        // check echo output size vs test message size plus newline
-        if (argc == 1 && ioSize != testMessage.size() + 1)
-            std::cerr << "Invalid I/O size:  " << ioSize << std::endl;
 
         if (ps.close() != 0)
         {

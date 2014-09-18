@@ -38,6 +38,7 @@ TEST_CASE(testStringStream)
     TEST_ASSERT_EQ(stream.tell(), 1);
 
     stream.seek(22, io::Seekable::CURRENT);
+    TEST_ASSERT_EQ(stream.tell(), static_cast<int>(io::InputStream::IS_END));
     stream.seek(0, io::Seekable::START);
 
     stream.reset();
@@ -135,28 +136,25 @@ TEST_CASE(testRotate)
     cleanupFiles( outFile);
 
     sys::OS os;
+    io::RotatingFileOutputStream out(outFile, 10, maxFiles);
+    out.write("0123456789");
+    TEST_ASSERT(os.exists(outFile));
+    TEST_ASSERT_FALSE(os.isFile(outFile + ".1"));
 
+    out.write("1");
+    TEST_ASSERT(os.isFile(outFile + ".1"));
+    TEST_ASSERT_EQ(out.getCount(), 1);
+
+    for(size_t i = 0; i < maxFiles - 1; ++i)
     {
-        io::RotatingFileOutputStream out(outFile, 10, maxFiles);
+        std::string fname = outFile + "." + str::toString(i + 1);
+        std::string next = outFile + "." + str::toString(i + 2);
+
+        TEST_ASSERT(os.isFile(fname));
+        TEST_ASSERT_FALSE(os.isFile(next));
+
         out.write("0123456789");
-        TEST_ASSERT(os.exists(outFile));
-        TEST_ASSERT_FALSE(os.isFile(outFile + ".1"));
-
-        out.write("1");
-        TEST_ASSERT(os.isFile(outFile + ".1"));
-        TEST_ASSERT_EQ(out.getCount(), 1);
-
-        for(size_t i = 0; i < maxFiles - 1; ++i)
-        {
-            std::string fname = outFile + "." + str::toString(i + 1);
-            std::string next = outFile + "." + str::toString(i + 2);
-
-            TEST_ASSERT(os.isFile(fname));
-            TEST_ASSERT_FALSE(os.isFile(next));
-
-            out.write("0123456789");
-            TEST_ASSERT(os.isFile(next));
-        }
+        TEST_ASSERT(os.isFile(next));
     }
 
     cleanupFiles( outFile);
@@ -168,14 +166,12 @@ TEST_CASE(testNeverRotate)
     cleanupFiles( outFile);
 
     sys::OS os;
-    {
-        io::RotatingFileOutputStream out(outFile);
-        for(size_t i = 0; i < 1024; ++i)
-        out.write("0");
-        TEST_ASSERT(os.exists(outFile));
-        TEST_ASSERT_FALSE(os.isFile(outFile + ".1"));
-        TEST_ASSERT_EQ(out.getCount(), 1024);
-    }
+    io::RotatingFileOutputStream out(outFile);
+    for(size_t i = 0; i < 1024; ++i)
+    out.write("0");
+    TEST_ASSERT(os.exists(outFile));
+    TEST_ASSERT_FALSE(os.isFile(outFile + ".1"));
+    TEST_ASSERT_EQ(out.getCount(), 1024);
     cleanupFiles( outFile);
 }
 
