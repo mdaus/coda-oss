@@ -180,11 +180,21 @@ class CPPContext(Context.Context):
                 glob_patterns.append(join(dir, '*%s' % ext))
 
         #build the lib
-        lib = bld(features='%s %s%s add_targets includes'% (libExeType, libExeType, env['LIB_TYPE'] or 'stlib'), includes=includes,
-                target=targetName, name=libName, export_includes=exportIncludes,
-                use=uselib_local, uselib=uselib, env=env.derive(),
-                defines=defines, path=path,
-                source=path.ant_glob(glob_patterns), targets_to_add=targets_to_add)
+        print 'Running: ' + libName
+        if libName in env['PREBUILT_LIBS']:
+            #targets_to_add.extend(uselib_local)
+            print 'TARGETS_TO_ADD: ' + str(targets_to_add)
+            #print targets_to_add
+            lib = bld(features='cxx link_only add_targets', includes=includes,
+                    target=targetName, name=libName, export_includes=exportIncludes,
+                    use=uselib_local, uselib=uselib, env=env.derive(),source=path.ant_glob(glob_patterns), 
+                    defines=defines, path=path,targets_to_add=targets_to_add)
+        else:
+            lib = bld(features='%s %s%s add_targets includes'% (libExeType, libExeType, env['LIB_TYPE'] or 'stlib'), includes=includes,
+                    target=targetName, name=libName, export_includes=exportIncludes,
+                    use=uselib_local, uselib=uselib, env=env.derive(),
+                    defines=defines, path=path,
+                    source=path.ant_glob(glob_patterns), targets_to_add=targets_to_add)
         lib.source = filter(partial(lambda x, t: basename(str(t)) not in x, modArgs.get('source_filter', '').split()), lib.source)
 
         if env['install_libs']:
@@ -232,14 +242,45 @@ class CPPContext(Context.Context):
 
             test_deps = map(lambda x: '%s-%s' % (x, lang), test_deps + listify(modArgs.get('test_uselib_local', '')) + listify(modArgs.get('test_use','')))
 
+            test_uselib = listify(modArgs.get('test_uselib', uselib))
+            
+            #test_uselib.append('cli-c++')
+            #test_uselib.append('except-c++')
+            #test_uselib.append('io-c++')
+            #test_uselib.append('logging-c++')
+            #test_uselib.append('mt-c++')
+            #test_uselib.append('str-c++')
+            #test_uselib.append('sys-c++')
+            #test_uselib.append('unique-c++')
+            #test_uselib.append('xerces-c++')
+            #test_uselib.append('xml.lite-c++')
+            #test_uselib.append('SOCKET')
+            #test_uselib.append('RPC')
+            #test_uselib.append('ADVAPI32')
+
+            #for lib in temp_test_deps:
+            #    if lib in env['PREBUILT_LIBS']:
+            #        test_uselib.append(lib)
+            #    else:
+            #        test_deps.append(lib)
             for test in testNode.ant_glob('*%s' % sourceExt):
                 if str(test) not in listify(modArgs.get('test_filter', '')):
                     testName = splitext(str(test))[0]
+
+                    #test_deps.append('xerces-c')
+                    if testName == 'ValidationTest':
+                        print 'TEST DEPS: ' + str(test_deps)
                     self.program(env=env.derive(), name=testName, target=testName, source=str(test),
                                  use=test_deps,
-                                 uselib=modArgs.get('test_uselib', uselib),
+                                 uselib=test_uselib,
                                  lang=lang, path=testNode, includes=includes, defines=defines,
                                  install_path='${PREFIX}/tests/%s' % modArgs['name'])
+                    #exe = self(features='%s %sprogram link_program' % (libExeType, libExeType), 
+                    #             env=env.derive(), name=testName, target=testName, source=str(test), use=test_deps,
+                    #             uselib = test_uselib,
+                    #             lang=lang, path=testNode, defines=defines,
+                    #             includes=includes, inherit=lib,
+                    #             install_path='${PREFIX}/tests/%s' % modArgs['name'])
 
         testNode = path.make_node('unittests')
         if os.path.exists(testNode.abspath()) and not Options.options.libs_only:
@@ -394,6 +435,7 @@ class CPPContext(Context.Context):
         """
         Builds a program (exe)
         """
+
         bld = self
         if 'env' in modArgs:
             env = modArgs['env']
@@ -719,6 +761,8 @@ def options(opt):
                     help='Override installation share directory')
     opt.add_option('--install-source', action='store_true', dest='install_source', default=False,
                    help='Distribute source into the installation area (for delivering source)')
+    opt.add_option('--with-prebuilt-modules-home', action='store', dest='prebuilt_home',
+                    help='Specify prebuilt CODA modules home')
 
 def configureCompilerOptions(self):
     sys_platform = getPlatform(default=Options.platform)
@@ -1183,8 +1227,42 @@ def configure(self):
     env['install_bindir'] = Options.options.bindir if Options.options.bindir else join(Options.options.prefix, 'bin')
     env['install_sharedir'] = Options.options.sharedir if Options.options.sharedir else join(Options.options.prefix, 'share')
 
+    env['PREBUILT_HOME'] = Options.options.prebuilt_home
+    env['PREBUILT_LIBS'] = []
+    if env['PREBUILT_HOME']:
+        libPath = os.path.join(env['PREBUILT_HOME'], 'lib')
+        includePath = os.path.join(env['PREBUILT_HOME'], 'include')
+        env['LIBPATH'].append(env['PREBUILT_HOME'])
+        #env['PREBUILT_LIBS'] = [f for f in os.listdir(env['PREBUILT_HOME']) if os.path.isfile(join(env['PREBUILT_HOME'], f))]
+        for f in os.listdir(libPath):
+            strippedName = os.path.splitext(f)[0]
+            env.append_value('LIB_' + strippedName, strippedName)
+            env.append_value('LIBPATH_' + strippedName, libPath)
+            env['PREBUILT_LIBS'].append(strippedName)
+    else:
+        env['PREBUILD_LIBS'] = []
+
     #flag that we already detected
     self.env['DETECTED_BUILD_PY'] = True
+
+@task_gen
+@feature('link_only')
+def link_only(tsk):
+    print 'IN LINK ONLY'
+    tsk.uselib.append(tsk.name)
+    tsk.env.STLIB = []
+    for lib in tsk.use:
+        if lib in tsk.env['PREBUILT_LIBS']:
+            tsk.uselib.append(lib)
+        else:
+            tsk.env.STLIB.append(lib)
+    print 'STLIB: ' + str(tsk.env.STLIB)
+
+#@task_gen
+#@feature('link_program')
+#def link_program(tsk):
+#    print 'LINK PROGRAM'
+#    print (tsk.uselib)
 
 @task_gen
 @feature('untar')
