@@ -1,7 +1,7 @@
 import os, sys, shutil
 import re
 from waflib import Options, Utils
-from build import getPlatform, writeConfig, makeHeaderFile, listToTuple
+from build import getPlatform, writeConfig, makeHeaderFile, listToTuple, recursiveGlob
 from os.path import join, exists
 from zipfile import ZipFile
 import types
@@ -192,6 +192,67 @@ def opencv_set_defines(conf, platform):
             for addl_flag in addl_flags:
                 flags.append(addl_flag)
             flags.remove('/EHs')
+
+
+
+
+# generate the cpp/hpp file in the same directory as the source
+class Cl2Cpp:
+    """Perform the same work as the opencv/cl2cpp.cmake command""" 
+    
+    CPP = """// This file is auto-generated. Do not edit!
+
+#include \"precomp.hpp\"
+#include \"${OUTPUT_HPP_NAME}\"
+
+namespace cv
+{
+namespace ocl
+{
+${nested_namespace_start}
+
+"""
+
+    HPP = """// This file is auto-generated. Do not edit!
+
+#include \"opencv2/core/ocl.hpp\"
+#include \"opencv2/core/ocl_genbase.hpp\"
+#include \"opencv2/core/opencl/ocl_defs.hpp\"
+
+namespace cv
+{
+namespace ocl
+{
+${nested_namespace_start}
+
+"""
+    
+    def __init__(self, module_name, source_dir):
+        self.replacements = {}
+        if module_name == 'ocl'
+            self.replacements['nested_namespace_start'] = ''
+            self.replacements['nested_namespace_end']   = ''
+            self.new_mode = False
+        else:
+            self.replacements['nested_namespace_start'] = 'namespace %s\n{' % module_name
+            self.replacements['nested_namespace_end']   = '}'
+            self.new_mode = True
+
+        # TODO: use HPP and CPP to start these
+        self.hpp_str = ''
+        self.cpp_str = ''
+        
+        cl_files = [cl_file in for cl_file in recursiveGlob(source_dir, ['*.cl'])]
+        cl_files.sort()
+        for cl_file in cl_files:
+            self._generate_source_for_file(cl_file)
+            
+
+    def _generate_source_for_file(self, cl_file):
+        with open(cl_file, 'r') as f:
+            cl_file_str = f.read()
+        
+        # TODO: start substituting!!
 
 
 
