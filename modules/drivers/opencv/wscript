@@ -1,0 +1,302 @@
+import os, sys, shutil
+import re
+from waflib import Options, Utils
+from build import getPlatform, writeConfig, makeHeaderFile, listToTuple
+from os.path import join, exists
+from zipfile import ZipFile
+import types
+
+version    = 'opencv-3.0.0-rc1'
+sourcepath = '%s' % version
+zipfile    = '%s.zip' % version
+
+opencv_modules = 'calib3d core features2d flann hal highgui ' +  \
+                 'imgcodecs imgproc ml objdetect photo ' +  \
+                 'shape stitching superres ts video videoio videostab'
+
+opencv_core_vars = {
+    'OPENCV_CUDA_ARCH_BIN' : '',
+    'OPENCV_CUDA_ARCH_FEATURES' : '',
+    'OPENCV_CUDA_ARCH_PTX' : '',
+}
+
+opencv_core_defines = {
+    'HAVE_INTTYPES_H': lambda conf: conf.check_cc(header_name='inttypes.h', mandatory=False),
+    'WORDS_BIGENDIAN': lambda conf: conf.check_endianness() != 'little',
+    # TODO: can we link against this?
+    #'HAVE_JPEG': ''
+}
+
+gcc_icc_defines = {
+
+}
+
+opencv_compiler_defines = {
+    r'gcc' : gcc_icc_defines,
+    r'icc' : gcc_icc_defines,
+}
+
+opencv_platform_defines = {
+    r'win32': {
+        'HAVE_WIN32UI': '',
+        'HAVE_VFW':  '',
+    },
+}
+
+def merge_dict(d1, d2):
+    if d1:
+        out = d1.copy()
+        out.update(d2)
+    return out
+
+
+def partition_defines(conf, platform, compiler):
+    """Separate defines from undefines"""
+    sys_platform = getPlatform(default=platform)
+
+    # look at compiler defs before resorting to platform
+    special_defines = None
+    for regex in opencv_compiler_defines.keys():
+        if re.match(regex, compiler):
+            special_defines = opencv_compiler_defines[regex]
+            break
+
+    if not special_defines:
+        for regex in opencv_platform_defines.keys():
+            if re.match(regex, sys_platform):
+                special_defines = opencv_platform_defines[regex]
+                break
+
+    if not special_defines:
+        special_defines = {}
+
+    # merge defines into a single dictionary
+    defines = special_defines.copy()
+    defines.update(opencv_core_defines)
+    
+    # partition into defs, undefs
+    defs = {}
+
+    remap_bool = lambda val: '' if val else None
+    for define, value in defines.iteritems():
+        is_def = True
+        if isinstance(value, types.FunctionType):
+            result = value(conf)
+            is_def = result
+        else:
+            # what was specified is what will go in
+            result = value
+        if is_def:
+            defs[define] = remap_bool(result)
+    
+    return defs
+        
+
+class CMakeConfigHGenerator:
+
+    define_regex     = re.compile(r'#cmakedefine\s+(.*)')
+    define_rep_regex = r'#cmakedefine\s+\b%s\b'
+    var_regex        = re.compile(r'\${(.*)}')
+    var_rep_regex    = r'\${%s}'
+
+    def __init__(self, template_file):
+        with open(template_file, 'r') as f:
+            self.template_str = f.read()
+
+        # find subsitution candidates
+        possible_defines = {}
+        def_iter = self.define_regex.finditer(self.template_str)
+        for pos_def in def_iter:
+            possible_defines[pos_def.group(1)] = None
+        self.possible_defines = possible_defines
+
+        # find subsitution candidates
+        possible_vars = {}
+        var_iter = self.var_regex.finditer(self.template_str)
+        for pos_var in var_iter:
+            possible_vars[pos_var.group(1)] = None
+        self.possible_vars = possible_vars 
+
+
+    def write(self, path, def_set, var_set):
+        def_set_merge = merge_dict(self.possible_defines, def_set)
+        var_set_merge = merge_dict(self.possible_vars, var_set)
+
+        # replace #cmakedefine
+        out_str = self.template_str
+        for define, value in def_set_merge.iteritems():
+            if value is None:
+                out_str = re.sub(self.define_rep_regex % define,
+                                 r'/* #undef %s */' % define, out_str)
+            else:
+                out_str = re.sub(self.define_rep_regex % define,
+                                 r'#define %s %s' % (define, value), out_str)
+        
+
+        # replace ${var}
+        for var, value in var_set_merge.iteritems():
+            if value is None:
+                out_str = re.sub(self.var_rep_regex % var, '', out_str)
+            else:
+                out_str = re.sub(self.var_rep_regex % var, value, out_str)
+                
+        # dump the contents
+        with open(path, 'w') as f:
+            f.write(out_str)
+
+
+def opencv_set_defines(conf, platform):
+    sys_platform = getPlatform(default=Options.platform)
+    winRegex = r'win32'
+    conf.env['DEFINES'].append("__OPENCV_BUILD=1")
+    ccCompiler = conf.env['COMPILER_CC']
+
+    # TODO: not cutting it
+    conf.undefine('HAVE_OPENCL')
+
+    defs = partition_defines(conf, Options.platform, ccCompiler)
+
+    template_file = conf.path.make_node(join(sourcepath, 'cmake',
+                                             'templates', 'cvconfig.h.in'))
+
+    gen = CMakeConfigHGenerator(template_file.abspath())
+    gen.write(conf.path.make_node(join(sourcepath, 'cvconfig.h')).abspath(),
+              defs, opencv_core_vars)
+    
+
+    if ccCompiler == 'gcc' or ccCompiler == 'icc':
+        pass
+    elif re.match(winRegex, sys_platform):
+
+        # defines
+        conf.env['DEFINES'].append('_CRT_NONSTDC_NO_DEPRECATE')
+        conf.env['DEFINES'].append('_CRT_SECURE_NO_DEPRECATE')
+        conf.env['DEFINES'].append('_VARIADIC_MAX=10')
+        conf.env['DEFINES'].append('_WINDOWS')
+        # conf.env['DEFINES'].append("WIN32") # done already
+        # conf.env['DEFINES'].append("_MBCS") # may be a problem to not define this
+        if Options.options.debugging:
+            conf.env['DEFINES'].append("_DEBUG")
+        else:
+            conf.env['DEFINES'].append("NDEBUG")
+        addl_flags = '/EHa /fp:precise /Gd /Gm- /GS /Gy /Oi /TP /WX- /Zc:forScope /bigobj'.split()
+        # Already done/skippable: /W4 /GR /errorReport:prompt /MP /nologo /Zi 
+        # May be needed(?): /Zc:wchar_t
+    
+        if Options.options.debugging:
+            addl_flags = addl_flags + '/Od /Ob0 /RTC1'.split()
+        else:
+            addl_flags = addl_flags + '/O2 /Ob2'.split()
+
+        for flags in [conf.env['CXXFLAGS'], conf.env['CFLAGS']]:
+            for addl_flag in addl_flags:
+                flags.append(addl_flag)
+            flags.remove('/EHs')
+
+
+
+def opencv_generate_modules_header(conf):
+    modules_header_dir = conf.path.make_node(join(sourcepath, 'opencv2'))
+    modules_header_dir.mkdir()
+    defs = dict(('HAVE_OPENCV_{0}'.format(x.upper()), '')
+                for x in opencv_modules.split())
+    makeHeaderFile(conf.bldnode.abspath(),
+                   guard='__OPENCV2_MODULES_HPP__',
+                   chmod=None,
+                   defs=defs, undefs=None,
+                   path=modules_header_dir,
+                   output='opencv_modules.hpp')
+
+
+def options(opt):
+    opt.add_option('--with-opencv-home', action='store', dest='opencv_home',
+                   help='Specify the OpenCV Home - where the OpenCV library is installed')
+
+    opt.add_option('--disable-opencv', action='store_false', dest='enable_opencv',
+                   help='will not build the opencv library')
+
+    opt.add_option('--enable-opencv', action='store_true',
+                   default=True, help='will build the opencv library if not found on the system (default)')
+
+    opt.add_option('--build-opencv', action='store_true', dest="build_opencv",
+                   help='force building opencv library from scratch',
+                   default=os.path.exists(join(opt.path.abspath(), zipfile)))
+
+    opt.add_option('--nobuild-opencv', action='store_false', dest="build_opencv",
+                   help='force not building opencv library from scratch')
+
+def configure(conf):    
+    if Options.options.enable_opencv:
+        if Options.options.opencv_home:
+           pass 
+        elif Options.options.build_opencv:
+            # Build is off by default when zipfile not found, fail if forced on
+            abszipfilepath   = join(conf.path.abspath(), zipfile)
+            abszipsourcepath = join(conf.path.abspath(), sourcepath)
+            if not os.path.exists(abszipfilepath):
+                conf.fatal('Missing libopencv zipfile')
+            
+            # callback function to check for all #defines used by the opencv driver
+
+            # status
+            conf.env['MAKE_OPENCV'] = True
+            conf.msg('Building local lib', 'opencv')
+            
+            # unzip archive
+            if not os.path.exists(abszipsourcepath):
+                with ZipFile(abszipfilepath, 'r') as opencvzipfile:
+                    opencvzipfile.extractall(conf.path.abspath())
+
+            # write the configuration file and set up build flags
+            # TODO: write this into sourcedir
+            # TODO: 
+            #driverNode = conf.path.make_node(sourcepath)
+
+            conf.setenv('%s_config_env' % 'opencv', conf.env.derive())
+            conf.env['define_key'] = []
+
+            opencv_set_defines(conf, Options.platform)
+            #writeConfig(conf, opencv_set_defines, 'opencv', outfile='cvconfig.h', path=sourcepath,
+            #            feature=None) #'makeHeader'
+
+            conf.setenv('')
+
+            # Generate the module configuration header
+        
+            opencv_generate_modules_header(conf)
+        else:
+            pass
+        conf.env['HAVE_OPENCV'] = True
+
+def build(bld):
+    variant = bld.env['VARIANT']
+    env = bld.all_envs[variant]
+    print 'building!!'
+    if not 'MAKE_OPENCV' in env:
+        print 'returning!!'
+        return
+
+    def build_opencv_module(name, module_deps=[]):
+        base_uselib  = 'THREAD DL ZIP RT'
+        includes_dir =  [ join(sourcepath, 'modules', nm, 'include') for nm in [ name ] + module_deps ] + \
+                        [ sourcepath ]
+        source_dir   = join(sourcepath, 'modules', name, 'src')
+        module_deps_canon = ['opencv_' + x for x in module_deps]
+        bld.module(name='opencv_%s' % name, env=env, uselib=base_uselib,
+                   includes=includes_dir,
+                   version=version,
+                   source_dir=source_dir,
+                   module_deps=module_deps_canon)
+    
+    build_opencv_module('hal')
+    build_opencv_module('core', module_deps='hal'.split())
+ 
+
+def distclean(context):
+    # remove the untarred directories
+    dirs = filter(lambda x: exists(join(context.path.abspath(), x)), 
+                  [sourcepath])
+    for d in dirs:
+        try:
+            shutil.rmtree(join(context.path.abspath(), d), ignore_errors=True)
+        except:{}
