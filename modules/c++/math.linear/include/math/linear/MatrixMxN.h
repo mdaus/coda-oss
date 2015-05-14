@@ -1065,11 +1065,11 @@ public:
         }
         return perm;
     }
-    /*!
-     *  Find the L2 norm of the matrix.
-     *  \return The norm
+    /*
+     * Find the square of the L2 norm
+     * Sum of squares of the vector elements
      */
-    _T norm() const
+    _T normSq() const
     {
         _T acc(0);
         for (size_t i = 0; i < _MD; ++i)
@@ -1079,7 +1079,15 @@ public:
                 acc += mRaw[i][j] * mRaw[i][j];
             }
         }
-        return static_cast<_T>(::sqrt(acc));
+        return static_cast<_T>(acc);
+    }
+    /*!
+     *  Find the L2 norm of the matrix.
+     *  \return The norm
+     */
+    _T norm() const
+    {
+        return static_cast<_T>(::sqrt(normSq()));
     }
 
     /*!
