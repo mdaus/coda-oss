@@ -232,16 +232,28 @@ public:
         }
         return acc;
     }
-
+    
+    _T angle(const Vector& v) const
+    {
+        _T val = ((*this * v) / norm()) / v.norm();
+        if (val > 1.0) val = 1.0;
+        if (val < -1.0) val = -1.0;
+        return (std::acos(val));
+    }
+    
+    _T normSq() const
+    {
+        return mRaw.normSq();
+    }
+    
     /*!
      * Euclidean, L2 norm
      */
     _T norm() const
     {
-
+     
         return mRaw.norm();
     }
-
     //!  Normalize a value
     void normalize()
     {
