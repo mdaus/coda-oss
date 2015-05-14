@@ -5,6 +5,9 @@ from build import getPlatform, writeConfig, makeHeaderFile, listToTuple, recursi
 from os.path import join, exists
 from zipfile import ZipFile
 import types
+import md5
+
+from waflib.TaskGen import feature, before_method
 
 version    = 'opencv-3.0.0-rc1'
 sourcepath = '%s' % version
@@ -203,13 +206,13 @@ class Cl2Cpp:
     CPP = """// This file is auto-generated. Do not edit!
 
 #include \"precomp.hpp\"
-#include \"${OUTPUT_HPP_NAME}\"
+#include \"{0}\"
 
 namespace cv
-{
+{{
 namespace ocl
-{
-${nested_namespace_start}
+{{
+{1}
 
 """
 
@@ -220,40 +223,137 @@ ${nested_namespace_start}
 #include \"opencv2/core/opencl/ocl_defs.hpp\"
 
 namespace cv
-{
+{{
 namespace ocl
-{
-${nested_namespace_start}
+{{
+{0}
 
 """
+
+    @staticmethod
+    def gen_source_name(module_name, ext=''):
+        ocl_name_root = 'opencl_kernels_{}'.format(module_name)
+        return ocl_name_root + ext
+
+    @staticmethod
+    def find_cl_source(source_dir):
+        return [cl_file for cl_file in recursiveGlob(source_dir, ['*.cl'])]
     
     def __init__(self, module_name, source_dir):
-        self.replacements = {}
-        if module_name == 'ocl'
-            self.replacements['nested_namespace_start'] = ''
-            self.replacements['nested_namespace_end']   = ''
-            self.new_mode = False
-        else:
-            self.replacements['nested_namespace_start'] = 'namespace %s\n{' % module_name
-            self.replacements['nested_namespace_end']   = '}'
-            self.new_mode = True
 
-        # TODO: use HPP and CPP to start these
-        self.hpp_str = ''
-        self.cpp_str = ''
+        self.module_name = module_name
+        self.source_dir  = source_dir
+
+        ocl_name_root = Cl2Cpp.gen_source_name(module_name)
+        self.output_hpp_name = ocl_name_root + '.hpp'
+        self.output_cpp_name = ocl_name_root + '.cpp'
+
+        if module_name == 'ocl':
+            self.new_mode = False
+            nested_namespace_start = ''
+            nested_namespace_end   = ''
+        else:
+            self.new_mode = True
+            nested_namespace_start = 'namespace {}\n{{'.format(module_name)
+            nested_namespace_end   = '}'
         
-        cl_files = [cl_file in for cl_file in recursiveGlob(source_dir, ['*.cl'])]
+
+        self.cpp_str = Cl2Cpp.CPP.format(self.output_hpp_name, nested_namespace_start)
+        self.hpp_str = Cl2Cpp.HPP.format(nested_namespace_start)
+        
+        cl_files = Cl2Cpp.find_cl_source(source_dir)
         cl_files.sort()
         for cl_file in cl_files:
             self._generate_source_for_file(cl_file)
+
+        self.cpp_str = self.cpp_str + "}}\n{0}}}\n".format(nested_namespace_end)
+        self.hpp_str = self.hpp_str + "}}\n{0}}}\n".format(nested_namespace_end)
+
+
+    def generate(self):
+        # write out the source files
+        with open(os.path.join(self.source_dir, self.output_hpp_name), 'w') as f:
+            f.write(self.hpp_str)
+        with open(os.path.join(self.source_dir, self.output_cpp_name), 'w') as f:
+            f.write(self.cpp_str)
             
 
     def _generate_source_for_file(self, cl_file):
         with open(cl_file, 'r') as f:
-            cl_file_str = f.read()
+            lines = f.read()
         
-        # TODO: start substituting!!
+        #lines = re.sub(r'', r'', lines)
 
+        cl_filename = os.path.splitext(os.path.basename(cl_file))[0]
+
+        lines = lines.replace('\r', '')
+        lines = lines + '\n' # not sure why, but it's there
+        lines = lines.replace('\t', '  ')
+
+        # speed hog!
+
+        multiline_comment = re.compile("""/\\*
+                                          (?:[^*]/|\\*[^/]|[^*/])*
+                                          \\*/""", re.X | re.M)
+        
+
+        lines = re.sub(multiline_comment,                   r'',   lines)  # multiline comments
+        #lines = re.sub(r'/\\*(?:[^*]/|\\*[^/]|[^*/])*\\*/', r'', lines)
+
+        lines = re.sub(r'/\\*(?:[^\n])*\\*/',               r'',   lines)  # single-line comments
+        lines = re.sub(r'[ ]*//[^\n]*\n',                   r'\n', lines)  # single-line comments
+        lines = re.sub(r'\n[ ]*(?:\n[ ]*)*',                r'\n', lines)  # empty lines & leading whitespace
+        lines = re.sub(r'^\n',                              r'',   lines)  # leading new line
+        
+        # do these as string replacement??
+        #lines = re.sub(r"\\", r"\\\\",       lines) 
+        #lines = re.sub(r"\"", r"\\\"",       lines)
+        #lines = re.sub(r'\n', r'\\n\"\n\""', lines)
+
+        lines = lines.replace('\\', '\\\\') 
+        lines = lines.replace('\"', '\\\"')
+        lines = lines.replace('\n', '\\n\"\n\""')
+
+
+        lines = re.sub(r'\"$', r'', lines)
+
+        # hash the lines
+        lines_hash = md5.md5(lines).hexdigest()
+
+        # assemble the template declarations
+        str_cpp_decl = "const struct ProgramEntry {cl_filename}={{\"{cl_filename}\",\n\"{lines}, \"{hash}\"}};\n"
+        str_hpp_decl = "extern const struct ProgramEntry {cl_filename};\n"
+        if self.new_mode:
+            str_cpp_decl = str_cpp_decl + "ProgramSource {cl_filename}_oclsrc({cl_filename}.programStr);\n"
+            str_hpp_decl = str_hpp_decl + "extern ProgramSource {cl_filename}_oclsrc;\n"
+
+        # fill in with the replacments
+        replacement_dict = {'cl_filename': cl_filename, 'lines' : lines, 'hash': lines_hash }
+        str_cpp_decl = str_cpp_decl.format(**replacement_dict)
+        str_hpp_decl = str_hpp_decl.format(**replacement_dict)
+
+        # append to the main string
+        self.cpp_str = self.cpp_str + str_cpp_decl
+        self.hpp_str = self.hpp_str + str_hpp_decl
+
+
+@feature('add_targets')
+@before_method('add_targets')
+def generate_opencl_sources(self):
+    import ipdb; ipdb.set_trace()
+
+    prefix = 'opencl_kernels_'
+
+    cl_tgts = [tgt for tgt in self.targets_to_add
+               if isinstance(tgt, str) and tgt.startswith(prefix)]
+
+    for cl_tgt in cl_tgts:
+        opencv_module = cl_tgt.replace(prefix, '')
+        out_dir_node  = self.path.make_node(os.path.join(sourcepath, 'modules', opencv_module, 'src'))
+        cl2cpp = Cl2Cpp(opencv_module, out_dir_node.abspath())
+        cl2cpp.generate()
+
+    #print cl_tgts
 
 
 def opencv_generate_modules_header(conf):
@@ -329,6 +429,13 @@ def configure(conf):
             pass
         conf.env['HAVE_OPENCV'] = True
 
+
+
+#class cl2cpp(Task):
+#    ext_out = ['.h']
+##    def run(self):
+#        print self
+
 def build(bld):
     variant = bld.env['VARIANT']
     env = bld.all_envs[variant]
@@ -343,11 +450,25 @@ def build(bld):
                         [ sourcepath ]
         source_dir   = join(sourcepath, 'modules', name, 'src')
         module_deps_canon = ['opencv_' + x for x in module_deps]
+
+        # see if there are any cl depends and add them to the build
+        source_node = bld.path.make_node(source_dir)
+        root_source_name = Cl2Cpp.gen_source_name(name) 
+        exts = ['.hpp', '.cpp'] if len(Cl2Cpp.find_cl_source(source_node.abspath())) > 0 else []
+        targets_to_add = [root_source_name + ext for ext in exts]
+
+        #print targets_to_add
+        if len(exts) > 0:
+            bld(name = root_source_name)
+            #targets_to_add.insert(0, root_source_name)
+            targets_to_add = [root_source_name]
+
         bld.module(name='opencv_%s' % name, env=env, uselib=base_uselib,
                    includes=includes_dir,
                    version=version,
                    source_dir=source_dir,
-                   module_deps=module_deps_canon)
+                   module_deps=module_deps_canon,
+                   targets_to_add=targets_to_add)
     
     build_opencv_module('hal')
     build_opencv_module('core', module_deps='hal'.split())
