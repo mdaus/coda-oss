@@ -202,7 +202,6 @@ public:
         const _T dotProduct = dot(vec) / (norm() * vec.norm());
         return std::max<_T>(std::min<_T>(dotProduct, 1.0), -1.0);
     }
-
     /*!
      * Euclidean, L2 norm
      */
@@ -210,7 +209,24 @@ public:
     {
         return mRaw.norm();
     }
-
+    /* 
+     * Euclidean, L2 norm squared
+     * Sum of the squares of the vector elements
+     */
+    _T normSq() const
+    {
+        return mRaw.normSq();
+    }
+    /*
+    * Returns the angle to another VectorN
+    */
+    _T angle(Like_T v) const
+    {
+        _T val = ((*this * v) / norm()) / v.norm();
+        if (val > 1.0) val = 1.0;
+        if (val < -1.0) val = -1.0;
+        return (std::acos(val));
+    }
     void normalize()
     {
         mRaw.normalize();
