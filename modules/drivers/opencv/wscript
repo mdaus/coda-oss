@@ -282,7 +282,6 @@ namespace ocl
         with open(cl_file, 'r') as f:
             lines = f.read()
         
-        #lines = re.sub(r'', r'', lines)
 
         cl_filename = os.path.splitext(os.path.basename(cl_file))[0]
 
@@ -290,32 +289,24 @@ namespace ocl
         lines = lines + '\n' # not sure why, but it's there
         lines = lines.replace('\t', '  ')
 
-        # speed hog!
-
-        multiline_comment = re.compile("""/\\*
-                                          (?:[^*]/|\\*[^/]|[^*/])*
-                                          \\*/""", re.X | re.M)
+        # was a speed problem
+        multiline_comment = re.compile("""\/\*
+                                          (?:[^*]\/|\*[^\/]|[^*\/])*
+                                          \*\/
+                                       """, re.X)
         
 
-        lines = re.sub(multiline_comment,                   r'',   lines)  # multiline comments
-        #lines = re.sub(r'/\\*(?:[^*]/|\\*[^/]|[^*/])*\\*/', r'', lines)
-
-        lines = re.sub(r'/\\*(?:[^\n])*\\*/',               r'',   lines)  # single-line comments
-        lines = re.sub(r'[ ]*//[^\n]*\n',                   r'\n', lines)  # single-line comments
-        lines = re.sub(r'\n[ ]*(?:\n[ ]*)*',                r'\n', lines)  # empty lines & leading whitespace
-        lines = re.sub(r'^\n',                              r'',   lines)  # leading new line
+        lines = re.sub(multiline_comment,                    '',   lines)  # multiline comments
+        lines = re.sub('\/\*(?:[^\n])*\*\/',                 '',   lines)  # single-line comments
+        lines = re.sub('[ ]*\/\/[^\n]*\n',                   '\n', lines)  # single-line comments
+        lines = re.sub('\n[ ]*(?:\n[ ]*)*',                  '\n', lines)  # empty lines & leading whitespace
+        lines = re.sub('^\n',                                '',   lines)  # leading new line
         
-        # do these as string replacement??
-        #lines = re.sub(r"\\", r"\\\\",       lines) 
-        #lines = re.sub(r"\"", r"\\\"",       lines)
-        #lines = re.sub(r'\n', r'\\n\"\n\""', lines)
-
         lines = lines.replace('\\', '\\\\') 
         lines = lines.replace('\"', '\\\"')
-        lines = lines.replace('\n', '\\n\"\n\""')
+        lines = lines.replace('\n', '\\n\"\n\"')
 
-
-        lines = re.sub(r'\"$', r'', lines)
+        lines = re.sub('\"$', '', lines)
 
         # hash the lines
         lines_hash = md5.md5(lines).hexdigest()
@@ -347,13 +338,12 @@ def generate_opencl_sources(self):
     cl_tgts = [tgt for tgt in self.targets_to_add
                if isinstance(tgt, str) and tgt.startswith(prefix)]
 
+    # TODO: test for existence!
     for cl_tgt in cl_tgts:
         opencv_module = cl_tgt.replace(prefix, '')
         out_dir_node  = self.path.make_node(os.path.join(sourcepath, 'modules', opencv_module, 'src'))
         cl2cpp = Cl2Cpp(opencv_module, out_dir_node.abspath())
         cl2cpp.generate()
-
-    #print cl_tgts
 
 
 def opencv_generate_modules_header(conf):
