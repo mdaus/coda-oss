@@ -176,6 +176,8 @@ def opencv_set_defines(conf, platform, debugging):
         pass
     elif re.match(winRegex, sys_platform):
 
+        conf.env.append_value('LIB_VIDEOIO', 'vfw')
+
         # defines
         defines_clone.append('_CRT_NONSTDC_NO_DEPRECATE')
         defines_clone.append('_CRT_SECURE_NO_DEPRECATE')
@@ -459,8 +461,13 @@ def build(bld):
         target = bld.path.make_node(join(sourcepath, 'modules', 'core', 'version_string.inc')),
         always = True)
 
-    def build_opencv_module(name, module_deps=[]):
-        base_uselib       = 'THREAD DL RT'
+    def build_opencv_module(name, module_deps=[], uselib=[]):
+        if isinstance(module_deps, str):
+            module_deps = module_deps.split()
+        if isinstance(uselib, str):
+            uselib = uselib.split()
+
+        base_uselib       = 'THREAD DL RT'.split() + uselib
         base_uselib_check = 'ZIP'
         includes_dir =  [join(sourcepath, 'modules', nm, 'include') for nm in [name] + module_deps] + \
                         [join(sourcepath, 'modules', 'core'), sourcepath]
@@ -482,13 +489,20 @@ def build(bld):
                    includes=includes_dir,
                    version=version,
                    source_dir=source_dir,
-                   #defines=env['DEFINES'],
                    module_deps=module_deps_canon,
                    targets_to_add=targets_to_add)
 
     
     build_opencv_module('hal')
-    build_opencv_module('core', module_deps='hal'.split())
+    build_opencv_module('core',      module_deps='hal')
+    build_opencv_module('flann',     module_deps='hal core')
+    build_opencv_module('imgproc',   module_deps='hal core')
+    build_opencv_module('ml',        module_deps='hal core')
+    build_opencv_module('photo',     module_deps='hal core imgproc')
+    build_opencv_module('video',     module_deps='hal core imgproc')
+    build_opencv_module('imgcodecs', module_deps='hal core imgproc', uselib='JPEG')
+    build_opencv_module('shape',     module_deps='hal core imgproc video')
+    build_opencv_module('videoio',   module_deps='hal core imgproc video imgcodecs', uselib='VIDEOIO') ## vfw32??
  
 
 def distclean(context):
