@@ -13,6 +13,9 @@ version    = 'opencv-3.0.0-rc1'
 sourcepath = '%s' % version
 zipfile    = '%s.zip' % version
 
+config_env = '%s_config_env' % 'opencv'
+
+
 opencv_modules = 'calib3d core features2d flann hal highgui ' +  \
                  'imgcodecs imgproc ml objdetect photo ' +  \
                  'shape stitching superres ts video videoio videostab'
@@ -148,54 +151,64 @@ class CMakeConfigHGenerator:
             f.write(out_str)
 
 
-def opencv_set_defines(conf, platform):
-    sys_platform = getPlatform(default=Options.platform)
-    winRegex = r'win32'
-    conf.env['DEFINES'].append("__OPENCV_BUILD=1")
-    ccCompiler = conf.env['COMPILER_CC']
+def opencv_gen_cvconfig_h(conf, platform):
+    """Generate cvconfig.h"""
 
-    # TODO: not cutting it
-    conf.undefine('HAVE_OPENCL')
-
-    defs = partition_defines(conf, Options.platform, ccCompiler)
-
+    # Fill out cvconfig.h
+    defs          = partition_defines(conf, platform, conf.env['COMPILER_CC'])
     template_file = conf.path.make_node(join(sourcepath, 'cmake',
                                              'templates', 'cvconfig.h.in'))
-
     gen = CMakeConfigHGenerator(template_file.abspath())
     gen.write(conf.path.make_node(join(sourcepath, 'cvconfig.h')).abspath(),
               defs, opencv_core_vars)
-    
 
+
+
+def opencv_set_defines(conf, platform, debugging):
+    sys_platform = getPlatform(default=platform)
+    winRegex = r'win32'
+
+    defines_clone = list(conf.env['DEFINES'])
+    defines_clone.append("__OPENCV_BUILD=1")
+
+    ccCompiler = conf.env['COMPILER_CC']
     if ccCompiler == 'gcc' or ccCompiler == 'icc':
         pass
     elif re.match(winRegex, sys_platform):
 
         # defines
-        conf.env['DEFINES'].append('_CRT_NONSTDC_NO_DEPRECATE')
-        conf.env['DEFINES'].append('_CRT_SECURE_NO_DEPRECATE')
-        conf.env['DEFINES'].append('_VARIADIC_MAX=10')
-        conf.env['DEFINES'].append('_WINDOWS')
-        # conf.env['DEFINES'].append("WIN32") # done already
-        # conf.env['DEFINES'].append("_MBCS") # may be a problem to not define this
-        if Options.options.debugging:
-            conf.env['DEFINES'].append("_DEBUG")
+        defines_clone.append('_CRT_NONSTDC_NO_DEPRECATE')
+        defines_clone.append('_CRT_SECURE_NO_DEPRECATE')
+        defines_clone.append('_VARIADIC_MAX=10')
+        defines_clone.append('_WINDOWS')
+        # defines_clone.append("WIN32") # done already
+        # defines_clone.append("_MBCS") # may be a problem to not define this
+        if debugging:
+            defines_clone.append("_DEBUG")
         else:
-            conf.env['DEFINES'].append("NDEBUG")
+            defines_clone.append("NDEBUG")
         addl_flags = '/EHa /fp:precise /Gd /Gm- /GS /Gy /Oi /TP /WX- /Zc:forScope /bigobj'.split()
         # Already done/skippable: /W4 /GR /errorReport:prompt /MP /nologo /Zi 
         # May be needed(?): /Zc:wchar_t
     
-        if Options.options.debugging:
+        if debugging:
             addl_flags = addl_flags + '/Od /Ob0 /RTC1'.split()
         else:
             addl_flags = addl_flags + '/O2 /Ob2'.split()
 
-        for flags in [conf.env['CXXFLAGS'], conf.env['CFLAGS']]:
-            for addl_flag in addl_flags:
-                flags.append(addl_flag)
-            flags.remove('/EHs')
+        for key in ['CXXFLAGS', 'CFLAGS']:
 
+            # update flags with our new versions
+            flags_clone = list(conf.env[key])
+            for addl_flag in addl_flags:
+                flags_clone.append(addl_flag)
+            flags_clone.remove('/EHs')
+    
+            # replace the values in our derived environment
+            conf.env[key] = flags_clone
+
+    # replace with our updated version
+    conf.env.DEFINES = defines_clone
 
 
 
@@ -390,54 +403,52 @@ def options(opt):
                    help='force not building opencv library from scratch')
 
 def configure(conf):    
-    if Options.options.enable_opencv:
-        if Options.options.opencv_home:
-           pass 
-        elif Options.options.build_opencv:
-            # Build is off by default when zipfile not found, fail if forced on
-            abszipfilepath   = join(conf.path.abspath(), zipfile)
-            abszipsourcepath = join(conf.path.abspath(), sourcepath)
-            if not os.path.exists(abszipfilepath):
-                conf.fatal('Missing libopencv zipfile')
-            
-            # callback function to check for all #defines used by the opencv driver
+    if not Options.options.enable_opencv:
+      return 
 
-            # status
-            conf.env['MAKE_OPENCV'] = True
-            conf.msg('Building local lib', 'opencv')
-            
-            # unzip archive
-            if not os.path.exists(abszipsourcepath):
-                with ZipFile(abszipfilepath, 'r') as opencvzipfile:
-                    opencvzipfile.extractall(conf.path.abspath())
-
-            # write the configuration file and set up build flags
-            # TODO: write this into sourcedir
-            # TODO: 
-            #driverNode = conf.path.make_node(sourcepath)
-
-            conf.setenv('%s_config_env' % 'opencv', conf.env.derive())
-            conf.env['define_key'] = []
-
-            opencv_set_defines(conf, Options.platform)
-            #writeConfig(conf, opencv_set_defines, 'opencv', outfile='cvconfig.h', path=sourcepath,
-            #            feature=None) #'makeHeader'
-
-            conf.setenv('')
-
-            # Generate the module configuration header
+    if Options.options.opencv_home:
+       pass 
+    elif Options.options.build_opencv:
+        # Build is off by default when zipfile not found, fail if forced on
+        abszipfilepath   = join(conf.path.abspath(), zipfile)
+        abszipsourcepath = join(conf.path.abspath(), sourcepath)
+        if not os.path.exists(abszipfilepath):
+            conf.fatal('Missing libopencv zipfile')
         
-            opencv_generate_modules_header(conf)
-        else:
-            pass
-        conf.env['HAVE_OPENCV'] = True
+        # status
+        conf.env['MAKE_OPENCV'] = True
+        conf.msg('Building local lib', 'opencv')
+        
+        # unzip archive
+        # TODO: use unziper
+        if not os.path.exists(abszipsourcepath):
+            with ZipFile(abszipfilepath, 'r') as opencvzipfile:
+                opencvzipfile.extractall(conf.path.abspath())
+
+        conf.setenv(config_env, conf.env.derive())
+        conf.env['define_key'] = []
+
+        opencv_gen_cvconfig_h(conf, Options.platform)
+        opencv_set_defines(conf, Options.platform, Options.options.debugging)
+
+        # Generate the module configuration header
+    
+        opencv_generate_modules_header(conf)
+
+        conf.setenv('')
+    else:
+        pass
+    conf.env['HAVE_OPENCV'] = True
 
 
 
 
 def build(bld):
+    
+    #import ipdb; ipdb.set_trace()
     variant = bld.env['VARIANT']
-    env = bld.all_envs[variant]
+    #env = bld.all_envs[variant]
+    env = bld.all_envs[config_env]
     if not 'MAKE_OPENCV' in env:
         return
 
@@ -456,16 +467,11 @@ def build(bld):
         source_dir   = join(sourcepath, 'modules', name, 'src')
         module_deps_canon = ['opencv_' + x for x in module_deps]
 
-        # see if there are any cl depends and add them to the build
-        source_node = bld.path.make_node(source_dir)
-        #exts = ['.hpp', '.cpp'] if len(Cl2Cpp.find_cl_source(source_node.abspath())) > 0 else []
-        #targets_to_add = [root_source_name + ext for ext in exts]
-
-        #print targets_to_add
-        #if len(exts) > 0:
-
         # depend on the version string
         targets_to_add = [gen_version_string]
+
+        # see if there are any cl depends and add them to the build
+        source_node = bld.path.make_node(source_dir)
         if len(Cl2Cpp.find_cl_source(source_node.abspath())):
             root_source_name = Cl2Cpp.gen_source_name(name) 
             bld(name = root_source_name)
@@ -476,6 +482,7 @@ def build(bld):
                    includes=includes_dir,
                    version=version,
                    source_dir=source_dir,
+                   #defines=env['DEFINES'],
                    module_deps=module_deps_canon,
                    targets_to_add=targets_to_add)
 
