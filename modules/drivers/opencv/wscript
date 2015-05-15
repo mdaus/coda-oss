@@ -331,7 +331,7 @@ namespace ocl
 @feature('add_targets')
 @before_method('add_targets')
 def generate_opencl_sources(self):
-    import ipdb; ipdb.set_trace()
+    #import ipdb; ipdb.set_trace()
 
     prefix = 'opencl_kernels_'
 
@@ -357,6 +357,20 @@ def opencv_generate_modules_header(conf):
                    defs=defs, undefs=None,
                    path=modules_header_dir,
                    output='opencv_modules.hpp')
+
+
+
+def opencv_generate_version_string_inc(task):
+
+    tgt = task.outputs[0]
+    output = ''
+    for key in ['CC', 'CXX', 'CFLAGS', 'CXXFLAGS', 'LINKFLAGS']:
+        values = task.env[key]
+        output = output + '"{}  {}\\n"\n'.format(key, repr(values))
+
+    # write a string to it
+    tgt.write(output)
+        
 
 
 def options(opt):
@@ -421,44 +435,51 @@ def configure(conf):
 
 
 
-#class cl2cpp(Task):
-#    ext_out = ['.h']
-##    def run(self):
-#        print self
 
 def build(bld):
     variant = bld.env['VARIANT']
     env = bld.all_envs[variant]
-    print 'building!!'
     if not 'MAKE_OPENCV' in env:
-        print 'returning!!'
         return
 
+    # Generate the version string header
+    gen_version_string = 'gen_version_string'
+    bld(name   = gen_version_string,
+        rule   = opencv_generate_version_string_inc,
+        target = bld.path.make_node(join(sourcepath, 'modules', 'core', 'version_string.inc')),
+        always = True)
+
     def build_opencv_module(name, module_deps=[]):
-        base_uselib  = 'THREAD DL ZIP RT'
-        includes_dir =  [ join(sourcepath, 'modules', nm, 'include') for nm in [ name ] + module_deps ] + \
-                        [ sourcepath ]
+        base_uselib       = 'THREAD DL RT'
+        base_uselib_check = 'ZIP'
+        includes_dir =  [join(sourcepath, 'modules', nm, 'include') for nm in [name] + module_deps] + \
+                        [join(sourcepath, 'modules', 'core'), sourcepath]
         source_dir   = join(sourcepath, 'modules', name, 'src')
         module_deps_canon = ['opencv_' + x for x in module_deps]
 
         # see if there are any cl depends and add them to the build
         source_node = bld.path.make_node(source_dir)
-        root_source_name = Cl2Cpp.gen_source_name(name) 
-        exts = ['.hpp', '.cpp'] if len(Cl2Cpp.find_cl_source(source_node.abspath())) > 0 else []
-        targets_to_add = [root_source_name + ext for ext in exts]
+        #exts = ['.hpp', '.cpp'] if len(Cl2Cpp.find_cl_source(source_node.abspath())) > 0 else []
+        #targets_to_add = [root_source_name + ext for ext in exts]
 
         #print targets_to_add
-        if len(exts) > 0:
+        #if len(exts) > 0:
+
+        # depend on the version string
+        targets_to_add = [gen_version_string]
+        if len(Cl2Cpp.find_cl_source(source_node.abspath())):
+            root_source_name = Cl2Cpp.gen_source_name(name) 
             bld(name = root_source_name)
-            #targets_to_add.insert(0, root_source_name)
-            targets_to_add = [root_source_name]
+            targets_to_add.append(root_source_name)
 
         bld.module(name='opencv_%s' % name, env=env, uselib=base_uselib,
+                   uselib_check=base_uselib_check,
                    includes=includes_dir,
                    version=version,
                    source_dir=source_dir,
                    module_deps=module_deps_canon,
                    targets_to_add=targets_to_add)
+
     
     build_opencv_module('hal')
     build_opencv_module('core', module_deps='hal'.split())
