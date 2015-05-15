@@ -359,7 +359,6 @@ def opencv_generate_modules_header(conf):
                    output='opencv_modules.hpp')
 
 
-
 def opencv_generate_version_string_inc(task):
 
     tgt = task.outputs[0]
