@@ -20,85 +20,138 @@ opencv_modules = 'calib3d core features2d flann hal highgui ' +  \
                  'imgcodecs imgproc ml objdetect photo ' +  \
                  'shape stitching superres ts video videoio videostab'
 
-opencv_core_vars = {
-    'OPENCV_CUDA_ARCH_BIN' : '',
-    'OPENCV_CUDA_ARCH_FEATURES' : '',
-    'OPENCV_CUDA_ARCH_PTX' : '',
-}
 
-opencv_core_defines = {
-    'HAVE_INTTYPES_H': lambda conf: conf.check_cc(header_name='inttypes.h', mandatory=False),
-    'WORDS_BIGENDIAN': lambda conf: conf.check_endianness() != 'little',
-    # TODO: can we link against this?
-    #'HAVE_JPEG': ''
-}
+class OpenCVCompilerConfig:
+    """Namespace class for compiler definitions"""
 
-gcc_icc_defines = {
+    # TODO: debug flags
+    # release flags
+    #-TODO:  march=i686 -mfpmath=sse use these???
+    gcc_compiler_flags    = """-fdiagnostics-show-option -ffunction-sections -fomit-frame-pointer -fPIC -fsigned-char -fvisibility=hidden 
+                                -msse -msse2 -msse3 -O2 -W -Wall -Werror=address -Werror=format-security 
+                                -Werror=non-virtual-dtor -Werror=return-type -Werror=sequence-point -Wformat -Winit-self
+                                -Wmissing-declarations -Wno-narrowing -Wpointer-arith -Wshadow -Wundef"""
+    gcc_compiler_cxxflags = " ".join([gcc_compiler_flags, '-fvisibility-inlines-hidden -Wno-delete-non-virtual-dtor -Wsign-promo'])
+    gcc_compiler_cflags   = " ".join([gcc_compiler_flags, '-Wmissing-prototypes -Wstrict-prototypes'])
 
-}
+    msvc_compiler_flags    = '/EHa /fp:precise /Gd /Gm- /GS /Gy /Oi /TP /WX- /Zc:forScope /bigobj'
+    # Already done/skippable: /W4 /GR /errorReport:prompt /MP /nologo /Zi 
+    # May be needed(?): /Zc:wchar_t
 
-opencv_compiler_defines = {
-    r'gcc' : gcc_icc_defines,
-    r'icc' : gcc_icc_defines,
-}
+    msvc_c_cxx_compiler_config = {
+        'debug': {
+            '+': " ".join([msvc_compiler_flags, '/Od /Ob0 /RTC1']),
+            '-': '/EHs',
+        },
+        'release':{
+            '+': " ".join([msvc_compiler_flags, '/O2 /Ob2']),
+            '-': '/EHs',
+        },
+    }
 
-opencv_platform_defines = {
-    r'win32': {
-        'HAVE_WIN32UI': '',
-        'HAVE_VFW':  '',
-    },
-}
+    gcc_icc_compiler_config = {
+        'CFLAGS': {
+            'debug': {
+                '+': gcc_compiler_cflags,
+                '-': '',
+             },
+            'release': {
+                '+': gcc_compiler_cflags,
+                '-': '',
+             }, 
+        },
+        'CXXFLAGS': {
+            'debug': {
+                '+': gcc_compiler_cxxflags,
+                '-': '',
+             },
+            'release': {
+                '+': gcc_compiler_cxxflags,
+                '-': '',
+             }, 
+        },
+        'DEFINES': {
+            'debug':   'DEBUG _DEBUG',
+            'release': 'NDEBUG',
+        },
+    }
 
-def merge_dict(d1, d2):
-    if d1:
-        out = d1.copy()
-        out.update(d2)
-    return out
+    msvc_base_compiler_defines = 'WIN32 _CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE _VARIADIC_MAX=10 _WINDOWS' # '_MBCS'
+
+    msvc_compiler_config = {
+        'CFLAGS': msvc_c_cxx_compiler_config,
+        'CXXFLAGS': msvc_c_cxx_compiler_config,
+        'DEFINES': {
+            'debug':   " ".join([msvc_base_compiler_defines, '_DEBUG']),
+            'release': " ".join([msvc_base_compiler_defines, 'NDEBUG']),
+        },
+    }
+
+    compiler_config = {
+        'gcc': gcc_icc_compiler_config,
+        'icc': gcc_icc_compiler_config,
+        'cl':  msvc_c_cxx_compiler_config
+    }
+
+    @staticmethod
+    def configure(conf, platform, debugging):
+        sys_platform = getPlatform(default=platform)
+        print sys_platform
+        winRegex = r'win32'
+        build_type = 'debug' if debugging else 'release'
+
+        ccCompiler = conf.env['COMPILER_CC']
+        compiler_config = OpenCVCompilerConfig.compiler_config[ccCompiler]
+
+        for key in ['DEFINES', 'CXXFLAGS', 'CFLAGS']:
+            overrides = compiler_config[key][build_type]
+            clone = list(conf.env[key])
+            if isinstance(overrides, dict):
+                if overrides['+']:
+                    for override in overrides['+'].split():
+                        clone.append(override)
+                if overrides['-']:
+                    for override in overrides['-'].split():
+                        clone.remove(override)
+            # replace the values in our derived environment
+            conf.env[key] = clone
+
+        # use by all versions
+        conf.env.DEFINES.append("__OPENCV_BUILD=1")
+
+        # stuff that doesn't fit the above paradigm
+        if ccCompiler == 'gcc' or ccCompiler == 'icc':
+            pass
+        elif re.match(winRegex, sys_platform):
+            conf.env.append_value('LIB_VIDEOIO', 'vfw')
 
 
-def partition_defines(conf, platform, compiler):
-    """Separate defines from undefines"""
-    sys_platform = getPlatform(default=platform)
+class CVConfigHGenerator:
+    """Class for generated cvconfig.h"""
 
-    # look at compiler defs before resorting to platform
-    special_defines = None
-    for regex in opencv_compiler_defines.keys():
-        if re.match(regex, compiler):
-            special_defines = opencv_compiler_defines[regex]
-            break
+    platform_defines = {
+        # TODO: update for linux
+        'win32': {
+            'HAVE_WIN32UI': '',
+            'HAVE_VFW':  '',
+        },
+        'goober': {
+            'HAVE_CAMV4L2': '',
+        }
+    }
 
-    if not special_defines:
-        for regex in opencv_platform_defines.keys():
-            if re.match(regex, sys_platform):
-                special_defines = opencv_platform_defines[regex]
-                break
+    core_vars = {
+        'OPENCV_CUDA_ARCH_BIN' : '',
+        'OPENCV_CUDA_ARCH_FEATURES' : '',
+        'OPENCV_CUDA_ARCH_PTX' : '',
+    }
 
-    if not special_defines:
-        special_defines = {}
-
-    # merge defines into a single dictionary
-    defines = special_defines.copy()
-    defines.update(opencv_core_defines)
-    
-    # partition into defs, undefs
-    defs = {}
-
-    remap_bool = lambda val: '' if val else None
-    for define, value in defines.iteritems():
-        is_def = True
-        if isinstance(value, types.FunctionType):
-            result = value(conf)
-            is_def = result
-        else:
-            # what was specified is what will go in
-            result = value
-        if is_def:
-            defs[define] = remap_bool(result)
-    
-    return defs
-        
-
-class CMakeConfigHGenerator:
+    core_defines = {
+        'HAVE_INTTYPES_H': lambda conf: conf.check_cc(header_name='inttypes.h', mandatory=False),
+        'WORDS_BIGENDIAN': lambda conf: conf.check_endianness() != 'little',
+        # TODO: can we link against this?
+        #'HAVE_JPEG': ''
+    }
 
     define_regex     = re.compile(r'#cmakedefine\s+(.*)')
     define_rep_regex = r'#cmakedefine\s+\b%s\b'
@@ -125,8 +178,8 @@ class CMakeConfigHGenerator:
 
 
     def write(self, path, def_set, var_set):
-        def_set_merge = merge_dict(self.possible_defines, def_set)
-        var_set_merge = merge_dict(self.possible_vars, var_set)
+        def_set_merge = CVConfigHGenerator.merge_dict(self.possible_defines, def_set)
+        var_set_merge = CVConfigHGenerator.merge_dict(self.possible_vars, var_set)
 
         # replace #cmakedefine
         out_str = self.template_str
@@ -150,68 +203,57 @@ class CMakeConfigHGenerator:
         with open(path, 'w') as f:
             f.write(out_str)
 
+    @staticmethod
+    def merge_dict(d1, d2):
+        if d1:
+            out = d1.copy()
+            out.update(d2)
+        return out
 
-def opencv_gen_cvconfig_h(conf, platform):
-    """Generate cvconfig.h"""
+    @staticmethod
+    def partition_defines(conf, platform, compiler):
+        """Separate defines from undefines"""
+        sys_platform = getPlatform(default=platform)
 
-    # Fill out cvconfig.h
-    defs          = partition_defines(conf, platform, conf.env['COMPILER_CC'])
-    template_file = conf.path.make_node(join(sourcepath, 'cmake',
-                                             'templates', 'cvconfig.h.in'))
-    gen = CMakeConfigHGenerator(template_file.abspath())
-    gen.write(conf.path.make_node(join(sourcepath, 'cvconfig.h')).abspath(),
-              defs, opencv_core_vars)
+        special_defines = {}
+        for regex in CVConfigHGenerator.platform_defines.keys():
+            if re.match(regex, sys_platform):
+                special_defines = CVConfigHGenerator.platform_defines[regex]
+                break
 
+        # merge defines into a single dictionary
+        defines = special_defines.copy()
+        defines.update(CVConfigHGenerator.core_defines)
+        
+        # partition into defs, undefs
+        defs = {}
 
+        remap_bool = lambda val: '' if val else None
+        for define, value in defines.iteritems():
+            is_def = True
+            if isinstance(value, types.FunctionType):
+                result = value(conf)
+                is_def = result
+            else:
+                # what was specified is what will go in
+                result = value
+            if is_def:
+                defs[define] = remap_bool(result)
+        
+        return defs
 
-def opencv_set_defines(conf, platform, debugging):
-    sys_platform = getPlatform(default=platform)
-    winRegex = r'win32'
+    @staticmethod
+    def generate(conf, platform):
+        """Generate cvconfig.h"""
 
-    defines_clone = list(conf.env['DEFINES'])
-    defines_clone.append("__OPENCV_BUILD=1")
-
-    ccCompiler = conf.env['COMPILER_CC']
-    if ccCompiler == 'gcc' or ccCompiler == 'icc':
-        pass
-    elif re.match(winRegex, sys_platform):
-
-        conf.env.append_value('LIB_VIDEOIO', 'vfw')
-
-        # defines
-        defines_clone.append('_CRT_NONSTDC_NO_DEPRECATE')
-        defines_clone.append('_CRT_SECURE_NO_DEPRECATE')
-        defines_clone.append('_VARIADIC_MAX=10')
-        defines_clone.append('_WINDOWS')
-        # defines_clone.append("WIN32") # done already
-        # defines_clone.append("_MBCS") # may be a problem to not define this
-        if debugging:
-            defines_clone.append("_DEBUG")
-        else:
-            defines_clone.append("NDEBUG")
-        addl_flags = '/EHa /fp:precise /Gd /Gm- /GS /Gy /Oi /TP /WX- /Zc:forScope /bigobj'.split()
-        # Already done/skippable: /W4 /GR /errorReport:prompt /MP /nologo /Zi 
-        # May be needed(?): /Zc:wchar_t
-    
-        if debugging:
-            addl_flags = addl_flags + '/Od /Ob0 /RTC1'.split()
-        else:
-            addl_flags = addl_flags + '/O2 /Ob2'.split()
-
-        for key in ['CXXFLAGS', 'CFLAGS']:
-
-            # update flags with our new versions
-            flags_clone = list(conf.env[key])
-            for addl_flag in addl_flags:
-                flags_clone.append(addl_flag)
-            flags_clone.remove('/EHs')
-    
-            # replace the values in our derived environment
-            conf.env[key] = flags_clone
-
-    # replace with our updated version
-    conf.env.DEFINES = defines_clone
-
+        # Fill out cvconfig.h
+        defs          = CVConfigHGenerator.partition_defines(conf, platform,
+                                                                conf.env['COMPILER_CC'])
+        template_file = conf.path.make_node(join(sourcepath, 'cmake',
+                                                 'templates', 'cvconfig.h.in'))
+        gen = CVConfigHGenerator(template_file.abspath())
+        gen.write(conf.path.make_node(join(sourcepath, 'cvconfig.h')).abspath(),
+                  defs, CVConfigHGenerator.core_vars)
 
 
 # generate the cpp/hpp file in the same directory as the source
@@ -311,11 +353,11 @@ namespace ocl
                                        """, re.X)
         
 
-        lines = re.sub(multiline_comment,                    '',   lines)  # multiline comments
-        lines = re.sub('\/\*(?:[^\n])*\*\/',                 '',   lines)  # single-line comments
-        lines = re.sub('[ ]*\/\/[^\n]*\n',                   '\n', lines)  # single-line comments
-        lines = re.sub('\n[ ]*(?:\n[ ]*)*',                  '\n', lines)  # empty lines & leading whitespace
-        lines = re.sub('^\n',                                '',   lines)  # leading new line
+        lines = re.sub(multiline_comment,    '',   lines)  # multiline comments
+        lines = re.sub('\/\*(?:[^\n])*\*\/', '',   lines)  # single-line comments
+        lines = re.sub('[ ]*\/\/[^\n]*\n',   '\n', lines)  # single-line comments
+        lines = re.sub('\n[ ]*(?:\n[ ]*)*',  '\n', lines)  # empty lines & leading whitespace
+        lines = re.sub('^\n',                '',   lines)  # leading new line
         
         lines = lines.replace('\\', '\\\\') 
         lines = lines.replace('\"', '\\\"')
@@ -422,7 +464,7 @@ def configure(conf):
         conf.msg('Building local lib', 'opencv')
         
         # unzip archive
-        # TODO: use unziper
+        # TODO: use unzipper
         if not os.path.exists(abszipsourcepath):
             with ZipFile(abszipfilepath, 'r') as opencvzipfile:
                 opencvzipfile.extractall(conf.path.abspath())
@@ -430,8 +472,8 @@ def configure(conf):
         conf.setenv(config_env, conf.env.derive())
         conf.env['define_key'] = []
 
-        opencv_gen_cvconfig_h(conf, Options.platform)
-        opencv_set_defines(conf, Options.platform, Options.options.debugging)
+        CVConfigHGenerator.generate(conf, Options.platform)
+        OpenCVCompilerConfig.configure(conf, Options.platform, Options.options.debugging)
 
         # Generate the module configuration header
     
@@ -513,3 +555,7 @@ def distclean(context):
         try:
             shutil.rmtree(join(context.path.abspath(), d), ignore_errors=True)
         except:{}
+
+
+
+# vim: set ft=python :
