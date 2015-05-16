@@ -20,7 +20,6 @@ opencv_modules = 'calib3d core features2d flann hal highgui ' +  \
                  'imgcodecs imgproc ml objdetect photo ' +  \
                  'shape stitching superres ts video videoio videostab'
 
-
 class OpenCVCompilerConfig:
     """Namespace class for compiler definitions"""
 
@@ -28,62 +27,64 @@ class OpenCVCompilerConfig:
     # release flags
     #-TODO:  march=i686 -mfpmath=sse use these???
     gcc_compiler_flags    = """-fdiagnostics-show-option -ffunction-sections -fomit-frame-pointer -fPIC -fsigned-char -fvisibility=hidden 
-                                -msse -msse2 -msse3 -O2 -W -Wall -Werror=address -Werror=format-security 
+                                -msse -msse2 -msse3 -W -Wall -Werror=address -Werror=format-security 
                                 -Werror=non-virtual-dtor -Werror=return-type -Werror=sequence-point -Wformat -Winit-self
-                                -Wmissing-declarations -Wno-narrowing -Wpointer-arith -Wshadow -Wundef"""
-    gcc_compiler_cxxflags = " ".join([gcc_compiler_flags, '-fvisibility-inlines-hidden -Wno-delete-non-virtual-dtor -Wsign-promo'])
-    gcc_compiler_cflags   = " ".join([gcc_compiler_flags, '-Wmissing-prototypes -Wstrict-prototypes'])
+                                -Wmissing-declarations -Wno-narrowing -Wpointer-arith -Wshadow -Wundef""".split()
+    gcc_compiler_cxxflags = gcc_compiler_flags + '-fvisibility-inlines-hidden -Wno-delete-non-virtual-dtor -Wsign-promo'.split()
+    gcc_compiler_cflags   = gcc_compiler_flags + '-Wmissing-prototypes -Wstrict-prototypes'.split()
 
-    msvc_compiler_flags    = '/EHa /fp:precise /Gd /Gm- /GS /Gy /Oi /TP /WX- /Zc:forScope /bigobj'
+    gcc_release_compiler_flags = '-O2'.split()
+    gcc_debug_compiler_flags   = '-g -O0'.split()
+
+    msvc_compiler_flags    = '/EHa /fp:precise /Gd /Gm- /GS /Gy /Oi /TP /WX- /Zc:forScope /bigobj'.split()
     # Already done/skippable: /W4 /GR /errorReport:prompt /MP /nologo /Zi 
     # May be needed(?): /Zc:wchar_t
+    msvc_debug_compiler_flags   = '/Od /Ob0 /RTC1'.split()
+    msvc_release_compiler_flags = '/O2 /Ob2'.split()
 
     msvc_c_cxx_compiler_config = {
         'debug': {
-            '+': " ".join([msvc_compiler_flags, '/Od /Ob0 /RTC1']),
-            '-': '/EHs',
+            '+': msvc_compiler_flags + msvc_debug_compiler_flags,
+            '-': '/EHs'.split(),
         },
         'release':{
-            '+': " ".join([msvc_compiler_flags, '/O2 /Ob2']),
-            '-': '/EHs',
+            '+': msvc_compiler_flags + msvc_release_compiler_flags,
+            '-': '/EHs'.split(),
         },
     }
 
     gcc_icc_compiler_config = {
         'CFLAGS': {
             'debug': {
-                '+': gcc_compiler_cflags,
-                '-': '',
+                '+': gcc_compiler_cflags + gcc_debug_compiler_flags,
              },
             'release': {
-                '+': gcc_compiler_cflags,
-                '-': '',
+                '+': gcc_compiler_cflags + gcc_release_compiler_flags,
              }, 
         },
         'CXXFLAGS': {
             'debug': {
-                '+': gcc_compiler_cxxflags,
-                '-': '',
+                '+': gcc_compiler_cxxflags + gcc_debug_compiler_flags,
              },
             'release': {
-                '+': gcc_compiler_cxxflags,
-                '-': '',
+                '+': gcc_compiler_cxxflags + gcc_release_compiler_flags,
              }, 
         },
         'DEFINES': {
-            'debug':   'DEBUG _DEBUG',
-            'release': 'NDEBUG',
+            'debug':   'DEBUG _DEBUG'.split(),
+            'release': 'NDEBUG'.split(),
         },
     }
 
-    msvc_base_compiler_defines = 'WIN32 _CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE _VARIADIC_MAX=10 _WINDOWS' # '_MBCS'
+    msvc_base_compiler_defines = """WIN32 _CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_DEPRECATE 
+                                    _VARIADIC_MAX=10 _WINDOWS""".split() # '_MBCS'
 
     msvc_compiler_config = {
         'CFLAGS': msvc_c_cxx_compiler_config,
         'CXXFLAGS': msvc_c_cxx_compiler_config,
         'DEFINES': {
-            'debug':   " ".join([msvc_base_compiler_defines, '_DEBUG']),
-            'release': " ".join([msvc_base_compiler_defines, 'NDEBUG']),
+            'debug':   msvc_base_compiler_defines + '_DEBUG'.split(),
+            'release': msvc_base_compiler_defines + 'NDEBUG'.split(),
         },
     }
 
@@ -107,12 +108,15 @@ class OpenCVCompilerConfig:
             overrides = compiler_config[key][build_type]
             clone = list(conf.env[key])
             if isinstance(overrides, dict):
-                if overrides['+']:
-                    for override in overrides['+'].split():
+                if overrides.has_key('+'):
+                    for override in overrides['+']:
                         clone.append(override)
-                if overrides['-']:
-                    for override in overrides['-'].split():
+                if overrides.has_key('-'):
+                    for override in overrides['-']:
                         clone.remove(override)
+            else:
+                for override in overrides:
+                    clone.append(override)
             # replace the values in our derived environment
             conf.env[key] = clone
 
