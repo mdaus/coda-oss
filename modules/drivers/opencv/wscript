@@ -1,7 +1,7 @@
 import os, sys, shutil
 import re
 from waflib import Options, Utils
-from build import getPlatform, writeConfig, makeHeaderFile, listToTuple, recursiveGlob
+from build import getPlatform, writeConfig, makeHeaderFile, listToTuple, recursiveGlob, unzipper
 from os.path import join, exists
 from zipfile import ZipFile
 import types
@@ -20,14 +20,16 @@ opencv_modules = 'calib3d core features2d flann hal highgui ' +  \
                  'imgcodecs imgproc ml objdetect photo ' +  \
                  'shape stitching superres ts video videoio videostab'
 
+win32_regex = 'win32'
+linux_regex = r'.*-.*-linux-.*|i686-pc-.*|linux'
+
+
 class OpenCVCompilerConfig:
     """Namespace class for compiler definitions"""
 
-    # TODO: debug flags
-    # release flags
     #-TODO:  march=i686 -mfpmath=sse use these???
-    gcc_compiler_flags    = """-fdiagnostics-show-option -ffunction-sections -fomit-frame-pointer -fPIC -fsigned-char -fvisibility=hidden 
-                                -msse -msse2 -msse3 -W -Wall -Werror=address -Werror=format-security 
+    gcc_compiler_flags    = """-fdiagnostics-show-option -ffunction-sections -fomit-frame-pointer -fPIC -fsigned-char
+                                -fvisibility=hidden -msse -msse2 -msse3 -W -Wall -Werror=address -Werror=format-security 
                                 -Werror=non-virtual-dtor -Werror=return-type -Werror=sequence-point -Wformat -Winit-self
                                 -Wmissing-declarations -Wno-narrowing -Wpointer-arith -Wshadow -Wundef""".split()
     gcc_compiler_cxxflags = gcc_compiler_flags + '-fvisibility-inlines-hidden -Wno-delete-non-virtual-dtor -Wsign-promo'.split()
@@ -89,17 +91,14 @@ class OpenCVCompilerConfig:
     }
 
     compiler_config = {
-        'gcc': gcc_icc_compiler_config,
-        'icc': gcc_icc_compiler_config,
-        'cl':  msvc_c_cxx_compiler_config
+        'gcc':  gcc_icc_compiler_config,
+        'icc':  gcc_icc_compiler_config,
+        'msvc': msvc_c_cxx_compiler_config
     }
 
     @staticmethod
-    def configure(conf, platform, debugging):
-        sys_platform = getPlatform(default=platform)
-        print sys_platform
-        winRegex = r'win32'
-        build_type = 'debug' if debugging else 'release'
+    def configure(conf, sys_platform, debugging):
+        build_type   = 'debug' if debugging else 'release'
 
         ccCompiler = conf.env['COMPILER_CC']
         compiler_config = OpenCVCompilerConfig.compiler_config[ccCompiler]
@@ -126,7 +125,7 @@ class OpenCVCompilerConfig:
         # stuff that doesn't fit the above paradigm
         if ccCompiler == 'gcc' or ccCompiler == 'icc':
             pass
-        elif re.match(winRegex, sys_platform):
+        elif re.match(win32_regex, sys_platform):
             conf.env.append_value('LIB_VIDEOIO', 'vfw')
 
 
@@ -134,12 +133,14 @@ class CVConfigHGenerator:
     """Class for generated cvconfig.h"""
 
     platform_defines = {
-        # TODO: update for linux
-        'win32': {
+        win32_regex : {
             'HAVE_WIN32UI': '',
             'HAVE_VFW':  '',
         },
-        'goober': {
+        linux_regex : {
+            # TODO: different options for linux??
+            # Should we try to detect what's on the
+            # the system?? gtk/gstreamer/xine?
             'HAVE_CAMV4L2': '',
         }
     }
@@ -153,7 +154,7 @@ class CVConfigHGenerator:
     core_defines = {
         'HAVE_INTTYPES_H': lambda conf: conf.check_cc(header_name='inttypes.h', mandatory=False),
         'WORDS_BIGENDIAN': lambda conf: conf.check_endianness() != 'little',
-        # TODO: can we link against this?
+        # TODO: can we link our version of this?
         #'HAVE_JPEG': ''
     }
 
@@ -215,9 +216,8 @@ class CVConfigHGenerator:
         return out
 
     @staticmethod
-    def partition_defines(conf, platform, compiler):
+    def partition_defines(conf, sys_platform, compiler):
         """Separate defines from undefines"""
-        sys_platform = getPlatform(default=platform)
 
         special_defines = {}
         for regex in CVConfigHGenerator.platform_defines.keys():
@@ -247,12 +247,11 @@ class CVConfigHGenerator:
         return defs
 
     @staticmethod
-    def generate(conf, platform):
+    def generate(conf, sys_platform):
         """Generate cvconfig.h"""
 
         # Fill out cvconfig.h
-        defs          = CVConfigHGenerator.partition_defines(conf, platform,
-                                                                conf.env['COMPILER_CC'])
+        defs = CVConfigHGenerator.partition_defines(conf, sys_platform, conf.env['COMPILER_CC'])
         template_file = conf.path.make_node(join(sourcepath, 'cmake',
                                                  'templates', 'cvconfig.h.in'))
         gen = CVConfigHGenerator(template_file.abspath())
@@ -392,7 +391,6 @@ namespace ocl
 @feature('add_targets')
 @before_method('add_targets')
 def generate_opencl_sources(self):
-    #import ipdb; ipdb.set_trace()
 
     prefix = 'opencl_kernels_'
 
@@ -430,7 +428,43 @@ def opencv_generate_version_string_inc(task):
 
     # write a string to it
     tgt.write(output)
-        
+
+
+class OpenCVSourceFilter:
+    videoio_base_sources = 'cap.cpp cap_images.cpp cap_mjpeg_encoder.cpp cap_mjpeg_decoder.cpp'.split()
+    # TODO: special linkflags for videoio
+    filters = {
+        'videoio': {
+            win32_regex : videoio_base_sources + 'cap_cmu.cpp cap_vfw.cpp'.split(),
+            linux_regex : videoio_base_sources + 'cap_libv4l.cpp'.split(),
+        }
+    }
+
+    @staticmethod
+    def create_inverted_source_filter(good_files, source_dir):
+        # find all files
+        all_files = [cpp_file for cpp_file in recursiveGlob(source_dir, ['*.cpp'])] + \
+                    [c_file for cl_file in recursiveGlob(source_dir, ['*.c'])]
+
+        # subtract good files and convert back to string
+        return " ".join(set(all_files) - set(good_files))
+
+    def __init__(self, sys_platform, module, source_dir):
+        #import ipdb; ipdb.set_trace()
+
+        self.source_filter = ''
+        if self.filters.has_key(module):
+            filters = self.filters[module]
+            for regex in filters.keys():
+                if re.match(regex, sys_platform):
+                    good_files = filters[regex]
+                    self.source_filter = \
+                        OpenCVSourceFilter.create_inverted_source_filter(good_files,
+                                                                         source_dir)
+                    break
+    
+    def get(self):
+        return self.source_filter
 
 
 def options(opt):
@@ -458,8 +492,7 @@ def configure(conf):
        pass 
     elif Options.options.build_opencv:
         # Build is off by default when zipfile not found, fail if forced on
-        abszipfilepath   = join(conf.path.abspath(), zipfile)
-        abszipsourcepath = join(conf.path.abspath(), sourcepath)
+        abszipfilepath = join(conf.path.abspath(), zipfile)
         if not os.path.exists(abszipfilepath):
             conf.fatal('Missing libopencv zipfile')
         
@@ -468,27 +501,21 @@ def configure(conf):
         conf.msg('Building local lib', 'opencv')
         
         # unzip archive
-        # TODO: use unzipper
-        if not os.path.exists(abszipsourcepath):
-            with ZipFile(abszipfilepath, 'r') as opencvzipfile:
-                opencvzipfile.extractall(conf.path.abspath())
+        unzipper(abszipfilepath, conf.path.abspath())
 
         conf.setenv(config_env, conf.env.derive())
         conf.env['define_key'] = []
 
-        CVConfigHGenerator.generate(conf, Options.platform)
-        OpenCVCompilerConfig.configure(conf, Options.platform, Options.options.debugging)
-
-        # Generate the module configuration header
-    
+        # Generate module configuration
+        sys_platform = getPlatform(default=Options.platform)
+        CVConfigHGenerator.generate(conf, sys_platform)
+        OpenCVCompilerConfig.configure(conf, sys_platform, Options.options.debugging)
         opencv_generate_modules_header(conf)
 
         conf.setenv('')
     else:
         pass
     conf.env['HAVE_OPENCV'] = True
-
-
 
 
 def build(bld):
@@ -499,6 +526,8 @@ def build(bld):
     env = bld.all_envs[config_env]
     if not 'MAKE_OPENCV' in env:
         return
+
+    sys_platform = getPlatform(default=Options.platform)
 
     # Generate the version string header
     gen_version_string = 'gen_version_string'
@@ -518,6 +547,10 @@ def build(bld):
         includes_dir =  [join(sourcepath, 'modules', nm, 'include') for nm in [name] + module_deps] + \
                         [join(sourcepath, 'modules', 'core'), sourcepath]
         source_dir   = join(sourcepath, 'modules', name, 'src')
+        if name == 'videoio':
+            import ipdb; ipdb.set_trace()
+        source_filter = OpenCVSourceFilter(sys_platform, name, source_dir).get()
+        print source_filter
         module_deps_canon = ['opencv_' + x for x in module_deps]
 
         # depend on the version string
@@ -535,6 +568,7 @@ def build(bld):
                    includes=includes_dir,
                    version=version,
                    source_dir=source_dir,
+                   source_filter=source_filter,
                    module_deps=module_deps_canon,
                    targets_to_add=targets_to_add)
 
