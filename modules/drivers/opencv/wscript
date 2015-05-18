@@ -54,11 +54,15 @@ class OpenCVCompilerConfig:
     """Namespace class for compiler definitions"""
 
     #-TODO:  march=i686 -mfpmath=sse use these???
+    # -Wno-narrowing  
     gcc_compiler_flags    = """-fdiagnostics-show-option -ffunction-sections -fomit-frame-pointer -fPIC -fsigned-char
                                 -fvisibility=hidden -msse -msse2 -msse3 -W -Wall -Werror=address -Werror=format-security 
                                 -Werror=non-virtual-dtor -Werror=return-type -Werror=sequence-point -Wformat -Winit-self
-                                -Wmissing-declarations -Wno-narrowing -Wpointer-arith -Wshadow -Wundef""".split()
-    gcc_compiler_cxxflags = gcc_compiler_flags + '-fvisibility-inlines-hidden -Wno-delete-non-virtual-dtor -Wsign-promo'.split()
+                                -Wmissing-declarations -Wpointer-arith -Wshadow -Wundef""".split()
+    # -finput-charset=UTF-16BE
+
+    # -Wno-delete-non-virtual-dtor 
+    gcc_compiler_cxxflags = gcc_compiler_flags + '-fvisibility-inlines-hidden -Wsign-promo'.split()
     gcc_compiler_cflags   = gcc_compiler_flags + '-Wmissing-prototypes -Wstrict-prototypes'.split()
 
     gcc_release_compiler_flags = '-O2'.split()
