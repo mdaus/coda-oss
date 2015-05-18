@@ -132,6 +132,7 @@ public:
     {
         return mCoef.empty();
     }
+
     /*!
      * Returns a scaled polynomial such that
      * P'(x) = P(x * scale)
@@ -192,31 +193,33 @@ public:
      * \param p The polynomial to copy from.
      */
     void copyFrom(const OneD<_T>& p);
+
     _T operator ()(double at) const;
     _T integrate(double start, double end) const;
     OneD<_T>derivative() const;
-    // Additions 5-14-15
     _T velocity(double x) const;
     _T acceleration(double x) const;
-
     _T& operator[](size_t i);
     _T operator[](size_t i) const;
     OneD<_T>& operator *=(double cv);
     OneD<_T>operator *(double cv) const;
     template<typename _TT>
-    friend OneD<_TT>operator *(double cv, const OneD<_TT>& p);
+    friend std::ostream& operator <<(std::ostream& out, const OneD<_TT>& p);
+    template<typename _TT>
+    friend math::poly::OneD<_TT>operator *(double cv, const OneD<_TT>& p);
+
     OneD<_T>& operator *=(const OneD<_T>& p);
-    OneD<_T>operator *(const math::poly::OneD<_T>& p) const;
+    OneD<_T>operator *(const OneD<_T>& p) const;
     OneD<_T>& operator +=(const OneD<_T>& p);
     OneD<_T>operator +(const OneD<_T>& p) const;
     OneD<_T>& operator -=(const OneD<_T>& p);
     OneD<_T>operator -(const OneD<_T>& p) const;
     OneD<_T>& operator /=(double cv);
     OneD<_T>operator /(double cv) const;
+
     OneD<_T> power(size_t toThe) const;
 
-    template<typename Vector_T>
-    bool operator==(const Vector_T& p) const
+    template<typename Vector_T> bool operator==(const Vector_T& p) const
     {
         size_t sz = size();
         size_t psz = p.size();
@@ -255,12 +258,9 @@ public:
         return !(*this == p);
     }
 };
+
 } // poly
 } // math
-
-template<typename _TT>
-friend std::ostream& operator <<(std::ostream& out, const math::poly::OneD<_TT>& p);
-
 
 #include "math/poly/OneD.hpp"
 #endif
