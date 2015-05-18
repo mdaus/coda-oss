@@ -82,8 +82,26 @@ OneD<_T>::derivative() const
 }
 
 template<typename _T>
+_T
+OneD<_T>::velocity(double x) const
+{
+   _T temp;
+   return temp;
+}
+
+template<typename _T>
+_T
+OneD<_T>::acceleration(double x) const
+{
+    _T temp;
+    return temp;
+
+}
+} // poly
+} // math
+template<typename _T>
 _T& 
-OneD<_T>::operator [] (size_t i)
+math::poly::OneD<_T>::operator [] (size_t i)
 {
     if (i < mCoef.size())
     {
@@ -102,7 +120,7 @@ OneD<_T>::operator [] (size_t i)
 
 template<typename _T>
 _T 
-OneD<_T>::operator [] (size_t i) const
+math::poly::OneD<_T>::operator [] (size_t i) const
 {
    _T ret(0.0);
    if (i < mCoef.size())
@@ -119,9 +137,10 @@ OneD<_T>::operator [] (size_t i) const
    return ret;
 }
 
+
 template<typename _T>
 std::ostream& 
-operator << (std::ostream& out, const OneD<_T>& p)
+operator << (std::ostream& out, const math::poly::OneD<_T>& p)
 {
    for (size_t i = 0 ; i < p.mCoef.size() ; i++)
    {
@@ -131,8 +150,8 @@ operator << (std::ostream& out, const OneD<_T>& p)
 }
 
 template<typename _T>
-OneD<_T>& 
-OneD<_T>::operator *= (double cv) 
+math::poly::OneD<_T>&
+math::poly::OneD<_T>::operator *= (double cv)
 {
     for (size_t i = 0, sz = mCoef.size() ; i < sz; i++)
     {
@@ -142,8 +161,8 @@ OneD<_T>::operator *= (double cv)
 }
     
 template<typename _T>
-OneD<_T> 
-OneD<_T>::operator * (double cv) const
+math::poly::OneD<_T>
+math::poly::OneD<_T>::operator * (double cv) const
 {
     OneD<_T> ret(*this);
     ret *= cv;
@@ -151,15 +170,15 @@ OneD<_T>::operator * (double cv) const
 }
 
 template<typename _T>
-OneD<_T> 
-operator * (double cv, const OneD<_T>& p) 
+math::poly::OneD<_T>
+operator * (double cv, const math::poly::OneD<_T>& p)
 {
     return p*cv;
 }
 
 template<typename _T>
-OneD<_T>& 
-OneD<_T>::operator *= (const OneD<_T>& p) 
+math::poly::OneD<_T>&
+math::poly::OneD<_T>::operator *= (const OneD<_T>& p)
 {
    OneD<_T> tmp(order()+p.order());
    for (size_t i = 0, xsz = mCoef.size() ; i < xsz; i++)
@@ -174,8 +193,8 @@ OneD<_T>::operator *= (const OneD<_T>& p)
 }
     
 template<typename _T>
-OneD<_T> 
-OneD<_T>::operator * (const OneD<_T>& p) const
+math::poly::OneD<_T>
+math::poly::OneD<_T>::operator * (const OneD<_T>& p) const
 {
     OneD<_T> ret(*this);
     ret *= p;
@@ -183,8 +202,8 @@ OneD<_T>::operator * (const OneD<_T>& p) const
 }
 
 template<typename _T>
-OneD<_T>& 
-OneD<_T>::operator += (const OneD<_T>& p) 
+math::poly::OneD<_T>&
+math::poly::OneD<_T>::operator += (const OneD<_T>& p)
 {
     OneD<_T> tmp(std::max<size_t>(order(), p.order()));
     for (size_t i = 0, sz = mCoef.size() ; i < sz; i++)
@@ -200,8 +219,8 @@ OneD<_T>::operator += (const OneD<_T>& p)
 }
 
 template<typename _T>
-OneD<_T> 
-OneD<_T>::operator + (const OneD<_T>& p) const
+math::poly::OneD<_T>
+math::poly::OneD<_T>::operator + (const OneD<_T>& p) const
 {
     OneD<_T> ret(*this);
     ret += p;
@@ -209,8 +228,8 @@ OneD<_T>::operator + (const OneD<_T>& p) const
 }
     
 template<typename _T>
-OneD<_T>& 
-OneD<_T>::operator -= (const OneD<_T>& p) 
+math::poly::OneD<_T>&
+math::poly::OneD<_T>::operator -= (const OneD<_T>& p)
 {
    OneD<_T> tmp(std::max<size_t>(order(), p.order()));
    for (unsigned int i = 0, sz = mCoef.size() ; i < sz; i++)
@@ -226,8 +245,8 @@ OneD<_T>::operator -= (const OneD<_T>& p)
 }
 
 template<typename _T>
-OneD<_T> 
-OneD<_T>::operator - (const OneD<_T>& p) const
+math::poly::OneD<_T>
+math::poly::OneD<_T>::operator - (const OneD<_T>& p) const
 {
    OneD<_T> ret(*this);
    ret -= p;
@@ -235,8 +254,8 @@ OneD<_T>::operator - (const OneD<_T>& p) const
 }
 
 template<typename _T>
-OneD<_T>& 
-OneD<_T>::operator /= (double cv) 
+math::poly::OneD<_T>&
+math::poly::OneD<_T>::operator /= (double cv)
 {
     double recipCV = 1.0/cv;
     for (unsigned int i = 0, sz = mCoef.size() ; i < sz; i++)
@@ -247,8 +266,8 @@ OneD<_T>::operator /= (double cv)
 }
 
 template<typename _T>
-OneD<_T> 
-OneD<_T>::operator / (double cv) const
+math::poly::OneD<_T>
+math::poly::OneD<_T>::operator / (double cv) const
 {
     OneD<_T> ret(*this);
     ret *= (1.0/cv);
@@ -256,7 +275,8 @@ OneD<_T>::operator / (double cv) const
 }
 
 template<typename _T>
-OneD<_T> OneD<_T>::power(size_t toThe) const
+math::poly::OneD<_T>
+math::poly::OneD<_T>::power(size_t toThe) const
 {
     // If its 0, we have to give back a 1*x^0 poly, since
     // we want a 2D poly out
@@ -283,13 +303,14 @@ OneD<_T> OneD<_T>::power(size_t toThe) const
 }
 
 template<typename _T>
-OneD<_T> OneD<_T>::scaleVariable(double scale) const
+math::poly::OneD<_T> math::poly::OneD<_T>::scaleVariable(double scale) const
 {
     return ::math::poly::scaleVariable<OneD<_T> >(*this, scale);
 }
 
 template<typename _T>
-OneD<_T> OneD<_T>::truncateTo(size_t order) const
+math::poly::OneD<_T>
+math::poly::OneD<_T>::truncateTo(size_t order) const
 {
     order = std::min(this->order(), order);
 
@@ -302,7 +323,8 @@ OneD<_T> OneD<_T>::truncateTo(size_t order) const
 }
 
 template<typename _T>
-OneD<_T> OneD<_T>::truncateToNonZeros(double zeroEpsilon) const
+math::poly::OneD<_T>
+math::poly::OneD<_T>::truncateToNonZeros(double zeroEpsilon) const
 {
     zeroEpsilon = std::abs(zeroEpsilon);
     size_t newOrder(0);
@@ -321,7 +343,8 @@ OneD<_T> OneD<_T>::truncateToNonZeros(double zeroEpsilon) const
 }
 
 template<typename _T>
-OneD<_T> OneD<_T>::transformInput(const OneD<_T>& gx,
+math::poly::OneD<_T>
+math::poly::OneD<_T>::transformInput(const OneD<_T>& gx,
                                   double zeroEpsilon) const
 {
     OneD<_T> newP(order());
@@ -335,11 +358,10 @@ OneD<_T> OneD<_T>::transformInput(const OneD<_T>& gx,
 }
 
 template<typename _T>
-void OneD<_T>::copyFrom(const OneD<_T>& p)
+void
+math::poly::OneD<_T>::copyFrom(const OneD<_T>& p)
 {
     const size_t numCopy(std::min(size(), p.size()));
     std::copy(p.mCoef.begin(), p.mCoef.begin() + numCopy, mCoef.begin());
 }
 
-} // poly
-} // math
