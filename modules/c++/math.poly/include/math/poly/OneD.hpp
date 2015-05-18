@@ -80,7 +80,6 @@ OneD<_T>::derivative() const
     }
     return ret;
 }
-
 template<typename _T>
 _T
 OneD<_T>::velocity(double x) const
@@ -88,7 +87,6 @@ OneD<_T>::velocity(double x) const
    _T temp;
    return temp;
 }
-
 template<typename _T>
 _T
 OneD<_T>::acceleration(double x) const
@@ -97,8 +95,7 @@ OneD<_T>::acceleration(double x) const
     return temp;
 
 }
-} // poly
-} // math
+
 template<typename _T>
 _T& 
 math::poly::OneD<_T>::operator [] (size_t i)
@@ -135,18 +132,6 @@ math::poly::OneD<_T>::operator [] (size_t i) const
       throw except::IndexOutOfRangeException(Ctxt(msg));
    }
    return ret;
-}
-
-
-template<typename _T>
-std::ostream& 
-operator << (std::ostream& out, const math::poly::OneD<_T>& p)
-{
-   for (size_t i = 0 ; i < p.mCoef.size() ; i++)
-   {
-      out << p[i] << "*y^" << i << " ";
-   }
-   return out;
 }
 
 template<typename _T>
@@ -365,3 +350,17 @@ math::poly::OneD<_T>::copyFrom(const OneD<_T>& p)
     std::copy(p.mCoef.begin(), p.mCoef.begin() + numCopy, mCoef.begin());
 }
 
+
+} // poly
+} // math
+
+template<typename _T>
+std::ostream&
+operator << (std::ostream& out, const math::poly::OneD<_T>& p)
+{
+   for (size_t i = 0 ; i < p.mCoef.size() ; i++)
+   {
+      out << p[i] << "*y^" << i << " ";
+   }
+   return out;
+}
