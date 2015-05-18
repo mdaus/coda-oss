@@ -23,6 +23,7 @@
 #define __MATH_LINEAR_VECTOR_N_H__
 
 #include "math/linear/MatrixMxN.h"
+#include <math.h>
 
 namespace math
 {
@@ -202,6 +203,7 @@ public:
         const _T dotProduct = dot(vec) / (norm() * vec.norm());
         return std::max<_T>(std::min<_T>(dotProduct, 1.0), -1.0);
     }
+
     /*!
      * Euclidean, L2 norm
      */
@@ -209,20 +211,17 @@ public:
     {
         return mRaw.norm();
     }
-    /* 
-     * Euclidean, L2 norm squared
-     * Sum of the squares of the vector elements
-     */
+
+    // Addition made 5-13-15:
     _T normSq() const
     {
         return mRaw.normSq();
+
     }
-    /*
-    * Returns the angle to another VectorN
-    */
+    // Addition made 5-13-15:
     _T angle(Like_T v) const
     {
-        _T val = ((*this * v) / norm()) / v.norm();
+        _T val = dot(v) / norm()/ v.norm();
         if (val > 1.0) val = 1.0;
         if (val < -1.0) val = -1.0;
         return (std::acos(val));
@@ -366,8 +365,6 @@ template<size_t _ND, typename _T> VectorN<_ND, _T>
     return v;
 }
 
-}
-}
 
 template<size_t _MD, size_t _ND, typename _T> 
     math::linear::VectorN<_MD, _T>
@@ -384,7 +381,7 @@ template<size_t _ND, typename _T> math::linear::VectorN<_ND, _T>
 }
 
 
-template<size_t _ND, typename _T> 
+template<size_t _ND, typename _T>
     std::ostream& operator<<(std::ostream& os,
                              const math::linear::VectorN<_ND, _T>& v)
 {
@@ -395,5 +392,9 @@ template<size_t _ND, typename _T>
     return os;
     
 }
+} //linear
+} //math
+
+
 
 #endif
