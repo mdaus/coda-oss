@@ -93,7 +93,7 @@ class OpenCVCompilerConfig:
     compiler_config = {
         'gcc':  gcc_icc_compiler_config,
         'icc':  gcc_icc_compiler_config,
-        'msvc': msvc_c_cxx_compiler_config
+        'msvc': msvc_compiler_config,
     }
 
     @staticmethod
@@ -446,12 +446,15 @@ class OpenCVSourceFilter:
         all_files = [cpp_file for cpp_file in recursiveGlob(source_dir, ['*.cpp'])] + \
                     [c_file for cl_file in recursiveGlob(source_dir, ['*.c'])]
 
-        # subtract good files and convert back to string
-        return " ".join(set(all_files) - set(good_files))
+        # remove path prefix
+        all_files = [os.path.basename(f) for f in all_files]
+
+        # subtract good files
+        bad_files = set(all_files) - set(good_files)
+
+        return " ".join(bad_files)
 
     def __init__(self, sys_platform, module, source_dir):
-        #import ipdb; ipdb.set_trace()
-
         self.source_filter = ''
         if self.filters.has_key(module):
             filters = self.filters[module]
@@ -520,7 +523,6 @@ def configure(conf):
 
 def build(bld):
     
-    #import ipdb; ipdb.set_trace()
     variant = bld.env['VARIANT']
     #env = bld.all_envs[variant]
     env = bld.all_envs[config_env]
@@ -547,17 +549,16 @@ def build(bld):
         includes_dir =  [join(sourcepath, 'modules', nm, 'include') for nm in [name] + module_deps] + \
                         [join(sourcepath, 'modules', 'core'), sourcepath]
         source_dir   = join(sourcepath, 'modules', name, 'src')
+        source_node = bld.path.make_node(source_dir)
         if name == 'videoio':
             import ipdb; ipdb.set_trace()
-        source_filter = OpenCVSourceFilter(sys_platform, name, source_dir).get()
-        print source_filter
+        source_filter = OpenCVSourceFilter(sys_platform, name, source_node.abspath()).get()
         module_deps_canon = ['opencv_' + x for x in module_deps]
 
         # depend on the version string
         targets_to_add = [gen_version_string]
 
         # see if there are any cl depends and add them to the build
-        source_node = bld.path.make_node(source_dir)
         if len(Cl2Cpp.find_cl_source(source_node.abspath())):
             root_source_name = Cl2Cpp.gen_source_name(name) 
             bld(name = root_source_name)
