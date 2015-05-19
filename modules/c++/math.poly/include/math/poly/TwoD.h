@@ -65,7 +65,7 @@ public:
 
     TwoD(size_t orderX, size_t orderY) : mCoef(orderX+1,OneD<_T>(orderY)) {}   
     
-    TwoD(std::vector<math::poly::OneD<double> v): mCoef(v) {}
+    TwoD(std::vector<OneD<_T> v): mCoef(v) {}
 
     template<typename Vector_T> TwoD(size_t orderX, size_t orderY,
                                      const Vector_T& coeffs)
