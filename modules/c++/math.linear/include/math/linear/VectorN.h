@@ -211,14 +211,16 @@ public:
     {
         return mRaw.norm();
     }
-
-    // Addition made 5-13-15:
+    /*
+     * Square of the Euclidean norm,
+     */
     _T normSq() const
     {
         return mRaw.normSq();
-
     }
-    // Addition made 5-13-15:
+    /*
+     * Angle between this VectorN and v
+     */
     _T angle(Like_T v) const
     {
         _T val = dot(v) / norm()/ v.norm();
@@ -394,7 +396,5 @@ template<size_t _ND, typename _T>
 }
 } //linear
 } //math
-
-
 
 #endif
