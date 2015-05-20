@@ -398,3 +398,4 @@ template<size_t _ND, typename _T>
 } //math
 
 #endif
+
