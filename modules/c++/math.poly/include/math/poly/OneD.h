@@ -206,7 +206,7 @@ public:
     OneD<_T>& operator *=(double cv);
     OneD<_T>operator *(double cv) const;
     template<typename _TT>
-    friend math::poly::OneD<_TT>operator *(double cv, const OneD<_TT>& p);
+    friend OneD<_TT>operator *(double cv, const OneD<_TT>& p);
     OneD<_T>& operator *=(const OneD<_T>& p);
     OneD<_T>operator *(const OneD<_T>& p) const;
     OneD<_T>& operator +=(const OneD<_T>& p);
