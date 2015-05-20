@@ -201,13 +201,12 @@ public:
     _T acceleration(double x) const;
     _T& operator[](size_t i);
     _T operator[](size_t i) const;
+    template<typename _TT>
+    friend std::ostream& operator <<(std::ostream& out, const OneD<_TT>& p);
     OneD<_T>& operator *=(double cv);
     OneD<_T>operator *(double cv) const;
     template<typename _TT>
-    friend std::ostream& operator <<(std::ostream& out, const OneD<_TT>& p);
-    template<typename _TT>
     friend math::poly::OneD<_TT>operator *(double cv, const OneD<_TT>& p);
-
     OneD<_T>& operator *=(const OneD<_T>& p);
     OneD<_T>operator *(const OneD<_T>& p) const;
     OneD<_T>& operator +=(const OneD<_T>& p);
@@ -261,6 +260,5 @@ public:
 
 } // poly
 } // math
-
 #include "math/poly/OneD.hpp"
 #endif
