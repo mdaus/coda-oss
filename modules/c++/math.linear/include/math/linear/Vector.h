@@ -245,13 +245,11 @@ public:
     {
         return mRaw.normSq();
     }
-    
     /*!
      * Euclidean, L2 norm
      */
     _T norm() const
     {
-     
         return mRaw.norm();
     }
     //!  Normalize a value
