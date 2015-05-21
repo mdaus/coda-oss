@@ -23,6 +23,7 @@
 #define __MATH_LINEAR_VECTOR_H__
 
 #include "math/linear/Matrix2D.h"
+#include <cmath>
 
 namespace math
 {
