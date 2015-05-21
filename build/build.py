@@ -1253,6 +1253,7 @@ def process_swig_linkage(tsk):
         elif lib.startswith('_'):
             libname = lib + '.so'
             searchstr = lib[1:].replace('_','.')
+            searchstr = os.path.join('python',searchstr)
             for libdir in tsk.env.LIBPATH:
                 if libdir.endswith(searchstr):
                     libpath = libdir
