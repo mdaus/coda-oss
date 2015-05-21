@@ -1243,6 +1243,7 @@ def process_swig_linkage(tsk):
         if lib.startswith('_coda_'):
             libname = libpattern % lib
             searchstr = lib[6:].replace('_','.')
+            searchstr = os.path.join('python',searchstr)
             libpath = ''
             for libdir in tsk.env.LIBPATH:
                 if libdir.endswith(searchstr):
@@ -1260,7 +1261,7 @@ def process_swig_linkage(tsk):
         else:
             newlib.append(lib)
 
-    # studio is a special and their compiler has an option
+    # studio is special and their compiler has an option
     # for giving a shared object a name, rather than letting us pass
     # in options to the linker like gcc and icc
 
