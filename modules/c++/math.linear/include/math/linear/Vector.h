@@ -236,9 +236,7 @@ public:
     _T angle(const Vector& v) const
     {
         _T val = ((*this * v) / norm()) / v.norm();
-        if (val > 1.0) val = 1.0;
-        if (val < -1.0) val = -1.0;
-        return (std::acos(val));
+        return std::acos(std::max(-1.0, std::min(val, 1.0)));
     }
     
     _T normSq() const
