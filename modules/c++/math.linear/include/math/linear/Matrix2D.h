@@ -981,7 +981,7 @@ public:
         {
             acc += mRaw[i] * mRaw[i];
         }
-        return (const _T)acc;
+        return acc;
     }
     /*!
      *  Find the L2 norm of the matrix.
@@ -989,7 +989,7 @@ public:
      */
     _T norm() const
     {
-        return (_T)::sqrt(normSq());
+        return static_cast<_T>(std::sqrt(normSq()));
     }
     /*!
      *  Scale the entire matrix inplace by the L2 norm value.
