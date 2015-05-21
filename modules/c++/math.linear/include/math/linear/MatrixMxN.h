@@ -1079,7 +1079,7 @@ public:
                 acc += mRaw[i][j] * mRaw[i][j];
             }
         }
-        return static_cast<_T>(acc);
+        return acc;
     }
     /*!
      *  Find the L2 norm of the matrix.
