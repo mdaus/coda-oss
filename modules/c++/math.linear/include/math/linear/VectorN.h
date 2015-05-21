@@ -219,15 +219,14 @@ public:
         return mRaw.normSq();
     }
     /*
-     * Angle between this VectorN and v
+     * Angle between this vector and v
      */
-    _T angle(Like_T v) const
+    _T angle(const Like_T& v) const
     {
-        _T val = dot(v) / norm()/ v.norm();
-        if (val > 1.0) val = 1.0;
-        if (val < -1.0) val = -1.0;
-        return (std::acos(val));
+        _T val = ((*this * v) / norm()) / v.norm();
+        return std::acos(std::max(-1.0, std::min(val, 1.0)));
     }
+    
     void normalize()
     {
         mRaw.normalize();
