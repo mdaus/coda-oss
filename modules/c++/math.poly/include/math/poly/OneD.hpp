@@ -84,15 +84,14 @@ template<typename _T>
 _T
 OneD<_T>::velocity(double x) const
 {
-    _T vel = derivative()(x);
-    return vel;
+    return derivative()(x);
 }
 template<typename _T>
 _T
 OneD<_T>::acceleration(double x) const
 {
-    _T acc = ((derivative()).derivative())(x);
-    return acc;
+    return derivative().derivative()(x);
+    
 }
 template<typename _T>
 _T& 
