@@ -78,9 +78,9 @@ public:
         }
     }
     
-    TwoD(const std::vector<OneD<_T> >& v): mCoef(v) 
+    TwoD(const std::vector<OneD<_T> >& v) : 
+        mCoef(v) 
     {
-     
     }
     
     bool empty() const
