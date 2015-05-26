@@ -1217,8 +1217,10 @@ def configure(self):
 @TaskGen.after_method('process_use')
 def process_swig_linkage(tsk):
 
+    # first we need to setup some platform specific
+    # options for specifying soname and passing linker
+    # flags
     solarisRegex = r'sparc-sun.*|i.86-pc-solaris.*|sunos'
-
     platform = getPlatform(default=Options.platform)
     compiler = tsk.env['COMPILER_CXX']
     if compiler == 'msvc':
@@ -1227,47 +1229,63 @@ def process_swig_linkage(tsk):
         # Not sure if cygwin/mingw does or not...
         return
 
+    libpattern = tsk.env['cshlib_PATTERN']
+    linkarg_pattern = '-Wl,%s'
+    if re.match(solarisRegex,platform) and compiler != 'g++' and compiler != 'icpc':
+      linkarg_pattern = '%s'
+
+    # so swig can find .i files to import
     incstr = ''
     for nod in tsk.includes:
         incstr += ' -I' + nod.abspath()
     if hasattr(tsk,'swig_flags'):
         tsk.swig_flags = tsk.swig_flags + incstr
 
-    libpattern = tsk.env['cshlib_PATTERN']
-    linkarg_pattern = '-Wl,%s'
-    if re.match(solarisRegex,platform) and compiler != 'g++' and compiler != 'icpc':
-      linkarg_pattern = '%s'
-
+    # Search for python libraries and
+    # add the target files explicitly as command line parameters for linking
     newlib = []
     for lib in tsk.env.LIB:
+        
+        # get our library name so we
+        # can extract it's path from LIBPATH 
+        # libname is the filename we'll be linking to
+        # searchstr is the module name
         if lib.startswith('_coda_'):
             libname = libpattern % lib
-            searchstr = lib[6:].replace('_','.')
-            searchstr = os.path.join('python',searchstr)
-            libpath = ''
-            for libdir in tsk.env.LIBPATH:
-                if libdir.endswith(searchstr):
-                    libpath = libdir
-            libpath = os.path.join(str(libpath), libname)
-            tsk.env.LINKFLAGS.append(libpath)
+            searchstr = lib[6:].replace('_','.')   
         elif lib.startswith('_'):
             libname = lib + '.so'
             searchstr = lib[1:].replace('_','.')
-            searchstr = os.path.join('python',searchstr)
-            for libdir in tsk.env.LIBPATH:
-                if libdir.endswith(searchstr):
-                    libpath = libdir
-            libpath = os.path.join(str(libpath), libname)
-            tsk.env.LINKFLAGS.append(libpath)
         else:
+            # this isnt a python library, ignore it
             newlib.append(lib)
+            continue
 
-    # studio is special and their compiler has an option
-    # for giving a shared object a name, rather than letting us pass
-    # in options to the linker like gcc and icc
+        # Python wrappers have the same module name as their associated
+        # C++ modules so if waf is configured with --shared searching through
+        # LIBPATH for our module name is not sufficient to find the *python* module
+        # TODO: find some way to tell the C++ and python shared libs apart without
+        #   forcing our python modules to be in a folder called 'python'
+        searchstr = os.path.join('python',searchstr)
 
+        # search for a module with a matching name
+        libpath = ''
+        for libdir in tsk.env.LIBPATH:
+            if libdir.endswith(searchstr):
+                libpath = libdir
+        libpath = os.path.join(str(libpath), libname)
+
+        # finally add the path to the referenced python library
+        tsk.env.LINKFLAGS.append(libpath) 
+
+    # We need to explicitly set our soname otherwise modules that
+    # link to *us* in the above fashion will not be able to do it 
+    # without the same path 
+    # (ie python dependencies at runtime after installation)
     soname_str = linkarg_pattern % ('-h ' + (libpattern % tsk.target))
     tsk.env.LINKFLAGS.append(soname_str)
+  
+    # newlib is now a list of our non-python libraries
     tsk.env.LIB = newlib
 
 @task_gen
