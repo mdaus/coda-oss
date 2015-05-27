@@ -595,15 +595,25 @@ def build(bld):
         if isinstance(uselib, str):
             uselib = uselib.split()
 
+
+        inc   = lambda md: [join(sourcepath, 'modules', nm, 'include') for nm in md] 
+        src   = lambda nm: join(sourcepath, 'modules', nm, 'src') 
+        perf  = lambda nm: join(sourcepath, 'modules', nm, 'perf') 
+        test  = lambda nm: join(sourcepath, 'modules', nm, 'test') 
+        canon = lambda md: ['opencv_' + x for x in md]
+
+        core_module = join(sourcepath, 'modules', 'core')
+
         uselib_platform   = OpenCVModuleDependencies.platform_deps(sys_platform, name)
         base_uselib       = 'THREAD DL RT'.split() + uselib + uselib_platform
         base_uselib_check = 'ZIP'
         source_dir        = join(sourcepath, 'modules', name, 'src')
         source_node       = bld.path.make_node(source_dir)
         source_filter     = OpenCVSourceFilter(sys_platform, name, source_node.abspath()).get()
-        includes_dir      =  [join(sourcepath, 'modules', nm, 'include') for nm in [name] + module_deps] + \
-                             [join(sourcepath, 'modules', 'core'), sourcepath, source_dir]
-        module_deps_canon = ['opencv_' + x for x in module_deps]
+        includes_dir      =  inc([name] + module_deps) + \
+                             [core_module, sourcepath, source_dir]
+
+        module_deps_canon = canon(module_deps)
 
         # depend on the version string
         targets_to_add = [gen_version_string]
@@ -614,7 +624,8 @@ def build(bld):
             bld(name = root_source_name)
             targets_to_add.append(root_source_name)
 
-        bld.module(name='opencv_%s' % name, env=env, uselib=base_uselib,
+        module_name = 'opencv_%s' % name
+        bld.module(name=module_name, env=env, uselib=base_uselib,
                    uselib_check=base_uselib_check,
                    includes=includes_dir,
                    version=version,
@@ -622,6 +633,28 @@ def build(bld):
                    source_filter=source_filter,
                    module_deps=module_deps_canon,
                    targets_to_add=targets_to_add)
+
+        u = lambda x: list(set(x))
+        perf_deps = ['ts', name, 'imgcodecs'] + module_deps
+        test_deps = perf_deps + ['videoio', 'highgui', 'imgproc']
+        progs = {
+            perf(name) : { 'deps': perf_deps,
+                            'fmt': 'opencv_perf_{}'},
+            test(name) : { 'deps': test_deps,
+                            'fmt': 'opencv_test_{}'},
+        }
+        # sample_deps = u(test_deps + ['highgui'])
+# warning 4324 ?
+        # TODO: need the dependencies for 'highgui', videoio etc
+        for src_dir, info in progs.iteritems():
+            if bld.path.find_dir(src_dir): 
+                bld.program_helper(name=info['fmt'].format(name), env=env,
+                                   uselib=base_uselib + base_uselib_check.split(),
+                                   module_deps=canon(info['deps']),
+                                   includes=inc(info['deps']) + [sourcepath],
+                                   source_dir=src_dir)
+
+
 
     
     # TODO: data structure-ize this?
