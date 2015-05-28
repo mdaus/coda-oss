@@ -44,17 +44,20 @@ class OpenCVModuleDependencies:
     }
 
     @staticmethod
-    def platform_deps(sys_platform, module=None):
+    def platform_deps(sys_platform, modules=None):
         deps = OpenCVModuleDependencies.uselib_deps 
+        if modules is not None:
+            modules = listify(modules)
         out = []
         for regex in deps:
             if re.match(regex, sys_platform):
-                if module is None:
+                if modules is None:
                     for values in deps[regex].values():
                         out = out + values
                 else:
-                    if deps[regex].has_key(module):
-                        out = deps[regex][module]
+                    for module in modules:
+                        if deps[regex].has_key(module):
+                            out = deps[regex][module]
                 break
         return [dep.upper() for dep in out] #uppercase-ize
 
@@ -77,7 +80,7 @@ class OpenCVCompilerConfig:
     gcc_release_compiler_flags = '-O2'.split()
     gcc_debug_compiler_flags   = '-g -O0'.split()
 
-    msvc_compiler_flags    = '/EHa /fp:precise /Gd /Gm- /GS /Gy /Oi /TP /WX- /Zc:forScope /bigobj /wd4324'.split()
+    msvc_compiler_flags    = '/EHa /fp:precise /Gd /Gm- /GS /Gy /Oi /TP /WX- /Zc:forScope /bigobj /wd4324 /wd4251'.split()
     # Already done/skippable: /W4 /GR /errorReport:prompt /MP /nologo /Zi 
     # May be needed(?): /Zc:wchar_t
     msvc_debug_compiler_flags   = '/Od /Ob0 /RTC1'.split()
@@ -143,12 +146,9 @@ class OpenCVCompilerConfig:
     }
 
     @staticmethod
-    def configure(conf, sys_platform, debugging):
-        build_type   = 'debug' if debugging else 'release'
-
-        ccCompiler = conf.env['COMPILER_CC']
-        compiler_config = OpenCVCompilerConfig.compiler_config[ccCompiler]
-
+    def configure(conf, debugging):
+        build_type      = 'debug' if debugging else 'release'
+        compiler_config = OpenCVCompilerConfig.compiler_config[conf.env['COMPILER_CC']]
         for key in ['DEFINES', 'CXXFLAGS', 'CFLAGS']:
             overrides = compiler_config[key][build_type]
             clone = list(conf.env[key])
@@ -168,17 +168,14 @@ class OpenCVCompilerConfig:
         # use by all versions
         conf.env.DEFINES.append("__OPENCV_BUILD=1")
 
-
+    @staticmethod
+    def configure_libs(conf):
+        compiler_config = OpenCVCompilerConfig.compiler_config[conf.env['COMPILER_CC']]
         if compiler_config.has_key('libs'):
             libs = compiler_config['libs']
             for lib in libs:
                 conf.check_cc(lib=lib.lower(), uselib_store=lib)
 
-        # stuff that doesn't fit the above paradigm
-        if ccCompiler == 'gcc' or ccCompiler == 'icc':
-            pass
-        elif re.match(win32_regex, sys_platform):
-            pass
 
 
 class CVConfigHGenerator:
@@ -562,15 +559,21 @@ def configure(conf):
         # unzip archive
         unzipper(abszipfilepath, conf.path.abspath())
 
+        # these need to 'escape' private configuration
+        # do this before, so the new env will inherit them
+        OpenCVCompilerConfig.configure_libs(conf)
+
+        # switch to another env for our private build settings
         conf.setenv(config_env, conf.env.derive())
         conf.env['define_key'] = []
 
         # Generate module configuration
         sys_platform = getPlatform(default=Options.platform)
         CVConfigHGenerator.generate(conf, sys_platform)
-        OpenCVCompilerConfig.configure(conf, sys_platform, Options.options.debugging)
+        OpenCVCompilerConfig.configure(conf, Options.options.debugging)
         opencv_generate_modules_header(conf)
 
+        # change back to normal build context
         conf.setenv('')
     else:
         pass
@@ -594,25 +597,30 @@ def build(bld):
         target = bld.path.make_node(join(sourcepath, 'modules', 'core', 'version_string.inc')),
         always = True)
 
+
+    inc          = lambda md: [join(sourcepath, 'modules', nm, 'include') for nm in md] 
+    canonicalize = lambda md: 'opencv_' + md if isinstance(md, str) else ['opencv_' + x for x in md]
+    pdeps        = lambda deps: OpenCVModuleDependencies.platform_deps(sys_platform, deps)
+    
+    base_uselib       = 'THREAD DL RT'.split() 
+    base_uselib_check = 'ZIP' # string, not list expected
+    core_module       = join(sourcepath, 'modules', 'core')
+    base_includes     = [sourcepath, core_module]
+
+
     def build_opencv_module(name, module_deps=[], uselib=[]):
         if isinstance(module_deps, str):
             module_deps = module_deps.split()
         if isinstance(uselib, str):
             uselib = uselib.split()
 
+        src  = lambda nm: join(sourcepath, 'modules', nm, 'src') 
+        perf = lambda nm: join(sourcepath, 'modules', nm, 'perf') 
+        test = lambda nm: join(sourcepath, 'modules', nm, 'test') 
 
-        inc          = lambda md: [join(sourcepath, 'modules', nm, 'include') for nm in md] 
-        src          = lambda nm: join(sourcepath, 'modules', nm, 'src') 
-        perf         = lambda nm: join(sourcepath, 'modules', nm, 'perf') 
-        test         = lambda nm: join(sourcepath, 'modules', nm, 'test') 
-        canonicalize = lambda md: ['opencv_' + x for x in md]
-
-
-        core_module = join(sourcepath, 'modules', 'core')
 
         uselib_platform   = OpenCVModuleDependencies.platform_deps(sys_platform, name)
-        base_uselib       = 'THREAD DL RT'.split() + uselib + uselib_platform
-        base_uselib_check = 'ZIP' # string, not list expected
+        uselib            = base_uselib + uselib + uselib_platform
 
         source_dir        = src(name)
         source_node       = bld.path.make_node(source_dir)
@@ -624,7 +632,7 @@ def build(bld):
                                                    for s in sources])
 
         source_filter     = OpenCVSourceFilter(sys_platform, name, source_node.abspath()).get()
-        includes_dir      = inc([name] + module_deps) + [core_module, sourcepath, source_dir]
+        includes_dir      = inc([name] + module_deps) + base_includes + [source_dir]
 
         module_deps_canon = canonicalize(module_deps)
 
@@ -638,8 +646,7 @@ def build(bld):
             targets_to_add.append(root_source_name)
 
         module_name = 'opencv_%s' % name
-
-        bld.module(name=module_name, env=env, uselib=base_uselib,
+        bld.module(name=module_name, env=env, uselib=uselib,
                    uselib_check=base_uselib_check,
                    includes=includes_dir,
                    version=version,
@@ -647,12 +654,6 @@ def build(bld):
                    source_filter=source_filter,
                    module_deps=module_deps_canon,
                    targets_to_add=targets_to_add)
-
-        def pdeps(deps):
-            pdeps = [] 
-            for dep in deps:
-                pdeps = pdeps + OpenCVModuleDependencies.platform_deps(sys_platform, dep)
-            return pdeps
 
         perf_deps = ['ts', name, 'imgcodecs', 'videoio', 'highgui'] + module_deps
         test_deps = perf_deps + ['imgproc']
@@ -662,20 +663,17 @@ def build(bld):
             test(name) : { 'deps': test_deps,
                             'fmt': 'opencv_test_{}'},
         }
-        # sample_deps = test_deps + ['highgui']
-# warning 4324 ?
-        # TODO: propagate dependencies? see xerces/xml.lite
+
         for src_dir, info in progs.iteritems():
             if bld.path.find_dir(src_dir): 
                 deps = info['deps']
                 bld.program_helper(name=info['fmt'].format(name), env=env,
-                                   uselib=base_uselib + base_uselib_check.split() + pdeps(deps),
+                                   uselib=uselib + base_uselib_check.split() + pdeps(deps),
                                    module_deps=canonicalize(deps),
                                    includes=inc(deps) + [sourcepath],
                                    source_dir=src_dir)
 
     
-    # TODO: data structure-ize this?
     build_opencv_module('hal')
     build_opencv_module('core',        module_deps='hal')
     build_opencv_module('flann',       module_deps='hal core')
@@ -694,6 +692,22 @@ def build(bld):
     build_opencv_module('calib3d',     module_deps='hal core flann imgproc ml imgcodecs videoio highgui features2d')
     build_opencv_module('stitching',   module_deps='hal core flann imgproc ml imgcodecs videoio highgui objdetect features2d calib3d')
     build_opencv_module('videostab',   module_deps='hal core flann imgproc ml photo video imgcodecs videoio highgui features2d calib3d')
+
+
+    def build_opencv_program(name, module_deps=[]):
+        module_deps = listify(module_deps)
+        appsource = join(sourcepath, 'apps', name)
+        bld.program_helper(name=canonicalize(name), env=env,
+                           uselib=base_uselib_check.split() + pdeps(module_deps),
+                           module_deps=canonicalize(module_deps),
+                           includes=inc(module_deps) + base_includes + [join(sourcepath, 'include', 'opencv')],
+                           source_dir=appsource)
+
+
+    build_opencv_program('traincascade',  module_deps='hal core imgproc objdetect imgcodecs highgui calib3d features2d')
+    build_opencv_program('createsamples', module_deps='hal core imgproc objdetect imgcodecs highgui calib3d features2d videoio')
+    build_opencv_program('annotation',    module_deps='hal core highgui imgproc imgcodecs videoio')
+     
 
 
 def distclean(context):
