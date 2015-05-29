@@ -377,9 +377,9 @@ namespace ocl
 
     def generate(self):
         # write out the source files
-        with open(os.path.join(self.source_dir, self.output_hpp_name), 'w') as f:
+        with open(join(self.source_dir, self.output_hpp_name), 'w') as f:
             f.write(self.hpp_str)
-        with open(os.path.join(self.source_dir, self.output_cpp_name), 'w') as f:
+        with open(join(self.source_dir, self.output_cpp_name), 'w') as f:
             f.write(self.cpp_str)
             
 
@@ -445,7 +445,8 @@ def generate_opencl_sources(self):
     # TODO: test for existence!
     for cl_tgt in cl_tgts:
         opencv_module = cl_tgt.replace(prefix, '')
-        cl2cpp = Cl2Cpp(opencv_module, self.path.abspath())
+        out_dir_node  = self.path.make_node(join(sourcepath, 'modules', opencv_module, 'src'))
+        cl2cpp = Cl2Cpp(opencv_module, out_dir_node.abspath())
         cl2cpp.generate()
 
 
@@ -608,9 +609,13 @@ def build(bld):
 
 
     if env['install_headers']:
-        bld(features='install_tgt', pattern='*.h include/**/*.h include/**/*.hpp', 
+        bld(features='install_tgt', pattern='*.h opencv2/*.hpp opencv2/*.h', 
             dir=bld.path.make_node(sourcepath), install_path=env['install_includedir'],
             name='CVCONFIG_H_INSTALL')
+        bld(features='install_tgt', pattern='**/*.h **/*.hpp', 
+            dir=bld.path.make_node(join(sourcepath, 'include')),
+            install_path=env['install_includedir'],
+            name='OPENCV_HEADER_INSTALL')
 
 
     def build_opencv_module(name, module_deps=[], uselib=[]):
@@ -641,15 +646,18 @@ def build(bld):
 
         # see if there are any cl depends and add them to the build
         if len(find_source(source_node.abspath(), '*.cl')):
+            # TODO these are going in the top level thing, put them down in the right directory
             root_source_name = Cl2Cpp.gen_source_name(name) 
             bld(name = root_source_name)
             targets_to_add.append(root_source_name)
 
         if env['install_headers']:
-            bld(features='install_tgt', pattern='*.h include/**/*.h include/**/*.hpp', 
-                dir=source_node, install_path=env['install_includedir'],
-                name='OPENCV_{}_INCLUDE_INSTALL'.format(canonicalize(name).upper()),
-                targets_to_add=['CVCONFIG_H_INSTALL'])
+            htgt = '{}_INCLUDE_INSTALL'.format(canonicalize(name).upper())
+            bld(features='install_tgt', pattern='**/*.h **/*.hpp', 
+                dir=bld.path.make_node(inc([name])), install_path=env['install_includedir'],
+                name=htgt,
+                targets_to_add=['CVCONFIG_H_INSTALL', 'OPENCV_HEADER_INSTALL'])
+            targets_to_add.append(htgt)
 
         module_name = 'opencv_%s' % name
 
