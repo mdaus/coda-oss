@@ -3,13 +3,13 @@ import re
 from waflib import Options, Utils
 from waflib.Utils import to_list as listify
 from build import getPlatform, writeConfig, makeHeaderFile, listToTuple, recursiveGlob, unzipper
-from os.path import join, exists, dirname
+from os.path import join, exists, dirname, basename
 from zipfile import ZipFile
 import types
 import md5
 from collections import OrderedDict
-
 from waflib.TaskGen import feature, before_method
+
 
 version    = 'opencv-3.0.0-rc1'
 sourcepath = '%s' % version
@@ -445,8 +445,7 @@ def generate_opencl_sources(self):
     # TODO: test for existence!
     for cl_tgt in cl_tgts:
         opencv_module = cl_tgt.replace(prefix, '')
-        out_dir_node  = self.path.make_node(os.path.join(sourcepath, 'modules', opencv_module, 'src'))
-        cl2cpp = Cl2Cpp(opencv_module, out_dir_node.abspath())
+        cl2cpp = Cl2Cpp(opencv_module, self.path.abspath())
         cl2cpp.generate()
 
 
@@ -632,12 +631,7 @@ def build(bld):
         source_node       = bld.path.make_node(source_dir)
         sources           = source_node.ant_glob('**/*.cpp') + source_node.ant_glob('**/*.c') 
 
-        # paths all need to start relative to source_dir
-        offset            = source_node.nice_path().find(source_dir) # how much to excise from start of paths
-        source_dirs       = [source_dir] + unique([s.parent.nice_path()[offset:]
-                                                   for s in sources])
-
-        source_filter     = OpenCVSourceFilter(sys_platform, name, source_node.abspath()).get()
+        source_filter     = OpenCVSourceFilter(sys_platform, name, source_node.abspath()).get().split()
         includes_dir      = inc([name] + module_deps) + base_includes + [source_dir]
 
         module_deps_canon = canonicalize(module_deps)
@@ -658,15 +652,20 @@ def build(bld):
                 targets_to_add=['CVCONFIG_H_INSTALL'])
 
         module_name = 'opencv_%s' % name
-        bld.module(name=module_name, env=env, uselib=uselib,
-                   uselib_check=base_uselib_check,
-                   includes=includes_dir,
-                   version=version,
-                   source_dir=source_dirs,
-                   source_filter=source_filter,
-                   module_deps=module_deps_canon,
-                   targets_to_add=targets_to_add)
 
+        ocvlib = bld(features='c c%s add_targets' % env['LIB_TYPE'] or 'stlib',
+                     includes=includes_dir,
+                     export_includes=includes_dir,
+                     target=module_name,
+                     source=sources,
+                     path=bld.path,
+                     defines=env['DEFINES'],
+                     uselib=uselib,
+                     use=base_uselib_check.split() + [m.upper() for m in module_deps_canon],
+                     env=env.derive(),
+                     name=module_name.upper(),
+                     targets_to_add=targets_to_add)
+        ocvlib.source = [s for s in ocvlib.source if basename(str(s)) not in source_filter]
 
         perf_deps = ['ts', name, 'imgcodecs', 'videoio', 'highgui'] + module_deps
         test_deps = perf_deps + ['imgproc']
@@ -681,8 +680,8 @@ def build(bld):
             if bld.path.find_dir(src_dir): 
                 deps = info['deps']
                 bld.program_helper(name=info['fmt'].format(name), env=env,
-                                   uselib=uselib + base_uselib_check.split() + pdeps(deps),
-                                   module_deps=canonicalize(deps),
+                                   use=uselib + base_uselib_check.split() + pdeps(deps),
+                                   uselib_local=[m.upper() for m in canonicalize(deps)],
                                    includes=inc(deps) + [sourcepath],
                                    source_dir=src_dir)
 
@@ -711,8 +710,8 @@ def build(bld):
         module_deps = listify(module_deps)
         appsource = join(sourcepath, 'apps', name)
         bld.program_helper(name=canonicalize(name), env=env,
-                           uselib=base_uselib_check.split() + pdeps(module_deps),
-                           module_deps=canonicalize(module_deps),
+                           use=base_uselib_check.split() + pdeps(module_deps),
+                           uselib_local=[m.upper() for m in canonicalize(module_deps)],
                            includes=inc(module_deps) + base_includes + [join(sourcepath, 'include', 'opencv')],
                            source_dir=appsource)
 
