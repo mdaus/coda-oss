@@ -646,7 +646,6 @@ def build(bld):
 
         # see if there are any cl depends and add them to the build
         if len(find_source(source_node.abspath(), '*.cl')):
-            # TODO these are going in the top level thing, put them down in the right directory
             root_source_name = Cl2Cpp.gen_source_name(name) 
             bld(name = root_source_name)
             targets_to_add.append(root_source_name)
