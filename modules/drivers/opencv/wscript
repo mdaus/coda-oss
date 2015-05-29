@@ -555,6 +555,10 @@ def build_opencv(bld, env, source_files):
             name='OPENCV_HEADER_INSTALL')
 
 
+    all_libs      = []
+    all_test_perf = []
+    all_apps     = []
+
     def build_opencv_module(name, module_deps=[], uselib=[], extra_targets=[]):
         if isinstance(module_deps, str):
             module_deps = module_deps.split()
@@ -597,6 +601,7 @@ def build_opencv(bld, env, source_files):
 
 
         module_name = canonicalize(name)
+        all_libs.append(module_name.upper())
         ocvlib = bld(features='c c%s add_targets' % env['LIB_TYPE'] or 'stlib',
                      includes=includes_dir,
                      export_includes=includes_dir,
@@ -623,7 +628,9 @@ def build_opencv(bld, env, source_files):
         for src_dir, info in progs.iteritems():
             if bld.path.find_dir(src_dir): 
                 deps = info['deps']
-                bld.program_helper(name=info['fmt'].format(name), env=env,
+                pname = info['fmt'].format(name)
+                all_test_perf.append(pname)
+                bld.program_helper(name=pname, env=env,
                                    use=uselib + base_uselib_check.split() + pdeps(deps),
                                    uselib_local=[m.upper() for m in canonicalize(deps)],
                                    includes=inc(deps) + [sourcepath],
@@ -660,7 +667,9 @@ def build_opencv(bld, env, source_files):
     def build_opencv_program(name, module_deps=[]):
         module_deps = listify(module_deps)
         appsource = join(sourcepath, 'apps', name)
-        bld.program_helper(name=canonicalize(name), env=env,
+        appname = canonicalize(name)
+        all_apps.append(appname)
+        bld.program_helper(name=appname, env=env,
                            use=base_uselib_check.split() + pdeps(module_deps),
                            uselib_local=[m.upper() for m in canonicalize(module_deps)],
                            includes=inc(module_deps) + base_includes + [join(sourcepath, 'include', 'opencv')],
@@ -670,6 +679,12 @@ def build_opencv(bld, env, source_files):
     build_opencv_program('traincascade',  module_deps='hal core imgproc objdetect imgcodecs highgui calib3d features2d')
     build_opencv_program('createsamples', module_deps='hal core imgproc objdetect imgcodecs highgui calib3d features2d videoio')
     build_opencv_program('annotation',    module_deps='hal core highgui imgproc imgcodecs videoio')
+
+
+    bld(name = 'opencv_all_libs',      features='add_targets', targets_to_add=all_libs)
+    bld(name = 'opencv_all_test_perf', features='add_targets', targets_to_add=all_libs + all_test_perf)
+    bld(name = 'opencv_all_apps',      features='add_targets', targets_to_add=all_libs + all_apps)
+    bld(name = 'opencv_mega',          features='add_targets', targets_to_add=all_test_perf + all_apps)
 
 
 
