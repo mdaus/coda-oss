@@ -523,6 +523,158 @@ class OpenCVSourceFilter:
         return self.source_filter
 
 
+def build_opencv(bld, env, source_files):
+    """Build step implementation"""
+    sys_platform = getPlatform(default=Options.platform)
+
+    # Generate the version string header
+    gen_version_string = 'gen_version_string'
+    bld(name   = gen_version_string,
+        rule   = opencv_generate_version_string_inc,
+        target = bld.path.make_node(join(sourcepath, 'modules', 'core', 'version_string.inc')),
+        always = True)
+
+
+    inc          = lambda md: [join(sourcepath, 'modules', nm, 'include') for nm in md] 
+    canonicalize = lambda md: 'opencv_' + md if isinstance(md, str) else ['opencv_' + x for x in md]
+    pdeps        = lambda deps: OpenCVModuleDependencies.platform_deps(sys_platform, deps)
+    
+    base_uselib       = 'THREAD DL RT'.split() 
+    base_uselib_check = 'ZIP' # string, not list expected
+    core_module       = join(sourcepath, 'modules', 'core')
+    base_includes     = [sourcepath, core_module]
+
+
+    if env['install_headers']:
+        bld(features='install_tgt', pattern='*.h opencv2/*.hpp opencv2/*.h', 
+            dir=bld.path.make_node(sourcepath), install_path=env['install_includedir'],
+            name='CVCONFIG_H_INSTALL')
+        bld(features='install_tgt', pattern='**/*.h **/*.hpp', 
+            dir=bld.path.make_node(join(sourcepath, 'include')),
+            install_path=env['install_includedir'],
+            name='OPENCV_HEADER_INSTALL')
+
+
+    def build_opencv_module(name, module_deps=[], uselib=[], extra_targets=[]):
+        if isinstance(module_deps, str):
+            module_deps = module_deps.split()
+        if isinstance(uselib, str):
+            uselib = uselib.split()
+
+        src  = lambda nm: join(sourcepath, 'modules', nm, 'src') 
+        perf = lambda nm: join(sourcepath, 'modules', nm, 'perf') 
+        test = lambda nm: join(sourcepath, 'modules', nm, 'test') 
+
+        uselib_platform   = OpenCVModuleDependencies.platform_deps(sys_platform, name)
+        uselib            = base_uselib + uselib + uselib_platform
+
+        source_dir        = src(name)
+        source_node       = bld.path.make_node(source_dir)
+        sources           = source_node.ant_glob('**/*.cpp') + source_node.ant_glob('**/*.c') 
+
+        source_filter     = OpenCVSourceFilter(sys_platform, name, source_node.abspath()).get().split()
+        includes_dir      = inc([name] + module_deps) + base_includes + [source_dir]
+
+        module_deps_canon = canonicalize(module_deps)
+
+        # depend on the version string
+        targets_to_add = [gen_version_string] + extra_targets
+
+        # see if there are any cl depends and add them to the build
+        if len(find_source(source_node.abspath(), '*.cl')):
+            root_source_name = Cl2Cpp.gen_source_name(name) 
+            bld(name = root_source_name)
+            targets_to_add.append(root_source_name)
+
+        if env['install_headers']:
+            htgt = '{}_INCLUDE_INSTALL'.format(canonicalize(name).upper())
+            bld(features='install_tgt', pattern='**/*.h **/*.hpp', 
+                dir=bld.path.make_node(inc([name])), install_path=env['install_includedir'],
+                name=htgt,
+                targets_to_add=['CVCONFIG_H_INSTALL', 'OPENCV_HEADER_INSTALL'])
+            targets_to_add.append(htgt)
+
+
+
+        module_name = canonicalize(name)
+        ocvlib = bld(features='c c%s add_targets' % env['LIB_TYPE'] or 'stlib',
+                     includes=includes_dir,
+                     export_includes=includes_dir,
+                     target=module_name,
+                     source=sources,
+                     path=bld.path,
+                     defines=env['DEFINES'],
+                     uselib=uselib,
+                     use=base_uselib_check.split() + [m.upper() for m in module_deps_canon],
+                     env=env.derive(),
+                     name=module_name.upper(),
+                     targets_to_add=targets_to_add)
+        ocvlib.source = [s for s in ocvlib.source if basename(str(s)) not in source_filter]
+
+        perf_deps = ['ts', name, 'imgcodecs', 'videoio', 'highgui'] + module_deps
+        test_deps = perf_deps + ['imgproc']
+        progs = {
+            perf(name) : { 'deps': perf_deps,
+                            'fmt': 'opencv_perf_{}'},
+            test(name) : { 'deps': test_deps,
+                            'fmt': 'opencv_test_{}'},
+        }
+
+        for src_dir, info in progs.iteritems():
+            if bld.path.find_dir(src_dir): 
+                deps = info['deps']
+                bld.program_helper(name=info['fmt'].format(name), env=env,
+                                   use=uselib + base_uselib_check.split() + pdeps(deps),
+                                   uselib_local=[m.upper() for m in canonicalize(deps)],
+                                   includes=inc(deps) + [sourcepath],
+                                   source_dir=src_dir)
+
+
+
+    # add source installation to most core module
+    hal_extra = []
+    if env['install_source']:
+        source_files.append(zipfile)
+        hal_extra.append('OPENCV_SOURCE_INSTALL')
+
+    build_opencv_module('hal',         extra_targets=hal_extra)
+    build_opencv_module('core',        module_deps='hal')
+    build_opencv_module('flann',       module_deps='hal core')
+    build_opencv_module('imgproc',     module_deps='hal core')
+    build_opencv_module('ml',          module_deps='hal core')
+    build_opencv_module('photo',       module_deps='hal core imgproc')
+    build_opencv_module('video',       module_deps='hal core imgproc')
+    build_opencv_module('imgcodecs',   module_deps='hal core imgproc', uselib='JPEG')
+    build_opencv_module('shape',       module_deps='hal core imgproc video')
+    build_opencv_module('videoio',     module_deps='hal core imgproc video imgcodecs')
+    build_opencv_module('highgui',     module_deps='hal core imgproc imgcodecs videoio', uselib='SOCKET')
+    build_opencv_module('objdetect',   module_deps='hal core imgproc ml imgcodecs videoio highgui')
+    build_opencv_module('superres',    module_deps='hal core imgproc imgcodecs video videoio')
+    build_opencv_module('ts',          module_deps='hal core imgproc imgcodecs videoio highgui')
+    build_opencv_module('features2d',  module_deps='hal core flann imgproc ml imgcodecs videoio highgui')
+    build_opencv_module('calib3d',     module_deps='hal core flann imgproc ml imgcodecs videoio highgui features2d')
+    build_opencv_module('stitching',   module_deps='hal core flann imgproc ml imgcodecs videoio highgui objdetect features2d calib3d')
+    build_opencv_module('videostab',   module_deps='hal core flann imgproc ml photo video imgcodecs videoio highgui features2d calib3d')
+
+
+    def build_opencv_program(name, module_deps=[]):
+        module_deps = listify(module_deps)
+        appsource = join(sourcepath, 'apps', name)
+        bld.program_helper(name=canonicalize(name), env=env,
+                           use=base_uselib_check.split() + pdeps(module_deps),
+                           uselib_local=[m.upper() for m in canonicalize(module_deps)],
+                           includes=inc(module_deps) + base_includes + [join(sourcepath, 'include', 'opencv')],
+                           source_dir=appsource)
+
+
+    build_opencv_program('traincascade',  module_deps='hal core imgproc objdetect imgcodecs highgui calib3d features2d')
+    build_opencv_program('createsamples', module_deps='hal core imgproc objdetect imgcodecs highgui calib3d features2d videoio')
+    build_opencv_program('annotation',    module_deps='hal core highgui imgproc imgcodecs videoio')
+
+
+
+
+
 def options(opt):
     opt.add_option('--with-opencv-home', action='store', dest='opencv_home',
                    help='Specify the OpenCV Home - where the OpenCV library is installed')
@@ -580,153 +732,26 @@ def configure(conf):
     conf.env['HAVE_OPENCV'] = True
 
 
+
+
 def build(bld):
     
     variant = bld.env['VARIANT']
     #env = bld.all_envs[variant]
     env = bld.all_envs[config_env]
-    if not 'MAKE_OPENCV' in env:
-        return
 
-    sys_platform = getPlatform(default=Options.platform)
+    source_files = []
+    if 'MAKE_OPENCV' in env:
+        build_opencv(bld, env, source_files)
 
-    # Generate the version string header
-    gen_version_string = 'gen_version_string'
-    bld(name   = gen_version_string,
-        rule   = opencv_generate_version_string_inc,
-        target = bld.path.make_node(join(sourcepath, 'modules', 'core', 'version_string.inc')),
-        always = True)
+    if env['install_source']:
+        source_node = bld.path.make_node('source')
+        bld.install_tgt(files=source_files,
+                        dir=bld.path,
+                        install_path=join('${PREFIX}', source_node.path_from(bld.path)),
+                        relative_trick=True,
+                        name='OPENCV_SOURCE_INSTALL')
 
-
-    inc          = lambda md: [join(sourcepath, 'modules', nm, 'include') for nm in md] 
-    canonicalize = lambda md: 'opencv_' + md if isinstance(md, str) else ['opencv_' + x for x in md]
-    pdeps        = lambda deps: OpenCVModuleDependencies.platform_deps(sys_platform, deps)
-    
-    base_uselib       = 'THREAD DL RT'.split() 
-    base_uselib_check = 'ZIP' # string, not list expected
-    core_module       = join(sourcepath, 'modules', 'core')
-    base_includes     = [sourcepath, core_module]
-
-
-    if env['install_headers']:
-        bld(features='install_tgt', pattern='*.h opencv2/*.hpp opencv2/*.h', 
-            dir=bld.path.make_node(sourcepath), install_path=env['install_includedir'],
-            name='CVCONFIG_H_INSTALL')
-        bld(features='install_tgt', pattern='**/*.h **/*.hpp', 
-            dir=bld.path.make_node(join(sourcepath, 'include')),
-            install_path=env['install_includedir'],
-            name='OPENCV_HEADER_INSTALL')
-
-
-    def build_opencv_module(name, module_deps=[], uselib=[]):
-        if isinstance(module_deps, str):
-            module_deps = module_deps.split()
-        if isinstance(uselib, str):
-            uselib = uselib.split()
-
-        src  = lambda nm: join(sourcepath, 'modules', nm, 'src') 
-        perf = lambda nm: join(sourcepath, 'modules', nm, 'perf') 
-        test = lambda nm: join(sourcepath, 'modules', nm, 'test') 
-
-
-        uselib_platform   = OpenCVModuleDependencies.platform_deps(sys_platform, name)
-        uselib            = base_uselib + uselib + uselib_platform
-
-        source_dir        = src(name)
-        source_node       = bld.path.make_node(source_dir)
-        sources           = source_node.ant_glob('**/*.cpp') + source_node.ant_glob('**/*.c') 
-
-        source_filter     = OpenCVSourceFilter(sys_platform, name, source_node.abspath()).get().split()
-        includes_dir      = inc([name] + module_deps) + base_includes + [source_dir]
-
-        module_deps_canon = canonicalize(module_deps)
-
-        # depend on the version string
-        targets_to_add = [gen_version_string]
-
-        # see if there are any cl depends and add them to the build
-        if len(find_source(source_node.abspath(), '*.cl')):
-            root_source_name = Cl2Cpp.gen_source_name(name) 
-            bld(name = root_source_name)
-            targets_to_add.append(root_source_name)
-
-        if env['install_headers']:
-            htgt = '{}_INCLUDE_INSTALL'.format(canonicalize(name).upper())
-            bld(features='install_tgt', pattern='**/*.h **/*.hpp', 
-                dir=bld.path.make_node(inc([name])), install_path=env['install_includedir'],
-                name=htgt,
-                targets_to_add=['CVCONFIG_H_INSTALL', 'OPENCV_HEADER_INSTALL'])
-            targets_to_add.append(htgt)
-
-        module_name = 'opencv_%s' % name
-
-        ocvlib = bld(features='c c%s add_targets' % env['LIB_TYPE'] or 'stlib',
-                     includes=includes_dir,
-                     export_includes=includes_dir,
-                     target=module_name,
-                     source=sources,
-                     path=bld.path,
-                     defines=env['DEFINES'],
-                     uselib=uselib,
-                     use=base_uselib_check.split() + [m.upper() for m in module_deps_canon],
-                     env=env.derive(),
-                     name=module_name.upper(),
-                     targets_to_add=targets_to_add)
-        ocvlib.source = [s for s in ocvlib.source if basename(str(s)) not in source_filter]
-
-        perf_deps = ['ts', name, 'imgcodecs', 'videoio', 'highgui'] + module_deps
-        test_deps = perf_deps + ['imgproc']
-        progs = {
-            perf(name) : { 'deps': perf_deps,
-                            'fmt': 'opencv_perf_{}'},
-            test(name) : { 'deps': test_deps,
-                            'fmt': 'opencv_test_{}'},
-        }
-
-        for src_dir, info in progs.iteritems():
-            if bld.path.find_dir(src_dir): 
-                deps = info['deps']
-                bld.program_helper(name=info['fmt'].format(name), env=env,
-                                   use=uselib + base_uselib_check.split() + pdeps(deps),
-                                   uselib_local=[m.upper() for m in canonicalize(deps)],
-                                   includes=inc(deps) + [sourcepath],
-                                   source_dir=src_dir)
-
-    
-    build_opencv_module('hal')
-    build_opencv_module('core',        module_deps='hal')
-    build_opencv_module('flann',       module_deps='hal core')
-    build_opencv_module('imgproc',     module_deps='hal core')
-    build_opencv_module('ml',          module_deps='hal core')
-    build_opencv_module('photo',       module_deps='hal core imgproc')
-    build_opencv_module('video',       module_deps='hal core imgproc')
-    build_opencv_module('imgcodecs',   module_deps='hal core imgproc', uselib='JPEG')
-    build_opencv_module('shape',       module_deps='hal core imgproc video')
-    build_opencv_module('videoio',     module_deps='hal core imgproc video imgcodecs')
-    build_opencv_module('highgui',     module_deps='hal core imgproc imgcodecs videoio', uselib='SOCKET')
-    build_opencv_module('objdetect',   module_deps='hal core imgproc ml imgcodecs videoio highgui')
-    build_opencv_module('superres',    module_deps='hal core imgproc imgcodecs video videoio')
-    build_opencv_module('ts',          module_deps='hal core imgproc imgcodecs videoio highgui')
-    build_opencv_module('features2d',  module_deps='hal core flann imgproc ml imgcodecs videoio highgui')
-    build_opencv_module('calib3d',     module_deps='hal core flann imgproc ml imgcodecs videoio highgui features2d')
-    build_opencv_module('stitching',   module_deps='hal core flann imgproc ml imgcodecs videoio highgui objdetect features2d calib3d')
-    build_opencv_module('videostab',   module_deps='hal core flann imgproc ml photo video imgcodecs videoio highgui features2d calib3d')
-
-
-    def build_opencv_program(name, module_deps=[]):
-        module_deps = listify(module_deps)
-        appsource = join(sourcepath, 'apps', name)
-        bld.program_helper(name=canonicalize(name), env=env,
-                           use=base_uselib_check.split() + pdeps(module_deps),
-                           uselib_local=[m.upper() for m in canonicalize(module_deps)],
-                           includes=inc(module_deps) + base_includes + [join(sourcepath, 'include', 'opencv')],
-                           source_dir=appsource)
-
-
-    build_opencv_program('traincascade',  module_deps='hal core imgproc objdetect imgcodecs highgui calib3d features2d')
-    build_opencv_program('createsamples', module_deps='hal core imgproc objdetect imgcodecs highgui calib3d features2d videoio')
-    build_opencv_program('annotation',    module_deps='hal core highgui imgproc imgcodecs videoio')
-     
 
 
 def distclean(context):
