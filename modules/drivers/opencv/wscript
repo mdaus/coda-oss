@@ -523,6 +523,9 @@ class OpenCVSourceFilter:
         return self.source_filter
 
 
+
+canonicalize = lambda md: 'opencv_' + md if isinstance(md, str) else ['opencv_' + x for x in md]
+
 def build_opencv(bld, env, source_files):
     """Build step implementation"""
     sys_platform = getPlatform(default=Options.platform)
@@ -536,7 +539,6 @@ def build_opencv(bld, env, source_files):
 
 
     inc          = lambda md: [join(sourcepath, 'modules', nm, 'include') for nm in md] 
-    canonicalize = lambda md: 'opencv_' + md if isinstance(md, str) else ['opencv_' + x for x in md]
     pdeps        = lambda deps: OpenCVModuleDependencies.platform_deps(sys_platform, deps)
     
     base_uselib       = 'THREAD DL RT'.split() 
@@ -615,6 +617,9 @@ def build_opencv(bld, env, source_files):
                      name=module_name.upper(),
                      targets_to_add=targets_to_add)
         ocvlib.source = [s for s in ocvlib.source if basename(str(s)) not in source_filter]
+
+        if env['install_libs']:
+            ocvlib.install_path = env['install_libdir']
 
         perf_deps = ['ts', name, 'imgcodecs', 'videoio', 'highgui'] + module_deps
         test_deps = perf_deps + ['imgproc']
@@ -712,7 +717,20 @@ def configure(conf):
       return 
 
     if Options.options.opencv_home:
-       pass 
+      opencv_home = Options.options.opencv_home
+      for ocv_module_name in opencv_modules.split():
+          home_node = conf.path.make_node(opencv_home)
+          print home_node.abspath()
+          opencv_lib = canonicalize(ocv_module_name)
+          #import ipdb; ipdb.set_trace()
+          if conf.check_cxx(lib=opencv_lib,
+                        uselib_store=opencv_lib.upper(), 
+                        header_name=join('opencv2', '{}.hpp'.format(ocv_module_name)),
+                        libpath=join(home_node.abspath(), 'lib'),
+                        includes=join(home_node.abspath(), 'include'),
+                        msg='Checking for library {}'.format(opencv_lib), okmsg=opencv_home,
+                        mandatory=True):
+                         conf.undefine('HAVE_{}_H'.format(opencv_lib.upper()))
     elif Options.options.build_opencv:
         # Build is off by default when zipfile not found, fail if forced on
         abszipfilepath = join(conf.path.abspath(), zipfile)
@@ -727,7 +745,8 @@ def configure(conf):
         unzipper(abszipfilepath, conf.path.abspath())
 
         # these need to 'escape' private configuration
-        # do this before, so the new env will inherit them
+        # do this before, so that the new env (and everyone else
+        # will inherit them
         OpenCVCompilerConfig.configure_libs(conf)
 
         # switch to another env for our private build settings
@@ -743,6 +762,7 @@ def configure(conf):
         # change back to normal build context
         conf.setenv('')
     else:
+        # TODO: clone above to use the sys version
         pass
     conf.env['HAVE_OPENCV'] = True
 
@@ -751,9 +771,11 @@ def configure(conf):
 
 def build(bld):
     
-    variant = bld.env['VARIANT']
-    #env = bld.all_envs[variant]
-    env = bld.all_envs[config_env]
+    if bld.all_envs.has_key(config_env):
+        # get compiler flags, etc
+        env = bld.all_envs[config_env]
+    else:
+        env = bld.all_envs[bld.env['VARIANT']]
 
     source_files = []
     if 'MAKE_OPENCV' in env:
