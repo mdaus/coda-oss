@@ -18,9 +18,9 @@ zipfile    = '%s.zip' % version
 config_env = '%s_config_env' % 'opencv'
 
 
-opencv_modules = """calib3d core features2d flann hal highgui
-                    imgcodecs imgproc ml objdetect photo
-                    shape stitching superres ts video videoio videostab"""
+# ORDER MATTERS!
+opencv_modules = """hal core flann imgproc ml photo video imgcodecs shape videoio
+                    highgui objdetect superres ts features2d calib3d stitching videostab"""
 
 win32_regex = 'win32'
 linux_regex = r'.*-.*-linux-.*|i686-pc-.*|linux'
@@ -559,7 +559,7 @@ def build_opencv(bld, env, source_files):
 
     all_libs      = []
     all_test_perf = []
-    all_apps     = []
+    all_apps      = []
 
     def build_opencv_module(name, module_deps=[], uselib=[], extra_targets=[]):
         if isinstance(module_deps, str):
@@ -686,10 +686,10 @@ def build_opencv(bld, env, source_files):
     build_opencv_program('annotation',    module_deps='hal core highgui imgproc imgcodecs videoio')
 
 
-    bld(name = 'opencv_all_libs',      features='add_targets', targets_to_add=all_libs)
-    bld(name = 'opencv_all_test_perf', features='add_targets', targets_to_add=all_libs + all_test_perf)
-    bld(name = 'opencv_all_apps',      features='add_targets', targets_to_add=all_libs + all_apps)
-    bld(name = 'opencv_mega',          features='add_targets', targets_to_add=all_test_perf + all_apps)
+    bld(name='opencv_all_libs',      features='add_targets', targets_to_add=all_libs)
+    bld(name='opencv_all_test_perf', features='add_targets', targets_to_add=all_libs + all_test_perf)
+    bld(name='opencv_all_apps',      features='add_targets', targets_to_add=all_libs + all_apps)
+    bld(name='opencv_mega',          features='add_targets', targets_to_add=all_test_perf + all_apps)
 
 
 
@@ -718,19 +718,22 @@ def configure(conf):
 
     if Options.options.opencv_home:
       opencv_home = Options.options.opencv_home
+
       for ocv_module_name in opencv_modules.split():
           home_node = conf.path.make_node(opencv_home)
-          print home_node.abspath()
           opencv_lib = canonicalize(ocv_module_name)
+
           #import ipdb; ipdb.set_trace()
-          if conf.check_cxx(lib=opencv_lib,
+          if conf.check(lib=opencv_lib,
                         uselib_store=opencv_lib.upper(), 
                         header_name=join('opencv2', '{}.hpp'.format(ocv_module_name)),
-                        libpath=join(home_node.abspath(), 'lib'),
-                        includes=join(home_node.abspath(), 'include'),
+                        libpath=join(opencv_home, 'lib'),
+                        includes=join(opencv_home, 'include'),
+                        use=canonicalize(opencv_modules.upper().split()),
                         msg='Checking for library {}'.format(opencv_lib), okmsg=opencv_home,
                         mandatory=True):
-                         conf.undefine('HAVE_{}_H'.format(opencv_lib.upper()))
+              conf.undefine('HAVE_{}_H'.format(opencv_lib.upper()))
+
     elif Options.options.build_opencv:
         # Build is off by default when zipfile not found, fail if forced on
         abszipfilepath = join(conf.path.abspath(), zipfile)
