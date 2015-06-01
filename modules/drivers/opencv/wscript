@@ -693,13 +693,10 @@ def build_opencv(bld, env, source_files):
     build_opencv_program('createsamples', module_deps='hal core imgproc objdetect imgcodecs highgui calib3d features2d videoio')
     build_opencv_program('annotation',    module_deps='hal core highgui imgproc imgcodecs videoio')
 
-
     bld(name='opencv_all_libs',      features='add_targets', targets_to_add=all_libs)
     bld(name='opencv_all_test_perf', features='add_targets', targets_to_add=all_libs + all_test_perf)
     bld(name='opencv_all_apps',      features='add_targets', targets_to_add=all_libs + all_apps)
-    bld(name='opencv_mega',          features='add_targets', targets_to_add=all_test_perf + all_apps)
-
-
+    bld(name='opencv_mega',          features='add_targets', targets_to_add=all_test_perf + all_apps + all_libs)
 
 
 
@@ -772,6 +769,10 @@ def configure(conf):
         
         # unzip archive
         unzipper(abszipfilepath, conf.path.abspath())
+
+        # clean up opencv-3.0.0-rc1/modules/imgproc/src/hough.cpp
+        bad_guy = conf.path.ant_glob('**/imgproc/src/hough.cpp')[0]
+        bad_guy.write(bad_guy.read()[3:])
 
         # these need to 'escape' private configuration
         # do this before, so that the new env (and everyone else
