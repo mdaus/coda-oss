@@ -508,7 +508,7 @@ class OpenCVSourceFilter:
     filters = {
         'videoio': {
             win32_regex : videoio_base_sources + 'cap_cmu.cpp cap_vfw.cpp'.split(),
-            linux_regex : videoio_base_sources + 'cap_libv4l.cpp'.split(),
+            linux_regex : videoio_base_sources + 'cap_v4l.cpp'.split(), 
         },
         'highgui': {
             win32_regex : highgui_base_sources + 'window_w32.cpp'.split(),
