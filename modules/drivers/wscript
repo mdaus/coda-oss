@@ -1,8 +1,23 @@
+
+def opencv_separate(ctx):
+    """Split out the opencv dir if present"""
+    dirs = [p.parent.name for p in ctx.path.ant_glob('*/wscript')]
+    opencv = []
+    ocv = 'opencv'
+    if dirs.count(ocv):
+        dirs.remove(ocv)
+        opencv.append(ocv)
+    return dirs, opencv
+
+
 def options(opt):
     opt.recurse()
 
 def configure(conf):
-    conf.recurse()
+    # opencv must be configured last, as it relies on zlib and jpeg
+    first, last = opencv_separate(conf)
+    conf.recurse(first)
+    conf.recurse(last)
 
 def build(bld):
     bld.recurse()

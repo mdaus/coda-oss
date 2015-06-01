@@ -22,6 +22,28 @@ config_env = '%s_config_env' % 'opencv'
 opencv_modules = """hal core flann imgproc ml photo video imgcodecs shape videoio
                     highgui objdetect superres ts features2d calib3d stitching videostab"""
 
+
+opencv_module_dependencies = {
+    'core'        : { 'module_deps':'hal' },
+    'flann'       : { 'module_deps':'hal core' },
+    'imgproc'     : { 'module_deps':'hal core' },
+    'ml'          : { 'module_deps':'hal core' },
+    'photo'       : { 'module_deps':'hal core imgproc' },
+    'video'       : { 'module_deps':'hal core imgproc' },
+    'imgcodecs'   : { 'module_deps':'hal core imgproc', 'uselib':'JPEG'},
+    'shape'       : { 'module_deps':'hal core imgproc video' },
+    'videoio'     : { 'module_deps':'hal core imgproc video imgcodecs' },
+    'highgui'     : { 'module_deps':'hal core imgproc imgcodecs videoio', 'uselib':'SOCKET'},
+    'objdetect'   : { 'module_deps':'hal core imgproc ml imgcodecs videoio highgui' },
+    'superres'    : { 'module_deps':'hal core imgproc imgcodecs video videoio' },
+    'ts'          : { 'module_deps':'hal core imgproc imgcodecs videoio highgui' },
+    'features2d'  : { 'module_deps':'hal core flann imgproc ml imgcodecs videoio highgui' },
+    'calib3d'     : { 'module_deps':'hal core flann imgproc ml imgcodecs videoio highgui features2d' },
+    'stitching'   : { 'module_deps':'hal core flann imgproc ml imgcodecs videoio highgui objdetect features2d calib3d' },
+    'videostab'   : { 'module_deps':'hal core flann imgproc ml photo video imgcodecs videoio highgui features2d calib3d' },
+}
+
+
 win32_regex = 'win32'
 linux_regex = r'.*-.*-linux-.*|i686-pc-.*|linux'
 
@@ -44,7 +66,7 @@ class OpenCVModuleDependencies:
     }
 
     @staticmethod
-    def platform_deps(sys_platform, modules=None):
+    def platform_deps(sys_platform, modules=None, lc=False):
         deps = OpenCVModuleDependencies.uselib_deps 
         if modules is not None:
             modules = listify(modules)
@@ -59,7 +81,7 @@ class OpenCVModuleDependencies:
                         if deps[regex].has_key(module):
                             out = deps[regex][module]
                 break
-        return [dep.upper() for dep in out] #uppercase-ize
+        return out if lc else [dep.upper() for dep in out] #uppercase-ize
 
 
 class OpenCVCompilerConfig:
@@ -80,9 +102,10 @@ class OpenCVCompilerConfig:
     gcc_release_compiler_flags = '-O2'.split()
     gcc_debug_compiler_flags   = '-g -O0'.split()
 
-    msvc_compiler_flags    = '/EHa /fp:precise /Gd /Gm- /GS /Gy /Oi /TP /WX- /Zc:forScope /bigobj /wd4324 /wd4251'.split()
+
     # Already done/skippable: /W4 /GR /errorReport:prompt /MP /nologo /Zi 
     # May be needed(?): /Zc:wchar_t
+    msvc_compiler_flags    = '/EHa /fp:precise /Gd /Gm- /GS /Gy /Oi /TP /WX- /Zc:forScope /bigobj /wd4324 /wd4251'.split()
     msvc_debug_compiler_flags   = '/Od /Ob0 /RTC1'.split()
     msvc_release_compiler_flags = '/O2 /Ob2'.split()
 
@@ -649,25 +672,10 @@ def build_opencv(bld, env, source_files):
         source_files.append(zipfile)
         hal_extra.append('OPENCV_SOURCE_INSTALL')
 
-    build_opencv_module('hal',         extra_targets=hal_extra)
-    build_opencv_module('core',        module_deps='hal')
-    build_opencv_module('flann',       module_deps='hal core')
-    build_opencv_module('imgproc',     module_deps='hal core')
-    build_opencv_module('ml',          module_deps='hal core')
-    build_opencv_module('photo',       module_deps='hal core imgproc')
-    build_opencv_module('video',       module_deps='hal core imgproc')
-    build_opencv_module('imgcodecs',   module_deps='hal core imgproc', uselib='JPEG')
-    build_opencv_module('shape',       module_deps='hal core imgproc video')
-    build_opencv_module('videoio',     module_deps='hal core imgproc video imgcodecs')
-    build_opencv_module('highgui',     module_deps='hal core imgproc imgcodecs videoio', uselib='SOCKET')
-    build_opencv_module('objdetect',   module_deps='hal core imgproc ml imgcodecs videoio highgui')
-    build_opencv_module('superres',    module_deps='hal core imgproc imgcodecs video videoio')
-    build_opencv_module('ts',          module_deps='hal core imgproc imgcodecs videoio highgui')
-    build_opencv_module('features2d',  module_deps='hal core flann imgproc ml imgcodecs videoio highgui')
-    build_opencv_module('calib3d',     module_deps='hal core flann imgproc ml imgcodecs videoio highgui features2d')
-    build_opencv_module('stitching',   module_deps='hal core flann imgproc ml imgcodecs videoio highgui objdetect features2d calib3d')
-    build_opencv_module('videostab',   module_deps='hal core flann imgproc ml photo video imgcodecs videoio highgui features2d calib3d')
-
+    build_opencv_module('hal', extra_targets=hal_extra) # has no dependencies
+    for module, module_info in opencv_module_dependencies.iteritems():
+        build_opencv_module(module, **module_info)
+    
 
     def build_opencv_program(name, module_deps=[]):
         module_deps = listify(module_deps)
@@ -715,24 +723,42 @@ def options(opt):
 def configure(conf):    
     if not Options.options.enable_opencv:
       return 
+    sys_platform = getPlatform(default=Options.platform)
 
     if Options.options.opencv_home:
+
+      # TODO: may need to extend this in case other stuff
+      if not Options.options.zip_home:
+        conf.fatal('Using prebuilt opencv required prebuilt zlib')
+
       opencv_home = Options.options.opencv_home
+
+      # add platform deps
+      OpenCVCompilerConfig.configure_libs(conf)
 
       for ocv_module_name in opencv_modules.split():
           home_node = conf.path.make_node(opencv_home)
           opencv_lib = canonicalize(ocv_module_name)
 
-          #import ipdb; ipdb.set_trace()
-          if conf.check(lib=opencv_lib,
-                        uselib_store=opencv_lib.upper(), 
-                        header_name=join('opencv2', '{}.hpp'.format(ocv_module_name)),
-                        libpath=join(opencv_home, 'lib'),
-                        includes=join(opencv_home, 'include'),
-                        use=canonicalize(opencv_modules.upper().split()),
-                        msg='Checking for library {}'.format(opencv_lib), okmsg=opencv_home,
-                        mandatory=True):
-              conf.undefine('HAVE_{}_H'.format(opencv_lib.upper()))
+          use  = conf.env['LIB_ZIP']
+          libs = [opencv_lib]
+          if opencv_module_dependencies.has_key(ocv_module_name):
+              info = opencv_module_dependencies[ocv_module_name]
+              if info.has_key('module_deps'):
+                  libs += canonicalize(info['module_deps'].split())
+              if info.has_key('uselib'):
+                  for lib in info['uselib'].split():
+                      use += conf.env['LIB_' + lib.upper()]
+
+          # test for lib and *all* of its dependencies
+          libs += (use + OpenCVModuleDependencies.platform_deps(sys_platform, ocv_module_name, lc=True))
+          conf.check(lib=libs,
+                     uselib_store=opencv_lib.upper(), 
+                     header_name=join('opencv2', '{}.hpp'.format(ocv_module_name)),
+                     libpath=join(opencv_home, 'lib'),
+                     includes=join(opencv_home, 'include'),
+                     msg='Checking for library {}'.format(opencv_lib), okmsg=opencv_home,
+                     mandatory=True)
 
     elif Options.options.build_opencv:
         # Build is off by default when zipfile not found, fail if forced on
