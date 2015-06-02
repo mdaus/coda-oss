@@ -51,10 +51,6 @@ linux_regex = r'.*-.*-linux-.*|i686-pc-.*|linux'
 def find_source(source_dir, glob):
     return [f for f in recursiveGlob(source_dir, listify(glob))]
 
-def unique(x):
-    """Ordered unique list"""
-    return list(OrderedDict.fromkeys(x)) 
-
 class OpenCVModuleDependencies:
     uselib_deps = {
         win32_regex : {
@@ -502,7 +498,7 @@ class OpenCVSourceFilter:
     videoio_base_sources = 'cap.cpp cap_images.cpp cap_mjpeg_encoder.cpp cap_mjpeg_decoder.cpp'.split()
     highgui_base_sources = 'window.cpp'.split()
 
-    #TODO: videoio/highgui link flags
+    # TODO: videoio/highgui link flags
     # videoio "/NODEFAULTLIB:atlthunk.lib /NODEFAULTLIB:atlsd.lib /NODEFAULTLIB:libcmt.lib /DEBUG"
     # highgui  same
     filters = {
@@ -546,8 +542,13 @@ class OpenCVSourceFilter:
         return self.source_filter
 
 
+def canonicalize(md):
+    """Convert to opencv module names"""
+    if isinstance(md, str):
+        return 'opencv_' + md
+    else:
+        return ['opencv_' + x for x in md]
 
-canonicalize = lambda md: 'opencv_' + md if isinstance(md, str) else ['opencv_' + x for x in md]
 
 def build_opencv(bld, env, source_files):
     """Build step implementation"""
