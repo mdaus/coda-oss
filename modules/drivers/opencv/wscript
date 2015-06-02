@@ -794,6 +794,8 @@ def configure(conf):
           # add platform deps
           OpenCVCompilerConfig.configure_libs(conf)
 
+          # TODO test for nobuild-zip
+
           for ocv_module_name in opencv_modules.split():
               opencv_lib = canonicalize(ocv_module_name)
 
