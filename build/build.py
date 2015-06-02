@@ -2,7 +2,7 @@ import sys, os, types, re, fnmatch, subprocess, shutil, platform, inspect
 from os.path import split, isdir, isfile, exists, splitext, abspath, join, \
                     basename, dirname
 
-from waflib import Options, Utils, Logs, TaskGen
+from waflib import Options, Utils, Logs, TaskGen, Context
 from waflib.Options import OptionsContext
 from waflib.Configure import conf, ConfigurationContext
 from waflib.Build import BuildContext, ListContext, CleanContext, InstallContext
@@ -251,7 +251,8 @@ class CPPContext(Context.Context):
             test_deps.append(modArgs['name'])
 
             if 'INCLUDES_UNITTEST' in env:
-                includes.append(env['INCLUDES_UNITTEST'][0])
+                for incl_dir in env['INCLUDES_UNITTEST']:
+                    includes.append(incl_dir)
 
                 test_deps = map(lambda x: '%s-%s' % (x, lang), test_deps + listify(modArgs.get('test_uselib_local', '')) + listify(modArgs.get('test_use','')))
 
@@ -458,7 +459,7 @@ class CPPContext(Context.Context):
             swigSource = os.path.join('source', name.replace('.', '_') + '.i')
             target = '_' + codename.replace('.', '_')
             use = modArgs['use']
-            installPath = os.path.join('${PYTHONDIR}', codename)
+            installPath = os.path.join('${PYTHONDIR}', Context.APPNAME)
             taskName = name + '-python'
             exportIncludes = listify(modArgs.get('export_includes', 'source'))
 
@@ -550,7 +551,8 @@ class CPPContext(Context.Context):
             targetName = modArgs.get('target', None)
 
             if source:
-                name = splitext(split(source)[1])[0]
+                source = str(source)
+                name = splitext(split(str(source))[1])[0]
 
             mex = bld(features='%s %sshlib'%(libExeType, libExeType), target=targetName or name,
                                    name=name, use=uselib_local,
@@ -811,7 +813,11 @@ def configureCompilerOptions(self):
             config['cxx']['optz_fast']      = '-O2'
             config['cxx']['optz_fastest']   = '-O3'
 
-            self.env.append_value('CXXFLAGS', '-fPIC')
+            gxxCompileFlags='-fPIC'
+            if cxxCompiler == 'g++' and gccHasCpp11():
+                gxxCompileFlags+=' -std=c++11'
+
+            self.env.append_value('CXXFLAGS', gxxCompileFlags.split())
 
             # DEFINES and LINKFLAGS will apply to both gcc and g++
             self.env.append_value('DEFINES', '_FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE'.split())
@@ -1216,37 +1222,81 @@ def configure(self):
 @TaskGen.after_method('process_use')
 def process_swig_linkage(tsk):
 
+    # first we need to setup some platform specific
+    # options for specifying soname and passing linker
+    # flags
+    solarisRegex = r'sparc-sun.*|i.86-pc-solaris.*|sunos'
+    platform = getPlatform(default=Options.platform)
+    compiler = tsk.env['COMPILER_CXX']
+    if compiler == 'msvc':
+        # TODO
+        # MSVC doesn't need this feature, apparently
+        # Not sure if cygwin/mingw does or not...
+        return
+
+    # TODO: Here we're using -Wl,_foo.so since if you just use -l_foo the linker
+    #       assumes there's a 'lib' prefix in the filename which we don't have
+    #       here.  Instead, according to the ld man page, may be able to prepend
+    #       a colon and do this instead: -l:_foo.so 
+    libpattern = tsk.env['cshlib_PATTERN']
+    linkarg_pattern = '-Wl,%s'
+    if re.match(solarisRegex,platform) and compiler != 'g++' and compiler != 'icpc':
+      linkarg_pattern = '%s'
+
+    # so swig can find .i files to import
     incstr = ''
     for nod in tsk.includes:
         incstr += ' -I' + nod.abspath()
     if hasattr(tsk,'swig_flags'):
         tsk.swig_flags = tsk.swig_flags + incstr
 
+    # Search for python libraries and
+    # add the target files explicitly as command line parameters for linking
     newlib = []
     for lib in tsk.env.LIB:
+        
+        # get our library name so we
+        # can extract it's path from LIBPATH 
+        # libname is the filename we'll be linking to
+        # searchstr is the module name
         if lib.startswith('_coda_'):
-            libname = lib + '.so'
-            searchstr = lib[6:].replace('_','.')
-            libpath = ''
-            for libdir in tsk.env.LIBPATH:
-                if libdir.endswith(searchstr):
-                    libpath = libdir
-            libpath = os.path.join(str(libpath), libname)
-            tsk.env.LINKFLAGS.append(libpath)
+            libname = libpattern % lib
+            searchstr = lib[6:].replace('_','.')   
         elif lib.startswith('_'):
             libname = lib + '.so'
             searchstr = lib[1:].replace('_','.')
-            for libdir in tsk.env.LIBPATH:
-                if libdir.endswith(searchstr):
-                    libpath = libdir
-            libpath = os.path.join(str(libpath), libname)
-            tsk.env.LINKFLAGS.append(libpath)
         else:
+            # this isnt a python library, ignore it
             newlib.append(lib)
+            continue
 
-    soname_str = '-Wl,-soname=' + tsk.target + '.so'
+        # Python wrappers have the same module name as their associated
+        # C++ modules so if waf is configured with --shared searching through
+        # LIBPATH for our module name is not sufficient to find the *python* module
+        # TODO: find some way to tell the C++ and python shared libs apart without
+        #   forcing our python modules to be in a folder called 'python'
+        searchstr = os.path.join('python',searchstr)
+
+        # search for a module with a matching name
+        libpath = ''
+        for libdir in tsk.env.LIBPATH:
+            if libdir.endswith(searchstr):
+                libpath = libdir
+        libpath = os.path.join(str(libpath), libname)
+
+        # finally add the path to the referenced python library
+        tsk.env.LINKFLAGS.append(libpath) 
+
+    # We need to explicitly set our soname otherwise modules that
+    # link to *us* in the above fashion will not be able to do it 
+    # without the same path 
+    # (ie python dependencies at runtime after installation)
+    soname_str = linkarg_pattern % ('-h' + (libpattern % tsk.target))
     tsk.env.LINKFLAGS.append(soname_str)
+  
+    # newlib is now a list of our non-python libraries
     tsk.env.LIB = newlib
+
 
 @task_gen
 @feature('untar')
@@ -1470,6 +1520,17 @@ def getSolarisFlags(compilerName):
             bitFlag64 = '-m64'
 
     return (bitFlag32, bitFlag64)
+
+def gccHasCpp11():
+    try:
+        output = subprocess.check_output("g++ --help=c++", stderr=subprocess.STDOUT, shell=True)
+    except subprocess.CalledProcessError:
+        #If gcc is too old for --help=, then it is too old for C++11
+        return False
+    for line in output.split('\n'):
+        if re.search(r'-std=c\+\+11', line):
+            return True
+    return False
 
 def getWscriptTargets(bld, env, path):
     # Here we're taking a look at the current stack and adding on all the
