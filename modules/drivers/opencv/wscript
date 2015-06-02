@@ -734,7 +734,6 @@ def configure(conf):
       OpenCVCompilerConfig.configure_libs(conf)
 
       for ocv_module_name in opencv_modules.split():
-          home_node = conf.path.make_node(opencv_home)
           opencv_lib = canonicalize(ocv_module_name)
 
           use  = conf.env['LIB_ZIP']
@@ -792,8 +791,38 @@ def configure(conf):
         # change back to normal build context
         conf.setenv('')
     else:
-        # TODO: clone above to use the sys version
-        pass
+          # add platform deps
+          OpenCVCompilerConfig.configure_libs(conf)
+
+          for ocv_module_name in opencv_modules.split():
+              opencv_lib = canonicalize(ocv_module_name)
+
+              use = []
+              for n in 'DL RT ZIP'.split():
+                  use += conf.env['LIB_' + n]
+              libs = [opencv_lib]
+              if opencv_module_dependencies.has_key(ocv_module_name):
+                  info = opencv_module_dependencies[ocv_module_name]
+                  if info.has_key('module_deps'):
+                      print libs
+                      cdeps = canonicalize(info['module_deps'].split())
+                      cdeps.reverse()
+                      libs += cdeps
+                      print libs
+                  if info.has_key('uselib'):
+                      for lib in info['uselib'].split():
+                          use += conf.env['LIB_' + lib.upper()]
+              # test for lib and *all* of its dependencies
+              libs += (use + OpenCVModuleDependencies.platform_deps(sys_platform, ocv_module_name, lc=True))
+              conf.check(lib=libs,
+                         uselib_store=opencv_lib.upper(), 
+                         header_name=join('opencv2', '{}.hpp'.format(ocv_module_name)),
+                         #libpath=join(opencv_home, 'lib'),
+                         #includes=join(opencv_home, 'include'),
+                         use='THREAD',
+                         msg='Checking for library {}'.format(opencv_lib), #okmsg=opencv_home,
+                         mandatory=True)
+
     conf.env['HAVE_OPENCV'] = True
 
 
