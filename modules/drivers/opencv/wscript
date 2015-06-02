@@ -619,10 +619,8 @@ def build_opencv(bld, env, source_files):
             htgt = '{}_INCLUDE_INSTALL'.format(canonicalize(name).upper())
             bld(features='install_tgt', pattern='**/*.h **/*.hpp', 
                 dir=bld.path.make_node(inc([name])), install_path=env['install_includedir'],
-                name=htgt,
-                targets_to_add=['CVCONFIG_H_INSTALL', 'OPENCV_HEADER_INSTALL'])
+                name=htgt)
             targets_to_add.append(htgt)
-
 
 
         module_name = canonicalize(name)
@@ -671,6 +669,9 @@ def build_opencv(bld, env, source_files):
     if env['install_source']:
         source_files.append(zipfile)
         hal_extra.append('OPENCV_SOURCE_INSTALL')
+    if env['install_headers']:
+        hal_extra.append('CVCONFIG_H_INSTALL')
+        hal_extra.append('OPENCV_HEADER_INSTALL')
 
     build_opencv_module('hal', extra_targets=hal_extra) # has no dependencies
     for module, module_info in opencv_module_dependencies.iteritems():
@@ -700,6 +701,38 @@ def build_opencv(bld, env, source_files):
 
 
 
+def opencv_configure_libs(conf, sys_platform, conf_params={}):
+  # add platform deps
+  OpenCVCompilerConfig.configure_libs(conf)
+
+  for ocv_module_name in opencv_modules.split():
+      opencv_lib = canonicalize(ocv_module_name)
+
+      use = []
+      for n in 'DL RT ZIP'.split():
+          use += conf.env['LIB_' + n]
+      libs = [opencv_lib]
+      if opencv_module_dependencies.has_key(ocv_module_name):
+          info = opencv_module_dependencies[ocv_module_name]
+          if info.has_key('module_deps'):
+              cdeps = canonicalize(info['module_deps'].split())
+              cdeps.reverse() # link order is reverse of build order
+              libs += cdeps
+          if info.has_key('uselib'):
+              for lib in info['uselib'].split():
+                  use += conf.env['LIB_' + lib.upper()]
+
+          # test for lib and *all* of its dependencies
+          libs += (use + OpenCVModuleDependencies.platform_deps(sys_platform, ocv_module_name, lc=True))
+          conf.check(lib=libs,
+                     uselib_store=opencv_lib.upper(), 
+                     header_name=join('opencv2', '{}.hpp'.format(ocv_module_name)),
+                     use='THREAD',
+                     msg='Checking for library {}'.format(opencv_lib),
+                     mandatory=True,
+                     **conf_params)
+
+
 def options(opt):
     opt.add_option('--with-opencv-home', action='store', dest='opencv_home',
                    help='Specify the OpenCV Home - where the OpenCV library is installed')
@@ -723,40 +756,16 @@ def configure(conf):
     sys_platform = getPlatform(default=Options.platform)
 
     if Options.options.opencv_home:
-
-      # TODO: may need to extend this in case other stuff
-      if not Options.options.zip_home:
-        conf.fatal('Using prebuilt opencv required prebuilt zlib')
-
-      opencv_home = Options.options.opencv_home
-
-      # add platform deps
-      OpenCVCompilerConfig.configure_libs(conf)
-
-      for ocv_module_name in opencv_modules.split():
-          opencv_lib = canonicalize(ocv_module_name)
-
-          use  = conf.env['LIB_ZIP']
-          libs = [opencv_lib]
-          if opencv_module_dependencies.has_key(ocv_module_name):
-              info = opencv_module_dependencies[ocv_module_name]
-              if info.has_key('module_deps'):
-                  libs += canonicalize(info['module_deps'].split())
-              if info.has_key('uselib'):
-                  for lib in info['uselib'].split():
-                      use += conf.env['LIB_' + lib.upper()]
-
-          # test for lib and *all* of its dependencies
-          libs += (use + OpenCVModuleDependencies.platform_deps(sys_platform, ocv_module_name, lc=True))
-          conf.check(lib=libs,
-                     uselib_store=opencv_lib.upper(), 
-                     header_name=join('opencv2', '{}.hpp'.format(ocv_module_name)),
-                     libpath=join(opencv_home, 'lib'),
-                     includes=join(opencv_home, 'include'),
-                     msg='Checking for library {}'.format(opencv_lib), okmsg=opencv_home,
-                     mandatory=True)
-
+        if not Options.options.zip_home:
+            conf.fatal('Using prebuilt opencv required prebuilt zlib')
+        opencv_home = Options.options.opencv_home
+        opencv_configure_libs(conf, sys_platform, conf_params={ 
+            'libpath':  join(opencv_home, 'lib'),
+            'includes': join(opencv_home, 'include'),
+            'okmsg':    opencv_home,
+        })
     elif Options.options.build_opencv:
+        
         # Build is off by default when zipfile not found, fail if forced on
         abszipfilepath = join(conf.path.abspath(), zipfile)
         if not os.path.exists(abszipfilepath):
@@ -771,7 +780,7 @@ def configure(conf):
 
         # clean up opencv-3.0.0-rc1/modules/imgproc/src/hough.cpp
         bad_guy = conf.path.ant_glob('**/imgproc/src/hough.cpp')[0]
-        bad_guy.write(bad_guy.read()[3:])
+        bad_guy.write(bad_guy.read()[3:]) # has a bogus UTF-16 mark
 
         # these need to 'escape' private configuration
         # do this before, so that the new env (and everyone else
@@ -783,7 +792,6 @@ def configure(conf):
         conf.env['define_key'] = []
 
         # Generate module configuration
-        sys_platform = getPlatform(default=Options.platform)
         CVConfigHGenerator.generate(conf, sys_platform)
         OpenCVCompilerConfig.configure(conf, Options.options.debugging)
         opencv_generate_modules_header(conf)
@@ -791,39 +799,9 @@ def configure(conf):
         # change back to normal build context
         conf.setenv('')
     else:
-          # add platform deps
-          OpenCVCompilerConfig.configure_libs(conf)
-
-          # TODO test for nobuild-zip
-
-          for ocv_module_name in opencv_modules.split():
-              opencv_lib = canonicalize(ocv_module_name)
-
-              use = []
-              for n in 'DL RT ZIP'.split():
-                  use += conf.env['LIB_' + n]
-              libs = [opencv_lib]
-              if opencv_module_dependencies.has_key(ocv_module_name):
-                  info = opencv_module_dependencies[ocv_module_name]
-                  if info.has_key('module_deps'):
-                      print libs
-                      cdeps = canonicalize(info['module_deps'].split())
-                      cdeps.reverse()
-                      libs += cdeps
-                      print libs
-                  if info.has_key('uselib'):
-                      for lib in info['uselib'].split():
-                          use += conf.env['LIB_' + lib.upper()]
-              # test for lib and *all* of its dependencies
-              libs += (use + OpenCVModuleDependencies.platform_deps(sys_platform, ocv_module_name, lc=True))
-              conf.check(lib=libs,
-                         uselib_store=opencv_lib.upper(), 
-                         header_name=join('opencv2', '{}.hpp'.format(ocv_module_name)),
-                         #libpath=join(opencv_home, 'lib'),
-                         #includes=join(opencv_home, 'include'),
-                         use='THREAD',
-                         msg='Checking for library {}'.format(opencv_lib), #okmsg=opencv_home,
-                         mandatory=True)
+        if Options.options.build_zip:
+            conf.fatal('Using prebuilt opencv required prebuilt zlib')
+        opencv_configure_libs(conf, sys_platform, )
 
     conf.env['HAVE_OPENCV'] = True
 
