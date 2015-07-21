@@ -35,7 +35,7 @@ else:
     build_options = []
     
 if "--disable-swig" in config_options:
-    config_options += ["--enable-swig"]
+    
 else:
     config_options += ["--enable-swig"]
 
