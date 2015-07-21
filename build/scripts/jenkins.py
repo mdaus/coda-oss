@@ -34,7 +34,9 @@ if options.build_options is not None:
 else:
     build_options = []
     
-if "--disable-swig" not in config_options:
+if "--disable-swig" in config_options:
+    config_options += ["--enable-swig"]
+else:
     config_options += ["--enable-swig"]
 
 print 'Package Name: %s' % package_name
