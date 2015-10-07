@@ -213,7 +213,7 @@ template<typename T> struct RowCol
         return ! (RowCol::operator==(p));
     }
     
-    T normL1() const
+    T area() const
     {
         return std::abs(row) * std::abs(col);
     }
@@ -231,7 +231,7 @@ template<typename T> struct RowCol
 };
 
 template <>
-inline size_t RowCol<size_t>::normL1() const
+inline size_t RowCol<size_t>::area() const
 {
     return row * col;
 }
