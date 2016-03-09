@@ -87,26 +87,6 @@ public:
         return *this;
     }
 
-    bool operator==(const ScopedCopyablePtr<T>& rhs) const
-    {
-        if (get() == NULL && rhs.get() == NULL)
-        {
-            return true;
-        }
-
-        if (get() == NULL || rhs.get() == NULL)
-        {
-            return false;
-        }
-
-        return (*(this->mPtr) == *rhs);
-    }
-
-    bool operator!=(const ScopedCopyablePtr<T>& rhs) const
-    {
-        return !(*this == rhs);
-    }
-
     T* get() const
     {
         return mPtr.get();
@@ -135,6 +115,28 @@ public:
 private:
     std::auto_ptr<T> mPtr;
 };
+
+template<class T>
+bool operator==(const ScopedCopyablePtr<T>& lhs, const ScopedCopyablePtr<T>& rhs)
+{
+    if (lhs.get() == NULL && rhs.get() == NULL)
+    {
+        return true;
+    }
+
+    if (lhs.get() == NULL || rhs.get() == NULL)
+    {
+        return false;
+    }
+
+    return (*lhs == *rhs);
+}
+
+template<class T>
+bool operator!=(const ScopedCopyablePtr<T>& lhs, const ScopedCopyablePtr<T>& rhs)
+{
+    return !(lhs == rhs);
+}
 }
 
 #endif
