@@ -969,9 +969,10 @@ def configureCompilerOptions(self):
         # specifications properly.
         # Skipping warning 4512 about being unable to generate an assignment
         # operator (since we often do this intentionally).
+	# warning C4100: '...' : unreferenced formal parameter
         # For warnings, use /W4 because /Wall
         # gives us tons of warnings in the VS headers themselves
-        warningFlags = '/W4 /wd4290 /wd4512'
+        warningFlags = '/W4 /wd4290 /wd4512 /wd4100'
         if Options.options.warningsAsErrors:
             warningFlags += ' /WX'
 
