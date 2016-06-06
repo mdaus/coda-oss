@@ -33,8 +33,6 @@ namespace
 
 TEST_CASE(testCreateSymlink)
 {
-	bool test_assert_false = false;
-
     try
     {
         sys::OS os;
@@ -69,18 +67,18 @@ TEST_CASE(testCreateSymlink)
     catch (const std::exception& ex)
     {
         std::cerr << "Caught std::exception: " << ex.what() << std::endl;
-		TEST_ASSERT(test_assert_false);
+        TEST_ASSERT(false);
     }
     catch (const except::Exception& ex)
     {
         std::cerr << "Caught except::exception: " << ex.getMessage()
                   << std::endl;
-		TEST_ASSERT(test_assert_false);
+        TEST_ASSERT(false);
     }
     catch (...)
     {
         std::cerr << "Caught unknown exception\n";
-		TEST_ASSERT(test_assert_false);
+        TEST_ASSERT(false);
     }
 }
 
