@@ -100,7 +100,7 @@ sys::Pid_T sys::OSWin32::getProcessId() const
 
 void sys::OSWin32::removeFile(const std::string& pathname) const
 {
-    if (DeleteFile(pathname.c_str()) != TRUE)
+    if (DeleteFile(pathname.c_str()) == FALSE) // "If the function succeeds, the return value is nonzero. If the function fails, the return value is zero (0)."
     {
         sys::Err err;
         std::ostringstream oss;
@@ -113,7 +113,7 @@ void sys::OSWin32::removeFile(const std::string& pathname) const
 
 void sys::OSWin32::removeDirectory(const std::string& pathname) const
 {
-	if (RemoveDirectory(pathname.c_str()) != TRUE)
+    if (RemoveDirectory(pathname.c_str()) == FALSE) // "If the function succeeds, the return value is nonzero. If the function fails, the return value is zero (0)."
     {
         sys::Err err;
         std::ostringstream oss;
@@ -312,7 +312,7 @@ void sys::OSWin32::createSymlink(const std::string& origPathname,
 
 void sys::OSWin32::removeSymlink(const std::string& symlinkPathname) const
 {
-	if (RemoveDirectory(symlinkPathname.c_str()) != TRUE)
+	if (RemoveDirectory(symlinkPathname.c_str()) == FALSE) // "If the function succeeds, the return value is nonzero. If the function fails, the return value is zero (0)."
     {
         sys::Err err;
         std::ostringstream oss;
