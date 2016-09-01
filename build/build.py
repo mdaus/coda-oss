@@ -969,6 +969,7 @@ def configureCompilerOptions(self):
 
         self.env.append_value('LIB_RPC', 'rpcrt4')
         self.env.append_value('LIB_SOCKET', 'Ws2_32')
+        self.env.append_value('LIB_DBGHELP', 'dbghelp')
 
         crtFlag = '/%s' % Options.options.crt
         crtDebug = '%sd' % crtFlag

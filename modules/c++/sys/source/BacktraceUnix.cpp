@@ -1,3 +1,5 @@
+#if !defined(WIN32)
+
 #include <sys/Backtrace.h>
 
 #include <sys/sys_config.h>
@@ -59,5 +61,7 @@ std::string sys::getBacktrace()
     return "sys::getBacktrace() is not supported "
         "on the current platform and/or libc";
 }
+
+#endif
 
 #endif
