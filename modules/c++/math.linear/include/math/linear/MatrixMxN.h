@@ -1375,6 +1375,32 @@ template<> inline
 template<> inline
     MatrixMxN<3, 3, float> inverse<3, float>(const MatrixMxN<3, 3, float>& mx);
 
+/*!
+ *  Try to pretty print the Matrix to an ostream.
+ *  \return Reference to ostream
+ */
+template<size_t _MD, size_t _ND, typename _T>
+    std::ostream& operator<<(std::ostream& os,
+                             const math::linear::MatrixMxN<_MD, _ND, _T>& m)
+{
+
+
+    size_t i, j;
+    os << "(" << _MD << ',' << _ND << ")" << std::endl;
+    
+    for (i = 0; i < _MD; ++i)
+    {
+        for (j = 0; j < _ND; ++j)
+        {
+            os << std::setw(10) << m(i, j) << " ";
+        }
+        os << std::endl;
+    }
+
+
+    return os;
+}
+
 
 }
 }
@@ -1547,32 +1573,6 @@ template<typename Matrix_T> Matrix_T tidy(const Matrix_T& constMatrix,
         }
     }
     return mx;
-}
-
-/*!
- *  Try to pretty print the Matrix to an ostream.
- *  \return Reference to ostream
- */
-template<size_t _MD, size_t _ND, typename _T>
-    std::ostream& operator<<(std::ostream& os,
-                             const math::linear::MatrixMxN<_MD, _ND, _T>& m)
-{
-
-
-    size_t i, j;
-    os << "(" << _MD << ',' << _ND << ")" << std::endl;
-    
-    for (i = 0; i < _MD; ++i)
-    {
-        for (j = 0; j < _ND; ++j)
-        {
-            os << std::setw(10) << m(i, j) << " ";
-        }
-        os << std::endl;
-    }
-
-
-    return os;
 }
 
 

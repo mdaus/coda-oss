@@ -1332,14 +1332,6 @@ template<typename _T> inline
     
     return inverseLU<_T>(mx);
 }
-}
-}
-
-template<typename _T> math::linear::Matrix2D<_T>
-    operator*(_T scalar, const math::linear::Matrix2D<_T>& m)
-{
-    return m.multiply(scalar);
-}
 
 /*!
  *  Try to pretty print the Matrix to an ostream.
@@ -1364,6 +1356,15 @@ template<typename _T>
 
 
     return os;
+}
+
+}
+}
+
+template<typename _T> math::linear::Matrix2D<_T>
+    operator*(_T scalar, const math::linear::Matrix2D<_T>& m)
+{
+    return m.multiply(scalar);
 }
 
 

@@ -444,6 +444,21 @@ template<typename _T> Vector<_T>
     return v;
 }
 
+/*!
+ *  Pretty(?)-print vector
+ */
+template<typename _T> 
+    std::ostream& operator<<(std::ostream& os,
+                             const math::linear::Vector<_T>& v)
+{
+    for (size_t i = 0; i < v.size(); ++i)
+    {
+        os << std::setw(10) << v[i] << " ";
+    }
+    return os;
+    
+}
+
 }
 }
 
@@ -469,20 +484,5 @@ template<typename _T> math::linear::Vector<_T>
     return v * scalar;
 }
 
-
-/*!
- *  Pretty(?)-print vector
- */
-template<typename _T> 
-    std::ostream& operator<<(std::ostream& os,
-                             const math::linear::Vector<_T>& v)
-{
-    for (size_t i = 0; i < v.size(); ++i)
-    {
-        os << std::setw(10) << v[i] << " ";
-    }
-    return os;
-    
-}
 
 #endif

@@ -382,11 +382,6 @@ template<size_t _Order, typename _T>
     return p*cv;
 }
 
-
-
-}
-}
-
 /*!
  *  Print our poly (y first, so the 2D version looks right)
  */
@@ -399,6 +394,9 @@ template<size_t _Order, typename _T>
         out << p[i] << "*y^" << i << " ";
     }
     return out;
+}
+
+}
 }
 
 #endif
