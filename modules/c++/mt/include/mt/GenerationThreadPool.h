@@ -24,7 +24,7 @@
 #ifndef __MT_GENERATION_THREAD_POOL_H__
 #define __MT_GENERATION_THREAD_POOL_H__
 
-#if !defined(__APPLE_CC__)
+//#if !defined(__APPLE_CC__)
 
 #include <import/sys.h>
 #include "mt/BasicThreadPool.h"
@@ -33,72 +33,74 @@
 
 namespace mt
 {
-    class TiedRequestHandler : public sys::Runnable
-    {
-	RunnableRequestQueue* mRequestQueue;
-	sys::Semaphore* mSem;
-	CPUAffinityThreadInitializer* mAffinityInit;
+class TiedRequestHandler : public sys::Runnable
+{
+    RunnableRequestQueue* mRequestQueue;
+    sys::Semaphore* mSem;
+    CPUAffinityThreadInitializer* mAffinityInit;
 
-    public:
-	TiedRequestHandler(RunnableRequestQueue* requestQueue) :
+public:
+    TiedRequestHandler(RunnableRequestQueue* requestQueue) :
 	    mRequestQueue(requestQueue), mAffinityInit(NULL) {}
 		
-	virtual ~TiedRequestHandler();
+    virtual ~TiedRequestHandler();
 
-	virtual void setSemaphore(sys::Semaphore* sem)
-	{
-	    mSem = sem;
-	}
-	virtual void setAffinityInit(CPUAffinityThreadInitializer* affinityInit)
-	{
-	    mAffinityInit = affinityInit;
-	}
-
-	// If we have a thread initializer, tie down our handler to a CPU
-	virtual void initialize();
-
-	virtual void run();
-    };
-
-    class GenerationThreadPool : public BasicThreadPool<TiedRequestHandler>
+    virtual void setSemaphore(sys::Semaphore* sem)
     {
-	sys::Semaphore mGenerationSync;
-	CPUAffinityInitializer* mAffinityInit;
-	int mGenSize;
-    public:
-	GenerationThreadPool(unsigned short numThreads = 0,
-			     CPUAffinityInitializer* affinityInit = NULL) 
-	    : BasicThreadPool<TiedRequestHandler>(numThreads), 
-	    mAffinityInit(affinityInit), mGenSize(0)
-	    {
-	    }
-	virtual ~GenerationThreadPool() {}
-	
-	virtual TiedRequestHandler *newRequestHandler()
-	{
-	    TiedRequestHandler* handler = BasicThreadPool<TiedRequestHandler>::newRequestHandler();
-	    handler->setSemaphore(&mGenerationSync);
-		
-	    if (mAffinityInit)
-		handler->setAffinityInit(mAffinityInit->newThreadInitializer());
-	    
-	    
-	    return handler;
-	}
-    
-	// Not set up for multiple producers 
-	void addGroup(const std::vector<sys::Runnable*>& toRun);
-	
-	// Not set up for multiple producers 
-	void waitGroup();
-	
-	void addAndWaitGroup(const std::vector<sys::Runnable*>& toRun)
-	{
-	    addGroup(toRun);
-	    waitGroup();
-	}
+        mSem = sem;
+    }
+    virtual void setAffinityInit(CPUAffinityThreadInitializer* affinityInit)
+    {
+        mAffinityInit = affinityInit;
+    }
 
-    };
+    // If we have a thread initializer, tie down our handler to a CPU
+    virtual void initialize();
+
+    virtual void run();
+};
+
+class GenerationThreadPool : public BasicThreadPool<TiedRequestHandler>
+{
+    sys::Semaphore mGenerationSync;
+    CPUAffinityInitializer* mAffinityInit;
+    int mGenSize;
+
+public:
+    GenerationThreadPool(unsigned short numThreads = 0,
+                         CPUAffinityInitializer* affinityInit = NULL) 
+	    : BasicThreadPool<TiedRequestHandler>(numThreads), 
+        mAffinityInit(affinityInit), mGenSize(0)
+    {
+    }
+
+    virtual ~GenerationThreadPool() {}
+	
+    virtual TiedRequestHandler *newRequestHandler()
+    {
+        TiedRequestHandler* handler = BasicThreadPool<TiedRequestHandler>::newRequestHandler();
+        handler->setSemaphore(&mGenerationSync);
+		
+        if (mAffinityInit)
+          handler->setAffinityInit(mAffinityInit->newThreadInitializer());
+	    
+	    
+        return handler;
+    }
+    
+    // Not set up for multiple producers 
+    void addGroup(const std::vector<sys::Runnable*>& toRun);
+	
+    // Not set up for multiple producers 
+    void waitGroup();
+	
+    void addAndWaitGroup(const std::vector<sys::Runnable*>& toRun)
+    {
+        addGroup(toRun);
+        waitGroup();
+    }
+
+};
 }
-#endif
+//#endif
 #endif

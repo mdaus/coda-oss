@@ -22,9 +22,9 @@
 
 #include <sys/SemaphorePosix.h>
 
-#if defined(HAVE_PTHREAD_H) && !defined(__APPLE_CC__)
+#if defined(HAVE_PTHREAD_H)// && !defined(__APPLE_CC__)
 
-#include <semaphore.h>
+//#include <semaphore.h>
 
 sys::SemaphorePosix::SemaphorePosix(unsigned int count)
 {

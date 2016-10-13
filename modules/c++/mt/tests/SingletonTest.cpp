@@ -20,15 +20,15 @@
  *
  */
 
-#if defined(__APPLE_CC__)
-#include <iostream>
-int main (int, char**)
-{
-    std::cout << "Sorry no semaphores" << std::endl;
-    return 0;
-}
+// #if defined(__APPLE_CC__)
+// #include <iostream>
+// int main (int, char**)
+// {
+//     std::cout << "Sorry no semaphores" << std::endl;
+//     return 0;
+// }
 
-#else
+// #else
 #include <iostream>
 #include <import/sys.h>
 #include <import/mt.h>
@@ -60,4 +60,4 @@ int main (int, char**)
     return 0;
 }
 
-#endif
+// #endif

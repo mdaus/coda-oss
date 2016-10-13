@@ -58,8 +58,8 @@ namespace sys
 {
 typedef SemaphoreIrix Semaphore;
 }
-#    elif defined(__APPLE_CC__)
-typedef int Semaphore;
+// #    elif defined(__APPLE_CC__)
+// typedef int Semaphore;
 // Give 'em Posix
 #    else
 #        include "sys/SemaphorePosix.h"

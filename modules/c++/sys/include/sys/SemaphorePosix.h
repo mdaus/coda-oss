@@ -26,19 +26,23 @@
 
 #include <sys/sys_config.h>
 
-#if defined(HAVE_PTHREAD_H) && !defined(__APPLE_CC__)
+#if defined(HAVE_PTHREAD_H)// && !defined(__APPLE_CC__)
 
 #include "sys/SemaphoreInterface.h"
 
-#if defined(__APPLE_CC_H__)
-#  include <sys/semaphore.h>
+#if defined(__APPLE_CC__)
+//#error __APPLE_CC_H__ defined!
+#  include </usr/include/sys/semaphore.h>
 #else
+//#error __APPLE_CC_H__ not defined!
 #  include <semaphore.h>
 #endif
 
 namespace sys
 {
-//    typedef ::sem_t sem_t;
+  //typedef ::sem_t sem_t;
+  //typedef int sem_t;
+
 class SemaphorePosix : public SemaphoreInterface
 {
 public:
