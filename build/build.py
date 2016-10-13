@@ -794,7 +794,7 @@ def options(opt):
 
 def configureCompilerOptions(self):
     sys_platform = getPlatform(default=Options.platform)
-    appleRegex = r'i.86-apple-.*'
+    appleRegex = r'darwin|i.86-apple-.*'
     linuxRegex = r'.*-.*-linux-.*|i686-pc-.*|linux'
     solarisRegex = r'sparc-sun.*|i.86-pc-solaris.*|sunos'
     winRegex = r'win32'
@@ -811,9 +811,12 @@ def configureCompilerOptions(self):
     config = {'cxx':{}, 'cc':{}}
 
     #apple
+    print sys_platform
     if re.match(appleRegex, sys_platform):
         self.env.append_value('LIB_DL', 'dl')
-        self.env.append_value('LIB_NSL', 'nsl')
+        #self.env.append_value('LIB_NSL', 'nsl')
+        self.env.append_value('LIB_SSL', 'ssl')
+        self.env.append_value('LIB_CRYPTO', 'crypto')
         self.env.append_value('LINKFLAGS_THREAD', '-pthread')
         self.check_cc(lib='pthread', mandatory=True)
 
@@ -1306,7 +1309,7 @@ def process_swig_linkage(tsk):
     # flags
 
     solarisRegex = r'sparc-sun.*|i.86-pc-solaris.*|sunos'
-    darwinRegex = r'i.86-apple-.*'
+    darwinRegex = r'darwin|i.86-apple-.*'
 
     platform = getPlatform(default=Options.platform)
     compiler = tsk.env['COMPILER_CXX']
