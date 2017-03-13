@@ -45,17 +45,7 @@ def configure(conf):
             }
             '''
 
-        # Visual Studio 2013 has nullptr but not constexpr.  Need to check for
-        # both in here to make sure we have full C++11 support... otherwise,
-        # long-term we may need multiple separate configure checks and
-        # corresponding defines
-        cpp11_str = '''
-            int main()
-            {
-                constexpr void* FOO = nullptr;
-            }
-            '''
-        #find out the size of some types, etc.
+        #find out the size of size_t, and whether the system is big endian
         # TODO: This is not using the 32 vs. 64 bit linker flags, so if you're
         #    building with --enable-32bit on 64 bit Linux, sizeof(size_t) will
         #    erroneously be 8 here.
@@ -71,7 +61,19 @@ def configure(conf):
                 elif v == 'False':
                     v = False
             conf.define(k.upper(), v)
-        conf.check_cxx(fragment = cpp11_str, execute=1, msg='Checking for C++11 support', define_name='__CODA_CPP11', mandatory=False)
+
+        if conf.env['cpp11support']:
+            # Visual Studio 2013 has nullptr but not constexpr.  Need to check for
+            # both in here to make sure we have full C++11 support... otherwise,
+            # long-term we may need multiple separate configure checks and
+            # corresponding defines
+            cpp11_str = '''
+                int main()
+                {
+                    constexpr void* FOO = nullptr;
+                }
+                '''
+            conf.check_cxx(fragment = cpp11_str, execute=1, msg='Checking for C++11 support', define_name='__CODA_CPP11', mandatory=False)
     writeConfig(conf, sys_callback, NAME)
 
 def build(bld):
