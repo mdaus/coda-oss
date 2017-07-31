@@ -23,13 +23,13 @@
 #include <string>
 #include <iostream>
 #include <io/StringStream.h>
-#include <xml/lite/Speed.h>
+#include <xml/lite/SpeedDocument.h>
 #include "TestCase.h"
 
 
 //#define __TEST_XML_LITE_SPEED_DEBUG__
 
-std::string writeXML(const xml::lite::Speed &xml)
+std::string writeXML(const xml::lite::SpeedDocument &xml)
 {
   io::StringStream ss_buf;
   xml.getRootElement()->print(ss_buf);
@@ -51,7 +51,7 @@ namespace
 TEST_CASE(testMakeEmptyRootNode)
 {
   // Start with an empty root node called "root"
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   
   std::string truth = "<root/>";
@@ -61,7 +61,7 @@ TEST_CASE(testMakeEmptyRootNode)
 //-----------------------------------------------------------------
 TEST_CASE(testSetRootNodeAttribute)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   
   xml.addRootAttribute("title", "de rerum natura");
@@ -73,7 +73,7 @@ TEST_CASE(testSetRootNodeAttribute)
 //-----------------------------------------------------------------
 TEST_CASE(testMakeOneEmptyChild)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.setData("foo","");
 
@@ -84,7 +84,7 @@ TEST_CASE(testMakeOneEmptyChild)
 //-----------------------------------------------------------------
 TEST_CASE(testMakeOneChildWithData)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.setData("foo", "yeah!");
 
@@ -95,7 +95,7 @@ TEST_CASE(testMakeOneChildWithData)
 //-----------------------------------------------------------------
 TEST_CASE(testChildDataTypeConversionOk)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.setData("foo", 3.14159f);
 
@@ -106,7 +106,7 @@ TEST_CASE(testChildDataTypeConversionOk)
 //-----------------------------------------------------------------
 TEST_CASE(testMakeChildNodeWithBadIndex)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   TEST_EXCEPTION(xml.setData("foo&0", "oh no!"));
 
@@ -114,7 +114,7 @@ TEST_CASE(testMakeChildNodeWithBadIndex)
 //-----------------------------------------------------------------
 TEST_CASE(testMakeChildNodeWithBadSyntax)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   TEST_EXCEPTION(xml.setData("21345l&barf", "oh no!"));
 
@@ -122,7 +122,7 @@ TEST_CASE(testMakeChildNodeWithBadSyntax)
 //-----------------------------------------------------------------
 TEST_CASE(testMakeSimpleNested)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.setData("foo>bar>baz>wuz>hooba>dooba","");
 
@@ -135,7 +135,7 @@ TEST_CASE(testMakeSimpleNested)
 //-----------------------------------------------------------------
 TEST_CASE(testMakeSameNameSameLevel)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.setData("foo", 1);
   xml.setData("foo&2", 2);
@@ -148,7 +148,7 @@ TEST_CASE(testMakeSameNameSameLevel)
 //-----------------------------------------------------------------
 TEST_CASE(testMakeSameNameSameLevelAutovivify)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.setData("foo&2", 2);
 
@@ -159,7 +159,7 @@ TEST_CASE(testMakeSameNameSameLevelAutovivify)
 //-----------------------------------------------------------------
 TEST_CASE(testMulitpleLevelsSameNames)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.setData("foo&3>bar&2", "A");
   xml.setData("foo&2>bar&3", "B");
@@ -176,7 +176,7 @@ TEST_CASE(testMulitpleLevelsSameNames)
 //-----------------------------------------------------------------
 TEST_CASE(testSetAnAttributeExistingElement)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
 
   xml.setData("foo>bar","3+j5");
@@ -192,7 +192,7 @@ TEST_CASE(testSetAnAttributeExistingElement)
 //-----------------------------------------------------------------
 TEST_CASE(testSetAnAttributeNewElement)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
 
   xml.addAttribute("foo>bar", "type", "complex");
@@ -207,7 +207,7 @@ TEST_CASE(testSetAnAttributeNewElement)
 //-----------------------------------------------------------------
 TEST_CASE(testSetNextDataElementExisting)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
 
   xml.setData("foo>bar", "yee");
@@ -223,7 +223,7 @@ TEST_CASE(testSetNextDataElementExisting)
 //-----------------------------------------------------------------
 TEST_CASE(testSetNextDataElementNotExisting)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
 
   xml.setNextData("foo>bar", "yee");
@@ -239,7 +239,7 @@ TEST_CASE(testSetNextDataElementNotExisting)
 //-----------------------------------------------------------------
 TEST_CASE(testDeclareNamespaceInRootNode)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.declareNamespace("","Hilbert", "http://mathworld.wolfram.com/HilbertSpace.html");
 
@@ -251,7 +251,7 @@ TEST_CASE(testDeclareNamespaceInRootNode)
 //-----------------------------------------------------------------
 TEST_CASE(testDeclareNamespaceInChildNode)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.declareNamespace("foo","Hilbert", "http://mathworld.wolfram.com/HilbertSpace.html");
 
@@ -265,7 +265,7 @@ TEST_CASE(testDeclareNamespaceInChildNode)
 //-----------------------------------------------------------------
 TEST_CASE(testSetNamespaceInChildNode)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.declareNamespace("","Hilbert", "http://mathworld.wolfram.com/HilbertSpace.html");
   xml.setData("foo>bar>oh>yeah","");
@@ -284,7 +284,7 @@ TEST_CASE(testSetNamespaceInChildNode)
 //-----------------------------------------------------------------
 TEST_CASE(testSetNamespaceInChildNodeNoRecurse)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.declareNamespace("","Hilbert", "http://mathworld.wolfram.com/HilbertSpace.html");
   xml.setData("foo>bar>oh>yeah","");
@@ -303,7 +303,7 @@ TEST_CASE(testSetNamespaceInChildNodeNoRecurse)
 //-----------------------------------------------------------------
 TEST_CASE(testSetCDATA)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.setData("foo","");
   xml.setCDATA("foo", "XML cannot see this! <<><<><><><<>><><><>><><>>>><<");
@@ -323,7 +323,7 @@ TEST_CASE(testSetCDATA)
 //-----------------------------------------------------------------
 TEST_CASE(testNormativeUseCase)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.declareNamespace("","","http://zombo.com");
   xml.setData("A>one", 1);
@@ -357,14 +357,14 @@ TEST_CASE(testNormativeUseCase)
 //-----------------------------------------------------------------
 TEST_CASE(testCreateFromExisting)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.declareNamespace("","","http://zombo.com");
   xml.setData("A>one", 1);
   xml.setData("A>three", 3);
   xml.setData("A>two", 2); 
 
-  xml::lite::Speed foo;
+  xml::lite::SpeedDocument foo;
   foo.fromDocument(&xml, true);
   foo.setData("lorem>ipsum>dolor>sit>amet", "consectetur adipiscing elit");
 
@@ -384,14 +384,14 @@ TEST_CASE(testCreateFromExisting)
 //=================================================================
 TEST_CASE(testCreatedFromExistingNoStealing)
 {
-  xml::lite::Speed xml;
+  xml::lite::SpeedDocument xml;
   xml.initRoot("root");
   xml.declareNamespace("","","http://zombo.com");
   xml.setData("A>one", 1);
   xml.setData("A>three", 3);
   xml.setData("A>two", 2); 
 
-  xml::lite::Speed foo;
+  xml::lite::SpeedDocument foo;
   foo.fromDocument(&xml, false);
   foo.setData("lorem>ipsum>dolor>sit>amet", "consectetur adipiscing elit");
 

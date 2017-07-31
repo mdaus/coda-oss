@@ -36,7 +36,7 @@ namespace lite
 {
 //=================================================================
 /*
- * \class xml::lite::Speed
+ * \class xml::lite::SpeedDocument
  * \brief An efficient interface for creating XML documents
  *
  * This class is designed to make building XML documents simple and fast for
@@ -47,7 +47,7 @@ namespace lite
  *  '>' shows hierarchy
  *  '&' shows ordinality (starting with one)
  *  example:
- *         XML                 xml::lite::Speed Syntax
+ *         XML                 xml::lite::SpeedDocument Syntax
  *  ----------------------------------------------------
  *       <root>             |                
  *           <foo>          | "foo"             
@@ -76,7 +76,7 @@ namespace lite
  *  utility and shallow learning curve will excuse the introduction of a new
  *  syntax.
  */
-class Speed : public Document
+class SpeedDocument : public Document
 {
   public:
     /*!
@@ -264,7 +264,7 @@ class Speed : public Document
 };
 //-----------------------------------------------------------------
 template <typename T>
-void Speed::setData(const std::string& elname, const T& value)
+void SpeedDocument::setData(const std::string& elname, const T& value)
 {
   std::string tocKey = elname;
   if (mTOC.count(elname) == 0)
@@ -278,7 +278,7 @@ void Speed::setData(const std::string& elname, const T& value)
 };
 //-----------------------------------------------------------------
 template <typename T>
-std::string Speed::setNextData(const std::string& elname, const T& value)
+std::string SpeedDocument::setNextData(const std::string& elname, const T& value)
 {
   // Take the hit of parsing the element name into parts.
   KeyParts parts = extractParts(elname);
@@ -299,7 +299,7 @@ std::string Speed::setNextData(const std::string& elname, const T& value)
 };
 //-----------------------------------------------------------------
 template <typename T>
-void Speed::addAttribute(const std::string& elname,
+void SpeedDocument::addAttribute(const std::string& elname,
                          const std::string& attrname,
                          const T& value)
 {
@@ -318,7 +318,7 @@ void Speed::addAttribute(const std::string& elname,
 }
 //-----------------------------------------------------------------
 template <typename T>
-void Speed::addRootAttribute(const std::string& attrname,
+void SpeedDocument::addRootAttribute(const std::string& attrname,
                                         const T& value)
 {
   Attributes attributes = mRootNode->getAttributes();

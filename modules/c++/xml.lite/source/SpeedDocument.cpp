@@ -30,17 +30,17 @@
 #include <except/Exception.h>
 #include <sys/Conf.h>
 #include <xml/lite/Element.h>
-#include <xml/lite/Speed.h>
+#include <xml/lite/SpeedDocument.h>
 
 //=================================================================
-void xml::lite::Speed::fromDocument(xml::lite::Document *doc, bool steal)
+void xml::lite::SpeedDocument::fromDocument(xml::lite::Document *doc, bool steal)
 {
   setRootElement(doc->getRootElement(steal), steal);
   buildTOC();
 }
 //=================================================================
-void xml::lite::Speed::buildTOC(const std::string &parent,
-                                const xml::lite::Element * element)
+void xml::lite::SpeedDocument::buildTOC(const std::string &parent,
+                                        const xml::lite::Element * element)
 {
   // make a smaller, local map for bookkeeping.
   std::map<std::string, size_t> localRegistry;
@@ -80,19 +80,19 @@ void xml::lite::Speed::buildTOC(const std::string &parent,
 
 }
 //=================================================================
-std::string xml::lite::Speed::getData(const std::string &elname)
+std::string xml::lite::SpeedDocument::getData(const std::string &elname)
 {
   return mTOC[elname]->getCharacterData();
 }
 //=================================================================
-void xml::lite::Speed::initRoot(const std::string &rootName)
+void xml::lite::SpeedDocument::initRoot(const std::string &rootName)
 {
   setRootElement(createElement(rootName,"",""));
 }
 //=================================================================
-xml::lite::Speed::KeyParts xml::lite::Speed::extractParts(const std::string &longname)
+xml::lite::SpeedDocument::KeyParts xml::lite::SpeedDocument::extractParts(const std::string &longname)
 {
-  xml::lite::Speed::KeyParts parts;
+  xml::lite::SpeedDocument::KeyParts parts;
   // make this name a proper name by ensuring zero-ordinal names have '&1' 
   std::vector<std::string> chunks = str::split(longname, ">");
 
@@ -141,17 +141,17 @@ xml::lite::Speed::KeyParts xml::lite::Speed::extractParts(const std::string &lon
   if (parts.childOrd < 1)
   {
         throw except::Exception(
-                    "xml::lite::Speed element ordinality starts at 1. "
+                    "xml::lite::SpeedDocument element ordinality starts at 1. "
                     "Name " +parts.child+" not allowed.");
   }
   return parts;
 }
 
 //=================================================================
-xml::lite::Speed::KeyParts xml::lite::Speed::vivify(const std::string &elname)
+xml::lite::SpeedDocument::KeyParts xml::lite::SpeedDocument::vivify(const std::string &elname)
 {
 
-  xml::lite::Speed::KeyParts parts = extractParts(elname);
+  xml::lite::SpeedDocument::KeyParts parts = extractParts(elname);
   if (mTOC.count(parts.properName) == 0)
   {
     // No element of that name exists already
@@ -212,9 +212,9 @@ xml::lite::Speed::KeyParts xml::lite::Speed::vivify(const std::string &elname)
 }
 
 //=================================================================
-void xml::lite::Speed::declareNamespace(const std::string &elname,
-                                 const std::string &nsPrefix,
-                                 const std::string &nsURI)
+void xml::lite::SpeedDocument::declareNamespace(const std::string &elname,
+                                                const std::string &nsPrefix,
+                                                const std::string &nsURI)
 {
 
   std::string nsSep = ":";
@@ -237,13 +237,13 @@ void xml::lite::Speed::declareNamespace(const std::string &elname,
 
 }
 //=================================================================
-void xml::lite::Speed::setNamespace(const std::string &elname,
-                             const std::string &nsPrefix,
-                             const bool recurse)
+void xml::lite::SpeedDocument::setNamespace(const std::string &elname,
+                                            const std::string &nsPrefix,
+                                            const bool recurse)
 {
 
   // We are going to have to parse the elname anyways... just call vivify.
-  xml::lite::Speed::KeyParts parts = vivify(elname);
+  xml::lite::SpeedDocument::KeyParts parts = vivify(elname);
   std::string tocKey = parts.properName;
 
 
@@ -268,14 +268,14 @@ void xml::lite::Speed::setNamespace(const std::string &elname,
   }
 }
 //=================================================================
-void xml::lite::Speed::setCDATA(const std::string &elname,
-                         const std::string &cdata)
+void xml::lite::SpeedDocument::setCDATA(const std::string &elname,
+                                        const std::string &cdata)
 {
   std::string tocKey = elname;
   if (mTOC.count(elname) == 0)
   {
     // 0 and 1 are the only options for std::map.count()
-    xml::lite::Speed::KeyParts parts = vivify(elname);
+    xml::lite::SpeedDocument::KeyParts parts = vivify(elname);
     tocKey = parts.properName;
   }
   mTOC[tocKey]->setCharacterData("<![CDATA["+cdata+"]]>");
