@@ -2,7 +2,7 @@
  * This file is part of xml.lite-c++
  * =========================================================================
  *
- * (C) Copyright 2004 - 2014, MDA Information Systems LLC
+ * (C) Copyright 2004 - 2017, MDA Information Systems LLC
  *
  * xml.lite-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,15 +21,15 @@
  */
 
 #include <string>
-#include <stdio.h>
-#include <import/io.h>
+#include <iostream>
+#include <io/StringStream.h>
 #include <xml/lite/Speed.h>
 #include "TestCase.h"
 
 
 //#define __TEST_XML_LITE_SPEED_DEBUG__
 
-std::string writexml(const xml::lite::Speed &xml)
+std::string writeXML(const xml::lite::Speed &xml)
 {
   io::StringStream ss_buf;
   xml.getRootElement()->print(ss_buf);
@@ -42,114 +42,125 @@ std::string writexml(const xml::lite::Speed &xml)
   return out;
 }
 
-// Start with an empty root node called "root"
-#define SETUP_XML  xml::lite::Speed xml; xml.initRoot("root");
-
+namespace
+{
 /////
 /// Begin Test Cases
 //
 //-----------------------------------------------------------------
-TEST_CASE(make_empty_root_node)
+TEST_CASE(testMakeEmptyRootNode)
 {
-  SETUP_XML;
+  // Start with an empty root node called "root"
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   
   std::string truth = "<root/>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(set_root_node_attribute)
+TEST_CASE(testSetRootNodeAttribute)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   
   xml.addRootAttribute("title", "de rerum natura");
 
   std::string truth = "<root title=\"de rerum natura\"/>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(make_one_empty_child)
+TEST_CASE(testMakeOneEmptyChild)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   xml.setData("foo","");
 
   std::string truth = "<root><foo/></root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(make_one_child_with_data)
+TEST_CASE(testMakeOneChildWithData)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   xml.setData("foo", "yeah!");
 
   std::string truth = "<root><foo>yeah!</foo></root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(child_data_type_conversion_ok)
+TEST_CASE(testChildDataTypeConversionOk)
 {
-  SETUP_XML;
-  xml.setData("foo", 3.14159f);;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
+  xml.setData("foo", 3.14159f);
 
   std::string truth = "<root><foo>3.14159</foo></root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(make_child_node_with_bad_index)
+TEST_CASE(testMakeChildNodeWithBadIndex)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   TEST_EXCEPTION(xml.setData("foo&0", "oh no!"));
 
 }
 //-----------------------------------------------------------------
-TEST_CASE(make_child_node_with_bad_syntax)
+TEST_CASE(testMakeChildNodeWithBadSyntax)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   TEST_EXCEPTION(xml.setData("21345l&barf", "oh no!"));
 
 }
 //-----------------------------------------------------------------
-TEST_CASE(make_simple_nested)
+TEST_CASE(testMakeSimpleNested)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   xml.setData("foo>bar>baz>wuz>hooba>dooba","");
 
   std::string truth =
     "<root><foo><bar><baz><wuz><hooba><dooba/>"
     "</hooba></wuz></baz></bar></foo></root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(make_same_name_same_level)
+TEST_CASE(testMakeSameNameSameLevel)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   xml.setData("foo", 1);
   xml.setData("foo&2", 2);
   xml.setData("foo&3", 3);
 
   std::string truth = "<root><foo>1</foo><foo>2</foo><foo>3</foo></root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(make_same_name_same_level_autovivify)
+TEST_CASE(testMakeSameNameSameLevelAutovivify)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   xml.setData("foo&2", 2);
 
   std::string truth = "<root><foo/><foo>2</foo></root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(mulitple_levels_same_names)
+TEST_CASE(testMulitpleLevelsSameNames)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   xml.setData("foo&3>bar&2", "A");
   xml.setData("foo&2>bar&3", "B");
 
@@ -160,12 +171,13 @@ TEST_CASE(mulitple_levels_same_names)
     "<foo><bar/><bar>A</bar></foo>"
     "</root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(set_an_attribute_existing_element)
+TEST_CASE(testSetAnAttributeExistingElement)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
 
   xml.setData("foo>bar","3+j5");
   xml.addAttribute("foo>bar", "type", "complex");
@@ -175,12 +187,13 @@ TEST_CASE(set_an_attribute_existing_element)
     "<foo><bar type=\"complex\">3+j5</bar></foo>"
     "</root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(set_an_attribute_new_element)
+TEST_CASE(testSetAnAttributeNewElement)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
 
   xml.addAttribute("foo>bar", "type", "complex");
 
@@ -189,12 +202,13 @@ TEST_CASE(set_an_attribute_new_element)
     "<foo><bar type=\"complex\"/></foo>"
     "</root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(set_next_data_element_existing)
+TEST_CASE(testSetNextDataElementExisting)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
 
   xml.setData("foo>bar", "yee");
   xml.setNextData("foo>bar", "haw");
@@ -204,12 +218,13 @@ TEST_CASE(set_next_data_element_existing)
     "<foo><bar>yee</bar><bar>haw</bar></foo>"
     "</root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(set_next_data_element_not_existing)
+TEST_CASE(testSetNextDataElementNotExisting)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
 
   xml.setNextData("foo>bar", "yee");
   xml.setNextData("foo>bar", "haw");
@@ -219,23 +234,25 @@ TEST_CASE(set_next_data_element_not_existing)
     "<foo><bar>yee</bar><bar>haw</bar></foo>"
     "</root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(declare_namespace_in_root_node)
+TEST_CASE(testDeclareNamespaceInRootNode)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   xml.declareNamespace("","Hilbert", "http://mathworld.wolfram.com/HilbertSpace.html");
 
   std::string truth = 
     "<root xmlns:Hilbert=\"http://mathworld.wolfram.com/HilbertSpace.html\"/>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(declare_namespace_in_child_node)
+TEST_CASE(testDeclareNamespaceInChildNode)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   xml.declareNamespace("foo","Hilbert", "http://mathworld.wolfram.com/HilbertSpace.html");
 
   std::string truth = 
@@ -243,12 +260,13 @@ TEST_CASE(declare_namespace_in_child_node)
     "<foo xmlns:Hilbert=\"http://mathworld.wolfram.com/HilbertSpace.html\"/>"
     "</root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(set_namespace_in_child_node)
+TEST_CASE(testSetNamespaceInChildNode)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   xml.declareNamespace("","Hilbert", "http://mathworld.wolfram.com/HilbertSpace.html");
   xml.setData("foo>bar>oh>yeah","");
 
@@ -261,12 +279,13 @@ TEST_CASE(set_namespace_in_child_node)
     "</Hilbert:foo>"
     "</root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(set_namespace_in_child_node_no_recurse)
+TEST_CASE(testSetNamespaceInChildNodeNoRecurse)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   xml.declareNamespace("","Hilbert", "http://mathworld.wolfram.com/HilbertSpace.html");
   xml.setData("foo>bar>oh>yeah","");
 
@@ -279,12 +298,13 @@ TEST_CASE(set_namespace_in_child_node_no_recurse)
     "</Hilbert:foo>"
     "</root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(setCDATA)
+TEST_CASE(testSetCDATA)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   xml.setData("foo","");
   xml.setCDATA("foo", "XML cannot see this! <<><<><><><<>><><><>><><>>>><<");
 
@@ -297,13 +317,14 @@ TEST_CASE(setCDATA)
     "</foo>"
     "</root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
-TEST_CASE(normative_use_case)
+TEST_CASE(testNormativeUseCase)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   xml.declareNamespace("","","http://zombo.com");
   xml.setData("A>one", 1);
   xml.setData("A>three", 3);
@@ -331,12 +352,13 @@ TEST_CASE(normative_use_case)
     "</razzle></B>"
     "</root>";
 
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //-----------------------------------------------------------------
-TEST_CASE(create_from_existing)
+TEST_CASE(testCreateFromExisting)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   xml.declareNamespace("","","http://zombo.com");
   xml.setData("A>one", 1);
   xml.setData("A>three", 3);
@@ -354,15 +376,16 @@ TEST_CASE(create_from_existing)
     "</amet></sit></dolor></ipsum></lorem>"
     "</root>";
 
-  TEST_ASSERT_EQ(writexml(foo), truth);
+  TEST_ASSERT_EQ(writeXML(foo), truth);
   // xml is still a view of the same document, it just doesn't own the root
   // node anymore. This means that it should see all the updates done to foo.
-  TEST_ASSERT_EQ(writexml(xml), truth);
+  TEST_ASSERT_EQ(writeXML(xml), truth);
 }
 //=================================================================
-TEST_CASE(created_from_existing_no_stealing)
+TEST_CASE(testCreatedFromExistingNoStealing)
 {
-  SETUP_XML;
+  xml::lite::Speed xml;
+  xml.initRoot("root");
   xml.declareNamespace("","","http://zombo.com");
   xml.setData("A>one", 1);
   xml.setData("A>three", 3);
@@ -380,34 +403,35 @@ TEST_CASE(created_from_existing_no_stealing)
     "</amet></sit></dolor></ipsum></lorem>"
     "</root>";
 
-  TEST_ASSERT_EQ(writexml(foo), truth);
+  TEST_ASSERT_EQ(writeXML(foo), truth);
+}
 }
 //=================================================================
-int main (int argc, char** argv)
+int main ()
 {
-  TEST_CHECK(make_empty_root_node);
-  TEST_CHECK(make_one_empty_child);
-  TEST_CHECK(make_one_child_with_data);
-  TEST_CHECK(child_data_type_conversion_ok);
-  TEST_CHECK(make_child_node_with_bad_index);
-  TEST_CHECK(make_child_node_with_bad_syntax);
-  TEST_CHECK(make_simple_nested);
-  TEST_CHECK(make_same_name_same_level);
-  TEST_CHECK(make_same_name_same_level_autovivify);
-  TEST_CHECK(mulitple_levels_same_names);
-  TEST_CHECK(set_an_attribute_existing_element);
-  TEST_CHECK(set_an_attribute_new_element);
-  TEST_CHECK(set_root_node_attribute);
-  TEST_CHECK(set_next_data_element_existing);
-  TEST_CHECK(set_next_data_element_not_existing);
-  TEST_CHECK(declare_namespace_in_root_node);
-  TEST_CHECK(declare_namespace_in_child_node);
-  TEST_CHECK(set_namespace_in_child_node);
-  TEST_CHECK(set_namespace_in_child_node_no_recurse);
-  TEST_CHECK(setCDATA);
-  TEST_CHECK(normative_use_case);
-  TEST_CHECK(create_from_existing);
-  TEST_CHECK(created_from_existing_no_stealing);
+  TEST_CHECK(testMakeEmptyRootNode);
+  TEST_CHECK(testMakeOneEmptyChild);
+  TEST_CHECK(testMakeOneChildWithData);
+  TEST_CHECK(testChildDataTypeConversionOk);
+  TEST_CHECK(testMakeChildNodeWithBadIndex);
+  TEST_CHECK(testMakeChildNodeWithBadSyntax);
+  TEST_CHECK(testMakeSimpleNested);
+  TEST_CHECK(testMakeSameNameSameLevel);
+  TEST_CHECK(testMakeSameNameSameLevelAutovivify);
+  TEST_CHECK(testMulitpleLevelsSameNames);
+  TEST_CHECK(testSetAnAttributeExistingElement);
+  TEST_CHECK(testSetAnAttributeNewElement);
+  TEST_CHECK(testSetRootNodeAttribute);
+  TEST_CHECK(testSetNextDataElementExisting);
+  TEST_CHECK(testSetNextDataElementNotExisting);
+  TEST_CHECK(testDeclareNamespaceInRootNode);
+  TEST_CHECK(testDeclareNamespaceInChildNode);
+  TEST_CHECK(testSetNamespaceInChildNode);
+  TEST_CHECK(testSetNamespaceInChildNodeNoRecurse);
+  TEST_CHECK(testSetCDATA);
+  TEST_CHECK(testNormativeUseCase);
+  TEST_CHECK(testCreateFromExisting);
+  TEST_CHECK(testCreatedFromExistingNoStealing);
 
   return 0;
 }

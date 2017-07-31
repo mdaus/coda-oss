@@ -2,7 +2,7 @@
  * This file is part of xml.lite-c++
  * =========================================================================
  *
- * (C) Copyright 2004 - 2014, MDA Information Systems LLC
+ * (C) Copyright 2004 - 2017, MDA Information Systems LLC
  *
  * xml.lite-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,9 +26,9 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <import/str.h>
-#include "xml/lite/Document.h"
-#include "xml/lite/Element.h"
+#include <str/Convert.h>
+#include <xml/lite/Document.h>
+#include <xml/lite/Element.h>
 
 namespace xml 
 {
@@ -76,19 +76,17 @@ namespace lite
  *  utility and shallow learning curve will excuse the introduction of a new
  *  syntax.
  */
-class Speed : public xml::lite::Document
+class Speed : public Document
 {
   public:
     /*!
-     * \func initRoot
      * \brief Creates the root element of the XML document.
      *
      * \param[in] rootName The name of the root element of the document.
      */
-    void initRoot(const std::string &rootName);
+    void initRoot(const std::string& rootName);
 
     /*!
-     * \func addRootAttribute
      * \brief Adds an XML attribute to the root element of the document.
      *
      * \param[in] attrname A string that is the name of the new attribute.
@@ -96,10 +94,9 @@ class Speed : public xml::lite::Document
      *                     If value is not a string it will be turned into one internally.
      */
     template <typename T>
-      void addRootAttribute(const std::string &attrname, T value);
+    void addRootAttribute(const std::string& attrname, const T& value);
 
     /*!
-     * \func setData
      * \brief Sets the value of an element.
      *
      * If the element does not exist, it is created.
@@ -114,24 +111,22 @@ class Speed : public xml::lite::Document
      *                  will be converted internally.
      */
     template <typename T>
-      void setData(const std::string &elname, const T &value);
+    void setData(const std::string& elname, const T& value);
 
     /*!
-     * \func addAttribute
      * \brief Adds an XML attribute to an element.
      *
      * \param[in] elname   The full name of the element being modified. See
      *                     setData for syntax.
      * \param[in] attrname The name of the attribute to add to element elname
-     * \param[in] value    The value of the attribute attrname.If it is not a
+     * \param[in] value    The value of the attribute attrname.  If it is not a
      *                     string, it will be converted internally.
      */
     template <typename T>
-      void addAttribute(const std::string &elname,
-                        const std::string &attrname,
-                        T value);
+    void addAttribute(const std::string& elname,
+                      const std::string& attrname,
+                      const T& value);
     /*!
-     * \func setNextData
      * \brief Creates and sets the next element with the name given at the path
      *        specified.
      *
@@ -153,10 +148,9 @@ class Speed : public xml::lite::Document
      * \return A string containing the full name of the new element.
      */
     template <typename T>
-      std::string setNextData(const std::string &elname, const T &value);
+    std::string setNextData(const std::string& elname, const T& value);
 
     /*!
-     * \func declareNamespace
      * \brief Declares an XML namespace on a given element.
      *
      * Note that this method merely declares a namespace. To set the namespace
@@ -167,12 +161,11 @@ class Speed : public xml::lite::Document
      * \param[in] nsPrefix The namespace prefix being declared.
      * \param[in] nsURI The URI associated with the namespace.
      */
-    void declareNamespace(const std::string &elname,
-                          const std::string &nsPrefix,
-                          const std::string &nsURI);
+    void declareNamespace(const std::string& elname,
+                          const std::string& nsPrefix,
+                          const std::string& nsURI);
 
     /*!
-     * \func setNamespace
      * \brief Sets a namespace prefix on an element and possibly all children.
      *
      * The recurse option is true by default.
@@ -184,23 +177,23 @@ class Speed : public xml::lite::Document
      * recursion enabled will perform a needless search of the existing nodes.
      *
      * \param[in] elname The full name of the element being modified.
-     * \param[in] nsPrefix 
+     * \param[in] nsPrefix The namespace prefix being set on the element(s).
+     * \param[in] recurse If true, sets the nsPrefix on all children of the
+     *                    element named by elname. Default is true.
      */
-    void setNamespace(const std::string &elname,
-                      const std::string &nsPrefix,
-                      const bool recurse=true);
+    void setNamespace(const std::string& elname,
+                      const std::string& nsPrefix,
+                      const bool recurse = true);
     
     /*!
-     * \func getData
      * \brief Gets the character data of an element
      *
      * \param elname The full name of the element.
      * \return A String containing the character data.
      */
-    std::string getData(const std::string &elname);
+    std::string getData(const std::string& elname);
 
     /*!
-     * \func fromDocument
      * \brief Set up this object to use an existing XML document
      *
      * This method is used to take an existing XML document and extend or
@@ -214,10 +207,9 @@ class Speed : public xml::lite::Document
      * \param steal Steal ownership of the root element of doc.
      *              Default is true.
      */
-    void fromDocument(xml::lite::Document *doc, bool steal=true);
+    void fromDocument(Document* doc, bool steal = true);
 
     /*!
-     * \func setCDATA
      * \brief Set the value of a CDATA element at at location
      *
      *  setCDATA takes a string value and inserts it at the given location
@@ -237,105 +229,105 @@ class Speed : public xml::lite::Document
      * \param elname The full name of the element.
      * \param cdata  The contents of the CDATA section.
      */
-    void setCDATA(const std::string &elname, const std::string &cdata);
+    void setCDATA(const std::string& elname, const std::string& cdata);
     // TODO: 
-    // setComment(const std::string &elname, const std::string &cdata);
-    // declareSchema(const std::string &elname,
-    //               const std::string &nsPrefix,
-    //               const std::string &nsURI);
+    // setComment(const std::string& elname, const std::string& cdata);
+    // declareSchema(const std::string& elname,
+    //               const std::string& nsPrefix,
+    //               const std::string& nsURI);
 
   protected:
-    /*! \func buildTOC
+    /*!
      *  \brief Build the table of contents map
      *
      */
-    void buildTOC(const std::string &parent="",
-                  xml::lite::Element const * element=NULL);
+    void buildTOC(const std::string& parent="",
+                  const Element* element=NULL);
 
     struct KeyParts
     {
-      std::string proper_name;
+      std::string properName;
       std::string parent;
       std::string child;
-      std::string child_name;
-      size_t      child_ord;
+      std::string childName;
+      size_t      childOrd;
     };
     
-    KeyParts vivify(const std::string &elname);
-    KeyParts extractParts(const std::string &longname);
+    KeyParts vivify(const std::string& elname);
+    KeyParts extractParts(const std::string& longname);
 
     //! The table of contents for the XML document.
-    std::map<std::string, xml::lite::Element*> mTOC;
+    std::map<std::string, Element*> mTOC;
     //! The namespaces known to exist in the document.
     std::map<std::string, std::string> mNamespaces;
 
 };
-} // end namespace "lite"
-} // end namespace "xml"
 //-----------------------------------------------------------------
-  template <typename T>
-void xml::lite::Speed::setData(const std::string &elname, const T &value)
+template <typename T>
+void Speed::setData(const std::string& elname, const T& value)
 {
-  std::string toc_key = elname;
+  std::string tocKey = elname;
   if (mTOC.count(elname) == 0)
   {
     // 0 and 1 are the only options for std::map.count()
-    xml::lite::Speed::KeyParts parts = vivify(elname);
-    toc_key = parts.proper_name;
+    KeyParts parts = vivify(elname);
+    tocKey = parts.properName;
   }
-  mTOC[toc_key]->setCharacterData(str::toString<T>(value));
+  mTOC[tocKey]->setCharacterData(str::toString<T>(value));
 
 };
 //-----------------------------------------------------------------
-  template <typename T>
-std::string xml::lite::Speed::setNextData(const std::string &elname, const T &value)
+template <typename T>
+std::string Speed::setNextData(const std::string& elname, const T& value)
 {
   // Take the hit of parsing the element name into parts.
-  xml::lite::Speed::KeyParts parts = extractParts(elname);
+  KeyParts parts = extractParts(elname);
   // Create the parents of this element if need be.
-  xml::lite::Speed::KeyParts parent_parts = vivify(parts.parent);
+  KeyParts parentarts = vivify(parts.parent);
 
   // Find out how many elements by this name there are right now.
-  std::vector<xml::lite::Element* > sibs;
-  mTOC[parts.parent]->getElementsByTagName(parts.child_name, sibs, false);
+  std::vector<Element* > sibs;
+  mTOC[parts.parent]->getElementsByTagName(parts.childName, sibs, false);
 
-  std::string next_name =
-    parts.parent+">"+parts.child_name+"&"+str::toString(sibs.size()+1);
-  xml::lite::Speed::KeyParts next_parts = vivify(next_name);
+  std::string nextName =
+    parts.parent+">"+parts.childName+"&"+str::toString(sibs.size()+1);
+  KeyParts nextParts = vivify(nextName);
 
-  mTOC[next_parts.proper_name]->setCharacterData(str::toString<T>(value));
+  mTOC[nextParts.properName]->setCharacterData(str::toString<T>(value));
 
-  return next_parts.proper_name;
+  return nextParts.properName;
 };
 //-----------------------------------------------------------------
-  template <typename T>
-void xml::lite::Speed::addAttribute(const std::string &elname,
-                             const std::string &attrname,
-                             T value)
+template <typename T>
+void Speed::addAttribute(const std::string& elname,
+                         const std::string& attrname,
+                         const T& value)
 {
-  std::string toc_key = elname;
+  std::string tocKey = elname;
   if (mTOC.count(elname) == 0)
   {
-    xml::lite::Speed::KeyParts parts = vivify(elname);
-    toc_key = parts.proper_name;
+    KeyParts parts = vivify(elname);
+    tocKey = parts.properName;
   }
-  xml::lite::Attributes attributes = mTOC[toc_key]->getAttributes();
-  xml::lite::AttributeNode node;
+  Attributes attributes = mTOC[tocKey]->getAttributes();
+  AttributeNode node;
   node.setLocalName(attrname);
   node.setValue(str::toString<T>(value));
   attributes.add(node);
-  mTOC[toc_key]->setAttributes(attributes);
+  mTOC[tocKey]->setAttributes(attributes);
 }
 //-----------------------------------------------------------------
-  template <typename T>
-void xml::lite::Speed::addRootAttribute(const std::string &attrname,
-                             T value)
+template <typename T>
+void Speed::addRootAttribute(const std::string& attrname,
+                                        const T& value)
 {
-  xml::lite::Attributes attributes = mRootNode->getAttributes();
-  xml::lite::AttributeNode node;
+  Attributes attributes = mRootNode->getAttributes();
+  AttributeNode node;
   node.setLocalName(attrname);
   node.setValue(str::toString<T>(value));
   attributes.add(node);
   mRootNode->setAttributes(attributes);
 }
+} // end namespace "lite"
+} // end namespace "xml"
 #endif
