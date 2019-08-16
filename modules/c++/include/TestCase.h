@@ -32,6 +32,7 @@
 
 #  define IS_NAN(X) X != X
 #  define TEST_CHECK(X) try{ X(std::string(#X)); std::cerr << #X << ": PASSED" << std::endl; } catch(except::Throwable& ex) { die_printf("%s: FAILED: Exception thrown: %s\n", std::string(#X).c_str(), ex.toString().c_str()); }
+#  define TEST_CHECK_ARGS(X) try{ X(std::string(#X),argc,argv); std::cerr << #X << ": PASSED" << std::endl; } catch(except::Throwable& ex) { die_printf("%s: FAILED: Exception thrown: %s\n", std::string(#X).c_str(), ex.toString().c_str()); }
 #  define TEST_ASSERT(X) if (!(X)) { die_printf("%s (%s,%s,%d): FAILED: Value should not be NULL\n", testName.c_str(), __FILE__, SYS_FUNC, __LINE__); }
 #  define TEST_ASSERT_NULL(X) if ((X) != NULL) { die_printf("%s (%s,%s,%d): FAILED: Value should be NULL\n", testName.c_str(), __FILE__, SYS_FUNC, __LINE__); }
 #  define TEST_ASSERT_FALSE(X) if ((X)) { die_printf("%s (%s,%s,%d): FAILED: Value should evaluate to false\n", testName.c_str(), __FILE__, SYS_FUNC, __LINE__); }
@@ -51,6 +52,7 @@
 #  define TEST_THROWS(X) try{ (X); die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception\n", testName.c_str(), __FILE__, SYS_FUNC, __LINE__); } catch (...){}
 #  define TEST_SPECIFIC_EXCEPTION(X,Y) try{ (X); die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__); } catch(Y&) { }  catch (except::Throwable&){ die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__);}
 #  define TEST_CASE(X) void X(std::string testName)
+#  define TEST_CASE_ARGS(X) void X(std::string testName, int argc, char** argv)
 
 #else /* C only */
 #  include <math.h>
