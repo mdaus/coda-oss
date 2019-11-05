@@ -792,6 +792,9 @@ def options(opt):
                    help='Specify a prebuilt modules config file (created from dumpconfig)')
     opt.add_option('--disable-swig-silent-leak', action='store_false', dest='swig_silent_leak',
                    default=True, help='Allow swig to print memory leaks it detects')
+    opt.add_option('--enable-openmp', action='store_true', dest='enableopenmp',
+                   default=True, help='Enable OpenMP')
+
 
 def configureCompilerOptions(self):
     sys_platform = getPlatform(default=Options.platform)
@@ -874,13 +877,14 @@ def configureCompilerOptions(self):
             config['cxx']['debug']          = '-g'
             config['cxx']['warn']           = warningFlags.split()
             config['cxx']['verbose']        = '-v'
-            config['cxx']['64']             = '-m64'
+            config['cxx']['64']             = ''
             config['cxx']['32']             = '-m32'
-            config['cxx']['linkflags_64']   = '-m64'
+            config['cxx']['linkflags_64']   = ''
             config['cxx']['linkflags_32']   = '-m32'
             config['cxx']['optz_med']       = '-O1'
             config['cxx']['optz_fast']      = '-O2'
             config['cxx']['optz_fastest']   = '-O3'
+            config['cxx']['openmp']         = '-fopenmp'
 
             gxxCompileFlags='-fPIC -std=c++11'
             self.env.append_value('CXXFLAGS', gxxCompileFlags.split())
@@ -901,13 +905,14 @@ def configureCompilerOptions(self):
             config['cc']['debug']          = '-g'
             config['cc']['warn']           = warningFlags.split()
             config['cc']['verbose']        = '-v'
-            config['cc']['64']             = '-m64'
+            config['cc']['64']             = ''
             config['cc']['32']             = '-m32'
-            config['cc']['linkflags_64']   = '-m64'
+            config['cc']['linkflags_64']   = ''
             config['cc']['linkflags_32']   = '-m32'
             config['cc']['optz_med']       = '-O1'
             config['cc']['optz_fast']      = '-O2'
             config['cc']['optz_fastest']   = '-O3'
+            config['cc']['openmp']         = '-fopenmp'
 
             self.env.append_value('CFLAGS', '-fPIC'.split())
 
@@ -1102,6 +1107,12 @@ int main() {
         variant.append_value('CXXFLAGS', config['cxx'].get('32', ''))
         variant.append_value('CFLAGS', config['cc'].get('32', ''))
         variant.append_value('LINKFLAGS', config['cc'].get('linkflags_32', ''))
+
+    if Options.options.enableopenmp:
+        variant.append_value('CXXFLAGS', config['cxx'].get('openmp',''))
+        variant.append_value('CFLAGS',   config['cxx'].get('openmp',''))
+        variant.append_value('LINKFLAGS',config['cxx'].get('openmp',''))
+
 
     self.env['IS64BIT'] = is64Bit
     self.all_envs[variantName] = variant
