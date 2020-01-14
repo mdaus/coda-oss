@@ -1,26 +1,40 @@
 *.swp
 *~
 *.pyc
+*.o
+*.obj
+*.pyc
+*.a
+*.lib
+*.dll
+*.pdb
+*.idb
+*.ilk
+*.exp
+*.log
+*.tlog
 
 # Build artifacts
-
 install/
 target/
+.vs/
+build/
+x64/
+**/generated/
 
 # Waf
-
 .waf-*
 waf-*
 .waf3-*
 waf3-*
 .lock-waf*
+.wafpickle-*
 
 # Eclipse
 .project
 .cproject
 
 # Drivers
-
 modules/drivers/fftw/fftw-2.1.5/
 modules/drivers/jpeg/jpeg-9/
 modules/drivers/j2k/openjpeg/openjpeg-2.3.0_mod/
@@ -32,3 +46,13 @@ modules/drivers/zlib/zlib-1.2.7/
 # VS
 project.sln
 .depproj/
+.*.suo
+*.VC.db
+*.opendb
+*.ipch
+*.pch
+*.gch
+*.VC.db-*
+*.lastbuildstate
+*.user
+packages/
