@@ -4,7 +4,6 @@
 
 namespace
 {
-
 TEST_CASE(tests)
 {
     std::vector<int> stub({ 1, 2, 3, 4, 5 });
