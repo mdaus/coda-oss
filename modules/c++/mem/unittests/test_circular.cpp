@@ -9,7 +9,6 @@ TEST_CASE(tests)
 {
     std::vector<int> stub({ 1, 2, 3, 4, 5 });
 
-
     std::cerr << "init test" << std::endl;
     mem::CircularBuffer<int> cc(10);
     TEST_ASSERT_EQ(cc.availableForRead(), 0);
@@ -74,6 +73,9 @@ TEST_CASE(tests)
 
     std::cerr << "write throw test" << std::endl;
     TEST_EXCEPTION(cc.write(stub.data(), 1000));
+
+    std::cerr << "zero element exception test" << std::endl;
+    TEST_EXCEPTION( mem::CircularBuffer<int>(0) );
 }
 }
 
