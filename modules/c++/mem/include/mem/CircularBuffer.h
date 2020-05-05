@@ -1,3 +1,24 @@
+/* =========================================================================
+ * This file is part of mem-c++
+ * =========================================================================
+ *
+ * (C) Copyright 2004 - 2020, Radiant Geospatial Solutions
+ *
+ * mem-c++ is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
+ * see <http://www.gnu.org/licenses/>.
+ *
+ */
 #ifndef __MEM_CIRCULAR_BUFFER_H__
 #define __MEM_CIRCULAR_BUFFER_H__
 
@@ -8,24 +29,36 @@ namespace mem
 {
 
 /*! CircularBuffer
- * Simple circular buffer allowing wrapping writes, reads, indexing over a
- * templated vector.
+ * Simple fixed-size circular buffer allowing wrapping writes, reads, 
+ * indexing over a templated vector.
  */
 template<typename DataT>
 class CircularBuffer
 {
 public:
-    CircularBuffer(size_t bufferSize)
-        : mBuffer(bufferSize),
+
+    /*! Ctor
+     * Allocates sizeof(DataT)*maxNumElts and initializes internal data structures.
+     * \param maxNumElts number of DataTs you want to be able to store at once
+     * \throws except::Exception if maxNumElts is zero
+     */
+    CircularBuffer(size_t maxNumElts)
+        : mBuffer(maxNumElts),
           mRead(0),
           mWrite(0),
           mAtCapacity(false)
-    {}
+    {
+        if (!maxNumElts)
+        {
+            throw except::Exception(Ctxt("Attempted to create an empty CircularBuffer"));
+        }
+    }
 
     /*! Writes data into the circular buffer. May throw if overwriting unread 
      * data. Will not modify underlying buffer in the event of that throw.
      * \param buffer Pointer to DataT buffer to write
      * \param numElts Number of DataT in buffer to write
+     * \throws except::Exception if trying to overwrite undread data
      */
     void write(DataT* buffer, size_t numElts)
     {
@@ -40,16 +73,16 @@ public:
             // current state
             if (mRead < afterWrap)
             {
-                throw except::Exception("CircularBuffer write() overrun");   
+                throw except::Exception(Ctxt("CircularBuffer write() overrun"));   
             }
 
             write(buffer, beforeWrap);
             write(buffer + beforeWrap, afterWrap);
         }
         // Check for an overrun
-        else if (mWrite < mRead && mWrite + numElts > mRead || mAtCapacity)
+        else if (((mWrite < mRead) && (mWrite + numElts > mRead)) || mAtCapacity)
         {
-            throw except::Exception("CircularBuffer write() overrun");
+            throw except::Exception(Ctxt("CircularBuffer write() overrun"));
         }
         // This should be a trivial write
         else
@@ -69,6 +102,7 @@ public:
      * \param buffer Pointer to DataT buffer to read data into
      * \param numElts Number of elements to read from the circular buffer
      * \returns numElts
+     * \throws except::Exception if trying to read more data than is available
      */
     size_t read(DataT* buffer, size_t numElts)
     {
@@ -81,19 +115,18 @@ public:
 
             if (mWrite < afterWrap)
             {
-                throw except::Exception("CircularBuffer read() overrun");
+                throw except::Exception(Ctxt("CircularBuffer read() overrun"));
             }
             
             size_t actuallyRead(0);
             actuallyRead += read(buffer, beforeWrap);
             actuallyRead += read(buffer + beforeWrap, afterWrap);
             return actuallyRead;
-
         }
         // Check for an overrun
-        else if ((mRead < mWrite && mRead + numElts > mWrite) || (mWrite == mRead && !mAtCapacity))
+        else if (((mRead < mWrite) && (mRead + numElts > mWrite)) || (mWrite == mRead && !mAtCapacity))
         {
-            throw except::Exception("CircularBuffer read() overrun");
+            throw except::Exception(Ctxt("CircularBuffer read() overrun"));
         }
         else
         {

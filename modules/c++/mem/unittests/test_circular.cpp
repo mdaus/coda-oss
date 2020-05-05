@@ -16,17 +16,7 @@ TEST_CASE(tests)
     TEST_ASSERT_EQ(cc.availableForWrite(), 10);
 
     std::cerr << "read throw test" << std::endl;
-    bool thrown = false;
-    try
-    {
-        cc.read(stub.data(), 1);
-    }
-    catch (except::Exception& ee)
-    {
-        thrown = true;
-    }
-
-    TEST_ASSERT(thrown);
+    TEST_EXCEPTION(cc.read(stub.data(), 1));
     TEST_ASSERT_EQ(stub[0], 1);
 
     std::cerr << "simple write tests" << std::endl;
@@ -83,18 +73,7 @@ TEST_CASE(tests)
     TEST_ASSERT_EQ(readStub[7], 7);
 
     std::cerr << "write throw test" << std::endl;
-    
-    thrown = false;
-    stub[0] = 99;
-    try
-    {
-        cc.write(stub.data(), 1000);
-    }
-    catch (except::Exception& ee)
-    {
-        thrown = true;
-    }
-    TEST_ASSERT(thrown);
+    TEST_EXCEPTION(cc.write(stub.data(), 1000));
 }
 }
 
