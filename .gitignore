@@ -1,26 +1,12 @@
 *.swp
 *~
 *.pyc
-*.o
-*.obj
-*.pyc
-*.a
-*.lib
-*.dll
-*.pdb
-*.idb
-*.ilk
-*.exp
-*.log
-*.tlog
-
+__pycache__/
 # Build artifacts
+
 install/
 target/
-.vs/
-build/
-x64/
-**/generated/
+test_package/build/
 
 # Waf
 .waf-*
@@ -28,7 +14,7 @@ waf-*
 .waf3-*
 waf3-*
 .lock-waf*
-.wafpickle-*
+build/waf*/
 
 # Eclipse
 .project
@@ -44,15 +30,6 @@ modules/drivers/xml/xerces/xerces-c-3.1.1/
 modules/drivers/zlib/zlib-1.2.7/
 
 # VS
+.vs/
 project.sln
 .depproj/
-.*.suo
-*.VC.db
-*.opendb
-*.ipch
-*.pch
-*.gch
-*.VC.db-*
-*.lastbuildstate
-*.user
-packages/
