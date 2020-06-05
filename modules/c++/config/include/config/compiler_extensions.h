@@ -50,3 +50,57 @@
 #endif // CODA_OSS_attribute_aligned_DEFINED_
 
 #endif // CODA_OSS_config_compiler_extentions_h_INCLUDED_
+
+#ifdef HAVE_ATTRIBUTE_NOINLINE
+
+#define ATTRIBUTE_NOINLINE __attribute__((noinline))
+#define DECLSPEC_NOINLINE
+#define NOINLINE(RETURN_TYPE_) RETURN_TYPE_ ATTRIBUTE_NOINLINE
+
+#elif defined HAVE_DECLSPEC_NOINLINE
+
+#define ATTRIBUTE_NOINLINE
+#define DECLSPEC_NOINLINE __declspec(noinline)
+#define NOINLINE(RETURN_TYPE_) DECLSPEC_NOINLINE RETURN_TYPE_
+
+#else
+    
+#define ATTRIBUTE_NOINLINE
+#define DECLSPEC_NOINLINE
+#define NOINLINE(RETURN_TYPE_) RETURN_TYPE_
+
+#endif
+
+
+#ifdef HAVE_ATTRIBUTE_ALIGNED
+
+#define ATTRIBUTE_ALIGNED(x) __attribute__((aligned (x)))
+#define DECLSPEC_ALIGN(x)
+#define ALIGNED(declaration, x) declaration ATTRIBUTE_ALIGNED(x)
+
+#elif defined HAVE_DECLSPEC_ALIGN
+
+#define ATTRIBUTE_ALIGNED(x)
+#define DECLSPEC_ALIGN(x) __declspec(align(x))
+#define ALIGNED(declaration, x) DECLSPEC_ALIGN(x) declaration
+
+#else
+    
+#define ATTRIBUTE_ALIGNED(X)
+#define DECLSPEC_ALIGN(x)
+#define ALIGNED(declaration, x) declaration
+
+#endif
+
+
+#ifdef HAVE_M256_DIRECT_INDEX
+#define _MM256_EXTRACTF(ymm_,i_) ymm_[i_]
+#elif defined HAVE_M256_MEMBER_INDEX
+#define _MM256_EXTRACTF(ymm_,i_) ymm_.m256_f32[i_]
+#else
+//This looks awful, but almost all of these intrinsics simply reinterpret bits and generate no actual instructions.
+#define _MM256_EXTRACTF(ymm_,i_) _mm256_cvtss_f32(_mm256_castsi256_ps(_mm256_set1_epi32(_mm256_extract_epi32(_mm256_castps_si256(ymm_),i_))))
+#endif
+
+
+#endif
