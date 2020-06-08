@@ -64,7 +64,7 @@
 #define NOINLINE(RETURN_TYPE_) DECLSPEC_NOINLINE RETURN_TYPE_
 
 #else
-    
+
 #define ATTRIBUTE_NOINLINE
 #define DECLSPEC_NOINLINE
 #define NOINLINE(RETURN_TYPE_) RETURN_TYPE_
@@ -85,7 +85,7 @@
 #define ALIGNED(declaration, x) DECLSPEC_ALIGN(x) declaration
 
 #else
-    
+
 #define ATTRIBUTE_ALIGNED(X)
 #define DECLSPEC_ALIGN(x)
 #define ALIGNED(declaration, x) declaration

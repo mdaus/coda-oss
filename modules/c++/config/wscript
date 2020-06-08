@@ -58,7 +58,7 @@ def configure(conf):
                 elif v == 'False':
                     v = False
             conf.define(k.upper(), v)
-        
+
         attribute_noinline_str = '''
             int __attribute__((noinline)) fn() { return 0; }
             int main()
@@ -70,7 +70,7 @@ def configure(conf):
                        msg='Checking for __attribute__(noinline)',
                        define_name='HAVE_ATTRIBUTE_NOINLINE',
                        mandatory=False)
-        
+
         declspec_noinline_str = '''
             __declspec(noinline) int fn() { return 0; }
             int main()
@@ -120,7 +120,7 @@ def configure(conf):
                        msg='Checking for __m256::operator[]',
                        define_name='HAVE_M256_DIRECT_INDEX',
                        mandatory=False)
-       
+
         member_m256_extract_str = '''
             #include <immintrin.h>
             int main()
@@ -134,8 +134,6 @@ def configure(conf):
                        msg='Checking for __m256::m256_f32',
                        define_name='HAVE_M256_MEMBER_INDEX',
                        mandatory=False)
-                       
-        
 
         conf.define('CODA_EXPORT', conf.env['declspec_decoration'], quote=False)
 
