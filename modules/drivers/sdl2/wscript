@@ -1,0 +1,31 @@
+import os
+import subprocess
+from waflib import Options
+
+build = distclean = lambda x: None
+
+def options(opt):
+    opt.add_option('--enable-sdl2', action='store_true', dest='sdlEnabled',
+            help='Enables linking to SDL2. Searches for sdl2-config on PATH or from provided --sdl2-home',
+            default=False)
+    opt.add_option('--sdl2-home', action='store', dest='sdlHome',
+            help='SDL2 Development install path, implies --enable-sdl', 
+            default=None)
+
+
+def configure(conf):
+    if Options.options.sdlEnabled or Options.options.sdlHome is not None:
+        conf.start_msg('Checking for SDL2')
+        sdlHome = ''
+        if Options.options.sdlHome is None:
+            sdl2_config = conf.find_program('sdl2-config', mandatory=True)
+            sdlHome = os.path.dirname(os.path.dirname(sdl2_config))
+        else:
+            sdlHome = Options.options.sdlHome
+
+        command = [sdlHome + '/bin/sdl2-config', '--cflags', '--libs']
+        proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+        conf.parse_flags(out, uselib_store='SDL2')
+        conf.end_msg('yes')
+

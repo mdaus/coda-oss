@@ -1,0 +1,14 @@
+NAME            = 'sdl'
+MAINTAINER      = 'Charles Vink'
+VERSION         = '0.1'
+MODULE_DEPS     = 'sys'
+USELIB_CHECK    = 'SDL2'
+TEST_DEPS       = 'cli'
+
+configure = options = distclean = lambda p: None
+
+from waflib import Options
+from build import writeConfig
+
+def build(bld):
+    bld.module(**globals())
