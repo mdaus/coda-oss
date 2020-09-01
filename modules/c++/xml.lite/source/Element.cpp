@@ -210,6 +210,7 @@ void xml::lite::Element::addChild(xml::lite::Element * node)
     node->setParent(this);
 }
 
+#if __cplusplus < 201703L  // C++17
 void xml::lite::Element::addChild(std::auto_ptr<xml::lite::Element> node)
 {
     // Always take ownership
@@ -217,7 +218,11 @@ void xml::lite::Element::addChild(std::auto_ptr<xml::lite::Element> node)
     addChild(scopedValue.get());
     scopedValue.release();
 }
-
+#endif
+void xml::lite::Element::addChild(std::unique_ptr<xml::lite::Element>&& node)
+{
+    addChild(node.release())); // addChild() now owns node
+}
 void xml::lite::Element::changePrefix(Element* element,
     const std::string& prefix, const std::string& uri)
 {

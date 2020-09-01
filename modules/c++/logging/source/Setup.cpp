@@ -38,7 +38,7 @@ logging::setupLogger(const std::string& program,
                      size_t logCount,
                      size_t logBytes)
 {
-    std::auto_ptr<logging::Logger> log(new logging::Logger(program));
+    mem::auto_ptr<logging::Logger> log(new logging::Logger(program));
 
     // setup logging level
     std::string lev = logLevel;
