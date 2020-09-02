@@ -68,13 +68,19 @@ void net::Socket::bind(const net::SocketAddress& address)
     }                               
 }
 
+#if __cplusplus < 201703L
 std::auto_ptr<net::Socket> net::Socket::accept(net::SocketAddress& fromClient)
+{
+    return std::auto_ptr<net::Socket>(accept(nullptr, fromClient).release());
+}
+#endif
+std::unique_ptr<net::Socket> net::Socket::accept(std::nullptr_t, net::SocketAddress& fromClient)
 {
     net::SockAddrIn_T& in = fromClient.getAddress();
 
     net::SockLen_T addrLen = sizeof(in);
-    return std::auto_ptr<net::Socket>( 
-        new Socket(::accept(mNative, (net::SockAddr_T *) &in, &addrLen), true) );
+    return std::unique_ptr<net::Socket>(
+            new Socket(::accept(mNative, (net::SockAddr_T*)&in, &addrLen), true));
 }
 
 size_t net::Socket::recv(void* b, size_t len, int flags)
