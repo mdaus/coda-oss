@@ -24,6 +24,8 @@
 #ifndef __MT_ABSTRACT_CPU_AFFINITY_INITIALIZER_H__
 #define __MT_ABSTRACT_CPU_AFFINITY_INITIALIZER_H__
 
+#include <memory>
+
 #include <mt/AbstractCPUAffinityThreadInitializer.h>
 
 namespace mt
@@ -43,9 +45,16 @@ public:
      * \returns a new thread initializer. In general, this should return
      *          a different affinity initializer each time it is called.
      */
+    #if __cplusplus < 201703L // C++17
     std::auto_ptr<AbstractCPUAffinityThreadInitializer> newThreadInitializer()
     {
         return std::auto_ptr<AbstractCPUAffinityThreadInitializer>(
+                newThreadInitializerImpl());
+    }
+    #endif
+    std::unique_ptr<AbstractCPUAffinityThreadInitializer> newThreadInitializer(std::nullptr_t)
+    {
+        return std::unique_ptr<AbstractCPUAffinityThreadInitializer>(
                 newThreadInitializerImpl());
     }
 

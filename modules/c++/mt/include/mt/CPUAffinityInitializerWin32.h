@@ -24,6 +24,8 @@
 #ifndef __MT_CPU_AFFINITY_INITIALIZER_WIN32_H__
 #define __MT_CPU_AFFINITY_INITIALIZER_WIN32_H__
 
+#include <memory>
+
 #if defined(WIN32)
 
 #include <mt/AbstractCPUAffinityInitializer.h>
@@ -43,9 +45,16 @@ public:
      * \todo Not yet implemented
      * \returns nullptr
      */
+    #if __cplusplus < 201703L // C++17
     std::auto_ptr<CPUAffinityThreadInitializerWin32> newThreadInitializer()
     {
         return std::auto_ptr<CPUAffinityThreadInitializerWin32>(
+                newThreadInitializerImpl());
+    }
+    #endif
+    std::unique_ptr<CPUAffinityThreadInitializerWin32> newThreadInitializer(std::nullptr_t)
+    {
+        return std::unique_ptr<CPUAffinityThreadInitializerWin32>(
                 newThreadInitializerImpl());
     }
 
