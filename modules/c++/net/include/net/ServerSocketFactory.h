@@ -81,9 +81,16 @@ public:
      *  \param address Address to establish the socket for
      *  \return The created & bound socket
      */
-    virtual std::auto_ptr<Socket> create(const SocketAddress& address)
+#if __cplusplus < 201703L // C++17
+    virtual std::auto_ptr<Socket> create(const SocketAddress& address) const
     {
-        std::auto_ptr<Socket> s (new Socket(mProto));
+        auto s = create(nullptr, address);
+        return std::auto_ptr<Socket>(s.release());
+    }
+#endif
+    virtual std::unique_ptr<Socket> create(std::nullptr_t, const SocketAddress& address) const
+    {
+        std::unique_ptr<Socket> s(new Socket(mProto));
 
         // Bind to this address
         s->bind(address);
@@ -126,9 +133,16 @@ public:
      *
      *  \return The produced socket
      */
-    virtual std::auto_ptr<Socket> create(const SocketAddress& address)
+    #if __cplusplus < 201703L // C++17
+    virtual std::auto_ptr<Socket> create(const SocketAddress& address) const override
     {
-        std::auto_ptr<Socket> s (new Socket(mProto));
+        auto s = create(nullptr, address);
+        return std::auto_ptr<Socket>(s.release());
+    }
+    #endif
+    virtual std::unique_ptr<Socket> create(std::nullptr_t, const SocketAddress& address) const override
+    {
+        std::unique_ptr<Socket> s(new Socket(mProto));
 
         // Make sure we're set up for broadcasting if necessary
         int on = 1;
@@ -138,9 +152,6 @@ public:
         s->bind(address);
         return s;
     }
-
-
-
 };
 
 /*!
@@ -184,9 +195,16 @@ public:
      *  listen().
      *
      */
-    virtual std::auto_ptr<Socket> create(const SocketAddress& address)
+    #if __cplusplus < 201703L  // C++17
+    virtual std::auto_ptr<Socket> create(const SocketAddress& address) const override
     {
-        std::auto_ptr<Socket> s (new Socket(mProto));
+        auto s = create(nullptr, address);
+        return std::auto_ptr<Socket>(s.release());
+    }
+    #endif
+    virtual std::unique_ptr<Socket> create(std::nullptr_t, const SocketAddress& address) const override
+    {
+        std::unique_ptr<Socket> s(new Socket(mProto));
 
         // Reuse socket address (important for most TCP apps)
         int on = 1;
