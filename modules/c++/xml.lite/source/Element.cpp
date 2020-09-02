@@ -221,7 +221,7 @@ void xml::lite::Element::addChild(std::auto_ptr<xml::lite::Element> node)
 #endif
 void xml::lite::Element::addChild(std::unique_ptr<xml::lite::Element>&& node)
 {
-    addChild(node.release())); // addChild() now owns node
+    addChild(node.release()); // addChild() now owns node
 }
 void xml::lite::Element::changePrefix(Element* element,
     const std::string& prefix, const std::string& uri)
