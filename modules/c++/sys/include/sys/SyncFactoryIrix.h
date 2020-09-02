@@ -110,7 +110,7 @@ class SyncImplIrix : public SyncInterface
         ulock_t* mGuard;
     };
 
-    static std::auto_ptr<ulock_t> cs;
+    static std::unique_ptr<ulock_t> cs;
     static SyncFactoryIrix::SyncImplIrix* createImpl()
     {
 
@@ -125,11 +125,11 @@ class SyncImplIrix : public SyncInterface
     static void destroyImpl()
     {
 
-        if (mImpl != NULL)
+        if (mImpl != nullptr)
         {
             dbg_ln("Destroying Impl");
             delete mImpl;
-            mImpl = NULL;
+            mImpl = nullptr;
         }
 
     }
