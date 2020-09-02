@@ -47,14 +47,22 @@ namespace logging
  *  \param logCount - number of rotating logs to keep (default: 0 no rotation)
  *  \param logBytes - number of bytes per rotating log (default: 0 no rotation)
  */
-mem::auto_ptr<logging::Logger> setupLogger(
+#if __cplusplus < 201703L  // C++17
+std::auto_ptr<logging::Logger> setupLogger(
     const std::string& program, 
     const std::string& logLevel = "warning", 
     const std::string& logFile = "console",
     const std::string& logFormat = "[%p] (%d) %m",
     size_t logCount = 0,
     size_t logBytes = 0);
-
+#endif
+std::unique_ptr<logging::Logger> setupLogger(std::nullptr_t,
+        const std::string& program,
+        const std::string& logLevel = "warning",
+        const std::string& logFile = "console",
+        const std::string& logFormat = "[%p] (%d) %m",
+        size_t logCount = 0,
+        size_t logBytes = 0);
 }
 
 #endif

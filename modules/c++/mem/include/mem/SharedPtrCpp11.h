@@ -75,21 +75,6 @@ public:
         return std::shared_ptr<T>::use_count();
     }
 };
-
-    // std::auto_ptr was deprecated in C++11 and removed in C++17
-    // This helps in replacing std::auto_ptr with std::unique_ptr; we
-    // can't force clients to change their code.
-    template <typename T>
-    using auto_ptr =
-    #if __cplusplus < 201703L  // C++17
-        #if defined(CODA_OSS_NO_AUTO_PTR)
-        std::unique_ptr<T>;
-        #else
-        std::auto_ptr<T>;  // existing code might still use std::auto_ptr
-        #endif
-    #else
-        std::unique_ptr<T>;  // no std::auto_ptr in C++17
-    #endif
 }
 
 #endif
