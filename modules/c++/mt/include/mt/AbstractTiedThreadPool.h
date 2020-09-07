@@ -48,7 +48,7 @@ public:
     }
 
     virtual std::unique_ptr<CPUAffinityThreadInitializer>
-    getCPUAffinityThreadInitializer(std::nullptr_t)
+    getCPUAffinityThreadInitializer()
     {
         std::unique_ptr<CPUAffinityThreadInitializer> threadInit(nullptr);
 

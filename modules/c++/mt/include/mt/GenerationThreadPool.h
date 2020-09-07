@@ -81,7 +81,7 @@ namespace mt
 		
 	    if (mAffinityInit)
         {
-            handler->setAffinityInit(mAffinityInit->newThreadInitializer(nullptr).release());
+            handler->setAffinityInit(mAffinityInit->newThreadInitializer().release());
         }
 
 	    return handler;

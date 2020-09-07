@@ -71,14 +71,7 @@ public:
      * \returns a new CPUAffinityInitializerLinux for the next available
      *          CPU that can be bound to.
      */
-#if __cplusplus < 201703L  // C++17
-    std::auto_ptr<CPUAffinityThreadInitializerLinux> newThreadInitializer()
-    {
-        return std::auto_ptr<CPUAffinityThreadInitializerLinux>(
-                newThreadInitializerImpl());
-    }
-#endif
-    std::unique_ptr<CPUAffinityThreadInitializerLinux> newThreadInitializer(std::nullptr_t)
+    std::unique_ptr<CPUAffinityThreadInitializerLinux> newThreadInitializer()
     {
         return std::unique_ptr<CPUAffinityThreadInitializerLinux>(
                 newThreadInitializerImpl());
