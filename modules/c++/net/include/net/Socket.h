@@ -247,10 +247,7 @@ public:
      *  \param fromClient Client socket address returned
      *  \return A new socket connection to the client
      */
-    #if __cplusplus < 201703L // C++17
-    std::auto_ptr<Socket> accept(SocketAddress& fromClient);
-    #endif
-    std::unique_ptr<Socket> accept(std::nullptr_t, SocketAddress& fromClient);
+    std::unique_ptr<Socket> accept(SocketAddress& fromClient);
 
     net::Socket_T getHandle() const
     {

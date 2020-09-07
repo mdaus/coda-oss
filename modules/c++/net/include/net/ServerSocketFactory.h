@@ -81,14 +81,7 @@ public:
      *  \param address Address to establish the socket for
      *  \return The created & bound socket
      */
-#if __cplusplus < 201703L // C++17
-    virtual std::auto_ptr<Socket> create(const SocketAddress& address) const
-    {
-        auto s = create(nullptr, address);
-        return std::auto_ptr<Socket>(s.release());
-    }
-#endif
-    virtual std::unique_ptr<Socket> create(std::nullptr_t, const SocketAddress& address) const
+    virtual std::unique_ptr<Socket> create(const SocketAddress& address) const
     {
         std::unique_ptr<Socket> s(new Socket(mProto));
 
@@ -133,14 +126,7 @@ public:
      *
      *  \return The produced socket
      */
-    #if __cplusplus < 201703L // C++17
-    virtual std::auto_ptr<Socket> create(const SocketAddress& address) const override
-    {
-        auto s = create(nullptr, address);
-        return std::auto_ptr<Socket>(s.release());
-    }
-    #endif
-    virtual std::unique_ptr<Socket> create(std::nullptr_t, const SocketAddress& address) const override
+    virtual std::unique_ptr<Socket> create(const SocketAddress& address) const override
     {
         std::unique_ptr<Socket> s(new Socket(mProto));
 
@@ -195,14 +181,7 @@ public:
      *  listen().
      *
      */
-    #if __cplusplus < 201703L  // C++17
-    virtual std::auto_ptr<Socket> create(const SocketAddress& address) const override
-    {
-        auto s = create(nullptr, address);
-        return std::auto_ptr<Socket>(s.release());
-    }
-    #endif
-    virtual std::unique_ptr<Socket> create(std::nullptr_t, const SocketAddress& address) const override
+    virtual std::unique_ptr<Socket> create(const SocketAddress& address) const override
     {
         std::unique_ptr<Socket> s(new Socket(mProto));
 
