@@ -59,14 +59,7 @@ struct AvailableCPUProvider final : public AbstractNextCPUProviderLinux
     {
     }
 
-    #if __cplusplus < 201703L  // C++17
-    virtual std::auto_ptr<const sys::ScopedCPUMaskUnix> nextCPU() override
-    {
-        auto result = nextCPU(nullptr);
-        return std::auto_ptr<const sys::ScopedCPUMaskUnix>(result.release());
-    }
-    #endif
-    virtual std::unique_ptr<const sys::ScopedCPUMaskUnix> nextCPU(std::nullptr_t) override
+    virtual std::unique_ptr<const sys::ScopedCPUMaskUnix> nextCPU() override
     {
         if (mNextCPUIndex >= mCPUs.size())
         {
@@ -93,14 +86,7 @@ struct OffsetCPUProvider final : public AbstractNextCPUProviderLinux
     {
     }
 
-    #if __cplusplus < 201703L  // C++17
-    virtual std::auto_ptr<const sys::ScopedCPUMaskUnix> nextCPU() override
-    {
-        auto result = nextCPU(nullptr);
-        return std::auto_ptr<const sys::ScopedCPUMaskUnix>(result.release());
-    }
-    #endif
-    virtual std::unique_ptr<const sys::ScopedCPUMaskUnix> nextCPU(std::nullptr_t) override
+    virtual std::unique_ptr<const sys::ScopedCPUMaskUnix> nextCPU() override
     {
         std::unique_ptr<sys::ScopedCPUMaskUnix> mask(new sys::ScopedCPUMaskUnix());
         CPU_SET_S(mNextCPU++, mask->getSize(), mask->getMask());

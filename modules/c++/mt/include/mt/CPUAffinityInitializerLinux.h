@@ -38,10 +38,7 @@ namespace mt
 {
 struct AbstractNextCPUProviderLinux
 {
-#if __cplusplus < 201703L // C++17
-    virtual std::auto_ptr<const sys::ScopedCPUMaskUnix> nextCPU() = 0;
-#endif
-    virtual std::unique_ptr <const sys::ScopedCPUMaskUnix> nextCPU(std::nullptr_t) = 0;
+    virtual std::unique_ptr <const sys::ScopedCPUMaskUnix> nextCPU() = 0;
 };
 
 /*!
