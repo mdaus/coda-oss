@@ -133,10 +133,7 @@ private:
      *          the internal CPUAffinityInitializer. If no initializer
      *          was created, will return nullptr.
      */
-#if __cplusplus < 201703L  // C++17
-    std::auto_ptr<CPUAffinityThreadInitializer> getNextInitializer() const;
-#endif
-    std::unique_ptr<CPUAffinityThreadInitializer> getNextInitializer(std::nullptr_t) const;
+    std::unique_ptr<CPUAffinityThreadInitializer> getNextInitializer() const;
 
     /*!
      * \class ThreadGroupRunnable

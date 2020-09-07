@@ -47,21 +47,6 @@ public:
         mAffinityInit = affinityInit;
     }
 
-    #if __cplusplus < 201703L // C++17
-    virtual std::auto_ptr<CPUAffinityThreadInitializer>
-    getCPUAffinityThreadInitializer()
-    {
-        std::auto_ptr<CPUAffinityThreadInitializer> threadInit(nullptr);
-
-        // If we were passed a schematic
-        // for initializing thread affinity...
-        if (mAffinityInit)
-        {
-            threadInit = mAffinityInit->newThreadInitializer();
-        }
-        return threadInit;
-    }
-    #endif
     virtual std::unique_ptr<CPUAffinityThreadInitializer>
     getCPUAffinityThreadInitializer(std::nullptr_t)
     {
@@ -71,7 +56,7 @@ public:
         // for initializing thread affinity...
         if (mAffinityInit)
         {
-            threadInit = mAffinityInit->newThreadInitializer(nullptr);
+            threadInit = mAffinityInit->newThreadInitializer();
         }
         return threadInit;
     }

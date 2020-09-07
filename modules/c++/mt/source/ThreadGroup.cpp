@@ -55,26 +55,12 @@ void ThreadGroup::createThread(sys::Runnable *runnable)
 {
     createThread(std::unique_ptr<sys::Runnable>(runnable));
 }
-#if __cplusplus < 201703L  // C++17
-void ThreadGroup::createThread(std::auto_ptr<sys::Runnable> runnable)
-{
-    // Note: If getNextInitializer throws, any previously created
-    //       threads may never finish if cross-thread communication is used.
-    std::auto_ptr<sys::Runnable> internalRunnable(
-            new ThreadGroupRunnable(runnable, *this, getNextInitializer()));
-
-    mem::SharedPtr<sys::Thread> thread(new sys::Thread(internalRunnable.get()));
-    internalRunnable.release();
-    mThreads.push_back(thread);
-    thread->start();
-}
-#endif
 void ThreadGroup::createThread(std::unique_ptr<sys::Runnable>&& runnable)
 {
     // Note: If getNextInitializer throws, any previously created
     //       threads may never finish if cross-thread communication is used.
     std::unique_ptr<sys::Runnable> internalRunnable(
-            new ThreadGroupRunnable(std::move(runnable), *this, getNextInitializer(nullptr)));
+            new ThreadGroupRunnable(std::move(runnable), *this, getNextInitializer()));
 
     mem::SharedPtr<sys::Thread> thread(new sys::Thread(internalRunnable.get()));
     internalRunnable.release();
@@ -125,19 +111,7 @@ void ThreadGroup::addException(const except::Exception& ex)
     }
 }
 
-#if __cplusplus < 201703L  // C++17
-std::auto_ptr<CPUAffinityThreadInitializer> ThreadGroup::getNextInitializer() const
-{
-    std::auto_ptr<CPUAffinityThreadInitializer> threadInit(nullptr);
-    if (mAffinityInit.get())
-    {
-        threadInit = mAffinityInit->newThreadInitializer();
-    }
-
-    return threadInit;
-}
-#endif
-std::unique_ptr<CPUAffinityThreadInitializer> ThreadGroup::getNextInitializer(std::nullptr_t) const
+std::unique_ptr<CPUAffinityThreadInitializer> ThreadGroup::getNextInitializer() const
 {
     std::unique_ptr<CPUAffinityThreadInitializer> threadInit(nullptr);
     if (mAffinityInit.get())
