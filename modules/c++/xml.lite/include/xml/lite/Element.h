@@ -306,9 +306,6 @@ public:
      *  Adds a child element to this element
      *  \param node the child element to add
      */
-#if __cplusplus < 201703L  // C++17
-    virtual void addChild(std::auto_ptr<Element> node);
-#endif
     virtual void addChild(std::unique_ptr <Element>&& node);
 
     /*!
