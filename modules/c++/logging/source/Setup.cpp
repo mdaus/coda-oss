@@ -30,21 +30,7 @@
 
 #include "logging/Setup.h"
 
-#if __cplusplus < 201703L  // C++17
-std::auto_ptr<logging::Logger>
-logging::setupLogger(const std::string& program, 
-                     const std::string& logLevel, 
-                     const std::string& logFile,
-                     const std::string& logFormat,
-                     size_t logCount,
-                     size_t logBytes)
-{
-    auto log = setupLogger(nullptr, program, logLevel, logFile, logFormat, logCount, logBytes);
-    return std::auto_ptr<logging::Logger>(log.release());
-}
-#endif
-std::unique_ptr<logging::Logger> logging::setupLogger(std::nullptr_t,
-        const std::string& program,
+std::unique_ptr<logging::Logger> logging::setupLogger(const std::string& program,
         const std::string& logLevel,
         const std::string& logFile,
         const std::string& logFormat,
