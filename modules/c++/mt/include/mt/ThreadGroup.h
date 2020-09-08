@@ -78,9 +78,6 @@ public:
     *  Creates and starts a thread from a sys::Runnable.
     *  \param runnable auto_ptr to sys::Runnable
     */
-#if __cplusplus < 201703L // C++17
-    void createThread(std::auto_ptr<sys::Runnable> runnable);
-#endif
     void createThread(std::unique_ptr<sys::Runnable>&& runnable);
 
     /*!
@@ -154,13 +151,6 @@ private:
          *                   to execute on. If nullptr, no affinity preferences
          *                   will be enforced.
          */
-#if __cplusplus < 201703L // C++17
-        ThreadGroupRunnable(
-                std::auto_ptr<sys::Runnable> runnable,
-                mt::ThreadGroup& parentThreadGroup,
-                std::auto_ptr<CPUAffinityThreadInitializer> threadInit =
-                        std::auto_ptr<CPUAffinityThreadInitializer>(nullptr));
-#endif
         ThreadGroupRunnable(
                 std::unique_ptr<sys::Runnable>&& runnable,
                 mt::ThreadGroup& parentThreadGroup,

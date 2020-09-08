@@ -122,17 +122,6 @@ std::unique_ptr<CPUAffinityThreadInitializer> ThreadGroup::getNextInitializer() 
     return threadInit;
 }
 
-#if __cplusplus < 201703L  // C++17
-ThreadGroup::ThreadGroupRunnable::ThreadGroupRunnable(
-        std::auto_ptr<sys::Runnable> runnable,
-        ThreadGroup& parentThreadGroup,
-        std::auto_ptr<CPUAffinityThreadInitializer> threadInit) :
-        mRunnable(runnable.release()),
-        mParentThreadGroup(parentThreadGroup),
-        mCPUInit(threadInit.release())
-{
-}
-#endif
 ThreadGroup::ThreadGroupRunnable::ThreadGroupRunnable(
         std::unique_ptr<sys::Runnable>&& runnable,
         ThreadGroup& parentThreadGroup,
