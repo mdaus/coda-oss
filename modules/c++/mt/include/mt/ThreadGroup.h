@@ -76,7 +76,7 @@ public:
 
     /*!
     *  Creates and starts a thread from a sys::Runnable.
-    *  \param runnable auto_ptr to sys::Runnable
+    *  \param runnable unique_ptr to sys::Runnable
     */
     void createThread(std::unique_ptr<sys::Runnable>&& runnable);
 
