@@ -56,7 +56,7 @@
 #if defined(__GNUC__)
     /*  We get a really nice function macro  */
 #   define NativeLayer_func__ __PRETTY_FUNCTION__
-#elif (defined(WIN32) || defined(_WIN32)) && (_MSC_VER >= 1300)
+#elif defined(WIN32) && (_MSC_VER >= 1300)
 #   define NativeLayer_func__ __FUNCSIG__
 /*  Otherwise, lets look for C99 compatibility  */
 #elif defined (__STDC_VERSION__)
@@ -314,18 +314,18 @@ namespace sys
      *
      *  \param sz The size (in bytes) of the buffer we wish to create
      *  \throw Exception if a bad allocation occurs
-     *  \return a pointer to the data (this method never returns NULL)
+     *  \return a pointer to the data (this method never returns nullptr)
      */
     inline void* alignedAlloc(size_t size,
                               size_t alignment = SSE_INSTRUCTION_ALIGNMENT)
     {
-#if defined(WIN32) || defined(_WIN32)
+#ifdef WIN32
         void* p = _aligned_malloc(size, alignment);
 #elif defined(HAVE_POSIX_MEMALIGN)
-        void* p = NULL;
+        void* p = nullptr;
         if (posix_memalign(&p, alignment, size) != 0)
         {
-            p = NULL;
+            p = nullptr;
         }
 #elif defined(HAVE_MEMALIGN)
         void* const p = memalign(alignment, size);
@@ -348,7 +348,7 @@ namespace sys
      */
     inline void alignedFree(void* p)
     {
-#if defined(WIN32) || defined(_WIN32)
+#ifdef WIN32
         _aligned_free(p);
 #else
         free(p);
