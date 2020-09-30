@@ -190,7 +190,7 @@
 #cmakedefine HAVE_STRDUP 1
 
 /* Define to 1 if you have the `stricmp' function. */
-#cmakedefine HAVE_STRICMP 0
+#cmakedefine HAVE_STRICMP 1
 
 /* Define to 1 if you have the <strings.h> header file. */
 #cmakedefine HAVE_STRINGS_H 1
@@ -202,7 +202,7 @@
 #cmakedefine HAVE_STRNCASECMP 1
 
 /* Define to 1 if you have the `strnicmp' function. */
-#cmakedefine HAVE_STRNICMP 0
+#cmakedefine HAVE_STRNICMP 1
 
 /* Define to 1 if you have the `strrchr' function. */
 #cmakedefine HAVE_STRRCHR 1
