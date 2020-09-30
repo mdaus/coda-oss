@@ -48,7 +48,7 @@ else()
     message("XML_HOME not specified, so XercesC will be built")
     coda_fetch_driver(
         NAME ${TARGET_NAME}
-        ARCHIVE "xerces-c-3.1.1.tar"
+        ARCHIVE "xerces-c-3.2.3.tar"
         HASH "SHA256=1F57A27DD1B3806DF42D5AE638C362358CD16519578D7D395FC77FFD35F4DBCB"
     )
 
@@ -203,7 +203,7 @@ else()
     set(PACKAGE xerces-c)
     set(PACKAGE_BUGREPORT "")
     set(PACKAGE_NAME "xerces-c")
-    set(PACKAGE_STRING "xerces-c 3.1.1")
+    set(PACKAGE_STRING "xerces-c 3.2.3")
     set(PACKAGE_TARNAME "xerces-c")
     set(PACKAGE_URL "")
     set(PACKAGE_VERSION "3.1.1")

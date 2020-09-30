@@ -4,7 +4,7 @@ from waflib import Options, Utils
 from waflib.TaskGen import feature, before, task_gen
 from build import untarFile, writeConfig
 
-SOURCE         = 'xerces-c-3.1.1'
+SOURCE         = 'xerces-c-3.2.3'
 XERCES_USELIBS = 'THREAD SOCKET'
 
 options = lambda x : None
@@ -181,7 +181,7 @@ def configure(conf):
                 conf.define('PACKAGE', 'xerces-c', quote=False)
                 conf.define('PACKAGE_BUGREPORT', '', quote=False)
                 conf.define('PACKAGE_NAME', 'xerces-c', quote=False)
-                conf.define('PACKAGE_STRING', 'xerces-c 3.1.1', quote=False)
+                conf.define('PACKAGE_STRING', 'xerces-c 3.2.3', quote=False)
                 conf.define('PACKAGE_TARNAME', 'xerces-c', quote=False)
                 conf.define('PACKAGE_URL', '', quote=False)
                 conf.define('PACKAGE_VERSION', '3.1.1', quote=False)
@@ -348,7 +348,7 @@ def distclean(context):
     # remove the untarred directories
     import shutil
     dirs = filter(lambda x: exists(join(context.path.abspath(), x)),
-                  ['xerces-c-3.1.1'])
+                  ['xerces-c-3.2.3'])
     for d in dirs:
         try:
             shutil.rmtree(join(context.path.abspath(), d), ignore_errors=True)
