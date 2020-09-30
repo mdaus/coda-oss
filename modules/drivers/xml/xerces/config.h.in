@@ -190,7 +190,7 @@
 #cmakedefine HAVE_STRDUP 1
 
 /* Define to 1 if you have the `stricmp' function. */
-#cmakedefine HAVE_STRICMP 1
+#cmakedefine HAVE_STRICMP 0
 
 /* Define to 1 if you have the <strings.h> header file. */
 #cmakedefine HAVE_STRINGS_H 1
@@ -202,7 +202,7 @@
 #cmakedefine HAVE_STRNCASECMP 1
 
 /* Define to 1 if you have the `strnicmp' function. */
-#cmakedefine HAVE_STRNICMP 1
+#cmakedefine HAVE_STRNICMP 0
 
 /* Define to 1 if you have the `strrchr' function. */
 #cmakedefine HAVE_STRRCHR 1
@@ -389,6 +389,9 @@
 
 /* Define as the platform's import attribute */
 #cmakedefine XERCES_PLATFORM_IMPORT @XERCES_PLATFORM_IMPORT@
+
+/* How to "extern" a template */
+#cmakedefine XERCES_TEMPLATE_EXTERN @XERCES_TEMPLATE_EXTERN@
 
 /* An appropriate signed 16 bit integer type */
 #cmakedefine XERCES_S16BIT_INT @XERCES_S16BIT_INT@
