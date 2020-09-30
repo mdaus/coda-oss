@@ -8,6 +8,15 @@ install/
 target/
 test_package/build/
 
+# CMake
+_deps/
+*.cmake
+CMakeCache.txt
+CMakeFiles/
+*_config.h
+Makefile
+modules/**/Makefile
+
 # Waf
 .waf-*
 waf-*
