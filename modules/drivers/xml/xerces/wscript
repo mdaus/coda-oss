@@ -177,6 +177,8 @@ def configure(conf):
                     conf.define('XERCES_SIZE_T', 'size_t', quote=False)
                     conf.define('XERCES_SSIZE_T', 'ssize_t', quote=False)
 
+                conf.define('XERCES_SIZE_MAX', 'SIZE_MAX', quote=False) 
+
                 conf.define('LT_OBJDIR', '.libs/', quote=False)
                 conf.define('PACKAGE', 'xerces-c', quote=False)
                 conf.define('PACKAGE_BUGREPORT', '', quote=False)
@@ -184,8 +186,8 @@ def configure(conf):
                 conf.define('PACKAGE_STRING', 'xerces-c 3.2.3', quote=False)
                 conf.define('PACKAGE_TARNAME', 'xerces-c', quote=False)
                 conf.define('PACKAGE_URL', '', quote=False)
-                conf.define('PACKAGE_VERSION', '3.1.1', quote=False)
-                conf.define('VERSION', '3.1.1', quote=False)
+                conf.define('PACKAGE_VERSION', '3.2.3', quote=False)
+                conf.define('VERSION', '3.2.3', quote=False)
 
                 # extra defines for Xerces_autoconf_config.hpp
                 conf.define('XERCES_USE_MSGLOADER_INMEMORY', 1)
@@ -198,6 +200,7 @@ def configure(conf):
                 conf.define('XERCES_AUTOCONF', 1)
                 conf.define('XERCES_PLATFORM_EXPORT', conf.env['declspec_decoration'], quote=False)
                 conf.define('XERCES_PLATFORM_IMPORT', '', quote=False)
+                conf.define('XERCES_TEMPLATE_EXTERN', 'extern', quote=False)
                 conf.define('XERCES_HAS_CPP_NAMESPACE', 1)
                 conf.define('XERCES_STD_NAMESPACE', 1)
                 conf.define('XERCES_NEW_IOSTREAMS', 1)
