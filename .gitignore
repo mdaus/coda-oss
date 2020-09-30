@@ -16,6 +16,7 @@ CMakeFiles/
 *_config.h
 Makefile
 modules/**/Makefile
+out/
 
 # Waf
 .waf-*
@@ -42,3 +43,4 @@ modules/drivers/zlib/zlib-1.2.7/
 .vs/
 project.sln
 .depproj/
+
