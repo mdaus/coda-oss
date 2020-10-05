@@ -49,7 +49,7 @@ else()
     coda_fetch_driver(
         NAME ${TARGET_NAME}
         ARCHIVE "xerces-c-3.2.3.tar"
-        HASH "SHA256=a62a37dfd5204ed28c0c3a185cae297ba9cae4f9bc10813ce3bc6d2f541192f6"
+        HASH "SHA256=61981c7a464e33913a093e0dfe7daf8a45f21e46b1924eb97f92bdbb746e2e6e"
     )
 
     check_include_file("inttypes.h" HAVE_INTTYPES_H)
