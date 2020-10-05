@@ -129,6 +129,15 @@ def configure(conf):
                     conf.define('XERCES_INCLUDE_WCHAR_H', 1)
                 if 'HAVE_EMMINTRIN_H=1' in conf.env['DEFINES'] :
                     conf.define('XERCES_HAVE_SSE2_INTRINSIC', 1)
+                if 'HAVE_STRICMP=1' in conf.env['DEFINES'] :
+                    conf.define('HAVE_STRICMP', 1)
+                else :
+                    conf.define('HAVE_STRICMP', 0)
+                if 'HAVE_STRNICMP=1' in conf.env['DEFINES'] :
+                    conf.define('HAVE_STRNICMP', 1)
+                else :
+                    conf.define('HAVE_STRNICMP', 0)
+
                 if sys.platform == 'win32' :
                     conf.define('XERCES_USE_FILEMGR_WINDOWS', 1)
                     conf.define('XERCES_USE_MUTEXMGR_WINDOWS', 1)
