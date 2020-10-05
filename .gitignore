@@ -5,6 +5,7 @@ __pycache__/
 # Build artifacts
 
 install/
+install-*/
 target/
 test_package/build/
 
