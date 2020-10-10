@@ -68,7 +68,7 @@ protected:
 
     virtual sys::byte processByte() const
     {
-        return (sys::byte) 0;
+        return 0;
     }
     virtual void processBytes(void* buffer, sys::Size_T len) const
     {
