@@ -26,7 +26,7 @@
 
 #include <memory>
 
-#if defined(WIN32) || defined(_WIN32)
+#if defined(WIN32)
 
 #include <mt/AbstractCPUAffinityInitializer.h>
 #include <mt/CPUAffinityThreadInitializerWin32.h>
@@ -43,7 +43,7 @@ class CPUAffinityInitializerWin32 : public AbstractCPUAffinityInitializer
 public:
     /*!
      * \todo Not yet implemented
-     * \returns NULL
+     * \returns nullptr
      */
     std::unique_ptr<CPUAffinityThreadInitializerWin32> newThreadInitializer()
     {
