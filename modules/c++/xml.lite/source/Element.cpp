@@ -142,9 +142,9 @@ void xml::lite::Element::destroyChildren()
     }
 }
 
-void xml::lite::Element::print(io::OutputStream& stream) const
+void xml::lite::Element::print(io::OutputStream& stream, bool asUTF8) const
 {
-    depthPrint(stream, 0, "");
+    depthPrint(stream, 0, "", asUTF8);
 }
 
 void xml::lite::Element::prettyPrint(io::OutputStream& stream,

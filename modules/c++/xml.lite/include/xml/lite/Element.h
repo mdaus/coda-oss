@@ -203,7 +203,7 @@ public:
      *  \param formatter  The formatter
      *  \todo Add format capability
      */
-    void print(io::OutputStream& stream) const;
+    void print(io::OutputStream& stream, bool asUTF8=false) const;
 
     void prettyPrint(io::OutputStream& stream, const std::string& formatter, bool asUTF8) const;
     void prettyPrint(io::OutputStream& stream, bool asUTF8) const;
