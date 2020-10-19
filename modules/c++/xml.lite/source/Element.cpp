@@ -154,6 +154,18 @@ void xml::lite::Element::prettyPrint(io::OutputStream& stream,
     depthPrint(stream, 0, formatter, asUTF8);
     stream.writeln("");
 }
+void xml::lite::Element::prettyPrint(io::OutputStream& stream, const std::string& formatter) const
+{
+    prettyPrint(stream, formatter, false /*asUTF8*/);
+}
+void xml::lite::Element::prettyPrint(io::OutputStream& stream, bool asUTF8) const
+{
+    prettyPrint(stream, "    " /*formatter*/, asUTF8);
+}
+void xml::lite::Element::prettyPrint(io::OutputStream& stream) const
+{
+    prettyPrint(stream, "    " /*formatter*/, false /*asUTF8*/);
+}
 
 void xml::lite::Element::depthPrint(io::OutputStream& stream,
                                     int depth,
@@ -192,7 +204,7 @@ void xml::lite::Element::depthPrint(io::OutputStream& stream,
         {
             if (!formatter.empty())
                 stream.write("\n");
-            mChildren[i]->depthPrint(stream, depth + 1, formatter);
+            mChildren[i]->depthPrint(stream, depth + 1, formatter, asUTF8);
         }
 
         if (!mChildren.empty() && !formatter.empty())

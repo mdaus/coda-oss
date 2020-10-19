@@ -205,9 +205,10 @@ public:
      */
     void print(io::OutputStream& stream) const;
 
-    void prettyPrint(io::OutputStream& stream,
-                     const std::string& formatter = "    ",
-                     bool asUTF8 = false) const;
+    void prettyPrint(io::OutputStream& stream, const std::string& formatter, bool asUTF8) const;
+    void prettyPrint(io::OutputStream& stream, bool asUTF8) const;
+    void prettyPrint(io::OutputStream& stream, const std::string& formatter) const;
+    void prettyPrint(io::OutputStream& stream) const;
 
     /*!
      *  Determines if a child element exists
