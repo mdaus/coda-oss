@@ -206,7 +206,8 @@ public:
     void print(io::OutputStream& stream) const;
 
     void prettyPrint(io::OutputStream& stream,
-                     const std::string& formatter = "    ") const;
+                     const std::string& formatter = "    ",
+                     bool asUTF8 = false) const;
 
     /*!
      *  Determines if a child element exists
@@ -347,7 +348,7 @@ protected:
                    const std::string& uri);
 
     void depthPrint(io::OutputStream& stream, int depth,
-                    const std::string& formatter) const;
+                    const std::string& formatter, bool asUTF8 = false) const;
     
     Element* mParent;
     //! The children of this element

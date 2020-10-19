@@ -22,6 +22,7 @@
 
 #ifndef __IO_OUTPUT_STREAM_H__
 #define __IO_OUTPUT_STREAM_H__
+#pragma once
 
 #include "sys/Dbg.h"
 #include "sys/Conf.h"
@@ -69,18 +70,15 @@ public:
      *  Write a string
      *  \param str
      */
-    void write(const std::string& str)
-    {
-        write(reinterpret_cast<const sys::byte*>(str.c_str()), (sys::Size_T) str.length());
-    }
+    void write(const std::string& str, bool asUTF8 = false);
 
     /*!
      *  Write a string with a newline at the end
      *  \param str
      */
-    void writeln(const std::string& str)
+    void writeln(const std::string& str, bool asUTF8 = false)
     {
-        write(str);
+        write(str, asUTF8);
         write('\n');
     }
 
