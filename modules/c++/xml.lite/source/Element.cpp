@@ -142,21 +142,22 @@ void xml::lite::Element::destroyChildren()
     }
 }
 
-void xml::lite::Element::print(io::OutputStream& stream) const
+void xml::lite::Element::print(io::OutputStream& stream, const io::TextEncoding* pEncoding) const
 {
-    depthPrint(stream, 0, "");
+    depthPrint(stream, 0, "", pEncoding);
 }
 
 void xml::lite::Element::prettyPrint(io::OutputStream& stream,
-                                     const std::string& formatter) const
+                                     const std::string& formatter,
+                                     const io::TextEncoding* pEncoding) const
 {
-    depthPrint(stream, 0, formatter);
+    depthPrint(stream, 0, formatter, pEncoding);
     stream.writeln("");
 }
 
 void xml::lite::Element::depthPrint(io::OutputStream& stream,
                                     int depth,
-                                    const std::string& formatter) const
+                                    const std::string& formatter, const io::TextEncoding* pEncoding) const
 {
     std::string prefix = "";
     for (int i = 0; i < depth; ++i)
@@ -185,13 +186,13 @@ void xml::lite::Element::depthPrint(io::OutputStream& stream,
     else
     {
         stream.write(acc + rBrack);
-        stream.write(mCharacterData);
+        stream.write(mCharacterData, pEncoding);
 
         for (unsigned int i = 0; i < mChildren.size(); i++)
         {
             if (!formatter.empty())
                 stream.write("\n");
-            mChildren[i]->depthPrint(stream, depth + 1, formatter);
+            mChildren[i]->depthPrint(stream, depth + 1, formatter, pEncoding);
         }
 
         if (!mChildren.empty() && !formatter.empty())
@@ -210,14 +211,10 @@ void xml::lite::Element::addChild(xml::lite::Element * node)
     node->setParent(this);
 }
 
-void xml::lite::Element::addChild(std::auto_ptr<xml::lite::Element> node)
+void xml::lite::Element::addChild(std::unique_ptr<xml::lite::Element>&& node)
 {
-    // Always take ownership
-    std::auto_ptr<xml::lite::Element> scopedValue(node);
-    addChild(scopedValue.get());
-    scopedValue.release();
+    addChild(node.release()); // addChild() now owns node
 }
-
 void xml::lite::Element::changePrefix(Element* element,
     const std::string& prefix, const std::string& uri)
 {
