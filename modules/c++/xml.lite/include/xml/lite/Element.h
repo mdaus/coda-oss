@@ -22,6 +22,7 @@
 
 #ifndef __XML_LITE_ELEMENT_H__
 #define __XML_LITE_ELEMENT_H__
+#pragma once
 
 #include <io/InputStream.h>
 #include <io/OutputStream.h>
