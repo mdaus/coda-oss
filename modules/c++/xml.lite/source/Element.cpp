@@ -142,34 +142,22 @@ void xml::lite::Element::destroyChildren()
     }
 }
 
-void xml::lite::Element::print(io::OutputStream& stream, bool asUTF8) const
+void xml::lite::Element::print(io::OutputStream& stream, const io::TextEncoding* pEncoding) const
 {
-    depthPrint(stream, 0, "", asUTF8);
+    depthPrint(stream, 0, "", pEncoding);
 }
 
 void xml::lite::Element::prettyPrint(io::OutputStream& stream,
                                      const std::string& formatter,
-                                     bool asUTF8) const
+                                     const io::TextEncoding* pEncoding) const
 {
-    depthPrint(stream, 0, formatter, asUTF8);
+    depthPrint(stream, 0, formatter, pEncoding);
     stream.writeln("");
-}
-void xml::lite::Element::prettyPrint(io::OutputStream& stream, const std::string& formatter) const
-{
-    prettyPrint(stream, formatter, false /*asUTF8*/);
-}
-void xml::lite::Element::prettyPrint(io::OutputStream& stream, bool asUTF8) const
-{
-    prettyPrint(stream, "    " /*formatter*/, asUTF8);
-}
-void xml::lite::Element::prettyPrint(io::OutputStream& stream) const
-{
-    prettyPrint(stream, "    " /*formatter*/, false /*asUTF8*/);
 }
 
 void xml::lite::Element::depthPrint(io::OutputStream& stream,
                                     int depth,
-                                    const std::string& formatter, bool asUTF8) const
+                                    const std::string& formatter, const io::TextEncoding* pEncoding) const
 {
     std::string prefix = "";
     for (int i = 0; i < depth; ++i)
@@ -198,13 +186,13 @@ void xml::lite::Element::depthPrint(io::OutputStream& stream,
     else
     {
         stream.write(acc + rBrack);
-        stream.write(mCharacterData, asUTF8);
+        stream.write(mCharacterData, pEncoding);
 
         for (unsigned int i = 0; i < mChildren.size(); i++)
         {
             if (!formatter.empty())
                 stream.write("\n");
-            mChildren[i]->depthPrint(stream, depth + 1, formatter, asUTF8);
+            mChildren[i]->depthPrint(stream, depth + 1, formatter, pEncoding);
         }
 
         if (!mChildren.empty() && !formatter.empty())

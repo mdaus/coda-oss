@@ -57,7 +57,7 @@ TEST_CASE(testStringStreamUtf8)
 {
     io::StringStream stream;
     const std::string input = "|I\xc9|"; // ISO8859-1, "|IÉ|"
-    stream.writeln(input, true /*asUTF8*/);
+    stream.writeln(input, io::TextEncoding::Utf8);
 
     stream.seek(0, io::Seekable::START);
     sys::byte buf[255];

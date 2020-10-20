@@ -21,6 +21,7 @@
  */
 
 #include <string>
+#include <stdexcept>
 
 #include <sys/Conf.h>
 #include <except/Exception.h>
@@ -28,47 +29,53 @@
 
 // Convert a single ISO8859-1 character to UTF-8
 // // https://en.wikipedia.org/wiki/ISO/IEC_8859-1
-static std::string toUtf8_(std::string::value_type ch)
+static std::string to_utf8_(std::string::value_type ch)
 {
-    std::string retval;
-
     if ((ch >= '\x00') && (ch <= '\x7f'))  // ASCII
     {
-        retval.push_back(ch);
+        return std::string{ch};
     }
-    else if ((ch >= '\xC0' /*À*/) && (ch <= '\xFF' /*y*/))  // ISO8859-1 letters
+
+    if ((ch >= '\xC0' /*À*/) && (ch <= '\xFF' /*y*/))  // ISO8859-1 letters
     {
-        retval.push_back('\xC3');
+        std::string retval{'\xC3'};
         ch -= 0x40;  // 0xC0 -> 0x80
         retval.push_back(ch);
+        return retval;
     }
-    else
-    {
-        retval.push_back(ch);  // ???
-    }
-
-    return retval;
+    
+    return std::string{ch}; // ???
 }
 
-static std::string toUtf8(const std::string& str)
+static std::string to_utf8(const std::string& str)
 {
     std::string retval;
     // Assume the input string is ISO8859-1 (western European) and convert to UTF-8
     for (const auto& ch : str)
     {
-        retval += toUtf8_(ch);
+        retval += to_utf8_(ch);
     }
     return retval;
 }
 
-void io::OutputStream::write(const std::string& str_, bool asUTF8 /*= false*/)
+static std::string convert(const std::string& str, io::TextEncoding encoding)
+{
+    if (encoding == io::TextEncoding::Utf8)
+    {
+        return to_utf8(str);    
+    }
+
+    throw std::invalid_argument("Unexpected 'encoding' value.");
+}
+
+void io::OutputStream::write(const std::string& str_, const io::TextEncoding* pEncoding /*= nullptr*/)
 {
     const std::string* pStr = &str_;
-    std::string str;
-    if (asUTF8)
+    std::string str; // keep any result from convert() in-scope so we use its address
+    if (pEncoding != nullptr)
     {
-        str = toUtf8(str_);
-        pStr = &str;
+        str = convert(str_, *pEncoding);
+        pStr = &str; // stays in-scope, above
     }
      
     auto buffer = reinterpret_cast<const sys::byte*>(pStr->c_str());
