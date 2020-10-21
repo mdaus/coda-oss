@@ -47,9 +47,13 @@ namespace io
 class StringStream : public SeekableBidirectionalStream
 {
 public:
+
     //! Default constructor
-    StringStream(const TextEncoding* pEncoding = nullptr) : SeekableBidirectionalStream(pEncoding),
-        mData(std::stringstream::in | std::stringstream::out | std::stringstream::binary) { }
+    StringStream() : SeekableBidirectionalStream(pEncoding),
+        mData(std::stringstream::in | std::stringstream::out
+                | std::stringstream::binary)
+    {
+    }
 
     StringStream(TextEncoding encoding) : StringStream(&encoding) { }
 

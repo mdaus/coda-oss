@@ -77,8 +77,11 @@ protected:
     }
 
 public:
-    OutputStream() = default;
-
+public:
+    //! Default constructor
+    OutputStream()
+    {
+    }
     //! Destructor
     virtual ~OutputStream()
     {
