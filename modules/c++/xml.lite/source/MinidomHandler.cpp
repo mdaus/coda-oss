@@ -22,6 +22,8 @@
 
 #include "xml/lite/MinidomHandler.h"
 
+#include "str/Manip.h"
+
 void xml::lite::MinidomHandler::setDocument(Document *newDocument, bool own)
 {
     if (mDocument != NULL && mOwnDocument)
@@ -91,23 +93,7 @@ std::string xml::lite::MinidomHandler::adjustCharacterData()
 
 void xml::lite::MinidomHandler::trim(std::string & s)
 {
-    int i;
-
-    for (i = 0; i < (int) s.length(); i++)
-    {
-        if (!isspace(s[i]))
-            break;
-    }
-    s.erase(0, i);
-
-    for (i = (int) s.length() - 1; i >= 0; i--)
-    {
-        if (!isspace(s[i]))
-            break;
-
-    }
-    if (i + 1 < (int) s.length())
-        s.erase(i + 1);
+    str::trim(s);
 }
 
 void xml::lite::MinidomHandler::endElement(const std::string & /*uri*/,
