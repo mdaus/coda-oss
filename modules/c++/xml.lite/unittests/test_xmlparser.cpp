@@ -30,7 +30,7 @@
 
 TEST_CASE(testXmlParseSimple)
 {
-    const std::string text("text");
+    const std::string text("TEXT");
     const std::string strXml = "<root><doc><a>" + text + "</a></doc></root>";
     io::StringStream ss;
     ss.stream() << strXml;
@@ -67,7 +67,7 @@ TEST_CASE(testXmlParseSimple)
 
 TEST_CASE(testXmlPreserveCharacterData)
 {
-    const std::string utf8Text("I\xc3\x89");  // UTF-8,  "IÉ"
+    const std::string utf8Text("T\xc3\x89XT");  // UTF-8,  "TÉXT"
     const std::string strXml = "<root><doc><a>" + utf8Text + "</a></doc></root>";
     io::StringStream stream;
     stream.stream() << strXml;
@@ -89,29 +89,38 @@ TEST_CASE(testXmlPreserveCharacterData)
 
 TEST_CASE(testXmlUtf8)
 {
-    const std::string text("I\xc9");  // ISO8859-1, "IÉ"
-    const std::string utf8Text("I\xc3\x89");  // UTF-8,  "IÉ"
+    //auto prev = std::setlocale(LC_ALL, "C");
+
+    const std::string text("T\xc9XT");  // ISO8859-1, "TÉXT"
+    const std::string utf8Text("T\xc3\x89XT");  // UTF-8,  "TÉXT"
     const std::string strXml = "<root><doc><a>" + utf8Text + "</a></doc></root>";
     io::StringStream stream;
     stream.stream() << strXml;
     TEST_ASSERT_EQ(stream.stream().str(), strXml);
 
     xml::lite::MinidomParser xmlParser;
-    //xmlParser.preserveCharacterData(true);
+#ifdef _WIN32
+    // see comments in testXmlPreserveCharacterData()
+    xmlParser.preserveCharacterData(true);
+#endif
     xmlParser.parse(stream);
 
     const auto aElements =
             xmlParser.getDocument()->getRootElement()->getElementsByTagName("a", true /*recurse*/);
     TEST_ASSERT_EQ(aElements.size(), 1);
     const auto& a = *(aElements[0]);
-    const std::string characterData = a.getCharacterData();
-    TEST_ASSERT_EQ(characterData.length(), 2);
-    const std::string actual = ">" + characterData + "<";
+    const std::string actual = a.getCharacterData();
+    TEST_ASSERT_EQ(actual.length(), 4);
     #ifdef _WIN32
     TEST_ASSERT_EQ(actual, text);
     #else
+    std::cout << "'" << actual << "'\n";
+    TEST_ASSERT(actual == utf8Text);
     TEST_ASSERT_EQ(actual, utf8Text);
     #endif
+
+    //prev = std::setlocale(LC_ALL, prev);
+    //TEST_ASSERT_EQ(std::string(prev), "C");
 }
 
 int main(int, char**)
