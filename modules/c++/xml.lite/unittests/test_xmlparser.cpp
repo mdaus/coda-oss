@@ -67,7 +67,7 @@ TEST_CASE(testXmlParseSimple)
 
 TEST_CASE(testXmlPreserveCharacterData)
 {
-    const std::string utf8Text("T\xc3\x89XT");  // UTF-8,  "TÉXT"
+    const std::string utf8Text("T\xc3\x89XT");  // UTF-8,  "Tï¿½XT"
     const std::string strXml = "<root><doc><a>" + utf8Text + "</a></doc></root>";
     io::StringStream stream;
     stream.stream() << strXml;
@@ -91,8 +91,9 @@ TEST_CASE(testXmlUtf8)
 {
     //auto prev = std::setlocale(LC_ALL, "C");
 
-    const std::string text("T\xc9XT");  // ISO8859-1, "TÉXT"
-    const std::string utf8Text("T\xc3\x89XT");  // UTF-8,  "TÉXT"
+    const std::string text("T\xc9XT");  // ISO8859-1, "Tï¿½XT"
+    const std::string utf8Text("T\xc3\x89XT");  // UTF-8,  "Tï¿½XT"
+    //const std::string utf8Text("TEXT");  // UTF-8,  "Tï¿½XT"
     const std::string strXml = "<root><doc><a>" + utf8Text + "</a></doc></root>";
     io::StringStream stream;
     stream.stream() << strXml;
@@ -109,13 +110,12 @@ TEST_CASE(testXmlUtf8)
             xmlParser.getDocument()->getRootElement()->getElementsByTagName("a", true /*recurse*/);
     TEST_ASSERT_EQ(aElements.size(), 1);
     const auto& a = *(aElements[0]);
-    const std::string actual = a.getCharacterData();
+    const auto actual = a.getCharacterData();
     TEST_ASSERT_EQ(actual.length(), 4);
     #ifdef _WIN32
     TEST_ASSERT_EQ(actual, text);
     #else
-    std::cout << "'" << actual << "'\n";
-    TEST_ASSERT(actual == utf8Text);
+    //std::cout << "'" << actual << "'\n";
     TEST_ASSERT_EQ(actual, utf8Text);
     #endif
 
