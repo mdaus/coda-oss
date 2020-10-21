@@ -20,29 +20,39 @@
  *
  */
 
-#ifndef __IO_BIDIRECTIONAL_STREAM_H__
-#define __IO_BIDIRECTIONAL_STREAM_H__
-
-#include "io/InputStream.h"
 #include "io/OutputStream.h"
 
-/*!
- *  \file
- *  \brief Provides an interface for a stream that is both input
- *  and output.
- */
+#include <string>
+#include <stdexcept>
 
-namespace io
-{
-/*!
- *  \class BidirectionalStream
- *  \brief Provides a input/output stream as one class.
- */
-struct BidirectionalStream: public InputStream, public OutputStream
-{
-    BidirectionalStream(const TextEncoding* pEncoding = nullptr) : OutputStream(pEncoding) { }
-    virtual ~BidirectionalStream() { }
-};
+#include <sys/String.h>
 
+static sys::u8string convert(const std::string& str, io::TextEncoding encoding)
+{
+    if (encoding == io::TextEncoding::Utf8)
+    {
+        return str::toUtf8(str);
+    }
+
+    throw std::invalid_argument("Unexpected 'encoding' value.");
 }
-#endif
+
+template<typename T>
+inline static void write(io::OutputStream& stream, const T& str)
+{
+    const auto buffer = reinterpret_cast<const sys::byte*>(str.c_str());
+    const sys::Size_T len{str.length()};
+    stream.write(buffer, len);
+}
+void io::OutputStream::write(const std::string& str)
+{
+    if (pEncoding == nullptr)
+    {
+        ::write(*this, str);
+    }
+    else
+    {
+        const auto u8str = convert(str, *pEncoding);
+        ::write(*this, u8str);
+    }
+}

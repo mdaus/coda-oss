@@ -22,6 +22,10 @@
 
 #ifndef __IO_OUTPUT_STREAM_H__
 #define __IO_OUTPUT_STREAM_H__
+#pragma once
+
+#include <string>
+#include <memory>
 
 #include "sys/Dbg.h"
 #include "sys/Conf.h"
@@ -35,6 +39,22 @@
 
 namespace io
 {
+    /*!
+     * \class TextEncoding
+     * \brief Specify how to encode text for various write() routines
+     *
+     */
+    enum class TextEncoding
+    {
+        Utf8
+        // There could be more here, but there's no need for them right now.
+        /*
+        , Iso8859_1
+       , Windows_1252 = Iso8859_1 // close enough for our purposes?
+        , Ascii
+        */
+    };
+
 /*!
  * \class OutputStream
  * \brief Class for handling output streams
@@ -46,6 +66,17 @@ namespace io
 
 class OutputStream
 {
+    std::shared_ptr<const TextEncoding> pEncoding;  // i.e., std::optional<>
+protected:
+    OutputStream(const TextEncoding* pEncoding) 
+    {
+        if (pEncoding != nullptr)
+        {
+            this->pEncoding = std::make_shared<const TextEncoding>(*pEncoding);
+        }
+    }
+
+public:
 public:
     //! Default constructor
     OutputStream()
@@ -69,10 +100,7 @@ public:
      *  Write a string
      *  \param str
      */
-    void write(const std::string& str)
-    {
-        write(reinterpret_cast<const sys::byte*>(str.c_str()), (sys::Size_T) str.length());
-    }
+    void write(const std::string& str);
 
     /*!
      *  Write a string with a newline at the end

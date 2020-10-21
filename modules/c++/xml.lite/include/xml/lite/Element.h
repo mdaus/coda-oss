@@ -22,6 +22,7 @@
 
 #ifndef __XML_LITE_ELEMENT_H__
 #define __XML_LITE_ELEMENT_H__
+#pragma once
 
 #include <io/InputStream.h>
 #include <io/OutputStream.h>
@@ -204,9 +205,7 @@ public:
      *  \todo Add format capability
      */
     void print(io::OutputStream& stream) const;
-
-    void prettyPrint(io::OutputStream& stream,
-                     const std::string& formatter = "    ") const;
+    void prettyPrint(io::OutputStream& stream, const std::string& formatter = "    ") const;
 
     /*!
      *  Determines if a child element exists
@@ -357,6 +356,7 @@ protected:
     xml::lite::Attributes mAttributes;
     //! The character data
     std::string mCharacterData;
+
 };
 }
 }
