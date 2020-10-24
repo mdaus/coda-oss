@@ -163,19 +163,6 @@ public:
      */
     virtual void preserveCharacterData(bool preserve);
     
-    /*!
-     * If set to true, how std::string values are encoded will be set.
-     * 
-     * This is a bit goofy to preserve existing behavior: on *ix,
-     * XML containing non-ASCII data is lost (it turns into 
-     * Windows-1252 on Windows).
-     * 
-     * When set, there won't be any change on Windows.  However,
-     * on *ix, std::string will be encoding as UTF-8 thus preserving
-     * the non-ASCII data.
-     */
-    virtual void storeEncoding(bool value);
-
 protected:
     void characters(const char* value, int length, const string_encoding*);
     bool storeEncoding() const;
@@ -187,7 +174,6 @@ protected:
     Document *mDocument;
     bool mOwnDocument;
     bool mPreserveCharData;
-    bool mStoreEncoding = false;
 };
 }
 }

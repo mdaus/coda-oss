@@ -195,23 +195,11 @@ void xml::lite::MinidomHandler::preserveCharacterData(bool preserve)
     mPreserveCharData = preserve;
 }
 
-void xml::lite::MinidomHandler::storeEncoding(bool value)
-{
-    mStoreEncoding = value;
-}
-
 bool xml::lite::MinidomHandler::storeEncoding() const
 {
     // Without mPreserveCharData=true, we gets asserts when parsing text containing
     // non-ASCII characters.  Given that, don't bother storing an encoding w/o 
     // mPreserveCharData also set.  This also further preserves existing behavior.
     // Also note that much code leaves mPreserveCharData as it's default of false.
-    if (mStoreEncoding)
-    {
-        if (!mPreserveCharData)
-        {
-            throw std::logic_error("preserveCharacterData() must be set with storeEncoding()");
-        }
-    }
-    return mStoreEncoding && mPreserveCharData;
+    return mPreserveCharData; // always store in encoding if we can parse
 }

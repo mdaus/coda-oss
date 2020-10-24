@@ -52,8 +52,11 @@ TEST_CASE(testXmlParseSimple)
         TEST_ASSERT_FALSE(aElements.empty());
         TEST_ASSERT_EQ(aElements.size(), 1);
         const auto& a = *(aElements[0]);
+
         const auto characterData = a.getCharacterData();
         TEST_ASSERT_EQ(characterData, text);
+        const auto pEncoding = a.getEncoding();
+        TEST_ASSERT_NULL(pEncoding);
     }
     
     const auto docElements = root->getElementsByTagName("doc");
@@ -64,8 +67,11 @@ TEST_CASE(testXmlParseSimple)
         TEST_ASSERT_FALSE(aElements.empty());
         TEST_ASSERT_EQ(aElements.size(), 1);
         const auto& a = *(aElements[0]);
+
         const auto characterData = a.getCharacterData();
         TEST_ASSERT_EQ(characterData, text);
+        const auto pEncoding = a.getEncoding();
+        TEST_ASSERT_NULL(pEncoding);
     }
 }
 
@@ -109,7 +115,7 @@ TEST_CASE(testXmlUtf8Legacy)
     #endif
 
     const auto pEncoding = a.getEncoding();
-    TEST_ASSERT_NULL(pEncoding);
+    TEST_ASSERT(pEncoding != nullptr);
 }
 
 TEST_CASE(testXmlUtf8)
@@ -138,30 +144,22 @@ TEST_CASE(testXmlUtf8)
 #endif
 }
 
-TEST_CASE(testXmlPrintLegacy)
+TEST_CASE(testXmlPrintSimple)
 {
     io::StringStream input;
-    input.stream() << strUtf8Xml;
+    input.stream() << strXml;
 
-    // This is LEGACY behavior, it is INCORRECT on Windows and won't even parse on Linux!
     xml::lite::MinidomParser xmlParser;
-    xmlParser.preserveCharacterData(true);
     xmlParser.parse(input);
     const auto pRootElement = xmlParser.getDocument()->getRootElement();
 
     io::StringStream output;
     pRootElement->print(output);
     const auto actual = output.stream().str();
-    #ifdef _WIN32
-    const auto strBadXml = "<root><doc><a>" + iso88591Text + "</a></doc></root>"; // XML must be UTF-8
-    TEST_ASSERT_EQ(actual, strBadXml);
-    #else
-    const auto strBadXml = "<root><doc><a>"; // Failed to parse UTF-8
-    TEST_ASSERT_EQ(actual.find(strBadXml), 0);
-    #endif
+    TEST_ASSERT_EQ(actual, strXml);
 }
 
-TEST_CASE(testXmlPrint)
+TEST_CASE(testXmlPrintUtf8)
 {
     io::StringStream input;
     input.stream() << strUtf8Xml;
@@ -183,6 +181,6 @@ int main(int, char**)
     TEST_CHECK(testXmlPreserveCharacterData);
     TEST_CHECK(testXmlUtf8Legacy);
     TEST_CHECK(testXmlUtf8);
-    TEST_CHECK(testXmlPrintLegacy);
-    TEST_CHECK(testXmlPrint);
+    TEST_CHECK(testXmlPrintSimple);
+    TEST_CHECK(testXmlPrintUtf8);
 }
