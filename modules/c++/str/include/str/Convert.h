@@ -35,7 +35,6 @@
 #include <sstream>
 #include <string>
 #include <typeinfo>
-#include <memory>
 
 // This is a fairly low-level file, so don't #include a lot of our other files
 //#include "sys/String.h"
@@ -77,9 +76,6 @@ std::string toString(const uint8_t& value);
 template <>
 std::string toString(const int8_t& value);
 
-template <>
-inline std::string toString(const std::nullptr_t& value) { return "<nullptr>"; }
-
 template <typename T>
 std::string toString(const T& real, const T& imag)
 {
@@ -87,6 +83,10 @@ std::string toString(const T& real, const T& imag)
 }
 
 sys::u8string toUtf8(const std::string&);
+sys::u8string toUtf8(const std::u16string&);
+
+void toUtf8(const std::u16string&, sys::u8string&);
+void toUtf8(const std::u16string&, std::string&);
 
 template <typename T>
 T toType(const std::string& s)
