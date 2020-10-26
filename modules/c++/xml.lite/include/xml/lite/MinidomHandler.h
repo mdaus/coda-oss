@@ -108,7 +108,14 @@ public:
      * \param length The length of the char data
      */
     virtual void characters(const char* value, int length) override;
-    bool characters(const wchar_t* const value, const size_t length) override;
+    bool characters(
+        #ifdef _WIN32
+        const wchar_t* const value,
+        #else
+        // not really system dependent, but it's how the existing code works 
+        const uint16_t* const value,
+        #endif
+        const size_t length) override;
 
     // Which characters() routine should be called?
     bool use_wchar_t() const override;
@@ -170,13 +177,15 @@ public:
      * XML containing non-ASCII data is lost (it turns into 
      * Windows-1252 on Windows).
      * 
-     * When set (highly recommended), text will be encoded as UTF-8.
+     * When set, there won't be any change on Windows.  However,
+     * on *ix, std::string will be encoding as UTF-8 thus preserving
+     * the non-ASCII data.
      */
-    virtual void forceUtf8(bool forceUtf8);
+    virtual void storeEncoding(bool value);
 
 protected:
     void characters(const char* value, int length, const string_encoding*);
-    bool forceUtf8() const;
+    bool storeEncoding() const;
 
     std::string currentCharacterData;
     std::shared_ptr<const string_encoding> mpEncoding;
@@ -185,7 +194,7 @@ protected:
     Document *mDocument;
     bool mOwnDocument;
     bool mPreserveCharData;
-    bool mForceUtf8Encoding = true;
+    bool mStoreEncoding = false;
 };
 }
 }
