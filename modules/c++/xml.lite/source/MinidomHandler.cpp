@@ -91,16 +91,17 @@ void xml::lite::MinidomHandler::characters(const char *value, int length)
 static std::string toUtf8(const wchar_t* value_, const size_t length)
 {
     #ifdef _WIN32
-    const auto value = reinterpret_cast<const std::u16string::value_type*>(value_);
+    const auto value = reinterpret_cast<const std::u16string::value_type*>(value_); // UTF-16
     const std::u16string strValue(value, length);
     #else
-    const auto value = reinterpret_cast<const std::u32string::value_type*>(value_);
+    const auto value = reinterpret_cast<const std::u32string::value_type*>(value_); // UTF-32
     const std::u32string strValue(value, length);
     #endif
     std::string retval;
     str::toUtf8(strValue, retval);
     return retval;
 }
+
 bool xml::lite::MinidomHandler::characters(const wchar_t* const value_, const size_t length_)
 {
     #ifdef _WIN32
@@ -116,9 +117,8 @@ bool xml::lite::MinidomHandler::characters(const wchar_t* const value_, const si
     }
     #endif
 
-    // This is the preferred encoding: UTF-8 on both Windows and *ix.
-    // However, it's not the default on Windows as that could break
-    // existing code.
+    // This is the preferred encoding: UTF-8 on both Windows and *ix.  However,
+    // it's not the default on Windows as that could break existing code.
     const std::string utf8Value = toUtf8(value_, length_);
 
     const auto length = static_cast<int>(utf8Value.length());
@@ -208,11 +208,23 @@ void xml::lite::MinidomHandler::preserveCharacterData(bool preserve)
     mPreserveCharData = preserve;
 }
 
+void xml::lite::MinidomHandler::forceUtf8(bool value)
+{
+    mForceUtf8Encoding = value;
+}
+
 bool xml::lite::MinidomHandler::forceUtf8() const
 {
     // Without mPreserveCharData=true, we gets asserts when parsing text containing
     // non-ASCII characters.  Given that, don't bother storing an encoding w/o 
     // mPreserveCharData also set.  This also further preserves existing behavior.
     // Also note that much code leaves mPreserveCharData as it's default of false.
-    return mPreserveCharData;  // always store encoding as UTF-8 if we can parse
+    if (mForceUtf8Encoding)
+    {
+        if (!mPreserveCharData)
+        {
+            throw std::logic_error("preserveCharacterData() must be set with storeEncoding()");
+        }
+    }
+    return mForceUtf8Encoding && mPreserveCharData;
 }

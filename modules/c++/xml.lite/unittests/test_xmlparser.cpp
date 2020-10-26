@@ -102,9 +102,28 @@ static const xml::lite::Element& testXmlUtf8_(xml::lite::MinidomParser& xmlParse
     const auto& a = *(aElements[0]);
     return a;
 }
-TEST_CASE(testXmlUtf8)
+
+
+TEST_CASE(testXmlUtf8Legacy)
 {
     xml::lite::MinidomParser xmlParser;
+    const auto& a = testXmlUtf8_(xmlParser);
+
+    // This is LEGACY behavior, it is INCORRECT on Linux!
+    auto actual = a.getCharacterData();
+    #ifdef _WIN32
+    TEST_ASSERT_EQ(actual, iso88591Text);
+    #else
+    TEST_ASSERT_EQ(actual.length(), 4);
+    #endif
+
+    const auto pEncoding = a.getEncoding();
+    TEST_ASSERT_NULL(pEncoding);
+}
+
+TEST_CASE(testXmlUtf8)
+{
+    xml::lite::MinidomParser xmlParser(true /*forceUtf8*/);
     const auto& a = testXmlUtf8_(xmlParser);
 
     const auto actual = a.getCharacterData();
@@ -113,16 +132,16 @@ TEST_CASE(testXmlUtf8)
     TEST_ASSERT(*pEncoding == xml::lite::string_encoding::utf_8);
 }
 
-static std::string testXmlPrint_(std::string& expected, const std::string& characterData)
+static std::string testXmlPrint_(std::string& expected, const std::string& text)
 {
     xml::lite::MinidomParser xmlParser;
     auto pDocument = xmlParser.getDocument();
 
-    const auto pRootElement = pDocument->createElement("root", "" /*uri*/, characterData);
+    const auto pRootElement = pDocument->createElement("root", "" /*uri*/, text);
 
     io::StringStream output;
     pRootElement->print(output);
-    expected = "<root>" + characterData + "</root>";
+    expected = "<root>" + text + "</root>";
     return output.stream().str();
 }
 TEST_CASE(testXmlPrintSimple)
@@ -148,7 +167,7 @@ TEST_CASE(testXmlPrintUtf8)
     const auto pRootElement = pDocument->createElement("root", "" /*uri*/, iso88591Text, &encoding);
 
     io::StringStream output;
-    pRootElement->print(output);
+    pRootElement->print(output, xml::lite::string_encoding::utf_8); // write UTF-8
     const auto actual = output.stream().str();
     const auto expected = "<root>" + utf8Text + "</root>";
     TEST_ASSERT_EQ(actual, expected);
@@ -159,13 +178,13 @@ TEST_CASE(testXmlParseAndPrintUtf8)
     io::StringStream input;
     input.stream() << strUtf8Xml;
 
-    xml::lite::MinidomParser xmlParser;
+    xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
     xmlParser.preserveCharacterData(true);
     xmlParser.parse(input);
     const auto pRootElement = xmlParser.getDocument()->getRootElement();
 
     io::StringStream output;
-    pRootElement->print(output);
+    pRootElement->print(output, xml::lite::string_encoding::utf_8); // write UTF-8
     const auto actual = output.stream().str();
     TEST_ASSERT_EQ(actual, strUtf8Xml);
 }
@@ -174,6 +193,7 @@ int main(int, char**)
 {
     TEST_CHECK(testXmlParseSimple);
     TEST_CHECK(testXmlPreserveCharacterData);
+    TEST_CHECK(testXmlUtf8Legacy);
     TEST_CHECK(testXmlUtf8);
     TEST_CHECK(testXmlPrintSimple);
     TEST_CHECK(testXmlPrintLegacy);
