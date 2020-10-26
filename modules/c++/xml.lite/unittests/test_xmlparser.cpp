@@ -101,17 +101,15 @@ TEST_CASE(testXmlUtf8Legacy)
     xmlParser.preserveCharacterData(true);
     xmlParser.parse(stream);
 
-    // This is LEGACY behavior, it is INCORRECT on Linux!
     const auto aElements =
             xmlParser.getDocument()->getRootElement()->getElementsByTagName("a", true /*recurse*/);
     TEST_ASSERT_EQ(aElements.size(), 1);
     const auto& a = *(aElements[0]);
     auto actual = a.getCharacterData();
     #ifdef _WIN32
-    TEST_ASSERT_EQ(actual.length(), 4);
     TEST_ASSERT_EQ(actual, iso88591Text);
     #else
-    TEST_ASSERT_EQ(actual.length(), 4);
+    TEST_ASSERT_EQ(actual, utf8Text);
     #endif
 
     const auto pEncoding = a.getEncoding();
@@ -159,12 +157,42 @@ TEST_CASE(testXmlPrintSimple)
     TEST_ASSERT_EQ(actual, strXml);
 }
 
+TEST_CASE(testXmlPrintLegacy)
+{
+    xml::lite::MinidomParser xmlParser;
+    auto pDocument = xmlParser.getDocument();
+
+    // This is LEGACY behavior, it generates bad XML
+    const auto pRootElement = pDocument->createElement("root", "" /*uri*/, iso88591Text);
+
+    io::StringStream output;
+    pRootElement->print(output);
+    const auto actual = output.stream().str();
+    const auto expected = "<root>" + iso88591Text + "</root>";
+    TEST_ASSERT_EQ(actual, expected);
+}
+
 TEST_CASE(testXmlPrintUtf8)
+{
+    xml::lite::MinidomParser xmlParser;
+    auto pDocument = xmlParser.getDocument();
+
+    const auto encoding = xml::lite::string_encoding::windows_1252;
+    const auto pRootElement = pDocument->createElement("root", "" /*uri*/, iso88591Text, &encoding);
+
+    io::StringStream output;
+    pRootElement->print(output);
+    const auto actual = output.stream().str();
+    const auto expected = "<root>" + utf8Text + "</root>";
+    TEST_ASSERT_EQ(actual, expected);
+}
+
+TEST_CASE(testXmlParseAndPrintUtf8)
 {
     io::StringStream input;
     input.stream() << strUtf8Xml;
 
-    xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
+    xml::lite::MinidomParser xmlParser;
     xmlParser.preserveCharacterData(true);
     xmlParser.parse(input);
     const auto pRootElement = xmlParser.getDocument()->getRootElement();
@@ -182,5 +210,7 @@ int main(int, char**)
     TEST_CHECK(testXmlUtf8Legacy);
     TEST_CHECK(testXmlUtf8);
     TEST_CHECK(testXmlPrintSimple);
+    TEST_CHECK(testXmlPrintLegacy);
+    TEST_CHECK(testXmlParseAndPrintUtf8);
     TEST_CHECK(testXmlPrintUtf8);
 }
