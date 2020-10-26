@@ -142,33 +142,29 @@ TEST_CASE(testXmlUtf8)
 #endif
 }
 
-TEST_CASE(testXmlPrintSimple)
-{
-    io::StringStream input;
-    input.stream() << strXml;
-
-    xml::lite::MinidomParser xmlParser;
-    xmlParser.parse(input);
-    const auto pRootElement = xmlParser.getDocument()->getRootElement();
-
-    io::StringStream output;
-    pRootElement->print(output);
-    const auto actual = output.stream().str();
-    TEST_ASSERT_EQ(actual, strXml);
-}
-
-TEST_CASE(testXmlPrintLegacy)
+static std::string testXmlPrint_(std::string& expected, const std::string& text)
 {
     xml::lite::MinidomParser xmlParser;
     auto pDocument = xmlParser.getDocument();
 
-    // This is LEGACY behavior, it generates bad XML
-    const auto pRootElement = pDocument->createElement("root", "" /*uri*/, iso88591Text);
+    const auto pRootElement = pDocument->createElement("root", "" /*uri*/, text);
 
     io::StringStream output;
     pRootElement->print(output);
-    const auto actual = output.stream().str();
-    const auto expected = "<root>" + iso88591Text + "</root>";
+    expected = "<root>" + text + "</root>";
+    return output.stream().str();
+}
+TEST_CASE(testXmlPrintSimple)
+{
+    std::string expected;
+    const auto actual = testXmlPrint_(expected, text);
+    TEST_ASSERT_EQ(actual, expected);
+}
+TEST_CASE(testXmlPrintLegacy)
+{
+    // This is LEGACY behavior, it generates bad XML
+    std::string expected;
+    const auto actual = testXmlPrint_(expected, iso88591Text);
     TEST_ASSERT_EQ(actual, expected);
 }
 
