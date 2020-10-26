@@ -165,7 +165,7 @@ public:
     
 protected:
     void characters(const char* value, int length, const string_encoding*);
-    bool storeEncoding() const;
+    bool forceUtf8() const;
 
     std::string currentCharacterData;
     std::shared_ptr<const string_encoding> mpEncoding;
