@@ -43,7 +43,7 @@ else()
     coda_fetch_driver(
         NAME ${TARGET_NAME}
         ARCHIVE "openjpeg-2.3.1_mod.tar"
-        HASH "SHA256=1ddcff11ac2522fffd51693002bab5ddc690adf735d86a5e4c60eade4468bd19"
+        HASH "SHA256=d25ed5ecbed03e3e1a058317d067dedb6d596277284072912ee434d25d1f58a6"
     )
 
     set(SOURCE_DIR "${${CMAKE_PROJECT_NAME}_${TARGET_NAME}_SOURCE_DIR}")
