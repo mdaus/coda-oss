@@ -66,11 +66,19 @@ bool exists(const path& p);  // https://en.cppreference.com/w/cpp/filesystem/exi
 }
 
 #ifndef CODA_OSS_DEFINE_std_filesystem_
-#if CODA_OSS_cplusplus < 201703L  // pre-C++17
-#define CODA_OSS_DEFINE_std_filesystem_ 1
+#if CODA_OSS_cplusplus >= 201703L  // C++17
+
+#if defined(__GNUC__) && (__GNUC__ < 9)
+// https://www.gnu.org/software/gcc/gcc-9/changes.html
+#define CODA_OSS_DEFINE_std_filesystem_ 1 // <filesystem> not fully supported until G++ 9.0
 #else
-#define CODA_OSS_DEFINE_std_filesystem_ 0  // std::filesystem part of C++17
+#define CODA_OSS_DEFINE_std_filesystem_ 0  // fully supported C++17 <filesystem>, don't need our own
+#endif
+
 #endif  // CODA_OSS_cplusplus
+
+#define CODA_OSS_DEFINE_std_filesystem_ 1 // pre-C++17
+
 #endif  // CODA_OSS_DEFINE_std_filesystem_
 
 #if CODA_OSS_DEFINE_std_filesystem_
