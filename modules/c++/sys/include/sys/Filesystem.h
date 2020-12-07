@@ -1,16 +1,25 @@
+#ifndef CODA_OSS_sys_Filesystem_h_INCLUDED_
+#define CODA_OSS_sys_Filesystem_h_INCLUDED_
 #pragma once
 
-// For now, these are just wrappers around the CODA-OSS routines ... eventually,
-// this should be replaced with C++17's <filesystem>
+//
+// For now, these are just some wrappers around the CODA-OSS routines ...
+// eventually, this should be replaced with C++17's <filesystem>.
+//
+// This does not even TRY to be a complete implementation of std::filesystem.
+//
 
 #include <string>
 
+#include "Conf.h"
+
 namespace sys
 {
+// http://en.cppreference.com/w/cpp/filesystem
 namespace Filesystem
 {
 // http://en.cppreference.com/w/cpp/filesystem/path
-struct path
+struct path // N.B. this is an INCOMPLETE implementation!
 {
     using string_type = std::string;
     using value_type = string_type::value_type;
@@ -62,3 +71,32 @@ bool is_directory(const path& p);  // https://en.cppreference.com/w/cpp/filesyst
 bool exists(const path& p);  // https://en.cppreference.com/w/cpp/filesystem/exists
 }
 }
+
+#ifndef CODA_OSS_DEFINE_std_filesystem_
+#if CODA_OSS_cplusplus >= 201703L  // C++17
+
+#if defined(__GNUC__) && (__GNUC__ < 9)
+// https://www.gnu.org/software/gcc/gcc-9/changes.html
+#define CODA_OSS_DEFINE_std_filesystem_ 1  // <filesystem> not fully supported until G++ 9.0
+#else
+#define CODA_OSS_DEFINE_std_filesystem_ 0  // fully supported C++17 <filesystem>, don't need our own
+#endif  // __GNUC__
+
+#else
+
+#define CODA_OSS_DEFINE_std_filesystem_ 1  // pre-C++17
+
+#endif  // CODA_OSS_cplusplus
+#endif  // CODA_OSS_DEFINE_std_filesystem_
+
+#if CODA_OSS_DEFINE_std_filesystem_
+// This is ever-so-slightly uncouth: we're not supposed to augment "std".
+namespace std
+{
+namespace filesystem = ::sys::Filesystem;
+}
+#else
+#include <filesystem>
+#endif
+
+#endif  // CODA_OSS_sys_Filesystem_h_INCLUDED_
