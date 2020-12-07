@@ -5,6 +5,8 @@
 
 #include <string>
 
+#include "Conf.h"
+
 namespace sys
 {
 namespace Filesystem
@@ -62,3 +64,22 @@ bool is_directory(const path& p);  // https://en.cppreference.com/w/cpp/filesyst
 bool exists(const path& p);  // https://en.cppreference.com/w/cpp/filesystem/exists
 }
 }
+
+#ifndef CODA_OSS_DEFINE_std_filesystem_
+#if CODA_OSS_cplusplus < 201703L  // pre-C++17
+#define CODA_OSS_DEFINE_std_filesystem_ 1
+#else
+#define CODA_OSS_DEFINE_std_filesystem_ 0  // std::filesystem part of C++17
+#endif  // CODA_OSS_cplusplus
+#endif  // CODA_OSS_DEFINE_std_filesystem_
+
+#if CODA_OSS_DEFINE_std_filesystem_
+// This is ever-so-slightly uncouth: we're not supposed to augment "std".
+namespace std
+{
+    namespace filesystem = ::sys::Filesystem;
+}
+#else
+#include <filesystem>
+#endif
+
