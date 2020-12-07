@@ -75,10 +75,11 @@ bool exists(const path& p);  // https://en.cppreference.com/w/cpp/filesystem/exi
 #define CODA_OSS_DEFINE_std_filesystem_ 0  // fully supported C++17 <filesystem>, don't need our own
 #endif // __GNUC__
 
-#else  // CODA_OSS_cplusplus
+#else  
 
 #define CODA_OSS_DEFINE_std_filesystem_ 1 // pre-C++17
 
+#endif  // CODA_OSS_cplusplus
 #endif  // CODA_OSS_DEFINE_std_filesystem_
 
 #if CODA_OSS_DEFINE_std_filesystem_
