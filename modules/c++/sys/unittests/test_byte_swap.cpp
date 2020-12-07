@@ -81,7 +81,7 @@ TEST_CASE(testEndianness)
     {
         TEST_ASSERT(!isBigEndianSystem);    
     }
-    if (std::endian::native == std::endian::litte)
+    if (std::endian::native == std::endian::little)
     {
         TEST_ASSERT(!isBigEndianSystem);
     }
