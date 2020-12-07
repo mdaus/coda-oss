@@ -49,6 +49,7 @@ namespace sys
 
         path operator/(const path& lhs, const path& rhs); // http://en.cppreference.com/w/cpp/filesystem/path/operator_slash
 		bool operator==(const path& lhs, const path& rhs) noexcept; // https://en.cppreference.com/w/cpp/filesystem/path/operator_cmp
+		bool operator!=(const path& lhs, const path& rhs) noexcept; // https://en.cppreference.com/w/cpp/filesystem/path/operator_cmp
 
         path absolute(const path&); // http://en.cppreference.com/w/cpp/filesystem/absolute
 		bool create_directory(const path&); // https://en.cppreference.com/w/cpp/filesystem/create_directory

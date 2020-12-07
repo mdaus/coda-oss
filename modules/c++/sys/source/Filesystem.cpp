@@ -280,3 +280,7 @@ bool fs::operator==(const path& lhs, const path& rhs) noexcept
 {
 	return sys::Path::normalizePath(lhs) == sys::Path::normalizePath(rhs);
 }
+bool fs::operator!=(const path& lhs, const path& rhs) noexcept
+{
+    return !(lhs == rhs);
+}
