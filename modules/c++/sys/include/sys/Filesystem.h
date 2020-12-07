@@ -1,16 +1,23 @@
+#ifndef CODA_OSS_sys_Filesystem_h_INCLUDED_
+#define CODA_OSS_sys_Filesystem_h_INCLUDED_
 #pragma once
 
-// For now, these are just wrappers around the CODA-OSS routines ... eventually,
-// this should be replaced with C++17's <filesystem>
+//
+// For now, these are just some wrappers around the CODA-OSS routines ...
+// eventually, this should be replaced with C++17's <filesystem>.
+//
+// This does not even TRY to be a complete implementation of std::filesystem.
+//
 
 #include <string>
 
 namespace sys
 {
+// http://en.cppreference.com/w/cpp/filesystem
 namespace Filesystem
 {
 // http://en.cppreference.com/w/cpp/filesystem/path
-struct path
+struct path // N.B. this is an INCOMPLETE implementation!
 {
     using string_type = std::string;
     using value_type = string_type::value_type;
@@ -62,3 +69,5 @@ bool is_directory(const path& p);  // https://en.cppreference.com/w/cpp/filesyst
 bool exists(const path& p);  // https://en.cppreference.com/w/cpp/filesystem/exists
 }
 }
+
+#endif  // CODA_OSS_sys_Filesystem_h_INCLUDED_
