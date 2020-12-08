@@ -152,7 +152,7 @@ TEST_CASE(testEnvVariables)
 
 TEST_CASE(testFsExtension)
 {
-    namespace fs = std::filesystem;
+    namespace fs = sys::Filesystem;
 
     // https://en.cppreference.com/w/cpp/filesystem/path/extension
 
@@ -191,17 +191,6 @@ TEST_CASE(testFsExtension)
 
 TEST_CASE(testFsOutput)
 {
-    {
-        namespace fs = std::filesystem;
-        const fs::path path("/path/to/file.txt");
-        const std::string expected = "\"" + path.string() + "\"";
-
-        std::stringstream ss;
-        ss << path;
-        const auto actual = ss.str();
-        TEST_ASSERT_EQ(expected, actual);
-    }
-
     {
         namespace fs = sys::Filesystem;
         const fs::path path("/path/to/file.txt");
