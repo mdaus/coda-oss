@@ -28,8 +28,6 @@
 #include <sys/Filesystem.h>
 #include "TestCase.h"
 
-namespace fs = std::filesystem;
-
 namespace
 {
 void createFile(const std::string& pathname)
@@ -154,6 +152,8 @@ TEST_CASE(testEnvVariables)
 
 TEST_CASE(testFsExtension)
 {
+    namespace fs = std::filesystem;
+
     // https://en.cppreference.com/w/cpp/filesystem/path/extension
 
     // "If the pathname is either . or .., ... then empty path is returned."
@@ -191,12 +191,27 @@ TEST_CASE(testFsExtension)
 
 TEST_CASE(testFsOutput)
 {
-    const fs::path path("/path/to/file.txt");
-    const std::string strPath = path.string();
+    {
+        namespace fs = std::filesystem;
+        const fs::path path("/path/to/file.txt");
+        const std::string expected = "\"" + path.string() + "\"";
 
-    std::stringstream ss;
-    ss << path;
-    TEST_ASSERT_EQ(strPath, ss.str());
+        std::stringstream ss;
+        ss << path;
+        const auto actual = ss.str();
+        TEST_ASSERT_EQ(expected, actual);
+    }
+
+    {
+        namespace fs = sys::Filesystem;
+        const fs::path path("/path/to/file.txt");
+        const std::string expected = "\"" + path.string() + "\"";
+
+        std::stringstream ss;
+        ss << path;
+        const auto actual = ss.str();
+        TEST_ASSERT_EQ(expected, actual);
+    }
 }
 
 }
