@@ -288,6 +288,7 @@ bool fs::operator!=(const path& lhs, const path& rhs) noexcept
 
 std::ostream& fs::operator<<(std::ostream& os, const path& p)
 {
-    os << p.string();
+    // https://en.cppreference.com/w/cpp/filesystem/path/operator_ltltgtgt
+    os << "\"" << p.string() << "\"";
     return os;
 }
