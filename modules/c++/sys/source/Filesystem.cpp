@@ -285,3 +285,9 @@ bool fs::operator!=(const path& lhs, const path& rhs) noexcept
 {
     return !(lhs == rhs);
 }
+
+std::ostream& fs::operator<<(std::ostream& os, const path& p)
+{
+    os << p.string();
+    return os;
+}
