@@ -192,7 +192,7 @@ TEST_CASE(testFsExtension)
 TEST_CASE(testFsOutput)
 {
     const fs::path path("/path/to/file.txt");
-    const std::string strPath = path;
+    const std::string strPath = path.string();
 
     std::stringstream ss;
     ss << path;
