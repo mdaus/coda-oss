@@ -22,9 +22,11 @@
 
 #ifndef __EXCEPT_THROWABLE_H__
 #define __EXCEPT_THROWABLE_H__
+#pragma once
 
 #include <string>
 #include <sstream>
+#include <exception>
 #include "except/Trace.h"
 
 /*!
@@ -43,17 +45,14 @@ namespace except
  *
  * This class provides the base interface for exceptions and errors.
  */
-class Throwable
+class Throwable : public std::exception
 {
 public:
 
     /*!
      * Default Constructor
      */
-    Throwable() :
-        mMessage("")
-    {
-    }
+    Throwable() = default;
 
     /*!
      * Constructor.  Takes a message
@@ -122,13 +121,14 @@ public:
 
     virtual std::string toString() const
     {
-        std::ostringstream s;
-        s << getType() << ": " << getMessage();
+        make_what();
+        return mWhat;
+    }
 
-        const Trace& t = getTrace();
-        if (t.getSize() > 0)
-            s << ": " << t;
-        return s.str();
+    const char* what() const noexcept override final // derived classes override toString()
+    {
+        make_what();
+        return mWhat.c_str();
     }
 
 protected:
@@ -136,6 +136,19 @@ protected:
     Trace mTrace;
     //! The name of the message the exception was thrown
     std::string mMessage;
+
+private:
+    mutable std::string mWhat;
+    void make_what() const
+    {
+        std::ostringstream s;
+        s << getType() << ": " << getMessage();
+
+        const Trace& t = getTrace();
+        if (t.getSize() > 0)
+            s << ": " << t;
+        mWhat = s.str();
+    }
 };
 }
 
