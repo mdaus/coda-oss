@@ -121,13 +121,18 @@ public:
 
     virtual std::string toString() const
     {
-        make_what();
-        return mWhat;
+        std::ostringstream s;
+        s << getType() << ": " << getMessage();
+
+        const Trace& t = getTrace();
+        if (t.getSize() > 0)
+            s << ": " << t;
+        return s.str();
     }
 
     const char* what() const noexcept override final // derived classes override toString()
     {
-        make_what();
+        mWhat = toString(); // call any derived toString()
         return mWhat.c_str();
     }
 
@@ -139,16 +144,6 @@ protected:
 
 private:
     mutable std::string mWhat;
-    void make_what() const
-    {
-        std::ostringstream s;
-        s << getType() << ": " << getMessage();
-
-        const Trace& t = getTrace();
-        if (t.getSize() > 0)
-            s << ": " << t;
-        mWhat = s.str();
-    }
 };
 }
 
