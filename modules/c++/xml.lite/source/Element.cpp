@@ -168,7 +168,7 @@ static void writeCharacterData(io::OutputStream& stream,
 {
     const std::string* pStringToWrite = &characterData; // already in UTF-8
 
-    sys::u8string u8CharacterData; // keep result in-scope
+    sys::U8string u8CharacterData; // keep result in-scope
     if (*pCharacterEncoding != xml::lite::string_encoding::utf_8)
     {
         u8CharacterData = str::fromWindows1252(characterData);
@@ -262,10 +262,12 @@ void xml::lite::Element::addChild(xml::lite::Element * node)
     node->setParent(this);
 }
 
-void xml::lite::Element::addChild(std::unique_ptr<xml::lite::Element>&& node)
+void xml::lite::Element::addChild(std::auto_ptr<xml::lite::Element> node)
 {
     // Always take ownership
-    addChild(node.release());
+    std::auto_ptr<xml::lite::Element> scopedValue(node);
+    addChild(scopedValue.get());
+    scopedValue.release();
 }
 
 void xml::lite::Element::changePrefix(Element* element,
