@@ -117,7 +117,7 @@ void ThreadGroup::addException(const except::Exception& ex)
 
 std::auto_ptr<CPUAffinityThreadInitializer> ThreadGroup::getNextInitializer()
 {
-    std::auto_ptr<CPUAffinityThreadInitializer> threadInit(NULL);
+    std::auto_ptr<CPUAffinityThreadInitializer> threadInit(nullptr);
     if (mAffinityInit.get())
     {
         threadInit = mAffinityInit->newThreadInitializer();

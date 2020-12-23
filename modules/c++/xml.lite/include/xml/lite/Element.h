@@ -80,7 +80,7 @@ class Element
 public:
     //! Default constructor
     Element() :
-        mParent(NULL)
+        mParent(nullptr)
     {
     }
 
@@ -92,7 +92,7 @@ public:
      */
     Element(const std::string& qname, const std::string& uri = "",
             std::string characterData = "", const string_encoding* pEncoding = nullptr) :
-        mParent(NULL), mName(uri, qname)
+        mParent(nullptr), mName(uri, qname)
     {
         setCharacterData(characterData, pEncoding);
     }

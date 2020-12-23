@@ -80,7 +80,7 @@ void *sys::ThreadPosix::__start(void *v)
     delete runnable;
     */
 
-    pthread_exit(NULL);
+    pthread_exit(nullptr);
     return NULL;
 }
 

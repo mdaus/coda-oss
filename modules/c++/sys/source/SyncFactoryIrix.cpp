@@ -31,7 +31,7 @@
 #include "sys/ConditionVarIrix.h"
 
 sys::SyncFactoryIrix::SyncImplIrix* sys::SyncFactoryIrix::mImpl = NULL;
-sys::SyncFactoryIrix::SyncImplIrix::SyncImplIrix() : mRef(0), mArena(NULL)
+sys::SyncFactoryIrix::SyncImplIrix::SyncImplIrix() : mRef(0), mArena(nullptr)
 {
     // NOTE: SIGUSR1 is used in the Irix conditional
     // variable, and needs to be blocked by the process.

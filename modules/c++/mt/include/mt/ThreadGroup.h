@@ -157,7 +157,7 @@ private:
                 std::auto_ptr<sys::Runnable> runnable,
                 mt::ThreadGroup& parentThreadGroup,
                 std::auto_ptr<CPUAffinityThreadInitializer> threadInit =
-                        std::auto_ptr<CPUAffinityThreadInitializer>(NULL));
+                        std::auto_ptr<CPUAffinityThreadInitializer>(nullptr));
 
         /*!
          *  Call run() on the Runnable passed to createThread

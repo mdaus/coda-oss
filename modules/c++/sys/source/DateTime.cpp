@@ -397,9 +397,9 @@ void sys::DateTime::setNow()
     // does not need millisecond accuracy
     SYSTEMTIME now;
     GetLocalTime(&now);
-    mTimeInMillis = (double)time(NULL) * 1000 + now.wMilliseconds;
+    mTimeInMillis = (double)time(nullptr) * 1000 + now.wMilliseconds;
 #else
-    mTimeInMillis = (double)time(NULL) * 1000;
+    mTimeInMillis = (double)time(nullptr) * 1000;
 #endif
     fromMillis();
 }

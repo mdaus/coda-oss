@@ -153,7 +153,7 @@ private:
 namespace re
 {
 Regex::Regex(const std::string& pattern) :
-    mPattern(pattern), mPCRE(NULL)
+    mPattern(pattern), mPCRE(nullptr)
 {
     if (!mPattern.empty())
     {
@@ -176,7 +176,7 @@ Regex::~Regex()
 }
 
 Regex::Regex(const Regex& rhs) :
-    mPattern(rhs.mPattern), mPCRE(NULL)
+    mPattern(rhs.mPattern), mPCRE(nullptr)
 {
     compile(mPattern);
 }

@@ -83,7 +83,7 @@ void sys::ConditionVarPosix::wait(double seconds)
     if ( seconds > 0 )
     {
         timespec tout;
-        tout.tv_sec = time(NULL) + (int)seconds;
+        tout.tv_sec = time(nullptr) + (int)seconds;
         tout.tv_nsec = (int)((seconds - (int)(seconds)) * 1e9);
         if (::pthread_cond_timedwait(&mNative,
                                      &(mMutex->getNative()),

@@ -1929,7 +1929,7 @@ SwigPyObject_TypeOnce(void) {
 #if PY_VERSION_HEX >= 0x03000000
       PyVarObject_HEAD_INIT(NULL, 0)
 #else
-      PyObject_HEAD_INIT(NULL)
+      PyObject_HEAD_INIT(nullptr)
       0,                                    /* ob_size */
 #endif
       (char *)"SwigPyObject",               /* tp_name */
@@ -2120,7 +2120,7 @@ SwigPyPacked_TypeOnce(void) {
 #if PY_VERSION_HEX>=0x03000000
       PyVarObject_HEAD_INIT(NULL, 0)
 #else
-      PyObject_HEAD_INIT(NULL)
+      PyObject_HEAD_INIT(nullptr)
       0,                                    /* ob_size */
 #endif
       (char *)"SwigPyPacked",               /* tp_name */
@@ -6200,7 +6200,7 @@ extern "C" {
 #if PY_VERSION_HEX >= 0x03000000
         PyVarObject_HEAD_INIT(NULL, 0)
 #else
-        PyObject_HEAD_INIT(NULL)
+        PyObject_HEAD_INIT(nullptr)
         0,                                  /* ob_size */
 #endif
         (char *)"swigvarlink",              /* tp_name */
@@ -6397,7 +6397,7 @@ SWIG_init(void) {
     PyModuleDef_HEAD_INIT,
 # else
     {
-      PyObject_HEAD_INIT(NULL)
+      PyObject_HEAD_INIT(nullptr)
       NULL, /* m_init */
       0,    /* m_index */
       NULL, /* m_copy */

@@ -95,7 +95,7 @@ public:
     */
     ExecPipe(const std::string& cmd) : 
         Exec(cmd),
-        mOutStream(NULL)
+        mOutStream(nullptr)
     {
     }
 

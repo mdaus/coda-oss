@@ -82,7 +82,7 @@ void sys::ConditionVarSolaris::wait(double seconds)
     if ( seconds > 0 )
     {
         timestruc_t tout;
-        tout.tv_sec = time(NULL) + (int)seconds;
+        tout.tv_sec = time(nullptr) + (int)seconds;
         tout.tv_nsec = (int)((seconds - (int)(seconds)) * 1e9);
         if (::cond_timedwait(&mNative,
                              &(mMutex->getNative()),
