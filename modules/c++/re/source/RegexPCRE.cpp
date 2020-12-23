@@ -166,7 +166,7 @@ void Regex::destroy()
     if (mPCRE != NULL)
     {
         pcre2_code_free(mPCRE);
-        mPCRE = NULL;
+        mPCRE = nullptr;
     }
 }
 

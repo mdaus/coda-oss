@@ -82,7 +82,7 @@ void xml::lite::XMLReaderExpat::destroy()
     // 1. Delete the parser
     // 2. Free the parser
     XML_ParserFree(mNative);
-    mNative = NULL;
+    mNative = nullptr;
 }
 
 
@@ -92,7 +92,7 @@ void xml::lite::XMLReaderExpat::pushNamespaceContext(const char **atts)
     mNamespaceStack.push();
 
     // Iterate through and find the mappings
-    for (int i = 0; atts[i] != NULL; i += 2)
+    for (int i = 0; atts[i] != nullptr; i += 2)
     {
         std::string attr(atts[i]);
         std::string::size_type x = attr.find_first_of(':');
@@ -172,7 +172,7 @@ void xml::lite::XMLReaderExpat::startElementCallback(void *p,
 
     xml::lite::Attributes attrs;
     // Resolve the attributes to what we really want
-    for (int i = 0; atts[i] != NULL; i += 2)
+    for (int i = 0; atts[i] != nullptr; i += 2)
     {
         xml::lite::AttributeNode attr;
         std::string attrQName;

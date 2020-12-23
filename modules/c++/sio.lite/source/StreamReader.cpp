@@ -94,7 +94,7 @@ void sio::lite::StreamReader::killHeader()
 {
     if (header)
         delete header;
-    header = NULL;
+    header = nullptr;
     // Reset length so we always have a correct value
     headerLength = 0;
 }

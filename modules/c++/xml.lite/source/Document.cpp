@@ -41,7 +41,7 @@ void xml::lite::Document::remove(Element * toDelete)
     {
         if (mRootNode && mOwnRoot)
             delete mRootNode;
-        mRootNode = NULL;
+        mRootNode = nullptr;
     }
     else
         remove(toDelete, mRootNode);
@@ -81,7 +81,7 @@ void xml::lite::Document::remove(xml::lite::Element * toDelete,
             {
                 fromHere->getChildren().erase(i);
                 delete toDelete;
-                toDelete = NULL;
+                toDelete = nullptr;
                 return;
             }
             else

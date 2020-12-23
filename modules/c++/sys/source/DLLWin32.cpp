@@ -58,7 +58,7 @@ void sys::DLL::unload()
         FreeLibrary( mLib );
 
         // Now we reset member data
-        mLib = NULL;
+        mLib = nullptr;
         mLibName.clear();
     }
 }

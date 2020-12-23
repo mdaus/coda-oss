@@ -58,7 +58,7 @@ void sys::DLL::unload()
             throw(sys::DLLException("Failed to close library") );
 
         // Now we reset member data
-        mLib = NULL;
+        mLib = nullptr;
         mLibName.clear();
     }
 }

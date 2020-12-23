@@ -37,7 +37,7 @@ GZipInputStream::GZipInputStream(const std::string& file)
 void GZipInputStream::close()
 {
     gzclose( mFile);
-    mFile = NULL;
+    mFile = nullptr;
 }
 
 sys::SSize_T GZipInputStream::readImpl(void* buffer, size_t len)

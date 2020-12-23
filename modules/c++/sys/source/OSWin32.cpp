@@ -77,7 +77,7 @@ bool sys::OSWin32::exists(const std::string& path) const
         const DWORD errCode = GetLastError();
         if (errCode != ERROR_FILE_NOT_FOUND && errCode != ERROR_PATH_NOT_FOUND)
         {
-            char* err = NULL;
+            char* err = nullptr;
             FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
                           FORMAT_MESSAGE_FROM_SYSTEM,
                           NULL, errCode,

@@ -219,7 +219,7 @@ public:
             try 
             {
                 XMLString::release(a);
-                *a = NULL;
+                *a = nullptr;
             }
             catch (...)
             {
@@ -236,7 +236,7 @@ public:
             try 
             {
                 XMLString::release(a);
-                *a = NULL;
+                *a = nullptr;
             }
             catch (...)
             {

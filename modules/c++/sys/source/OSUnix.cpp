@@ -534,7 +534,7 @@ void sys::DirectoryUnix::close()
     if (mDir)
     {
         closedir( mDir);
-        mDir = NULL;
+        mDir = nullptr;
     }
 }
 std::string sys::DirectoryUnix::findFirstFile(const std::string& dir)
@@ -548,7 +548,7 @@ std::string sys::DirectoryUnix::findFirstFile(const std::string& dir)
 
 std::string sys::DirectoryUnix::findNextFile()
 {
-    struct dirent* entry = NULL;
+    struct dirent* entry = nullptr;
     entry = ::readdir(mDir);
     if (entry == NULL)
         return "";

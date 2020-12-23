@@ -30,8 +30,8 @@
 
 dbi::OracleConnection::OracleConnection()
 {
-    mEnvHandle = NULL;
-    mErrorHandle = NULL;
+    mEnvHandle = nullptr;
+    mErrorHandle = nullptr;
     (void) OCIInitialize((ub4) OCI_DEFAULT, (dvoid *)0,
                          (dvoid * (*)(dvoid *, size_t)) 0,
                          (dvoid * (*)(dvoid *, dvoid *, size_t))0,
@@ -118,7 +118,7 @@ dbi::pResultSet dbi::OracleConnection::query(const std::string& q)
                        (ub4)countq.length(), (ub4) OCI_NTV_SYNTAX, (ub4) OCI_DEFAULT);
         OCIStmtExecute(mContextHandle, countHandle, mErrorHandle, (ub4)val, (ub4)0,
                        (CONST OCISnapshot *) NULL, (OCISnapshot *) NULL, OCI_DEFAULT);
-        OCIDefine * defineHandle = NULL;
+        OCIDefine * defineHandle = nullptr;
         OCIDefineByPos(countHandle, &defineHandle, mErrorHandle, 1,
                        &rowCount, sizeof(rowCount), SQLT_UIN, 0, 0, 0, OCI_DEFAULT);
         OCIStmtFetch(countHandle, mErrorHandle, 1, OCI_FETCH_NEXT, OCI_DEFAULT);
@@ -160,9 +160,9 @@ dbi::Row dbi::OracleResultSet::fetchRow()
             fields[i].type = 0;
             fields[i].extType = SQLT_STR;
             fields[i].fieldSize = 0;
-            fields[i].value = NULL;
+            fields[i].value = nullptr;
 
-            OCIParam* param_handle = NULL;
+            OCIParam* param_handle = nullptr;
             ub4       name_len = 0;
 
             result = OCIParamGet(mSQLHandle, OCI_HTYPE_STMT,
@@ -210,7 +210,7 @@ dbi::Row dbi::OracleResultSet::fetchRow()
                 int indp = -1; // This means that NULL values will not cause an error
                 fields[i].value = new char[fields[i].fieldSize];
                 memset(fields[i].value, '\0', fields[i].fieldSize);
-                OCIDefine* defineHandle = NULL;
+                OCIDefine* defineHandle = nullptr;
                 result = OCIDefineByPos(mSQLHandle, &defineHandle, mErrorHandle, i + 1,
                                         fields[i].value, fieldSize, fields[i].extType,
                                         &indp, 0, 0, OCI_DEFAULT);

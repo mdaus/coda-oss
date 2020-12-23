@@ -67,7 +67,7 @@ namespace mem
         T* release()
         {
             T* const array = mArray;
-            mArray = NULL;
+            mArray = nullptr;
             return array;
         }
 

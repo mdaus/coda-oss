@@ -68,7 +68,7 @@ namespace mem
             if (mArray)
             {
                 sys::alignedFree(mArray);
-                mArray = NULL;
+                mArray = nullptr;
             }
 
             mArray = allocate(numElements, alignment);
@@ -87,7 +87,7 @@ namespace mem
         T* release()
         {
             T* const array = mArray;
-            mArray = NULL;
+            mArray = nullptr;
             return array;
         }
 

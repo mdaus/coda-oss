@@ -129,7 +129,7 @@ class SyncImplIrix : public SyncInterface
         {
             dbg_ln("Destroying Impl");
             delete mImpl;
-            mImpl = NULL;
+            mImpl = nullptr;
         }
 
     }

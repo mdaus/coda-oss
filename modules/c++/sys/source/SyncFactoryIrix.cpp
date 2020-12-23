@@ -30,7 +30,7 @@
 #include "sys/ThreadIrix.h"
 #include "sys/ConditionVarIrix.h"
 
-sys::SyncFactoryIrix::SyncImplIrix* sys::SyncFactoryIrix::mImpl = NULL;
+sys::SyncFactoryIrix::SyncImplIrix* sys::SyncFactoryIrix::mImpl = nullptr;
 sys::SyncFactoryIrix::SyncImplIrix::SyncImplIrix() : mRef(0), mArena(nullptr)
 {
     // NOTE: SIGUSR1 is used in the Irix conditional
@@ -65,7 +65,7 @@ sys::SyncFactoryIrix::SyncImplIrix::SyncImplIrix() : mRef(0), mArena(nullptr)
     if (*mGuard == NULL)
     {
         delete mGuard;
-        mGuard = NULL;
+        mGuard = nullptr;
     }
 
 
@@ -82,7 +82,7 @@ sys::SyncFactoryIrix::SyncImplIrix::~SyncImplIrix()
     dbg_ln("Detaching the arena");
     usdetach(mArena);
 
-    mArena = NULL;
+    mArena = nullptr;
     dbg_ln("Done destructing the SyncImpl");
 }
 
@@ -122,7 +122,7 @@ bool sys::SyncFactoryIrix::SyncImplIrix::createLock(sys::MutexIrix& mutex)
     {
         dbg_ln("Lock creation failed");
         delete mutex.getNative();
-        mutex.getNative() = NULL;
+        mutex.getNative() = nullptr;
         return false;
     }
     TRACE(mRef++);
@@ -142,7 +142,7 @@ bool sys::SyncFactoryIrix::SyncImplIrix::destroyLock(sys::MutexIrix& mutex)
     EVAL( mutex.getNative() );
     TRACE( usfreelock(*(mutex.getNative()), mArena) );
     TRACE( delete mutex.getNative() );
-    mutex.getNative() = NULL;
+    mutex.getNative() = nullptr;
 
     TRACE(mRef--);
     EVAL(mRef);

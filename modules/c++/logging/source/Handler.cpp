@@ -43,7 +43,7 @@ void Handler::close()
         mFormatter != NULL)
     {
         delete mFormatter;
-        mFormatter = NULL;
+        mFormatter = nullptr;
     }
 }
 

@@ -39,7 +39,7 @@ namespace sys
 FILE* ExecPipe::openPipe(const std::string& command,
                          const std::string& type)
 {
-    FILE* ioFile = NULL;
+    FILE* ioFile = nullptr;
     int pIO[2];
 
     //! create the IO pipes for stdin/out
@@ -144,7 +144,7 @@ int ExecPipe::closePipe()
     if (mOutStream)
     {
         fclose(mOutStream);
-        mOutStream = NULL;
+        mOutStream = nullptr;
     }
 
     int exitStatus = 0;

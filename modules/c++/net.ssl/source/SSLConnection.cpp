@@ -31,7 +31,7 @@ net::ssl::SSLConnection::SSLConnection(std::auto_ptr<net::Socket> socket,
     NetConnection(socket),
     mServerAuthentication(serverAuth)
 {
-    mSSL = NULL;
+    mSSL = nullptr;
     
     mBioErr = BIO_new_fp(stderr, BIO_NOCLOSE);
     

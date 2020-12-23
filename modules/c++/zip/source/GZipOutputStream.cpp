@@ -59,5 +59,5 @@ void GZipOutputStream::write(const void* buffer, size_t len)
 void GZipOutputStream::close()
 {
     gzclose( mFile);
-    mFile = NULL;
+    mFile = nullptr;
 }

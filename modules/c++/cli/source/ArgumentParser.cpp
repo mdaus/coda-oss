@@ -369,12 +369,12 @@ cli::Results* cli::ArgumentParser::parse(const std::vector<std::string>& args)
     }
 
     std::auto_ptr<cli::Results> results(new Results);
-    cli::Results *currentResults = NULL;
+    cli::Results *currentResults = nullptr;
     for (size_t i = 0, s = explodedArgs.size(); i < s; ++i)
     {
         currentResults = results.get(); // set the pointer
         std::string argStr = explodedArgs[i];
-        cli::Argument *arg = NULL;
+        cli::Argument *arg = nullptr;
         std::string optionsStr("");
         if (argStr.size() > 2 && argStr[0] == mPrefixChar && argStr[1]
                 == mPrefixChar)
@@ -545,7 +545,7 @@ cli::Results* cli::ArgumentParser::parse(const std::vector<std::string>& args)
         else
         {
             // it's a positional argument
-            cli::Value *lastPosVal = NULL;
+            cli::Value *lastPosVal = nullptr;
             for (std::vector<cli::Argument*>::iterator it =
                     positionalArgs.begin(); it != positionalArgs.end(); ++it)
             {

@@ -100,7 +100,7 @@ public:
         {
             mEntry->next();
             if (mEntry->mCurrent.empty()) 
-                mEntry = NULL;
+                mEntry = nullptr;
             return *this;
         }
         std::string operator*() const

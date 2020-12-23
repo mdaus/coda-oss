@@ -1575,7 +1575,7 @@ SwigPyObject_long(SwigPyObject *v)
 SWIGRUNTIME PyObject *
 SwigPyObject_format(const char* fmt, SwigPyObject *v)
 {
-  PyObject *res = NULL;
+  PyObject *res = nullptr;
   PyObject *args = PyTuple_New(1);
   if (args) {
     if (PyTuple_SetItem(args, 0, SwigPyObject_long(v)) == 0) {
@@ -1712,7 +1712,7 @@ SwigPyObject_dealloc(PyObject *v)
          remain true upon return from SwigPyObject_dealloc.  So save
          and restore. */
       
-      PyObject *val = NULL, *type = NULL, *tb = NULL;
+      PyObject *val = NULL, *type = NULL, *tb = nullptr;
       PyErr_Fetch(&val, &type, &tb);
 
       if (data->delargs) {
@@ -2246,7 +2246,7 @@ _SWIG_This(void)
     return SWIG_Python_str_FromChar("this");
 }
 
-static PyObject *swig_this = NULL;
+static PyObject *swig_this = nullptr;
 
 SWIGRUNTIME PyObject *
 SWIG_This(void)
@@ -2568,7 +2568,7 @@ SWIG_Python_NewShadowInstance(SwigPyClientData *data, PyObject *swig_this)
     return NULL;
   }
 #ifdef Py_TPFLAGS_HAVE_WEAKREFS
-  inst->in_weakreflist = NULL;
+  inst->in_weakreflist = nullptr;
 #endif
 #ifdef Py_TPFLAGS_GC
   PyObject_GC_Init(inst);
@@ -2761,7 +2761,7 @@ SWIG_Python_DestroyModule(void *vptr)
     }
   }
   Py_DECREF(SWIG_This());
-  swig_this = NULL;
+  swig_this = nullptr;
 }
 
 SWIGRUNTIME void
@@ -2967,7 +2967,7 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
   }
 
   descr = _PyType_Lookup(tp, name);
-  f = NULL;
+  f = nullptr;
   if (descr != NULL)
     f = descr->ob_type->tp_descr_set;
   if (!f) {
@@ -6158,7 +6158,7 @@ extern "C" {
   
   SWIGINTERN PyObject *
   swig_varlink_getattr(swig_varlinkobject *v, char *n) {
-    PyObject *res = NULL;
+    PyObject *res = nullptr;
     swig_globalvar *var = v->vars;
     while (var) {
       if (strcmp(var->name,n) == 0) {
@@ -6500,7 +6500,7 @@ SWIG_init(void) {
   
   PyDict_SetItemString(md, "__all__", public_interface);
   Py_DECREF(public_interface);
-  for (i = 0; SwigMethods[i].ml_name != NULL; ++i)
+  for (i = 0; SwigMethods[i].ml_name != nullptr; ++i)
   SwigPyBuiltin_AddPublicSymbol(public_interface, SwigMethods[i].ml_name);
   for (i = 0; swig_const_table[i].name != 0; ++i)
   SwigPyBuiltin_AddPublicSymbol(public_interface, swig_const_table[i].name);

@@ -84,7 +84,7 @@ public:
     //! Constructor.  Creates a new XML parser
     XMLReaderExpat()
     {
-        mNative = NULL;
+        mNative = nullptr;
         create();
     }
 
