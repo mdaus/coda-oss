@@ -51,8 +51,8 @@ namespace
 
 sys::ConditionVarDataWin32::ConditionVarDataWin32():
     mNumWaiters(0),
-    mSemaphore(CreateSemaphore(NULL, 0, 0x7FFFFFFF, NULL)),
-    mWaitersAreDone(CreateEvent(NULL, FALSE, FALSE, NULL)),
+    mSemaphore(CreateSemaphore(nullptr, 0, 0x7FFFFFFF, NULL)),
+    mWaitersAreDone(CreateEvent(nullptr, FALSE, FALSE, NULL)),
     mWasBroadcast(false)
 {
     InitializeCriticalSection(&mNumWaitersCS);

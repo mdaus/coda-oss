@@ -29,7 +29,7 @@
 
 sys::MutexWin32::MutexWin32()
 {
-    mNative = CreateMutex(NULL, FALSE, NULL);
+    mNative = CreateMutex(nullptr, FALSE, NULL);
     if (mNative == nullptr)
         throw sys::SystemException("Mutex initializer failed");
 }

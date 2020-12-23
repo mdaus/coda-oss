@@ -120,7 +120,7 @@ protected:
 class ToggleOutputStream: public io::ProxyOutputStream
 {
 public:
-    ToggleOutputStream(io::OutputStream *output = NULL, bool ownPtr = false) :
+    ToggleOutputStream(io::OutputStream *output = nullptr, bool ownPtr = false) :
         io::ProxyOutputStream(nullptr), mPtr(output),
                 mNullStream(new io::NullOutputStream), mOwnPtr(ownPtr)
     {

@@ -79,7 +79,7 @@ public:
     //! Destructor
     virtual ~ MinidomHandler()
     {
-        setDocument(NULL, true);
+        setDocument(nullptr, true);
     }
 
     virtual void setDocument(Document *newDocument, bool own = true);

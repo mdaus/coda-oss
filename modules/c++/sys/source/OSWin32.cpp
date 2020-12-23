@@ -80,7 +80,7 @@ bool sys::OSWin32::exists(const std::string& path) const
             char* err = nullptr;
             FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
                           FORMAT_MESSAGE_FROM_SYSTEM,
-                          NULL, errCode,
+                          nullptr, errCode,
                           MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                           (LPTSTR) &err, 0, NULL);
             throw except::Exception(Ctxt(
@@ -218,7 +218,7 @@ std::string sys::OSWin32::operator[](const std::string& s) const
 std::string sys::OSWin32::getEnv(const std::string& s) const
 {
     std::string result;
-    const DWORD size = GetEnvironmentVariable(s.c_str(), NULL, 0);
+    const DWORD size = GetEnvironmentVariable(s.c_str(), nullptr, 0);
     if (size == 0)
     {
         throw sys::SystemException(Ctxt(
@@ -246,7 +246,7 @@ std::string sys::OSWin32::getEnv(const std::string& s) const
 
 bool sys::OSWin32::isEnvSet(const std::string& s) const
 {
-    const DWORD size = GetEnvironmentVariable(s.c_str(), NULL, 0);
+    const DWORD size = GetEnvironmentVariable(s.c_str(), nullptr, 0);
     return (size != 0);
 }
 
@@ -381,7 +381,7 @@ std::string sys::OSWin32::getCurrentExecutable(
     char buffer[MAX_PATH + 2];
     memset(buffer, 0, MAX_PATH + 2);
 
-    size_t bytesRead = GetModuleFileName(NULL, buffer, MAX_PATH + 1);
+    size_t bytesRead = GetModuleFileName(nullptr, buffer, MAX_PATH + 1);
 
     if (bytesRead == MAX_PATH + 1 || bytesRead == 0)
     {

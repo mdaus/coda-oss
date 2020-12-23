@@ -42,7 +42,7 @@ FILE* ExecPipe::openPipe(const std::string& command,
                          const std::string& type)
 {
     FILE* ioFile;
-    HANDLE outIO[2] = {NULL, NULL};
+    HANDLE outIO[2] = {nullptr, NULL};
 
     //! inherit the pipe handles
     SECURITY_ATTRIBUTES saAttr; 
@@ -75,8 +75,8 @@ FILE* ExecPipe::openPipe(const std::string& command,
 
     //! create the subprocess --
     //  this is equivalent to a fork + exec
-    if (CreateProcess(NULL, const_cast<char*>(command.c_str()),
-                      NULL, NULL, TRUE, 0, NULL, NULL,
+    if (CreateProcess(nullptr, const_cast<char*>(command.c_str()),
+                      nullptr, nullptr, TRUE, 0, nullptr, NULL,
                       &mStartInfo, &mProcessInfo) == 0)
     {
         return NULL;

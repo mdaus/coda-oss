@@ -115,7 +115,7 @@ TEST_CASE(testCountingOutputStream)
 TEST_CASE(testBufferViewStream)
 {
     {
-        mem::BufferView<sys::ubyte> bufferView(NULL, 0);
+        mem::BufferView<sys::ubyte> bufferView(nullptr, 0);
         io::BufferViewStream<sys::ubyte> stream(bufferView);
         TEST_ASSERT_EQ(stream.tell(), 0);
         TEST_ASSERT_EQ(stream.available(), 0);

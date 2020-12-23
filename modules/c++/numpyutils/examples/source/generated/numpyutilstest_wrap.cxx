@@ -1185,10 +1185,10 @@ SWIGRUNTIME PyObject* SWIG_PyInstanceMethod_New(PyObject *SWIGUNUSEDPARM(self), 
 #ifdef SWIGPYTHON_BUILTIN
 #define SWIG_NewPointerObj(ptr, type, flags)            SWIG_Python_NewPointerObj(self, ptr, type, flags)
 #else
-#define SWIG_NewPointerObj(ptr, type, flags)            SWIG_Python_NewPointerObj(NULL, ptr, type, flags)
+#define SWIG_NewPointerObj(ptr, type, flags)            SWIG_Python_NewPointerObj(nullptr, ptr, type, flags)
 #endif
 
-#define SWIG_InternalNewPointerObj(ptr, type, flags)	SWIG_Python_NewPointerObj(NULL, ptr, type, flags)
+#define SWIG_InternalNewPointerObj(ptr, type, flags)	SWIG_Python_NewPointerObj(nullptr, ptr, type, flags)
 
 #define SWIG_CheckImplicit(ty)                          SWIG_Python_CheckImplicit(ty) 
 #define SWIG_AcquirePtr(ptr, src)                       SWIG_Python_AcquirePtr(ptr, src)
@@ -1204,7 +1204,7 @@ SWIGRUNTIME PyObject* SWIG_PyInstanceMethod_New(PyObject *SWIGUNUSEDPARM(self), 
 
 /* for C or C++ function pointers */
 #define SWIG_ConvertFunctionPtr(obj, pptr, type)        SWIG_Python_ConvertFunctionPtr(obj, pptr, type)
-#define SWIG_NewFunctionPtrObj(ptr, type)               SWIG_Python_NewPointerObj(NULL, ptr, type, 0)
+#define SWIG_NewFunctionPtrObj(ptr, type)               SWIG_Python_NewPointerObj(nullptr, ptr, type, 0)
 
 /* for C++ member pointers, ie, member methods */
 #define SWIG_ConvertMember(obj, ptr, sz, ty)            SWIG_Python_ConvertPacked(obj, ptr, sz, ty)
@@ -1712,7 +1712,7 @@ SwigPyObject_dealloc(PyObject *v)
          remain true upon return from SwigPyObject_dealloc.  So save
          and restore. */
       
-      PyObject *val = NULL, *type = NULL, *tb = nullptr;
+      PyObject *val = nullptr, *type = nullptr, *tb = nullptr;
       PyErr_Fetch(&val, &type, &tb);
 
       if (data->delargs) {
@@ -1927,7 +1927,7 @@ SwigPyObject_TypeOnce(void) {
   if (!type_init) {
     const PyTypeObject tmp = {
 #if PY_VERSION_HEX >= 0x03000000
-      PyVarObject_HEAD_INIT(NULL, 0)
+      PyVarObject_HEAD_INIT(nullptr, 0)
 #else
       PyObject_HEAD_INIT(nullptr)
       0,                                    /* ob_size */
@@ -2118,7 +2118,7 @@ SwigPyPacked_TypeOnce(void) {
   if (!type_init) {
     const PyTypeObject tmp = {
 #if PY_VERSION_HEX>=0x03000000
-      PyVarObject_HEAD_INIT(NULL, 0)
+      PyVarObject_HEAD_INIT(nullptr, 0)
 #else
       PyObject_HEAD_INIT(nullptr)
       0,                                    /* ob_size */
@@ -2770,7 +2770,7 @@ SWIG_Python_SetModule(swig_module_info *swig_module) {
  /* Add a dummy module object into sys.modules */
   PyObject *module = PyImport_AddModule((char*)"swig_runtime_data" SWIG_RUNTIME_VERSION);
 #else
-  static PyMethodDef swig_empty_runtime_method_table[] = { {NULL, NULL, 0, NULL} }; /* Sentinel */
+  static PyMethodDef swig_empty_runtime_method_table[] = { {nullptr, nullptr, 0, NULL} }; /* Sentinel */
   PyObject *module = Py_InitModule((char*)"swig_runtime_data" SWIG_RUNTIME_VERSION, swig_empty_runtime_method_table);
 #endif
 #ifdef SWIGPY_USE_CAPSULE
@@ -2815,7 +2815,7 @@ SWIG_Python_TypeQuery(const char *type)
     descriptor = SWIG_TypeQueryModule(swig_module, swig_module, type);
     if (descriptor) {
 #ifdef SWIGPY_USE_CAPSULE
-      obj = PyCapsule_New((void*) descriptor, NULL, NULL);
+      obj = PyCapsule_New((void*) descriptor, nullptr, NULL);
 #else
       obj = PyCObject_FromVoidPtr(descriptor, NULL);
 #endif
@@ -2947,7 +2947,7 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 
 # ifdef Py_USING_UNICODE
   if (PyString_Check(name)) {
-    name = PyUnicode_Decode(PyString_AsString(name), PyString_Size(name), NULL, NULL);
+    name = PyUnicode_Decode(PyString_AsString(name), PyString_Size(name), nullptr, NULL);
     if (!name)
       return -1;
   } else if (!PyUnicode_Check(name))
@@ -5718,7 +5718,7 @@ static PyMethodDef SwigMethods[] = {
 		"elementDoubleTest(PyObject * inputNPArray, PyObject * outputNPArray) -> PyObject\n"
 		"elementDoubleTest(PyObject * inputNPArray) -> PyObject *\n"
 		""},
-	 { NULL, NULL, 0, NULL }
+	 { nullptr, nullptr, 0, NULL }
 };
 
 
@@ -6198,7 +6198,7 @@ extern "C" {
     if (!type_init) {
       const PyTypeObject tmp = {
 #if PY_VERSION_HEX >= 0x03000000
-        PyVarObject_HEAD_INIT(NULL, 0)
+        PyVarObject_HEAD_INIT(nullptr, 0)
 #else
         PyObject_HEAD_INIT(nullptr)
         0,                                  /* ob_size */
@@ -6398,9 +6398,9 @@ SWIG_init(void) {
 # else
     {
       PyObject_HEAD_INIT(nullptr)
-      NULL, /* m_init */
+      nullptr, /* m_init */
       0,    /* m_index */
-      NULL, /* m_copy */
+      nullptr, /* m_copy */
     },
 # endif
     (char *) SWIG_name,
@@ -6419,14 +6419,14 @@ SWIG_init(void) {
     0, 0, 0, 0, 0, 0, 0
   };
   static PyGetSetDef this_getset_def = {
-    (char *)"this", &SwigPyBuiltin_ThisClosure, NULL, NULL, NULL
+    (char *)"this", &SwigPyBuiltin_ThisClosure, nullptr, nullptr, NULL
   };
   static SwigPyGetSet thisown_getset_closure = {
     (PyCFunction) SwigPyObject_own,
     (PyCFunction) SwigPyObject_own
   };
   static PyGetSetDef thisown_getset_def = {
-    (char *)"thisown", SwigPyBuiltin_GetterClosure, SwigPyBuiltin_SetterClosure, NULL, &thisown_getset_closure
+    (char *)"thisown", SwigPyBuiltin_GetterClosure, SwigPyBuiltin_SetterClosure, nullptr, &thisown_getset_closure
   };
   PyTypeObject *builtin_pytype;
   int builtin_base_count;
