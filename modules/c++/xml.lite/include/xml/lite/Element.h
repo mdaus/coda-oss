@@ -413,7 +413,10 @@ public:
      *  Adds a child element to this element
      *  \param node the child element to add
      */
-    virtual void addChild(std::unique_ptr<Element>&& node);
+    #if !CODA_OSS_cpp17
+    virtual void addChild(std::auto_ptr<Element> node);
+    #endif
+    virtual void addChild(std::unique_ptr <Element>&& node);
 
     /*!
      *  Returns all of the children of this element
