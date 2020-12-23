@@ -50,7 +50,7 @@ void xml::lite::Element::clone(const xml::lite::Element& node)
     mCharacterData = node.mCharacterData;
     mpEncoding = node.mpEncoding;
     mAttributes = node.mAttributes;
-    mParent = NULL;
+    mParent = nullptr;
 
     std::vector<xml::lite::Element *>::const_iterator iter;
     iter = node.getChildren().begin();
