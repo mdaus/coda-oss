@@ -74,7 +74,7 @@ void sys::File::readInto(void* buffer, size_t size)
                       bufferPtr + bytesRead,
                       bytesToRead,
                       &bytesThisRead,
-                      NULL))
+                      nullptr))
         {
             throw sys::SystemException(Ctxt("Error reading from file"));
         }
@@ -111,7 +111,7 @@ void sys::File::writeFrom(const void* buffer, size_t size)
                        bufferPtr + bytesWritten,
                        bytesToWrite,
                        &bytesThisWrite,
-                       NULL))
+                       nullptr))
         {
             throw sys::SystemException(Ctxt("Writing from file"));
         }

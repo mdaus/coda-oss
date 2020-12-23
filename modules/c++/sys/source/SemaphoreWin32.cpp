@@ -53,7 +53,7 @@ void sys::SemaphoreWin32::signal()
 {
     if (!ReleaseSemaphore(mNative,
                           1,
-                          NULL) )
+                          nullptr) )
     {
         throw sys::SystemException("Semaphore signal failed");
     }
