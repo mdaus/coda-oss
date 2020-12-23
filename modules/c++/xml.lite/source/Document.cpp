@@ -64,14 +64,14 @@ xml::lite::Document::createElement(const std::string& qname,
 void xml::lite::Document::insert(xml::lite::Element * element,
                                  xml::lite::Element * underThis)
 {
-    if (element != NULL && underThis != nullptr)
+    if (element != nullptr && underThis != nullptr)
         underThis->addChild(element);
 }
 
 void xml::lite::Document::remove(xml::lite::Element * toDelete,
                                  xml::lite::Element * fromHere)
 {
-    if (fromHere != NULL && toDelete != nullptr)
+    if (fromHere != nullptr && toDelete != nullptr)
     {
         for (std::vector<xml::lite::Element *>::iterator i =
                 fromHere->getChildren().begin(); i

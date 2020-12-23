@@ -6410,7 +6410,7 @@ SWIG_init(void) {
     nullptr,
     nullptr,
     nullptr,
-    NULL
+    nullptr
   };
 #endif
   
