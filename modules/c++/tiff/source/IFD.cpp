@@ -46,7 +46,7 @@ tiff::IFDEntry *tiff::IFD::operator[](unsigned short tag)
     // not exist.  This is to make sure that the map doesn't get full
     // of invalid key/value pairs if you're just trying to verify whether
     // a key already exists of not.
-    return exists(tag) ? mIFD[tag] : NULL;
+    return exists(tag) ? mIFD[tag] : nullptr;
 }
 
 bool tiff::IFD::exists(unsigned short tag)

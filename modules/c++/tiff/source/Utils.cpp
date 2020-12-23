@@ -85,10 +85,10 @@ tiff::IFD* tiff::Utils::createGeoTiffIFD(tiff::IFD* ifd)
     tiff::IFDEntry *geoDir = (*ifd)["GeoKeyDirectoryTag"];
     tiff::IFDEntry *doubleParams =
             ifd->exists("GeoDoubleParamsTag") ? (*ifd)["GeoDoubleParamsTag"]
-                                              : NULL;
+                                              : nullptr;
     tiff::IFDEntry *asciiParams =
             ifd->exists("GeoAsciiParamsTag") ? (*ifd)["GeoAsciiParamsTag"]
-                                             : NULL;
+                                             : nullptr;
 
     std::vector<tiff::TypeInterface*> geoVals = geoDir->getValues();
     size_t idx = 0;
