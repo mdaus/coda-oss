@@ -50,7 +50,7 @@ public:
     //       to do.
     ScopedMatchData(const pcre2_code* code) :
         mCode(code),
-        mMatchData(pcre2_match_data_create_from_pattern(code, NULL))
+        mMatchData(pcre2_match_data_create_from_pattern(code, nullptr))
     {
         if (mMatchData == nullptr)
         {

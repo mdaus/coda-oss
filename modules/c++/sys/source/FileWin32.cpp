@@ -43,7 +43,7 @@ void sys::File::create(const std::string& str,
 
     mHandle = CreateFile(str.c_str(),
                          accessFlags,
-                         FILE_SHARE_READ, NULL,
+                         FILE_SHARE_READ, nullptr,
                          creationFlags,
                          FILE_ATTRIBUTE_NORMAL, nullptr);
 

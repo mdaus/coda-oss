@@ -74,7 +74,7 @@ void sys::ThreadSolaris::kill()
 void sys::ThreadSolaris::join()
 {
     dbg_printf("Joining thread\n");
-    if (::thr_join(mNative, nullptr, NULL) != 0 )
+    if (::thr_join(mNative, nullptr, nullptr) != 0 )
         throw sys::SystemException("thr_join()");
 }
 

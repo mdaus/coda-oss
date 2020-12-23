@@ -76,7 +76,7 @@ FILE* ExecPipe::openPipe(const std::string& command,
     //! create the subprocess --
     //  this is equivalent to a fork + exec
     if (CreateProcess(nullptr, const_cast<char*>(command.c_str()),
-                      nullptr, nullptr, TRUE, 0, nullptr, NULL,
+                      nullptr, nullptr, TRUE, 0, nullptr, nullptr,
                       &mStartInfo, &mProcessInfo) == 0)
     {
         return nullptr;

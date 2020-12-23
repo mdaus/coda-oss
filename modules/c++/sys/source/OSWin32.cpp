@@ -158,7 +158,7 @@ bool sys::OSWin32::isDirectory(const std::string& path) const
 
 bool sys::OSWin32::makeDirectory(const std::string& path) const
 {
-    return (CreateDirectory(path.c_str(), NULL)) ? (true): (false);
+    return (CreateDirectory(path.c_str(), nullptr)) ? (true): (false);
 }
 
 std::string sys::OSWin32::getCurrentWorkingDirectory() const
