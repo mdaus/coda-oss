@@ -323,10 +323,10 @@ namespace sys
 #if defined(WIN32) || defined(_WIN32)
         void* p = _aligned_malloc(size, alignment);
 #elif defined(HAVE_POSIX_MEMALIGN)
-        void* p = NULL;
+        void* p = nullptr;
         if (posix_memalign(&p, alignment, size) != 0)
         {
-            p = NULL;
+            p = nullptr;
         }
 #elif defined(HAVE_MEMALIGN)
         void* const p = memalign(alignment, size);
