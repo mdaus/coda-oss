@@ -37,7 +37,7 @@ void sys::ThreadSolaris::start()
                getLevel() == KERNEL_LEVEL);
     // \todo Kernel level
 
-    int p = thr_create(NULL,
+    int p = thr_create(nullptr,
                        0,
                        __sys_ThreadSolaris_start,
                        this,

@@ -96,7 +96,7 @@ void xml::lite::XMLReaderLibXML::create()
     mContextLibXML =
         xmlCreatePushParserCtxt(&mSAXLibXML,
                                 this,
-                                NULL,
+                                nullptr,
                                 0,
                                 nullptr);
     

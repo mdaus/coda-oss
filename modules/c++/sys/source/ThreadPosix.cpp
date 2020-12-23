@@ -60,7 +60,7 @@ void sys::ThreadPosix::start()
     else
     {
         if (::pthread_create(&mNative,
-                             NULL,
+                             nullptr,
                              (void *(*)(void *))this->__start,
                              this) != 0)
             throw sys::SystemException("pthread_create()");

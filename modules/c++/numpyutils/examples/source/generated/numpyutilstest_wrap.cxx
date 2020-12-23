@@ -6404,12 +6404,12 @@ SWIG_init(void) {
     },
 # endif
     (char *) SWIG_name,
-    NULL,
+    nullptr,
     -1,
     SwigMethods,
-    NULL,
-    NULL,
-    NULL,
+    nullptr,
+    nullptr,
+    nullptr,
     NULL
   };
 #endif
