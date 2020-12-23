@@ -100,7 +100,7 @@ void xml::lite::XMLReaderLibXML::create()
                                 0,
                                 NULL);
     
-    if (mContextLibXML == NULL)
+    if (mContextLibXML == nullptr)
         throw except::Exception(Ctxt("Failed to create parser context"));
 
 }

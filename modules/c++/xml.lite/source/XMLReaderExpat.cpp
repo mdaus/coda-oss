@@ -56,7 +56,7 @@ void xml::lite::XMLReaderExpat::create()
 {
     // 1. Take the default character mapping
     // 2. Note we are not using expat's NS expanding
-    if (mNative == NULL)
+    if (mNative == nullptr)
         mNative = XML_ParserCreate(nullptr);
     else
         dbg_printf("Tried to re-create an existing parser!\n");

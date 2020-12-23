@@ -58,7 +58,7 @@ net::NetConnection* net::NetConnectionServer::accept()
 void net::NetConnectionServer::initialize(net::RequestHandlerFactory* factory,
                                           net::AllocStrategy* newStrategy)
 {
-    std::auto_ptr<net::AllocStrategy> tmp ((newStrategy == NULL) ? 
+    std::auto_ptr<net::AllocStrategy> tmp ((newStrategy == nullptr) ? 
         new DefaultAllocStrategy() : newStrategy);
 
     tmp->setRequestHandlerFactory(factory);

@@ -74,7 +74,7 @@ retrieve(const std::string& functionName)
                                GetProcAddress(mLib, functionName.c_str());
 
         // Now we check the ptr value
-        if (ptr == NULL)
+        if (ptr == nullptr)
             throw(sys::DLLException(FmtX("Failed to load function: %s",
                                          functionName.c_str())));
         return ptr;

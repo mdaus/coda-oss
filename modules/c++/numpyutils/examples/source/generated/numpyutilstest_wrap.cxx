@@ -2251,7 +2251,7 @@ static PyObject *swig_this = nullptr;
 SWIGRUNTIME PyObject *
 SWIG_This(void)
 {
-  if (swig_this == NULL)
+  if (swig_this == nullptr)
     swig_this = _SWIG_This();
   return swig_this;
 }
@@ -2517,7 +2517,7 @@ SWIG_Python_NewShadowInstance(SwigPyClientData *data, PyObject *swig_this)
       PyObject **dictptr = _PyObject_GetDictPtr(inst);
       if (dictptr != nullptr) {
 	PyObject *dict = *dictptr;
-	if (dict == NULL) {
+	if (dict == nullptr) {
 	  dict = PyDict_New();
 	  *dictptr = dict;
 	  PyDict_SetItem(dict, SWIG_This(), swig_this);
@@ -2557,13 +2557,13 @@ SWIG_Python_NewShadowInstance(SwigPyClientData *data, PyObject *swig_this)
   return (PyObject *) inst;
 #else
   PyInstanceObject *inst = PyObject_NEW(PyInstanceObject, &PyInstance_Type);
-  if (inst == NULL) {
+  if (inst == nullptr) {
     return NULL;
   }
   inst->in_class = (PyClassObject *)data->newargs;
   Py_INCREF(inst->in_class);
   inst->in_dict = PyDict_New();
-  if (inst->in_dict == NULL) {
+  if (inst->in_dict == nullptr) {
     Py_DECREF(inst);
     return NULL;
   }
@@ -2587,7 +2587,7 @@ SWIG_Python_SetSwigThis(PyObject *inst, PyObject *swig_this)
  PyObject **dictptr = _PyObject_GetDictPtr(inst);
  if (dictptr != nullptr) {
    dict = *dictptr;
-   if (dict == NULL) {
+   if (dict == nullptr) {
      dict = PyDict_New();
      *dictptr = dict;
    }
@@ -2726,7 +2726,7 @@ PyModule_AddObject(PyObject *m, char *name, PyObject *o)
   }
   
   dict = PyModule_GetDict(m);
-  if (dict == NULL) {
+  if (dict == nullptr) {
     /* Internal error -- modules must have a dict! */
     PyErr_Format(PyExc_SystemError, "module '%s' has no __dict__",
 		 PyModule_GetName(m));
@@ -6167,7 +6167,7 @@ extern "C" {
       }
       var = var->next;
     }
-    if (res == NULL && !PyErr_Occurred()) {
+    if (res == nullptr && !PyErr_Occurred()) {
       PyErr_Format(PyExc_AttributeError, "Unknown C global variable '%s'", n);
     }
     return res;

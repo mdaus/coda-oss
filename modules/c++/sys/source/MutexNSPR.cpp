@@ -27,7 +27,7 @@
 sys::MutexNSPR::MutexNSPR()
 {
     mNative = PR_NewLock();
-    if (mNative == NULL)
+    if (mNative == nullptr)
         throw sys::SystemException("Mutex initialization failed");
 }
 sys::MutexNSPR::~MutexNSPR()

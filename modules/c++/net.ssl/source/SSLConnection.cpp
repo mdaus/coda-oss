@@ -36,7 +36,7 @@ net::ssl::SSLConnection::SSLConnection(std::auto_ptr<net::Socket> socket,
     mBioErr = BIO_new_fp(stderr, BIO_NOCLOSE);
     
     mSSL = SSL_new(ctx);
-    if(mSSL == NULL)
+    if(mSSL == nullptr)
     {
         throw net::ssl::SSLException(Ctxt(FmtX("SSL_new failed")));
     }

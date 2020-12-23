@@ -56,7 +56,7 @@ sys::ConditionVarDataWin32::ConditionVarDataWin32():
     mWasBroadcast(false)
 {
     InitializeCriticalSection(&mNumWaitersCS);
-    if (mSemaphore == NULL || mWaitersAreDone == NULL)
+    if (mSemaphore == nullptr || mWaitersAreDone == nullptr)
     {
         throw sys::SystemException(
             "ConditionVarDataWin32 Initializer failed");

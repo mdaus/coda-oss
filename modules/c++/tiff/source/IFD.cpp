@@ -107,7 +107,7 @@ void tiff::IFD::serialize(io::OutputStream& output)
 {
     io::Seekable *seekable =
             dynamic_cast<io::Seekable *>(&output);
-    if (seekable == NULL)
+    if (seekable == nullptr)
         throw except::Exception(Ctxt("Can only serialize IFD to seekable stream"));
 
     // Makes sure all data offsets are defined for each entry.

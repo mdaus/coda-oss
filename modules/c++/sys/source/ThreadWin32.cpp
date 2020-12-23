@@ -45,7 +45,7 @@ void sys::ThreadWin32::start()
                              (void*)this,
                              0,
                              &threadId);
-    if (mNative == NULL)
+    if (mNative == nullptr)
         throw sys::SystemException("Thread creation failed");
 
 

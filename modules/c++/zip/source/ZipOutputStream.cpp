@@ -29,7 +29,7 @@ namespace zip
 ZipOutputStream::ZipOutputStream(const std::string& pathname)
 {
     mZip = zipOpen64(pathname.c_str(), APPEND_STATUS_CREATE);
-    if (mZip == NULL)
+    if (mZip == nullptr)
         throw except::IOException(Ctxt("Failed to open zip stream " + 
                 pathname));
 

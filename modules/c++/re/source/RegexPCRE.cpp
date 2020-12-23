@@ -52,7 +52,7 @@ public:
         mCode(code),
         mMatchData(pcre2_match_data_create_from_pattern(code, NULL))
     {
-        if (mMatchData == NULL)
+        if (mMatchData == nullptr)
         {
             throw re::RegexException(Ctxt(
                     "pcre2_match_data_create_from_pattern() failed to "
@@ -217,7 +217,7 @@ Regex& Regex::compile(const std::string& pattern)
                           &errorOffset,
                           NULL); // Use default compile context
 
-    if (mPCRE == NULL)
+    if (mPCRE == nullptr)
     {
         std::ostringstream ostr;
         ostr << "PCRE compilation failed at offset " << errorOffset

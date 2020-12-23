@@ -62,7 +62,7 @@ sys::SyncFactoryIrix::SyncImplIrix::SyncImplIrix() : mRef(0), mArena(nullptr)
 
     mGuard = new ulock_t;
     *mGuard = usnewlock(mArena);
-    if (*mGuard == NULL)
+    if (*mGuard == nullptr)
     {
         delete mGuard;
         mGuard = nullptr;
@@ -118,7 +118,7 @@ bool sys::SyncFactoryIrix::SyncImplIrix::createLock(sys::MutexIrix& mutex)
     ussetlock(*mGuard);
     mutex.getNative() = new ulock_t;
     *(mutex.getNative()) = usnewlock(mArena);
-    if (*(mutex.getNative()) == NULL)
+    if (*(mutex.getNative()) == nullptr)
     {
         dbg_ln("Lock creation failed");
         delete mutex.getNative();
