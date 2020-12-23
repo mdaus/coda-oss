@@ -76,20 +76,20 @@ bool exists(const path& p);  // https://en.cppreference.com/w/cpp/filesystem/exi
 }
 
 #ifndef CODA_OSS_DEFINE_std_filesystem_
-#if CODA_OSS_cplusplus >= 201703L  // C++17
+#if CODA_OSS_cpp17
 
 // Some versions of G++ say they're C++17 but don't have <filesystem>
 #if __has_include(<filesystem>) // __has_include is C++17
 #define CODA_OSS_DEFINE_std_filesystem_ 0  // got <filesystem>, don't need our own
 #else
-#define CODA_OSS_DEFINE_std_filesystem_ 1  // no <filesystem>, use our own
+#define CODA_OSS_DEFINE_std_filesystem_ CODA_OSS_AUGMENT_std_namespace  // no <filesystem>, use our own
 #endif  //__has_include(<filesystem>)
 
 #else
 
-#define CODA_OSS_DEFINE_std_filesystem_ 1  // pre-C++17
+#define CODA_OSS_DEFINE_std_filesystem_ CODA_OSS_AUGMENT_std_namespace  // pre-C++17
 
-#endif  // CODA_OSS_cplusplus
+#endif  // CODA_OSS_cpp17
 #endif  // CODA_OSS_DEFINE_std_filesystem_
 
 #if CODA_OSS_DEFINE_std_filesystem_
@@ -99,7 +99,12 @@ namespace std
 namespace filesystem = ::sys::Filesystem;
 }
 #else
+
+// Not doing our own std::filesystem, can we get the real one?
+#if CODA_OSS_cpp17 && __has_include(<filesystem>)  // __has_include is C++17
 #include <filesystem>
+#endif
+
 #endif
 
 #endif  // CODA_OSS_sys_Filesystem_h_INCLUDED_

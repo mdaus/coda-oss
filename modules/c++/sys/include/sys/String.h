@@ -19,17 +19,20 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
+#ifndef CODA_OSS_sys_String_h_INCLUDED_
+#define CODA_OSS_sys_String_h_INCLUDED_
 #pragma once
 
 #include <string>
+
+#include "Conf.h"
 
 #if !defined(CODA_OSS_sys_U8string_DEFINED_)
 #define CODA_OSS_sys_U8string_DEFINED_ 1
 namespace sys
 {
     // Char8_T for UTF-8 characters
-    #if __cplusplus >= 202002L  // C++20
+    #if CODA_OSS_cpp20
     using Char8_T = char8_t;
     using U8string = std::u8string;
     #else
@@ -38,3 +41,5 @@ namespace sys
     #endif  // __cplusplus
 }
 #endif  // CODA_OSS_sys_U8string_DEFINED_
+
+#endif  // CODA_OSS_sys_String_h_INCLUDED_
