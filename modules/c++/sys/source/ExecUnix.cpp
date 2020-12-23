@@ -45,7 +45,7 @@ FILE* ExecPipe::openPipe(const std::string& command,
     //! create the IO pipes for stdin/out
     if (pipe(pIO) < 0)
     {
-        return NULL;
+        return nullptr;
     }
 
     //! fork a subprocess for running our command --
@@ -58,7 +58,7 @@ FILE* ExecPipe::openPipe(const std::string& command,
             // there was an error while forking
             close(pIO[READ_PIPE]);
             close(pIO[WRITE_PIPE]);
-            return NULL;
+            return nullptr;
         case 0:
         {
             // we are now in the forked process --

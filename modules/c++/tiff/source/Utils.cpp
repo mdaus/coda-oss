@@ -30,7 +30,7 @@ bool tiff::Utils::hasGeoTiffIFD(tiff::IFD* ifd)
 tiff::IFD* tiff::Utils::createGeoTiffIFD(tiff::IFD* ifd)
 {
     if (!tiff::Utils::hasGeoTiffIFD(ifd))
-        return NULL;
+        return nullptr;
 
     std::map<unsigned short, std::string> keyMap;
     keyMap[1024] = "GTModelTypeGeoKey";

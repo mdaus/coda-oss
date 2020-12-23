@@ -107,7 +107,7 @@ namespace mem
             }
             else
             {
-                return NULL;
+                return nullptr;
             }
         }
 

@@ -35,7 +35,7 @@
 tiff::IFDEntry *tiff::IFD::operator[](const char *name)
 {
     tiff::IFDEntry *mapEntry = tiff::KnownTagsRegistry::getInstance()[name];
-    if (!mapEntry) return NULL;
+    if (!mapEntry) return nullptr;
     return (*this)[mapEntry->getTagID()];
 }
 

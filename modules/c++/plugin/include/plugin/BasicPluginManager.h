@@ -196,7 +196,7 @@ public:
             mHandlers.find( name );
         if ( it != mHandlers.end() )
             return it->second.first;
-        return NULL;
+        return nullptr;
     }
 
     /*!

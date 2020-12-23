@@ -528,7 +528,7 @@ SWIG_TypePrettyName(const swig_type_info *type) {
      type, separated by vertical-bar characters.  We choose
      to print the last name, as it is often (?) the most
      specific. */
-  if (!type) return NULL;
+  if (!type) return nullptr;
   if (type->str != nullptr) {
     const char *last_name = type->str;
     const char *s;
@@ -1157,7 +1157,7 @@ SWIGRUNTIME PyObject* SWIG_PyInstanceMethod_New(PyObject *SWIGUNUSEDPARM(self), 
 #else
 SWIGRUNTIME PyObject* SWIG_PyInstanceMethod_New(PyObject *SWIGUNUSEDPARM(self), PyObject *SWIGUNUSEDPARM(func))
 {
-  return NULL;
+  return nullptr;
 }
 #endif
 
@@ -1749,12 +1749,12 @@ SwigPyObject_append(PyObject* v, PyObject* next)
   SwigPyObject *sobj = (SwigPyObject *) v;
 #ifndef METH_O
   PyObject *tmp = 0;
-  if (!PyArg_ParseTuple(next,(char *)"O:append", &tmp)) return NULL;
+  if (!PyArg_ParseTuple(next,(char *)"O:append", &tmp)) return nullptr;
   next = tmp;
 #endif
   if (!SwigPyObject_Check(next)) {
     PyErr_SetString(PyExc_TypeError, "Attempt to append a non SwigPyObject");
-    return NULL;
+    return nullptr;
   }
   sobj->next = next;
   Py_INCREF(next);
@@ -1813,7 +1813,7 @@ SwigPyObject_own(PyObject *v, PyObject *args)
   if (!PyArg_UnpackTuple(args, "own", 0, 1, &val)) 
 #endif
     {
-      return NULL;
+      return nullptr;
     } 
   else
     {
@@ -2011,7 +2011,7 @@ SwigPyObject_TypeOnce(void) {
     swigpyobject_type.ob_type = &PyType_Type;
 #else
     if (PyType_Ready(&swigpyobject_type) < 0)
-      return NULL;
+      return nullptr;
 #endif
   }
   return &swigpyobject_type;
@@ -2198,7 +2198,7 @@ SwigPyPacked_TypeOnce(void) {
     swigpypacked_type.ob_type = &PyType_Type;
 #else
     if (PyType_Ready(&swigpypacked_type) < 0)
-      return NULL;
+      return nullptr;
 #endif
   }
   return &swigpypacked_type;
@@ -2280,7 +2280,7 @@ SWIG_Python_GetSwigThis(PyObject *pyobj)
       return (SwigPyObject*) pyobj;
   }
 # endif
-  return NULL;
+  return nullptr;
 #else
 
   obj = 0;
@@ -2558,14 +2558,14 @@ SWIG_Python_NewShadowInstance(SwigPyClientData *data, PyObject *swig_this)
 #else
   PyInstanceObject *inst = PyObject_NEW(PyInstanceObject, &PyInstance_Type);
   if (inst == nullptr) {
-    return NULL;
+    return nullptr;
   }
   inst->in_class = (PyClassObject *)data->newargs;
   Py_INCREF(inst->in_class);
   inst->in_dict = PyDict_New();
   if (inst->in_dict == nullptr) {
     Py_DECREF(inst);
-    return NULL;
+    return nullptr;
   }
 #ifdef Py_TPFLAGS_HAVE_WEAKREFS
   inst->in_weakreflist = nullptr;
@@ -2605,7 +2605,7 @@ SWIGINTERN PyObject *
 SWIG_Python_InitShadowInstance(PyObject *args) {
   PyObject *obj[2];
   if (!SWIG_Python_UnpackTuple(args, "swiginit", 2, 2, obj)) {
-    return NULL;
+    return nullptr;
   } else {
     SwigPyObject *sthis = SWIG_Python_GetSwigThis(obj[0]);
     if (sthis) {
@@ -4718,7 +4718,7 @@ SWIGINTERN PyObject *_wrap_delete_SwigPyIterator(PyObject *SWIGUNUSEDPARM(self),
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -4750,7 +4750,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_value(PyObject *SWIGUNUSEDPARM(self), 
   resultobj = result;
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -4791,7 +4791,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_incr__SWIG_0(PyObject *SWIGUNUSEDPARM(
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_swig__SwigPyIterator, 0 |  0 );
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -4823,7 +4823,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_incr__SWIG_1(PyObject *SWIGUNUSEDPARM(
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_swig__SwigPyIterator, 0 |  0 );
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -4910,7 +4910,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_decr__SWIG_0(PyObject *SWIGUNUSEDPARM(
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_swig__SwigPyIterator, 0 |  0 );
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -4942,7 +4942,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_decr__SWIG_1(PyObject *SWIGUNUSEDPARM(
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_swig__SwigPyIterator, 0 |  0 );
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5028,7 +5028,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_distance(PyObject *SWIGUNUSEDPARM(self
   resultobj = SWIG_From_ptrdiff_t(static_cast< ptrdiff_t >(result));
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5068,7 +5068,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_equal(PyObject *SWIGUNUSEDPARM(self), 
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5090,7 +5090,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_copy(PyObject *SWIGUNUSEDPARM(self), P
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_swig__SwigPyIterator, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5122,7 +5122,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_next(PyObject *SWIGUNUSEDPARM(self), P
   resultobj = result;
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5154,7 +5154,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator___next__(PyObject *SWIGUNUSEDPARM(self
   resultobj = result;
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5186,7 +5186,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_previous(PyObject *SWIGUNUSEDPARM(self
   resultobj = result;
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5227,7 +5227,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_advance(PyObject *SWIGUNUSEDPARM(self)
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_swig__SwigPyIterator, 0 |  0 );
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5261,7 +5261,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator___eq__(PyObject *SWIGUNUSEDPARM(self),
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5295,7 +5295,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator___ne__(PyObject *SWIGUNUSEDPARM(self),
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5336,7 +5336,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator___iadd__(PyObject *SWIGUNUSEDPARM(self
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_swig__SwigPyIterator, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5377,7 +5377,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator___isub__(PyObject *SWIGUNUSEDPARM(self
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_swig__SwigPyIterator, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5418,7 +5418,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator___add__(PyObject *SWIGUNUSEDPARM(self)
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_swig__SwigPyIterator, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5459,7 +5459,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator___sub____SWIG_0(PyObject *SWIGUNUSEDPA
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_swig__SwigPyIterator, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5493,7 +5493,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator___sub____SWIG_1(PyObject *SWIGUNUSEDPA
   resultobj = SWIG_From_ptrdiff_t(static_cast< ptrdiff_t >(result));
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5546,7 +5546,7 @@ fail:
 
 SWIGINTERN PyObject *SwigPyIterator_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
-  if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
+  if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return nullptr;
   SWIG_TypeNewClientData(SWIGTYPE_p_swig__SwigPyIterator, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
@@ -5596,7 +5596,7 @@ SWIGINTERN PyObject *_wrap_elementDoubleTest__SWIG_0(PyObject *SWIGUNUSEDPARM(se
   resultobj = result;
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -5642,7 +5642,7 @@ SWIGINTERN PyObject *_wrap_elementDoubleTest__SWIG_1(PyObject *SWIGUNUSEDPARM(se
   resultobj = result;
   return resultobj;
 fail:
-  return NULL;
+  return nullptr;
 }
 
 
@@ -6255,7 +6255,7 @@ extern "C" {
       varlink_type.ob_type = &PyType_Type;
 #else
       if (PyType_Ready(&varlink_type) < 0)
-      return NULL;
+      return nullptr;
 #endif
     }
     return &varlink_type;
@@ -6480,7 +6480,7 @@ SWIG_init(void) {
   } else if (swigpyobject->tp_basicsize != cd->pytype->tp_basicsize) {
     PyErr_SetString(PyExc_RuntimeError, "Import error: attempted to load two incompatible swig-generated modules.");
 # if PY_VERSION_HEX >= 0x03000000
-    return NULL;
+    return nullptr;
 # else
     return;
 # endif

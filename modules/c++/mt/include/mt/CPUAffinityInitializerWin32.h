@@ -52,7 +52,7 @@ public:
 private:
     virtual CPUAffinityThreadInitializerWin32* newThreadInitializerImpl()
     {
-        return NULL;
+        return nullptr;
     }
 };
 }

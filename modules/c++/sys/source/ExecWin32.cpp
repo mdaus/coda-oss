@@ -51,13 +51,13 @@ FILE* ExecPipe::openPipe(const std::string& command,
     saAttr.lpSecurityDescriptor = NULL; 
     if (!CreatePipe(&outIO[READ_PIPE], &outIO[WRITE_PIPE], &saAttr, 0))
     {
-        return NULL;
+        return nullptr;
     }
 
     // check the pipes themselves are not inherited
     if (!SetHandleInformation(outIO[READ_PIPE], HANDLE_FLAG_INHERIT, 0))
     {
-        return NULL;
+        return nullptr;
     }
 
     // the startInfo structure is where the pipes are connected 
@@ -79,7 +79,7 @@ FILE* ExecPipe::openPipe(const std::string& command,
                       nullptr, nullptr, TRUE, 0, nullptr, NULL,
                       &mStartInfo, &mProcessInfo) == 0)
     {
-        return NULL;
+        return nullptr;
     }
 
     //  connect the pipes currently connected in the subprocess
@@ -92,7 +92,7 @@ FILE* ExecPipe::openPipe(const std::string& command,
         if ((readDescriptor = _open_osfhandle(
                 (intptr_t)outIO[READ_PIPE], _O_RDONLY)) == -1)
         {
-            return NULL;
+            return nullptr;
         }
         ioFile = _fdopen(readDescriptor, type.c_str());
         CloseHandle(outIO[WRITE_PIPE]);

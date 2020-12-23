@@ -67,7 +67,7 @@ const char* ZipEntry::getVersionMadeByString() const
 {
 
     if (mVersionMadeBy >= 20)
-        return NULL;
+        return nullptr;
 
     return sZipFileMadeByStr[mVersionMadeBy];
 }

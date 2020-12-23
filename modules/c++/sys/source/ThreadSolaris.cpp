@@ -57,7 +57,7 @@ extern "C" void *__sys_ThreadSolaris_start(void *v)
     dbg_printf("Beginning __start()\n");
     STANDARD_START_CALL(ThreadSolaris, v);
     dbg_printf("Finishing __start()\n");
-    return NULL;
+    return nullptr;
 
 }
 
