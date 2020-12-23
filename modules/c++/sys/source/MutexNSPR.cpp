@@ -32,7 +32,7 @@ sys::MutexNSPR::MutexNSPR()
 }
 sys::MutexNSPR::~MutexNSPR()
 {
-    if (mNative != NULL)
+    if (mNative != nullptr)
         PR_DestroyLock(mNative);
 }
 void sys::MutexNSPR::lock()

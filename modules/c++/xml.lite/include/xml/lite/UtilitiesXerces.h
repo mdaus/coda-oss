@@ -214,7 +214,7 @@ public:
 
     static void destroyXMLCh(XMLCh** a)
     {
-        if (a != NULL && *a != NULL)
+        if (a != NULL && *a != nullptr)
         {
             try 
             {
@@ -231,7 +231,7 @@ public:
 
     static void destroyChArray(char** a)
     {
-        if (a != NULL && *a != NULL)
+        if (a != NULL && *a != nullptr)
         {
             try 
             {

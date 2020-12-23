@@ -529,7 +529,7 @@ SWIG_TypePrettyName(const swig_type_info *type) {
      to print the last name, as it is often (?) the most
      specific. */
   if (!type) return NULL;
-  if (type->str != NULL) {
+  if (type->str != nullptr) {
     const char *last_name = type->str;
     const char *s;
     for (s = type->str; *s; s++)
@@ -2290,7 +2290,7 @@ SWIG_Python_GetSwigThis(PyObject *pyobj)
     obj = _PyInstance_Lookup(pyobj, SWIG_This());      
   } else {
     PyObject **dictptr = _PyObject_GetDictPtr(pyobj);
-    if (dictptr != NULL) {
+    if (dictptr != nullptr) {
       PyObject *dict = *dictptr;
       obj = dict ? PyDict_GetItem(dict, SWIG_This()) : 0;
     } else {
@@ -2515,7 +2515,7 @@ SWIG_Python_NewShadowInstance(SwigPyClientData *data, PyObject *swig_this)
     if (inst) {
 #if !defined(SWIG_PYTHON_SLOW_GETSET_THIS)
       PyObject **dictptr = _PyObject_GetDictPtr(inst);
-      if (dictptr != NULL) {
+      if (dictptr != nullptr) {
 	PyObject *dict = *dictptr;
 	if (dict == NULL) {
 	  dict = PyDict_New();
@@ -2585,7 +2585,7 @@ SWIG_Python_SetSwigThis(PyObject *inst, PyObject *swig_this)
  PyObject *dict;
 #if (PY_VERSION_HEX >= 0x02020000) && !defined(SWIG_PYTHON_SLOW_GETSET_THIS)
  PyObject **dictptr = _PyObject_GetDictPtr(inst);
- if (dictptr != NULL) {
+ if (dictptr != nullptr) {
    dict = *dictptr;
    if (dict == NULL) {
      dict = PyDict_New();
@@ -2968,7 +2968,7 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 
   descr = _PyType_Lookup(tp, name);
   f = nullptr;
-  if (descr != NULL)
+  if (descr != nullptr)
     f = descr->ob_type->tp_descr_set;
   if (!f) {
     if (PyString_Check(name)) {

@@ -124,7 +124,7 @@ public:
         io::ProxyOutputStream(nullptr), mPtr(output),
                 mNullStream(new io::NullOutputStream), mOwnPtr(ownPtr)
     {
-        setEnabled(mPtr != NULL);
+        setEnabled(mPtr != nullptr);
     }
 
     virtual ~ToggleOutputStream()

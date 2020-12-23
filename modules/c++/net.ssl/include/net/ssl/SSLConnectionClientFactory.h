@@ -77,7 +77,7 @@ public:
     virtual ~SSLConnectionClientFactory() 
     {
 # if defined(USE_OPENSSL)	
-        if(mCtx != NULL)
+        if(mCtx != nullptr)
         {
             SSL_CTX_free(mCtx);
         }

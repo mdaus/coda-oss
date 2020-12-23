@@ -95,7 +95,7 @@ std::ostream& operator<<(std::ostream& os, const zip::ZipEntry& ze)
 {
     const char* madeBy = ze.getVersionMadeByString();
     std::string asStr = "Unknown";
-    if (madeBy != NULL)
+    if (madeBy != nullptr)
     {
         asStr = madeBy;
     }

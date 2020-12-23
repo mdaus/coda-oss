@@ -443,7 +443,7 @@ cli::Results* cli::ArgumentParser::parse(const std::vector<std::string>& args)
             }
         }
 
-        if (arg != NULL)
+        if (arg != nullptr)
         {
             std::string argVar = arg->getVariable();
             switch (arg->getAction())
@@ -587,7 +587,7 @@ cli::Results* cli::ArgumentParser::parse(const std::vector<std::string>& args)
         if (!results->hasValue(argVar))
         {
             const Value* defaultVal = arg->getDefault();
-            if (defaultVal != NULL)
+            if (defaultVal != nullptr)
                 results->put(argVar, defaultVal->clone());
             else if (arg->getAction() == cli::STORE_FALSE)
                 results->put(argVar, new cli::Value(true));

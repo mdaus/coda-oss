@@ -114,7 +114,7 @@ void sys::ConditionVarIrix::wait(double timeout)
         }
     }
 
-    if (lTimeout != NULL)
+    if (lTimeout != nullptr)
         delete lTimeout;
 
     if (lSignalInfo.si_signo != SIGUSR1)

@@ -163,7 +163,7 @@ Regex::Regex(const std::string& pattern) :
 
 void Regex::destroy()
 {
-    if (mPCRE != NULL)
+    if (mPCRE != nullptr)
     {
         pcre2_code_free(mPCRE);
         mPCRE = nullptr;

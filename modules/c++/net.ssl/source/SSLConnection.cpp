@@ -46,11 +46,11 @@ net::ssl::SSLConnection::SSLConnection(std::auto_ptr<net::Socket> socket,
 
 net::ssl::SSLConnection::~SSLConnection()
 {
-    if(mSSL != NULL)
+    if(mSSL != nullptr)
     {
         SSL_shutdown(mSSL);
     }
-    if(mSSL != NULL)
+    if(mSSL != nullptr)
     {
         SSL_free(mSSL);
     }
