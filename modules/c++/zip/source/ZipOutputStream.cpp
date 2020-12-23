@@ -96,7 +96,7 @@ void ZipOutputStream::write(const void* buffer, size_t len)
 
 void ZipOutputStream::close()
 {
-    sys::Int32_T results = zipClose(mZip, NULL);
+    sys::Int32_T results = zipClose(mZip, nullptr);
     if (results != Z_OK)
         throw except::IOException(Ctxt("Failed to save zip file."));
 }

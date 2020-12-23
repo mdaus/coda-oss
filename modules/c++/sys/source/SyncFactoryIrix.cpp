@@ -44,7 +44,7 @@ sys::SyncFactoryIrix::SyncImplIrix::SyncImplIrix() : mRef(0), mArena(nullptr)
 
     sigemptyset(&lSignalSet);
     sigaddset(&lSignalSet, SIGUSR1);
-    sigprocmask(SIG_BLOCK, &lSignalSet, NULL);
+    sigprocmask(SIG_BLOCK, &lSignalSet, nullptr);
 
 
     // Set maximum number of sharing processes, default=8

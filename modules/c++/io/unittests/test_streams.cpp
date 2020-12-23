@@ -119,7 +119,7 @@ TEST_CASE(testBufferViewStream)
         io::BufferViewStream<sys::ubyte> stream(bufferView);
         TEST_ASSERT_EQ(stream.tell(), 0);
         TEST_ASSERT_EQ(stream.available(), 0);
-        TEST_ASSERT_EQ(stream.get(), NULL);
+        TEST_ASSERT_EQ(stream.get(), nullptr);
     }
     {
         std::vector<sys::ubyte> data(4);

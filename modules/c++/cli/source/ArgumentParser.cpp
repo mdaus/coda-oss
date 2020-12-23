@@ -502,7 +502,7 @@ cli::Results* cli::ArgumentParser::parse(const std::vector<std::string>& args)
             case cli::STORE_CONST:
             {
                 const Value* constVal = arg->getConst();
-                currentResults->put(argVar, constVal ? constVal->clone() : NULL);
+                currentResults->put(argVar, constVal ? constVal->clone() : nullptr);
                 break;
             }
             case cli::SUB_OPTIONS:

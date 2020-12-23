@@ -1377,7 +1377,7 @@ SWIG_Python_UnpackTuple(PyObject *args, const char *name, Py_ssize_t min, Py_ssi
 
 /* A functor is a function object with one single object argument */
 #if PY_VERSION_HEX >= 0x02020000
-#define SWIG_Python_CallFunctor(functor, obj)	        PyObject_CallFunctionObjArgs(functor, obj, NULL);
+#define SWIG_Python_CallFunctor(functor, obj)	        PyObject_CallFunctionObjArgs(functor, obj, nullptr);
 #else
 #define SWIG_Python_CallFunctor(functor, obj)	        PyObject_CallFunction(functor, "O", obj);
 #endif
@@ -2511,7 +2511,7 @@ SWIG_Python_NewShadowInstance(SwigPyClientData *data, PyObject *swig_this)
   PyObject *inst = 0;
   PyObject *newraw = data->newraw;
   if (newraw) {
-    inst = PyObject_Call(newraw, data->newargs, NULL);
+    inst = PyObject_Call(newraw, data->newargs, nullptr);
     if (inst) {
 #if !defined(SWIG_PYTHON_SLOW_GETSET_THIS)
       PyObject **dictptr = _PyObject_GetDictPtr(inst);
@@ -2806,7 +2806,7 @@ SWIG_Python_TypeQuery(const char *type)
   swig_type_info *descriptor;
   if (obj) {
 #ifdef SWIGPY_USE_CAPSULE
-    descriptor = (swig_type_info *) PyCapsule_GetPointer(obj, NULL);
+    descriptor = (swig_type_info *) PyCapsule_GetPointer(obj, nullptr);
 #else
     descriptor = (swig_type_info *) PyCObject_AsVoidPtr(obj);
 #endif
@@ -2815,9 +2815,9 @@ SWIG_Python_TypeQuery(const char *type)
     descriptor = SWIG_TypeQueryModule(swig_module, swig_module, type);
     if (descriptor) {
 #ifdef SWIGPY_USE_CAPSULE
-      obj = PyCapsule_New((void*) descriptor, nullptr, NULL);
+      obj = PyCapsule_New((void*) descriptor, nullptr, nullptr);
 #else
-      obj = PyCObject_FromVoidPtr(descriptor, NULL);
+      obj = PyCObject_FromVoidPtr(descriptor, nullptr);
 #endif
       PyDict_SetItem(cache, key, obj);
       Py_DECREF(obj);
@@ -2947,7 +2947,7 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 
 # ifdef Py_USING_UNICODE
   if (PyString_Check(name)) {
-    name = PyUnicode_Decode(PyString_AsString(name), PyString_Size(name), nullptr, NULL);
+    name = PyUnicode_Decode(PyString_AsString(name), PyString_Size(name), nullptr, nullptr);
     if (!name)
       return -1;
   } else if (!PyUnicode_Check(name))
@@ -4855,7 +4855,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_incr(PyObject *self, PyObject *args) {
     _v = SWIG_CheckState(res);
     if (_v) {
       {
-        int res = SWIG_AsVal_size_t(argv[1], NULL);
+        int res = SWIG_AsVal_size_t(argv[1], nullptr);
         _v = SWIG_CheckState(res);
       }
       if (_v) {
@@ -4974,7 +4974,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_decr(PyObject *self, PyObject *args) {
     _v = SWIG_CheckState(res);
     if (_v) {
       {
-        int res = SWIG_AsVal_size_t(argv[1], NULL);
+        int res = SWIG_AsVal_size_t(argv[1], nullptr);
         _v = SWIG_CheckState(res);
       }
       if (_v) {
@@ -5529,7 +5529,7 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator___sub__(PyObject *self, PyObject *args
     _v = SWIG_CheckState(res);
     if (_v) {
       {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
+        int res = SWIG_AsVal_ptrdiff_t(argv[1], nullptr);
         _v = SWIG_CheckState(res);
       }
       if (_v) {

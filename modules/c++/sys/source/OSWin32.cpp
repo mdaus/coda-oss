@@ -82,7 +82,7 @@ bool sys::OSWin32::exists(const std::string& path) const
                           FORMAT_MESSAGE_FROM_SYSTEM,
                           nullptr, errCode,
                           MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                          (LPTSTR) &err, 0, NULL);
+                          (LPTSTR) &err, 0, nullptr);
             throw except::Exception(Ctxt(
                 "Problem while testing file existence for " + path +
                 " with Error: " + std::string(err)));
@@ -267,7 +267,7 @@ void sys::OSWin32::setEnv(const std::string& var,
 
 void sys::OSWin32::unsetEnv(const std::string& var)
 {
-    const BOOL ret = SetEnvironmentVariable(var.c_str(), NULL);
+    const BOOL ret = SetEnvironmentVariable(var.c_str(), nullptr);
     if (!ret)
     {
         throw sys::SystemException(Ctxt("Unable to unset windows environment variable " + var));

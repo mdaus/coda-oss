@@ -90,7 +90,7 @@ public:
                             startOffset,
                             options,
                             mMatchData,
-                            NULL); // Match context
+                            nullptr); // Match context
 
         if (returnCode == PCRE2_ERROR_NOMATCH)
         {
@@ -215,7 +215,7 @@ Regex& Regex::compile(const std::string& pattern)
                           FLAGS,
                           &errorCode,
                           &errorOffset,
-                          NULL); // Use default compile context
+                          nullptr); // Use default compile context
 
     if (mPCRE == nullptr)
     {

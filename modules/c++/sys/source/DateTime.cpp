@@ -387,7 +387,7 @@ void sys::DateTime::setNow()
     mTimeInMillis = (now.tv_sec + 1.0e-9 * now.tv_nsec) * 1000;
 #elif defined(HAVE_SYS_TIME_H)
     struct timeval now;
-    gettimeofday(&now,NULL);
+    gettimeofday(&now,nullptr);
     mTimeInMillis = (now.tv_sec + 1.0e-6 * now.tv_usec) * 1000;
 #elif defined(_WIN32)
     // Getting time twice may be inefficient but is quicker

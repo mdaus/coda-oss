@@ -166,7 +166,7 @@ void sys::ConditionVarDataWin32::signal()
     // If there are waiters, increment the semaphore by 1 to wake one up
     if (haveWaiters)
     {
-        ReleaseSemaphore(mSemaphore, 1, NULL);
+        ReleaseSemaphore(mSemaphore, 1, nullptr);
     }
 }
 

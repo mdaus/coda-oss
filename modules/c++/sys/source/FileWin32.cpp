@@ -45,7 +45,7 @@ void sys::File::create(const std::string& str,
                          accessFlags,
                          FILE_SHARE_READ, NULL,
                          creationFlags,
-                         FILE_ATTRIBUTE_NORMAL, NULL);
+                         FILE_ATTRIBUTE_NORMAL, nullptr);
 
     if (mHandle == SYS_INVALID_HANDLE)
     {
