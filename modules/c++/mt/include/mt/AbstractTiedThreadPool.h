@@ -42,7 +42,7 @@ public:
 
     virtual ~AbstractTiedThreadPool(){}
 
-    virtual void initialize(CPUAffinityInitializer* affinityInit = NULL)
+    virtual void initialize(CPUAffinityInitializer* affinityInit = nullptr)
     {
         mAffinityInit = affinityInit;
     }

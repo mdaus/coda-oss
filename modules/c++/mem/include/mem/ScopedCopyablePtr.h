@@ -52,7 +52,7 @@ template <class T>
 class ScopedCopyablePtr
 {
 public:
-    explicit ScopedCopyablePtr(T* ptr = NULL) :
+    explicit ScopedCopyablePtr(T* ptr = nullptr) :
         mPtr(ptr)
     {
     }
@@ -129,7 +129,7 @@ public:
         return mPtr.get();
     }
 
-    void reset(T* ptr = NULL)
+    void reset(T* ptr = nullptr)
     {
         mPtr.reset(ptr);
     }

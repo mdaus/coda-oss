@@ -283,7 +283,7 @@ public:
      *  We will only bind to this, not free it.
      *  \param ch  The handler to bind
      */
-    XercesContentHandler(xml::lite::ContentHandler* ch = NULL)
+    XercesContentHandler(xml::lite::ContentHandler* ch = nullptr)
     {
         mLiteHandler = ch;
     }

@@ -34,7 +34,7 @@ namespace mt
 
 
 ThreadGroup::ThreadGroup(bool pinToCPU) :
-    mAffinityInit(pinToCPU ? new CPUAffinityInitializer() : NULL),
+    mAffinityInit(pinToCPU ? new CPUAffinityInitializer() : nullptr),
     mLastJoined(0)
 {
 }
