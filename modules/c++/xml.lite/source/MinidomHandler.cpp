@@ -29,7 +29,7 @@
 
 void xml::lite::MinidomHandler::setDocument(Document *newDocument, bool own)
 {
-    if (mDocument != NULL && mOwnDocument)
+    if (mDocument != nullptr && mOwnDocument)
     {
         if (newDocument != mDocument)
             delete mDocument;
@@ -90,7 +90,7 @@ void xml::lite::MinidomHandler::characters(const char *value, int length)
 bool xml::lite::MinidomHandler::characters(const wchar_t* const value_, const size_t length_)
 {
     #ifndef _WIN32
-    // As on Windows, this comes to us already encoded ... but UTF-32
+    // As on Windows, this comes to us already encoded ... but UTF-16
     const auto value = reinterpret_cast<const std::u32string::value_type*>(value_);
     const std::u32string strValue(value, length_);
     std::string utf8Value;
