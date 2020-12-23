@@ -214,7 +214,7 @@ namespace sys
         if (!bufferPtr || elemSize < 2 || !numElems)
             return;
 
-        const unsigned short half = elemSize >> 1;
+        const auto half = elemSize >> 1;
         size_t offset = 0, innerOff = 0, innerSwap = 0;
 
         for(size_t i = 0; i < numElems; ++i, offset += elemSize)
@@ -252,7 +252,7 @@ namespace sys
             return;
         }
 
-        const unsigned short half = elemSize >> 1;
+        const auto half = elemSize >> 1;
         size_t offset = 0;
 
         for (size_t ii = 0; ii < numElems; ++ii, offset += elemSize)
@@ -358,4 +358,23 @@ namespace sys
 
 }
 
-#endif
+#define CODA_OSS_cplusplus __cplusplus
+#if CODA_OSS_cplusplus < 201103L  // We need at least C++11
+    #undef CODA_OSS_cplusplus  // oops...try to fix
+
+    // MSVC only sets __cplusplus >199711L with the /Zc:__cplusplus command-line option.
+    // https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/
+    #if defined(_MSVC_LANG)
+    // https://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=msvc-160
+    // "Defined as an integer literal that specifies the C++ language standard targeted by the compiler."
+    #define CODA_OSS_cplusplus _MSVC_LANG
+    #endif // _MSVC_LANG
+
+    #if defined(__GNUC__)
+    // ... similar things needed for other compilers ... ?
+    #endif // __GNUC__
+
+#endif // CODA_OSS_cplusplus
+static_assert(CODA_OSS_cplusplus >= 201103L, "Must compile with C++11 or greater.");
+
+#endif // __SYS_CONF_H__
