@@ -42,7 +42,7 @@ FILE* ExecPipe::openPipe(const std::string& command,
                          const std::string& type)
 {
     FILE* ioFile;
-    HANDLE outIO[2] = {nullptr, NULL};
+    HANDLE outIO[2] = {nullptr, nullptr};
 
     //! inherit the pipe handles
     SECURITY_ATTRIBUTES saAttr; 

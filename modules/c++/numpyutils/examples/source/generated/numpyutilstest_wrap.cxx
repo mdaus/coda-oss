@@ -2770,7 +2770,7 @@ SWIG_Python_SetModule(swig_module_info *swig_module) {
  /* Add a dummy module object into sys.modules */
   PyObject *module = PyImport_AddModule((char*)"swig_runtime_data" SWIG_RUNTIME_VERSION);
 #else
-  static PyMethodDef swig_empty_runtime_method_table[] = { {nullptr, nullptr, 0, NULL} }; /* Sentinel */
+  static PyMethodDef swig_empty_runtime_method_table[] = { {nullptr, nullptr, 0, nullptr} }; /* Sentinel */
   PyObject *module = Py_InitModule((char*)"swig_runtime_data" SWIG_RUNTIME_VERSION, swig_empty_runtime_method_table);
 #endif
 #ifdef SWIGPY_USE_CAPSULE
@@ -5686,7 +5686,7 @@ fail:
 
 
 static PyMethodDef SwigMethods[] = {
-	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
+	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, nullptr},
 	 { (char *)"delete_SwigPyIterator", _wrap_delete_SwigPyIterator, METH_VARARGS, (char *)"delete_SwigPyIterator(SwigPyIterator self)"},
 	 { (char *)"SwigPyIterator_value", _wrap_SwigPyIterator_value, METH_VARARGS, (char *)"SwigPyIterator_value(SwigPyIterator self) -> PyObject *"},
 	 { (char *)"SwigPyIterator_incr", _wrap_SwigPyIterator_incr, METH_VARARGS, (char *)"\n"
@@ -5713,12 +5713,12 @@ static PyMethodDef SwigMethods[] = {
 		"__sub__(ptrdiff_t n) -> SwigPyIterator\n"
 		"SwigPyIterator___sub__(SwigPyIterator self, SwigPyIterator x) -> ptrdiff_t\n"
 		""},
-	 { (char *)"SwigPyIterator_swigregister", SwigPyIterator_swigregister, METH_VARARGS, NULL},
+	 { (char *)"SwigPyIterator_swigregister", SwigPyIterator_swigregister, METH_VARARGS, nullptr},
 	 { (char *)"elementDoubleTest", _wrap_elementDoubleTest, METH_VARARGS, (char *)"\n"
 		"elementDoubleTest(PyObject * inputNPArray, PyObject * outputNPArray) -> PyObject\n"
 		"elementDoubleTest(PyObject * inputNPArray) -> PyObject *\n"
 		""},
-	 { nullptr, nullptr, 0, NULL }
+	 { nullptr, nullptr, 0, nullptr }
 };
 
 
@@ -6419,7 +6419,7 @@ SWIG_init(void) {
     0, 0, 0, 0, 0, 0, 0
   };
   static PyGetSetDef this_getset_def = {
-    (char *)"this", &SwigPyBuiltin_ThisClosure, nullptr, nullptr, NULL
+    (char *)"this", &SwigPyBuiltin_ThisClosure, nullptr, nullptr, nullptr
   };
   static SwigPyGetSet thisown_getset_closure = {
     (PyCFunction) SwigPyObject_own,

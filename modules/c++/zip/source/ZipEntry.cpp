@@ -27,7 +27,7 @@ const static char* sZipFileMadeByStr[] = {
         "OpenVMS", "UNIX", "VM/CMS", "Atari ST", "OS/2 H.P.F.S.", "Macintosh",
         "Z-System", "CP/M", "Windows NTFS", "MVS (OS/390 - Z/OS)", "VSE",
         "Acorn Risc", "VFAT", "alternative MVS", "BeOS", "Tandem", "OS/400",
-        "OS/X (Darwin)", NULL };
+        "OS/X (Darwin)", nullptr };
 
 namespace zip
 {
