@@ -48,7 +48,7 @@ FILE* ExecPipe::openPipe(const std::string& command,
     SECURITY_ATTRIBUTES saAttr; 
     saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
     saAttr.bInheritHandle = TRUE;
-    saAttr.lpSecurityDescriptor = NULL; 
+    saAttr.lpSecurityDescriptor = nullptr; 
     if (!CreatePipe(&outIO[READ_PIPE], &outIO[WRITE_PIPE], &saAttr, 0))
     {
         return nullptr;
@@ -122,14 +122,14 @@ int ExecPipe::closePipe()
 
     // in case it fails
     FILE* tmp = mOutStream;
-    mOutStream = NULL;
+    mOutStream = nullptr;
 
     DWORD dwMillisec = INFINITE;
     DWORD dwWaitStatus = 
         WaitForSingleObject(mProcessInfo.hProcess, dwMillisec);
 
     //! get the exit code
-    DWORD exitCode = NULL;
+    DWORD exitCode = 0;
     GetExitCodeProcess(mProcessInfo.hProcess, &exitCode);
     const int exitStatus = static_cast<int>(exitCode);
     if (exitStatus == -1)
