@@ -10,7 +10,6 @@
 //
 
 #include <string>
-#include <ostream>
 
 namespace sys
 {
@@ -51,15 +50,13 @@ struct path // N.B. this is an INCOMPLETE implementation!
     bool is_absolute() const;  // http://en.cppreference.com/w/cpp/filesystem/path/is_absrel
     bool is_relative() const;  // http://en.cppreference.com/w/cpp/filesystem/path/is_absrel
 
-    friend bool operator==(const path& lhs, const path& rhs) noexcept;  // https://en.cppreference.com/w/cpp/filesystem/path/operator_cmp
-    friend bool operator!=(const path& lhs, const path& rhs) noexcept;  // https://en.cppreference.com/w/cpp/filesystem/path/operator_cmp
-    friend std::ostream& operator<<(std::ostream&, const path&); // https://en.cppreference.com/w/cpp/filesystem/path/operator_ltltgtgt
-
 private:
     string_type p_;
 };
 
 path operator/(const path& lhs, const path& rhs);  // http://en.cppreference.com/w/cpp/filesystem/path/operator_slash
+bool operator==(const path& lhs, const path& rhs) noexcept;  // https://en.cppreference.com/w/cpp/filesystem/path/operator_cmp
+bool operator!=(const path& lhs, const path& rhs) noexcept;  // https://en.cppreference.com/w/cpp/filesystem/path/operator_cmp
 
 path absolute(const path&);  // http://en.cppreference.com/w/cpp/filesystem/absolute
 bool create_directory(const path&);  // https://en.cppreference.com/w/cpp/filesystem/create_directory
