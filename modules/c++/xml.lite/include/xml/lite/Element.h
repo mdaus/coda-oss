@@ -32,6 +32,7 @@
 #include <str/Convert.h>
 #include "xml/lite/XMLException.h"
 #include "xml/lite/Attributes.h"
+#include "sys/Conf.h"
 
 /*!
  * \file  Element.h
@@ -80,7 +81,7 @@ class Element
 public:
     //! Default constructor
     Element() :
-        mParent(nullptr)
+        mParent(NULL)
     {
     }
 
@@ -92,7 +93,7 @@ public:
      */
     Element(const std::string& qname, const std::string& uri = "",
             std::string characterData = "", const string_encoding* pEncoding = nullptr) :
-        mParent(nullptr), mName(uri, qname)
+        mParent(NULL), mName(uri, qname)
     {
         setCharacterData(characterData, pEncoding);
     }
@@ -413,10 +414,10 @@ public:
      *  Adds a child element to this element
      *  \param node the child element to add
      */
-    #if !CODA_OSS_cpp17
+    virtual void addChild(std::unique_ptr<Element>&& node);
+    #if !CODA_OSS_cpp17  // std::auto_ptr removed in C++17
     virtual void addChild(std::auto_ptr<Element> node);
     #endif
-    virtual void addChild(std::unique_ptr <Element>&& node);
 
     /*!
      *  Returns all of the children of this element
