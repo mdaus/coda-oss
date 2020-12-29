@@ -50,7 +50,7 @@ void xml::lite::Element::clone(const xml::lite::Element& node)
     mCharacterData = node.mCharacterData;
     mpEncoding = node.mpEncoding;
     mAttributes = node.mAttributes;
-    mParent = nullptr;
+    mParent = NULL;
 
     std::vector<xml::lite::Element *>::const_iterator iter;
     iter = node.getChildren().begin();
@@ -343,20 +343,17 @@ void xml::lite::Element::addChild(xml::lite::Element * node)
     node->setParent(this);
 }
 
-#if !CODA_OSS_cpp17
-void xml::lite::Element::addChild(std::auto_ptr<xml::lite::Element> node)
-{
-    // Always take ownership
-    std::auto_ptr<xml::lite::Element> scopedValue(node);
-    addChild(scopedValue.get());
-    scopedValue.release();
-}
-#endif
 void xml::lite::Element::addChild(std::unique_ptr<xml::lite::Element>&& node)
 {
     // Always take ownership
     addChild(node.release());
 }
+#if !CODA_OSS_cpp17  // std::auto_ptr removed in C++17
+void xml::lite::Element::addChild(std::auto_ptr<xml::lite::Element> node)
+{
+    addChild(std::unique_ptr<xml::lite::Element>(node.release()));
+}
+#endif
 
 void xml::lite::Element::changePrefix(Element* element,
     const std::string& prefix, const std::string& uri)
