@@ -1,10 +1,10 @@
 /* =========================================================================
- * This file is part of mt-c++
+ * This file is part of sys-c++
  * =========================================================================
  *
- * (C) Copyright 2004 - 2019, MDA Information Systems LLC
+ * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
- * mt-c++ is free software; you can redistribute it and/or modify
+ * sys-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -20,27 +20,21 @@
  *
  */
 
+#pragma once
 
-#ifndef __MT_CPU_AFFINITY_THREAD_INITIALIZER_WIN32_H__
-#define __MT_CPU_AFFINITY_THREAD_INITIALIZER_WIN32_H__
+#include <string>
 
-#if defined(WIN32) || defined(_WIN32)
-
-#include <mt/AbstractCPUAffinityThreadInitializer.h>
-
-namespace mt
+#if !defined(CODA_OSS_sys_U8string_DEFINED_)
+#define CODA_OSS_sys_U8string_DEFINED_ 1
+namespace sys
 {
-/*!
- * \class CPUAffinityThreadInitializerWin32
- * \brief Windows-specific setting of the CPU affinity of a thread
- * \todo This is a stub implementation that doesn't do anything. Make this work.
- */
-class CPUAffinityThreadInitializerWin32 : public AbstractCPUAffinityThreadInitializer
-{
-public:
-    virtual void initialize() {}
-};
+    // Char8_T for UTF-8 characters
+    #if __cplusplus >= 202002L  // C++20
+    using Char8_T = char8_t;
+    using U8string = std::u8string;
+    #else
+    enum Char8_T : unsigned char { }; // https://en.cppreference.com/w/cpp/language/types
+    using U8string = std::basic_string<Char8_T>; // https://en.cppreference.com/w/cpp/string
+    #endif  // __cplusplus
 }
-
-#endif
-#endif
+#endif  // CODA_OSS_sys_U8string_DEFINED_
