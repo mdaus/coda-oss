@@ -45,13 +45,9 @@ namespace except
  *
  * This class provides the base interface for exceptions and errors.
  */
-class Throwable : public std::exception
+class Throwable // TODO: public std::exception
 {
 public:
-
-    /*!
-     * Default Constructor
-     */
     Throwable() = default;
 
     /*!
@@ -130,9 +126,10 @@ public:
         return s.str();
     }
 
-    const char* what() const noexcept override final // derived classes override toString()
+    //const char* what() const noexcept override final  // derived classes override toString()
+    const char* what() const noexcept  // TODO: override final
     {
-        mWhat = toString(); // call any derived toString()
+        mWhat = toString();  // call any derived toString()
         return mWhat.c_str();
     }
 
