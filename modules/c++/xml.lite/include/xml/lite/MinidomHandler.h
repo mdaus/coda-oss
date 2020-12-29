@@ -71,7 +71,7 @@ class MinidomHandler : public ContentHandler
 public:
     //! Constructor.  Uses default document
     MinidomHandler() :
-        mDocument(nullptr), mOwnDocument(true), mPreserveCharData(false)
+        mDocument(NULL), mOwnDocument(true), mPreserveCharData(false)
     {
         setDocument(new Document());
     }
@@ -79,7 +79,7 @@ public:
     //! Destructor
     virtual ~ MinidomHandler()
     {
-        setDocument(nullptr, true);
+        setDocument(NULL, true);
     }
 
     virtual void setDocument(Document *newDocument, bool own = true);

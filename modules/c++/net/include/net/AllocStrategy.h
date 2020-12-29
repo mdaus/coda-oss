@@ -67,7 +67,7 @@ public:
      *
      */
     AllocStrategy() :
-        mRequestHandlerFactory(nullptr)
+        mRequestHandlerFactory(NULL)
     {
     }
 
