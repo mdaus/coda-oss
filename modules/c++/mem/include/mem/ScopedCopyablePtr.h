@@ -60,8 +60,8 @@ public:
     {
     }
 
-    explicit ScopedCopyablePtr(std::unique_ptr<T>&& ptr) :
-        mPtr(std::move(ptr))
+    explicit ScopedCopyablePtr(std::auto_ptr<T> ptr) :
+        mPtr(ptr)
     {
     }
     #if !CODA_OSS_cpp17  // std::auto_ptr removed in C++17
@@ -143,9 +143,9 @@ public:
         mPtr.reset(ptr);
     }
 
-    void reset(std::unique_ptr<T>&& ptr)
+    void reset(std::auto_ptr<T> ptr)
     {
-        mPtr = std::move(ptr);
+        mPtr = ptr;
     }
     #if !CODA_OSS_cpp17  // std::auto_ptr removed in C++17
     void reset(std::auto_ptr<T> ptr)
@@ -155,7 +155,7 @@ public:
     #endif
 
 private:
-    std::unique_ptr<T> mPtr;
+    std::auto_ptr<T> mPtr;
 };
 }
 
