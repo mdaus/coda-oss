@@ -288,10 +288,3 @@ std::ostream& fs::details::Ostream(std::ostream& os, const path& p)
     os << "\"" << p.string() << "\"";
     return os;
 }
-
-std::ostream& fs::operator<<(std::ostream& os, const path& p)
-{
-    // https://en.cppreference.com/w/cpp/filesystem/path/operator_ltltgtgt
-    os << "\"" << p.string() << "\"";
-    return os;
-}
