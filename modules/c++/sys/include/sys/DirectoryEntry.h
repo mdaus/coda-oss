@@ -56,7 +56,7 @@ public:
 
         mCurrent = mDir.findFirstFile(path.getPath());
         mFirst.reset(this);
-        mLast.reset(nullptr);
+        mLast.reset(NULL);
         return *this;
     }
     */

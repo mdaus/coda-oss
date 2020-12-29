@@ -67,7 +67,7 @@ namespace mt
 	int mGenSize;
     public:
 	GenerationThreadPool(unsigned short numThreads = 0,
-			     CPUAffinityInitializer* affinityInit = nullptr) 
+			     CPUAffinityInitializer* affinityInit = NULL) 
 	    : BasicThreadPool<TiedRequestHandler>(numThreads), 
 	    mAffinityInit(affinityInit), mGenSize(0)
 	    {
