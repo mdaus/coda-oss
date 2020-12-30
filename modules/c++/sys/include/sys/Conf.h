@@ -81,17 +81,17 @@
 
 namespace sys
 {
-    typedef char byte;
-    typedef unsigned char ubyte;
-    typedef uint8_t Uint8_T;
-    typedef uint16_t Uint16_T;
-    typedef uint32_t Uint32_T;
-    typedef uint64_t Uint64_T;
-    typedef int8_t Int8_T;
-    typedef int16_t Int16_T;
-    typedef int32_t Int32_T;
-    typedef int64_t Int64_T;
-    typedef size_t Size_T;
+    typedef char              byte;
+    typedef unsigned char     ubyte;
+    typedef uint8_t            Uint8_T;
+    typedef uint16_t           Uint16_T;
+    typedef uint32_t           Uint32_T;
+    typedef uint64_t           Uint64_T;
+    typedef size_t             Size_T;
+    typedef int8_t             Int8_T;
+    typedef int16_t            Int16_T;
+    typedef int32_t            Int32_T;
+    typedef int64_t            Int64_T;
 }
 
 #if defined(WIN32) || defined(_WIN32)
