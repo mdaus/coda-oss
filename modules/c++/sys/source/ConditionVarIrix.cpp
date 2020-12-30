@@ -88,7 +88,7 @@ void sys::ConditionVarIrix::wait(double timeout)
     dbg_printf("Timed waiting on condition [%f]\n", timeout);
     sigset_t lSignalSet;
     siginfo_t lSignalInfo;
-    timespec_t *lTimeout = nullptr;
+    timespec_t *lTimeout = NULL;
 
     mNative.insert(mNative.begin(), getpid());
 
@@ -114,7 +114,7 @@ void sys::ConditionVarIrix::wait(double timeout)
         }
     }
 
-    if (lTimeout != nullptr)
+    if (lTimeout != NULL)
         delete lTimeout;
 
     if (lSignalInfo.si_signo != SIGUSR1)
