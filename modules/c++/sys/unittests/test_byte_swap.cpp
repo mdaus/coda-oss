@@ -21,8 +21,12 @@
  */
 
 #include "TestCase.h"
+
+#include <array>
+
 #include <sys/Conf.h>
 #include <sys/Bit.h>
+#include <sys/CStdDef.h>
 
 namespace
 {
@@ -114,6 +118,24 @@ TEST_CASE(testEndianness_std)
         TEST_FAIL("Mixed-endian not supported!");
     }
 }
+
+TEST_CASE(testSysByte)
+{
+    std::array<sys::Byte, 256> bytes;
+    for (size_t i = 0; i < bytes.size(); i++)
+    {
+        auto value = static_cast<sys::Byte>(i);
+        bytes[i] = value;
+    }
+
+    const auto actuals = bytes;  // copy
+    TEST_ASSERT_EQ(actuals.size(), bytes.size());
+    for (size_t i = 0; i < actuals.size(); i++)
+    {
+        const auto actual = static_cast<size_t>(actuals[i]);
+        TEST_ASSERT_EQ(i, actual);
+    }
+}
 }
 
 int main(int /*argc*/, char** /*argv*/)
@@ -121,5 +143,6 @@ int main(int /*argc*/, char** /*argv*/)
     TEST_CHECK(testByteSwap);
     TEST_CHECK(testEndianness);
     TEST_CHECK(testEndianness_std);
+    TEST_CHECK(testSysByte);
     return 0;
 }
