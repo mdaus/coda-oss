@@ -71,7 +71,7 @@ public:
     mem::auto_ptr<Socket> createMulticastSubscriber(const std::string& group, int port)
     {
         SocketAddress here(port);
-        std::auto_ptr<Socket> socket( new Socket(UDP_PROTO) );
+        mem::auto_ptr<Socket> socket(new Socket(UDP_PROTO));
         socket->bind(here);
         struct ip_mreq mreq;
 
