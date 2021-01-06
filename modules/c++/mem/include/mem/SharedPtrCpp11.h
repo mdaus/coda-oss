@@ -137,8 +137,16 @@ void unique(TArgs&&...) = delete;
 #if !CODA_OSS_cpp14 // C++14 has std::make_unique
 namespace std
 {
-    template<typename T>
-    using make_unique = mem::make::unique<T>;
+template <typename T, typename... TArgs>
+std::unique_ptr<T> make_unique(TArgs&&... args)
+{
+    return mem::make::unique<T>(std::forward<TArgs>(args)...);
+}
+template <typename T>
+std::unique_ptr<T> make_unique(size_t size)
+{
+    return mem::make::unique<T>(size);
+}
 }
 #endif //CODA_OSS_cpp14
 #endif

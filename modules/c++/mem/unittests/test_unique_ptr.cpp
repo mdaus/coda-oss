@@ -20,7 +20,9 @@
  *
  */
 
+#if !defined(CODA_OSS_AUGMENT_std_namespace)
 #define CODA_OSS_AUGMENT_std_namespace 1 // get std::make_unique
+#endif
 
 #include <config/coda_oss_config.h>
 #include <mem/SharedPtr.h>
@@ -60,7 +62,7 @@ TEST_CASE(testStdUniquePtr)
         TEST_ASSERT_NOT_EQ(nullptr, pFoos.get());
     }
 
-#if CODA_OSS_AUGMENT_std_namespace
+#if CODA_OSS_AUGMENT_std_namespace || CODA_OSS_cpp14
     {
         auto fooCtor = std::make_unique<Foo>(123);
         TEST_ASSERT_NOT_EQ(nullptr, fooCtor.get());
