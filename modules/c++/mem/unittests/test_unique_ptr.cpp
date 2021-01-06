@@ -60,6 +60,8 @@ TEST_CASE(testStdUniquePtr)
     {
         auto pFoos = mem::make::unique<Foo[]>(123);  // 123 instances of Foo
         TEST_ASSERT_NOT_EQ(nullptr, pFoos.get());
+        TEST_ASSERT_EQ(0, pFoos[0].mVal);
+        TEST_ASSERT_EQ(0, pFoos[122].mVal);
     }
 
 #if CODA_OSS_AUGMENT_std_namespace || CODA_OSS_cpp14
@@ -71,6 +73,8 @@ TEST_CASE(testStdUniquePtr)
     {
         auto pFoos = std::make_unique<Foo[]>(123); // 123 instances of Foo
         TEST_ASSERT_NOT_EQ(nullptr, pFoos.get());
+        TEST_ASSERT_EQ(0, pFoos[0].mVal);
+        TEST_ASSERT_EQ(0, pFoos[122].mVal);
     }
 #endif
 }

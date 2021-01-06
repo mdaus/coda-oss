@@ -140,12 +140,8 @@ namespace std
 template <typename T, typename... TArgs>
 std::unique_ptr<T> make_unique(TArgs&&... args)
 {
+    // let mem::make::unique to all the template magic
     return mem::make::unique<T>(std::forward<TArgs>(args)...);
-}
-template <typename T>
-std::unique_ptr<T> make_unique(size_t size)
-{
-    return mem::make::unique<T>(size);
 }
 }
 #endif //CODA_OSS_cpp14
