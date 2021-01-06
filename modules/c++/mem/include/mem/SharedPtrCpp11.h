@@ -138,7 +138,7 @@ void unique(TArgs&&...) = delete;
 namespace std
 {
     template<typename T>
-    using make_unique = mem::make::unique<T>; // is this right ... ?
+    using make_unique = mem::make::unique<T>;
 }
 #endif //CODA_OSS_cpp14
 #endif
