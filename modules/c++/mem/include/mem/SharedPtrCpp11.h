@@ -124,8 +124,8 @@ std::unique_ptr<T> unique(TArgs&&... args)
 template <typename T, typename std::enable_if<std::is_array<T>::value &&  std::extent<T>::value == 0, int>::type = 0>
 std::unique_ptr<T> unique(size_t size)
 {
-    using element_t = std::remove_extent<T>::type;
-    return unique_ptr<T>(new element_t[size]());
+    using element_t = typename std::remove_extent<T>::type;
+    return std::unique_ptr<T>(new element_t[size]());
 }
 
 template <typename T, typename... TArgs, typename std::enable_if<std::extent<T>::value != 0, int>::type = 0>
