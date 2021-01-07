@@ -7,6 +7,9 @@ class CodaOssTestConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
+        for name, val in self.options['coda-oss'].items():
+            if name.isupper() and val is not None:
+                cmake.definitions[name] = val
         cmake.configure()
         cmake.build()
 
