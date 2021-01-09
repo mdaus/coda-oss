@@ -56,9 +56,9 @@ public:
     {
     }
 
-    explicit ScopedCloneablePtr(std::auto_ptr<T> ptr) :
-        mPtr(ptr)
+    explicit ScopedCloneablePtr(std::auto_ptr<T> ptr)
     {
+        reset(ptr);
     }
 
     ScopedCloneablePtr(const ScopedCloneablePtr& rhs)
@@ -133,7 +133,7 @@ public:
     }
 
 private:
-    std::auto_ptr<T> mPtr;
+    std::unique_ptr<T> mPtr;
 };
 }
 
