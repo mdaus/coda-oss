@@ -123,7 +123,7 @@ void ThreadGroup::addException(const except::Exception& ex)
 
 mem::auto_ptr<CPUAffinityThreadInitializer> ThreadGroup::getNextInitializer()
 {
-    mem::auto_ptr<CPUAffinityThreadInitializer> threadInit(NULL);
+    mem::auto_ptr<CPUAffinityThreadInitializer> threadInit(nullptr);
     if (mAffinityInit.get())
     {
         threadInit = mAffinityInit->newThreadInitializer();
