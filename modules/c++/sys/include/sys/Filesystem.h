@@ -63,6 +63,10 @@ struct path // N.B. this is an INCOMPLETE implementation!
     path(const path&);
     path(const string_type&);
     path(const value_type*);
+    //#ifdef _WIN32
+    //path(const std::string&);
+    //path(const char*);
+    //#endif
 
     path& operator/=(const path&);  // http://en.cppreference.com/w/cpp/filesystem/path/append
     path& operator/=(const value_type*);  // http://en.cppreference.com/w/cpp/filesystem/path/append

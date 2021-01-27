@@ -65,7 +65,7 @@ fs::path& fs::path::operator/=(const path& p)
     else
     {
         // TODO: there is more to do here ... see http://en.cppreference.com/w/cpp/filesystem/path/append
-        p_ = sys::Path::joinPaths(p_, p.native());
+        p_ = sys::Path::joinPaths(string(), p.string());
     }
 
     return *this;
@@ -96,7 +96,7 @@ const fs::path::string_type& fs::path::native() const noexcept
 
 fs::path::operator string_type() const
 {
-    return string();
+    return native();
 }
 
 std::string fs::path::string() const
@@ -106,17 +106,17 @@ std::string fs::path::string() const
 
 fs::path fs::path::parent_path() const
 {
-    return sys::Path::splitPath(native()).first;
+    return sys::Path::splitPath(string()).first;
 }
 
 fs::path fs::path::filename() const
 {
-    return sys::Path::basename(native(), false /*rmvExt*/);
+    return sys::Path::basename(string(), false /*rmvExt*/);
 }
 
 fs::path fs::path::stem() const
 {
-    return sys::Path::basename(native(), true /*rmvExt*/);
+    return sys::Path::basename(string(), true /*rmvExt*/);
 }
 
 fs::path fs::path::extension() const
@@ -124,7 +124,8 @@ fs::path fs::path::extension() const
     // https://en.cppreference.com/w/cpp/filesystem/path/extension
 
     // "If the pathname is either . or .., ... then empty path is returned."
-    if ((native() == ".") || (native() == ".."))
+    const auto pathname = string();
+    if ((pathname == ".") || (pathname == ".."))
     {
         return "";
     }
@@ -155,7 +156,7 @@ bool fs::path::empty() const noexcept
 
 bool fs::path::is_absolute() const
 {
-    return sys::Path::isAbsolutePath(native());
+    return sys::Path::isAbsolutePath(string());
 }
 bool fs::path::is_relative() const
 {
@@ -169,7 +170,7 @@ fs::path fs::operator/(const fs::path& lhs, const fs::path& rhs)
 
 fs::path fs::absolute(const path& p)
 {
-    return sys::Path::absolutePath(p.native());
+    return sys::Path::absolutePath(p.string());
 }
 
 fs::path fs::temp_directory_path()
@@ -211,23 +212,24 @@ fs::path fs::temp_directory_path()
 #endif
 }
 
-bool fs::create_directory(const path& p)
+bool fs::create_directory(const path& p_)
 {
     const sys::OS os;
+    const auto p = p_.string();
     const bool created = os.makeDirectory(p);
     if (created)
     {
         // If it exists, see if it's a file
         if (os.isFile(p))
         {
-            const std::string stat_failed("stat failed: " + p.string());
+            const std::string stat_failed("stat failed: " + p);
             const std::string error("Error:\n" + strerror_(errno));
             CODA_OSS_Filesystem_THROW_ERR(stat_failed + "\n" + error);
         }
         else if (!os.isDirectory(p))
         {
             std::stringstream ss;
-            ss << "Path '" << p.string() << "' exists and is not a directory.";
+            ss << "Path '" << p << "' exists and is not a directory.";
             CODA_OSS_Filesystem_THROW_ERR(ss.str());
         }
 
@@ -239,24 +241,25 @@ bool fs::create_directory(const path& p)
 bool fs::is_regular_file(const path& p)
 {
     const sys::OS os;
-    return os.isFile(p);
+    return os.isFile(p.string());
 }
 
 bool fs::is_directory(const path& p)
 {
     const sys::OS os;
-    return os.isDirectory(p);
+    return os.isDirectory(p.string());
 }
 
 bool fs::exists(const path& p)
 {
     const sys::OS os;
-    return os.exists(p);
+    return os.exists(p.string());
 }
 
-bool fs::remove(const path& p)
+bool fs::remove(const path& p_)
 {
     // https://en.cppreference.com/w/cpp/io/c/remove
+    const auto p = p_.string();
     return ::remove(p.c_str()) == 0;  // "0 upon success or non-zero value on error."
 }
 
@@ -279,7 +282,7 @@ fs::path fs::current_path()
 
 bool fs::details::Equals(const path& lhs, const path& rhs) noexcept
 {
-    return sys::Path::normalizePath(lhs) == sys::Path::normalizePath(rhs);
+    return sys::Path::normalizePath(lhs.string()) == sys::Path::normalizePath(rhs.string());
 }
 
 std::ostream& fs::details::Ostream(std::ostream& os, const path& p)
