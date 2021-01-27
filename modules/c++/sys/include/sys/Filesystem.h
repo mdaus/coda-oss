@@ -49,8 +49,14 @@ namespace Filesystem
 // http://en.cppreference.com/w/cpp/filesystem/path
 struct path // N.B. this is an INCOMPLETE implementation!
 {
-    using string_type = std::string;
-    using value_type = string_type::value_type;
+    // character type used by the native encoding of the filesystem: char on POSIX, wchar_t on Windows
+    #ifdef _WIN32
+    //using value_type = wchar_t; // TODO
+    using value_type = char;
+    #else
+    using value_type = char;
+    #endif
+    using string_type = std::basic_string<value_type>;
 
     // http://en.cppreference.com/w/cpp/filesystem/path/path
     path() noexcept;
@@ -112,9 +118,13 @@ bool exists(const path& p);  // https://en.cppreference.com/w/cpp/filesystem/exi
 }
 
 #ifndef CODA_OSS_DEFINE_std_filesystem_
-    // Some versions of G++ say they're C++17 but don't have <filesystem>
-    #if CODA_OSS_cpp17 && __has_include(<filesystem>)  // __has_include is C++17
-        #define CODA_OSS_DEFINE_std_filesystem_ -1  // OK to #include <>, below
+    #if CODA_OSS_cpp17
+        // Some versions of G++ say they're C++17 but don't have <filesystem>
+        #if _has_include(<filesystem>)
+            #define CODA_OSS_DEFINE_std_filesystem_ -1  // OK to #include <>, below
+        #else
+            #define CODA_OSS_DEFINE_std_filesystem_ 1 // must have std::filesystem w/C++17
+        #endif // __has_niclude
     #else
         #define CODA_OSS_DEFINE_std_filesystem_ CODA_OSS_AUGMENT_std_namespace  // maybe use our own
     #endif

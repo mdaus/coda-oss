@@ -191,7 +191,7 @@ TEST_CASE(testFsExtension)
 
 TEST_CASE(testFsOutput)
 {
-    #if CODA_OSS_cpp17 && __has_include(<filesystem>)  // __has_include is C++17
+    #if CODA_OSS_cpp17
     {
         namespace fs = std::filesystem;
         const fs::path path("/path/to/file.txt");
