@@ -144,4 +144,17 @@ bool exists(const path& p);  // https://en.cppreference.com/w/cpp/filesystem/exi
     #include <filesystem>
 #endif // CODA_OSS_DEFINE_std_filesystem_
 
+// sys::fs::path will always work, and will be std::filesystem::path if available.
+namespace sys
+{
+namespace fs
+{
+    #if CODA_OSS_cpp17 || (CODA_OSS_DEFINE_std_filesystem_ == 1)
+    using path = std::filesystem::path;
+    #else
+    using path = sys::Filesystem::path;
+    #endif
+}
+}
+
 #endif  // CODA_OSS_sys_Filesystem_h_INCLUDED_
