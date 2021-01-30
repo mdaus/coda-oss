@@ -129,14 +129,11 @@ bool exists(const path& p);  // https://en.cppreference.com/w/cpp/filesystem/exi
 #ifndef CODA_OSS_DEFINE_std_filesystem_
     #if CODA_OSS_cpp17
         // Some versions of G++ say they're C++17 but don't have <filesystem>
-        #if __has_include(<filesystem>)
+        #if __has_include(<filesystem>) || (__cpp_lib_filesystem >= 201703)
             #define CODA_OSS_DEFINE_std_filesystem_ -1  // OK to #include <>, below
         #else
             #define CODA_OSS_DEFINE_std_filesystem_ 1 // must have std::filesystem w/C++17
-        #endif // __has_niclude
-    #elif CODA_OSS_cpp14 && (_MSC_VER >= 1928)
-        // Visual Studio has support for <filesystem> in C++14
-        #define CODA_OSS_DEFINE_std_filesystem_ -1  // OK to #include <>, below
+        #endif // __has_include
     #else
         #define CODA_OSS_DEFINE_std_filesystem_ CODA_OSS_AUGMENT_std_namespace  // maybe use our own
     #endif
@@ -148,16 +145,24 @@ bool exists(const path& p);  // https://en.cppreference.com/w/cpp/filesystem/exi
     {
         namespace filesystem = ::sys::Filesystem;
     }
+    #define CODA_OSS_lib_filesystem 1
 #elif CODA_OSS_DEFINE_std_filesystem_ == -1 // set above
     #include <filesystem>
-#endif // CODA_OSS_DEFINE_std_filesystem_
+    #define CODA_OSS_lib_filesystem 1
+#endif  // CODA_OSS_DEFINE_std_filesystem_
+
+#if CODA_OSS_cpp17 || ( CODA_OSS_DEFINE_std_filesystem_ == 1) // sanity check on above
+#if !CODA_OSS_lib_filesystem
+#error must have std::filesystem with C++17
+#endif // CODA_OSS_lib_filesystem
+#endif
 
 // coda_oss::filesystem::path will always work, and will be std::filesystem::path if available.
 namespace coda_oss
 {
 namespace filesystem
 {
-    #if CODA_OSS_cpp17 || (CODA_OSS_DEFINE_std_filesystem_ == 1)
+    #if CODA_OSS_lib_filesystem
     using path = std::filesystem::path;
     #else
     using path = sys::Filesystem::path;
