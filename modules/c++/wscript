@@ -8,6 +8,7 @@ def options(opt):
 def configure(conf):
     conf.env.append_value('INCLUDES_UNITTEST',
                           os.path.join(conf.path.abspath(), 'include'))
+    conf.env.CXXFLAGS += ['-std=c++17']
     conf.recurse()
 
 
