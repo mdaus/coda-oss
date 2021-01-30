@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #ifdef _WIN32
 #include <direct.h>
+#include <comdef.h> // _bstr_t
 #else
 #include <unistd.h>
 #endif
@@ -43,6 +44,16 @@ static inline std::string make_what(const char* curfile, const int lineNum, cons
 // Need "throw" to be visible, not hidden inside of a function, so that code-analysis tools can see it.
 #define CODA_OSS_Filesystem_THROW_ERR(MSG) throw std::runtime_error(make_what(__FILE__, __LINE__, MSG))
 
+fs::path::string_type fs::path::to_native(const std::string& s_)
+{
+#ifdef _WIN32
+    const _bstr_t s(s_.c_str());  // convert to wchar_t
+    return s;
+#else
+    return s_;
+#endif
+}
+
 fs::path::path() noexcept
 {
 }
@@ -50,9 +61,6 @@ fs::path::path(const path& p) : p_(p.native())
 {
 }
 fs::path::path(const string_type& p) : p_(p)
-{
-}
-fs::path::path(const value_type* p) : p_(p)
 {
 }
 
@@ -65,18 +73,10 @@ fs::path& fs::path::operator/=(const path& p)
     else
     {
         // TODO: there is more to do here ... see http://en.cppreference.com/w/cpp/filesystem/path/append
-        p_ = sys::Path::joinPaths(string(), p.string());
+        p_ = to_native(sys::Path::joinPaths(string(), p.string()));
     }
 
     return *this;
-}
-fs::path& fs::path::operator/=(const string_type& p)
-{
-    return (*this) /= path(p);  // TODO: call sys::Path::joinPaths() directly?
-}
-fs::path& fs::path::operator/=(const value_type* p)
-{
-    return (*this) /= path(p);
 }
 
 void fs::path::clear() noexcept
@@ -101,7 +101,12 @@ fs::path::operator string_type() const
 
 std::string fs::path::string() const
 {
+#ifdef _WIN32
+    const _bstr_t p(c_str());
+    return p;
+#else
     return native();
+#endif
 }
 
 fs::path fs::path::parent_path() const
