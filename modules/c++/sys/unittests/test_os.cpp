@@ -192,7 +192,7 @@ TEST_CASE(testFsExtension)
 {
     testFsExtension_<sys::Filesystem::path>(testName);
     testFsExtension_<coda_oss::filesystem::path>(testName);
-    #if CODA_OSS_cpp17
+    #if CODA_OSS_lib_filesystem
     testFsExtension_<std::filesystem::path>(testName);
     #endif
 }
@@ -214,9 +214,9 @@ TEST_CASE(testFsOutput)
 {
     testFsOutput_<sys::Filesystem::path>(testName);
     testFsOutput_<coda_oss::filesystem::path>(testName);
-#if CODA_OSS_cpp17
+    #if CODA_OSS_lib_filesystem
     testFsOutput_<std::filesystem::path>(testName);
-#endif
+    #endif
 }
 
 }
