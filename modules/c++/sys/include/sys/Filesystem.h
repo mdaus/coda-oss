@@ -129,11 +129,14 @@ bool exists(const path& p);  // https://en.cppreference.com/w/cpp/filesystem/exi
 #ifndef CODA_OSS_DEFINE_std_filesystem_
     #if CODA_OSS_cpp17
         // Some versions of G++ say they're C++17 but don't have <filesystem>
-        #if _has_include(<filesystem>)
+        #if __has_include(<filesystem>)
             #define CODA_OSS_DEFINE_std_filesystem_ -1  // OK to #include <>, below
         #else
             #define CODA_OSS_DEFINE_std_filesystem_ 1 // must have std::filesystem w/C++17
         #endif // __has_niclude
+    #elif CODA_OSS_cpp14 && (_MSC_VER >= 1928)
+        // Visual Studio has support for <filesystem> in C++14
+        #define CODA_OSS_DEFINE_std_filesystem_ -1  // OK to #include <>, below
     #else
         #define CODA_OSS_DEFINE_std_filesystem_ CODA_OSS_AUGMENT_std_namespace  // maybe use our own
     #endif
