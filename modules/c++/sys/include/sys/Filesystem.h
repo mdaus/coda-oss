@@ -64,15 +64,15 @@ struct path final // N.B. this is an INCOMPLETE and NON-STANDARD implementation!
     path() noexcept;
     path(const path&);
     path(const string_type&);
-    template<typename Source>
-    path(const Source& source)
+    template<typename TSource>
+    path(const TSource& source)
     {
         p_ = to_native(source);
     }
 
     path& operator/=(const path&);  // http://en.cppreference.com/w/cpp/filesystem/path/append
-    template<typename Source>
-    path& operator/=(const Source& source)  // http://en.cppreference.com/w/cpp/filesystem/path/append
+    template <typename TSource>
+    path& operator/=(const TSource& source)  // http://en.cppreference.com/w/cpp/filesystem/path/append
     {
         return (*this) /= path(to_native(source));
     }

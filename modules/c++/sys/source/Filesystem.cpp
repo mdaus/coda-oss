@@ -66,9 +66,11 @@ fs::path::path(const string_type& p) : p_(p)
 
 fs::path& fs::path::operator/=(const path& p)
 {
-    if (p.is_absolute())
+    // https://en.cppreference.com/w/cpp/filesystem/path/append
+
+    if (p.is_absolute()) // || (p.has_root_name() && p.root_name() != root_name())
     {
-        p_ = p.native();  // "If p.is_absolute() ... replaces the current path with p ... http://en.cppreference.com/w/cpp/filesystem/path/append
+        p_ = p.native();  // "If p.is_absolute() ... replaces the current path with p ..."
     }
     else
     {
