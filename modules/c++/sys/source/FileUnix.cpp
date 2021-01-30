@@ -28,7 +28,7 @@
 #include <string.h>
 #include <errno.h>
 
-void sys::File::create(const coda_oss::filesystem::path& str, int accessFlags,
+void sys::File::create(const coda_oss::filesystem::path& str_, int accessFlags,
         int creationFlags)
 {
     const auto str = str_.string();
