@@ -451,7 +451,7 @@ void tiff::ImageWriter::putTileData(const unsigned char *buffer,
         // should probably be found.
         else
         {
-            auto lastTileIndex = mTileOffsets->getValues().size() - 1;
+            auto lastTileIndex = static_cast<sys::Uint32_T>(mTileOffsets->getValues().size() - 1);
             sys::Uint32_T seekPos = *(tiff::GenericType<sys::Uint32_T> *)(*mTileOffsets)[lastTileIndex];
             seekPos += *(tiff::GenericType<sys::Uint32_T> *)(*mTileByteCounts)[lastTileIndex];
             mOutput->seek(seekPos, io::Seekable::START);
