@@ -30,13 +30,14 @@
 using endian = sys::Endian;
 
 // https://en.cppreference.com/w/cpp/types/endian
-inline bool is_big_endian()
+inline constexpr bool is_big_endian()
 {
-    if (endian::native == endian::big)
+    auto endianness = endian::native; // "conditional expression is constant"
+    if (endianness == endian::big)
     {
         return true;
     }
-    if (endian::native == endian::little)
+    if (endianness == endian::little)
     {
         return false;
     }
