@@ -30,6 +30,7 @@
 #include "sys/SystemException.h"
 #include "str/Tokenizer.h"
 
+
 /*!
  *  \file
  *  \brief This class is the interface for an OS Abstraction layer.
@@ -198,6 +199,10 @@ public:
      *  Returns true if environment variable is set, false otherwise
      */
     bool getEnvIfSet(const std::string& envVar, std::string& value) const;
+
+    // A variable like PATH is often several directories, return each one that exists.
+    bool splitEnv(const std::string& s, std::vector<std::string>&) const;
+    bool splitEnv(const std::string& s, std::vector<std::string>&, Filesystem::FileType) const;
 
     /*!
      *  Set an environment variable

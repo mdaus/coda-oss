@@ -133,19 +133,56 @@ std::string AbstractOS::getCurrentExecutable(
     }
 
     // Look for it in PATH
-    const std::vector<std::string> pathDirs =
-            str::split(getEnv("PATH"), sys::Path::separator());
-    for (size_t ii = 0; ii < pathDirs.size(); ++ii)
+    std::vector<std::string> pathDirs;
+    if (splitEnv("PATH", pathDirs))
     {
-        candidatePathname = sys::Path::joinPaths(
-                sys::Path::absolutePath(pathDirs[ii]), argvPathname);
-        if (exists(candidatePathname))
+        for (const auto& pathDir : pathDirs)
         {
-            return candidatePathname;
+            candidatePathname =
+                    sys::Path::joinPaths(sys::Path::absolutePath(pathDir),
+                                         argvPathname);
+            if (exists(candidatePathname))
+            {
+                return candidatePathname;
+            }
         }
     }
 
     return "";
+}
+
+// A variable like PATH is often several directories, return each one that exists.
+static bool splitEnv_(const AbstractOS& os, const std::string& s, std::vector<std::string>& result, Filesystem::FileType* pType = nullptr)
+{
+    std::string value;
+    if (!os.getEnvIfSet(s, value))
+    {
+        return false;
+    }
+    const auto vals = str::split(value, sys::Path::separator());
+    for (const auto& val : vals)
+    {
+        bool matches = true;
+        if (pType != nullptr)
+        {
+            const auto isFile = (*pType == Filesystem::FileType::Regular) && Filesystem::is_regular_file(val);
+            const auto isDirectory = (*pType == Filesystem::FileType::Directory) && Filesystem::is_directory(val);
+            matches = isFile || isDirectory;
+        }
+        if (Filesystem::exists(val) && matches)
+        {
+            result.push_back(val);
+        }
+    }
+    return true;
+}
+bool AbstractOS::splitEnv(const std::string& s, std::vector<std::string>& result, Filesystem::FileType type) const
+{
+    return splitEnv_(*this, s, result, &type);
+}
+bool AbstractOS::splitEnv(const std::string& s, std::vector<std::string>& result) const
+{
+    return splitEnv_(*this, s, result);
 }
 
 }
