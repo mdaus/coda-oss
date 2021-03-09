@@ -68,6 +68,12 @@ public:
     }
 
     /*!
+    * Expands the enviroment variables in a string
+    * c.f., https://docs.microsoft.com/en-us/dotnet/api/system.environment.expandenvironmentvariables?view=net-5.0
+    */
+    static std::string expandEnvironmentVariables(const std::string& path);
+
+    /*!
      * Joins two paths together, using the OS-specific delimiter.
      */
     static std::string joinPaths(const std::string& path1,
@@ -114,6 +120,11 @@ public:
     {
         return separate(mPathName);
     }
+
+    /*!
+     *  Reverses separate()
+     */
+    static std::string merge(const std::vector<std::string>&);
 
     /*!
      * Splits the path into two components: head & tail.

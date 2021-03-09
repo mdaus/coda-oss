@@ -287,4 +287,40 @@ std::istream& operator>>(std::istream& is, Path& path)
     path.reset(str);
     return is;
 }
+
+std::string Path::merge(const std::vector<std::string>& components)
+{
+    std::string retval;
+    for (const auto& component : components)
+    {
+        if (!retval.empty())
+        {
+            retval += Path::delimiter();
+        }
+        retval += component;
+    }
+    return retval;
+}
+
+std::string Path::expandEnvironmentVariables(const std::string& path)
+{
+    #ifdef _WIN32
+    // https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
+    constexpr auto escape = R"(\\?\)";
+    #else
+    // assuming *nix
+    constexpr auto escape = R"(//)";
+    #endif
+    if (path.find_first_of(escape) == 0)
+    {
+        return path;
+    }
+
+    const auto components = Path::separate(path); // "This splits on both '/' and '\\'."
+    for (const auto& component : components)
+    {
+    
+    }
+    return merge(components);
+}
 }
