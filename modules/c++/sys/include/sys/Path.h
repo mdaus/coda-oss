@@ -20,14 +20,19 @@
  *
  */
 
-#ifndef __SYS_PATH_H__
-#define __SYS_PATH_H__
+#ifndef CODA_OSS_sys_Path_h_INCLUDED_
+#define CODA_OSS_sys_Path_h_INCLUDED_
+#pragma once
 
-#include "sys/OS.h"
-#include <import/str.h>
 #include <string>
 #include <deque>
 #include <utility>
+
+#include <import/str.h>
+
+#include "sys/OS.h"
+#include "sys/Filesystem.h"
+
 
 /*!
  *  \file
@@ -71,7 +76,8 @@ public:
     * Expands the enviroment variables in a string
     * c.f., https://docs.microsoft.com/en-us/dotnet/api/system.environment.expandenvironmentvariables?view=net-5.0
     */
-    static std::string expandEnvironmentVariables(const std::string& path);
+    static std::string expandEnvironmentVariables(const std::string& path, bool checkIfExists = true);
+    static std::string expandEnvironmentVariables(const std::string& path, Filesystem::FileType);
 
     /*!
      * Joins two paths together, using the OS-specific delimiter.
@@ -287,4 +293,4 @@ std::ostream& operator<<(std::ostream& os, const sys::Path& path);
 std::istream& operator>>(std::istream& os, sys::Path& path);
 }
 
-#endif
+#endif // CODA_OSS_sys_Path_h_INCLUDED_

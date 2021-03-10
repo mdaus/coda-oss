@@ -20,8 +20,9 @@
  *
  */
 
-#ifndef __SYS_ABSTRACT_OS_H__
-#define __SYS_ABSTRACT_OS_H__
+#ifndef CODA_OSS_sys_AbstractOS_h_INCLUDED_
+#define CODA_OSS_sys_AbstractOS_h_INCLUDED_
+#pragma once
 
 #include <vector>
 #include <string>
@@ -29,6 +30,7 @@
 #include "sys/FileFinder.h"
 #include "sys/SystemException.h"
 #include "str/Tokenizer.h"
+#include "sys/Filesystem.h"
 
 
 /*!
@@ -318,5 +320,4 @@ public:
 
 }
 
-#endif
-
+#endif  // CODA_OSS_sys_AbstractOS_h_INCLUDED_

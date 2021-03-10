@@ -352,7 +352,6 @@ int main(int, char**)
     TEST_CHECK(testFsExtension);
     TEST_CHECK(testFsOutput);
     TEST_CHECK(testBacktrace);
-    TEST_CHECK(testPathMerge);
 
     return 0;
 }

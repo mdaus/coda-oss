@@ -302,25 +302,208 @@ std::string Path::merge(const std::vector<std::string>& components)
     return retval;
 }
 
-std::string Path::expandEnvironmentVariables(const std::string& path)
+struct ExtractedEnvironmentVariable final
 {
+    std::string begin; // "foo" of "foo$(BAR)baz"
+    std::string variable; // "BAR" of "foo$(BAR)baz"
+    std::string end; // "baz" of "foo$(BAR)baz"
+};
+
+static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::string component, size_t dollar_pos) // make a copy for manipulation
+{
+    assert(dollar_pos != std::string::npos);
+    ExtractedEnvironmentVariable retval;
+    retval.variable = component;  // assume this really isn't an env. var
+
+    retval.begin = component.substr(0, dollar_pos);
+    str::replace(component, retval.begin, ""); // don't want to find "(" before "$"
+    auto paren = component.find_first_of("(");
+    std::string paren_match = ")";
+    if (paren == std::string::npos)
+    {
+        paren = component.find_first_of("{");
+        paren_match = "}";
+    }
+    if (paren == std::string::npos) // not ${FOO} or $(FOO), maybe $FOO-bar (not $FOO_BAR is a real name)
+    {
+        const auto dash = component.find_first_of("-");
+        if (dash != std::string::npos)
+        {
+            retval.variable = component.substr(0, dash);
+            retval.end = component.substr(dash);
+            return retval;
+        }
+    }
+
+    const auto paren_last_pos = component.find_last_of(paren_match);
+    if ((paren_last_pos == std::string::npos) || (paren == paren_last_pos))
+    {
+        // not "${FOO}" or "$(FOO)"
+        retval.begin.clear();
+        assert(retval.variable == component);
+        assert(retval.end.empty());
+        return retval;
+    }
+
+    // finally ... everything checks out
+    retval.begin = component.substr(0, paren);
+    retval.variable = component.substr(paren, paren_last_pos);
+    retval.end = component.substr(paren_last_pos);
+
+    return retval;
+}
+
+static ExtractedEnvironmentVariable extractEnvironmentVariable(const std::string& component)
+{
+    ExtractedEnvironmentVariable retval;
+    retval.variable = component; // assume this really isn't an env. var
+
+    const auto dollar_pos = component.find_first_of("$");
+    if (dollar_pos != std::string::npos)  // foo$BAR -> "foo_bar" for BAR=_bar
+    {
+        return extractEnvironmentVariable_dollar(component, dollar_pos);
+    }
+    #if _WIN32 // %FOO% only on Windows
+    else
+    {
+        const auto percent_pos = component.find_first_of("%");
+        if (percent_pos != std::string::npos)
+        {
+            const auto percent_last_pos = component.find_last_of("%");
+            if (percent_last_pos != percent_pos) // no need to check npos, we know one '%' exists
+            {
+                retval.begin = component.substr(0, percent_pos);
+                retval.variable = component.substr(percent_pos, percent_last_pos);
+                retval.end = component.substr(percent_last_pos);
+                return retval;
+            }
+        }
+    }
+    #endif
+
+    return retval;
+}
+
+static std::vector<std::string> expandEnvironmentVariable(const std::string& component, sys::Filesystem::FileType type) 
+{
+    static const sys::OS os;
+
+    const auto extractedEnvVar = extractEnvironmentVariable(component);
+
+    std::vector<std::string> paths;
+    if (!os.splitEnv(extractedEnvVar.variable, paths, type))
+    {
+        // this "environment variable" is really just a normal part of a path name
+        paths.push_back(component);
+    }
+    else
+    {
+        // add back the other pieces: "foo$(BAR)baz" -> "foo_bar_baz" for BAR=_bar_
+        for (auto& path : paths)
+        {
+            path = extractedEnvVar.begin + path + extractedEnvVar.end;
+        }
+    }
+    return paths;
+}
+
+static std::string expandAndMergeComponents(const std::vector<std::string>& components, size_t current,  sys::Filesystem::FileType type)
+{
+    std::string retval;
+    if (current < components.size())
+    {
+    }
+    return retval;
+}
+
+static std::string expandEnvironmentVariables(const std::vector<std::string>& components, sys::Filesystem::FileType type)
+{
+    for (const auto& component : components)
+    {
+    
+    }
+    return Path::merge(components);
+}
+
+// a single "~" is a bit of a special case
+static std::string expandTilde()
+{
+    static const sys::OS os;
+
+    #ifdef _WIN32
+    constexpr auto home = "USERPROFILE";
+    #else  // assuming *nix
+    // Is there a better way to support ~ on *nix than $HOME ?
+    constexpr auto home = "HOME";
+    #endif
+
+    std::vector<std::string> paths;
+    if (!os.splitEnv(home, paths, sys::Filesystem::FileType::Directory))
+    {
+        // something is horribly wrong
+        throw except::FileNotFoundException(Ctxt(home));
+    }
+
+    if (paths.size() != 1)
+    {
+        // somebody set HOME to multiple directories ... why?
+        throw except::FileNotFoundException(Ctxt(home));
+    }
+    return paths[0];
+}
+
+static std::string expandEnvironmentVariables_(std::string path, sys::Filesystem::FileType type) // make a copy for str::replace
+{
+    constexpr auto tilde_slash = "~/"; // ~\ would be goofy on Windows, so only support ~/
+    if (path.find_first_of(tilde_slash) == 0)
+    {
+        // Don't have to worry about goofy things like ~ expanding to /home/${FOO}
+        // expandTilde() ensures the directory exists.
+        str::replace(path, tilde_slash, expandTilde() + "/");
+    }
+
+    const auto components = Path::separate(path);  // "This splits on both '/' and '\\'."
+    return expandEnvironmentVariables(components, type);
+} 
+
+std::string Path::expandEnvironmentVariables(const std::string& path, bool checkIfExists)
+{
+    // Avoid pathalogical cases where the first env-variable expands to escape or ~
     #ifdef _WIN32
     // https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
     constexpr auto escape = R"(\\?\)";
-    #else
-    // assuming *nix
+    #else // assuming *nix
     constexpr auto escape = R"(//)";
     #endif
     if (path.find_first_of(escape) == 0)
     {
         return path;
     }
-
-    const auto components = Path::separate(path); // "This splits on both '/' and '\\'."
-    for (const auto& component : components)
+    if (path == "~")
     {
-    
+        return expandTilde();
     }
-    return merge(components);
+
+    return ""; // TODO
 }
+std::string Path::expandEnvironmentVariables(const std::string& path, sys::Filesystem::FileType type)
+{
+    // Avoid pathalogical cases where the first env-variable expands to escape or ~
+    #ifdef _WIN32
+    // https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
+    constexpr auto escape = R"(\\?\)";
+    #else // assuming *nix
+    constexpr auto escape = R"(//)";
+    #endif
+    if (path.find_first_of(escape) == 0)
+    {
+        return path;
+    }
+    if (path == "~")
+    {
+        return expandTilde();
+    }
+    return expandEnvironmentVariables_(path, type);
+}
+
 }
