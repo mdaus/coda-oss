@@ -121,11 +121,17 @@ public:
      *  them. This splits on both '/' and '\\'.
      */
     static std::vector<std::string> separate(const std::string& path);
+    static std::vector<std::string> separate(const std::string& path, bool& isRooted);
 
     inline std::vector<std::string> separate() const
     {
         return separate(mPathName);
     }
+
+    /*!
+     *  Reverses separate()
+     */
+    static std::string merge(const std::vector<std::string>&, bool isRooted);
 
     /*!
      * Splits the path into two components: head & tail.

@@ -27,6 +27,36 @@
 
 namespace
 {
+TEST_CASE(testPathMerge)
+{
+    const sys::OS os;
+
+    // PATH is usually set to multiple directories on both Windows and *nix
+    std::vector<std::string> paths;
+    const auto splitResult = os.splitEnv("PATH", paths);
+    TEST_ASSERT_TRUE(splitResult);
+    TEST_ASSERT_GREATER(paths.size(), 0);
+
+    auto path = paths[0];
+    bool isRooted;
+    auto components = sys::Path::separate(path, isRooted);
+    TEST_ASSERT_GREATER(components.size(), 0);
+    auto result = sys::Path::merge(components, isRooted);
+    TEST_ASSERT_EQ(result, path);
+    TEST_ASSERT_TRUE(sys::Filesystem::exists(result));
+    TEST_ASSERT_TRUE(sys::Filesystem::is_directory(result));
+
+    #if _WIN32
+    path = R"(\\server\dir\file.txt)";
+    #else
+    path = R"(/dir1/dir2/file.txt)";
+    #endif
+    components = sys::Path::separate(path, isRooted);
+    TEST_ASSERT_EQ(components.size(), 3);
+    result = sys::Path::merge(components, isRooted);
+    TEST_ASSERT_EQ(result, path);
+}
+
 TEST_CASE(testExpandEnvTilde)
 {
     const auto result = sys::Path::expandEnvironmentVariables("~");
@@ -95,6 +125,7 @@ TEST_CASE(testExpandEnvPath)
 
 int main(int, char**)
 {
+    TEST_CHECK(testPathMerge);
     TEST_CHECK(testExpandEnvTilde);
     TEST_CHECK(testExpandEnvPath);
 

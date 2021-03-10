@@ -149,6 +149,28 @@ std::vector<std::string> Path::separate(const std::string& path)
     std::reverse(pathList.begin(), pathList.end());
     return pathList;
 }
+static bool isPathRooted(const std::string& path)
+{
+    #if _WIN32
+    const auto backslash_pos = path.find_first_of('\\');
+    if (backslash_pos == 0)
+    {
+        return path.find_first_of("\\\\") ==  0;  // "\\server\folder" is rooted on Windows
+    }
+    else if ((path.find_first_of(':') == 1) && (backslash_pos == 2))
+    {
+        return  isalpha(path[0]) ? true : false;  // "C:\" is rooted on Windows
+    }
+    return false;
+    #else
+    return path.find_first_of('/') == 0; // "/foo" is rooted on *nix
+    #endif
+}
+std::vector<std::string> Path::separate(const std::string& path, bool& isRooted)
+{  
+    isRooted = isPathRooted(path);
+    return separate(path);
+}
 
 std::string Path::absolutePath(const std::string& path)
 {
@@ -288,7 +310,19 @@ std::istream& operator>>(std::istream& is, Path& path)
     return is;
 }
 
-static std::string merge(const std::vector<std::string>& components)
+struct separate_result final
+{
+    std::vector<std::string> components;
+    bool rooted;
+};
+static separate_result separate_path(const std::string& path)
+{
+    separate_result retval;
+    retval.components = Path::separate(path, retval.rooted);
+    return retval;
+}
+
+std::string Path::merge(const std::vector<std::string>& components, bool isRooted)
 {
     std::string retval;
     for (const auto& component : components)
@@ -297,9 +331,26 @@ static std::string merge(const std::vector<std::string>& components)
         {
             retval += Path::delimiter();
         }
+        else if (isRooted)
+        {
+            // don't want \C:\dir on Windows, but need \\server\dir
+            const auto front = components.front(); // got at least one otherwise we wouldn't be in the "foo" loop
+            const auto colon_pos = front.find_first_of(':');
+            if (colon_pos != 1) // yea, there are devices like PRN:
+            {
+                retval = Path::delimiter();
+                #if _WIN32  
+                retval += Path::delimiter(); // \\server
+                #endif
+            }
+        }
         retval += component;
     }
     return retval;
+}
+static std::string merge_path(const separate_result& components)
+{
+    return Path::merge(components.components, components.rooted);
 }
 
 struct ExtractedEnvironmentVariable final
@@ -442,19 +493,15 @@ static std::string expandAndMergeComponents(const std::vector<std::string>& comp
     return retval;
 }
 
-static std::string expandEnvironmentVariables(const std::vector<std::string>& components, sys::Filesystem::FileType type)
+static std::string expandEnvironmentVariables(const separate_result& components, sys::Filesystem::FileType type)
 {
-    for (const auto& component : components)
-    {
-    
-    }
-    return merge(components);
+    return merge_path(components);
 }
 
-static std::string expandEnvironmentVariables_noCheckIfExists(const std::vector<std::string>& components)
+static std::string expandEnvironmentVariables_noCheckIfExists(const separate_result& components)
 {
     std::vector<std::string> expandedComponents;
-    for (const auto& component : components)
+    for (const auto& component : components.components)
     {
         const auto result = expandEnvironmentVariable(component, nullptr);
         assert(result.size() >= 1);
@@ -462,21 +509,17 @@ static std::string expandEnvironmentVariables_noCheckIfExists(const std::vector<
         // not checking for existence, just grab the first one
         expandedComponents.push_back(result.front());    
     }
-    return merge(expandedComponents);
+    return Path::merge(expandedComponents, components.rooted);
 }
 
-static std::string expandEnvironmentVariables(const std::vector<std::string>& components, bool checkIfExists)
+static std::string expandEnvironmentVariables(const separate_result& components, bool checkIfExists)
 {
     if (!checkIfExists)
     {
         return expandEnvironmentVariables_noCheckIfExists(components);
     }
 
-    for (const auto& component : components)
-    {
-    
-    }
-    return merge(components);
+    return merge_path(components);
 }
 
 // a single "~" is a bit of a special case
@@ -516,7 +559,7 @@ static std::string expandEnvironmentVariables_(std::string path, sys::Filesystem
         str::replace(path, tilde_slash, expandTilde() + "/");
     }
 
-    const auto components = Path::separate(path);  // "This splits on both '/' and '\\'."
+    const auto components = separate_path(path);  // "This splits on both '/' and '\\'."
     return expandEnvironmentVariables(components, type);
 } 
 
@@ -530,7 +573,7 @@ static std::string expandEnvironmentVariables_(std::string path, bool checkIfExi
         str::replace(path, tilde_slash, expandTilde() + "/");
     }
 
-    const auto components = Path::separate(path);  // "This splits on both '/' and '\\'."
+    const auto components = separate_path(path);  // "This splits on both '/' and '\\'."
     return expandEnvironmentVariables(components, checkIfExists);
 } 
 
