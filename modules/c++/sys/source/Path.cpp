@@ -288,7 +288,7 @@ std::istream& operator>>(std::istream& is, Path& path)
     return is;
 }
 
-std::string Path::merge(const std::vector<std::string>& components)
+static std::string merge(const std::vector<std::string>& components)
 {
     std::string retval;
     for (const auto& component : components)
@@ -448,7 +448,7 @@ static std::string expandEnvironmentVariables(const std::vector<std::string>& co
     {
     
     }
-    return Path::merge(components);
+    return merge(components);
 }
 
 static std::string expandEnvironmentVariables_noCheckIfExists(const std::vector<std::string>& components)
@@ -462,7 +462,7 @@ static std::string expandEnvironmentVariables_noCheckIfExists(const std::vector<
         // not checking for existence, just grab the first one
         expandedComponents.push_back(result.front());    
     }
-    return Path::merge(expandedComponents);
+    return merge(expandedComponents);
 }
 
 static std::string expandEnvironmentVariables(const std::vector<std::string>& components, bool checkIfExists)
@@ -476,7 +476,7 @@ static std::string expandEnvironmentVariables(const std::vector<std::string>& co
     {
     
     }
-    return Path::merge(components);
+    return merge(components);
 }
 
 // a single "~" is a bit of a special case

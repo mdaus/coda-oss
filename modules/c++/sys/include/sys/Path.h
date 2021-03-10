@@ -128,11 +128,6 @@ public:
     }
 
     /*!
-     *  Reverses separate()
-     */
-    static std::string merge(const std::vector<std::string>&);
-
-    /*!
      * Splits the path into two components: head & tail.
      *
      * The tail part will never contain the delim; if path ends in the delim,
