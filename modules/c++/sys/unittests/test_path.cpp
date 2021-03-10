@@ -121,6 +121,32 @@ TEST_CASE(testExpandEnvPath)
     TEST_ASSERT_EQ(foopath_barpathbar_, "foo" + path + "-bar" + path + "BAR)");
 }
 
+TEST_CASE(testExpandEnvPathExists)
+{
+    sys::OS os;
+    const auto path_value = os.getEnv("PATH");
+    #ifdef _WIN32
+    std::string does_not_exist(R"(Q:\Does\Not\Exist)"); does_not_exist += ";";
+    #else
+    std::string does_not_exist(R"(/does/not/existt)"); does_not_exist += ":";
+    #endif
+    os.setEnv("PATH", does_not_exist + path_value, true /*overwrite*/);
+
+    const auto path = sys::Path::expandEnvironmentVariables("$PATH");
+    TEST_ASSERT_FALSE(path.empty());
+
+    #if _WIN32  // %FOO% only on Windows
+    const auto win32_path = sys::Path::expandEnvironmentVariables("%PATH%");
+    TEST_ASSERT_EQ(win32_path, path);
+    #endif
+
+    const auto path2 = sys::Path::expandEnvironmentVariables("$(PATH)");
+    TEST_ASSERT_EQ(path2, path);
+
+    const auto path3 = sys::Path::expandEnvironmentVariables("${PATH}");
+    TEST_ASSERT_EQ(path3, path);
+}
+
 }
 
 int main(int, char**)
@@ -128,6 +154,7 @@ int main(int, char**)
     TEST_CHECK(testPathMerge);
     TEST_CHECK(testExpandEnvTilde);
     TEST_CHECK(testExpandEnvPath);
+    TEST_CHECK(testExpandEnvPathExists);
 
     return 0;
 }

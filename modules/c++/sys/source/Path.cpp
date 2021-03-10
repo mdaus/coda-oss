@@ -314,6 +314,14 @@ struct separate_result final
 {
     std::vector<std::string> components;
     bool rooted;
+    void push_back(const std::string& s)
+    {
+        components.push_back(s);
+    }
+    void push_back(std::string&& s)
+    {
+        components.push_back(std::move(s));
+    }
 };
 static separate_result separate_path(const std::string& path)
 {
@@ -431,14 +439,12 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable(const std::string
     {
         return extractEnvironmentVariable_dollar(component, dollar_pos);
     }
+
     #if _WIN32 // %FOO% only on Windows
-    else
+    const auto percent_pos = component.find_first_of('%');
+    if (percent_pos != std::string::npos)
     {
-        const auto percent_pos = component.find_first_of('%');
-        if (percent_pos != std::string::npos)
-        {
-            return extractEnvironmentVariable_percent(component, percent_pos);
-        }
+        return extractEnvironmentVariable_percent(component, percent_pos);
     }
     #endif
 
@@ -454,7 +460,6 @@ static bool osSplitEnv(const std::string& var, std::vector<std::string>& result,
     }
     return os.splitEnv(var, result);
 }
-
 static std::vector<std::string> expandEnvironmentVariable(const std::string& component, const sys::Filesystem::FileType* pType) 
 {
     const auto extractedEnvVar = extractEnvironmentVariable(component);
@@ -463,6 +468,7 @@ static std::vector<std::string> expandEnvironmentVariable(const std::string& com
     if (!osSplitEnv(extractedEnvVar.variable, paths, pType))
     {
         // this "environment variable" is really just a normal part of a path name
+        paths.clear();
         paths.push_back(component);
         return paths;
     }
@@ -500,16 +506,54 @@ static std::string expandEnvironmentVariables(const separate_result& components,
 
 static std::string expandEnvironmentVariables_noCheckIfExists(const separate_result& components)
 {
-    std::vector<std::string> expandedComponents;
+    separate_result expandedComponents;
+    expandedComponents.rooted = components.rooted;
     for (const auto& component : components.components)
     {
-        const auto result = expandEnvironmentVariable(component, nullptr);
-        assert(result.size() >= 1);
+        const auto expansions = expandEnvironmentVariable(component, nullptr);
+        assert(expansions.size() >= 1);  // the component itself should always be there
 
         // not checking for existence, just grab the first one
-        expandedComponents.push_back(result.front());    
+        auto expansion = expansions.front();
+        expandedComponents.push_back(std::move(expansion));    
     }
-    return Path::merge(expandedComponents, components.rooted);
+    return merge_path(expandedComponents);
+}
+
+static std::string expandEnvironmentVariables_checkIfExists(const separate_result& components)
+{
+    separate_result expandedComponents;
+    expandedComponents.rooted = components.rooted;
+    for (const auto& component : components.components)
+    {
+        const auto expansions = expandEnvironmentVariable(component, nullptr);
+        assert(expansions.size() >= 1);  // the component itself should always be there
+
+        for (const auto& expansion : expansions)
+        {
+            expandedComponents.push_back(expansion);
+            auto path = merge_path(expandedComponents);
+            if (sys::Filesystem::exists(path))
+            {
+                return path;  // all done!
+            }
+
+            path = expandEnvironmentVariables_checkIfExists(expandedComponents);
+            if (sys::Filesystem::exists(path))
+            {
+                return path;  // all done!
+            }
+
+            expandedComponents.components.pop_back();  // restore
+            path = expandEnvironmentVariables_checkIfExists(expandedComponents);
+            if (sys::Filesystem::exists(path))
+            {
+                return path;  // all done!
+            }
+        }
+    }
+
+    return merge_path(components); // default if everything above failed
 }
 
 static std::string expandEnvironmentVariables(const separate_result& components, bool checkIfExists)
@@ -519,7 +563,7 @@ static std::string expandEnvironmentVariables(const separate_result& components,
         return expandEnvironmentVariables_noCheckIfExists(components);
     }
 
-    return merge_path(components);
+    return expandEnvironmentVariables_checkIfExists(components);
 }
 
 // a single "~" is a bit of a special case
