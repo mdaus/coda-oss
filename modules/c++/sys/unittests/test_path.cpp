@@ -49,6 +49,8 @@ TEST_CASE(testExpandEnvTilde)
 {
     const auto result = sys::Path::expandEnvironmentVariables("~");
     TEST_ASSERT_FALSE(result.empty());
+    TEST_ASSERT_TRUE(sys::Filesystem::exists(result));
+    TEST_ASSERT_TRUE(sys::Filesystem::is_directory(result));
 }
 
 TEST_CASE(testExpandEnvPath)
@@ -100,10 +102,8 @@ TEST_CASE(testExpandEnvPath)
     pathpath = sys::Path::expandEnvironmentVariables("%PATH%%PATH%", false);
     TEST_ASSERT_EQ(pathpath, path + path);
     #endif
-    auto pathpathpath = sys::Path::expandEnvironmentVariables("$PATH$PATH$PATH", false);
-    TEST_ASSERT_EQ(pathpathpath, path + path + path);
-    pathpathpath = sys::Path::expandEnvironmentVariables("$PATH$(PATH)${PATH}", false);
-    TEST_ASSERT_EQ(pathpathpath, path + path + path);
+    auto pathpathpath = sys::Path::expandEnvironmentVariables("$PATH$(PATH)${PATH}", false);
+    TEST_ASSERT_EQ(pathpathpath, pathpath + path);
 
     const auto foopath_barpathbar_ = sys::Path::expandEnvironmentVariables("foo$PATH-bar$(PATH)BAR)", false);
     TEST_ASSERT_EQ(foopath_barpathbar_, "foo" + path + "-bar" + path + "BAR)");
