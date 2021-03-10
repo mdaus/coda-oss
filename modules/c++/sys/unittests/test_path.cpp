@@ -56,28 +56,27 @@ TEST_CASE(testExpandEnvPath)
     const auto path = sys::Path::expandEnvironmentVariables("$PATH", false);
     TEST_ASSERT_FALSE(path.empty());
 
+    #if _WIN32  // %FOO% only on Windows
+    const auto win32_path = sys::Path::expandEnvironmentVariables("%PATH%", false);
+    TEST_ASSERT_EQ(win32_path, path);
+    #endif
+
     const auto path2 = sys::Path::expandEnvironmentVariables("$(PATH)", false);
-    TEST_ASSERT_FALSE(path2.empty());
     TEST_ASSERT_EQ(path2, path);
 
     const auto path3 = sys::Path::expandEnvironmentVariables("${PATH}", false);
-    TEST_ASSERT_FALSE(path3.empty());
     TEST_ASSERT_EQ(path3, path);
 
     const auto foopath = sys::Path::expandEnvironmentVariables("foo${PATH}", false);
-    TEST_ASSERT_FALSE(foopath.empty());
     TEST_ASSERT_EQ(foopath, "foo" + path);
 
     const auto pathfoo = sys::Path::expandEnvironmentVariables("${PATH}foo", false);
-    TEST_ASSERT_FALSE(pathfoo.empty());
     TEST_ASSERT_EQ(pathfoo, path + "foo");
 
     const auto foopathbar = sys::Path::expandEnvironmentVariables("foo${PATH}bar", false);
-    TEST_ASSERT_FALSE(foopathbar.empty());
     TEST_ASSERT_EQ(foopathbar, "foo" + path + "bar");
 
     const auto foopath_bar = sys::Path::expandEnvironmentVariables("foo$PATH-bar", false);
-    TEST_ASSERT_FALSE(foopath_bar.empty());
     TEST_ASSERT_EQ(foopath_bar, "foo" + path + "-bar");
 
     auto foopath_bar_ = sys::Path::expandEnvironmentVariables("foo$PATH(bar)", false);
@@ -85,12 +84,29 @@ TEST_CASE(testExpandEnvPath)
     TEST_ASSERT_EQ(foopath_bar_, "foo" + path + "(bar)");
 
     foopath_bar_ = sys::Path::expandEnvironmentVariables("foo$PATH)bar(", false);
-    TEST_ASSERT_FALSE(foopath_bar_.empty());
     TEST_ASSERT_EQ(foopath_bar_, "foo" + path + ")bar(");
 
     foopath_bar_ = sys::Path::expandEnvironmentVariables("foo$(PATH)BAR)", false);
-    TEST_ASSERT_FALSE(foopath_bar_.empty());
     TEST_ASSERT_EQ(foopath_bar_, "foo" + path + "BAR)");
+
+
+    auto pathpath = sys::Path::expandEnvironmentVariables("$PATH$PATH", false);
+    TEST_ASSERT_EQ(pathpath, path + path);
+    pathpath = sys::Path::expandEnvironmentVariables("$PATH$(PATH)", false);
+    TEST_ASSERT_EQ(pathpath, path + path);
+    pathpath = sys::Path::expandEnvironmentVariables("${PATH}$PATH", false);
+    TEST_ASSERT_EQ(pathpath, path + path);
+    #if _WIN32  // %FOO% only on Windows
+    pathpath = sys::Path::expandEnvironmentVariables("%PATH%%PATH%", false);
+    TEST_ASSERT_EQ(pathpath, path + path);
+    #endif
+    auto pathpathpath = sys::Path::expandEnvironmentVariables("$PATH$PATH$PATH", false);
+    TEST_ASSERT_EQ(pathpathpath, path + path + path);
+    pathpathpath = sys::Path::expandEnvironmentVariables("$PATH$(PATH)${PATH}", false);
+    TEST_ASSERT_EQ(pathpathpath, path + path + path);
+
+    const auto foopath_barpathbar_ = sys::Path::expandEnvironmentVariables("foo$PATH-bar$(PATH)BAR)", false);
+    TEST_ASSERT_EQ(foopath_barpathbar_, "foo" + path + "-bar" + path + "BAR)");
 }
 
 }

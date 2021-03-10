@@ -309,13 +309,13 @@ struct ExtractedEnvironmentVariable final
     std::string end; // "baz" of "foo$(BAR)baz"
 };
 
-static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::string component, size_t dollar_pos) // make a copy for manipulation
+static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::string component, size_t pos) // make a copy for manipulation
 {
-    assert(dollar_pos != std::string::npos);
+    assert(pos != std::string::npos);
     ExtractedEnvironmentVariable retval;
     retval.variable = component;  // assume this really isn't an env. var
 
-    retval.begin = component.substr(0, dollar_pos);
+    retval.begin = component.substr(0, pos);
     str::replace(component, retval.begin + "$", ""); // don't want to find "(" before "$"
     auto paren = component.find_first_of('(');
     char paren_match = ')';
@@ -337,7 +337,7 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::strin
     }
 
     // not ${FOO} or $(FOO), maybe $FOO-bar ($FOO_BAR is a real name)
-    const auto delim = component.find_first_of("-(){}");
+    const auto delim = component.find_first_of("-(){}$%");
     if (delim != std::string::npos)
     {
         retval.variable = component.substr(0, delim);
@@ -350,12 +350,32 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::strin
     return retval;
 }
 
+static ExtractedEnvironmentVariable extractEnvironmentVariable_percent(std::string component, size_t pos) // make a copy for manipulation
+{
+    assert(pos != std::string::npos);
+    ExtractedEnvironmentVariable retval;
+    retval.variable = component;  // assume this really isn't an env. var
+
+    retval.begin = component.substr(0, pos); // foo%BAR%
+    str::replace(component, retval.begin + "%", ""); // %FOO%bar% -> foo_bar% for FOO=foo_
+    auto percent_pos = component.find_first_of('%');
+    if (percent_pos == std::string::npos) // "foo%BAR"
+    {
+        retval.begin.clear();
+        return retval;
+    }
+
+    retval.variable = component.substr(0, percent_pos);
+    retval.end = component.substr(percent_pos+1);
+    return retval;
+}
+
 static ExtractedEnvironmentVariable extractEnvironmentVariable(const std::string& component)
 {
     ExtractedEnvironmentVariable retval;
     retval.variable = component; // assume this really isn't an env. var
 
-    const auto dollar_pos = component.find_first_of("$");
+    const auto dollar_pos = component.find_first_of('$');
     if (dollar_pos != std::string::npos)  // foo$BAR -> "foo_bar" for BAR=_bar
     {
         return extractEnvironmentVariable_dollar(component, dollar_pos);
@@ -363,17 +383,10 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable(const std::string
     #if _WIN32 // %FOO% only on Windows
     else
     {
-        const auto percent_pos = component.find_first_of("%");
+        const auto percent_pos = component.find_first_of('%');
         if (percent_pos != std::string::npos)
         {
-            const auto percent_last_pos = component.find_last_of("%");
-            if (percent_last_pos != percent_pos) // no need to check npos, we know one '%' exists
-            {
-                retval.begin = component.substr(0, percent_pos);
-                retval.variable = component.substr(percent_pos, percent_last_pos);
-                retval.end = component.substr(percent_last_pos);
-                return retval;
-            }
+            return extractEnvironmentVariable_percent(component, percent_pos);
         }
     }
     #endif
@@ -400,16 +413,24 @@ static std::vector<std::string> expandEnvironmentVariable(const std::string& com
     {
         // this "environment variable" is really just a normal part of a path name
         paths.push_back(component);
+        return paths;
     }
-    else
+
+    // Add back the other pieces: "foo$(BAR)baz" -> "foo_bar_baz" for BAR=_bar_
+    //
+    // The "end" piece could be another env-var: foo$BAR$BAZ
+    const auto endExtpandedEnvVar = expandEnvironmentVariable(extractedEnvVar.end, pType);
+
+    std::vector<std::string> retval;
+    for (const auto& path : paths)
     {
-        // add back the other pieces: "foo$(BAR)baz" -> "foo_bar_baz" for BAR=_bar_
-        for (auto& path : paths)
+        for (const auto& endVar : endExtpandedEnvVar)
         {
-            path = extractedEnvVar.begin + path + extractedEnvVar.end;
+            auto p = extractedEnvVar.begin + path + endVar;
+            retval.push_back(std::move(p));
         }
     }
-    return paths;
+    return retval;
 }
 
 static std::string expandAndMergeComponents(const std::vector<std::string>& components, size_t current,  sys::Filesystem::FileType type)
