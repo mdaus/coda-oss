@@ -471,65 +471,45 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable(const std::string
     return retval;
 }
 
-static bool osSplitEnv(const std::string& var, std::vector<std::string>& result, const sys::Filesystem::FileType* pType)
-{
-    static const sys::OS os;
-    if (pType != nullptr)
-    {
-        return os.splitEnv(var, result, *pType);
-    }
-    return os.splitEnv(var, result);
-}
-
-// Don't want to keep expanding.
-// If "a$(FOO)b" results in "a$(FOOBAR)b" for FOO=$(FOOBAR), that's it; don't expand $(FOOBAR)
-struct ExpandedEnvironmentVariable final
-{
-    std::vector<std::string> expansions;
-    bool expanded = false;
-    ExpandedEnvironmentVariable(const std::string& component) : expanded(true)
-    {
-        // trivial "expansion"
-        expansions.push_back(component);
-    }
-    ExpandedEnvironmentVariable(std::vector<std::string>&& paths) :
-        expansions(std::move(paths)), expanded(true)
-    {
-    }
-};
-
-static ExpandedEnvironmentVariable expandEnvironmentVariable(const std::string& component, const sys::Filesystem::FileType* pType)
+static std::vector<std::string> expandEnvironmentVariable(const std::string& component)
 {
     const auto extractedEnvVar = extractEnvironmentVariable(component);
+    std::vector<std::string> retval;
     if (extractedEnvVar.variable == component)
     {
         // no env-var syntax found; don't even bother with osSplitEnv()
-        return ExpandedEnvironmentVariable(component);
+        retval.push_back(component);
+        return retval;
     }
 
-    std::vector<std::string> paths;
-    if (!osSplitEnv(extractedEnvVar.variable, paths, pType))
+    // Can't check whether the expansions exist as this could just be a piece
+    // of a longer path: /foo/$BAR/baz/file.txt
+    static const sys::OS os;
+    std::string value;
+    if (!os.getEnvIfSet(extractedEnvVar.variable, value))
     {
-        // No value for the purported "environment variable," assume it's just a path with
-        // some funky characters: $({})
-        return ExpandedEnvironmentVariable(component);
+        // No value for the purported "environment variable," assume it's just a
+        // path with some funky characters: $({})
+        retval.push_back(component);
+        return retval;
     }
+    const auto paths = str::split(value, sys::Path::separator());
 
     // Add back the other pieces: "foo$(BAR)baz" -> "foo_bar_baz" for BAR=_bar_
     //
     // The "end" piece could be another env-var: foo$BAR$BAZ
-    const auto endExtpandedEnvVar = expandEnvironmentVariable(extractedEnvVar.end, pType);
+    const auto endExtpandedEnvVar = expandEnvironmentVariable(extractedEnvVar.end);
 
     std::vector<std::string> updated_paths;
     for (const auto& path : paths)
     {
-        for (const auto& endVar : endExtpandedEnvVar.expansions)
+        for (const auto& endVar : endExtpandedEnvVar)
         {
             auto p = extractedEnvVar.begin + path + endVar;
             updated_paths.push_back(std::move(p));
         }
     }
-    return ExpandedEnvironmentVariable(std::move(updated_paths));
+    return updated_paths;
 }
 
 static std::string expandAndMergeComponents(const std::vector<std::string>& components, size_t current,  sys::Filesystem::FileType type)
@@ -552,12 +532,11 @@ static std::string expandEnvironmentVariables_noCheckIfExists(const separate_res
     expandedComponents.absolute = components.absolute;
     for (const auto& component : components.components())
     {
-        const auto expansions = expandEnvironmentVariable(component, nullptr);
-        assert(expansions.expanded);
-        assert(expansions.expansions.size() >= 1);  // the component itself should always be there
+        const auto expansions = expandEnvironmentVariable(component);
+        assert(expansions.size() >= 1);  // the component itself should always be there
 
         // not checking for existence, just grab the first one
-        auto expansion = expansions.expansions.front();
+        auto expansion = expansions.front();
         expandedComponents.push_back(std::move(expansion));
     }
     return merge_path(expandedComponents);
@@ -569,11 +548,10 @@ static std::string expandEnvironmentVariables_checkIfExists(const separate_resul
     expandedComponents.absolute = components.absolute;
     for (const auto& component : components.components())
     {
-        const auto expansions = expandEnvironmentVariable(component, nullptr);
-        assert(expansions.expanded);
-        assert(expansions.expansions.size() >= 1);  // the component itself should always be there
+        const auto expansions = expandEnvironmentVariable(component);
+        assert(expansions.size() >= 1);  // the component itself should always be there
 
-        for (const auto& expansion : expansions.expansions)
+        for (const auto& expansion : expansions)
         {
             expandedComponents.push_back(expansion);
             auto path = merge_path(expandedComponents);
