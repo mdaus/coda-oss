@@ -314,7 +314,7 @@ class separate_result final
 {
     std::vector<std::string> components_;
 public:
-    bool rooted = false;
+    bool absolute = false;
     separate_result() = default;
 
     separate_result(std::vector<std::string>&& components) :
@@ -340,13 +340,13 @@ public:
 };
 static separate_result separate_path(const std::string& path)
 {
-    bool rooted;
-    separate_result retval(Path::separate(path, rooted));
-    retval.rooted = rooted;
+    bool absolute;
+    separate_result retval(Path::separate(path, absolute));
+    retval.absolute = absolute;
     return retval;
 }
 
-std::string Path::merge(const std::vector<std::string>& components, bool isRooted)
+std::string Path::merge(const std::vector<std::string>& components, bool isAbsolute)
 {
     std::string retval;
     for (const auto& component : components)
@@ -355,7 +355,7 @@ std::string Path::merge(const std::vector<std::string>& components, bool isRoote
         {
             retval += Path::delimiter();
         }
-        else if (isRooted)
+        else if (isAbsolute)
         {
             // don't want \C:\dir on Windows, but need \\server\dir
             const auto front = components.front(); // got at least one otherwise we wouldn't be in the "foo" loop
@@ -374,7 +374,7 @@ std::string Path::merge(const std::vector<std::string>& components, bool isRoote
 }
 static std::string merge_path(const separate_result& components)
 {
-    return Path::merge(components.components(), components.rooted);
+    return Path::merge(components.components(), components.absolute);
 }
 
 struct ExtractedEnvironmentVariable final
@@ -394,13 +394,11 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::strin
     str::replace(component, retval.begin + "$", ""); // don't want to find "(" before "$"
     auto paren = component.find_first_of('(');
     char paren_match = ')';
-    #if !_WIN32 // no ${FOO} on Windows, just $(FOO)
     if (paren == std::string::npos)
     {
         paren = component.find_first_of('{');
         paren_match = '}';
     }
-    #endif
 
     if (paren == 0) // ${FOO} or $(FOO)
     {
@@ -415,7 +413,7 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::strin
 
     // not ${FOO} or $(FOO), maybe $FOO-bar ($FOO_BAR is a real name)
     #if _WIN32
-    const auto delim = component.find_first_of("$%"); // don't allow as much "gooffiness" as *nix
+    const auto delim = component.find_first_of("$%"); // don't allow as much "goofiness" as *nix
     #else
     const auto delim = component.find_first_of("-(){}$%");
     #endif
@@ -551,7 +549,7 @@ static std::string expandEnvironmentVariables(const separate_result& components,
 static std::string expandEnvironmentVariables_noCheckIfExists(const separate_result& components)
 {
     separate_result expandedComponents;
-    expandedComponents.rooted = components.rooted;
+    expandedComponents.absolute = components.absolute;
     for (const auto& component : components.components())
     {
         const auto expansions = expandEnvironmentVariable(component, nullptr);
@@ -568,7 +566,7 @@ static std::string expandEnvironmentVariables_noCheckIfExists(const separate_res
 static std::string expandEnvironmentVariables_checkIfExists(const separate_result& components)
 {
     separate_result expandedComponents;
-    expandedComponents.rooted = components.rooted;
+    expandedComponents.absolute = components.absolute;
     for (const auto& component : components.components())
     {
         const auto expansions = expandEnvironmentVariable(component, nullptr);

@@ -73,7 +73,7 @@ public:
     }
 
     /*!
-    * Expands the enviroment variables in a string
+    * Expands the environment variables in a string
     * c.f., https://docs.microsoft.com/en-us/dotnet/api/system.environment.expandenvironmentvariables?view=net-5.0
     */
     static std::string expandEnvironmentVariables(const std::string& path, bool checkIfExists = true);
@@ -91,7 +91,7 @@ public:
     }
 
     /*!
-     * Return a normalized absolutized verion of the pathname supplied.
+     * Return a normalized absolutized version of the pathname supplied.
      */
     static std::string absolutePath(const std::string& path);
 
@@ -131,7 +131,7 @@ public:
     /*!
      *  Reverses separate()
      */
-    static std::string merge(const std::vector<std::string>&, bool isRooted);
+    static std::string merge(const std::vector<std::string>&, bool isAbsolute);
 
     /*!
      * Splits the path into two components: head & tail.
