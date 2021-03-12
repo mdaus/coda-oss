@@ -526,26 +526,62 @@ static std::string expandEnvironmentVariables(const separate_result& components,
     return merge_path(components);
 }
 
+struct expanded_component final
+{
+    std::string component;
+    std::vector<std::string> value;
+};
+
+struct expanded_components final
+{
+    bool absolute = false;
+    std::vector<expanded_component> value;
+};
+
+expanded_components expand_components(const separate_result& components)
+{
+    expanded_components retval{components.absolute};
+    for (const auto& component : components.components())
+    {
+        expanded_component e{component};
+        e.value = expandEnvironmentVariable(component);
+        assert(e.value.size() >= 1);  // the component itself should always be there
+
+        retval.value.push_back(std::move(e));
+    }
+    return retval;
+}
+
 static std::string expandEnvironmentVariables_noCheckIfExists(const separate_result& components)
 {
     separate_result expandedComponents;
     expandedComponents.absolute = components.absolute;
-    for (const auto& component : components.components())
-    {
-        const auto expansions = expandEnvironmentVariable(component);
-        assert(expansions.size() >= 1);  // the component itself should always be there
 
+    const auto expansions = expand_components(components);
+    for (const auto& expansion : expansions.value)
+    {
         // not checking for existence, just grab the first one
-        auto expansion = expansions.front();
-        expandedComponents.push_back(std::move(expansion));
+        expandedComponents.push_back(expansion.value.front());
     }
+
     return merge_path(expandedComponents);
 }
+
+static std::string expandEnvironmentVariables_checkIfExists(const expanded_components& so_far, const expanded_component& current, const expanded_components& remaining)
+{
+}
+
 
 static std::string expandEnvironmentVariables_checkIfExists(const separate_result& components)
 {
     separate_result expandedComponents;
     expandedComponents.absolute = components.absolute;
+
+    const auto expansions = expand_components(components);
+    for (const auto& expansion : expansions.value)
+    {
+    }
+
     for (const auto& component : components.components())
     {
         const auto expansions = expandEnvironmentVariable(component);
