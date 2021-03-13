@@ -297,18 +297,14 @@ std::istream& operator>>(std::istream& is, Path& path)
 }
 
 using path_components = std::vector<std::string>;
-class separate_result final
+class separated_path final
 {
     path_components components_;
 
 public:
     bool absolute = false;
-    separate_result() = default;
-
-    separate_result(path_components&& components) :
-        components_(std::move(components)) { }
-    separate_result(const path_components& components) :
-        components_(components)  {  }
+    separated_path(path_components&& components) : components_(std::move(components)) { }
+    separated_path(const path_components& components) : components_(components)  {  }
     void push_back(const std::string& s)
     {
         components_.push_back(s);
@@ -317,15 +313,12 @@ public:
     {
         components_.push_back(std::move(s));
     }
-    const path_components& components() const
-    {
-        return components_;
-    }
+    const path_components& components() const { return components_; }
 };
-static separate_result separate_path(const std::string& path)
+static separated_path separate_path(const std::string& path)
 {
     bool absolute;
-    separate_result retval(Path::separate(path, absolute));
+    separated_path retval(Path::separate(path, absolute));
     retval.absolute = absolute;
     return retval;
 }
@@ -337,6 +330,10 @@ static void clean_slashes(std::string& path, bool isAbsolute)
     {
         path = path.substr(0, path.length() - 1);
     }
+    if (!isAbsolute && str::startsWith(path, Path::delimiter()))
+    {
+        path = path.substr(1);
+    }
     // std::filesystem has (some?) support for UNC paths, but not this code
     #if _WIN32
     if (str::startsWith(path, "\\"))
@@ -344,20 +341,8 @@ static void clean_slashes(std::string& path, bool isAbsolute)
         path = path.substr(1);
     }
     #endif
-    if (!isAbsolute && str::startsWith(path, Path::delimiter()))
-    {
-        path = path.substr(1);
-    }
 
-    fs::path fspath(path);
-    if (isAbsolute)
-    {
-      assert(fspath.is_absolute());
-    }
-    else
-    {
-      assert(fspath.is_relative());
-    }
+    assert(isAbsolute ? fs::path(path).is_absolute() : fs::path(path).is_relative());
 }
 std::string Path::merge(const std::vector<std::string>& components, bool isAbsolute)
 {
@@ -370,7 +355,7 @@ std::string Path::merge(const std::vector<std::string>& components, bool isAbsol
     clean_slashes(retval, isAbsolute);
     return retval;
 }
-static std::string merge_path(const separate_result& components)
+static std::string merge_path(const separated_path& components)
 {
     return Path::merge(components.components(), components.absolute);
 }
@@ -495,7 +480,7 @@ static path_components expandEnvironmentVariable(const std::string& component)
     // Add back the other pieces: "foo$(BAR)baz" -> "foo_bar_baz" for BAR=_bar_
     //
     // The "end" piece could be another env-var: foo$BAR$BAZ
-    const auto endExpandedEnvVar = expandEnvironmentVariable(extractedEnvVar.end);
+    const auto endExpandedEnvVar = expandEnvironmentVariable(extractedEnvVar.end); // note: recursion
 
     path_components updated_paths;
     for (const auto& path : paths)
@@ -550,7 +535,7 @@ struct expanded_component final
     std::string component;
     std::vector<std::string> value;
 };
-static std::vector<expanded_component> expand_components(const separate_result& components)
+static std::vector<expanded_component> expand_components(const separated_path& components)
 {
     std::vector<expanded_component> retval;
     for (const auto& component : components.components())
@@ -660,27 +645,26 @@ static std::vector<std::string> expandedEnvironmentVariables_(const std::string&
     const auto components = separate_path(path);  // "This splits on both '/' and '\\'."
     const auto expanded_components = expand_components(components);
     const auto all_expansions = expand(expanded_components);
-    std::vector<std::string> retval;
 
+    std::vector<std::string> retval;
     for (const auto& unmerged_path_ : all_expansions)
     {
-        separate_result unmerged_path(unmerged_path_);
+        separated_path unmerged_path(unmerged_path_);
         unmerged_path.absolute = components.absolute;
-	// $PATH doesn't look absolute, but /usr/bin is
-	if (!unmerged_path.absolute && !unmerged_path_.empty())
-	{
-	    unmerged_path.absolute = fs::path(unmerged_path_.front()).is_absolute();
-	}
+	    // $PATH doesn't look absolute, but /usr/bin is
+	    if (!unmerged_path.absolute && !unmerged_path_.empty())
+	    {
+	        unmerged_path.absolute = fs::path(unmerged_path_.front()).is_absolute();
+	    }
         path = merge_path(unmerged_path);
         retval.push_back(std::move(path));
     }
-
     return retval;
 }
 std::vector<std::string> Path::expandedEnvironmentVariables(const std::string& path)
 {
-    bool unused;
-    return expandedEnvironmentVariables_(path, unused);
+    bool unused_specialPath;
+    return expandedEnvironmentVariables_(path, unused_specialPath);
 }
 
 static bool path_matches_type(const std::string &path, sys::Filesystem::FileType type)
