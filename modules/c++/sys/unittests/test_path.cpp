@@ -92,12 +92,8 @@ TEST_CASE(testExpandEnvPath)
     const auto foopath = sys::Path::expandEnvironmentVariables("foo${PATH}", false);
     TEST_ASSERT_EQ(foopath, "foo" + path);
 
-    getchar();
     const auto pathfoo = sys::Path::expandEnvironmentVariables("${PATH}foo", false);
-    std::clog << "pathfoo = '" << pathfoo << "'\n";
-    auto expected = path.substr(0, path.size()-1); // remove trailing '/'
-    expected += "foo";
-    TEST_ASSERT_EQ(pathfoo, expected);
+    TEST_ASSERT_EQ(pathfoo, path + "foo");
 
     const auto foopathbar = sys::Path::expandEnvironmentVariables("foo${PATH}bar", false);
     TEST_ASSERT_EQ(foopathbar, "foo" + path + "bar");

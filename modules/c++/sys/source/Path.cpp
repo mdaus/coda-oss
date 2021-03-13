@@ -379,7 +379,11 @@ std::string Path::merge(const std::vector<std::string>& components, bool isAbsol
 
         if (i < components.size() - 1)
         {
-            retval += Path::delimiter(); // no trailing delimiter after last component
+            // various manipulations can result in empty components, espeically at the end
+            if (!components[i+1].empty())
+            {
+                retval += Path::delimiter();  // no trailing delimiter after last component
+            }
         }
     }
     return retval;
