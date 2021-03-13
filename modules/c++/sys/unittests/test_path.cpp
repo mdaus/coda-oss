@@ -56,7 +56,7 @@ TEST_CASE(testPathMerge)
     TEST_ASSERT_TRUE(sys::Filesystem::is_directory(result));
 
     #if _WIN32
-    path = R"(\\server\dir\file.txt)";
+    path = R"(C:\dir\file.txt)";
     #else
     path = R"(/dir1/dir2/file.txt)";
     #endif
@@ -176,14 +176,6 @@ TEST_CASE(testExpandEnvPathMultiple)
     TEST_ASSERT_EQ(expanded_path, "home");
     auto expanded_paths = sys::Path::expandedEnvironmentVariables("$(paths)");
     TEST_ASSERT_EQ(expanded_paths.size(), 3);
-    expanded_path = sys::Path::expandEnvironmentVariables("/$(paths)", false /*checkIfExists*/);
-    TEST_ASSERT_EQ(expanded_path, "/home");
-    expanded_paths = sys::Path::expandedEnvironmentVariables("/$(paths)");
-    TEST_ASSERT_EQ(expanded_paths.size(), 3);
-    expanded_path = sys::Path::expandEnvironmentVariables("/disk0/$(paths)", false /*checkIfExists*/);
-    TEST_ASSERT_EQ(expanded_path, "/disk0/home");
-    expanded_paths = sys::Path::expandedEnvironmentVariables("/disk0/$(paths)");
-    TEST_ASSERT_EQ(expanded_paths.size(), 3);
 
     const std::vector<std::string> apps{"apps"};
     result = os.prependEnv("apps", apps, false /*overwrite*/);
@@ -198,15 +190,21 @@ TEST_CASE(testExpandEnvPathMultiple)
     result = os.prependEnv("exts", exts, true /*overwrite*/);
     TEST_ASSERT_TRUE(result);
 
-    const std::string path_to_expand = "/disk0/$(paths)/$(apps)/$(app)/$(libs)/$(exts)";
-    const std::vector<std::string> expected{"disk0", paths[0], apps[0], app[0], libs[0], exts[0]};
+    const std::string path_to_expand_root =
+    #if _WIN32
+    "C:";
+    #else
+    "/disk0";
+    #endif
+    const std::string path_to_expand = path_to_expand_root + "/$(paths)/$(apps)/$(app)/$(libs)/$(exts)";
+    const std::vector<std::string> expected{path_to_expand_root, paths[0], apps[0], app[0], libs[0], exts[0]};
     auto expected_path = sys::Path::merge(expected, true /*isAbsolute*/);
     expanded_path = sys::Path::expandEnvironmentVariables(path_to_expand, false /*checkIfExists*/);
     TEST_ASSERT_EQ(expanded_path, expected_path);
 
     expanded_paths = sys::Path::expandedEnvironmentVariables(path_to_expand);
     TEST_ASSERT_EQ(expanded_paths.size(), paths.size() * apps.size() * app.size() * libs.size() * exts.size());
-    const std::vector<std::string> expected_back{"disk0", paths.back(), apps.back(), app.back(), libs.back(), exts.back()};
+    const std::vector<std::string> expected_back{path_to_expand_root, paths.back(), apps.back(), app.back(), libs.back(), exts.back()};
     expected_path = sys::Path::merge(expected_back, true /*isAbsolute*/);
     TEST_ASSERT_EQ(expanded_paths.back(), expected_path);
 }

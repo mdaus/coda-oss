@@ -149,26 +149,9 @@ std::vector<std::string> Path::separate(const std::string& path)
     std::reverse(pathList.begin(), pathList.end());
     return pathList;
 }
-static bool isPathRooted(const std::string& path)
+std::vector<std::string> Path::separate(const std::string& path, bool& isAbsolute)
 {
-    #if _WIN32
-    const auto backslash_pos = path.find('\\');
-    if (backslash_pos == 0)
-    {
-        return path.find("\\\\") ==  0;  // "\\server\folder" is rooted on Windows
-    }
-    else if ((path.find(':') == 1) && (backslash_pos == 2))
-    {
-        return  isalpha(path[0]) ? true : false;  // "C:\" is rooted on Windows
-    }
-    return false;
-    #else
-    return path.find('/') == 0; // "/foo" is rooted on *nix
-    #endif
-}
-std::vector<std::string> Path::separate(const std::string& path, bool& isRooted)
-{
-    isRooted = isPathRooted(path);
+    isAbsolute = isAbsolutePath(path);
     return separate(path);
 }
 
@@ -652,9 +635,9 @@ static std::string expandTilde()
 static std::vector<std::string> expandedEnvironmentVariables_(const std::string& path_, bool& specialPath)
 {
     // Avoid pathalogical cases where the first env-variable expands to escape or ~
-    #ifdef _WIN32
-    // https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
-    constexpr auto escape = R"(\\?\)";
+    #if _WIN32
+    //constexpr auto escape = R"(\\?\)"; // https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
+    constexpr auto escape = R"(\\)"; // none of the Path:: code supports UNC paths: \\server\dir\file.txt, only C:\dir\file.txt
     #else // assuming *nix
     constexpr auto escape = R"(//)";
     #endif

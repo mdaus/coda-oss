@@ -122,7 +122,7 @@ public:
      *  them. This splits on both '/' and '\\'.
      */
     static std::vector<std::string> separate(const std::string& path);
-    static std::vector<std::string> separate(const std::string& path, bool& isRooted);
+    static std::vector<std::string> separate(const std::string& path, bool& isAbsolute);
 
     inline std::vector<std::string> separate() const
     {
