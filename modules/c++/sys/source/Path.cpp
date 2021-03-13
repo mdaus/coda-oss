@@ -344,17 +344,14 @@ static std::string merge_(const std::vector<std::string>& components, bool isAbs
 
         if ((i == 0) && (isAbsolute))
         {
-            // don't want \C:\dir on Windows, but need \\server\dir
-            const auto colon_pos = component.find(':');
-            if (colon_pos == 1)  // yea, there are devices like PRN:
+            // don't want \C:\dir on Windows or //dir on *nix
+            if (component.find(':') == 1)  // yea, there are devices like PRN:
             {
                 retval.clear();  // get rid of delimiter from initialization
             }
-            else
+            else if (component.find('/') == 0)
             {
-                #if _WIN32
-                retval += Path::delimiter();  // \\server
-                #endif
+                retval.clear();  // get rid of delimiter from initialization
             }
         }
         
