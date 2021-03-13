@@ -455,6 +455,7 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::strin
     return retval;
 }
 
+#if _WIN32 // %FOO% only on Windows
 static ExtractedEnvironmentVariable extractEnvironmentVariable_percent(std::string component, size_t pos) // make a copy for manipulation
 {
     assert(pos != std::string::npos);
@@ -474,6 +475,7 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_percent(std::stri
     retval.end = component.substr(percent_pos+1);
     return retval;
 }
+#endif // _WIN32
 
 static ExtractedEnvironmentVariable extractEnvironmentVariable(const std::string& component)
 {
@@ -541,7 +543,10 @@ static path_components expandEnvironmentVariable(const std::string& component)
 static path_components join(const std::string& v1, const std::string& v2)
 {
     // put two strings into a new list
-    return path_components{ {v1, v2} };
+    path_components retval;
+    retval.push_back(v1);
+    retval.push_back(v2);
+    return retval;
 }
 static path_components join(path_components v1, const std::string& v2)
 {
