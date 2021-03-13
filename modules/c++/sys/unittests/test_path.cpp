@@ -52,8 +52,6 @@ TEST_CASE(testPathMerge)
     auto components = sys::Path::separate(path, isAbsolute);
     TEST_ASSERT_GREATER(components.size(), 0);
     auto result = sys::Path::merge(components, isAbsolute);
-    std::clog << "path = '" << path << "'\n";
-    std::clog << "result = '" << result << "'\n";
     TEST_ASSERT_EQ(result, path);
     TEST_ASSERT_TRUE(sys::Filesystem::is_directory(result));
 
@@ -94,8 +92,12 @@ TEST_CASE(testExpandEnvPath)
     const auto foopath = sys::Path::expandEnvironmentVariables("foo${PATH}", false);
     TEST_ASSERT_EQ(foopath, "foo" + path);
 
+    getchar();
     const auto pathfoo = sys::Path::expandEnvironmentVariables("${PATH}foo", false);
-    TEST_ASSERT_EQ(pathfoo, path + "foo");
+    std::clog << "pathfoo = '" << pathfoo << "'\n";
+    auto expected = path.substr(0, path.size()-1); // remove trailing '/'
+    expected += "foo";
+    TEST_ASSERT_EQ(pathfoo, expected);
 
     const auto foopathbar = sys::Path::expandEnvironmentVariables("foo${PATH}bar", false);
     TEST_ASSERT_EQ(foopathbar, "foo" + path + "bar");

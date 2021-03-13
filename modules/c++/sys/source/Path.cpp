@@ -320,9 +320,9 @@ public:
     separate_result() = default;
 
     separate_result(path_components&& components) :
-        components_(std::move(components))
-    {
-    }
+        components_(std::move(components)) { }
+    separate_result(const path_components& components) :
+        components_(components)  {  }
     void push_back(const std::string& s)
     {
         components_.push_back(s);
@@ -335,10 +335,6 @@ public:
     {
         return components_;
     }
-    void pop_back()
-    {
-        return components_.pop_back();
-    }
 };
 static separate_result separate_path(const std::string& path)
 {
@@ -350,27 +346,41 @@ static separate_result separate_path(const std::string& path)
 
 std::string Path::merge(const std::vector<std::string>& components, bool isAbsolute)
 {
-    std::string retval;
-    for (const auto& component : components)
+    std::string retval(isAbsolute ? Path::delimiter() : "");
+
+    // Be sure size()-1 doesn't wrap-around
+    if (components.empty())
     {
-        if (!retval.empty())
-        {
-            retval += Path::delimiter();
-        }
-        else if (isAbsolute)
+        return retval;
+    }
+
+    // We need to know where we are in the path to properly add separaters
+    for (size_t i = 0; i < components.size(); i++)
+    {
+        const auto component = components[i];
+
+        if ((i == 0) && (isAbsolute))
         {
             // don't want \C:\dir on Windows, but need \\server\dir
-            const auto front = components.front(); // got at least one otherwise we wouldn't be in the "foo" loop
-            const auto colon_pos = front.find_first_of(':');
-            if (colon_pos != 1) // yea, there are devices like PRN:
+            const auto colon_pos = component.find_first_of(':');
+            if (colon_pos == 1)  // yea, there are devices like PRN:
             {
-                retval = Path::delimiter();
+                retval.clear();  // get rid of delimiter from initialization
+            }
+            else
+            {
                 #if _WIN32
-                retval += Path::delimiter(); // \\server
+                retval += Path::delimiter();  // \\server
                 #endif
             }
         }
+        
         retval += component;
+
+        if (i < components.size() - 1)
+        {
+            retval += Path::delimiter(); // no trailing delimiter after last component
+        }
     }
     return retval;
 }
@@ -512,10 +522,12 @@ static path_components expandEnvironmentVariable(const std::string& component)
 
 static path_components join(const std::string& v1, const std::string& v2)
 {
+    // put two strings into a new list
     return path_components{ {v1, v2} };
 }
 static path_components join(path_components v1, const std::string& v2)
 {
+    // add a string onto an existing list
     v1.push_back(v2);
     return v1;
 }
@@ -526,24 +538,19 @@ C3& joined_cartesian_product(const C1& c1, const C2& c2, C3& result)
     {
         for (const auto& v2 : c2)
         {
+            // Rather than returning a list of (v1_n, v2_n) pairs, we'll "join" the
+            // pair into a list [v1_n, v2_n].  That list will in turn be the input for
+            // a subsequent cartesian product where we can just add to the end.
+            //
+            // Input: [a, b], [1, 2]; "normal" output: [(a, 1), (a, 2), (b, 1), (b, 2)]
+            // Input: [(a, 1), (b, 2)], [X, Y]; "normal" output: [((a, 1), X), ((a, 1), Y), ((b, 2), X), ((b, 2), Y)]
+            // By turning the pairs into a list, we simply products-of-products (and products-of-products-of-products)
+            //    Input: [a, b], [1, 2]; output: [[a, 1], [a, 2], [b, 1], [b, 2]]
+            //    Input: [[a, 1], [b, 2]], [X, Y]; output: [[a, 1, X], [a, 1, Y], [b, 2,, X], [b, 2, Y]]
             result.push_back(join(v1, v2));
         }
     }
     return result;
-}
-
-static std::string expandAndMergeComponents(const std::vector<std::string>& components, size_t current,  sys::Filesystem::FileType type)
-{
-    std::string retval;
-    if (current < components.size())
-    {
-    }
-    return retval;
-}
-
-static std::string expandEnvironmentVariables(const separate_result& components, sys::Filesystem::FileType type)
-{
-    return merge_path(components);
 }
 
 struct expanded_component final
@@ -551,92 +558,101 @@ struct expanded_component final
     std::string component;
     std::vector<std::string> value;
 };
-
-struct expanded_components final
+std::vector<expanded_component> expand_components(const separate_result& components)
 {
-    bool absolute = false;
-    std::vector<expanded_component> value;
-};
-
-expanded_components expand_components(const separate_result& components)
-{
-    expanded_components retval{components.absolute};
+    std::vector<expanded_component> retval;
     for (const auto& component : components.components())
     {
         expanded_component e{component};
         e.value = expandEnvironmentVariable(component);
         assert(e.value.size() >= 1);  // the component itself should always be there
 
-        retval.value.push_back(std::move(e));
+        retval.push_back(std::move(e));
     }
     return retval;
 }
 
-static std::string expandEnvironmentVariables_noCheckIfExists(const separate_result& components)
+// Generate all the different ways the expansions can be combined.
+std::vector<path_components> joined_cartesian_product(const expanded_component& ec1, const expanded_component& ec2)
 {
-    separate_result expandedComponents;
-    expandedComponents.absolute = components.absolute;
-
-    const auto expansions = expand_components(components);
-    for (const auto& expansion : expansions.value)
+    std::vector<path_components> retval;
+    return joined_cartesian_product(ec1.value, ec2.value, retval);
+}
+std::vector<path_components> joined_cartesian_product(const std::vector<path_components>& ec1, const expanded_component& ec2)
+{
+    std::vector<path_components> retval;
+    return joined_cartesian_product(ec1, ec2.value, retval);
+}
+std::vector<path_components> expand(const std::vector<expanded_component>& expanded_components)
+{
+    std::vector<path_components> retval;
+    if (expanded_components.empty())
     {
-        // not checking for existence, just grab the first one
-        expandedComponents.push_back(expansion.value.front());
+        return retval;
+    }
+    if (expanded_components.size() == 1)
+    {
+        // cartesian product of <anything> with <empty> is empty; we want <anything> instead
+        for (const auto& s : expanded_components[0].value)
+        {
+            retval.push_back(join(s, ""));
+        }
+        return retval;
     }
 
-    return merge_path(expandedComponents);
+    retval = joined_cartesian_product(expanded_components[0], expanded_components[1]);
+    for (size_t i = 2; i < expanded_components.size(); i++)
+    {
+        retval = joined_cartesian_product(retval, expanded_components[i]);
+    }
+    return retval;
 }
 
-static std::string expandEnvironmentVariables_checkIfExists(const separate_result& components)
+static std::string expandEnvironmentVariables(const separate_result& components, sys::Filesystem::FileType type)
 {
-    separate_result expandedComponents;
-    expandedComponents.absolute = components.absolute;
-
-    const auto expansions = expand_components(components);
-    for (const auto& expansion : expansions.value)
+    const auto expanded_components = expand_components(components);
+    const auto all_expansions = expand(expanded_components);
+    for (const auto& unmerged_path_ : all_expansions)
     {
-    }
+        separate_result unmerged_path(unmerged_path_);
+        unmerged_path.absolute = components.absolute;
+        auto path = merge_path(unmerged_path);
 
-    for (const auto& component : components.components())
-    {
-        const auto expansions = expandEnvironmentVariable(component);
-        assert(expansions.size() >= 1);  // the component itself should always be there
-
-        for (const auto& expansion : expansions)
+        // If the type matches, we're done
+        if ((type == Filesystem::FileType::Regular) && Filesystem::is_regular_file(path))
         {
-            expandedComponents.push_back(expansion);
-            auto path = merge_path(expandedComponents);
-            if (sys::Filesystem::exists(path))
-            {
-                return path;  // all done!
-            }
-
-            path = expandEnvironmentVariables_checkIfExists(expandedComponents);
-            if (sys::Filesystem::exists(path))
-            {
-                return path;  // all done!
-            }
-
-            expandedComponents.pop_back();  // restore
-            path = expandEnvironmentVariables_checkIfExists(expandedComponents);
-            if (sys::Filesystem::exists(path))
-            {
-                return path;  // all done!
-            }
+            return path;
+        }
+        if ((type == Filesystem::FileType::Directory) && Filesystem::is_directory(path))
+        {
+            return path;
         }
     }
 
-    return merge_path(components); // default if everything above failed
+    return "";
 }
 
 static std::string expandEnvironmentVariables(const separate_result& components, bool checkIfExists)
 {
-    if (!checkIfExists)
+    const auto expanded_components = expand_components(components);
+    const auto all_expansions = expand(expanded_components);
+    for (const auto& unmerged_path_ : all_expansions)
     {
-        return expandEnvironmentVariables_noCheckIfExists(components);
+        separate_result unmerged_path(unmerged_path_);
+        unmerged_path.absolute = components.absolute;
+        auto path = merge_path(unmerged_path);
+        if (!checkIfExists)
+        {
+            // not checking for existence, just grab the first one
+            return path;
+        }
+        if (Filesystem::exists(path))
+        {
+            return path;
+        }
     }
 
-    return expandEnvironmentVariables_checkIfExists(components);
+    return "";
 }
 
 // a single "~" is a bit of a special case
