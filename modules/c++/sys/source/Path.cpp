@@ -330,16 +330,10 @@ static separate_result separate_path(const std::string& path)
     return retval;
 }
 
-static void clean_slashes(std::string& path)
+static void clean_slashes(std::string& path, bool isAbsolute)
 {
     // get rid of a trailing /
-    if (
-        #if _WIN32
-        str::endsWith(path, "\\")
-        #else
-        str::endsWith(path, "/") 
-        #endif
-    )
+    if (str::endsWith(path, Path::delimiter()))
     {
         path = path.substr(0, path.length() - 1);
     }
@@ -350,6 +344,20 @@ static void clean_slashes(std::string& path)
         path = path.substr(1);
     }
     #endif
+    if (!isAbsolute && str::startsWith(path, Path::delimiter()))
+    {
+        path = path.substr(1);
+    }
+
+    fs::path fspath(path);
+    if (isAbsolute)
+    {
+      assert(fspath.is_absolute());
+    }
+    else
+    {
+      assert(fspath.is_relative());
+    }
 }
 std::string Path::merge(const std::vector<std::string>& components, bool isAbsolute)
 {
@@ -359,7 +367,7 @@ std::string Path::merge(const std::vector<std::string>& components, bool isAbsol
         result /= component;
     }
     auto retval = result.string();
-    clean_slashes(retval);
+    clean_slashes(retval, isAbsolute);
     return retval;
 }
 static std::string merge_path(const separate_result& components)
@@ -653,10 +661,16 @@ static std::vector<std::string> expandedEnvironmentVariables_(const std::string&
     const auto expanded_components = expand_components(components);
     const auto all_expansions = expand(expanded_components);
     std::vector<std::string> retval;
+
     for (const auto& unmerged_path_ : all_expansions)
     {
         separate_result unmerged_path(unmerged_path_);
         unmerged_path.absolute = components.absolute;
+	// $PATH doesn't look absolute, but /usr/bin is
+	if (!unmerged_path.absolute && !unmerged_path_.empty())
+	{
+	    unmerged_path.absolute = fs::path(unmerged_path_.front()).is_absolute();
+	}
         path = merge_path(unmerged_path);
         retval.push_back(std::move(path));
     }
