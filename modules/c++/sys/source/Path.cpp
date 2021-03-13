@@ -310,14 +310,16 @@ std::istream& operator>>(std::istream& is, Path& path)
     return is;
 }
 
+using path_components = std::vector<std::string>;
 class separate_result final
 {
-    std::vector<std::string> components_;
+    path_components components_;
+
 public:
     bool absolute = false;
     separate_result() = default;
 
-    separate_result(std::vector<std::string>&& components) :
+    separate_result(path_components&& components) :
         components_(std::move(components))
     {
     }
@@ -329,7 +331,7 @@ public:
     {
         components_.push_back(std::move(s));
     }
-    const std::vector<std::string>& components() const
+    const path_components& components() const
     {
         return components_;
     }
@@ -412,11 +414,7 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::strin
     }
 
     // not ${FOO} or $(FOO), maybe $FOO-bar ($FOO_BAR is a real name)
-    #if _WIN32
-    const auto delim = component.find_first_of("$%"); // don't allow as much "goofiness" as *nix
-    #else
     const auto delim = component.find_first_of("-(){}$%");
-    #endif
     if (delim != std::string::npos)
     {
         retval.variable = component.substr(0, delim);
@@ -471,10 +469,10 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable(const std::string
     return retval;
 }
 
-static std::vector<std::string> expandEnvironmentVariable(const std::string& component)
+static path_components expandEnvironmentVariable(const std::string& component)
 {
     const auto extractedEnvVar = extractEnvironmentVariable(component);
-    std::vector<std::string> retval;
+    path_components retval;
     if (extractedEnvVar.variable == component)
     {
         // no env-var syntax found; don't even bother with osSplitEnv()
@@ -500,7 +498,7 @@ static std::vector<std::string> expandEnvironmentVariable(const std::string& com
     // The "end" piece could be another env-var: foo$BAR$BAZ
     const auto endExtpandedEnvVar = expandEnvironmentVariable(extractedEnvVar.end);
 
-    std::vector<std::string> updated_paths;
+    path_components updated_paths;
     for (const auto& path : paths)
     {
         for (const auto& endVar : endExtpandedEnvVar)
@@ -510,6 +508,28 @@ static std::vector<std::string> expandEnvironmentVariable(const std::string& com
         }
     }
     return updated_paths;
+}
+
+static path_components join(const std::string& v1, const std::string& v2)
+{
+    return path_components{ {v1, v2} };
+}
+static path_components join(path_components v1, const std::string& v2)
+{
+    v1.push_back(v2);
+    return v1;
+}
+template <typename C3, typename C1, typename C2>
+C3& joined_cartesian_product(const C1& c1, const C2& c2, C3& result)
+{
+    for (const auto& v1 : c1)
+    {
+        for (const auto& v2 : c2)
+        {
+            result.push_back(join(v1, v2));
+        }
+    }
+    return result;
 }
 
 static std::string expandAndMergeComponents(const std::vector<std::string>& components, size_t current,  sys::Filesystem::FileType type)
@@ -566,11 +586,6 @@ static std::string expandEnvironmentVariables_noCheckIfExists(const separate_res
 
     return merge_path(expandedComponents);
 }
-
-static std::string expandEnvironmentVariables_checkIfExists(const expanded_components& so_far, const expanded_component& current, const expanded_components& remaining)
-{
-}
-
 
 static std::string expandEnvironmentVariables_checkIfExists(const separate_result& components)
 {

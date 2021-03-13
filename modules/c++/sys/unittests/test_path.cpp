@@ -37,13 +37,24 @@ TEST_CASE(testPathMerge)
     TEST_ASSERT_TRUE(splitResult);
     TEST_ASSERT_GREATER(paths.size(), 0);
 
-    auto path = paths[0];
-    bool isRooted;
-    auto components = sys::Path::separate(path, isRooted);
+    std::string path;
+    for (const auto& p : paths)
+    {
+        if (sys::Filesystem::is_directory(p))
+        {
+            path = p;
+            break;
+        }
+    }
+    TEST_ASSERT_TRUE(sys::Filesystem::is_directory(path));
+
+    bool isAbsolute;
+    auto components = sys::Path::separate(path, isAbsolute);
     TEST_ASSERT_GREATER(components.size(), 0);
-    auto result = sys::Path::merge(components, isRooted);
+    auto result = sys::Path::merge(components, isAbsolute);
+    std::clog << "path = '" << path << "'\n";
+    std::clog << "result = '" << result << "'\n";
     TEST_ASSERT_EQ(result, path);
-    TEST_ASSERT_TRUE(sys::Filesystem::exists(result));
     TEST_ASSERT_TRUE(sys::Filesystem::is_directory(result));
 
     #if _WIN32
@@ -51,9 +62,9 @@ TEST_CASE(testPathMerge)
     #else
     path = R"(/dir1/dir2/file.txt)";
     #endif
-    components = sys::Path::separate(path, isRooted);
+    components = sys::Path::separate(path, isAbsolute);
     TEST_ASSERT_EQ(components.size(), 3);
-    result = sys::Path::merge(components, isRooted);
+    result = sys::Path::merge(components, isAbsolute);
     TEST_ASSERT_EQ(result, path);
 }
 
@@ -61,7 +72,6 @@ TEST_CASE(testExpandEnvTilde)
 {
     const auto result = sys::Path::expandEnvironmentVariables("~");
     TEST_ASSERT_FALSE(result.empty());
-    TEST_ASSERT_TRUE(sys::Filesystem::exists(result));
     TEST_ASSERT_TRUE(sys::Filesystem::is_directory(result));
 }
 
@@ -103,19 +113,12 @@ TEST_CASE(testExpandEnvPath)
     foopath_bar_ = sys::Path::expandEnvironmentVariables("foo$(PATH)BAR)", false);
     TEST_ASSERT_EQ(foopath_bar_, "foo" + path + "BAR)");
 
-
     auto pathpath = sys::Path::expandEnvironmentVariables("$PATH$PATH", false);
-    TEST_ASSERT_EQ(pathpath, path + path);
-    pathpath = sys::Path::expandEnvironmentVariables("$PATH$(PATH)", false);
-    TEST_ASSERT_EQ(pathpath, path + path);
-    pathpath = sys::Path::expandEnvironmentVariables("${PATH}$PATH", false);
     TEST_ASSERT_EQ(pathpath, path + path);
     #if _WIN32  // %FOO% only on Windows
     pathpath = sys::Path::expandEnvironmentVariables("%PATH%%PATH%", false);
     TEST_ASSERT_EQ(pathpath, path + path);
     #endif
-    auto pathpathpath = sys::Path::expandEnvironmentVariables("$PATH$(PATH)${PATH}", false);
-    TEST_ASSERT_EQ(pathpathpath, pathpath + path);
 
     const auto foopath_barpathbar_ = sys::Path::expandEnvironmentVariables("foo$PATH-bar$(PATH)BAR)", false);
     TEST_ASSERT_EQ(foopath_barpathbar_, "foo" + path + "-bar" + path + "BAR)");
