@@ -152,10 +152,10 @@ std::string AbstractOS::getCurrentExecutable(
 }
 
 // A variable like PATH is often several directories, return each one that exists.
-static bool splitEnv_(const AbstractOS& os, const std::string& s, std::vector<std::string>& result, Filesystem::FileType* pType = nullptr)
+static bool splitEnv_(const AbstractOS& os, const std::string& envVar, std::vector<std::string>& result, Filesystem::FileType* pType = nullptr)
 {
     std::string value;
-    if (!os.getEnvIfSet(s, value))
+    if (!os.getEnvIfSet(envVar, value))
     {
         return false;
     }
@@ -176,13 +176,54 @@ static bool splitEnv_(const AbstractOS& os, const std::string& s, std::vector<st
     }
     return true;
 }
-bool AbstractOS::splitEnv(const std::string& s, std::vector<std::string>& result, Filesystem::FileType type) const
+bool AbstractOS::splitEnv(const std::string& envVar, std::vector<std::string>& result, Filesystem::FileType type) const
 {
-    return splitEnv_(*this, s, result, &type);
+    return splitEnv_(*this, envVar, result, &type);
 }
-bool AbstractOS::splitEnv(const std::string& s, std::vector<std::string>& result) const
+bool AbstractOS::splitEnv(const std::string& envVar, std::vector<std::string>& result) const
 {
-    return splitEnv_(*this, s, result);
+    return splitEnv_(*this, envVar, result);
+}
+
+static bool modifyEnv(AbstractOS& os, const std::string& envVar, bool overwrite,
+                      const std::vector<std::string>& prepend, const std::vector<std::string>& append)
+{
+    std::vector<std::string> values;
+    auto splitResult = os.splitEnv(envVar, values);
+    if (splitResult && !overwrite)
+    {
+        // envVar already exists and we can't overwrite it
+        return false;
+    }
+
+    values.insert(values.begin(), prepend.begin(), prepend.end()); // prepend
+    values.insert(values.end(), append.begin(), append.end());  // append
+
+    std::string val;
+    if (!values.empty()) // don't let size()-1 wrap-around
+    {
+        for (size_t i = 0; i<values.size(); i++)
+        {
+            val += values[i];
+            if (i < values.size()-1)
+            {
+                val += Path::separator();  // ':' or ';'
+            }
+        }    
+    }
+
+    os.setEnv(envVar, val, true /*overwrite*/);
+    return true;
+}
+bool AbstractOS::prependEnv(const std::string& envVar, const std::vector<std::string>& values, bool overwrite)
+{
+    static const std::vector<std::string> empty;
+    return modifyEnv(*this, envVar, overwrite, values, empty);
+}
+bool AbstractOS::appendEnv(const std::string& envVar, const std::vector<std::string>& values, bool overwrite)
+{
+    static const std::vector<std::string> empty;
+    return modifyEnv(*this, envVar, overwrite, empty, values);
 }
 
 }

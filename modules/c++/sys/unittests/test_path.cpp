@@ -69,7 +69,6 @@ TEST_CASE(testPathMerge)
 TEST_CASE(testExpandEnvTilde)
 {
     const auto result = sys::Path::expandEnvironmentVariables("~");
-    TEST_ASSERT_FALSE(result.empty());
     TEST_ASSERT_TRUE(sys::Filesystem::is_directory(result));
 }
 
@@ -125,13 +124,14 @@ TEST_CASE(testExpandEnvPath)
 TEST_CASE(testExpandEnvPathExists)
 {
     sys::OS os;
-    const auto path_value = os.getEnv("PATH");
     #ifdef _WIN32
-    std::string does_not_exist(R"(Q:\Does\Not\Exist)"); does_not_exist += ";";
+    const std::string does_not_exist(R"(Q:\Does\Not\Exist)");
     #else
-    std::string does_not_exist(R"(/does/not/existt)"); does_not_exist += ":";
+    const std::string does_not_exist(R"(/does/not/existt)");
     #endif
-    os.setEnv("PATH", does_not_exist + path_value, true /*overwrite*/);
+    std::vector<std::string> values{does_not_exist};
+    bool result = os.prependEnv("PATH", values, true /*overwrite*/);
+    TEST_ASSERT_TRUE(result);
 
     const auto path = sys::Path::expandEnvironmentVariables("$PATH");
     TEST_ASSERT_FALSE(path.empty());
@@ -148,6 +148,33 @@ TEST_CASE(testExpandEnvPathExists)
     TEST_ASSERT_EQ(path3, path);
 }
 
+TEST_CASE(testExpandEnvPathMultiple)
+{
+    sys::OS os;
+
+    const std::vector<std::string> paths{"home", "opt", "var"};
+    bool result = os.prependEnv("paths", paths, false /*overwrite*/);
+    TEST_ASSERT_TRUE(result);
+    const std::vector<std::string> apps{"apps"};
+    result = os.prependEnv("apps", apps, false /*overwrite*/);
+    TEST_ASSERT_TRUE(result);
+    const std::vector<std::string> app{"app_v1", "app_v2"};
+    result = os.prependEnv("app", app, false /*overwrite*/);
+    TEST_ASSERT_TRUE(result);
+    const std::vector<std::string> libs{"lib", "lib64"};
+    result = os.prependEnv("libs", libs, false /*overwrite*/);
+    TEST_ASSERT_TRUE(result);
+    const std::vector<std::string> exts{"libfoo.a", "libfoo.so", "foo.dll"};
+    result = os.prependEnv("exts", exts, false /*overwrite*/);
+    TEST_ASSERT_TRUE(result);
+
+    const std::string path_to_expand = "/disk0/$(paths)/$(apps)/$(app)/$(libs)/$(exts)";
+    const std::vector<std::string> expected{"disk0", paths[0], apps[0], app[0], libs[0], exts[0]};
+    const auto expected_path = sys::Path::merge(expected, true /*isAbsolute*/);
+    auto expanded_path = sys::Path::expandEnvironmentVariables(path_to_expand, false /*checkIfExists*/);
+    TEST_ASSERT_EQ(expanded_path, expected_path);
+}
+
 }
 
 int main(int, char**)
@@ -156,6 +183,7 @@ int main(int, char**)
     TEST_CHECK(testExpandEnvTilde);
     TEST_CHECK(testExpandEnvPath);
     TEST_CHECK(testExpandEnvPathExists);
+    TEST_CHECK(testExpandEnvPathMultiple);
 
     return 0;
 }

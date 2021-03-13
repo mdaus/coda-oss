@@ -336,15 +336,16 @@ public:
         return components_;
     }
 };
-static separate_result separate_path(const std::string& path)
+static separate_result separate_path(std::string path) // yes, a copy for normalizePath()
 {
     bool absolute;
+    path = Path::normalizePath(path);
     separate_result retval(Path::separate(path, absolute));
     retval.absolute = absolute;
     return retval;
 }
 
-std::string Path::merge(const std::vector<std::string>& components, bool isAbsolute)
+static std::string merge_(const std::vector<std::string>& components, bool isAbsolute)
 {
     std::string retval(isAbsolute ? Path::delimiter() : "");
 
@@ -386,6 +387,19 @@ std::string Path::merge(const std::vector<std::string>& components, bool isAbsol
             }
         }
     }
+    return retval;
+}
+std::string Path::merge(const std::vector<std::string>& components, bool isAbsolute)
+{
+    auto retval = merge_(components, isAbsolute);
+    retval = Path::normalizePath(retval);
+    #if _WIN32
+    // normalizePath() incorrectly removes "\\" for UNC paths
+    if ((isAbsolute) && (retval.find_first_of('\\') == 0))
+    {
+        retval = "\\" + retval;
+    }
+    #endif
     return retval;
 }
 static std::string merge_path(const separate_result& components)
