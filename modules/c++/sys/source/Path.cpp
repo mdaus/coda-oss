@@ -23,6 +23,9 @@
 #include <algorithm>
 
 #include <sys/Path.h>
+#include <sys/Filesystem.h>
+
+namespace fs = coda_oss::filesystem;
 
 namespace sys
 {
@@ -327,50 +330,37 @@ static separate_result separate_path(const std::string& path)
     return retval;
 }
 
-static std::string merge_(const std::vector<std::string>& components, bool isAbsolute)
+static void clean_slashes(std::string& path)
 {
-    std::string retval(isAbsolute ? Path::delimiter() : "");
-
-    // Be sure size()-1 doesn't wrap-around
-    if (components.empty())
+    // get rid of a trailing /
+    if (
+        #if _WIN32
+        str::endsWith(path, "\\")
+        #else
+        str::endsWith(path, "/") 
+        #endif
+    )
     {
-        return retval;
+        path = path.substr(0, path.length() - 1);
     }
-
-    // We need to know where we are in the path to properly add separaters
-    for (size_t i = 0; i < components.size(); i++)
+    // std::filesystem has (some?) support for UNC paths, but not this code
+    #if _WIN32
+    if (str::startsWith(path, "\\"))
     {
-        const auto component = components[i];
-
-        if ((i == 0) && (isAbsolute))
-        {
-            // don't want \C:\dir on Windows or //dir on *nix
-            if (component.find(':') == 1)  // yea, there are devices like PRN:
-            {
-                retval.clear();  // get rid of delimiter from initialization
-            }
-            else if (component.find('/') == 0)
-            {
-                retval.clear();  // get rid of delimiter from initialization
-            }
-        }
-        
-        retval += component;
-
-        if (i < components.size() - 1)
-        {
-            // various manipulations can result in empty components, espeically at the end
-            if (!components[i+1].empty())
-            {
-                retval += Path::delimiter();  // no trailing delimiter after last component
-            }
-        }
+        path = path.substr(1);
     }
-    return retval;
+    #endif
 }
 std::string Path::merge(const std::vector<std::string>& components, bool isAbsolute)
 {
-    return merge_(components, isAbsolute);
+    fs::path result(isAbsolute ? "/" : "");
+    for (const auto& component : components)
+    {
+        result /= component;
+    }
+    auto retval = result.string();
+    clean_slashes(retval);
+    return retval;
 }
 static std::string merge_path(const separate_result& components)
 {
