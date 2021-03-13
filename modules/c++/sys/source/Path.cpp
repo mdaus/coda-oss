@@ -703,53 +703,73 @@ std::vector<std::string> Path::expandedEnvironmentVariables(const std::string& p
     return expandedEnvironmentVariables_(path, unused);
 }
 
-std::string Path::expandEnvironmentVariables(const std::string& path, bool checkIfExists)
+static bool path_matches_type(const std::string &path, sys::Filesystem::FileType type)
 {
-    bool specialPath;
-    const auto expanded_paths = expandedEnvironmentVariables_(path, specialPath);
-    if (specialPath)
+    if ((type == Filesystem::FileType::Regular) && Filesystem::is_regular_file(path))
     {
-        assert(expanded_paths.size() == 1);
-        return expanded_paths[0];
+        return true;
     }
-
-    for (const auto& expanded_path : expanded_paths)
+    if ((type== Filesystem::FileType::Directory) && Filesystem::is_directory(path))
     {
-        if (!checkIfExists)
-        {
-            // not checking for existence, just grab the first one
-            return expanded_path;
-        }
-        if (Filesystem::exists(expanded_path))
-        {
-            return expanded_path;
-        }
+        return true;
     }
-    return "";
+    return false;
 }
-std::string Path::expandEnvironmentVariables(const std::string& path, sys::Filesystem::FileType type)
+
+static std::string expandEnvironmentVariables_(const std::string& path,
+                                               bool checkIfExists, sys::Filesystem::FileType* pType = nullptr)
 {
     bool specialPath;
     const auto expanded_paths = expandedEnvironmentVariables_(path, specialPath);
     if (specialPath)
     {
         assert(expanded_paths.size() == 1);
+
+        // more handling for "~"; it's a directory, not a file
+        if (path == "~")
+        {
+            if ((pType != nullptr) && (*pType == Filesystem::FileType::Regular))
+            {
+                return ""; // looking for files, "~" can't be it
+            }
+        }
         return expanded_paths[0];
     }
 
     for (const auto& expanded_path : expanded_paths)
     {
         // If the type matches, we're done
-        if ((type == Filesystem::FileType::Regular) && Filesystem::is_regular_file(expanded_path))
+        if (pType != nullptr)
         {
-            return expanded_path;
+            assert(checkIfExists);
+            if (path_matches_type(expanded_path, *pType))
+            {
+                return expanded_path;
+            }
         }
-        if ((type == Filesystem::FileType::Directory) && Filesystem::is_directory(expanded_path))
+        else
         {
-            return expanded_path;
+            assert(pType == nullptr);
+            if (!checkIfExists)
+            {
+                return expanded_path; // not checking for existence, just grab the first one
+            }
+            if (Filesystem::exists(expanded_path))
+            {
+                return expanded_path;
+            }
         }
     }
     return "";
+}
+std::string Path::expandEnvironmentVariables(const std::string& path, bool checkIfExists)
+{
+    return expandEnvironmentVariables_(path, checkIfExists);
+}
+std::string Path::expandEnvironmentVariables(const std::string& path, sys::Filesystem::FileType type)
+{
+    bool unused_checkIfExists = true;
+    return expandEnvironmentVariables_(path, unused_checkIfExists, &type);
 }
 
 }

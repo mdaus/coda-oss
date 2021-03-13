@@ -78,6 +78,17 @@ TEST_CASE(testExpandEnvTilde)
     TEST_ASSERT_TRUE(path.empty());
 }
 
+TEST_CASE(testExpandEnvTildePath)
+{
+    sys::OS os;
+    const std::vector<std::string> exts{"NTUSER.DAT", ".login", ".cshrc", ".bashrc"};
+    const auto result = os.prependEnv("exts", exts, true /*overwrite*/);
+    TEST_ASSERT_TRUE(result);
+
+    const auto path = sys::Path::expandEnvironmentVariables("~/$(exts)", sys::Filesystem::FileType::Regular);
+    TEST_ASSERT_TRUE(sys::Filesystem::is_regular_file(path));
+}
+
 TEST_CASE(testExpandEnvPath)
 {
     const auto path = sys::Path::expandEnvironmentVariables("$PATH", false);
@@ -171,7 +182,7 @@ TEST_CASE(testExpandEnvPathMultiple)
     result = os.prependEnv("libs", libs, false /*overwrite*/);
     TEST_ASSERT_TRUE(result);
     const std::vector<std::string> exts{"libfoo.a", "libfoo.so", "foo.dll"};
-    result = os.prependEnv("exts", exts, false /*overwrite*/);
+    result = os.prependEnv("exts", exts, true /*overwrite*/);
     TEST_ASSERT_TRUE(result);
 
     const std::string path_to_expand = "/disk0/$(paths)/$(apps)/$(app)/$(libs)/$(exts)";
@@ -194,6 +205,7 @@ int main(int, char**)
     TEST_CHECK(testPathMerge);
     TEST_CHECK(testExpandEnvTilde);
     TEST_CHECK(testExpandEnvPath);
+    TEST_CHECK(testExpandEnvTildePath);    
     TEST_CHECK(testExpandEnvPathExists);
     TEST_CHECK(testExpandEnvPathMultiple);
 
