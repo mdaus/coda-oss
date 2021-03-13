@@ -152,18 +152,18 @@ std::vector<std::string> Path::separate(const std::string& path)
 static bool isPathRooted(const std::string& path)
 {
     #if _WIN32
-    const auto backslash_pos = path.find_first_of('\\');
+    const auto backslash_pos = path.find('\\');
     if (backslash_pos == 0)
     {
-        return path.find_first_of("\\\\") ==  0;  // "\\server\folder" is rooted on Windows
+        return path.find("\\\\") ==  0;  // "\\server\folder" is rooted on Windows
     }
-    else if ((path.find_first_of(':') == 1) && (backslash_pos == 2))
+    else if ((path.find(':') == 1) && (backslash_pos == 2))
     {
         return  isalpha(path[0]) ? true : false;  // "C:\" is rooted on Windows
     }
     return false;
     #else
-    return path.find_first_of('/') == 0; // "/foo" is rooted on *nix
+    return path.find('/') == 0; // "/foo" is rooted on *nix
     #endif
 }
 std::vector<std::string> Path::separate(const std::string& path, bool& isRooted)
@@ -336,10 +336,9 @@ public:
         return components_;
     }
 };
-static separate_result separate_path(std::string path) // yes, a copy for normalizePath()
+static separate_result separate_path(const std::string& path)
 {
     bool absolute;
-    path = Path::normalizePath(path);
     separate_result retval(Path::separate(path, absolute));
     retval.absolute = absolute;
     return retval;
@@ -363,7 +362,7 @@ static std::string merge_(const std::vector<std::string>& components, bool isAbs
         if ((i == 0) && (isAbsolute))
         {
             // don't want \C:\dir on Windows, but need \\server\dir
-            const auto colon_pos = component.find_first_of(':');
+            const auto colon_pos = component.find(':');
             if (colon_pos == 1)  // yea, there are devices like PRN:
             {
                 retval.clear();  // get rid of delimiter from initialization
@@ -391,16 +390,7 @@ static std::string merge_(const std::vector<std::string>& components, bool isAbs
 }
 std::string Path::merge(const std::vector<std::string>& components, bool isAbsolute)
 {
-    auto retval = merge_(components, isAbsolute);
-    retval = Path::normalizePath(retval);
-    #if _WIN32
-    // normalizePath() incorrectly removes "\\" for UNC paths
-    if ((isAbsolute) && (retval.find_first_of('\\') == 0))
-    {
-        retval = "\\" + retval;
-    }
-    #endif
-    return retval;
+    return merge_(components, isAbsolute);
 }
 static std::string merge_path(const separate_result& components)
 {
@@ -422,17 +412,17 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::strin
 
     retval.begin = component.substr(0, pos);
     str::replace(component, retval.begin + "$", ""); // don't want to find "(" before "$"
-    auto paren = component.find_first_of('(');
+    auto paren = component.find('(');
     char paren_match = ')';
     if (paren == std::string::npos)
     {
-        paren = component.find_first_of('{');
+        paren = component.find('{');
         paren_match = '}';
     }
 
     if (paren == 0) // ${FOO} or $(FOO)
     {
-        const auto paren_match_pos = component.find_first_of(paren_match); // "$(FOO)bar)" will get $(FOO), leaving "bar)"
+        const auto paren_match_pos = component.find(paren_match); // "$(FOO)bar)" will get $(FOO), leaving "bar)"
         if ((paren_match_pos != std::string::npos) && (paren_match_pos > paren))
         {
             retval.variable = component.substr(paren + 1, paren_match_pos - 1);
@@ -464,7 +454,7 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_percent(std::stri
 
     retval.begin = component.substr(0, pos); // foo%BAR%
     str::replace(component, retval.begin + "%", ""); // %FOO%bar% -> foo_bar% for FOO=foo_
-    auto percent_pos = component.find_first_of('%');
+    auto percent_pos = component.find('%');
     if (percent_pos == std::string::npos) // "foo%BAR"
     {
         retval.begin.clear();
@@ -482,14 +472,14 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable(const std::string
     ExtractedEnvironmentVariable retval;
     retval.variable = component; // assume this really isn't an env. var
 
-    const auto dollar_pos = component.find_first_of('$');
+    const auto dollar_pos = component.find('$');
     if (dollar_pos != std::string::npos)  // foo$BAR -> "foo_bar" for BAR=_bar
     {
         return extractEnvironmentVariable_dollar(component, dollar_pos);
     }
 
     #if _WIN32 // %FOO% only on Windows
-    const auto percent_pos = component.find_first_of('%');
+    const auto percent_pos = component.find('%');
     if (percent_pos != std::string::npos)
     {
         return extractEnvironmentVariable_percent(component, percent_pos);
@@ -522,16 +512,17 @@ static path_components expandEnvironmentVariable(const std::string& component)
         return retval;
     }
     const auto paths = str::split(value, sys::Path::separator());
+    assert(!paths.empty()); // split("abc") should be "abc"
 
     // Add back the other pieces: "foo$(BAR)baz" -> "foo_bar_baz" for BAR=_bar_
     //
     // The "end" piece could be another env-var: foo$BAR$BAZ
-    const auto endExtpandedEnvVar = expandEnvironmentVariable(extractedEnvVar.end);
+    const auto endExpandedEnvVar = expandEnvironmentVariable(extractedEnvVar.end);
 
     path_components updated_paths;
     for (const auto& path : paths)
     {
-        for (const auto& endVar : endExtpandedEnvVar)
+        for (const auto& endVar : endExpandedEnvVar)
         {
             auto p = extractedEnvVar.begin + path + endVar;
             updated_paths.push_back(std::move(p));
@@ -581,7 +572,7 @@ struct expanded_component final
     std::string component;
     std::vector<std::string> value;
 };
-std::vector<expanded_component> expand_components(const separate_result& components)
+static std::vector<expanded_component> expand_components(const separate_result& components)
 {
     std::vector<expanded_component> retval;
     for (const auto& component : components.components())
@@ -667,7 +658,7 @@ static std::vector<std::string> expandedEnvironmentVariables_(const std::string&
     #else // assuming *nix
     constexpr auto escape = R"(//)";
     #endif
-    if (path_.find_first_of(escape) == 0)
+    if (path_.find(escape) == 0)
     {
         specialPath = true;
         return std::vector<std::string>{path_};
@@ -681,7 +672,7 @@ static std::vector<std::string> expandedEnvironmentVariables_(const std::string&
 
     constexpr auto tilde_slash = "~/"; // ~\ would be goofy on Windows, so only support ~/
     auto path = path_;
-    if (path.find_first_of(tilde_slash) == 0)
+    if (path.find(tilde_slash) == 0)
     {
         // Don't have to worry about goofy things like ~ expanding to /home/${FOO}
         // expandTilde() ensures the directory exists.
