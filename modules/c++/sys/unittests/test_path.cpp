@@ -170,9 +170,15 @@ TEST_CASE(testExpandEnvPathMultiple)
 
     const std::string path_to_expand = "/disk0/$(paths)/$(apps)/$(app)/$(libs)/$(exts)";
     const std::vector<std::string> expected{"disk0", paths[0], apps[0], app[0], libs[0], exts[0]};
-    const auto expected_path = sys::Path::merge(expected, true /*isAbsolute*/);
+    auto expected_path = sys::Path::merge(expected, true /*isAbsolute*/);
     auto expanded_path = sys::Path::expandEnvironmentVariables(path_to_expand, false /*checkIfExists*/);
     TEST_ASSERT_EQ(expanded_path, expected_path);
+
+    const auto expanded_paths = sys::Path::expandedEnvironmentVariables(path_to_expand);
+    TEST_ASSERT_EQ(expanded_paths.size(), paths.size() * apps.size() * app.size() * libs.size() * exts.size());
+    const std::vector<std::string> expected_back{"disk0", paths.back(), apps.back(), app.back(), libs.back(), exts.back()};
+    expected_path = sys::Path::merge(expected_back, true /*isAbsolute*/);
+    TEST_ASSERT_EQ(expanded_paths.back(), expected_path);
 }
 
 }

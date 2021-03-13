@@ -78,6 +78,7 @@ public:
     */
     static std::string expandEnvironmentVariables(const std::string& path, bool checkIfExists = true);
     static std::string expandEnvironmentVariables(const std::string& path, Filesystem::FileType);
+    static std::vector<std::string> expandedEnvironmentVariables(const std::string& path); // mostly for unit-testing
 
     /*!
      * Joins two paths together, using the OS-specific delimiter.

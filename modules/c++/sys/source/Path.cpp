@@ -728,6 +728,48 @@ static std::string expandEnvironmentVariables_(std::string path, bool checkIfExi
     return expandEnvironmentVariables(components, checkIfExists);
 }
 
+std::vector<std::string> Path::expandedEnvironmentVariables(const std::string& path_)
+{
+    // Avoid pathalogical cases where the first env-variable expands to escape or ~
+    #ifdef _WIN32
+    // https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
+    constexpr auto escape = R"(\\?\)";
+    #else // assuming *nix
+    constexpr auto escape = R"(//)";
+    #endif
+    if (path_.find_first_of(escape) == 0)
+    {
+        return std::vector<std::string>{path_};
+    }
+    if (path_ == "~")
+    {
+        return std::vector<std::string>{expandTilde()};
+    }
+
+    constexpr auto tilde_slash = "~/"; // ~\ would be goofy on Windows, so only support ~/
+    auto path = path_;
+    if (path.find_first_of(tilde_slash) == 0)
+    {
+        // Don't have to worry about goofy things like ~ expanding to /home/${FOO}
+        // expandTilde() ensures the directory exists.
+        str::replace(path, tilde_slash, expandTilde() + "/");
+    }
+
+    const auto components = separate_path(path);  // "This splits on both '/' and '\\'."
+    const auto expanded_components = expand_components(components);
+    const auto all_expansions = expand(expanded_components);
+    std::vector<std::string> retval;
+    for (const auto& unmerged_path_ : all_expansions)
+    {
+        separate_result unmerged_path(unmerged_path_);
+        unmerged_path.absolute = components.absolute;
+        path = merge_path(unmerged_path);
+        retval.push_back(std::move(path));
+    }
+
+    return retval;
+}
+
 std::string Path::expandEnvironmentVariables(const std::string& path, bool checkIfExists)
 {
     // Avoid pathalogical cases where the first env-variable expands to escape or ~
