@@ -626,53 +626,6 @@ std::vector<path_components> expand(const std::vector<expanded_component>& expan
     return retval;
 }
 
-static std::string expandEnvironmentVariables(const separate_result& components, sys::Filesystem::FileType type)
-{
-    const auto expanded_components = expand_components(components);
-    const auto all_expansions = expand(expanded_components);
-    for (const auto& unmerged_path_ : all_expansions)
-    {
-        separate_result unmerged_path(unmerged_path_);
-        unmerged_path.absolute = components.absolute;
-        auto path = merge_path(unmerged_path);
-
-        // If the type matches, we're done
-        if ((type == Filesystem::FileType::Regular) && Filesystem::is_regular_file(path))
-        {
-            return path;
-        }
-        if ((type == Filesystem::FileType::Directory) && Filesystem::is_directory(path))
-        {
-            return path;
-        }
-    }
-
-    return "";
-}
-
-static std::string expandEnvironmentVariables(const separate_result& components, bool checkIfExists)
-{
-    const auto expanded_components = expand_components(components);
-    const auto all_expansions = expand(expanded_components);
-    for (const auto& unmerged_path_ : all_expansions)
-    {
-        separate_result unmerged_path(unmerged_path_);
-        unmerged_path.absolute = components.absolute;
-        auto path = merge_path(unmerged_path);
-        if (!checkIfExists)
-        {
-            // not checking for existence, just grab the first one
-            return path;
-        }
-        if (Filesystem::exists(path))
-        {
-            return path;
-        }
-    }
-
-    return "";
-}
-
 // a single "~" is a bit of a special case
 static std::string expandTilde()
 {
@@ -700,35 +653,7 @@ static std::string expandTilde()
     return paths[0];
 }
 
-static std::string expandEnvironmentVariables_(std::string path, sys::Filesystem::FileType type) // make a copy for str::replace
-{
-    constexpr auto tilde_slash = "~/"; // ~\ would be goofy on Windows, so only support ~/
-    if (path.find_first_of(tilde_slash) == 0)
-    {
-        // Don't have to worry about goofy things like ~ expanding to /home/${FOO}
-        // expandTilde() ensures the directory exists.
-        str::replace(path, tilde_slash, expandTilde() + "/");
-    }
-
-    const auto components = separate_path(path);  // "This splits on both '/' and '\\'."
-    return expandEnvironmentVariables(components, type);
-}
-
-static std::string expandEnvironmentVariables_(std::string path, bool checkIfExists) // make a copy for str::replace
-{
-    constexpr auto tilde_slash = "~/"; // ~\ would be goofy on Windows, so only support ~/
-    if (path.find_first_of(tilde_slash) == 0)
-    {
-        // Don't have to worry about goofy things like ~ expanding to /home/${FOO}
-        // expandTilde() ensures the directory exists.
-        str::replace(path, tilde_slash, expandTilde() + "/");
-    }
-
-    const auto components = separate_path(path);  // "This splits on both '/' and '\\'."
-    return expandEnvironmentVariables(components, checkIfExists);
-}
-
-std::vector<std::string> Path::expandedEnvironmentVariables(const std::string& path_)
+static std::vector<std::string> expandedEnvironmentVariables_(const std::string& path_, bool& specialPath)
 {
     // Avoid pathalogical cases where the first env-variable expands to escape or ~
     #ifdef _WIN32
@@ -739,12 +664,15 @@ std::vector<std::string> Path::expandedEnvironmentVariables(const std::string& p
     #endif
     if (path_.find_first_of(escape) == 0)
     {
+        specialPath = true;
         return std::vector<std::string>{path_};
     }
     if (path_ == "~")
     {
+        specialPath = true;
         return std::vector<std::string>{expandTilde()};
     }
+    specialPath = false;
 
     constexpr auto tilde_slash = "~/"; // ~\ would be goofy on Windows, so only support ~/
     auto path = path_;
@@ -769,44 +697,59 @@ std::vector<std::string> Path::expandedEnvironmentVariables(const std::string& p
 
     return retval;
 }
+std::vector<std::string> Path::expandedEnvironmentVariables(const std::string& path)
+{
+    bool unused;
+    return expandedEnvironmentVariables_(path, unused);
+}
 
 std::string Path::expandEnvironmentVariables(const std::string& path, bool checkIfExists)
 {
-    // Avoid pathalogical cases where the first env-variable expands to escape or ~
-    #ifdef _WIN32
-    // https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
-    constexpr auto escape = R"(\\?\)";
-    #else // assuming *nix
-    constexpr auto escape = R"(//)";
-    #endif
-    if (path.find_first_of(escape) == 0)
+    bool specialPath;
+    const auto expanded_paths = expandedEnvironmentVariables_(path, specialPath);
+    if (specialPath)
     {
-        return path;
+        assert(expanded_paths.size() == 1);
+        return expanded_paths[0];
     }
-    if (path == "~")
+
+    for (const auto& expanded_path : expanded_paths)
     {
-        return expandTilde();
+        if (!checkIfExists)
+        {
+            // not checking for existence, just grab the first one
+            return expanded_path;
+        }
+        if (Filesystem::exists(expanded_path))
+        {
+            return expanded_path;
+        }
     }
-    return expandEnvironmentVariables_(path, checkIfExists);
+    return "";
 }
 std::string Path::expandEnvironmentVariables(const std::string& path, sys::Filesystem::FileType type)
 {
-    // Avoid pathalogical cases where the first env-variable expands to escape or ~
-    #ifdef _WIN32
-    // https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
-    constexpr auto escape = R"(\\?\)";
-    #else // assuming *nix
-    constexpr auto escape = R"(//)";
-    #endif
-    if (path.find_first_of(escape) == 0)
+    bool specialPath;
+    const auto expanded_paths = expandedEnvironmentVariables_(path, specialPath);
+    if (specialPath)
     {
-        return path;
+        assert(expanded_paths.size() == 1);
+        return expanded_paths[0];
     }
-    if (path == "~")
+
+    for (const auto& expanded_path : expanded_paths)
     {
-        return expandTilde();
+        // If the type matches, we're done
+        if ((type == Filesystem::FileType::Regular) && Filesystem::is_regular_file(expanded_path))
+        {
+            return expanded_path;
+        }
+        if ((type == Filesystem::FileType::Directory) && Filesystem::is_directory(expanded_path))
+        {
+            return expanded_path;
+        }
     }
-    return expandEnvironmentVariables_(path, type);
+    return "";
 }
 
 }

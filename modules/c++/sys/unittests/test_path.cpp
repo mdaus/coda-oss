@@ -68,8 +68,14 @@ TEST_CASE(testPathMerge)
 
 TEST_CASE(testExpandEnvTilde)
 {
-    const auto result = sys::Path::expandEnvironmentVariables("~");
-    TEST_ASSERT_TRUE(sys::Filesystem::is_directory(result));
+    auto path = sys::Path::expandEnvironmentVariables("~");
+    TEST_ASSERT_TRUE(sys::Filesystem::is_directory(path));
+
+    path = sys::Path::expandEnvironmentVariables("~", sys::Filesystem::FileType::Directory);
+    TEST_ASSERT_TRUE(sys::Filesystem::is_directory(path));
+
+    path = sys::Path::expandEnvironmentVariables("~", sys::Filesystem::FileType::Regular);
+    TEST_ASSERT_TRUE(path.empty());
 }
 
 TEST_CASE(testExpandEnvPath)
