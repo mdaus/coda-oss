@@ -325,10 +325,13 @@ static separated_path separate_path(const std::string& path)
 
 static void clean_slashes(std::string& path, bool isAbsolute)
 {
-    // get rid of a trailing /
+    // Directories will consistently have a trailing '/', files won't
     if (str::endsWith(path, Path::delimiter()))
     {
-        path = path.substr(0, path.length() - 1);
+        if (!fs::is_directory(path))
+        {
+            path = path.substr(0, path.length() - 1);
+        }
     }
     if (!isAbsolute && str::startsWith(path, Path::delimiter()))
     {
@@ -341,6 +344,15 @@ static void clean_slashes(std::string& path, bool isAbsolute)
         path = path.substr(1);
     }
     #endif
+
+    // Do this last so that we have the best chance of finding the path on disk
+    if (fs::is_directory(path))
+    {
+        if (!str::endsWith(path, Path::delimiter()))
+        {
+            path += Path::delimiter();
+        }
+    }
 
     assert(isAbsolute ? fs::path(path).is_absolute() : fs::path(path).is_relative());
 }
