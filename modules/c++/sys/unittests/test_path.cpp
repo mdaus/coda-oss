@@ -218,6 +218,21 @@ TEST_CASE(testExpandEnvPathMultiple)
     TEST_ASSERT_EQ(expanded_paths.back(), expected_path);
 }
 
+
+TEST_CASE(testModifyVar)
+{
+    const sys::OS os;
+
+    const auto argv0 = sys::Path::expandEnvironmentVariables("${ARGV0@t}");
+    TEST_ASSERT_FALSE(argv0.empty());
+    
+    auto result = os.getSpecialEnv("0");  // i.e., ${0)
+    TEST_ASSERT_FALSE(result.empty());
+    const fs::path fsresult(result);
+    TEST_ASSERT_EQ(fsresult.stem(), "test_path");
+    // TEST_ASSERT_EQ(argv0, fsresult.filename());
+}
+
 }
 
 int main(int, char**)
@@ -228,6 +243,7 @@ int main(int, char**)
     TEST_CHECK(testExpandEnvTildePath);
     TEST_CHECK(testExpandEnvPathExists);
     TEST_CHECK(testExpandEnvPathMultiple);
+    TEST_CHECK(testModifyVar);
 
     return 0;
 }
