@@ -519,7 +519,7 @@ static path_components expandEnvironmentVariable(const std::string& component)
     // of a longer path: /foo/$BAR/baz/file.txt
     static const sys::OS os;
     std::string value;
-    if (!os.getEnvIfSet(extractedEnvVar.variable, value))
+    if (!os.getEnvIfSet(extractedEnvVar.variable, value, true /*includeSpecial*/))
     {
         // No value for the purported "environment variable," assume it's just a
         // path with some funky characters: $({})
