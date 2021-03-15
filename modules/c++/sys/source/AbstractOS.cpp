@@ -26,6 +26,7 @@
 
 #include <functional>
 #include <map>
+#include <stdexcept>
 
 #include <sys/Path.h>
 #include <sys/DirectoryEntry.h>
@@ -123,6 +124,20 @@ bool AbstractOS::getEnvIfSet(const std::string& envVar, std::string& value, bool
     }
 
     return false;
+}
+
+std::string s_argvPathname;
+void AbstractOS::setArgvPathname(const std::string& argvPathname)
+{
+    if (argvPathname.empty())
+    {
+        throw std::invalid_argument("argvPathname is empty");
+    }
+    s_argvPathname = argvPathname;
+}
+std::string AbstractOS::getArgvPathname(const std::string& argvPathname) const
+{
+    return argvPathname.empty() ? s_argvPathname : argvPathname;
 }
 
 std::string AbstractOS::getCurrentExecutable(
@@ -241,30 +256,13 @@ void AbstractOS::appendEnv(const std::string& envVar, const std::vector<std::str
     modifyEnv(*this, envVar, overwrite, empty, values);
 }
 
-std::string s_argvPathname;
-void AbstractOS::setArgvPathname(const std::string& argvPathname)
-{
-    s_argvPathname = argvPathname;
-}
-std::string AbstractOS::getArgvPathname_(const std::string& argvPathname) const
-{
-    return argvPathname.empty() ? s_argvPathname : argvPathname;
-}
-
-static std::string getSpecialEnv_0(const AbstractOS& os, const std::string& envVar)
-{
-    assert((envVar == "0") || (envVar == "ARGV0"));
-    return os.getCurrentExecutable(os.getArgvPathname_());
-}
-
 // See https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
 // and https://wiki.bash-hackers.org/syntax/shellvars
 typedef std::string (*get_env_fp)(const AbstractOS&, const std::string&);
 // For some special variables, a separate function may be needed;
 // others can be done in-line.
 static const std::map<std::string, get_env_fp> s_get_env{
-                                                    {"0", getSpecialEnv_0}, {"ARGV0", getSpecialEnv_0},
-                                                    {"dirname0", nullptr},
+                                                    {"0", nullptr}, {"ARGV0", nullptr},
                                                     {"$", nullptr}, {"PID", nullptr},
                                                     {"PWD", nullptr},
                                                     {"USER", nullptr}, {"USERNAME", nullptr},
@@ -297,11 +295,16 @@ std::string AbstractOS::getSpecialEnv(const std::string& envVar) const
         return f(*this, envVar);
     }
 
-    if (envVar == "dirname0")
+    if ((envVar == "0") || (envVar == "ARGV0")) 
     {
-        const auto dirname = fs::path(getSpecialEnv("0")).parent_path();
-        return dirname.string();
+        return getCurrentExecutable(); // $0
     }
+
+    //if (envVar == "dirname0")
+    //{
+    //    const auto dirname = fs::path(getSpecialEnv("0")).parent_path();
+    //    return dirname.string();
+    //}
 
     return ""; // variable was found, so no exception
 }

@@ -48,6 +48,11 @@ TEST_CASE(testPathMerge)
         }
     }
     TEST_ASSERT_TRUE(sys::Filesystem::is_directory(path));
+    // add trailing '/'
+    if (!str::endsWith(path, sys::Path::delimiter()))
+    {
+        path += sys::Path::delimiter();
+    }
 
     bool isAbsolute;
     auto components = sys::Path::separate(path, isAbsolute);

@@ -303,9 +303,10 @@ public:
             const std::string& argvPathname="") const;
     // Access to argv[0] might be far away from a getCurrentExecutable() call.
     static void setArgvPathname(const std::string& argvPathname);
-    std::string getArgvPathname_(const std::string& argvPathname="") const;
 
 protected:
+    std::string getArgvPathname(const std::string& argvPathname) const;
+
     /*!
      *  Remove file with this pathname
      */
