@@ -25,6 +25,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 #include <new> // std::nothrow_t
 
 #include <io/InputStream.h>
@@ -32,6 +33,8 @@
 #include <str/Convert.h>
 #include "xml/lite/XMLException.h"
 #include "xml/lite/Attributes.h"
+#include "sys/Conf.h"
+#include "sys/Optional.h"
 
 /*!
  * \file  Element.h
@@ -77,6 +80,11 @@ enum class string_encoding
  */
 class Element
 {
+    Element(const std::string& qname, const std::string& uri, std::nullptr_t) :
+        mParent(NULL), mName(uri, qname)
+    {
+    }
+
 public:
     //! Default constructor
     Element() :
@@ -91,10 +99,22 @@ public:
      * \param characterData The character data (if any)
      */
     Element(const std::string& qname, const std::string& uri = "",
-            std::string characterData = "", const string_encoding* pEncoding = nullptr) :
-        mParent(NULL), mName(uri, qname)
+            std::string characterData = "") :
+        Element(qname, uri, nullptr)
     {
-        setCharacterData(characterData, pEncoding);
+        setCharacterData(characterData);
+    }
+    Element(const std::string& qname, const std::string& uri,
+            const std::string& characterData, string_encoding encoding) :
+        Element(qname, uri, nullptr)
+    {
+        setCharacterData(characterData, encoding);
+    }
+    Element(const std::string& qname, const std::string& uri,
+            const sys::U8string& characterData) :
+        Element(qname, uri, nullptr)
+    {
+        setCharacterData(characterData);
     }
 
     //! Destructor
@@ -174,15 +194,7 @@ public:
      *  \param std::nothrow -- will still throw if MULTIPLE elements are found, returns NULL if none
      */
     Element* getElementByTagNameNS(std::nothrow_t, const std::string& qname, bool recurse = false) const;
-    Element& getElementByTagNameNS(const std::string& qname, bool recurse = false) const
-    {
-        auto pElement = getElementByTagNameNS(std::nothrow, qname, recurse);
-        if (pElement == nullptr)
-        {
-            throw XMLException(Ctxt("Element '" + qname + "' was not found."));
-        }
-        return *pElement;
-    }
+    Element& getElementByTagNameNS(const std::string& qname, bool recurse = false) const;
 
     /*!
      *  Utility for people that dont like to pass by reference
@@ -208,15 +220,7 @@ public:
      *  \param std::nothrow -- will still throw if MULTIPLE elements are found, returns NULL if none
      */
     Element* getElementByTagName(std::nothrow_t, const std::string& localName, bool recurse = false) const;
-    Element& getElementByTagName(const std::string& localName, bool recurse = false) const
-    {
-        auto pElement = getElementByTagName(std::nothrow, localName, recurse);
-        if (pElement == nullptr)
-        {
-            throw XMLException(Ctxt("Element '" + localName + "' was not found."));
-        }
-        return *pElement;
-    }
+    Element& getElementByTagName(const std::string& localName, bool recurse = false) const;
 
     /*!
      *  Utility for people that dont like to pass by reference
@@ -244,15 +248,7 @@ public:
     Element* getElementByTagName(std::nothrow_t, const std::string& uri, const std::string& localName,
                                  bool recurse = false) const;
     Element& getElementByTagName(const std::string& uri, const std::string& localName,
-                                 bool recurse = false) const
-    {
-        auto pElement = getElementByTagName(std::nothrow, uri, localName, recurse);
-        if (pElement == nullptr)
-        {
-            throw XMLException(Ctxt("Element '" + localName + "' was not found (uri=" + uri + ")."));
-        }
-        return *pElement;
-    }
+                                 bool recurse = false) const;
 
     /*!
      *  Utility for people that dont like to pass by reference
@@ -319,11 +315,11 @@ public:
     {
         return mCharacterData;
     }
-    const string_encoding* getEncoding() const
+    const sys::Optional<string_encoding>& getEncoding() const
     {
-        return mpEncoding.get();
+        return mEncoding;
     }
-    const string_encoding* getCharacterData(std::string& result) const
+   const sys::Optional<string_encoding>& getCharacterData(std::string& result) const
     {
         result = getCharacterData();
         return getEncoding();
@@ -334,20 +330,10 @@ public:
      *  Sets the character data for this element.
      *  \param characters The data to add to this element
      */
-    void setCharacterData(const std::string& characters, const string_encoding* pEncoding = nullptr)
-    {
-        mCharacterData = characters;
-        if (pEncoding != nullptr)
-        {
-            mpEncoding = std::make_shared<const string_encoding>(*pEncoding);
-        }
-    }
-    void setCharacterData(const sys::U8string& characters)
-    {
-        mCharacterData = str::toString(characters);
-        static const auto encoding = string_encoding::utf_8;
-        mpEncoding = std::make_shared<const string_encoding>(encoding);
-    }
+    void setCharacterData_(const std::string& characters, const string_encoding*);
+    void setCharacterData(const std::string& characters);
+    void setCharacterData(const std::string& characters, string_encoding);
+    void setCharacterData(const sys::U8string& characters);
 
     /*!
      *  Sets the local name for this element.
@@ -413,10 +399,10 @@ public:
      *  Adds a child element to this element
      *  \param node the child element to add
      */
-    #if !CODA_OSS_cpp17
+    virtual void addChild(std::unique_ptr<Element>&& node);
+    #if !CODA_OSS_cpp17  // std::auto_ptr removed in C++17
     virtual void addChild(std::auto_ptr<Element> node);
     #endif
-    virtual void addChild(std::unique_ptr <Element>&& node);
 
     /*!
      *  Returns all of the children of this element
@@ -434,6 +420,14 @@ public:
     const std::vector<Element*>& getChildren() const
     {
         return mChildren;
+    }
+
+    /*!
+    * Removes all the children WITHOUT destroying them; see destroyChildren().
+    */
+    void clearChildren()
+    {
+        mChildren.clear();
     }
 
     Element* getParent() const
@@ -469,30 +463,45 @@ protected:
     xml::lite::Attributes mAttributes;
     //! The character data ...
     std::string mCharacterData;
-    // ... and how that data is encoded
-    std::shared_ptr<const string_encoding> mpEncoding;
 
     private:
+        // ... and how that data is encoded
+        sys::Optional<string_encoding> mEncoding;
         void depthPrint(io::OutputStream& stream, bool utf8, int depth,
                 const std::string& formatter) const;
 };
+
+#ifndef SWIG
+// The (old) version of SWIG we're using doesn't like certain C++11 features.
 
 /*!
  *  Returns the character data of this element converted to the specified type.
  *  \param value the charater data as T
  *  \return whether or not there was a value of type T
  */
-template<typename T>
-inline bool getValue(const Element& element, T& value)
+template <typename ToType>
+inline auto castValue(const Element& element, ToType toType)  // getValue() conflicts with below
+   -> decltype(toType(std::string()))
 {
     const auto characterData = element.getCharacterData();
     if (characterData.empty())
     {
-        return false; // call getCharacterData() to get an empty string
+        throw except::BadCastException(Ctxt("call getCharacterData() to get an empty string"));
     }
+    return toType(characterData);
+}
+template <typename T>
+inline T getValue(const Element& element)
+{
+    return castValue(element, details::toType<T>);
+}
+
+template <typename T, typename ToType>
+inline bool castValue(const Element& element, T& value, ToType toType)
+{
     try
     {
-        value = str::toType<T>(characterData);
+        value = castValue(element, toType);
     }
     catch (const except::BadCastException&)
     {
@@ -500,17 +509,27 @@ inline bool getValue(const Element& element, T& value)
     }
     return true;
 }
-
+template <typename T>
+inline bool getValue(const Element& element, T& value)
+{
+    return castValue(element, value, details::toType<T>);
+}
 
 /*!
  *  Sets the character data for this element by calling str::toString() on the value.
  *  \param value The data to add to this element
  */
+template <typename T, typename ToString>
+inline void setValue(Element& element, const T& value, ToString toString)
+{
+    element.setCharacterData(toString(value));
+}
 template <typename T>
 inline void setValue(Element& element, const T& value)
 {
-    element.setCharacterData(str::toString(value));
+    setValue(element, value, details::toString<T>);
 }
+#endif // SWIG
 
 }
 }

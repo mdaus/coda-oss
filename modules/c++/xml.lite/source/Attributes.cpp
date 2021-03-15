@@ -21,6 +21,7 @@
  */
 
 #include "xml/lite/Attributes.h"
+#include "gsl/gsl.h"
 
 xml::lite::AttributeNode::AttributeNode(const xml::lite::AttributeNode& node)
 {
@@ -41,7 +42,8 @@ xml::lite::AttributeNode::operator=(const xml::lite::AttributeNode& node)
 
 int xml::lite::Attributes::getIndex(int i) const
 {
-    if ((i >= 0) && (i < mAttributes.size()))
+    const size_t i_ = i;
+    if ((i >= 0) && (i_ < mAttributes.size()))
     {
         return i;
     }
@@ -53,7 +55,7 @@ int xml::lite::Attributes::getIndex(const std::string& qname) const
     for (size_t i = 0; i < mAttributes.size(); i++)
     {
         if (qname == mAttributes[i].getQName())
-            return i;
+            return gsl::narrow<int>(i);
     }
     return -1;
 }
@@ -65,18 +67,26 @@ int xml::lite::Attributes::getIndex(const std::string& uri,
     {
         if ((uri == mAttributes[i].getUri()) && (localName
                 == mAttributes[i].getLocalName()))
-            return i;
+            return gsl::narrow<int>(i);
     }
     return -1;
 }
 
 std::string xml::lite::Attributes::getValue(int i) const
 {
-    return mAttributes.at(i).getValue();
+    try
+    {
+        return mAttributes.at(i).getValue();
+    }
+    catch (const std::out_of_range& ex)
+    {
+        throw except::NoSuchKeyException(Ctxt(FmtX("attributes[%d] not found, %s", i, ex.what())));
+    }
 }
 bool xml::lite::Attributes::getValue(int i, std::string& result) const
 {
-    if ((i >= 0) && (i < mAttributes.size()))
+    const size_t i_ = i;
+    if ((i >= 0) && (i_ < mAttributes.size()))
     {
         result = mAttributes[i].getValue();
         return true; // index in range

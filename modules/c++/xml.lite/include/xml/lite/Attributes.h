@@ -269,6 +269,11 @@ public:
      * \throw NoSuchKeyException If the uri/localName is not found
      */
     std::string getValue(const std::string & uri, const std::string & localName) const;
+    std::string getValue(const std::tuple<std::string, std::string>& name) const
+    {
+        return getValue(std::get<0>(name), std::get<1>(name));
+    }
+
     /*!
      * Look up an attribute's value by Namespace name.
      * \param uri The uri association
@@ -307,7 +312,7 @@ public:
         return getNode(i);
     }
 
-    std::string& operator[](std::string s)
+    std::string& operator[](const std::string& s)
     {
         int idx = getIndex(s);
         if (idx < 0)
@@ -375,33 +380,50 @@ private:
     Attributes_T mAttributes;
 };
 
+#ifndef SWIG
+// The (old) version of SWIG we're using doesn't like certain C++11 features.
+
 /*!
  * Look up an attribute's value by an arbitrary key.
  * \param key  The key for the attribute we want
  * \param result The value after calling str::toType(), if found
  * \return If an attribute with the key is found or not
  */
-template <typename T, typename K>
-inline bool getValue_(const Attributes& attributes, const K& key, T& result)
+template <typename K, typename ToType>
+inline auto castValue_(const Attributes& attributes, const K& key, ToType toType)
+  -> decltype(toType(std::string())) 
 {
-    std::string value;
-    if (!attributes.getValue(key, value))
-    {
-        return false;
-    }
+    const auto value = attributes.getValue(key);
     if (value.empty())
     {
-        return false;  // call Attributes::getValue() directly to get an empty string
+        throw except::BadCastException(Ctxt("call Attributes::getValue() directly to get an empty string"));
     }
+    return toType(value);
+}
+template <typename T, typename K, typename ToType>
+inline bool castValue_(const Attributes& attributes, const K& key, T& result, ToType toType)
+{
     try
     {
-        result = str::toType<T>(value);
+        result = castValue_(attributes, key, toType);
+    }
+    catch (const except::NoSuchKeyException&)
+    {
+        return false;
     }
     catch (const except::BadCastException&)
     {
         return false;
     }
     return true;
+}
+namespace details
+{
+template <typename T>
+inline T toType(const std::string& value)
+{
+    return str::toType<T>(value);
+}
 }
 
 /*!
@@ -410,22 +432,33 @@ inline bool getValue_(const Attributes& attributes, const K& key, T& result)
  * \param result The value after calling str::toType(), if found
  * \return If the index is out of range or not
  */
-template<typename T>
-inline bool getValue(const Attributes& attributes, int i, T& result)
-{
-    return getValue_(attributes, i, result);
-}
-
 /*!
  * Look up an attribute's value by XML 1.0 qualified name.
  * \param qname The qualified name
  * \param result The value after calling str::toType(), if found
  * \return If the qname is not found or not
  */
-template <typename T>
-inline bool getValue(const Attributes& attributes, const std::string& qname, T& result)
+template <typename ToType, typename TKey>
+inline auto castValue(const Attributes& attributes, const TKey& k, ToType toType)
+  -> decltype(toType(std::string()))
 {
-    return getValue_(attributes, qname, result);
+    return castValue_(attributes, k, toType);
+}
+template <typename T, typename TKey>
+inline T getValue(const Attributes& attributes, const TKey& k)
+{
+    return castValue(attributes, k, details::toType<T>);
+}
+
+template <typename T, typename ToType, typename TKey>
+inline bool castValue(const Attributes& attributes, const TKey& k, T& result, ToType toType)
+{
+    return castValue_(attributes, k, result, toType);
+}
+template <typename T, typename TKey>
+inline bool getValue(const Attributes& attributes, const TKey& k, T& result)
+{
+    return castValue(attributes, k, result, details::toType<T>);
 }
 
 /*!
@@ -435,10 +468,22 @@ inline bool getValue(const Attributes& attributes, const std::string& qname, T& 
  * \param result The value after calling str::toType(), if found
  * \return If the uri/localName is not found or not
  */
-template <typename T>
-inline bool getValue(const Attributes& attributes, const std::tuple<std::string, std::string>& name, T& result)
+template <typename ToType>
+inline auto castValue(const Attributes& attributes, const std::string & uri, const std::string & localName, ToType toType)
+-> decltype(toType(std::string()))
 {
-    return getValue_(attributes, name, result);
+    return castValue(attributes, std::make_tuple(uri, localName), toType);
+}
+template <typename T>
+inline T getValue(const Attributes& attributes, const std::string & uri, const std::string & localName)
+{
+    return getValue<T>(attributes, std::make_tuple(uri, localName));
+}
+
+template <typename T, typename ToType>
+inline bool castValue(const Attributes& attributes, const std::string & uri, const std::string & localName, T& result, ToType toType)
+{
+    return getValue(attributes, std::make_tuple(uri, localName), result, toType);
 }
 template <typename T>
 inline bool getValue(const Attributes& attributes, const std::string & uri, const std::string & localName, T& result)
@@ -452,8 +497,9 @@ inline bool getValue(const Attributes& attributes, const std::string & uri, cons
  * \param value The value to be converted by calling str::toString
  * \return If an attribute with the key is found or not
  */
-template <typename T, typename K>
-inline bool setValue_(Attributes& attributes, const K& key, const T& value)
+template <typename T, typename K, typename ToString>
+inline bool setValue_(Attributes& attributes, const K& key, const T& value,
+    ToString toString)
 {
     int index = attributes.getIndex(key);
     if (index < 0)
@@ -462,19 +508,33 @@ inline bool setValue_(Attributes& attributes, const K& key, const T& value)
     }
 
     auto& node = attributes.getNode(index);
-    node.setValue(str::toString(value));
+    node.setValue(toString(value));
     return true;
 }
+namespace details
+{
+template <typename T>
+inline std::string toString(const T& value)
+{
+    return str::toString(value);
+}
+}
+
 /*!
  * Look up an attribute's value by index.
  * \param i  The index for the attribute we want
  * \param result The value after calling str::toType(), if found
  * \return If the index is out of range or not
  */
-template<typename T>
+template <typename T, typename ToString>
+inline bool setValue(Attributes& attributes, int i, const T& value, ToString toString)
+{
+    return setValue_(attributes, i, value, toString);
+}
+template <typename T>
 inline bool setValue(Attributes& attributes, int i, const T& value)
 {
-    return setValue_(attributes, i, value);
+    return setValue_(attributes, i, value, details::toString<T>);
 }
 
 /*!
@@ -483,10 +543,16 @@ inline bool setValue(Attributes& attributes, int i, const T& value)
  * \param result The value after calling str::toType(), if found
  * \return If the qname is not found or not
  */
+template <typename T, typename ToString>
+inline bool setValue(Attributes& attributes, const std::string& qname, const T& value,
+    ToString toString)
+{
+    return setValue_(attributes, qname, value, toString);
+}
 template <typename T>
 inline bool setValue(Attributes& attributes, const std::string& qname, const T& value)
 {
-    return setValue_(attributes, qname, value);
+    return setValue_(attributes, qname, value, details::toString<T>);
 }
 
 /*!
@@ -496,16 +562,29 @@ inline bool setValue(Attributes& attributes, const std::string& qname, const T& 
  * \param result The value after calling str::toType(), if found
  * \return If the uri/localName is not found or not
  */
+template <typename T, typename ToString>
+inline bool setValue(Attributes& attributes, const std::tuple<std::string, std::string>& name, const T& value,
+        ToString toString)
+{
+    return setValue_(attributes, name, value, toString);
+}
 template <typename T>
 inline bool setValue(Attributes& attributes, const std::tuple<std::string, std::string>& name, const T& value)
 {
-    return setValue_(attributes, name, value);
+    return setValue_(attributes, name, value, details::toString<T>);
+}
+template <typename T, typename ToString>
+inline bool setValue(Attributes& attributes, const std::string & uri, const std::string & localName, const T& value,
+     ToString toString)
+{
+    return setValue(attributes, std::make_tuple(uri, localName), value, toString);
 }
 template <typename T>
 inline bool setValue(Attributes& attributes, const std::string & uri, const std::string & localName, const T& value)
 {
-    return setValue(attributes, std::make_tuple(uri, localName), value);
+    return setValue(attributes, uri, localName, value, details::toString<T>);
 }
+#endif // SWIG
 
 }
 }

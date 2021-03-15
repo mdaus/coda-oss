@@ -1,4 +1,10 @@
 set(TARGET_LANGUAGE c++)
+# turn on warnings as errors
+if (MSVC)
+    add_compile_options(/WX)
+elseif (UNIX)
+    add_compile_options(-Werror)
+endif()
 
 # add an interface library for unittests
 add_library(TestCase INTERFACE)
@@ -65,3 +71,5 @@ add_subdirectory("polygon")
 add_subdirectory("math.linear")
 add_subdirectory("math.poly")
 add_subdirectory("numpyutils")
+add_subdirectory("gsl")
+

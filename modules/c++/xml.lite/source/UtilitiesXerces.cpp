@@ -92,7 +92,7 @@ void XercesContentHandler::characters(const XMLCh* const chars,
 {
     if (mLiteHandler->use_wchar_t())
     {
-        if (mLiteHandler->characters(chars, length))
+        if (mLiteHandler->wcharacters(chars, length))
         {
             return; // processed as wide_char
         }    
@@ -174,8 +174,8 @@ error(const SAXParseException &exception)
 {
     XercesLocalString m(exception.getMessage());
     throw(XMLParseException(m.str(),
-                                       exception.getLineNumber(),
-                                       exception.getColumnNumber()));
+                                       static_cast<int>(exception.getLineNumber()),
+                                       static_cast<int>(exception.getColumnNumber())));
 }
 
 void XercesErrorHandler::
@@ -183,8 +183,8 @@ fatalError(const SAXParseException &exception)
 {
     XercesLocalString m(exception.getMessage());
     XMLParseException xex(m.str(),
-                                     exception.getLineNumber(),
-                                     exception.getColumnNumber());
+                                     static_cast<int>(exception.getLineNumber()),
+                                     static_cast<int>(exception.getColumnNumber()));
 
     throw except::Error(Ctxt(xex.getMessage()));
 }
