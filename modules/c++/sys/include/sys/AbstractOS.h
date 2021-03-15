@@ -218,16 +218,6 @@ public:
     void prependEnv(const std::string& envVar, const std::vector<std::string>&, bool overwrite);
     void appendEnv(const std::string& envVar, const std::vector<std::string>&, bool overwrite);
 
-    // A variable like PATH is often several directories, return each one that exists.
-    bool splitEnv(const std::string& envVar, std::vector<std::string>&) const;
-    bool splitEnv(const std::string& envVar, std::vector<std::string>&, Filesystem::FileType) const;
-
-    // Modify the specified env-var as indicated.
-    // If the variable doesn't already exists and overwrite=false, false is returned.
-    // Otherwise, true: 1) variable is new (overwrite doesn't matter) or 2) overwrite = true
-    bool prependEnv(const std::string& envVar, const std::vector<std::string>&, bool overwrite);
-    bool appendEnv(const std::string& envVar, const std::vector<std::string>&, bool overwrite);
-
     /*!
      *  Set an environment variable
      */
