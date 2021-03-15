@@ -181,7 +181,11 @@ TEST_CASE(testExpandEnvPathMultiple)
     const std::vector<std::string> paths{"home", "opt", "var"};
     os.prependEnv("paths", paths, true /*overwrite*/);
     auto expanded_path = sys::Path::expandEnvironmentVariables("$(paths)", false /*checkIfExists*/);
-    const auto home = std::string("home") + sys::Path::delimiter();
+    std::string home = "home";
+    if (fs::is_directory(home) && !str::endsWith(home, sys::Path::delimiter()))
+    {
+        home += sys::Path::delimiter();
+    }
     TEST_ASSERT_EQ(expanded_path, home);
     auto expanded_paths = sys::Path::expandedEnvironmentVariables("$(paths)");
     TEST_ASSERT_EQ(expanded_paths.size(), 3);
