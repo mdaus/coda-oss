@@ -444,6 +444,21 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_percent(std::stri
 
 static ExtractedEnvironmentVariable extractEnvironmentVariable(const std::string& component)
 {
+    // http://www.kitebird.com/csh-tcsh-book/tcsh.pdf
+    /* The word or words in a history reference can be edited, or "modified", by following it with one or more modifiers,
+        each preceded by a ':':
+            h Remove a trailing pathname component, leaving the head.
+            t Remove all leading pathname components, leaving the tail.
+            r Remove a filename extension '.xxx', leaving the root name.
+            e Remove all but the extension.
+    */
+    // http://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Shell-Parameter-Expansion
+    /*
+    ${parameter@operator} The expansion is either a transformation of the value of parameter or information about parameter itself,
+    depending on the value of operator. Each operator is a single letter:
+    */
+
+
     ExtractedEnvironmentVariable retval;
     retval.variable = component; // assume this really isn't an env. var
 
@@ -663,11 +678,11 @@ static std::vector<std::string> expandedEnvironmentVariables_(const std::string&
     {
         separated_path unmerged_path(unmerged_path_);
         unmerged_path.absolute = components.absolute;
-	    // $PATH doesn't look absolute, but /usr/bin is
-	    if (!unmerged_path.absolute && !unmerged_path_.empty())
-	    {
-	        unmerged_path.absolute = fs::path(unmerged_path_.front()).is_absolute();
-	    }
+        // $PATH doesn't look absolute, but /usr/bin is
+        if (!unmerged_path.absolute && !unmerged_path_.empty())
+        {
+            unmerged_path.absolute = fs::path(unmerged_path_.front()).is_absolute();
+        }
         path = merge_path(unmerged_path);
         retval.push_back(std::move(path));
     }
