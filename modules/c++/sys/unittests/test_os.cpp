@@ -25,12 +25,14 @@
 #include <fstream>
 #include <sstream>
 #include <numeric> // std::accumulate
+#include <string>
 
 #include <sys/OS.h>
 #include <sys/Path.h>
 #include <sys/Filesystem.h>
 #include <sys/Backtrace.h>
 #include <sys/Dbg.h>
+#include <sys/DateTime.h>
 #include "TestCase.h"
 
 namespace fs = coda_oss::filesystem;
@@ -325,13 +327,31 @@ TEST_CASE(testBacktrace)
     }
 }
 
-TEST_CASE(testARGV0)
+TEST_CASE(testSpecialEnvVars)
 {
     const sys::OS os;
-    const auto result = os.getSpecialEnv("ARGV0");
+    auto result = os.getSpecialEnv("ARGV0");
     TEST_ASSERT_FALSE(result.empty());
     const fs::path fsresult(result);
     TEST_ASSERT_EQ(fsresult.stem(), "test_os");
+
+    result = os.getSpecialEnv("PWD");
+    TEST_ASSERT_FALSE(result.empty());
+
+    result = os.getSpecialEnv("USER");
+    TEST_ASSERT_FALSE(result.empty());
+    const auto username = os.getSpecialEnv("USERNAME");
+    TEST_ASSERT_FALSE(result.empty());
+    TEST_ASSERT_EQ(username, result);
+
+    result = os.getSpecialEnv("HOSTNAME");
+    TEST_ASSERT_FALSE(result.empty());
+
+    const auto epochSeconds = sys::DateTime::getEpochSeconds();
+    result = os.getSpecialEnv("EPOCHSECONDS");
+    TEST_ASSERT_FALSE(result.empty());
+    const auto resultEpochSeconds = std::stoll(result);
+    TEST_ASSERT_GREATER_EQ(resultEpochSeconds, epochSeconds);
 }
 
 }
@@ -345,7 +365,7 @@ int main(int, char**)
     TEST_CHECK(testFsExtension);
     TEST_CHECK(testFsOutput);
     TEST_CHECK(testBacktrace);
-    TEST_CHECK(testARGV0);
+    TEST_CHECK(testSpecialEnvVars);
 
     return 0;
 }

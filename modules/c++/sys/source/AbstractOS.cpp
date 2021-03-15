@@ -27,10 +27,12 @@
 #include <functional>
 #include <map>
 #include <stdexcept>
+#include <string>
 
 #include <sys/Path.h>
 #include <sys/DirectoryEntry.h>
 #include <sys/Filesystem.h>
+#include <sys/DateTime.h>
 
 namespace fs = coda_oss::filesystem;
 
@@ -256,6 +258,17 @@ void AbstractOS::appendEnv(const std::string& envVar, const std::vector<std::str
     modifyEnv(*this, envVar, overwrite, empty, values);
 }
 
+static std::string getSpecialEnv_USER(const AbstractOS& os, const std::string& envVar)
+{
+    // $USER on *nix, %USERNAME% on Windows; make it so either one always works
+    assert((envVar == "USER") || (envVar == "USERNAME"));
+    #if _WIN32
+    return os.getEnv("USERNAME");
+    #else
+    return os.getEnv("USER");
+    #endif
+}
+
 // See https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
 // and https://wiki.bash-hackers.org/syntax/shellvars
 typedef std::string (*get_env_fp)(const AbstractOS&, const std::string&);
@@ -265,7 +278,7 @@ static const std::map<std::string, get_env_fp> s_get_env{
                                                     {"0", nullptr}, {"ARGV0", nullptr},
                                                     {"$", nullptr}, {"PID", nullptr},
                                                     {"PWD", nullptr},
-                                                    {"USER", nullptr}, {"USERNAME", nullptr},
+                                                    {"USER", getSpecialEnv_USER}, {"USERNAME", getSpecialEnv_USER},
                                                     {"EPOCHSECONDS", nullptr},
                                                     {"HOSTNAME", nullptr},
                                                     {"HOSTTYPE", nullptr}, // x86_64
@@ -305,6 +318,21 @@ std::string AbstractOS::getSpecialEnv(const std::string& envVar) const
     //    const auto dirname = fs::path(getSpecialEnv("0")).parent_path();
     //    return dirname.string();
     //}
+
+    if (envVar == "PWD")
+    {
+        return getCurrentWorkingDirectory();
+    }
+
+    if (envVar == "HOSTNAME")
+    {
+        return getNodeName();
+    }
+
+    if (envVar == "EPOCHSECONDS")
+    {
+        return std::to_string(sys::DateTime::getEpochSeconds());
+    }
 
     return ""; // variable was found, so no exception
 }
