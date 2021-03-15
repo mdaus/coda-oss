@@ -358,11 +358,21 @@ TEST_CASE(testSpecialEnvVars)
     result = os.getSpecialEnv("HOSTNAME");
     TEST_ASSERT_FALSE(result.empty());
 
+    result = os.getSpecialEnv("SECONDS");
+    TEST_ASSERT_FALSE(result.empty());
+    const auto seconds = std::stoll(result);
+    TEST_ASSERT_GREATER_EQ(seconds, 0);
+
     const auto epochSeconds = sys::DateTime::getEpochSeconds();
     result = os.getSpecialEnv("EPOCHSECONDS");
     TEST_ASSERT_FALSE(result.empty());
     const auto resultEpochSeconds = std::stoll(result);
     TEST_ASSERT_GREATER_EQ(resultEpochSeconds, epochSeconds);
+
+    result = os.getSpecialEnv("Configuration");
+    TEST_ASSERT_FALSE(result.empty());
+    result = os.getSpecialEnv("Platform");
+    TEST_ASSERT_FALSE(result.empty());
 }
 
 }
