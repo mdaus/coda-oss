@@ -334,7 +334,7 @@ static void clean_slashes(std::string& path, bool isAbsolute)
     // get rid of multiple "//"s
     while (str::startsWith(path, Path::delimiter()))
     {
-	path = path.substr(1);
+    path = path.substr(1);
     }
     #ifndef _WIN32 // std::filesystem has (some?) support for UNC paths, but not this code
     if (isAbsolute)
@@ -379,8 +379,11 @@ static std::string merge_path(const separated_path& components)
 
 struct ExtractedEnvironmentVariable final
 {
+    std::string component; // copy of what was passed
+
     std::string begin; // "foo" of "foo$(BAR)baz"
     std::string variable; // "BAR" of "foo$(BAR)baz"
+    std::string op; // for ${FOO@b}, "b"; http://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Shell-Parameter-Expansion
     std::string end; // "baz" of "foo$(BAR)baz"
 };
 
@@ -388,7 +391,7 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::strin
 {
     assert(pos != std::string::npos);
     ExtractedEnvironmentVariable retval;
-    retval.variable = component;  // assume this really isn't an env. var
+    retval.component = retval.variable = component;  // assume this really isn't an env. var
 
     retval.begin = component.substr(0, pos);
     str::replace(component, retval.begin + "$", ""); // don't want to find "(" before "$"
@@ -407,6 +410,23 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::strin
         {
             retval.variable = component.substr(paren + 1, paren_match_pos - 1);
             retval.end = component.substr(paren_match_pos + 1);
+
+            // We're going to support a very specific format for modifiers, just: ${FOO@c}
+            // If it's anythng else, assume it's something else
+            if (paren_match == '}')  // only "${...", not "$(..."
+            {
+                const auto at_pos = retval.variable.find('@');
+                if ((at_pos != std::string::npos) && (at_pos >= 1) && (at_pos < retval.variable.length()))
+                {
+                    auto op = retval.variable.substr(at_pos + 1); // at_pos < length(), from above()
+                    if (op.length() == 1)  // only single-characters
+                    {
+                        retval.variable = retval.variable.substr(0, at_pos);
+                        retval.op = std::move(op);
+                    }
+                }
+            }
+
             return retval;
         }
     }
