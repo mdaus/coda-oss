@@ -504,6 +504,32 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable(const std::string
     return retval;
 }
 
+static std::string apply_edits(const std::string& path, const std::string& op)
+{
+    // http://www.kitebird.com/csh-tcsh-book/tcsh.pdf
+    /* The word or words in a history reference can be edited, or "modified", by following it with one or more modifiers,
+        each preceded by a ':':
+            h Remove a trailing pathname component, leaving the head.
+            t Remove all leading pathname components, leaving the tail.
+            r Remove a filename extension '.xxx', leaving the root name.
+            e Remove all but the extension.
+    */
+    if (op.length() == 1)
+    {
+        const fs::path fspath(path);
+        switch (op[0])
+        {
+        case 'h': return fspath.parent_path().string();
+        case 't': return fspath.filename().string();
+        case 'r': return fspath.stem().string();
+        case 'e': return fspath.extension().string();
+        default: break;
+        }
+    }
+
+    return path;
+}
+
 static path_components expandEnvironmentVariable(const std::string& component)
 {
     const auto extractedEnvVar = extractEnvironmentVariable(component);
@@ -535,8 +561,10 @@ static path_components expandEnvironmentVariable(const std::string& component)
     const auto endExpandedEnvVar = expandEnvironmentVariable(extractedEnvVar.end); // note: recursion
 
     path_components updated_paths;
-    for (const auto& path : paths)
+    for (const auto& path_ : paths)
     {
+        const auto path = apply_edits(path_, extractedEnvVar.op);
+
         for (const auto& endVar : endExpandedEnvVar)
         {
             auto p = extractedEnvVar.begin + path + endVar;

@@ -230,7 +230,7 @@ TEST_CASE(testModifyVar)
     TEST_ASSERT_FALSE(result.empty());
     const fs::path fsresult(result);
     TEST_ASSERT_EQ(fsresult.stem(), "test_path");
-    // TEST_ASSERT_EQ(argv0, fsresult.filename());
+    TEST_ASSERT_EQ(argv0, fsresult.filename());
 }
 
 }
