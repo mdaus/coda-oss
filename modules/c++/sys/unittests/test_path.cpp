@@ -24,7 +24,10 @@
 #include <assert.h>
 
 #include <sys/Path.h>
+#include <sys/Filesystem.h>
 #include "TestCase.h"
+
+namespace fs = coda_oss::filesystem;
 
 namespace
 {
@@ -75,10 +78,10 @@ TEST_CASE(testPathMerge)
 TEST_CASE(testExpandEnvTilde)
 {
     auto path = sys::Path::expandEnvironmentVariables("~");
-    TEST_ASSERT_TRUE(sys::Filesystem::is_directory(path));
+    TEST_ASSERT_TRUE(fs::is_directory(path));
 
     path = sys::Path::expandEnvironmentVariables("~", sys::Filesystem::FileType::Directory);
-    TEST_ASSERT_TRUE(sys::Filesystem::is_directory(path));
+    TEST_ASSERT_TRUE(fs::is_directory(path));
 
     path = sys::Path::expandEnvironmentVariables("~", sys::Filesystem::FileType::Regular);
     TEST_ASSERT_TRUE(path.empty());
@@ -178,7 +181,8 @@ TEST_CASE(testExpandEnvPathMultiple)
     const std::vector<std::string> paths{"home", "opt", "var"};
     os.prependEnv("paths", paths, true /*overwrite*/);
     auto expanded_path = sys::Path::expandEnvironmentVariables("$(paths)", false /*checkIfExists*/);
-    TEST_ASSERT_EQ(expanded_path, "home");
+    const auto home = std::string("home") + sys::Path::delimiter();
+    TEST_ASSERT_EQ(expanded_path, home);
     auto expanded_paths = sys::Path::expandedEnvironmentVariables("$(paths)");
     TEST_ASSERT_EQ(expanded_paths.size(), 3);
 
