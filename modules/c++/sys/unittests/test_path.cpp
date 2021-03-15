@@ -83,8 +83,7 @@ TEST_CASE(testExpandEnvTildePath)
 {
     sys::OS os;
     const std::vector<std::string> exts{"NTUSER.DAT", ".login", ".cshrc", ".bashrc"};
-    const auto result = os.prependEnv("exts", exts, true /*overwrite*/);
-    TEST_ASSERT_TRUE(result);
+    os.prependEnv("exts", exts, true /*overwrite*/);
 
     const auto path = sys::Path::expandEnvironmentVariables("~/$(exts)", sys::Filesystem::FileType::Regular);
     TEST_ASSERT_TRUE(sys::Filesystem::is_regular_file(path));
@@ -150,8 +149,7 @@ TEST_CASE(testExpandEnvPathExists)
     const std::string does_not_exist(R"(/does/not/existt)");
     #endif
     std::vector<std::string> values{does_not_exist};
-    bool result = os.prependEnv("PATH", values, true /*overwrite*/);
-    TEST_ASSERT_TRUE(result);
+    os.prependEnv("PATH", values, true /*overwrite*/);
 
     const auto path = sys::Path::expandEnvironmentVariables("$PATH");
     TEST_ASSERT_FALSE(path.empty());
@@ -173,25 +171,20 @@ TEST_CASE(testExpandEnvPathMultiple)
     sys::OS os;
 
     const std::vector<std::string> paths{"home", "opt", "var"};
-    bool result = os.prependEnv("paths", paths, false /*overwrite*/);
-    TEST_ASSERT_TRUE(result);
+    os.prependEnv("paths", paths, true /*overwrite*/);
     auto expanded_path = sys::Path::expandEnvironmentVariables("$(paths)", false /*checkIfExists*/);
     TEST_ASSERT_EQ(expanded_path, "home");
     auto expanded_paths = sys::Path::expandedEnvironmentVariables("$(paths)");
     TEST_ASSERT_EQ(expanded_paths.size(), 3);
 
     const std::vector<std::string> apps{"apps"};
-    result = os.prependEnv("apps", apps, false /*overwrite*/);
-    TEST_ASSERT_TRUE(result);
+    os.prependEnv("apps", apps, true /*overwrite*/);
     const std::vector<std::string> app{"app_v1", "app_v2"};
-    result = os.prependEnv("app", app, false /*overwrite*/);
-    TEST_ASSERT_TRUE(result);
+    os.prependEnv("app", app, true /*overwrite*/);
     const std::vector<std::string> libs{"lib", "lib64"};
-    result = os.prependEnv("libs", libs, false /*overwrite*/);
-    TEST_ASSERT_TRUE(result);
+    os.prependEnv("libs", libs, true /*overwrite*/);
     const std::vector<std::string> exts{"libfoo.a", "libfoo.so", "foo.dll"};
-    result = os.prependEnv("exts", exts, true /*overwrite*/);
-    TEST_ASSERT_TRUE(result);
+    os.prependEnv("exts", exts, true /*overwrite*/);
 
     const std::string path_to_expand_root =
     #if _WIN32
