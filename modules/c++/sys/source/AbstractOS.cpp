@@ -258,6 +258,12 @@ void AbstractOS::appendEnv(const std::string& envVar, const std::vector<std::str
     modifyEnv(*this, envVar, overwrite, empty, values);
 }
 
+static std::string getSpecialEnv_PID(const AbstractOS& os, const std::string& envVar)
+{
+    const auto pid = os.getProcessId();
+    return std::to_string(pid);
+}
+
 static std::string getSpecialEnv_USER(const AbstractOS& os, const std::string& envVar)
 {
     // $USER on *nix, %USERNAME% on Windows; make it so either one always works
@@ -276,7 +282,7 @@ typedef std::string (*get_env_fp)(const AbstractOS&, const std::string&);
 // others can be done in-line.
 static const std::map<std::string, get_env_fp> s_get_env{
                                                     {"0", nullptr}, {"ARGV0", nullptr},
-                                                    {"$", nullptr}, {"PID", nullptr},
+                                                    {"$", getSpecialEnv_PID}, {"PID", getSpecialEnv_PID},
                                                     {"PWD", nullptr},
                                                     {"USER", getSpecialEnv_USER}, {"USERNAME", getSpecialEnv_USER},
                                                     {"EPOCHSECONDS", nullptr},

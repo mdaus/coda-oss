@@ -330,10 +330,21 @@ TEST_CASE(testBacktrace)
 TEST_CASE(testSpecialEnvVars)
 {
     const sys::OS os;
-    auto result = os.getSpecialEnv("ARGV0");
+    const auto argv0 = os.getSpecialEnv("ARGV0");
+    TEST_ASSERT_FALSE(argv0.empty());
+    auto result = os.getSpecialEnv("0"); // i.e., ${0)
     TEST_ASSERT_FALSE(result.empty());
+    TEST_ASSERT_EQ(result, argv0);
     const fs::path fsresult(result);
     TEST_ASSERT_EQ(fsresult.stem(), "test_os");
+
+    const auto pid = os.getSpecialEnv("PID");
+    TEST_ASSERT_FALSE(pid.empty());
+    result = os.getSpecialEnv("$"); // i.e., ${$}
+    TEST_ASSERT_FALSE(result.empty());
+    TEST_ASSERT_EQ(result, pid);
+    const auto strPid = std::to_string(os.getProcessId());
+    TEST_ASSERT_EQ(result, strPid);
 
     result = os.getSpecialEnv("PWD");
     TEST_ASSERT_FALSE(result.empty());
