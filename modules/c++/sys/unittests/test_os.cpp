@@ -378,7 +378,7 @@ TEST_CASE(testSpecialEnvVars)
 
 }
 
-int main(int argc, char** argv)
+int main(int, char** argv)
 {
     sys::AbstractOS::setArgvPathname(argv[0]);
 
