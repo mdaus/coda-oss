@@ -336,7 +336,8 @@ TEST_CASE(testSpecialEnvVars)
     TEST_ASSERT_FALSE(result.empty());
     TEST_ASSERT_EQ(result, argv0);
     const fs::path fsresult(result);
-    TEST_ASSERT_EQ(fsresult.stem(), "test_os");
+    const fs::path this_file(__FILE__);
+    TEST_ASSERT_EQ(fsresult.stem(), this_file.stem());
 
     const auto pid = os.getSpecialEnv("PID");
     TEST_ASSERT_FALSE(pid.empty());
@@ -377,8 +378,10 @@ TEST_CASE(testSpecialEnvVars)
 
 }
 
-int main(int, char**)
+int main(int argc, char** argv)
 {
+    sys::AbstractOS::setArgvPathname(argv[0]);
+
     TEST_CHECK(testRecursiveRemove);
     TEST_CHECK(testForcefulMove);
     TEST_CHECK(testEnvVariables);

@@ -223,14 +223,15 @@ TEST_CASE(testModifyVar)
 {
     const sys::OS os;
 
-    const auto argv0 = sys::Path::expandEnvironmentVariables("${ARGV0@t}");
-    TEST_ASSERT_FALSE(argv0.empty());
-    
-    auto result = os.getSpecialEnv("0");  // i.e., ${0)
+    const auto argv0_t = sys::Path::expandEnvironmentVariables("${ARGV0@t}", false /*checkIfExists*/);
+    TEST_ASSERT_FALSE(argv0_t.empty());
+
+    const auto result = os.getSpecialEnv("0");  // i.e., ${0)
     TEST_ASSERT_FALSE(result.empty());
     const fs::path fsresult(result);
-    TEST_ASSERT_EQ(fsresult.stem(), "test_path");
-    TEST_ASSERT_EQ(argv0, fsresult.filename());
+    const fs::path this_file(__FILE__);
+    TEST_ASSERT_EQ(fsresult.stem(), this_file.stem());
+    TEST_ASSERT_EQ(argv0_t, fsresult.filename());
 }
 
 }
