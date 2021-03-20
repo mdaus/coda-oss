@@ -208,7 +208,7 @@ static bool splitEnv_(const AbstractOS& os, const std::string& envVar, std::vect
             result.push_back(val);
         }
     }
-    return true;
+    return !result.empty(); // false for no matches
 }
 bool AbstractOS::splitEnv(const std::string& envVar, std::vector<std::string>& result, Filesystem::FileType type) const
 {
