@@ -1,9 +1,8 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
- * (C) Copyright 2004 - 2014, MDA Information Systems LLC
- * (C) Copyright 2021, Maxar Technologies, Inc.
+ *
+ * (C) Copyright 2004 - 2016, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,33 +14,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
+#include <sys/Backtrace.h>
 
-#include "sys/Dbg.h"
-
-void sys::dbgPrintf(const char *format, ...)
+std::string sys::getBacktrace(bool* pSupported)
 {
-    if (sys::debugging)
-    {
-        va_list args;
-        va_start(args, format);
-        fprintf(DEBUG_STREAM, "<DBG> ");
-        vfprintf(DEBUG_STREAM, format, args);
-        va_end(args);
-    }
+    bool supported;
+    std::vector<std::string> frames;
+    bool& supported_ = pSupported != nullptr ? *pSupported : supported;
+    return getBacktrace(supported_, frames);
 }
-
-void sys::diePrintf(const char *format, ...)
+std::string sys::getBacktrace(bool& supported, std::vector<std::string>& frames)
 {
-    va_list args;
-    va_start(args, format);
-    vfprintf(DEBUG_STREAM, format, args);
-    va_end(args);
-    exit(EXIT_FAILURE);
+    return except::getBacktrace(supported, frames);
 }
-
