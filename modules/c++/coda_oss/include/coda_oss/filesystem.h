@@ -2,7 +2,7 @@
  * This file is part of sys-c++
  * =========================================================================
  *
- * (C) Copyright 2020, Maxar Technologies, Inc.
+ * (C) Copyright 2021, Maxar Technologies, Inc.
  *
  * sys-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,28 +18,28 @@
  * License along with this program; If not, http://www.gnu.org/licenses/.
  *
  */
-#ifndef CODA_OSS_sys_Bit_h_INCLUDED_
-#define CODA_OSS_sys_Bit_h_INCLUDED_
+#ifndef CODA_OSS_coda_oss_filesystem_h_INCLUDED_
+#define CODA_OSS_coda_oss_filesystem_h_INCLUDED_
 #pragma once
 
-#include "CPlusPlus.h"
+#include "sys/CPlusPlus.h"
+#if CODA_OSS_cpp17 || (defined(CODA_OSS_AUGMENT_std_filesystem) && (CODA_OSS_AUGMENT_std_filesystem == 1))
+#include <std/filesystem>
+#define CODA_OSS_coda_oss_std_filesystem_ 1
+#endif
+#include "sys/Filesystem.h"
 
-namespace sys
+namespace coda_oss
 {
-    // https://en.cppreference.com/w/cpp/types/endian
-    enum class Endian
-    {
-    #ifdef _WIN32
-        little = 0,
-        big = 1,
-        native = little
-    #else
-        little = __ORDER_LITTLE_ENDIAN__,
-        big = __ORDER_BIG_ENDIAN__,
-        native = __BYTE_ORDER__
-    #endif
-    };
-    #define CODA_OSS_sys_Endian 201907L // __cpp_lib_endian
+namespace filesystem
+{
+#ifdef CODA_OSS_coda_oss_std_filesystem_
+using path = std::filesystem::path;
+#else
+using path = sys::Filesystem::path;
+#endif
+}
 }
 
-#endif  // CODA_OSS_sys_Bit_h_INCLUDED_
+
+#endif  // CODA_OSS_coda_oss_filesystem_h_INCLUDED_

@@ -1,6 +1,5 @@
-NAME            = 'logging'
-VERSION         = '1.1'
-MODULE_DEPS     = 'io mt std sys coda_oss'
+NAME            = 'std'
+VERSION         = '1.0'
 
 options = configure = distclean = lambda p: None
 
