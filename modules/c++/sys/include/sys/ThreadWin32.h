@@ -133,7 +133,7 @@ public:
     }
     
 private:
-    HANDLE mNative;
+    HANDLE mNative = INVALID_HANDLE_VALUE;
 };
 
 }

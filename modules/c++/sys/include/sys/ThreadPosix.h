@@ -142,7 +142,7 @@ public:
     }
 
 private:
-    pthread_t mNative;
+    pthread_t mNative{};
 
 };
 
