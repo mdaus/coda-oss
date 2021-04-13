@@ -64,9 +64,9 @@ jobs:
         ctest
 
 
-  build-linux-waf:
-    name: Linux
-    runs-on: [ubuntu-latest]
+  build-waf:
+    name: waf
+    runs-on: [ubuntu-latest, windows-latest]
 
     steps:
     - uses: actions/checkout@v2
@@ -76,11 +76,9 @@ jobs:
         python-version: '3.7'
     - name: configure
       run: |
-        env
-        which python
         pip install numpy
         mkdir installLinux-Github
-        python waf configure --prefix=$(realpath installLinux-Github)
+        python waf configure --prefix="$PWD/installLinux-Github"
     - name: build
       run: |
         python waf build
