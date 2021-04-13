@@ -56,7 +56,7 @@ template<typename Vector_T> OneD<double> fit(const Vector_T& x,
     math::linear::Vector<double> vx(x);
     math::linear::Vector<double> vy(y);
     // n is polynomial order
-    size_t sizeX = vx.size();
+    const auto sizeX = vx.size();
 
     if (sizeX <= order)
     {
@@ -76,7 +76,7 @@ template<typename Vector_T> OneD<double> fit(const Vector_T& x,
     math::linear::Vector<double> xp = vx - offv;
 
     // Normalize the values in the vector using standard deviation
-    double rxrms = 1 / std::sqrt(xp.normSq() / sizeX);
+    const double rxrms = 1 / std::sqrt(xp.normSq() / sizeX);
     xp.scale(rxrms);
 
     math::linear::Matrix2D<double> A(sizeX, order + 1);
@@ -89,7 +89,7 @@ template<typename Vector_T> OneD<double> fit(const Vector_T& x,
         A(i, 1) = v;
         for (size_t j = 2; j <= order; j++)
         {
-            A(i, j) = std::pow(v, (double)j);
+            A(i, j) = std::pow(v, static_cast<double>(j));
         }
     }
     

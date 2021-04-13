@@ -725,14 +725,13 @@ public:
         multiply(const MatrixMxN<_ND, _PD, _T>& mx) const
     {
         MatrixMxN<_MD, _PD, _T> newM;
-        size_t i, j, k;
 
-        for (i = 0; i < _MD; i++)
+        for (size_t i = 0; i < _MD; i++)
         {
-            for (j = 0; j < _PD; j++)
+            for (size_t j = 0; j < _PD; j++)
             {
                 newM.mRaw[i][j] = 0;
-                for (k = 0; k < _ND; k++)
+                for (size_t k = 0; k < _ND; k++)
                 {
                     newM.mRaw[i][j] += mRaw[i][k] * mx.mRaw[k][j];
                 }
@@ -1254,7 +1253,7 @@ template<size_t _ND, typename _T> MatrixMxN<_ND, _ND, _T>
     {
         for (size_t j = 0; j < _ND; j++)
         {
-            mx(i, j) = (i == j) ? _T(1): _T(0);
+            mx(i, j) = (i == j) ? static_cast<_T>(1): static_cast<_T>(0);
         }
     }
     return mx;

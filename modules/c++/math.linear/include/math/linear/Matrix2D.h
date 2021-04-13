@@ -896,7 +896,7 @@ public:
             {
                 rowi = lu[i];
 
-                size_t max = std::min<size_t>(i, j);
+                const auto max = std::min<size_t>(i, j);
                 _T s(0);
                 for (size_t k = 0; k < max; k++)
                 {
@@ -1285,9 +1285,9 @@ template<typename _T> inline Matrix2D<_T>
 template<typename _T> inline
     Matrix2D<_T> inverseLU(const Matrix2D<_T>& mx)
 {
-    size_t M = mx.rows();
-    size_t N = mx.cols();
-    Matrix2D<_T> a(M, M, (_T)0);
+    const auto M = mx.rows();
+    const auto N = mx.cols();
+    Matrix2D<_T> a(M, M, static_cast<_T>(0));
 
     for (size_t i = 0; i < M; i++)
         a(i, i) = 1;
