@@ -3,7 +3,7 @@ name: build_unittest
 on: [push]
 
 jobs:
-  build-windows:
+  build-windows-cmake:
     name: Windows
     runs-on: [windows-latest]
 
@@ -33,7 +33,7 @@ jobs:
         ctest -C Release
 
 
-  build-linux:
+  build-linux-cmake:
     name: Linux
     runs-on: [ubuntu-latest]
 
