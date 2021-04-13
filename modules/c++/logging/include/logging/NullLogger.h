@@ -37,10 +37,8 @@ namespace logging
  * \class NullHandler
  * \brief Ignores all records
  */
-class NullHandler : public Handler
+struct NullHandler : public Handler
 {
-
-public:
     NullHandler(LogLevel level = LogLevel::LOG_NOTSET) :
         Handler(level)
     {
@@ -48,6 +46,9 @@ public:
     ~NullHandler()
     {
     }
+
+    NullHandler(const NullHandler&) = delete;
+    NullHandler& operator=(const NullHandler&) = delete;
 
 protected:
         

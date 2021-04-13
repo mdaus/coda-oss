@@ -55,6 +55,7 @@ public:
     virtual ~Handler()
     {
     }
+    Handler& operator=(const Handler&) = delete;
 
     /*! 
      * Sets the Formatter to use when formatting LogRecords
