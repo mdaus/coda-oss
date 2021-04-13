@@ -78,7 +78,7 @@ jobs:
       run: |
         pip install numpy
         mkdir installLinux-Github
-        python waf configure --prefix="$PWD/installLinux-Github"
+        python waf configure --with-optz=fastest --prefix="$PWD/installLinux-Github"
     - name: build
       run: |
         python waf build
@@ -103,7 +103,7 @@ jobs:
       run: |
         pip install numpy
         mkdir installLinux-Github
-        python waf configure --prefix="$PWD/installLinux-Github"
+        python waf configure --with-optz=fastest --prefix="$PWD/installLinux-Github"
     - name: build
       run: |
         python waf build
