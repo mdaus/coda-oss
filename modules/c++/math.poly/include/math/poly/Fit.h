@@ -154,9 +154,9 @@ inline math::poly::TwoD<double> fit(const math::linear::Matrix2D<double>& x,
                     size_t nx,
                     size_t ny)
 {
-    size_t m = x.rows();
-    size_t n = x.cols();
-    size_t mxn = x.size();
+    const auto m = x.rows();
+    const auto n = x.cols();
+    const auto mxn = x.size();
 
     if (m != y.rows())
         throw except::Exception(Ctxt("Matrices must be equally sized"));
@@ -165,8 +165,8 @@ inline math::poly::TwoD<double> fit(const math::linear::Matrix2D<double>& x,
         throw except::Exception(Ctxt("Matrices must be equally sized"));
 
     // Compute mean values
-    double xoff = std::accumulate(x.get(), x.get() + mxn, 0.0) / mxn;
-    double yoff = std::accumulate(y.get(), y.get() + mxn, 0.0) / mxn;
+    const double xoff = std::accumulate(x.get(), x.get() + mxn, 0.0) / mxn;
+    const double yoff = std::accumulate(y.get(), y.get() + mxn, 0.0) / mxn;
 
     // Shift the matrix values by mean to center around zero
     math::linear::Matrix2D<double> xoffm(m, n, xoff);
@@ -176,12 +176,12 @@ inline math::poly::TwoD<double> fit(const math::linear::Matrix2D<double>& x,
     math::linear::Matrix2D<double> yp = y - yoffm;
 
     // Normalize the values in the matrix using standard deviation
-    double rxrms = 1 / std::sqrt(xp.normSq() / mxn);
-    double ryrms = 1 / std::sqrt(yp.normSq() / mxn);
+    const auto rxrms = 1.0 / std::sqrt(xp.normSq() / mxn);
+    const auto ryrms = 1.0 / std::sqrt(yp.normSq() / mxn);
     xp.scale(rxrms);
     yp.scale(ryrms);
 
-    size_t acols = (nx+1) * (ny+1);
+    const auto acols = (nx+1) * (ny+1);
 
     if (mxn < acols)
     {
@@ -208,8 +208,8 @@ inline math::poly::TwoD<double> fit(const math::linear::Matrix2D<double>& x,
             // We are doing an accumulation of pow()s to get this
 
             // Pre-calculate these
-            double xij = xp(i, j);
-            double yij = yp(i, j);
+            const auto xij = xp(i, j);
+            const auto yij = yp(i, j);
 
             double xacc = 1;
 
@@ -321,7 +321,7 @@ inline math::poly::OneD< math::linear::VectorN< 3, double > > fit(
     const math::linear::Vector<double>& yObs2,
     size_t order)
 {
-    size_t numObs = xObs.size();
+    const auto numObs = xObs.size();
     if (yObs0.size() != numObs || yObs1.size() != numObs || yObs2.size() != numObs)
     {
         throw except::Exception(Ctxt("Must have the same number of observed y values as observed x values"));

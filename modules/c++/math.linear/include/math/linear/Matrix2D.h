@@ -588,8 +588,8 @@ public:
             throw except::Exception(Ctxt(
                 "Invalid inner dimension sizes for multiply"));
 
-        size_t M = mM;
-        size_t P = mx.mN;
+        const auto M = mM;
+        const auto P = mx.mN;
 
         Matrix2D newM(M, P);
         multiply(mx, newM);
@@ -617,9 +617,9 @@ public:
     void
     multiply(const Matrix2D& mx, Matrix2D &out) const
     {
-        size_t M(mM);
-        size_t N(mN);
-        size_t P(mx.mN);
+        const auto  M(mM);
+        const auto N(mN);
+        const auto P(mx.mN);
 
         if (mN != mx.mM)
             throw except::Exception(Ctxt(
@@ -631,14 +631,13 @@ public:
             throw except::Exception(Ctxt(
                 "Invalid output column size for multiply"));
 
-        size_t i, j, k;
-        for (i = 0; i < M; i++)
+        for (size_t i = 0; i < M; i++)
         {
-            for (j = 0; j < P; j++)
+            for (size_t j = 0; j < P; j++)
             {
                 out(i, j) = 0;
 
-                for (k = 0; k < N; k++)
+                for (size_t k = 0; k < N; k++)
                 {
                     out(i, j) += mRaw[i * N + k] * mx(k, j);
                 }
@@ -977,7 +976,7 @@ public:
      */
      _T normSq() const
     {
-        size_t sz = mM * mN;
+        const auto sz = mM * mN;
         _T acc(0);
         for (size_t i = 0; i < sz; ++i)
         {

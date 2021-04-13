@@ -37,7 +37,8 @@ OneD<_T>::operator () (double at) const
 {
    _T ret(0.0);
    double atPwr = 1.0;
-   for (size_t i = 0, sz = mCoef.size() ; i < sz; i++)
+   const auto sz = mCoef.size();
+   for (size_t i = 0 ; i < sz; i++)
    {
       ret += mCoef[i]*atPwr;
       atPwr *= at;
@@ -78,7 +79,8 @@ OneD<math::linear::VectorN<3, double> >::integrate(double start, double end) con
    OneD<double> poly1(polyOrder);
    OneD<double> poly2(polyOrder);
 
-   for (size_t term = 0, sz = mCoef.size(); term < sz; term++)
+   const auto sz = mCoef.size();
+   for (size_t term = 0; term < sz; term++)
    {
        poly0[term] = mCoef[term][0];
        poly1[term] = mCoef[term][1];
@@ -122,11 +124,14 @@ OneD< math::linear::VectorN<3, double> >::derivative() const
        OneD<double> poly1(polyOrder);
        OneD<double> poly2(polyOrder);
 
-       for (size_t term = 0, sz = mCoef.size(); term < sz; term++)
        {
-           poly0[term] = mCoef[term][0];
-           poly1[term] = mCoef[term][1];
-           poly2[term] = mCoef[term][2];
+           const auto sz = mCoef.size();
+           for (size_t term = 0; term < sz; term++)
+           {
+               poly0[term] = mCoef[term][0];
+               poly1[term] = mCoef[term][1];
+               poly2[term] = mCoef[term][2];
+           }
        }
 
        poly0 = poly0.derivative();
@@ -134,11 +139,14 @@ OneD< math::linear::VectorN<3, double> >::derivative() const
        poly2 = poly2.derivative();
 
        ret = OneD<math::linear::VectorN<3, double> >(polyOrder - 1);
-       for (size_t term = 0, sz = mCoef.size() -1; term < sz; term++)
        {
-           ret[term][0] = poly0[term];
-           ret[term][1] = poly1[term];
-           ret[term][2] = poly2[term];
+           const auto sz = mCoef.size() - 1;
+           for (size_t term = 0; term < sz; term++)
+           {
+               ret[term][0] = poly0[term];
+               ret[term][1] = poly1[term];
+               ret[term][2] = poly2[term];
+           }
        }
    }
 
@@ -239,9 +247,11 @@ OneD<_T>&
 OneD<_T>::operator *= (const OneD<_T>& p)
 {
    OneD<_T> tmp(order()+p.order());
-   for (size_t i = 0, xsz = mCoef.size(); i < xsz; i++)
+   const auto xsz = mCoef.size();
+   const auto ysz = p.mCoef.size();
+   for (size_t i = 0; i < xsz; i++)
    {
-       for (size_t j = 0, ysz = p.mCoef.size(); j < ysz; j++)
+       for (size_t j = 0; j < ysz; j++)
        {
            tmp.mCoef[i + j] += mCoef[i] * p.mCoef[j];
        }
