@@ -62,3 +62,30 @@ jobs:
       run: |
         cd target
         ctest
+
+
+  build-linux-waf:
+    name: Linux
+    runs-on: [ubuntu-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.7'
+    - name: configure
+      run: |
+        env
+        which python
+        mkdir installLinux-Github
+        python waf configure --prefix=$(realpath installLinux-Github)
+    - name: build
+      run: |
+        python waf build
+    - name: install
+      run: |
+        python waf install
+    - name: test
+      run: |
+        python waf install --alltests
