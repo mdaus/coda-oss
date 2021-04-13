@@ -78,6 +78,7 @@ jobs:
       run: |
         env
         which python
+        pip install numpy
         mkdir installLinux-Github
         python waf configure --prefix=$(realpath installLinux-Github)
     - name: build
