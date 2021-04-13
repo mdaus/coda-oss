@@ -75,41 +75,16 @@
     #endif
 #endif // CODA_OSS_attribute_aligned_DEFINED_
 
-#ifdef HAVE_M256_DIRECT_INDEX
-    #define _MM256_EXTRACTF(ymm_,i_) ymm_[i_]
-#elif defined HAVE_M256_MEMBER_INDEX
-    #define _MM256_EXTRACTF(ymm_,i_) ymm_.m256_f32[i_]
-#else
-    //This looks awful, but almost all of these intrinsics simply reinterpret bits and generate no actual instructions.
-    #define _MM256_EXTRACTF(ymm_,i_) _mm256_cvtss_f32(_mm256_castsi256_ps(_mm256_set1_epi32(_mm256_extract_epi32(_mm256_castps_si256(ymm_),i_))))
-#endif
+#ifndef _MM256_EXTRACTF
+    #ifdef HAVE_M256_DIRECT_INDEX
+        #define _MM256_EXTRACTF(ymm_,i_) ymm_[i_]
+    #elif defined HAVE_M256_MEMBER_INDEX
+        #define _MM256_EXTRACTF(ymm_,i_) ymm_.m256_f32[i_]
+    #else
+        //This looks awful, but almost all of these intrinsics simply reinterpret bits and generate no actual instructions.
+        #define _MM256_EXTRACTF(ymm_,i_) _mm256_cvtss_f32(_mm256_castsi256_ps(_mm256_set1_epi32(_mm256_extract_epi32(_mm256_castps_si256(ymm_),i_))))
+    #endif
+#endif  // _MM256_EXTRACTF
 
-#ifndef CODA_OSS_mm256_extractf_DEFINED_
-    #define CODA_OSS_mm256_extractf_DEFINED_ 1
-
-    #include <immintrin.h>
-    namespace sys
-    {
-        template <typename T>
-        inline T& mm256_extractf_(T& ymm, int i)
-        {
-            //This looks awful, but almost all of these intrinsics simply reinterpret bits and generate no actual instructions.
-            #define CODA_OSS_sys_MM256_EXTRACTF_(ymm_,i_) _mm256_cvtss_f32(_mm256_castsi256_ps(_mm256_set1_epi32(_mm256_extract_epi32(_mm256_castps_si256(ymm_),i_))))
-            return CODA_OSS_sys_MM256_EXTRACTF_(ymm, i);
-        }
-        template <typename T>
-        inline float& mm256_extractf(T& ymm, int i)
-        {
-            #if defined(__GNUC__)
-                return ymm[i];
-            #elif defined(_MSC_VER)
-                return ymm.m256_f32[i];
-            #else
-                return mm256_extractf_(ymm, i);
-            #endif
-        }
-    }
-
-#endif
 
 #endif  // CODA_OSS_config_compiler_extentions_h_INCLUDED_

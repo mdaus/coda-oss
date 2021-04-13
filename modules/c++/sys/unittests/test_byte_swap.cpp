@@ -28,7 +28,6 @@
 #include <std/cstddef>
 
 #include <sys/Conf.h>
-#include <config/compiler_extensions.h>
 
 namespace
 {
@@ -154,26 +153,7 @@ TEST_CASE(testByte)
     test_byte_<std::byte>(testName);
     #endif
 }
-
-TEST_CASE(m256)
-{
-    #if defined(__GNUC__)
-        // direct_m256_extract_str
-        __m256 ymm = _mm256_setzero_ps();
-        float val = ymm[7];
-    #elif defined(_MSC_VER)
-        // member_m256_extract_str
-        __m256 ymm = _mm256_setzero_ps();
-        float val = ymm.m256_f32[7];
-    #else
-        float ymm = 0.0;
-        float val = sys::mm256_extractf(ymm, 7);
-        val = sys::mm256_extractf_(ymm, 7);
-#endif
-
-    val = sys::mm256_extractf(ymm, 7);
-}
-    
+   
 }
 
 int main(int /*argc*/, char** /*argv*/)
@@ -182,8 +162,6 @@ int main(int /*argc*/, char** /*argv*/)
     TEST_CHECK(testEndianness);
     TEST_CHECK(testEndianness_std);
     TEST_CHECK(testByte);
-
-    TEST_CHECK(m256);
 
     return 0;
 }
