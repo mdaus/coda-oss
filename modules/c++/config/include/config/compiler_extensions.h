@@ -49,8 +49,6 @@
 	#endif
 #endif // CODA_OSS_attribute_aligned_DEFINED_
 
-#endif // CODA_OSS_config_compiler_extentions_h_INCLUDED_
-
 #ifdef HAVE_ATTRIBUTE_NOINLINE
 
 #define ATTRIBUTE_NOINLINE __attribute__((noinline))
@@ -103,4 +101,4 @@
 #endif
 
 
-#endif
+#endif // CODA_OSS_config_compiler_extentions_h_INCLUDED_
