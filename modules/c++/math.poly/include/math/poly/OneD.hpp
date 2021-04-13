@@ -54,11 +54,11 @@ OneD<_T>::integrate(double start, double end) const
    double endAtPwr = end;
    double startAtPwr = start;
    double div = 0;
-   double newCoef;
-   for (size_t i = 0, sz = mCoef.size(); i < sz; i++)
+   const auto sz = mCoef.size();
+   for (size_t i = 0; i < sz; i++)
    {
       div = 1.0 / (i + 1);
-      newCoef = mCoef[i] * div;
+      const double newCoef = mCoef[i] * div;
       ret += newCoef * endAtPwr;
       ret -= newCoef * startAtPwr;
       endAtPwr *= end;
@@ -181,8 +181,7 @@ OneD<_T>::operator [] (size_t i)
         std::stringstream str;
         str << "index: " << i << " not within range [0..."
             << mCoef.size() << ")";
-        std::string msg(str.str());
-        throw except::IndexOutOfRangeException(Ctxt(msg));
+        throw except::IndexOutOfRangeException(Ctxt(str.str()));
     }
 }
 
@@ -199,8 +198,7 @@ OneD<_T>::operator [] (size_t i) const
    {
       std::stringstream str;
       str << "idx(" << i << ") not within range [0..." << mCoef.size() << ")";
-      std::string msg(str.str());
-      throw except::IndexOutOfRangeException(Ctxt(msg));
+      throw except::IndexOutOfRangeException(Ctxt(str.str()));
    }
 }
 
@@ -350,7 +348,7 @@ OneD<_T> OneD<_T>::power(size_t toThe) const
     if (toThe == 0)
     {
         OneD<_T> zero(0);
-        zero[0] = _T(1);
+        zero[0] = static_cast<_T>(1);
         return zero;
     }
 

@@ -883,7 +883,6 @@ public:
         }
 
         std::vector<_T> colj(mM);
-        _T* rowi;
 
         for (size_t j = 0; j < mN; j++)
         {
@@ -894,7 +893,7 @@ public:
 
             for (size_t i = 0; i < mM; i++)
             {
-                rowi = lu[i];
+                auto rowi = lu[i];
 
                 const auto max = std::min<size_t>(i, j);
                 _T s(0);
