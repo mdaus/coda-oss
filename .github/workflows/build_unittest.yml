@@ -78,7 +78,8 @@ jobs:
       run: |
         pip install numpy
         mkdir installLinux-Github
-        python waf configure --with-optz=fastest --prefix="$PWD/installLinux-Github"
+        # test_os.cpp is a little fritzy w/o --enable-debugging
+        python waf configure --enable-debugging --prefix="$PWD/installLinux-Github"
     - name: build
       run: |
         python waf build
@@ -103,7 +104,7 @@ jobs:
       run: |
         pip install numpy
         mkdir installLinux-Github
-        python waf configure --with-optz=fastest --prefix="$PWD/installLinux-Github"
+        python waf configure --prefix="$PWD/installLinux-Github"
     - name: build
       run: |
         python waf build
