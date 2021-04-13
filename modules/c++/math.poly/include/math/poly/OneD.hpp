@@ -102,7 +102,8 @@ OneD<_T>::derivative() const
     if (order() > 0)
     {
         ret = OneD<_T>(order()-1);
-        for (size_t ii = 0, sz = mCoef.size() - 1; ii < sz; ii++)
+        const auto sz = mCoef.size() - 1;
+        for (size_t ii = 0; ii < sz; ii++)
         {
             ret[ii] = static_cast<_T>(mCoef[ii + 1] * (ii + 1));
         }
@@ -217,7 +218,8 @@ template<typename _T>
 OneD<_T>&
 OneD<_T>::operator *= (double cv)
 {
-    for (size_t i = 0, sz = mCoef.size() ; i < sz; i++)
+    const auto sz = mCoef.size();
+    for (size_t i = 0; i < sz; i++)
     {
         mCoef[i] *= cv;
     }
@@ -272,13 +274,19 @@ OneD<_T>&
 OneD<_T>::operator += (const OneD<_T>& p)
 {
     OneD<_T> tmp(std::max<size_t>(order(), p.order()));
-    for (size_t i = 0, sz = mCoef.size() ; i < sz; i++)
     {
-        tmp.mCoef[i] = mCoef[i];
+        const auto sz = mCoef.size();
+        for (size_t i = 0; i < sz; i++)
+        {
+            tmp.mCoef[i] = mCoef[i];
+        }
     }
-    for (size_t i = 0, sz = p.mCoef.size() ; i < sz; i++)
     {
-        tmp.mCoef[i] += p.mCoef[i];
+        const auto sz = p.mCoef.size();
+        for (size_t i = 0; i < sz; i++)
+        {
+            tmp.mCoef[i] += p.mCoef[i];
+        }
     }
    *this = tmp;
    return *this;

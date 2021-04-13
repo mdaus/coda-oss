@@ -239,9 +239,11 @@ TwoD<_T>&
 TwoD<_T>::operator *= (const TwoD<_T>& p)
 {
     TwoD<_T> tmp(orderX() + p.orderX(), orderY() + p.orderY());
-    for (size_t i = 0, xsz = mCoef.size(); i < xsz; i++)
+    const auto xsz = mCoef.size();
+    const auto ysz = p.mCoef.size();
+    for (size_t i = 0; i < xsz; i++)
     {
-        for (size_t j = 0, ysz = p.mCoef.size(); j < ysz; j++)
+        for (size_t j = 0; j < ysz; j++)
         {
             tmp.mCoef[i + j] += mCoef[i] * p.mCoef[j];
         }
