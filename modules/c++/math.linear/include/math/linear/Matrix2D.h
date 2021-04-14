@@ -137,7 +137,10 @@ public:
         mRaw(mStorage.get())
     {
         // use mMN endpoint, since mMN can be less than raw.size()
-        std::copy(raw.begin(), raw.begin()+mMN, mRaw);
+        const auto begin = raw.begin();
+        auto end = begin;
+        std::advance(end, static_cast<ptrdiff_t>(mMN));
+        std::copy(begin, end, mRaw);
     }
     /*!
      *  Supports explicit assignment from
@@ -1184,14 +1187,15 @@ template<typename _T>
             }
         }
     }
-    for (sys::SSize_T kk = N - 1; kk >= 0; kk--)
+    for (auto kk_ = static_cast<sys::SSize_T>(N) - 1; kk_ >= 0; kk_--)
     {
+        const auto kk = static_cast<size_t>(kk_);
         for (size_t jj = 0; jj < P; jj++)
         {
             x(kk, jj) /= lu(kk, kk);
         }
 
-        for (size_t ii = 0; ii < static_cast<size_t>(kk); ii++)
+        for (size_t ii = 0; ii < kk; ii++)
         {
             // This one could be _Q
             for (size_t jj = 0; jj < P; jj++)
