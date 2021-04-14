@@ -31,6 +31,7 @@
 
 #if CODA_OSS_use_real_gsl
 #include "gsl/span"				// span
+#include "gsl/span_ext"				// make_span
 #else
  namespace gsl
  {
