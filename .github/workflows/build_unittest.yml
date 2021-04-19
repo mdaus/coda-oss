@@ -87,6 +87,9 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.7'
+    - name: Get latest CMake and ninja
+      # Using 'latest' branch, the most recent CMake and ninja are installed.
+      uses: lukka/get-cmake@latest        # THIS IS THE ONE LINER YOU NEED
     - name: configure
       run: |
         ls env:
@@ -110,13 +113,15 @@ jobs:
   build-linux-cmake-ninja:
     name: Linux
     runs-on: [ubuntu-latest]
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.7'
+    - name: Get latest CMake and ninja
+      # Using 'latest' branch, the most recent CMake and ninja are installed.
+      uses: lukka/get-cmake@latest        # THIS IS THE ONE LINER YOU NEED
     - name: configure
       run: |
         env
