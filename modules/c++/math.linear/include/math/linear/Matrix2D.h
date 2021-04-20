@@ -78,11 +78,15 @@ class Matrix2D
     //!  pointer to the raw storage
     _T* mRaw = nullptr;
 
-    Matrix2D(size_t M, size_t N, std::nullptr_t) :
-        mM(M), mN(N), mMN(M*N),
-        mStorage(mem::make::unique<_T[]>(mMN)),
-        mRaw(mStorage.get())
+    void reset()
     {
+        mStorage = mem::make::unique<_T[]>(mMN);
+        mRaw = mStorage.get();
+    }
+    Matrix2D(size_t M, size_t N, std::nullptr_t) :
+        mM(M), mN(N), mMN(M*N)
+    {
+        reset();
     }
 
 public:
@@ -211,9 +215,7 @@ public:
             mM  = mx.mM;
             mN  = mx.mN;
             mMN = mx.mMN;
-
-            mStorage = mem::make::unique<_T[]>(mMN);
-            mRaw = mStorage.get();
+            reset();
 
             std::copy(mx.mRaw, mx.mRaw+mMN, mRaw);
         }
@@ -237,8 +239,7 @@ public:
         mM  = 1;
         mN  = 1;
         mMN = 1;
-        mStorage = mem::make::unique<_T[]>(1);
-        mRaw = mStorage.get();
+        reset();
         mRaw[0] = sv;
         return *this;
     }
@@ -1108,8 +1109,7 @@ public:
         ar & mMN;
         if (Archive::is_loading::value)
         {
-            mStorage.reset(new _T[mMN]);
-            mRaw = mStorage.get();
+            reset();
         }
         for (size_t ii = 0; ii < mMN; ++ii)
         {
