@@ -3,22 +3,90 @@ name: build_unittest
 on: [push]
 
 jobs:
-  build-windows-cmake:
+#  build-windows-cmake-default:
+    #name: Windows
+    #runs-on: [windows-latest]
+
+    #steps:
+    #- uses: actions/checkout@v2
+    #- name: Set up Python
+      #uses: actions/setup-python@v2
+      #with:
+        #python-version: '3.7'
+    #- name: configure
+      #run: |
+        #ls env:
+        #mkdir target
+        #cd target
+        #cmake .. -DCMAKE_INSTALL_PREFIX=installWindows-Github -DPYTHON_VERSION="3.7"
+    #- name: build
+      #run: |
+        #cd target
+        #cmake --build . --config Release -j
+    #- name: install
+      #run: |
+        #cd target
+        #cmake --build . --config Release --target install
+    #- name: test
+      #run: |
+        #cd target
+        #ctest -C Release
+
+
+#  build-linux-cmake-default:
+    #name: Linux
+    #runs-on: [ubuntu-latest]
+
+    #steps:
+    #- uses: actions/checkout@v2
+    #- name: Set up Python
+      #uses: actions/setup-python@v2
+      #with:
+        #python-version: '3.7'
+    #- name: configure
+      #run: |
+        #env
+        #which python
+        #mkdir target
+        #cd target
+        #cmake .. -DCMAKE_INSTALL_PREFIX=installLinux-Github -DPYTHON_VERSION=3.7
+    #- name: build
+      #run: |
+        #cd target
+        #cmake --build . -j
+    #- name: install
+      #run: |
+        #cd target
+        #cmake --build . --target install
+    #- name: test
+      #run: |
+        #cd target
+        #ctest
+
+
+  build-windows-cmake-ninja:
     name: Windows
     runs-on: [windows-latest]
 
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: adam-beauchamp/setup-python@v2
       with:
-        python-version: '3.7'
+        python-version: '3.8'
+    - name: Get latest CMake and ninja
+      # Using 'latest' branch, the most recent CMake and ninja are installed.
+      uses: lukka/get-cmake@latest        # THIS IS THE ONE LINER YOU NEED
+    - name: Setup msvc compiler
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: 'x64'
     - name: configure
       run: |
         ls env:
         mkdir target
         cd target
-        cmake .. -DCMAKE_INSTALL_PREFIX=installWindows-Github -DPYTHON_VERSION="3.7"
+        cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=installWindows-Github -DPYTHON_VERSION="3.8"
     - name: build
       run: |
         cd target
@@ -33,84 +101,88 @@ jobs:
         ctest -C Release
 
 
-  build-linux-cmake:
-    name: Linux
-    runs-on: [ubuntu-latest]
+#  build-linux-cmake-ninja:
+    #name: Linux
+    #runs-on: [ubuntu-latest]
+    #steps:
+    #- uses: actions/checkout@v2
+    #- name: Set up Python
+      #uses: actions/setup-python@v2
+      #with:
+        #python-version: '3.7'
+    #- name: Get latest CMake and ninja
+      ## Using 'latest' branch, the most recent CMake and ninja are installed.
+      #uses: lukka/get-cmake@latest        # THIS IS THE ONE LINER YOU NEED
+    #- name: configure
+      #run: |
+        #env
+        #which python
+        #mkdir target
+        #cd target
+        #cmake .. -G Ninja -DCMAKE_INSTALL_PREFIX=installLinux-Github -DPYTHON_VERSION=3.7
+    #- name: build
+      #run: |
+        #cd target
+        #cmake --build . -j
+    #- name: install
+      #run: |
+        #cd target
+        #cmake --build . --target install
+    #- name: test
+      #run: |
+        #cd target
+        #ctest
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.7'
-    - name: configure
-      run: |
-        env
-        which python
-        mkdir target
-        cd target
-        cmake .. -DCMAKE_INSTALL_PREFIX=installLinux-Github -DPYTHON_VERSION=3.7
-    - name: build
-      run: |
-        cd target
-        cmake --build . -j
-    - name: install
-      run: |
-        cd target
-        cmake --build . --target install
-    - name: test
-      run: |
-        cd target
-        ctest
 
 
-  build-windows-waf:
-    name: Windows
-    runs-on: [windows-latest]
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.7'
-    - name: configure
-      run: |
-        pip install numpy
-        mkdir installLinux-Github
-        # test_os.cpp is a little fritzy w/o --enable-debugging
-        python waf configure --enable-debugging --prefix="$PWD/installLinux-Github"
-    - name: build
-      run: |
-        python waf build
-    - name: install
-      run: |
-        python waf install
-    - name: test
-      run: |
-        python waf install --alltests
+#  build-windows-waf:
+    #name: Windows
+    #runs-on: [windows-latest]
 
-  build-linux-waf:
-    name: Linux
-    runs-on: [ubuntu-latest]
+    #steps:
+    #- uses: actions/checkout@v2
+    #- name: Set up Python
+      #uses: actions/setup-python@v2
+      #with:
+        #python-version: '3.7'
+    #- name: configure
+      #run: |
+        #pip install numpy
+        #mkdir installLinux-Github
+        ## test_os.cpp is a little fritzy w/o --enable-debugging
+        #python waf configure --enable-debugging --prefix="$PWD/installLinux-Github"
+    #- name: build
+      #run: |
+        #python waf build
+    #- name: install
+      #run: |
+        #python waf install
+    #- name: test
+      #run: |
+        #python waf install --alltests
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.7'
-    - name: configure
-      run: |
-        pip install numpy
-        mkdir installLinux-Github
-        python waf configure --prefix="$PWD/installLinux-Github"
-    - name: build
-      run: |
-        python waf build
-    - name: install
-      run: |
-        python waf install
-    - name: test
-      run: |
-        python waf install --alltests
+  #build-linux-waf:
+    #name: Linux
+    #runs-on: [ubuntu-latest]
+
+    #steps:
+    #- uses: actions/checkout@v2
+    #- name: Set up Python
+      #uses: actions/setup-python@v2
+      #with:
+        #python-version: '3.7'
+    #- name: configure
+      #run: |
+        #pip install numpy
+        #mkdir installLinux-Github
+        #python waf configure --prefix="$PWD/installLinux-Github"
+    #- name: build
+      #run: |
+        #python waf build
+    #- name: install
+      #run: |
+        #python waf install
+    #- name: test
+      #run: |
+        #python waf install --alltests
