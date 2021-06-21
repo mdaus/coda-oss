@@ -51,11 +51,17 @@
             #error "Both __OPTIMIZE__ and _GLIBCXX_DEBUG"
         #endif
 
-        #if __NO_INLINE__ || defined(_GLIBCXX_DEBUG)
+        #if defined(_GLIBCXX_DEBUG)
             #ifdef NDEBUG
-                #error "NDEBUG #define''d for debug build."
+                #error "NDEBUG #define''d with _GLIBCXX_DEBUG."
             #endif
             #define CODA_OSS_DEBUG 1
+        #elif __NO_INLINE__
+            #ifdef NDEBUG
+                #define CODA_OSS_DEBUG 0
+            #else
+                #define CODA_OSS_DEBUG 1
+           #endif
         #elif __OPTIMIZE__
             #ifndef NDEBUG
                 //#error "NDEBUG should be #define'd with __OPTIMIZE__"
