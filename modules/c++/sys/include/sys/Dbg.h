@@ -24,6 +24,7 @@
 
 #ifndef CODA_OSS_sys_Dbg_h_INCLUDED_
 #define CODA_OSS_sys_Dbg_h_INCLUDED_
+#pragma once
 
 // A "debug" build has debugging symbols, detailed call stacks, minimal optimization, STL validation, etc.
 // A "release" build is likely to "run fast" and be "shipped;" it might lack much of what is in a "debug" build.
@@ -45,9 +46,15 @@
                 //#error "NDEBUG should be #define'd with __OPTIMIZE__"
             #endif
             #define CODA_OSS_DEBUG 0
-        #else
+        // https://gcc.gnu.org/onlinedocs/libstdc++/manual/debug_mode_using.html#debug_mode.using.mode
+        #elif defined(_GLIBCXX_DEBUG)
+            #ifdef NDEBUG
+                #error "NDEBUG #define'd with _GLIBCXX_DEBUG"
+            #endif
             #define CODA_OSS_DEBUG 1
-        #endif  // __OPTIMIZE__
+        #else
+            #define CODA_OSS_DEBUG 0
+        #endif // __OPTIMIZE__
     #else	
         //#error "Can't #define CODA_OSS_DEBUG for this compiler."
         #ifdef NDEBUG  // https://en.cppreference.com/w/c/error/assert
