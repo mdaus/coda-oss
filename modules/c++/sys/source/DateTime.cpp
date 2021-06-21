@@ -621,7 +621,7 @@ int sys::details::localtime_s(tm* t, const time_t* numSecondsSinceEpoch)
 {
     #if CODA_OSS_POSIX_SOURCE || _WIN32
     (void)t; (void)numSecondsSinceEpoch;
-    throw std::logic_error("Should be calling OS-specific routine.");
+    throw std::logic_error(std::string("Should be calling OS-specific routine."));
     #else
     return time_s(localtime, t, numSecondsSinceEpoch);
     #endif
@@ -630,7 +630,7 @@ int sys::details::gmtime_s(tm* t, const time_t* numSecondsSinceEpoch)
 {
     #if CODA_OSS_POSIX_SOURCE || _WIN32
     (void)t; (void)numSecondsSinceEpoch;
-    throw std::logic_error("Should be calling OS-specific routine.");
+    throw std::logic_error(std::string("Should be calling OS-specific routine."));
     #else
     return time_s(gmtime, t, numSecondsSinceEpoch);
     #endif
