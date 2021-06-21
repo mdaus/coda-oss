@@ -31,43 +31,74 @@
 #ifndef CODA_OSS_DEBUG
     #if defined(_MSC_VER)
         // https://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=msvc-160
-        #if _DEBUG // "Defined as 1 ... . Otherwise, undefined."
+        #if defined(_DEBUG) && _DEBUG // "Defined as 1 ... . Otherwise, undefined."
             #ifdef NDEBUG
                 #error "NDEBUG #define'd with _DEBUG"
             #endif
             #define CODA_OSS_DEBUG 1
         #else
             #define CODA_OSS_DEBUG 0
-        #endif // _DEBUG
-    #elif defined(__GNUC__)
+        #endif
+    #endif // _MSC_VER
+
+    #if defined(__GNUC__)
         // https://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html#Common-Predefined-Macros
-        #if __OPTIMIZE__ // "... is defined ... . If they are defined, their value is 1."
+        // https://gcc.gnu.org/onlinedocs/libstdc++/manual/debug_mode_using.html#debug_mode.using.mode
+        #if __OPTIMIZE__ && __NO_INLINE__
+            #error "Both __OPTIMIZE__ and __NO_INLINE__"
+        #endif
+        #if __OPTIMIZE__ && defined(_GLIBCXX_DEBUG)
+            #error "Both __OPTIMIZE__ and _GLIBCXX_DEBUG"
+        #endif
+
+        #if __NO_INLINE__ || defined(_GLIBCXX_DEBUG)
+            #ifdef NDEBUG
+                #error "NDEBUG #define''d for debug build."
+            #endif
+            #define CODA_OSS_DEBUG 1
+        #elif __OPTIMIZE__
             #ifndef NDEBUG
                 //#error "NDEBUG should be #define'd with __OPTIMIZE__"
             #endif
             #define CODA_OSS_DEBUG 0
-        // https://gcc.gnu.org/onlinedocs/libstdc++/manual/debug_mode_using.html#debug_mode.using.mode
-        #elif defined(_GLIBCXX_DEBUG)
-            #ifdef NDEBUG
-                #error "NDEBUG #define'd with _GLIBCXX_DEBUG"
-            #endif
-            #define CODA_OSS_DEBUG 1
         #else
-            #define CODA_OSS_DEBUG 0
-        #endif // __OPTIMIZE__
-    #else	
+            #error "Can't #define CODA_OSS_DEBUG for __GNUC__."
+        #endif
+    #endif // __GNUC__
+
+    // TODO: ... other compilers ...
+
+    #ifndef CODA_OSS_DEBUG
         //#error "Can't #define CODA_OSS_DEBUG for this compiler."
         #ifdef NDEBUG  // https://en.cppreference.com/w/c/error/assert
             #define CODA_OSS_DEBUG 0  // NDEBUG = "No DEBUG"
         #else
             #define CODA_OSS_DEBUG 1
         #endif  // NDEBUG
-    #endif  
+    #endif  // CODA_OSS_DEBUG
 #endif // CODA_OSS_DEBUG
-// Be sure NDEBUG and CODA_OSS_DEBUG are in-sync
-// GCC doesn't set NDEBUG w/__OPTIMIZE__ (see above), so we can't be too rigorous
-#if CODA_OSS_DEBUG && defined(NDEBUG)
-   #error "Both CODA_OSS_DEBUG and NDEBUG are set."
+#ifndef CODA_OSS_DEBUG
+    #error "CODA_OSS_DEBUG is not set."
+#endif
+
+// Set CODA_OSS_NDEBUG for consistency with NDEBUG
+#if !defined(CODA_OSS_NDEBUG)
+    #if defined(NDEBUG)
+        #define CODA_OSS_NDEBUG NDEBUG
+    #else
+        #define CODA_OSS_NDEBUG !CODA_OSS_DEBUG
+    #endif // NDEBUG
+#endif // CODA_OSS_NDEBUG
+#if CODA_OSS_DEBUG && CODA_OSS_NDEBUG
+    #error "CODA_OSS_DEBUG && CODA_OSS_NDEBUG" 
+#endif
+#if !CODA_OSS_DEBUG && !CODA_OSS_NDEBUG
+    #error "!CODA_OSS_DEBUG && !CODA_OSS_NDEBUG"
+#endif
+
+// #define NDEBUG as other code could depend on it; such as assert()
+#if !defined(NDEBUG)
+    #define NDEBUG CODA_OSS_NDEBUG
 #endif
 
 #include <stdio.h>
@@ -83,8 +114,17 @@
 
 namespace sys
 {
-constexpr auto debug_build = CODA_OSS_DEBUG ? true : false;
-constexpr auto release_build = !debug_build;
+
+    // compile-time for Dbg.h
+    constexpr auto debug = CODA_OSS_DEBUG ? true : false;
+    constexpr auto release = !debug;
+
+    // build-time for Dbg.cpp; may be different than above
+    extern bool debug_build();
+    inline bool release_build()
+    {
+        return !debug_build();
+    }
 }
 
 #ifndef DEBUG_STREAM
