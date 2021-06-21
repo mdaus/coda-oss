@@ -16,21 +16,34 @@ jobs:
     - name: configure
       run: |
         ls env:
-        mkdir target
-        cd target
+        mkdir target-Release
+        cd target-Release
+        cmake .. -DCMAKE_INSTALL_PREFIX=installWindowsCMake-Github -DPYTHON_VERSION="3.7"
+        cd ..
+        mkdir target-Debug
+        cd target-Debug
         cmake .. -DCMAKE_INSTALL_PREFIX=installWindowsCMake-Github -DPYTHON_VERSION="3.7"
     - name: build
       run: |
-        cd target
+        cd target-Release
         cmake --build . --config Release -j
+        cd ..
+        cd target-Debug
+        cmake --build . --config Debug -j
     - name: install
       run: |
-        cd target
+        cd target-Release
         cmake --build . --config Release --target install
+        cd ..
+        cd target-Debug
+        cmake --build . --config Debug --target install
     - name: test
       run: |
-        cd target
+        cd target-Release
         ctest -C Release
+        cd ..
+        cd target-Debug
+        ctest -C Debug
 
 
   build-linux-cmake:
@@ -78,7 +91,7 @@ jobs:
       run: |
         pip install numpy
         mkdir installWindowsWaf-Github
-        python waf configure --prefix="$PWD/installWindowsWaf-Github"
+        python waf configure --prefix="$PWD/installWindowsWaf-Github" --enable-debugging
     - name: build
       run: |
         python waf build
@@ -103,7 +116,7 @@ jobs:
       run: |
         pip install numpy
         mkdir installLinuxWaf-Github
-        python waf configure --prefix="$PWD/installLinuxWaf-Github"
+        python waf configure --prefix="$PWD/installLinuxWaf-Github" --enable-debugging
     - name: build
       run: |
         python waf build
