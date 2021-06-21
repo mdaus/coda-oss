@@ -53,7 +53,7 @@ template<typename T> class RowCol
     static T cast(const Other_T& t) 
     {
         //return static_cast<T>(t);
-        return gsl::narrow<T>(t);
+        return gsl::narrow_cast<T>(t);
     }
 
 public:
