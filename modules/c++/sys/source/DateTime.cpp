@@ -598,12 +598,13 @@ std::string sys::DateTime::format(const std::string& formatStr) const
     return std::string(str);
 }
 
+#if !CODA_OSS_POSIX_SOURCE &&  !_WIN32
+// Wrap localtime() and gmtime() to make them almost thread-safe.
+// For OSes that don't have their own (not Windows and not Linux).
+
 // https://en.cppreference.com/w/c/chrono/localtime
 // "The structure may be shared between gmtime, localtime, and ctime ... ."
 static std::mutex g_dateTimeMutex;
-
-// Wrap localtime() and gmtime() to make them almost thread-safe.
-// For OSes that don't have their own (not Windows and not Linux).
 template<typename F>
 static inline int time_s_(F f, tm* t, const time_t* numSecondsSinceEpoch)
 {
@@ -617,26 +618,15 @@ static inline int time_s_(F f, tm* t, const time_t* numSecondsSinceEpoch)
     *t = *result;
     return 0; // no error
 }
-static int localtime_s_(tm* t, const time_t* numSecondsSinceEpoch)
+static inline int localtime_s_(tm* t, const time_t* numSecondsSinceEpoch)
 {
-    #if CODA_OSS_POSIX_SOURCE || _WIN32
-    // Should never call this code-path at run-time, see below.
-    (void)t; (void)numSecondsSinceEpoch;
-    throw std::logic_error(std::string("Should be calling OS-specific routine."));
-    #else
     return time_s_(localtime, t, numSecondsSinceEpoch);
-    #endif
 }
-static int gmtime_s_(tm* t, const time_t* numSecondsSinceEpoch)
+static inline int gmtime_s_(tm* t, const time_t* numSecondsSinceEpoch)
 {
-    #if CODA_OSS_POSIX_SOURCE || _WIN32
-    // Should never call this code-path at run-time, see below.
-    (void)t; (void)numSecondsSinceEpoch;
-    throw std::logic_error(std::string("Should be calling OS-specific routine."));
-    #else
     return time_s_(gmtime, t, numSecondsSinceEpoch);
-    #endif
 }
+#endif // !(CODA_OSS_POSIX_SOURCE || _WIN32)
 
 void sys::DateTime::localtime(time_t numSecondsSinceEpoch, tm& t)
 {
