@@ -86,23 +86,7 @@
     #endif  // CODA_OSS_DEBUG
 #endif // CODA_OSS_DEBUG
 #ifndef CODA_OSS_DEBUG
-    #error "CODA_OSS_DEBUG is not set."
-#endif
-
-// Set CODA_OSS_NDEBUG for consistency with NDEBUG
-#if !defined(CODA_OSS_NDEBUG) && defined(NDEBUG)
-    #define CODA_OSS_NDEBUG NDEBUG
-#endif // CODA_OSS_NDEBUG
-#if CODA_OSS_DEBUG && defined(CODA_OSS_NDEBUG)
-    #error "CODA_OSS_DEBUG && CODA_OSS_NDEBUG" 
-#endif
-#if !CODA_OSS_DEBUG && !defined(CODA_OSS_NDEBUG)
-    #error "!CODA_OSS_DEBUG && !CODA_OSS_NDEBUG"
-#endif
-
-// #define NDEBUG as other code could depend on it; such as assert()
-#if !defined(NDEBUG) && defined(CODA_OSS_NDEBUG)
-    #define NDEBUG CODA_OSS_NDEBUG
+    #error CODA_OSS_DEBUG is not set.
 #endif
 
 #include <stdio.h>
