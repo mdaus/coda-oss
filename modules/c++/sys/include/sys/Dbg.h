@@ -41,6 +41,8 @@
         #endif
     #endif // _MSC_VER
 
+    // GCC has a "neither" mode with no flags; no -O (optimization) and no -g (debugging);
+    // that doesn't seem very useful, so try to figure out something that makes sense.
     #if defined(__GNUC__)
         // https://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html#Common-Predefined-Macros
         // https://gcc.gnu.org/onlinedocs/libstdc++/manual/debug_mode_using.html#debug_mode.using.mode
@@ -88,22 +90,18 @@
 #endif
 
 // Set CODA_OSS_NDEBUG for consistency with NDEBUG
-#if !defined(CODA_OSS_NDEBUG)
-    #if defined(NDEBUG)
-        #define CODA_OSS_NDEBUG NDEBUG
-    #else
-        #define CODA_OSS_NDEBUG !CODA_OSS_DEBUG
-    #endif // NDEBUG
+#if !defined(CODA_OSS_NDEBUG) && defined(NDEBUG)
+    #define CODA_OSS_NDEBUG NDEBUG
 #endif // CODA_OSS_NDEBUG
-#if CODA_OSS_DEBUG && CODA_OSS_NDEBUG
+#if CODA_OSS_DEBUG && defined(CODA_OSS_NDEBUG)
     #error "CODA_OSS_DEBUG && CODA_OSS_NDEBUG" 
 #endif
-#if !CODA_OSS_DEBUG && !CODA_OSS_NDEBUG
+#if !CODA_OSS_DEBUG && !defined(CODA_OSS_NDEBUG)
     #error "!CODA_OSS_DEBUG && !CODA_OSS_NDEBUG"
 #endif
 
 // #define NDEBUG as other code could depend on it; such as assert()
-#if !defined(NDEBUG)
+#if !defined(NDEBUG) && defined(CODA_OSS_NDEBUG)
     #define NDEBUG CODA_OSS_NDEBUG
 #endif
 
@@ -125,7 +123,9 @@ namespace sys
     constexpr auto debug = CODA_OSS_DEBUG ? true : false;
     constexpr auto release = !debug;
 
-    // build-time for Dbg.cpp; may be different than above
+    // build-time for Dbg.cpp; may (although shouldn't) be different than above.
+    // C++ says little about debug/release/optimize/etc. (there's NDEBUG inherited from C);
+    // but mixing is likely to cause all kinds of problems.
     extern bool debug_build();
     inline bool release_build()
     {
