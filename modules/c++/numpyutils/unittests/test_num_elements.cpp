@@ -20,8 +20,8 @@
  *
  */
 
-#include <TestCase.h>
 #include <numpyutils/numpyutils.h>
+#include <TestCase.h>
 
 namespace
 {
