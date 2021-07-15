@@ -22,6 +22,7 @@
 
 #include <TestCase.h>
 #include <units/Angles.h>
+#include <units/Lengths.h>
 
 namespace
 {
@@ -47,11 +48,22 @@ TEST_CASE(test_degrees)
     TEST_ASSERT_ALMOST_EQ(1.0, cos(degrees_360));
 }
 
+TEST_CASE(test_lengths)
+{
+    // These are part of "scene" not "six", but there aren't any unittests there
+    const units::Feet<double> feet_3 = 3;
+    const units::Meters<double> meters_1 = 1;
+
+   TEST_ASSERT_ALMOST_EQ(toMeters(feet_3).value(), 0.9144);
+    TEST_ASSERT_ALMOST_EQ(toFeet(meters_1).value(), 3.2808398);
+}
+
 }
 
 int main(int /*argc*/, char** /*argv*/)
 {
     TEST_CHECK(test_degrees);
+    TEST_CHECK(test_lengths);
     return 0;
 }
 
