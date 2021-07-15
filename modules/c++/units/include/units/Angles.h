@@ -35,20 +35,17 @@ namespace units
 //
 // Avoid confusion between degrees and radians
 //
-namespace details
-{
 namespace tags
 {
 struct Radians final { };
 struct Degrees final { };
-}
 }
 
 template <typename T, typename Tag>
 using Angle = Unit<T, Tag>;
 
 template <typename T>
-using Radians = Angle<T, details::tags::Radians>;
+using Radians = Angle<T, tags::Radians>;
 template <typename T>
 inline Radians<T> asRadians(T a) noexcept
 {
@@ -61,7 +58,7 @@ inline Radians<TReturn> toRadians(Radians<T> a) noexcept
 }
 
 template <typename T>
-using Degrees = Angle<T, details::tags::Degrees>;
+using Degrees = Angle<T, tags::Degrees>;
 template <typename T>
 inline Degrees<T> asDegrees(T a) noexcept
 {

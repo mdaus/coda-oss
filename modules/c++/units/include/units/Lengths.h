@@ -35,20 +35,17 @@ namespace units
 //
 // Avoid confusion between feet and meters
 //
-namespace details
-{
 namespace tags
 {
 struct Feet final { };
 struct Meters final { };
-}
 }
 
 template <typename T, typename Tag>
 using Length = Unit<T, Tag>;
 
 template <typename T>
-using Feet = Length<T, details::tags::Feet>;
+using Feet = Length<T, tags::Feet>;
 template <typename T>
 inline Feet<T> asFeet(T a) noexcept
 {
@@ -61,7 +58,7 @@ inline Feet<TReturn> toFeet(Feet<T> a) noexcept
 }
 
 template <typename T>
-using Meters = Length<T, details::tags::Meters>;
+using Meters = Length<T, tags::Meters>;
 template <typename T>
 inline Meters<T> asMeters(T a) noexcept
 {
@@ -85,16 +82,13 @@ inline Meters<TReturn> toMeters(Feet<T> a) noexcept
 }
 
 
-namespace details
-{
 namespace tags
 {
 struct NauticalMiles final { };
 }
-}
 
 template <typename T>
-using NauticalMiles = Length<T, details::tags::NauticalMiles>;
+using NauticalMiles = Length<T, tags::NauticalMiles>;
 template <typename T>
 inline NauticalMiles<T> asNauticalMiles(T v) noexcept
 {

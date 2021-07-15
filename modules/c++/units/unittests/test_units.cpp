@@ -54,7 +54,7 @@ TEST_CASE(test_lengths)
     const units::Feet<double> feet_3 = 3;
     const units::Meters<double> meters_1 = 1;
 
-   TEST_ASSERT_ALMOST_EQ(toMeters(feet_3).value(), 0.9144);
+    TEST_ASSERT_ALMOST_EQ(toMeters(feet_3).value(), 0.9144);
     TEST_ASSERT_ALMOST_EQ(toFeet(meters_1).value(), 3.2808398);
 }
 
