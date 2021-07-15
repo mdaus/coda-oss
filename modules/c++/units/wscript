@@ -1,0 +1,10 @@
+from build import writeConfig
+NAME            = 'units'
+VERSION         = '0.1'
+USELIB          = 'MATH'
+MODULE_DEPS     = 'except str sys types math'
+
+options = configure = distclean = lambda p: None
+
+def build(bld):
+    bld.module(**globals())
