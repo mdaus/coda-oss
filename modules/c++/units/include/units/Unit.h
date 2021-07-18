@@ -1,11 +1,11 @@
 /* =========================================================================
- * This file is part of math-c++
+ * This file is part of units-c++
  * =========================================================================
  *
  * (C) Copyright 2004 - 2015, MDA Information Systems LLC
  * (C) Copyright 2021, Maxar Technologies, Inc.
  *
- * math-c++ is free software; you can redistribute it and/or modify
+ * units-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -30,25 +30,48 @@
 namespace units
 {
 //
-// Avoid confusion between different units
+// Simple template to help avoid confusion between different units.
+// 
+// This is intentionally simple for several reasons:
+// * simple and easy to understand and maintain
+// * getting things like "+" or "*" right can be (very) difficult
+// * it's not even clear that doubling a temperature has real meaning
+// * there's really not that much code that needs to manipulate units
 //
-template <typename T, typename Tag>
+template <typename Tag, typename T>
 struct Unit final
 {
-    T value_;
+    using tag_t = Tag;
+    using value_t = T;
+
+    value_t value_;
 
     Unit() = delete;
-    Unit(T v) : value_(v) { }
+    Unit(value_t v) noexcept : value_(v) { }
 
-    T& value()
+    value_t& value() noexcept
     {
         return value_;
     }
-    const T& value() const
+    const value_t& value() noexcept const
     {
         return value_;
     }
 };
+
+template<typename Tag, typename T>
+inline Unit<Tag, T> as(T t) noexcept
+{
+    return Unit<Tag, T>(t);
+}
+
+
+template <typename Tag, typename T, typename TReturn = T>
+inline Unit<Tag, TReturn> to(Unit<Tag, T> v) noexcept
+{
+    return Unit<Tag, TReturn>(v.value());
+}
+
 }
 
 #endif  // CODA_OSS_units_Unit_h_INCLUDED_

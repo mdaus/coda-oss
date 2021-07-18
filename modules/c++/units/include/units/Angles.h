@@ -1,11 +1,11 @@
 /* =========================================================================
- * This file is part of math-c++
+ * This file is part of units-c++
  * =========================================================================
  *
  * (C) Copyright 2004 - 2015, MDA Information Systems LLC
  * (C) Copyright 2021, Maxar Technologies, Inc.
  *
- * math-c++ is free software; you can redistribute it and/or modify
+ * units-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -47,54 +47,44 @@ using Angle = Unit<T, Tag>;
 template <typename T>
 using Radians = Angle<T, tags::Radians>;
 template <typename T>
-inline Radians<T> asRadians(T a) noexcept
+inline Radians<T> asRadians(T v) noexcept
 {
-    return Radians<T>{a};
-}
-template <typename T, typename TReturn = T>
-inline Radians<TReturn> toRadians(Radians<T> a) noexcept
-{
-    return Radians<TReturn>{a.value()};
+    return as<tags::Radians>(v);
 }
 
 template <typename T>
 using Degrees = Angle<T, tags::Degrees>;
 template <typename T>
-inline Degrees<T> asDegrees(T a) noexcept
+inline Degrees<T> asDegrees(T v) noexcept
 {
-    return Degrees<T>{a};
-}
-template <typename T, typename TReturn = T>
-inline Degrees<TReturn> toDegrees(Degrees<T> a) noexcept
-{
-    return Degrees<TReturn>{a.value()};
+    return as<tags::Degrees>(v);
 }
 
-template <typename T, typename TReturn = T>
-inline Radians<TReturn> toRadians(Degrees<T> a) noexcept
+template <typename Tag, typename T, typename TReturn = T>
+inline Radians<TReturn> to(Degrees<T> v) noexcept
 {
-    return Radians<TReturn>{a.value() * math::Constants::DEGREES_TO_RADIANS};
+    return Radians<TReturn>(v.value() * math::Constants::DEGREES_TO_RADIANS);
 }
-template <typename T, typename TReturn = T>
-inline Degrees<TReturn> toDegrees(Radians<T> a) noexcept
+template <typename Tag, typename T, typename TReturn = T>
+inline Degrees<TReturn> to(Radians<T> v) noexcept
 {
-    return Degrees<TReturn>{a.value() * math::Constants::RADIANS_TO_DEGREES};
+    return Degrees<TReturn>(v.value() * math::Constants::RADIANS_TO_DEGREES);
 }
 
 template <typename T, typename Tag>
-inline T sin(Angle<T, Tag> a) noexcept
+inline T sin(Angle<T, Tag> v) noexcept
 {
-    return std::sin(toRadians(a).value());
+    return std::sin(to<tags::Radians>(v).value());
 }
 template <typename T, typename Tag>
-inline T cos(Angle<T, Tag> a) noexcept
+inline T cos(Angle<T, Tag> v) noexcept
 {
-    return std::cos(toRadians(a).value());
+    return std::cos(to<tags::Radians>(v).value());
 }
 template <typename T, typename Tag>
-inline T tan(Angle<T, Tag> a) noexcept
+inline T tan(Angle<T, Tag> v) noexcept
 {
-    return std::tan(toRadians(a).value());
+    return std::tan(to<tags::Radians>(v).value());
 }
 }
 
