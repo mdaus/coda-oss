@@ -1,8 +1,7 @@
-from build import writeConfig
 NAME            = 'units'
-VERSION         = '0.1'
-USELIB          = 'MATH'
-MODULE_DEPS     = 'except str sys types math'
+VERSION         = '1.0'
+MODULE_DEPS     = 'math'
+UNITTEST_DEPS   = 'sys'
 
 options = configure = distclean = lambda p: None
 
