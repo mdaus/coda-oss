@@ -25,20 +25,18 @@
 #ifndef CODA_OSS_units_Unit_h_INCLUDED_
 #define CODA_OSS_units_Unit_h_INCLUDED_
 
-#include <type_traits>
-
 namespace units
 {
 //
 // Simple template to help avoid confusion between different units.
-// 
+//
 // This is intentionally simple for several reasons:
 // * simple and easy to understand and maintain
 // * getting things like "+" or "*" right can be (very) difficult
-// * it's not even clear that doubling a temperature has real meaning
+// * it's not even clear that doubling a temperature or a length of -4 has real meaning
 // * there's really not that much code that needs to manipulate units
 //
-template <typename Tag, typename T>
+template <typename T, typename Tag>
 struct Unit final
 {
     using tag_t = Tag;
@@ -47,29 +45,40 @@ struct Unit final
     value_t value_;
 
     Unit() = delete;
-    Unit(value_t v) noexcept : value_(v) { }
+    constexpr Unit(value_t v) noexcept : value_(v) { }
 
-    value_t& value() noexcept
+    constexpr value_t& value() noexcept
     {
         return value_;
     }
-    const value_t& value() noexcept const
+    constexpr const value_t& value() const noexcept
     {
         return value_;
     }
+
+    template <typename ResultTag = Tag, typename TReturn = T>
+    constexpr Unit<TReturn, ResultTag> to() const noexcept;
 };
 
 template<typename Tag, typename T>
-inline Unit<Tag, T> as(T t) noexcept
+inline constexpr Unit<T, Tag> as(T v) noexcept
 {
-    return Unit<Tag, T>(t);
+    return Unit<T, Tag>(v);
 }
 
-
-template <typename Tag, typename T, typename TReturn = T>
-inline Unit<Tag, TReturn> to(Unit<Tag, T> v) noexcept
+template <typename T, typename Tag, typename ResultTag = Tag, typename TResult = T>
+inline constexpr void convert(Unit<T, Tag> v, Unit<TResult, ResultTag>& result) noexcept
 {
-    return Unit<Tag, TReturn>(v.value());
+    result = as<Tag, TResult>(v.value());
+}
+
+template <typename T, typename Tag>
+template <typename ResultTag, typename TReturn>
+constexpr Unit<TReturn, ResultTag> Unit<T, Tag>::to() const noexcept
+{
+    Unit<TReturn, ResultTag> retval{ 0 };
+    convert(*this, retval);
+    return retval;
 }
 
 }

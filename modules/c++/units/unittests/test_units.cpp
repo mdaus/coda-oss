@@ -28,12 +28,11 @@ namespace
 {
 TEST_CASE(test_degrees)
 {
-    // These are part of "scene" not "six", but there aren't any unittests there
-    const units::Degrees<double> degrees_0 = 0;
-    const auto degrees_90 = units::asDegrees(90.0);
-    const auto degrees_180 = units::asDegrees(180.0);
-    const auto degrees_270 = units::asDegrees(270.0);
-    const auto degrees_360 = units::asDegrees(360.0);
+    constexpr units::Degrees<double> degrees_0 = 0;
+    constexpr units::Degrees<double> degrees_90 = 90;
+    constexpr units::Degrees<double> degrees_180 = 180;
+    constexpr units::Degrees<double> degrees_270 = 270;
+    constexpr units::Degrees<double> degrees_360 = 360;
 
     TEST_ASSERT_ALMOST_EQ(0.0, sin(degrees_0));
     TEST_ASSERT_ALMOST_EQ(1.0, sin(degrees_90));
@@ -50,12 +49,11 @@ TEST_CASE(test_degrees)
 
 TEST_CASE(test_lengths)
 {
-    // These are part of "scene" not "six", but there aren't any unittests there
-    const units::Feet<double> feet_3 = 3;
-    const units::Meters<double> meters_1 = 1;
+    constexpr units::Feet<double> feet_3 = 3;
+    constexpr units::Meters<double> meters_1 = 1;
 
-    TEST_ASSERT_ALMOST_EQ(toMeters(feet_3).value(), 0.9144);
-    TEST_ASSERT_ALMOST_EQ(toFeet(meters_1).value(), 3.2808398);
+    TEST_ASSERT_ALMOST_EQ(feet_3.to<units::tags::Meters>().value(), 0.9144);
+    TEST_ASSERT_ALMOST_EQ(meters_1.to<units::tags::Feet>().value(), 3.2808398);
 }
 
 }

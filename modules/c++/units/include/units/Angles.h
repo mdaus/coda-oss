@@ -39,52 +39,45 @@ namespace tags
 {
 struct Radians final { };
 struct Degrees final { };
+//struct Gradians final { };
 }
 
-template <typename T, typename Tag>
-using Angle = Unit<T, Tag>;
-
-template <typename T>
-using Radians = Angle<T, tags::Radians>;
-template <typename T>
-inline Radians<T> asRadians(T v) noexcept
-{
-    return as<tags::Radians>(v);
-}
+template <typename AngleTag, typename T>
+using Angle = Unit<T, AngleTag>;
 
 template <typename T>
-using Degrees = Angle<T, tags::Degrees>;
+using Radians = Angle<tags::Radians, T>;
+
 template <typename T>
-inline Degrees<T> asDegrees(T v) noexcept
+using Degrees = Angle<tags::Degrees, T>;
+//template <typename T>
+//using Gradians = Angle<tags::Gradians, T>;
+
+template <typename T, typename TResult = T>
+inline constexpr void convert(Radians<T> v, Degrees<TResult>& result) noexcept
 {
-    return as<tags::Degrees>(v);
+    result.value() = v.value() * math::Constants::RADIANS_TO_DEGREES;
+}
+template <typename T, typename TResult = T>
+inline constexpr void convert(Degrees<T> v, Radians<TResult>& result) noexcept
+{
+    result.value() = v.value() * math::Constants::DEGREES_TO_RADIANS;
 }
 
-template <typename Tag, typename T, typename TReturn = T>
-inline Radians<TReturn> to(Degrees<T> v) noexcept
+template <typename Tag, typename T>
+inline T sin(Angle<Tag, T> v) noexcept
 {
-    return Radians<TReturn>(v.value() * math::Constants::DEGREES_TO_RADIANS);
+    return std::sin(v.to<tags::Radians>().value());
 }
-template <typename Tag, typename T, typename TReturn = T>
-inline Degrees<TReturn> to(Radians<T> v) noexcept
+template <typename Tag, typename T>
+inline T cos(Angle<Tag, T> v) noexcept
 {
-    return Degrees<TReturn>(v.value() * math::Constants::RADIANS_TO_DEGREES);
+    return std::cos(v.to<tags::Radians>().value());
 }
-
-template <typename T, typename Tag>
-inline T sin(Angle<T, Tag> v) noexcept
+template <typename Tag, typename T>
+inline T tan(Angle<Tag, T> v) noexcept
 {
-    return std::sin(to<tags::Radians>(v).value());
-}
-template <typename T, typename Tag>
-inline T cos(Angle<T, Tag> v) noexcept
-{
-    return std::cos(to<tags::Radians>(v).value());
-}
-template <typename T, typename Tag>
-inline T tan(Angle<T, Tag> v) noexcept
-{
-    return std::tan(to<tags::Radians>(v).value());
+    return std::tan(v.to<tags::Radians>().value());
 }
 }
 

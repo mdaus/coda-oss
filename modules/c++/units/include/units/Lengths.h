@@ -25,8 +25,6 @@
 #ifndef CODA_OSS_units_Lengths_h_INCLUDED_
 #define CODA_OSS_units_Lengths_h_INCLUDED_
 
-#include <cmath>
-
 #include "math/Constants.h"
 #include "units/Unit.h"
 
@@ -41,46 +39,25 @@ struct Feet final { };
 struct Meters final { };
 }
 
-template <typename T, typename Tag>
-using Length = Unit<T, Tag>;
+template <typename LengthTag, typename T>
+using Length = Unit<T, LengthTag>;
 
 template <typename T>
-using Feet = Length<T, tags::Feet>;
-template <typename T>
-inline Feet<T> asFeet(T a) noexcept
-{
-    return Feet<T>{a};
-}
-template <typename T, typename TReturn = T>
-inline Feet<TReturn> toFeet(Feet<T> a) noexcept
-{
-    return Feet<TReturn>{a.value()};
-}
+using Feet = Length<tags::Feet, T>;
 
 template <typename T>
-using Meters = Length<T, tags::Meters>;
-template <typename T>
-inline Meters<T> asMeters(T a) noexcept
-{
-    return Meters<T>{a};
-}
-template <typename T, typename TReturn = T>
-inline Meters<TReturn> toMeters(Meters<T> a) noexcept
-{
-    return Meters<TReturn>{a.value()};
-}
+using Meters = Length<tags::Meters, T>;
 
-template <typename T, typename TReturn = T>
-inline Feet<TReturn> toFeet(Meters<T> a) noexcept
+template <typename T, typename TResult = T>
+inline constexpr void convert(Meters<T> v, Feet<TResult>& result) noexcept
 {
-    return Feet<TReturn>{a.value() * math::Constants::METERS_TO_FEET};
+    result.value() = v.value() * math::Constants::METERS_TO_FEET;
 }
-template <typename T, typename TReturn = T>
-inline Meters<TReturn> toMeters(Feet<T> a) noexcept
+template <typename T, typename TResult = T>
+inline constexpr void convert(Feet<T> v, Meters<TResult>& result) noexcept
 {
-    return Meters<TReturn>{a.value() * math::Constants::FEET_TO_METERS};
+    result.value() = v.value() * math::Constants::FEET_TO_METERS;
 }
-
 
 namespace tags
 {
@@ -88,34 +65,23 @@ struct NauticalMiles final { };
 }
 
 template <typename T>
-using NauticalMiles = Length<T, tags::NauticalMiles>;
-template <typename T>
-inline NauticalMiles<T> asNauticalMiles(T v) noexcept
-{
-    return NauticalMiles<T>{v};
-}
-template <typename T, typename TReturn = T>
-inline NauticalMiles<TReturn> toNauticalMiles(NauticalMiles<T> v) noexcept
-{
-    return NauticalMiles<TReturn>{v.value()};
-}
+using NauticalMiles = Length<tags::NauticalMiles, T>;
 
-template <typename T, typename TReturn = T>
-inline Feet<TReturn> toFeet(NauticalMiles<T> v) noexcept
+template <typename T, typename TResult = T>
+inline constexpr void convert(NauticalMiles<T> v, Feet<TResult>& result) noexcept
 {
-    return Feet<TReturn>{v.value() * math::Constants::NAUTICAL_MILES_TO_FEET};
+    result.value() = v.value() * math::Constants::NAUTICAL_MILES_TO_FEET;
 }
-template <typename T, typename TReturn = T>
-inline Meters<TReturn> toMeters(NauticalMiles<T> v) noexcept
+template <typename T, typename TResult = T>
+inline constexpr void convert(NauticalMiles<T> v, Meters<TResult>& result) noexcept
 {
-    return Meters<TReturn>{v.value() * math::Constants::NAUTICAL_MILES_TO_METERS};
+    result.value() = v.value() * math::Constants::NAUTICAL_MILES_TO_METERS;
 }
-template <typename T, typename TReturn = T>
-inline NauticalMiles<TReturn> toNauticalMiles(Meters<T> l) noexcept
+template <typename T, typename TResult = T>
+inline constexpr void convert(Meters<T> v, NauticalMiles<TResult>& result) noexcept
 {
-    return NauticalMiles<TReturn>{v.value() * math::Constants::METERS_TO_NAUTICAL_MILES};
+    result.value() = v.value() * math::Constants::METERS_TO_NAUTICAL_MILES;
 }
-
 }
 
 #endif  // CODA_OSS_units_Lengths_h_INCLUDED_
