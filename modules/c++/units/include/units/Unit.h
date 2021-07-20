@@ -39,15 +39,15 @@ namespace units
 template <typename T, typename Tag>
 struct Unit final
 {
-    using tag_t = Tag;
     using value_t = T;
+    using tag_t = Tag;
 
     value_t value_;
 
     Unit() = delete;
     constexpr Unit(value_t v) noexcept : value_(v) { }
 
-    constexpr value_t& value() noexcept
+    /*constexpr*/ value_t& value() noexcept
     {
         return value_;
     }
