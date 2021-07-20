@@ -64,20 +64,32 @@ inline constexpr void convert(Degrees<T> v, Radians<TResult>& result) noexcept
     result.value() = v.value() * math::Constants::DEGREES_TO_RADIANS;
 }
 
+template<typename Tag, typename T>
+inline Radians<T> toRadians(Angle<Tag, T> v) noexcept
+{
+  //return v.to<tags::Radians>();
+  Radians<T> retval{ 0 };
+  convert(v, retval);
+  return retval;
+}
+
 template <typename Tag, typename T>
 inline T sin(Angle<Tag, T> v) noexcept
 {
-    return std::sin(v.to<tags::Radians>().value());
+  //return std::sin(v.to<tags::Radians>().value());
+  return std::sin(toRadians(v).value());
 }
 template <typename Tag, typename T>
 inline T cos(Angle<Tag, T> v) noexcept
 {
-    return std::cos(v.to<tags::Radians>().value());
+  //return std::cos(v.to<tags::Radians>().value());
+  return std::cos(toRadians(v).value());
 }
 template <typename Tag, typename T>
 inline T tan(Angle<Tag, T> v) noexcept
 {
-    return std::tan(v.to<tags::Radians>().value());
+  //return std::tan(v.to<tags::Radians>().value());
+  return std::tan(toRadians(v).value());
 }
 }
 

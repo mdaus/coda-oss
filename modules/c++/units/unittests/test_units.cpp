@@ -50,10 +50,14 @@ TEST_CASE(test_degrees)
 TEST_CASE(test_lengths)
 {
     constexpr units::Feet<double> feet_3 = 3;
-    constexpr units::Meters<double> meters_1 = 1;
+    units::Meters<double> meters { 0 };
+    convert(feet_3, meters);
+    TEST_ASSERT_ALMOST_EQ(meters.value(), 0.9144);
 
-    TEST_ASSERT_ALMOST_EQ(feet_3.to<units::tags::Meters>().value(), 0.9144);
-    TEST_ASSERT_ALMOST_EQ(meters_1.to<units::tags::Feet>().value(), 3.2808398);
+    constexpr units::Meters<double> meters_1 = 1;
+    units::Feet<double> feet { 0 };
+    convert(meters_1, feet);
+    TEST_ASSERT_ALMOST_EQ(feet.value(), 3.2808398);
 }
 
 }
