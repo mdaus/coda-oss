@@ -35,6 +35,7 @@
 #include "xml/lite/Attributes.h"
 #include "sys/Conf.h"
 #include "sys/Optional.h"
+#include "mem/SharedPtr.h"
 
 /*!
  * \file  Element.h
@@ -81,14 +82,14 @@ enum class string_encoding
 class Element
 {
     Element(const std::string& qname, const std::string& uri, std::nullptr_t) :
-        mParent(NULL), mName(uri, qname)
+        mParent(nullptr), mName(uri, qname)
     {
     }
 
 public:
     //! Default constructor
     Element() :
-        mParent(NULL)
+        mParent(nullptr)
     {
     }
 
@@ -401,7 +402,7 @@ public:
      */
     virtual void addChild(std::unique_ptr<Element>&& node);
     #if !CODA_OSS_cpp17  // std::auto_ptr removed in C++17
-    virtual void addChild(std::auto_ptr<Element> node);
+    virtual void addChild(mem::auto_ptr<Element> node);
     #endif
 
     /*!

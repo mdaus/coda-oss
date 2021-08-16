@@ -261,27 +261,38 @@ void xml::lite::Element::getCharacterData(sys::U8string& result) const
     if (encoding == xml::lite::string_encoding::utf_8)
     {
         // already in UTF-8, no converstion necessary
-        result = str::castToU8string(mCharacterData);
+        result = str::c_str<sys::U8string::const_pointer>(mCharacterData); // copy
     }
     else if (encoding == xml::lite::string_encoding::windows_1252)
     {
-        str::fromWindows1252(mCharacterData, result);
+        result = str::fromWindows1252(mCharacterData);
+    }
+    else
+    {
+        throw std::logic_error("getCharacterData(): unknown encoding");
     }
 }
 
 static void writeCharacterData(io::OutputStream& stream,
-    const std::string& characterData, const sys::Optional<xml::lite::string_encoding>& encoding)
+    const std::string& characterData, const sys::Optional<xml::lite::string_encoding>& encoding_)
 {
-    if (getEncoding_(encoding) != xml::lite::string_encoding::utf_8)
+    const auto encoding = getEncoding_(encoding_);
+
+    if (encoding == xml::lite::string_encoding::windows_1252)
     {
-        std::string utf8; // need to convert before writing
-        str::fromWindows1252(characterData, utf8);
-        stream.write(utf8);
+        // need to convert before writing
+        const auto utf8 = str::fromWindows1252(characterData);
+        auto const pStr = str::c_str<std::string::const_pointer>(utf8);
+        stream.write(pStr);
     }
-    else
+    else if (encoding == xml::lite::string_encoding::utf_8)
     {
         // already UTF-8
         stream.write(characterData);    
+    }
+    else
+    {
+        throw std::logic_error("writeCharacterData(): unknown encoding");
     }
 }
 
@@ -375,7 +386,7 @@ void xml::lite::Element::addChild(std::unique_ptr<xml::lite::Element>&& node)
     addChild(node.release());
 }
 #if !CODA_OSS_cpp17  // std::auto_ptr removed in C++17
-void xml::lite::Element::addChild(std::auto_ptr<xml::lite::Element> node)
+void xml::lite::Element::addChild(mem::auto_ptr<xml::lite::Element> node)
 {
     addChild(std::unique_ptr<xml::lite::Element>(node.release()));
 }
@@ -410,6 +421,10 @@ void xml::lite::Element::changePrefix(Element* element,
     }
 }
 
+#if _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4702)  // unreachable code
+#endif
 void xml::lite::Element::changeURI(Element* element,
     const std::string& prefix, const std::string& uri)
 {
@@ -433,12 +448,17 @@ void xml::lite::Element::changeURI(Element* element,
         }
     }
 
-    for (size_t i = 0, s = element->mChildren.size(); i < s; i++)
+    // the "i++" is unreachable because of the "break"
+    const auto s = element->mChildren.size();
+    for (size_t i = 0; i < s; i++)
     {
         changeURI(element->mChildren[i], prefix, uri);
         break;
     }
 }
+#if _MSC_VER
+#pragma warning(pop)
+#endif
 
 void xml::lite::Element::setNamespacePrefix(
     std::string prefix, std::string uri)
@@ -494,5 +514,5 @@ void xml::lite::Element::setCharacterData(const std::string& characters, string_
 }
 void xml::lite::Element::setCharacterData(const sys::U8string& characters)
 {
-    setCharacterData(str::toString(characters), string_encoding::utf_8);
+    setCharacterData(str::c_str<std::string::const_pointer>(characters), string_encoding::utf_8);
 }
