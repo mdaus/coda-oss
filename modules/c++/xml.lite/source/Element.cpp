@@ -32,6 +32,12 @@ xml::lite::Element::Element(const xml::lite::Element& node)
     *this = node;
 }
 
+std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const std::string& qname, const std::string& uri, const std::string& characterData_)
+{
+    const auto characterData = str::to_u8string(characterData_);
+    return mem::make::unique<xml::lite::Element>(qname, uri, characterData);
+}
+
 xml::lite::Element& xml::lite::Element::operator=(const xml::lite::Element& node)
 {
     if (this !=&node)
