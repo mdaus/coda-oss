@@ -118,8 +118,10 @@ public:
         setCharacterData(characterData);
     }
 
-    // Encoding of "characterData" is assumed based on the platform: Windows-1252 or UTF-8.
+    // string_encoding is assumed based on the platform: Windows-1252 or UTF-8.
     static std::unique_ptr<Element> create(const std::string& qname, const std::string& uri = "", const std::string& characterData = "");
+    // Encoding of "characterData" is assumed based on the platform: Windows-1252 or UTF-8
+    static std::unique_ptr<Element> createU8(const std::string& qname, const std::string& uri = "", const std::string& characterData = "");
 
     //! Destructor
     virtual ~Element()
