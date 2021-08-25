@@ -83,7 +83,7 @@ public:
     template<typename Other_T> RowCol& operator=(const RowCol<Other_T>& p) noexcept
     {
         const void* pOther = &p;
-        if (this != pOther)
+        if (this != static_cast<const RowCol*>(pOther))
         {
             row = cast<T>(p.row);
             col = cast<T>(p.col);
