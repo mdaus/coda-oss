@@ -25,7 +25,7 @@
 #include <sys/Path.h>
 #include <sys/Filesystem.h>
 
-namespace fs = coda_oss::filesystem;
+namespace fs = sys::Filesystem;
 
 namespace sys
 {
@@ -341,6 +341,8 @@ static void clean_slashes(std::string& path, bool isAbsolute)
     {
         path = Path::delimiter() + path;
     }
+    #else
+    UNREFERENCED_PARAMETER(isAbsolute);
     #endif
 
     // Do this last so that we have the best chance of finding the path on disk

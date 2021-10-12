@@ -27,6 +27,8 @@
 #include <numeric> // std::accumulate
 #include <string>
 
+#include <std/filesystem>
+
 #include <sys/OS.h>
 #include <sys/Path.h>
 #include <sys/Filesystem.h>
@@ -35,7 +37,7 @@
 #include <sys/DateTime.h>
 #include "TestCase.h"
 
-namespace fs = coda_oss::filesystem;
+namespace fs = sys::Filesystem;
 
 namespace
 {
@@ -243,7 +245,7 @@ static void testFsExtension_(const std::string& testName)
 TEST_CASE(testFsExtension)
 {
     testFsExtension_<sys::Filesystem::path>(testName);
-    testFsExtension_<coda_oss::filesystem::path>(testName);
+    testFsExtension_<std::filesystem::path>(testName);
     #if CODA_OSS_lib_filesystem
     testFsExtension_<std::filesystem::path>(testName);
     #endif
@@ -265,7 +267,7 @@ static void testFsOutput_(const std::string& testName)
 TEST_CASE(testFsOutput)
 {
     testFsOutput_<sys::Filesystem::path>(testName);
-    testFsOutput_<coda_oss::filesystem::path>(testName);
+    testFsOutput_<std::filesystem::path>(testName);
     #if CODA_OSS_lib_filesystem
     testFsOutput_<std::filesystem::path>(testName);
     #endif
@@ -285,6 +287,10 @@ static std::string h(bool& supported, std::vector<std::string>& frames)
 }
 TEST_CASE(testBacktrace)
 {
+    // These don't **have** to be the same; but it would be unusual for build scripts pass
+    // different flags to these pieces ... and likely cause all kinds of weird problems.
+    TEST_ASSERT_EQ(sys::debug_build(), sys::debug);
+
     bool supported;
     std::vector<std::string> frames;
     const auto result = h(supported, frames);
@@ -293,7 +299,7 @@ TEST_CASE(testBacktrace)
     TEST_ASSERT_EQ(failed_pos, std::string::npos);
 
 
-    size_t frames_size = 0;
+    size_t expected = 0;
     auto version_sys_backtrace_ = version::sys::backtrace; // "Conditional expression is constant"
     if (version_sys_backtrace_ >= 20210216L)
     {
@@ -308,13 +314,13 @@ TEST_CASE(testBacktrace)
         #else
         #error "CODA_OSS_sys_Backtrace inconsistency."
         #endif
-        frames_size = sys::debug_build ? frames_size_DEBUG : frames_size_RELEASE;
+        expected = sys::debug_build() ? frames_size_DEBUG : frames_size_RELEASE;
     }
     else
     {
         TEST_ASSERT_FALSE(supported);
     }
-    TEST_ASSERT_EQ(frames.size(), frames_size);
+    TEST_ASSERT_EQ(frames.size(), expected);
 
     const auto msg = std::accumulate(frames.begin(), frames.end(), std::string());
     if (supported)
