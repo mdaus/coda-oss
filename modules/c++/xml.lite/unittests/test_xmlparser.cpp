@@ -163,10 +163,10 @@ TEST_CASE(testXmlUtf8)
         TEST_ASSERT_TRUE(encoding.has_value());
         #ifdef _WIN32
         TEST_ASSERT_EQ(actual, iso88591Text);
-        TEST_ASSERT(encoding == xml::lite::string_encoding::windows_1252);
+        TEST_ASSERT(encoding.value() == xml::lite::string_encoding::windows_1252);
         #else
         TEST_ASSERT_EQ(actual, utf8Text);
-        TEST_ASSERT(encoding == xml::lite::string_encoding::utf_8);
+        TEST_ASSERT(encoding.value() == xml::lite::string_encoding::utf_8);
         #endif
     }
     {
@@ -175,10 +175,10 @@ TEST_CASE(testXmlUtf8)
         TEST_ASSERT_TRUE(encoding.has_value());
         #ifdef _WIN32
         TEST_ASSERT_EQ(actual, iso88591Text);
-        TEST_ASSERT(encoding == xml::lite::string_encoding::windows_1252);
+        TEST_ASSERT(encoding.value() == xml::lite::string_encoding::windows_1252);
         #else
         TEST_ASSERT_EQ(actual, utf8Text);
-        TEST_ASSERT(encoding == xml::lite::string_encoding::utf_8);
+        TEST_ASSERT(encoding.value() == xml::lite::string_encoding::utf_8);
         #endif
     }
 }
@@ -264,36 +264,20 @@ TEST_CASE(testReadUtf8XmlFile)
 
     io::FileInputStream input((unittests / "utf-8.xml").string());
 
-    xml::lite::MinidomParser xmlParser;
-    //xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
-    //xmlParser.preserveCharacterData(true);
+    xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
+    xmlParser.preserveCharacterData(true);
     xmlParser.parse(input);
     const auto& root = getRootElement(*xmlParser.getDocument());
 
-    {
-        const auto aElements = root.getElementsByTagName("a", true /*recurse*/);
-        TEST_ASSERT_EQ(aElements.size(), static_cast<size_t>(1));
-        const auto& a = *(aElements[0]);
+    const auto aElements = root.getElementsByTagName("a", true /*recurse*/);
+    TEST_ASSERT_EQ(aElements.size(), static_cast<size_t>(1));
+    const auto& a = *(aElements[0]);
 
-        const auto characterData = a.getCharacterData();
-        TEST_ASSERT_EQ(characterData, text);
-        const auto encoding = a.getEncoding();
-        TEST_ASSERT_FALSE(encoding.has_value());
-    }
-
-    const auto docElements = root.getElementsByTagName("doc");
-    TEST_ASSERT_FALSE(docElements.empty());
-    TEST_ASSERT_EQ(docElements.size(), static_cast<size_t>(1));
-    {
-        const auto aElements = docElements[0]->getElementsByTagName("a");
-        TEST_ASSERT_EQ(aElements.size(), static_cast<size_t>(1));
-        const auto& a = *(aElements[0]);
-
-        const auto characterData = a.getCharacterData();
-        TEST_ASSERT_EQ(characterData, text);
-        const auto encoding = a.getEncoding();
-        TEST_ASSERT_FALSE(encoding.has_value());
-    }
+    const auto characterData = a.getCharacterData();
+    TEST_ASSERT_EQ(characterData, utf8Text);
+    const auto encoding = a.getEncoding();
+    TEST_ASSERT_TRUE(encoding.has_value());
+    TEST_ASSERT(encoding.value() == xml::lite::string_encoding::utf_8);
 }
 
 int main(int, char**)
@@ -310,5 +294,5 @@ int main(int, char**)
     TEST_CHECK(testXmlParseAndPrintUtf8);
     TEST_CHECK(testXmlPrintUtf8);
 
-    //TEST_CHECK(testReadUtf8XmlFile);    
+    TEST_CHECK(testReadUtf8XmlFile);    
 }
