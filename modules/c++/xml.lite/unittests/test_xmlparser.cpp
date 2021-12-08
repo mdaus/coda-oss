@@ -22,8 +22,10 @@
 
 #include <string>
 #include <clocale>
+#include <std/filesystem>
 
 #include "io/StringStream.h"
+#include "io/FileInputStream.h"
 #include "str/Convert.h"
 #include <TestCase.h>
 
@@ -34,6 +36,24 @@ static const std::string strXml = "<root><doc><a>" + text + "</a></doc></root>";
 static const std::string iso88591Text("T\xc9XT");  // ISO8859-1, "TÉXT"
 static const std::string utf8Text("T\xc3\x89XT");  // UTF-8,  "TÉXT"
 static const auto strUtf8Xml = "<root><doc><a>" + utf8Text + "</a></doc></root>";
+
+namespace fs = std::filesystem;
+
+static fs::path findRoot(const fs::path& p)
+{
+    const fs::path LICENSE("LICENSE");
+    const fs::path README_md("README.md");
+    const fs::path CMakeLists_txt("CMakeLists.txt");
+    if (fs::is_regular_file(p / LICENSE)  && fs::is_regular_file(p / README_md)  && fs::is_regular_file(p / CMakeLists_txt))
+    {
+        return p;
+    }
+    return findRoot(p.parent_path());
+}
+inline fs::path findRoot()
+{
+    return findRoot(fs::current_path());
+}
 
 TEST_CASE(testXmlParseSimple)
 {
@@ -237,6 +257,45 @@ TEST_CASE(testXmlParseAndPrintUtf8)
     TEST_ASSERT_EQ(actual, strUtf8Xml);
 }
 
+TEST_CASE(testReadUtf8XmlFile)
+{
+    const auto coda_oss = findRoot();
+    const auto unittests = coda_oss / "modules" / "c++" / "xml.lite" / "unittests";
+
+    io::FileInputStream input(unittests / "utf-8.xml");
+
+    xml::lite::MinidomParser xmlParser;
+    //xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
+    //xmlParser.preserveCharacterData(true);
+    xmlParser.parse(input);
+    const auto& root = getRootElement(*xmlParser.getDocument());
+
+    {
+        const auto aElements = root.getElementsByTagName("a", true /*recurse*/);
+        TEST_ASSERT_EQ(aElements.size(), static_cast<size_t>(1));
+        const auto& a = *(aElements[0]);
+
+        const auto characterData = a.getCharacterData();
+        TEST_ASSERT_EQ(characterData, text);
+        const auto encoding = a.getEncoding();
+        TEST_ASSERT_FALSE(encoding.has_value());
+    }
+
+    const auto docElements = root.getElementsByTagName("doc");
+    TEST_ASSERT_FALSE(docElements.empty());
+    TEST_ASSERT_EQ(docElements.size(), static_cast<size_t>(1));
+    {
+        const auto aElements = docElements[0]->getElementsByTagName("a");
+        TEST_ASSERT_EQ(aElements.size(), static_cast<size_t>(1));
+        const auto& a = *(aElements[0]);
+
+        const auto characterData = a.getCharacterData();
+        TEST_ASSERT_EQ(characterData, text);
+        const auto encoding = a.getEncoding();
+        TEST_ASSERT_FALSE(encoding.has_value());
+    }
+}
+
 int main(int, char**)
 {
     TEST_CHECK(testXmlParseSimple);
@@ -250,4 +309,6 @@ int main(int, char**)
     TEST_CHECK(testXmlPrintLegacy);
     TEST_CHECK(testXmlParseAndPrintUtf8);
     TEST_CHECK(testXmlPrintUtf8);
+
+    //TEST_CHECK(testReadUtf8XmlFile);    
 }

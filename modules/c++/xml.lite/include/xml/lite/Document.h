@@ -36,6 +36,8 @@
  * itself.
  */
 
+#include <assert.h>
+
 #include "xml/lite/Element.h"
 
 namespace xml
@@ -157,6 +159,20 @@ protected:
     Element *mRootNode;
     bool mOwnRoot;
 };
+
+inline Element& getRootElement(Document& doc)
+{
+    auto retval = doc.getRootElement();
+    assert(retval != nullptr);
+    return *retval;
+}
+inline const Element& getRootElement(const Document& doc)
+{
+    auto retval = doc.getRootElement();
+    assert(retval != nullptr);
+    return *retval;
+}
+
 }
 }
 
