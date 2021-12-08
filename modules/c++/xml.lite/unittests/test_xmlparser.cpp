@@ -262,7 +262,7 @@ TEST_CASE(testReadUtf8XmlFile)
     const auto coda_oss = findRoot();
     const auto unittests = coda_oss / "modules" / "c++" / "xml.lite" / "unittests";
 
-    io::FileInputStream input(unittests / "utf-8.xml");
+    io::FileInputStream input((unittests / "utf-8.xml").string());
 
     xml::lite::MinidomParser xmlParser;
     //xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
