@@ -274,10 +274,12 @@ TEST_CASE(testReadUtf8XmlFile)
     const auto& a = *(aElements[0]);
 
     const auto characterData = a.getCharacterData();
-    TEST_ASSERT_EQ(characterData, utf8Text);
+    TEST_ASSERT_EQ(characterData, sys::Platform == sys::PlatformType::Linux ? utf8Text : iso88591Text);
     const auto encoding = a.getEncoding();
     TEST_ASSERT_TRUE(encoding.has_value());
-    TEST_ASSERT(encoding.value() == xml::lite::string_encoding::utf_8);
+    const auto expected_encoding = sys::Platform == sys::PlatformType::Linux ? xml::lite::string_encoding::utf_8 : xml::lite::string_encoding::windows_1252;
+    TEST_ASSERT(encoding.value() == expected_encoding);
+        
 }
 
 int main(int, char**)
