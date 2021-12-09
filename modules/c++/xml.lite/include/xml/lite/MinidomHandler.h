@@ -177,10 +177,10 @@ public:
      * the non-ASCII data.
      */
     virtual void storeEncoding(bool value);
+    bool storeEncoding() const;
 
 protected:
     void characters(const char* value, int length, const StringEncoding*);
-    bool storeEncoding() const;
 
     std::string currentCharacterData;
     std::shared_ptr<const StringEncoding> mpEncoding;

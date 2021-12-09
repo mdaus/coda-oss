@@ -336,7 +336,7 @@ TEST_CASE(testReadWindows1252XmlFile)
     //xml::lite::MinidomParser xmlParser;
     xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
     xmlParser.preserveCharacterData(true);
-    xmlParser.parse(input, xml::lite::StringEncoding::Windows1252);
+    xmlParser.parse(input);
     const auto& root = getRootElement(*xmlParser.getDocument());
 
     const auto aElements = root.getElementsByTagName("a", true /*recurse*/);

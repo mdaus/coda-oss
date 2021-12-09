@@ -40,6 +40,9 @@ public:
     {
     }
 
+    XMLReaderInterface(const XMLReaderInterface&) = delete;
+    XMLReaderInterface& operator=(const XMLReaderInterface&) = delete;
+
     //!  Destructor
     virtual ~XMLReaderInterface()
     {
@@ -71,14 +74,6 @@ public:
     virtual void destroy() = 0;
 
     virtual std::string getDriverName() const = 0;
-
-private:
-    //! Private copy constructor
-    XMLReaderInterface(const XMLReaderInterface &);
-
-    //! Private overloaded assignment operator
-    XMLReaderInterface & operator=(const XMLReaderInterface &);
-
 };
 }
 }
