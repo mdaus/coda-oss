@@ -20,7 +20,7 @@
  *
  */
 
-#include <string>
+#include <std/string>
 #include <clocale>
 #include <std/filesystem>
 
@@ -279,7 +279,12 @@ TEST_CASE(testReadUtf8XmlFile)
     TEST_ASSERT_TRUE(encoding.has_value());
     const auto expected_encoding = sys::Platform == sys::PlatformType::Linux ? xml::lite::string_encoding::utf_8 : xml::lite::string_encoding::windows_1252;
     TEST_ASSERT(encoding.value() == expected_encoding);
-        
+
+    std::u8string u8_characterData;
+    a.getCharacterData(u8_characterData);
+    const void* pu8_characterData = u8_characterData.c_str();
+    const std::string u8_characterData_(static_cast<std::string::const_pointer>(pu8_characterData));
+    TEST_ASSERT_EQ(utf8Text, u8_characterData_);     
 }
 
 int main(int, char**)
