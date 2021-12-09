@@ -27,6 +27,7 @@
 #include "io/StringStream.h"
 #include "io/FileInputStream.h"
 #include "str/Convert.h"
+#include "str/Encoding.h"
 #include <TestCase.h>
 
 #include "xml/lite/MinidomParser.h"
@@ -282,8 +283,7 @@ static void testReadEncodedXmlFile(const std::string& testName, const std::strin
 
     std::u8string u8_characterData;
     a.getCharacterData(u8_characterData);
-    const void* pu8_characterData = u8_characterData.c_str();
-    const std::string u8_characterData_(static_cast<std::string::const_pointer>(pu8_characterData));
+    const std::string u8_characterData_(str::c_str<std::string::const_pointer>(u8_characterData));
     TEST_ASSERT_EQ(utf8Text, u8_characterData_);     
 
 }
@@ -320,9 +320,8 @@ TEST_CASE(testReadUtf8XmlFile)
 
     std::u8string u8_characterData;
     a.getCharacterData(u8_characterData);
-    const void* pu8_characterData = u8_characterData.c_str();
-    const std::string u8_characterData_(static_cast<std::string::const_pointer>(pu8_characterData));
-    TEST_ASSERT_EQ(utf8Text, u8_characterData_);     
+    const std::string u8_characterData_(str::c_str<std::string::const_pointer>(u8_characterData));
+    TEST_ASSERT_EQ(utf8Text, u8_characterData_);
 }
 
 TEST_CASE(testReadWindows1252XmlFile)
@@ -352,9 +351,8 @@ TEST_CASE(testReadWindows1252XmlFile)
 
     std::u8string u8_characterData;
     a.getCharacterData(u8_characterData);
-    const void* pu8_characterData = u8_characterData.c_str();
-    const std::string u8_characterData_(static_cast<std::string::const_pointer>(pu8_characterData));
-    TEST_ASSERT_EQ(utf8Text, u8_characterData_);     
+    const std::string u8_characterData_(str::c_str<std::string::const_pointer>(u8_characterData));
+    TEST_ASSERT_EQ(utf8Text, u8_characterData_);
 }
 
 int main(int, char**)
