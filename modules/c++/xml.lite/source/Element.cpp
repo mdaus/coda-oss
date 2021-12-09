@@ -38,16 +38,28 @@ std::unique_ptr<xml::lite::Element> xml::lite::Element::createU8(const std::stri
     return mem::make::unique<Element>(qname, uri,  str::to_u8string(characterData));
 }
 
+xml::lite::Element::Element(const Element& node)
+{
+    *this = node;
+}
+xml::lite::Element& xml::lite::Element::operator=(const Element& node)
+{
+    if (this != &node)
+    {
+        mName = node.mName;
+        mCharacterData = node.mCharacterData;
+        mEncoding = node.mEncoding;
+        mAttributes = node.mAttributes;
+        mChildren = node.mChildren;
+        mParent = node.mParent;
+        mEncoding = node.mEncoding;
+    }
+    return *this;
+}
+
 void xml::lite::Element::clone(const xml::lite::Element& node)
 {
-    // i.e., operator=()
-    mName = node.mName;
-    mCharacterData = node.mCharacterData;
-    mEncoding = node.mEncoding;
-    mAttributes = node.mAttributes;
-    mChildren = node.mChildren;
-    mParent = node.mParent;
-    mEncoding = node.mEncoding;
+    *this = node;
 
     clearChildren();
     mParent = NULL;

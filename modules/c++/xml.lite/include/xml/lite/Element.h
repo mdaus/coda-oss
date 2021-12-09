@@ -133,8 +133,14 @@ public:
     void destroyChildren();
 
     // use clone() to duplicate an Element
-    Element(const Element&) = delete;
-    Element& operator=(const Element&) = delete;
+#ifndef SWIG 
+private: // SWIG needs these
+#endif
+    Element(const Element&);
+    Element& operator=(const Element&);
+#ifndef SWIG
+public:
+#endif
 
     Element(Element&&) = default;
     Element& operator=(Element&&) = default;
