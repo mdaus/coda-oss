@@ -311,7 +311,7 @@ TEST_CASE(test_getValue)
 TEST_CASE(test_getValueFailure)
 {
     test_MinidomParser xmlParser;
-    const auto root = xmlParser.getRootElement();
+    const auto& root = xmlParser.getRootElement();
 
     {
         const auto& e = root.getElementByTagName("string", true /*recurse*/);
