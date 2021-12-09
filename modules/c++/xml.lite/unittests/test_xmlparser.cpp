@@ -336,7 +336,7 @@ TEST_CASE(testReadWindows1252XmlFile)
     //xml::lite::MinidomParser xmlParser;
     xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
     xmlParser.preserveCharacterData(true);
-    xmlParser.parse(input);
+    xmlParser.parse(input, xml::lite::string_encoding::windows_1252);
     const auto& root = getRootElement(*xmlParser.getDocument());
 
     const auto aElements = root.getElementsByTagName("a", true /*recurse*/);
@@ -373,5 +373,5 @@ int main(int, char**)
     
     TEST_CHECK(testReadEncodedXmlFiles);
     TEST_CHECK(testReadUtf8XmlFile);    
-    //TEST_CHECK(testReadWindows1252XmlFile);    
+    TEST_CHECK(testReadWindows1252XmlFile);    
 }

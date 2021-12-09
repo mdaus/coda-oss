@@ -32,7 +32,7 @@ xml::lite::XMLReaderXerces::XMLReaderXerces()
     create();
 }
 
-void xml::lite::XMLReaderXerces::parse(io::InputStream & is, int size)
+void xml::lite::XMLReaderXerces::parse(io::InputStream& is, const string_encoding* pEncoding, int size)
 {
     io::StringStream oss;
     is.streamTo(oss, size);
@@ -51,8 +51,23 @@ void xml::lite::XMLReaderXerces::parse(io::InputStream & is, int size)
                                 XMLReaderXerces::MEM_BUFFER_ID(),
                                 false);
 
+    if ((pEncoding != nullptr) && (*pEncoding == string_encoding::windows_1252))
+    {
+        // The only other value is string_encoding::utf_8 which is the default
+        memBuffer.setEncoding(XMLUni::fgWin1252EncodingString);
+    }
+
     mNative->parse(memBuffer);
 }
+void xml::lite::XMLReaderXerces::parse(io::InputStream& is, int size)
+{
+    parse(is, nullptr /*pEncoding*/, size);
+}
+void xml::lite::XMLReaderXerces::parse(io::InputStream& is, string_encoding encoding, int size)
+{
+    parse(is, &encoding, size);
+}
+
 
 // This function creates the parser
 void xml::lite::XMLReaderXerces::create()
