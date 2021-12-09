@@ -91,7 +91,7 @@ public:
                                    std::string characterData = "");
     virtual Element *createElement(const std::string & qname,
                                    const std::string & uri,
-                                   const std::string& characterData, string_encoding);
+                                   const std::string& characterData, StringEncoding);
     virtual Element* createElement(const std::string& qname,
                                    const std::string& uri,
                                    const sys::U8string& characterData);

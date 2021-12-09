@@ -99,7 +99,7 @@ public:
     }
 
     void parse(io::InputStream& is, int size = io::InputStream::IS_END);
-    void parse(io::InputStream& is, string_encoding, int size = io::InputStream::IS_END);
+    void parse(io::InputStream& is, StringEncoding, int size = io::InputStream::IS_END);
     
     //! Method to create an xml reader
     void create();
@@ -110,7 +110,7 @@ public:
     std::string getDriverName() const { return "xerces"; }
 
 private:
-    void parse(io::InputStream& is, const string_encoding*, int size);
+    void parse(io::InputStream& is, const StringEncoding*, int size);
 
     virtual void write(const void*, size_t)
     {

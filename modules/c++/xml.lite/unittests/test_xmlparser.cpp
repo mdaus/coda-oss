@@ -163,10 +163,10 @@ TEST_CASE(testXmlUtf8)
         TEST_ASSERT_TRUE(encoding.has_value());
         #ifdef _WIN32
         TEST_ASSERT_EQ(actual, iso88591Text);
-        TEST_ASSERT(encoding.value() == xml::lite::string_encoding::windows_1252);
+        TEST_ASSERT(encoding.value() == xml::lite::StringEncoding::Windows1252);
         #else
         TEST_ASSERT_EQ(actual, utf8Text);
-        TEST_ASSERT(encoding.value() == xml::lite::string_encoding::utf_8);
+        TEST_ASSERT(encoding.value() == xml::lite::StringEncoding::Utf8);
         #endif
     }
     {
@@ -175,10 +175,10 @@ TEST_CASE(testXmlUtf8)
         TEST_ASSERT_TRUE(encoding.has_value());
         #ifdef _WIN32
         TEST_ASSERT_EQ(actual, iso88591Text);
-        TEST_ASSERT(encoding.value() == xml::lite::string_encoding::windows_1252);
+        TEST_ASSERT(encoding.value() == xml::lite::StringEncoding::Windows1252);
         #else
         TEST_ASSERT_EQ(actual, utf8Text);
-        TEST_ASSERT(encoding.value() == xml::lite::string_encoding::utf_8);
+        TEST_ASSERT(encoding.value() == xml::lite::StringEncoding::Utf8);
         #endif
     }
 }
@@ -192,12 +192,12 @@ TEST_CASE(testXml_setCharacterData)
     a.setCharacterData(characters);
     auto encoding = a.getEncoding();
     TEST_ASSERT_TRUE(encoding.has_value());
-    TEST_ASSERT(encoding == xml::lite::string_encoding::utf_8);
+    TEST_ASSERT(encoding == xml::lite::StringEncoding::Utf8);
 
     std::string actual;
     encoding = a.getCharacterData(actual);
     TEST_ASSERT_TRUE(encoding.has_value());
-    TEST_ASSERT(encoding == xml::lite::string_encoding::utf_8);
+    TEST_ASSERT(encoding == xml::lite::StringEncoding::Utf8);
     TEST_ASSERT_EQ(actual, utf8Text);
 }
 
@@ -232,10 +232,10 @@ TEST_CASE(testXmlPrintUtf8)
     xml::lite::MinidomParser xmlParser;
     auto pDocument = xmlParser.getDocument();
 
-    const auto pRootElement = pDocument->createElement("root", "" /*uri*/, iso88591Text, xml::lite::string_encoding::windows_1252);
+    const auto pRootElement = pDocument->createElement("root", "" /*uri*/, iso88591Text, xml::lite::StringEncoding::Windows1252);
 
     io::StringStream output;
-    pRootElement->print(output, xml::lite::string_encoding::utf_8); // write UTF-8
+    pRootElement->print(output, xml::lite::StringEncoding::Utf8); // write UTF-8
     const auto actual = output.stream().str();
     const auto expected = "<root>" + utf8Text + "</root>";
     TEST_ASSERT_EQ(actual, expected);
@@ -252,7 +252,7 @@ TEST_CASE(testXmlParseAndPrintUtf8)
     const auto pRootElement = xmlParser.getDocument()->getRootElement();
 
     io::StringStream output;
-    pRootElement->print(output, xml::lite::string_encoding::utf_8); // write UTF-8
+    pRootElement->print(output, xml::lite::StringEncoding::Utf8); // write UTF-8
     const auto actual = output.stream().str();
     TEST_ASSERT_EQ(actual, strUtf8Xml);
 }
@@ -277,7 +277,7 @@ static void testReadEncodedXmlFile(const std::string& testName, const std::strin
     TEST_ASSERT_EQ(characterData, sys::Platform == sys::PlatformType::Linux ? utf8Text : iso88591Text);
     const auto encoding = a.getEncoding();
     TEST_ASSERT_TRUE(encoding.has_value());
-    const auto expected_encoding = sys::Platform == sys::PlatformType::Linux ? xml::lite::string_encoding::utf_8 : xml::lite::string_encoding::windows_1252;
+    const auto expected_encoding = sys::Platform == sys::PlatformType::Linux ? xml::lite::StringEncoding::Utf8 : xml::lite::StringEncoding::Windows1252;
     TEST_ASSERT(encoding.value() == expected_encoding);
 
     std::u8string u8_characterData;
@@ -315,7 +315,7 @@ TEST_CASE(testReadUtf8XmlFile)
     TEST_ASSERT_EQ(characterData, sys::Platform == sys::PlatformType::Linux ? utf8Text : iso88591Text);
     const auto encoding = a.getEncoding();
     TEST_ASSERT_TRUE(encoding.has_value());
-    const auto expected_encoding = sys::Platform == sys::PlatformType::Linux ? xml::lite::string_encoding::utf_8 : xml::lite::string_encoding::windows_1252;
+    const auto expected_encoding = sys::Platform == sys::PlatformType::Linux ? xml::lite::StringEncoding::Utf8 : xml::lite::StringEncoding::Windows1252;
     TEST_ASSERT(encoding.value() == expected_encoding);
 
     std::u8string u8_characterData;
@@ -336,7 +336,7 @@ TEST_CASE(testReadWindows1252XmlFile)
     //xml::lite::MinidomParser xmlParser;
     xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
     xmlParser.preserveCharacterData(true);
-    xmlParser.parse(input, xml::lite::string_encoding::windows_1252);
+    xmlParser.parse(input, xml::lite::StringEncoding::Windows1252);
     const auto& root = getRootElement(*xmlParser.getDocument());
 
     const auto aElements = root.getElementsByTagName("a", true /*recurse*/);
@@ -347,7 +347,7 @@ TEST_CASE(testReadWindows1252XmlFile)
     TEST_ASSERT_EQ(characterData, sys::Platform == sys::PlatformType::Linux ? utf8Text : iso88591Text);
     const auto encoding = a.getEncoding();
     TEST_ASSERT_TRUE(encoding.has_value());
-    const auto expected_encoding = sys::Platform == sys::PlatformType::Linux ? xml::lite::string_encoding::utf_8 : xml::lite::string_encoding::windows_1252;
+    const auto expected_encoding = sys::Platform == sys::PlatformType::Linux ? xml::lite::StringEncoding::Utf8 : xml::lite::StringEncoding::Windows1252;
     TEST_ASSERT(encoding.value() == expected_encoding);
 
     std::u8string u8_characterData;

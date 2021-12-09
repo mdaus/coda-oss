@@ -72,7 +72,7 @@ TEST_CASE(test_CloneCopy_root_encoding)
         test_MinidomParser xmlParser;
         auto& root = xmlParser.getRootElement();
 
-        root.setCharacterData("abc", xml::lite::string_encoding::utf_8);
+        root.setCharacterData("abc", xml::lite::StringEncoding::Utf8);
         TEST_ASSERT_TRUE(root.getEncoding().has_value());
  
         auto copy(root);
@@ -89,12 +89,12 @@ TEST_CASE(test_CloneCopy_root_encoding)
         test_MinidomParser xmlParser;
         auto& root = xmlParser.getRootElement();
 
-        root.setCharacterData("abc", xml::lite::string_encoding::utf_8);
+        root.setCharacterData("abc", xml::lite::StringEncoding::Utf8);
 
         auto copy(root);
         copy.clearChildren();
         TEST_ASSERT_TRUE(copy.getEncoding().has_value());
-        copy.setCharacterData("xyz", xml::lite::string_encoding::windows_1252);
+        copy.setCharacterData("xyz", xml::lite::StringEncoding::Windows1252);
         TEST_ASSERT_TRUE(copy.getEncoding().has_value());
         TEST_ASSERT_TRUE(root.getEncoding().has_value());
         TEST_ASSERT(*root.getEncoding() != *copy.getEncoding());
@@ -115,7 +115,7 @@ TEST_CASE(test_CloneCopy_copy_encoding)
     auto copy(root);
     copy.clearChildren();
     TEST_ASSERT_FALSE(copy.getEncoding().has_value());
-    copy.setCharacterData("xyz", xml::lite::string_encoding::utf_8);
+    copy.setCharacterData("xyz", xml::lite::StringEncoding::Utf8);
     TEST_ASSERT_TRUE(copy.getEncoding().has_value());
     TEST_ASSERT_FALSE(root.getEncoding().has_value());
 }

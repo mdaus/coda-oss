@@ -179,11 +179,11 @@ public:
     virtual void storeEncoding(bool value);
 
 protected:
-    void characters(const char* value, int length, const string_encoding*);
+    void characters(const char* value, int length, const StringEncoding*);
     bool storeEncoding() const;
 
     std::string currentCharacterData;
-    std::shared_ptr<const string_encoding> mpEncoding;
+    std::shared_ptr<const StringEncoding> mpEncoding;
     std::stack<int> bytesForElement;
     std::stack<Element *> nodeStack;
     Document *mDocument;

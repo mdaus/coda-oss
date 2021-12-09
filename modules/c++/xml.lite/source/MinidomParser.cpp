@@ -33,7 +33,7 @@ void xml::lite::MinidomParser::parse(io::InputStream& is,
 {
     mReader.parse(is, size);
 }
-void xml::lite::MinidomParser::parse(io::InputStream& is, string_encoding encoding, int size)
+void xml::lite::MinidomParser::parse(io::InputStream& is, StringEncoding encoding, int size)
 {
     mReader.parse(is, encoding, size);
 }
