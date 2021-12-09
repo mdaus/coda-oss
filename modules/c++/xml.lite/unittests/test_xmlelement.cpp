@@ -70,28 +70,30 @@ TEST_CASE(test_CloneCopy_root_encoding)
 {
     {
         test_MinidomParser xmlParser;
-        auto& root = xmlParser.getRootElement();
-
-        root.setCharacterData("abc", xml::lite::StringEncoding::Utf8);
+        auto& root_ = xmlParser.getRootElement();
+        root_.setCharacterData("abc", xml::lite::StringEncoding::Utf8);
+        const auto& root = root_;
         TEST_ASSERT_TRUE(root.getEncoding().has_value());
  
-        auto copy(root);
+        xml::lite::Element copy;
+        copy.clone(root);
         copy.clearChildren();
         TEST_ASSERT_TRUE(copy.getEncoding().has_value());
         copy.setCharacterData("xyz");
         TEST_ASSERT_FALSE(copy.getEncoding().has_value());
         TEST_ASSERT_TRUE(root.getEncoding().has_value());
 
-        root.setCharacterData("123");
+        root_.setCharacterData("123");
         TEST_ASSERT_FALSE(root.getEncoding().has_value());
     }
     {
         test_MinidomParser xmlParser;
-        auto& root = xmlParser.getRootElement();
+        auto& root_ = xmlParser.getRootElement();
+        root_.setCharacterData("abc", xml::lite::StringEncoding::Utf8);
+        const auto& root = root_;
 
-        root.setCharacterData("abc", xml::lite::StringEncoding::Utf8);
-
-        auto copy(root);
+        xml::lite::Element copy;
+        copy.clone(root);
         copy.clearChildren();
         TEST_ASSERT_TRUE(copy.getEncoding().has_value());
         copy.setCharacterData("xyz", xml::lite::StringEncoding::Windows1252);
@@ -99,7 +101,7 @@ TEST_CASE(test_CloneCopy_root_encoding)
         TEST_ASSERT_TRUE(root.getEncoding().has_value());
         TEST_ASSERT(*root.getEncoding() != *copy.getEncoding());
 
-        root.setCharacterData("123");
+        root_.setCharacterData("123");
         TEST_ASSERT_FALSE(root.getEncoding().has_value());
         TEST_ASSERT_TRUE(copy.getEncoding().has_value());
     }
@@ -108,11 +110,13 @@ TEST_CASE(test_CloneCopy_root_encoding)
 TEST_CASE(test_CloneCopy_copy_encoding)
 {
     test_MinidomParser xmlParser;
-    auto& root = xmlParser.getRootElement();
-    root.setCharacterData("abc");
+    auto& root_ = xmlParser.getRootElement();
+    root_.setCharacterData("abc");
+    const auto& root = root_;
     TEST_ASSERT_FALSE(root.getEncoding().has_value());
 
-    auto copy(root);
+    xml::lite::Element copy;
+    copy.clone(root);
     copy.clearChildren();
     TEST_ASSERT_FALSE(copy.getEncoding().has_value());
     copy.setCharacterData("xyz", xml::lite::StringEncoding::Utf8);

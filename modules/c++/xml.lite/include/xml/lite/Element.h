@@ -132,18 +132,12 @@ public:
     //! Destroys any child elements.
     void destroyChildren();
 
-    /*!
-     * Copy constructor
-     * \param element  Takes an element
-     */
-    Element(const Element& element);
+    // use clone() to duplicate an Element
+    Element(const Element&) = delete;
+    Element& operator=(const Element&) = delete;
 
-    /*!
-     *  Assignment operator
-     *  \param element  Takes an element
-     *  \return a reference to *this
-     */
-    Element& operator=(const Element& element);
+    Element(Element&&) = default;
+    Element& operator=(Element&&) = default;
 
     /*!
      *  Clone function performs deep copy

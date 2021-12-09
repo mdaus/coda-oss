@@ -28,11 +28,6 @@
 #include <import/mem.h>
 #include <sys/OS.h>
 
-xml::lite::Element::Element(const xml::lite::Element& node)
-{
-    *this = node;
-}
-
 std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const std::string& qname, const std::string& uri, const std::string& characterData)
 {
     constexpr auto encoding = sys::Platform == sys::PlatformType::Windows ? StringEncoding::Windows1252 : StringEncoding::Utf8;
@@ -43,23 +38,17 @@ std::unique_ptr<xml::lite::Element> xml::lite::Element::createU8(const std::stri
     return mem::make::unique<Element>(qname, uri,  str::to_u8string(characterData));
 }
 
-xml::lite::Element& xml::lite::Element::operator=(const xml::lite::Element& node)
-{
-    if (this !=&node)
-    {
-        mName = node.mName;
-        mCharacterData = node.mCharacterData;
-        mEncoding = node.mEncoding;
-        mAttributes = node.mAttributes;
-        mChildren = node.mChildren;
-        mParent = node.mParent;
-    }
-    return *this;
-}
-
 void xml::lite::Element::clone(const xml::lite::Element& node)
 {
-    *this = node;
+    // i.e., operator=()
+    mName = node.mName;
+    mCharacterData = node.mCharacterData;
+    mEncoding = node.mEncoding;
+    mAttributes = node.mAttributes;
+    mChildren = node.mChildren;
+    mParent = node.mParent;
+    mEncoding = node.mEncoding;
+
     clearChildren();
     mParent = NULL;
 
