@@ -530,3 +530,9 @@ void xml::lite::Element::setCharacterData(const sys::U8string& characters)
 {
     setCharacterData(str::c_str<std::string::const_pointer>(characters), StringEncoding::Utf8);
 }
+
+xml::lite::Element& xml::lite::create(const std::string& name, const std::string& uri,
+                       const std::string& value, Element& parent)
+{
+    return parent.addChild(Element::create(name, uri, value));
+}
