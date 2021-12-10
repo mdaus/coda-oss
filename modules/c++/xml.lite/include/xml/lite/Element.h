@@ -405,9 +405,9 @@ public:
      *  Adds a child element to this element
      *  \param node the child element to add
      */
-    virtual void addChild(std::unique_ptr<Element>&& node);
+    virtual Element& addChild(std::unique_ptr<Element>&& node);
     #if CODA_OSS_autoptr_is_std  // std::auto_ptr removed in C++17
-    virtual void addChild(mem::auto_ptr<Element> node);
+    virtual Element& addChild(mem::auto_ptr<Element> node);
     #endif
 
     /*!

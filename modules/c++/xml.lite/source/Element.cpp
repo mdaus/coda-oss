@@ -393,14 +393,16 @@ void xml::lite::Element::addChild(xml::lite::Element * node)
     node->setParent(this);
 }
 
-void xml::lite::Element::addChild(std::unique_ptr<xml::lite::Element>&& node)
+xml::lite::Element& xml::lite::Element::addChild(std::unique_ptr<xml::lite::Element>&& node)
 {
+    auto retval = node.get();
     addChild(node.release());
+    return *retval;
 }
 #if CODA_OSS_autoptr_is_std  // std::auto_ptr removed in C++17
-void xml::lite::Element::addChild(mem::auto_ptr<xml::lite::Element> node)
+xml::lite::Element& xml::lite::Element::addChild(mem::auto_ptr<xml::lite::Element> node)
 {
-    addChild(std::unique_ptr<xml::lite::Element>(node.release()));
+    return addChild(std::unique_ptr<xml::lite::Element>(node.release()));
 }
 #endif
 
