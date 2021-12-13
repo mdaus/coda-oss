@@ -131,6 +131,7 @@ public:
         return mValue;
     }
     std::string getQName() const;
+    void getQName(QName&) const;
 
 protected:
 
@@ -152,15 +153,11 @@ protected:
  *  this data structure everywhere.  That also allows us to
  *  simplify future dom classes
  */
-class Attributes
+struct Attributes final
 {
-public:
-
     typedef std::vector<AttributeNode> Attributes_T;
     //! Default constructor
-    Attributes()
-    {
-    }
+    Attributes() = default;
 
     //! Copy constructor
     Attributes(const Attributes & attributes);
@@ -169,9 +166,7 @@ public:
     Attributes & operator=(const Attributes & attributes);
 
     //! Destructor
-    ~Attributes()
-    {
-    }
+    ~Attributes() = default;
 
     /*!
      *  Adds an attribute to the list of attributes.
@@ -200,22 +195,22 @@ public:
      * \return the index or -1 if none found
      */
     int getIndex(const QName& name) const;
-    int getIndex(const Uri& uri, const std::string& localName) const
-    {
-        return getIndex(QName(uri, localName));
-    }
     int getIndex(const std::string& uri, const std::string& localName) const
     {
-        return getIndex(Uri(uri), localName);
+        return getIndex(QName(uri, localName));
     }
 
     /*!
      * Return the number of attributes in the list.
      * \return The number of attributes contained herein
      */
+    size_t size() const
+    {
+        return mAttributes.size();
+    }
     int getLength() const
     {
-        return (int) mAttributes.size();
+        return static_cast<int>(size());
     }
 
     /*!
@@ -227,6 +222,7 @@ public:
     std::string getLocalName(int i) const;
 
     std::string getQName(int i) const;
+    void getQName(int i, QName&) const;
 
     /*!
      * Look up an attribute's Namespace URI by index.
@@ -235,6 +231,7 @@ public:
      * \throw IndexOutOfRangeException if the index is out of range
      */
     std::string getUri(int i) const;
+    void getUri(int i, Uri&) const;
 
     /*!
      * Look up an attribute's value by index.
@@ -274,13 +271,9 @@ public:
      * \throw NoSuchKeyException If the uri/localName is not found
      */
     std::string getValue(const QName&) const;
-    std::string getValue(const Uri& uri, const std::string& localName) const
-    {
-        return getValue(QName(uri, localName));
-    }
     std::string getValue(const std::string & uri, const std::string & localName) const
     {
-        return getValue(Uri(uri), localName);
+        return getValue(QName(uri, localName));
     }
 
     /*!
@@ -291,13 +284,9 @@ public:
      * \return If the uri/localName is not found or not
      */
     bool getValue(const QName&, std::string& result) const;
-    bool getValue(const Uri& uri, const std::string& localName, std::string& result) const
-    {
-        return getValue(QName(uri, localName), result);
-    }
     bool getValue(const std::string& uri, const std::string& localName, std::string& result) const
     {
-        return getValue(Uri(uri), localName, result);
+        return getValue(QName(uri, localName), result);
     }
 
     /*!
