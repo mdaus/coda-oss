@@ -33,9 +33,21 @@ std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const std::string
     constexpr auto encoding = sys::Platform == sys::PlatformType::Windows ? StringEncoding::Windows1252 : StringEncoding::Utf8;
     return mem::make::unique<Element>(qname, uri, characterData, encoding);
 }
-std::unique_ptr<xml::lite::Element> xml::lite::Element::createU8(const std::string& qname, const std::string& uri, const std::string& characterData)
+std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const std::string& qname, const Uri& uri, const std::string& characterData)
 {
-    return mem::make::unique<Element>(qname, uri,  str::to_u8string(characterData));
+    return create(qname, uri.value, characterData);
+}
+std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const QName& qname, const std::string& characterData)
+{
+    return create(qname.getName(), qname.getUri(), characterData);
+}
+std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const QName& qname, const sys::U8string& characterData)
+{
+    return mem::make::unique<Element>(qname.getName(), qname.getUri().value,  characterData);
+}
+std::unique_ptr<xml::lite::Element> xml::lite::Element::createU8(const QName& qname, const std::string& characterData)
+{
+    return create(qname,  str::to_u8string(characterData));
 }
 
 xml::lite::Element::Element(const xml::lite::Element& node)
@@ -97,10 +109,11 @@ bool xml::lite::Element::hasElement(const std::string& localName) const
     return false;
 }
 
-void xml::lite::Element::getElementsByTagName(const std::string& uri, const std::string& localName,
-                                              std::vector<Element*>& elements,
-                                              bool recurse) const
+void xml::lite::Element::getElementsByTagName(const QName& n, std::vector<Element*>& elements, bool recurse) const
 {
+    const auto uri = n.getUri().value;
+    const auto localName = n.getName();
+
     for (unsigned int i = 0; i < mChildren.size(); i++)
     {
         if (mChildren[i]->getUri() == uri && mChildren[i]->getLocalName()
@@ -134,19 +147,17 @@ xml::lite::Element& getElement(TGetElements getElements, TMakeContext makeContex
     return *pElement;
 }
 
-xml::lite::Element* xml::lite::Element::getElementByTagName(std::nothrow_t,
-    const std::string& uri, const std::string& localName,
-    bool recurse) const
+xml::lite::Element* xml::lite::getElementByTagName(std::nothrow_t, const Element& e, const QName& n, bool recurse)
 {
-    auto getElements = [&]() { return getElementsByTagName(uri, localName, recurse); };
+    auto getElements = [&]() { return e.getElementsByTagName(n, recurse); };
     return std::get<0>(getElement(getElements));
 }
-xml::lite::Element& xml::lite::Element::getElementByTagName(
-    const std::string& uri, const std::string& localName,
-    bool recurse) const
+xml::lite::Element& xml::lite::getElementByTagName(const Element& e, const QName& n, bool recurse)
 {
-    auto getElements = [&]() { return getElementsByTagName(uri, localName, recurse); };
+    auto getElements = [&]() { return e.getElementsByTagName(n, recurse); };
     auto makeContext = [&](const std::string& sz) {
+        const auto uri = n.getUri().value;
+        const auto localName = n.getName();
        return Ctxt("Expected exactly one '" + localName + "' (uri=" + uri + "); but got " + sz); };
     return getElement(getElements, makeContext);
 }
@@ -531,11 +542,11 @@ void xml::lite::Element::setCharacterData(const sys::U8string& characters)
     setCharacterData(str::c_str<std::string::const_pointer>(characters), StringEncoding::Utf8);
 }
 
-xml::lite::Element& xml::lite::add(const std::string& name,
-                                   const std::string& uri,
+xml::lite::Element& xml::lite::add(const QName& qname,
                                    const std::string& value,
                                    Element& parent)
 {
-    auto elem = Element::create(name, uri, value);
+    auto elem = Element::create(qname, value);
     return parent.addChild(std::move(elem));
 }
+

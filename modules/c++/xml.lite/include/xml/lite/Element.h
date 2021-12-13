@@ -33,6 +33,7 @@
 #include <str/Convert.h>
 #include "xml/lite/XMLException.h"
 #include "xml/lite/Attributes.h"
+#include "xml/lite/QName.h"
 #include "sys/Conf.h"
 #include "sys/Optional.h"
 #include "mem/SharedPtr.h"
@@ -120,8 +121,11 @@ public:
 
     // StringEncoding is assumed based on the platform: Windows-1252 or UTF-8.
     static std::unique_ptr<Element> create(const std::string& qname, const std::string& uri = "", const std::string& characterData = "");
-    // Encoding of "characterData" is assumed based on the platform: Windows-1252 or UTF-8
-    static std::unique_ptr<Element> createU8(const std::string& qname, const std::string& uri = "", const std::string& characterData = "");
+    static std::unique_ptr<Element> create(const std::string& qname, const Uri& uri, const std::string& characterData = "");
+    static std::unique_ptr<Element> create(const QName&, const std::string& characterData = "");
+    static std::unique_ptr<Element> create(const QName&, const sys::U8string&);
+    // Encoding of "characterData" is always UTF-8
+    static std::unique_ptr<Element> createU8(const QName&, const std::string& characterData = "");
 
     //! Destructor
     virtual ~Element()
@@ -222,11 +226,6 @@ public:
     void getElementsByTagName(const std::string& localName,
                               std::vector<Element*>& elements,
                               bool recurse = false) const;
-    /*!
-     *  \param std::nothrow -- will still throw if MULTIPLE elements are found, returns NULL if none
-     */
-    Element* getElementByTagName(std::nothrow_t, const std::string& localName, bool recurse = false) const;
-    Element& getElementByTagName(const std::string& localName, bool recurse = false) const;
 
     /*!
      *  Utility for people that dont like to pass by reference
@@ -238,6 +237,11 @@ public:
         getElementsByTagName(localName, v, recurse);
         return v;
     }
+        /*!
+     *  \param std::nothrow -- will still throw if MULTIPLE elements are found, returns NULL if none
+     */
+    Element* getElementByTagName(std::nothrow_t, const std::string& localName, bool recurse = false) const;
+    Element& getElementByTagName(const std::string& localName, bool recurse = false) const;
 
     /*!
      *  Get the elements by tag name
@@ -245,26 +249,27 @@ public:
      *  \param localName the local name
      *  \param elements the elements that match the QName
      */
-    void getElementsByTagName(const std::string& uri, const std::string& localName,
+    void getElementsByTagName(const QName& name, std::vector<Element*>& elements, bool recurse = false) const;
+    void getElementsByTagName(const std::string& uri,
+                              const std::string& localName,
                               std::vector<Element*>& elements,
-                              bool recurse = false) const;
-    /*!
-     *  \param std::nothrow -- will still throw if MULTIPLE elements are found, returns NULL if none
-     */
-    Element* getElementByTagName(std::nothrow_t, const std::string& uri, const std::string& localName,
-                                 bool recurse = false) const;
-    Element& getElementByTagName(const std::string& uri, const std::string& localName,
-                                 bool recurse = false) const;
+                              bool recurse = false) const
+    {
+        getElementsByTagName(QName(uri, localName), elements, recurse);
+    }
 
     /*!
      *  Utility for people that dont like to pass by reference
      */
-    std::vector<Element*> getElementsByTagName(const std::string& uri, const std::string& localName,
-                                               bool recurse = false) const
+    std::vector<Element*> getElementsByTagName(const QName& name, bool recurse = false) const
     {
         std::vector<Element*> v;
-        getElementsByTagName(uri, localName, v, recurse);
+        getElementsByTagName(name, v, recurse);
         return v;
+    }
+    std::vector<Element*> getElementsByTagName(const std::string& uri, const std::string& localName, bool recurse = false) const
+    {
+        return getElementsByTagName(QName(uri, localName), recurse);
     }
 
     /*!
@@ -477,7 +482,7 @@ protected:
                 const std::string& formatter) const;
 };
 
-extern Element& add(const std::string& name, const std::string& uri, const std::string& value, Element& parent);
+extern Element& add(const QName&, const std::string& value, Element& parent);
 
 #ifndef SWIG
 // The (old) version of SWIG we're using doesn't like certain C++11 features.
@@ -539,41 +544,59 @@ inline void setValue(Element& element, const T& value)
 }
 
 template <typename T, typename ToString>
-inline Element& addNewElement(const std::string& name, const std::string& uri, const T& value, Element& parent,
+inline Element& addNewElement(const QName& name, const T& value, Element& parent,
     ToString toString)
 {
-    return xml::lite::add(name, uri, toString(value), parent);
+    return xml::lite::add(name, toString(value), parent);
 }
 template<typename T>
-inline Element& addNewElement(const std::string& name, const std::string& uri, const T& value, Element& parent)
+inline Element& addNewElement(const QName& name, const T& value, Element& parent)
 {
-    return addNewElement(name, uri, value, parent, details::toString<T>);
+    return addNewElement(name, value, parent, details::toString<T>);
 }
 
 template <typename T, typename ToString>
-inline Element& addNewElement(const std::string& name, const std::string& uri, const sys::Optional<T>& v, Element& parent,
+inline Element& addNewElement(const QName& name, const sys::Optional<T>& v, Element& parent,
     ToString toString)
 {
-    return addNewElement(name, uri, v.value(), parent, toString);
+    return addNewElement(name, v.value(), parent, toString);
 }
 template<typename T>
-inline Element& addNewElement(const std::string& name, const std::string& uri, const sys::Optional<T>& v, Element& parent)
+inline Element& addNewElement(const QName& name, const sys::Optional<T>& v, Element& parent)
 {
-    return addNewElement(name, uri, v.value(), parent);
+    return addNewElement(name, v.value(), parent);
 }
 template <typename T, typename ToString>
-inline Element* addNewOptionalElement(const std::string& name, const std::string& uri, const sys::Optional<T>& v, Element& parent,
+inline Element* addNewOptionalElement(const QName& name, const sys::Optional<T>& v, Element& parent,
         ToString toString)
 {
-    return v.has_value() ? &addNewElement(name, uri, v, parent, toString) : nullptr;
+    return v.has_value() ? &addNewElement(name, v, parent, toString) : nullptr;
 }
 template<typename T>
-inline Element* addNewOptionalElement(const std::string& name, const std::string& uri, const sys::Optional<T>& v, Element& parent)
+inline Element* addNewOptionalElement(const QName& name, const sys::Optional<T>& v, Element& parent)
 {
-    return v.has_value() ? &addNewElement(name, uri, v, parent) : nullptr;
+    return v.has_value() ? &addNewElement(name, v, parent) : nullptr;
 }
 
 #endif // SWIG
+
+ /*!
+ *  Get the elements by tag name
+ *  \param uri the URI
+ *  \param localName the local name
+ *  \param elements the elements that match the QName
+ */
+inline void getElementsByTagName(const Element& e, const QName& n, std::vector<Element*>& elements, bool recurse = false)
+{
+    e.getElementsByTagName(n.getUri().value, n.getName(), elements, recurse);
+}
+
+/*!
+ *  \param std::nothrow -- will still throw if MULTIPLE elements are found,
+ * returns NULL if none
+ */
+Element* getElementByTagName(std::nothrow_t, const Element&, const QName&, bool recurse = false);
+Element& getElementByTagName(const Element&, const QName&, bool recurse = false);
 
 }
 }
