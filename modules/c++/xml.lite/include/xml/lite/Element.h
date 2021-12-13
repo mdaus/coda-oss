@@ -277,9 +277,17 @@ public:
      *  2)  Recursively descend over children and fix all
      *  namespaces below using fixNodeNamespace()
      */
-    void setNamespacePrefix(std::string prefix, std::string uri);
+    void setNamespacePrefix(std::string prefix, const Uri&);
+    void setNamespacePrefix(std::string prefix, std::string uri)
+    {
+        setNamespacePrefix(prefix, Uri(uri));
+    }
 
-    void setNamespaceURI(std::string prefix, std::string uri);
+    void setNamespaceURI(std::string prefix, const Uri&);
+    void setNamespaceURI(std::string prefix, std::string uri)
+    {
+        setNamespaceURI(prefix, Uri(uri));
+    }
 
     /*!
      *  Prints the element to the specified OutputStream
@@ -316,7 +324,11 @@ public:
      *  \param localName the local name to search for
      *  \return true if it exists, false if not
      */
-    bool hasElement(const std::string& uri, const std::string& localName) const;
+    bool hasElement(const QName&) const;
+    bool hasElement(const std::string& uri, const std::string& localName) const
+    {
+        return hasElement(QName(uri, localName));
+    }
 
     /*!
      *  Returns the character data of this element.
@@ -372,6 +384,10 @@ public:
     {
         mName.setQName(qname);
     }
+    void setQName(const QName& qname)
+    {
+        mName = qname;
+    }
 
     /*!
      *  Returns the QName of this element.
@@ -379,16 +395,26 @@ public:
      */
     std::string getQName() const
     {
-        return mName.toString();
+        QName result;
+        getQName(result);
+        return result.toString();
+    }
+    void getQName(QName& result) const
+    {
+        result = mName;
     }
 
     /*!
      *  Sets the URI for this element.
      *  \param uri the data to add to this element
      */
-    void setUri(const std::string& uri)
+    void setUri(const Uri& uri)
     {
         mName.setAssociatedUri(uri);
+    }
+    void setUri(const std::string& uri)
+    {
+        setUri(Uri(uri));
     }
 
     /*!
@@ -397,7 +423,13 @@ public:
      */
     std::string getUri() const
     {
-        return mName.getAssociatedUri();
+        Uri result;
+        getUri(result);
+        return result.value;
+    }
+    void getUri(Uri& result) const
+    {
+        mName.getAssociatedUri(result);
     }
 
     /*!

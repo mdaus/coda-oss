@@ -86,8 +86,10 @@ void xml::lite::Element::clone(const xml::lite::Element& node)
     }
 }
 
-bool xml::lite::Element::hasElement(const std::string& uri, const std::string& localName) const
+bool xml::lite::Element::hasElement(const QName& qname) const
 {
+    const auto uri = qname.getUri().value;
+    const auto localName = qname.getName();
 
     for (unsigned int i = 0; i < mChildren.size(); i++)
     {
@@ -486,9 +488,10 @@ void xml::lite::Element::changeURI(Element* element,
 #endif
 
 void xml::lite::Element::setNamespacePrefix(
-    std::string prefix, std::string uri)
+    std::string prefix, const Uri& uri_)
 {
     str::trim(prefix);
+    auto uri = uri_.value;
     changePrefix(this, prefix, uri);
 
     // Add namespace definition
@@ -501,9 +504,10 @@ void xml::lite::Element::setNamespacePrefix(
 }
 
 void xml::lite::Element::setNamespaceURI(
-    std::string prefix, std::string uri)
+    std::string prefix,  const Uri& uri_)
 {
     str::trim(prefix);
+    auto uri = uri_.value;
     changeURI(this, prefix, uri);
 
     // Add namespace definition
