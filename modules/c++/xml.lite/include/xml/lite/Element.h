@@ -122,10 +122,10 @@ public:
     // StringEncoding is assumed based on the platform: Windows-1252 or UTF-8.
     static std::unique_ptr<Element> create(const std::string& qname, const std::string& uri = "", const std::string& characterData = "");
     static std::unique_ptr<Element> create(const std::string& qname, const Uri& uri, const std::string& characterData = "");
-    static std::unique_ptr<Element> create(const QName&, const std::string& characterData = "");
-    static std::unique_ptr<Element> create(const QName&, const sys::U8string&);
+    static std::unique_ptr<Element> create(const xml::lite::QName&, const std::string& characterData = "");
+    static std::unique_ptr<Element> create(const xml::lite::QName&, const sys::U8string&);
     // Encoding of "characterData" is always UTF-8
-    static std::unique_ptr<Element> createU8(const QName&, const std::string& characterData = "");
+    static std::unique_ptr<Element> createU8(const xml::lite::QName&, const std::string& characterData = "");
 
     //! Destructor
     virtual ~Element()
@@ -249,7 +249,7 @@ public:
      *  \param localName the local name
      *  \param elements the elements that match the QName
      */
-    void getElementsByTagName(const QName& name, std::vector<Element*>& elements, bool recurse = false) const;
+    void getElementsByTagName(const xml::lite::QName& name, std::vector<Element*>& elements, bool recurse = false) const;
     void getElementsByTagName(const std::string& uri,
                               const std::string& localName,
                               std::vector<Element*>& elements,
@@ -261,7 +261,7 @@ public:
     /*!
      *  Utility for people that dont like to pass by reference
      */
-    std::vector<Element*> getElementsByTagName(const QName& name, bool recurse = false) const
+    std::vector<Element*> getElementsByTagName(const xml::lite::QName& name, bool recurse = false) const
     {
         std::vector<Element*> v;
         getElementsByTagName(name, v, recurse);
@@ -324,7 +324,7 @@ public:
      *  \param localName the local name to search for
      *  \return true if it exists, false if not
      */
-    bool hasElement(const QName&) const;
+    bool hasElement(const xml::lite::QName&) const;
     bool hasElement(const std::string& uri, const std::string& localName) const
     {
         return hasElement(QName(uri, localName));
@@ -384,7 +384,7 @@ public:
     {
         mName.setQName(qname);
     }
-    void setQName(const QName& qname)
+    void setQName(const xml::lite::QName& qname)
     {
         mName = qname;
     }
@@ -514,7 +514,7 @@ protected:
                 const std::string& formatter) const;
 };
 
-extern Element& add(const QName&, const std::string& value, Element& parent);
+extern Element& add(const xml::lite::QName&, const std::string& value, Element& parent);
 
 #ifndef SWIG
 // The (old) version of SWIG we're using doesn't like certain C++11 features.
@@ -576,36 +576,36 @@ inline void setValue(Element& element, const T& value)
 }
 
 template <typename T, typename ToString>
-inline Element& addNewElement(const QName& name, const T& value, Element& parent,
+inline Element& addNewElement(const xml::lite::QName& name, const T& value, Element& parent,
     ToString toString)
 {
     return xml::lite::add(name, toString(value), parent);
 }
 template<typename T>
-inline Element& addNewElement(const QName& name, const T& value, Element& parent)
+inline Element& addNewElement(const xml::lite::QName& name, const T& value, Element& parent)
 {
     return addNewElement(name, value, parent, details::toString<T>);
 }
 
 template <typename T, typename ToString>
-inline Element& addNewElement(const QName& name, const sys::Optional<T>& v, Element& parent,
+inline Element& addNewElement(const xml::lite::QName& name, const sys::Optional<T>& v, Element& parent,
     ToString toString)
 {
     return addNewElement(name, v.value(), parent, toString);
 }
 template<typename T>
-inline Element& addNewElement(const QName& name, const sys::Optional<T>& v, Element& parent)
+inline Element& addNewElement(const xml::lite::QName& name, const sys::Optional<T>& v, Element& parent)
 {
     return addNewElement(name, v.value(), parent);
 }
 template <typename T, typename ToString>
-inline Element* addNewOptionalElement(const QName& name, const sys::Optional<T>& v, Element& parent,
+inline Element* addNewOptionalElement(const xml::lite::QName& name, const sys::Optional<T>& v, Element& parent,
         ToString toString)
 {
     return v.has_value() ? &addNewElement(name, v, parent, toString) : nullptr;
 }
 template<typename T>
-inline Element* addNewOptionalElement(const QName& name, const sys::Optional<T>& v, Element& parent)
+inline Element* addNewOptionalElement(const xml::lite::QName& name, const sys::Optional<T>& v, Element& parent)
 {
     return v.has_value() ? &addNewElement(name, v, parent) : nullptr;
 }
@@ -618,7 +618,7 @@ inline Element* addNewOptionalElement(const QName& name, const sys::Optional<T>&
  *  \param localName the local name
  *  \param elements the elements that match the QName
  */
-inline void getElementsByTagName(const Element& e, const QName& n, std::vector<Element*>& elements, bool recurse = false)
+inline void getElementsByTagName(const Element& e, const xml::lite::QName& n, std::vector<Element*>& elements, bool recurse = false)
 {
     e.getElementsByTagName(n.getUri().value, n.getName(), elements, recurse);
 }
@@ -627,8 +627,8 @@ inline void getElementsByTagName(const Element& e, const QName& n, std::vector<E
  *  \param std::nothrow -- will still throw if MULTIPLE elements are found,
  * returns NULL if none
  */
-Element* getElementByTagName(std::nothrow_t, const Element&, const QName&, bool recurse = false);
-Element& getElementByTagName(const Element&, const QName&, bool recurse = false);
+Element* getElementByTagName(std::nothrow_t, const Element&, const xml::lite::QName&, bool recurse = false);
+Element& getElementByTagName(const Element&, const xml::lite::QName&, bool recurse = false);
 
 }
 }

@@ -85,7 +85,7 @@ public:
      *  \param qname The fully qualified name
      */
     void setQName(const std::string& qname);
-    void setQName(const QName& qname);
+    void setQName(const xml::lite::QName& qname);
 
     /*!
      *  Set the local (unqualified portion) of the name
@@ -194,7 +194,7 @@ struct Attributes final
      * \param localName  The local name of the attribute
      * \return the index or -1 if none found
      */
-    int getIndex(const QName& name) const;
+    int getIndex(const xml::lite::QName& name) const;
     int getIndex(const std::string& uri, const std::string& localName) const
     {
         return getIndex(QName(uri, localName));
@@ -270,7 +270,7 @@ struct Attributes final
      * \return The value
      * \throw NoSuchKeyException If the uri/localName is not found
      */
-    std::string getValue(const QName&) const;
+    std::string getValue(const xml::lite::QName&) const;
     std::string getValue(const std::string & uri, const std::string & localName) const
     {
         return getValue(QName(uri, localName));
@@ -283,7 +283,7 @@ struct Attributes final
      * \param result The value, if found
      * \return If the uri/localName is not found or not
      */
-    bool getValue(const QName&, std::string& result) const;
+    bool getValue(const xml::lite::QName&, std::string& result) const;
     bool getValue(const std::string& uri, const std::string& localName, std::string& result) const
     {
         return getValue(QName(uri, localName), result);
@@ -565,12 +565,12 @@ inline bool setValue(Attributes& attributes, const std::string& qname, const T& 
  * \return If the uri/localName is not found or not
  */
 template <typename T, typename ToString>
-inline bool setValue(Attributes& attributes, const QName& name, const T& value, ToString toString)
+inline bool setValue(Attributes& attributes, const xml::lite::QName& name, const T& value, ToString toString)
 {
     return setValue_(attributes, name, value, toString);
 }
 template <typename T>
-inline bool setValue(Attributes& attributes, const QName& name, const T& value)
+inline bool setValue(Attributes& attributes, const xml::lite::QName& name, const T& value)
 {
     return setValue_(attributes, name, value, details::toString<T>);
 }
