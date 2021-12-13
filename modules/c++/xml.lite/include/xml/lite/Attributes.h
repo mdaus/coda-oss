@@ -60,9 +60,7 @@ class AttributeNode
 public:
 
     //! Constructor
-    AttributeNode()
-    {
-    }
+    AttributeNode() = default;
 
     /*!
      *  Copy constructor
@@ -79,9 +77,7 @@ public:
     AttributeNode& operator=(const AttributeNode& attributeNode);
 
     //! Destructor
-    ~AttributeNode()
-    {
-    }
+    ~AttributeNode() = default;
 
     /*!
      *  This function takes a fully qualified name.
@@ -90,6 +86,7 @@ public:
      *  \param qname The fully qualified name
      */
     void setQName(const std::string& qname);
+    void setQName(const QName& qname);
 
     /*!
      *  Set the local (unqualified portion) of the name
@@ -108,7 +105,11 @@ public:
      *  Set the URI association in the QName
      *  \param uri The new uri
      */
-    void setUri(const std::string& uri);
+    void setUri(const Uri&);
+    void setUri(const std::string& uri)
+    {
+        setUri(Uri(uri));
+    }
 
     /*!
      *  Set the attribute value
@@ -122,6 +123,7 @@ public:
      *  \return The uri
      */
     std::string getUri() const;
+    void getUri(Uri&) const;
     std::string getLocalName() const;
     std::string getPrefix() const;
     std::string getValue() const;
@@ -198,10 +200,18 @@ public:
      * \param localName  The local name of the attribute
      * \return the index or -1 if none found
      */
-    int getIndex(const std::string & uri, const std::string & localName) const;
+    int getIndex(const QName& name) const;
+    int getIndex(const Uri& uri, const std::string& localName) const
+    {
+        return getIndex(QName(uri, localName));
+    }
+    int getIndex(const std::string& uri, const std::string& localName) const
+    {
+        return getIndex(Uri(uri), localName);
+    }
     int getIndex(const std::tuple<std::string, std::string>& name) const
     {
-        return getIndex(std::get<0>(name), std::get<1>(name));
+        return getIndex(Uri(std::get<0>(name)), std::get<1>(name));
     }
 
     /*!
@@ -268,10 +278,18 @@ public:
      * \return The value
      * \throw NoSuchKeyException If the uri/localName is not found
      */
-    std::string getValue(const std::string & uri, const std::string & localName) const;
+    std::string getValue(const QName&) const;
+    std::string getValue(const Uri& uri, const std::string& localName) const
+    {
+        return getValue(QName(uri, localName));
+    }
+    std::string getValue(const std::string & uri, const std::string & localName) const
+    {
+        return getValue(Uri(uri), localName);
+    }
     std::string getValue(const std::tuple<std::string, std::string>& name) const
     {
-        return getValue(std::get<0>(name), std::get<1>(name));
+        return getValue(Uri(std::get<0>(name)), std::get<1>(name));
     }
 
     /*!
@@ -281,10 +299,18 @@ public:
      * \param result The value, if found
      * \return If the uri/localName is not found or not
      */
-    bool getValue(const std::string& uri, const std::string& localName, std::string& result) const;
+    bool getValue(const QName&, std::string& result) const;
+    bool getValue(const Uri& uri, const std::string& localName, std::string& result) const
+    {
+        return getValue(QName(uri, localName), result);
+    }
+    bool getValue(const std::string& uri, const std::string& localName, std::string& result) const
+    {
+        return getValue(Uri(uri), localName, result);
+    }
     bool getValue(const std::tuple<std::string, std::string>& name, std::string& result) const
     {
-        return getValue(std::get<0>(name), std::get<1>(name), result);
+        return getValue(Uri(std::get<0>(name)), std::get<1>(name), result);
     }
 
     /*!

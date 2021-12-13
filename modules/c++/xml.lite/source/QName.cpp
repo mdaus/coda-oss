@@ -70,16 +70,18 @@ void xml::lite::QName::setQName(const std::string& str)
 
 void xml::lite::QName::setAssociatedUri(const Uri& v)
 {
-    mAssocUri = v.value;
+    mAssocUri = v;
 }
 
 void xml::lite::QName::getAssociatedUri(Uri& v) const
 {
-    v.value = mAssocUri;
+    v = getUri();
 }
 std::string xml::lite::QName::getAssociatedUri() const
 {
-    Uri result;
-    getAssociatedUri(result);
-    return result.value;
+    return getUri().value;
+}
+const xml::lite::Uri& xml::lite::QName::getUri() const
+{
+    return mAssocUri;
 }

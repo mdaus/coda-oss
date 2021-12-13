@@ -64,7 +64,7 @@ namespace lite
 struct Uri final // help prevent mixups with std::string
 {
     Uri() = default;
-    Uri(const std::string& v) : value(v) { }
+    explicit Uri(const std::string& v) : value(v) { }
     std::string value;
 };
 
@@ -75,7 +75,7 @@ class QName final
     //!  Local Part (Unqualified)
     std::string mLocalName;
     //!  Associated URI for Prefix
-    std::string mAssocUri;
+    Uri mAssocUri;
 
 public:
     QName() = default;
@@ -164,6 +164,7 @@ public:
      */
     std::string getAssociatedUri() const;
     void getAssociatedUri(Uri&) const;
+    const Uri& getUri() const;
 };
 }
 }
