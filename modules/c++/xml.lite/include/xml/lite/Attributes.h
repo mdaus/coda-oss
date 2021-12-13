@@ -26,7 +26,6 @@
 
 #include <string>
 #include <vector>
-#include <tuple>
 
 #include "sys/Conf.h"
 #include "except/Exception.h"
@@ -209,10 +208,6 @@ public:
     {
         return getIndex(Uri(uri), localName);
     }
-    int getIndex(const std::tuple<std::string, std::string>& name) const
-    {
-        return getIndex(Uri(std::get<0>(name)), std::get<1>(name));
-    }
 
     /*!
      * Return the number of attributes in the list.
@@ -287,10 +282,6 @@ public:
     {
         return getValue(Uri(uri), localName);
     }
-    std::string getValue(const std::tuple<std::string, std::string>& name) const
-    {
-        return getValue(Uri(std::get<0>(name)), std::get<1>(name));
-    }
 
     /*!
      * Look up an attribute's value by Namespace name.
@@ -307,10 +298,6 @@ public:
     bool getValue(const std::string& uri, const std::string& localName, std::string& result) const
     {
         return getValue(Uri(uri), localName, result);
-    }
-    bool getValue(const std::tuple<std::string, std::string>& name, std::string& result) const
-    {
-        return getValue(Uri(std::get<0>(name)), std::get<1>(name), result);
     }
 
     /*!
@@ -498,23 +485,23 @@ template <typename ToType>
 inline auto castValue(const Attributes& attributes, const std::string & uri, const std::string & localName, ToType toType)
 -> decltype(toType(std::string()))
 {
-    return castValue(attributes, std::make_tuple(uri, localName), toType);
+    return castValue(attributes, QName(uri, localName), toType);
 }
 template <typename T>
 inline T getValue(const Attributes& attributes, const std::string & uri, const std::string & localName)
 {
-    return getValue<T>(attributes, std::make_tuple(uri, localName));
+    return getValue<T>(attributes, QName(uri, localName));
 }
 
 template <typename T, typename ToType>
 inline bool castValue(const Attributes& attributes, const std::string & uri, const std::string & localName, T& result, ToType toType)
 {
-    return getValue(attributes, std::make_tuple(uri, localName), result, toType);
+    return getValue(attributes, QName(uri, localName), result, toType);
 }
 template <typename T>
 inline bool getValue(const Attributes& attributes, const std::string & uri, const std::string & localName, T& result)
 {
-    return getValue(attributes, std::make_tuple(uri, localName), result);
+    return getValue(attributes, QName(uri, localName), result);
 }
 
 /*!
@@ -589,13 +576,12 @@ inline bool setValue(Attributes& attributes, const std::string& qname, const T& 
  * \return If the uri/localName is not found or not
  */
 template <typename T, typename ToString>
-inline bool setValue(Attributes& attributes, const std::tuple<std::string, std::string>& name, const T& value,
-        ToString toString)
+inline bool setValue(Attributes& attributes, const QName& name, const T& value, ToString toString)
 {
     return setValue_(attributes, name, value, toString);
 }
 template <typename T>
-inline bool setValue(Attributes& attributes, const std::tuple<std::string, std::string>& name, const T& value)
+inline bool setValue(Attributes& attributes, const QName& name, const T& value)
 {
     return setValue_(attributes, name, value, details::toString<T>);
 }
@@ -603,7 +589,7 @@ template <typename T, typename ToString>
 inline bool setValue(Attributes& attributes, const std::string & uri, const std::string & localName, const T& value,
      ToString toString)
 {
-    return setValue(attributes, std::make_tuple(uri, localName), value, toString);
+    return setValue(attributes, QName(uri, localName), value, toString);
 }
 template <typename T>
 inline bool setValue(Attributes& attributes, const std::string & uri, const std::string & localName, const T& value)
