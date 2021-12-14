@@ -163,7 +163,7 @@ public:
      *
      */
     std::string getAssociatedUri() const;
-    void getAssociatedUri(Uri&) const;
+    void getAssociatedUri(xml::lite::Uri&) const;
     const xml::lite::Uri& getUri() const;
 };
 }

@@ -122,7 +122,7 @@ public:
      *  \return The uri
      */
     std::string getUri() const;
-    void getUri(Uri&) const;
+    void getUri(xml::lite::Uri&) const;
     std::string getLocalName() const;
     std::string getPrefix() const;
     std::string getValue() const;
@@ -131,7 +131,7 @@ public:
         return mValue;
     }
     std::string getQName() const;
-    void getQName(QName&) const;
+    void getQName(xml::lite::QName&) const;
 
 protected:
 
@@ -222,7 +222,7 @@ struct Attributes final
     std::string getLocalName(int i) const;
 
     std::string getQName(int i) const;
-    void getQName(int i, QName&) const;
+    void getQName(int i, xml::lite::QName&) const;
 
     /*!
      * Look up an attribute's Namespace URI by index.
@@ -231,7 +231,7 @@ struct Attributes final
      * \throw IndexOutOfRangeException if the index is out of range
      */
     std::string getUri(int i) const;
-    void getUri(int i, Uri&) const;
+    void getUri(int i, xml::lite::Uri&) const;
 
     /*!
      * Look up an attribute's value by index.

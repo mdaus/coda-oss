@@ -412,7 +412,7 @@ public:
         getQName(result);
         return result.toString();
     }
-    void getQName(QName& result) const
+    void getQName(xml::lite::QName& result) const
     {
         result = mName;
     }
@@ -440,7 +440,7 @@ public:
         getUri(result);
         return result.value;
     }
-    void getUri(Uri& result) const
+    void getUri(xml::lite::Uri& result) const
     {
         mName.getAssociatedUri(result);
     }
