@@ -104,7 +104,7 @@ public:
      *  Set the URI association in the QName
      *  \param uri The new uri
      */
-    void setUri(const Uri&);
+    void setUri(const xml::lite::Uri&);
     void setUri(const std::string& uri)
     {
         setUri(Uri(uri));

@@ -85,12 +85,12 @@ public:
      * \param uri The uri of the object 
      * \param qname The qname of the object 
      */
-    QName(const Uri& uri, const std::string& qname)
+    QName(const xml::lite::Uri& uri, const std::string& qname)
     {
         setQName(qname);
         setAssociatedUri(uri);
     }
-    QName(const std::string& qname, const Uri& uri) : QName(uri, qname) { }
+    QName(const std::string& qname, const xml::lite::Uri& uri) : QName(uri, qname) { }
     QName(const std::string& uri, const std::string& qname) : QName(Uri(uri), qname)  { }
 
     /*!
@@ -151,7 +151,7 @@ public:
      *  Here you specify that URI.
      *  \param uri The URI to associate with this QName
      */
-    void setAssociatedUri(const Uri&);
+    void setAssociatedUri(const xml::lite::Uri&);
     void setAssociatedUri(const std::string& str)
     {
         setAssociatedUri(Uri(str));
@@ -164,7 +164,7 @@ public:
      */
     std::string getAssociatedUri() const;
     void getAssociatedUri(Uri&) const;
-    const Uri& getUri() const;
+    const xml::lite::Uri& getUri() const;
 };
 }
 }

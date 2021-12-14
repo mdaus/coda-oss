@@ -121,7 +121,7 @@ public:
 
     // StringEncoding is assumed based on the platform: Windows-1252 or UTF-8.
     static std::unique_ptr<Element> create(const std::string& qname, const std::string& uri = "", const std::string& characterData = "");
-    static std::unique_ptr<Element> create(const std::string& qname, const Uri& uri, const std::string& characterData = "");
+    static std::unique_ptr<Element> create(const std::string& qname, const xml::lite::Uri& uri, const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const sys::U8string&);
     // Encoding of "characterData" is always UTF-8
@@ -290,13 +290,13 @@ public:
      *  2)  Recursively descend over children and fix all
      *  namespaces below using fixNodeNamespace()
      */
-    void setNamespacePrefix(std::string prefix, const Uri&);
+    void setNamespacePrefix(std::string prefix, const xml::lite::Uri&);
     void setNamespacePrefix(std::string prefix, std::string uri)
     {
         setNamespacePrefix(prefix, Uri(uri));
     }
 
-    void setNamespaceURI(std::string prefix, const Uri&);
+    void setNamespaceURI(std::string prefix, const xml::lite::Uri&);
     void setNamespaceURI(std::string prefix, std::string uri)
     {
         setNamespaceURI(prefix, Uri(uri));
@@ -421,7 +421,7 @@ public:
      *  Sets the URI for this element.
      *  \param uri the data to add to this element
      */
-    void setUri(const Uri& uri)
+    void setUri(const xml::lite::Uri& uri)
     {
         mName.setAssociatedUri(uri);
     }
