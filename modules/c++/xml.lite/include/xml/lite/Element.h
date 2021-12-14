@@ -237,7 +237,8 @@ public:
         getElementsByTagName(localName, v, recurse);
         return v;
     }
-        /*!
+
+    /*!
      *  \param std::nothrow -- will still throw if MULTIPLE elements are found, returns NULL if none
      */
     Element* getElementByTagName(std::nothrow_t, const std::string& localName, bool recurse = false) const;
@@ -265,6 +266,10 @@ public:
         return getElementByTagName(t, QName(uri, localName), recurse);
     }
     Element& getElementByTagName(const xml::lite::QName&, bool recurse = false) const;
+    Element& getElementByTagName(const std::string& uri, const std::string& localName, bool recurse = false) const 
+    {
+        return getElementByTagName(QName(uri, localName), recurse);
+    }
 
     /*!
      *  Utility for people that dont like to pass by reference
