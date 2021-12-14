@@ -149,14 +149,14 @@ xml::lite::Element& getElement(TGetElements getElements, TMakeContext makeContex
     return *pElement;
 }
 
-xml::lite::Element* xml::lite::getElementByTagName(std::nothrow_t, const Element& e, const QName& n, bool recurse)
+xml::lite::Element* xml::lite::Element::getElementByTagName(std::nothrow_t, const QName& n, bool recurse) const
 {
-    auto getElements = [&]() { return e.getElementsByTagName(n, recurse); };
+    auto getElements = [&]() { return getElementsByTagName(n, recurse); };
     return std::get<0>(getElement(getElements));
 }
-xml::lite::Element& xml::lite::getElementByTagName(const Element& e, const QName& n, bool recurse)
+xml::lite::Element& xml::lite::Element::getElementByTagName(const QName& n, bool recurse) const
 {
-    auto getElements = [&]() { return e.getElementsByTagName(n, recurse); };
+    auto getElements = [&]() { return getElementsByTagName(n, recurse); };
     auto makeContext = [&](const std::string& sz) {
         const auto uri = n.getUri().value;
         const auto localName = n.getName();

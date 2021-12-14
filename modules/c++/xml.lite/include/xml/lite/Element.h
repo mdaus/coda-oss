@@ -250,13 +250,21 @@ public:
      *  \param elements the elements that match the QName
      */
     void getElementsByTagName(const xml::lite::QName& name, std::vector<Element*>& elements, bool recurse = false) const;
-    void getElementsByTagName(const std::string& uri,
-                              const std::string& localName,
-                              std::vector<Element*>& elements,
-                              bool recurse = false) const
+    void getElementsByTagName(const std::string& uri, const std::string& localName, std::vector<Element*>& elements, bool recurse = false) const
     {
         getElementsByTagName(QName(uri, localName), elements, recurse);
     }
+    
+    /*!
+     *  \param std::nothrow -- will still throw if MULTIPLE elements are found,
+     * returns NULL if none
+     */
+    Element* getElementByTagName(std::nothrow_t, const xml::lite::QName&, bool recurse = false) const;
+    Element* getElementByTagName(std::nothrow_t t, const std::string& uri, const std::string& localName, bool recurse = false) const 
+    {
+        return getElementByTagName(t, QName(uri, localName), recurse);
+    }
+    Element& getElementByTagName(const xml::lite::QName&, bool recurse = false) const;
 
     /*!
      *  Utility for people that dont like to pass by reference
@@ -611,24 +619,6 @@ inline Element* addNewOptionalElement(const xml::lite::QName& name, const sys::O
 }
 
 #endif // SWIG
-
- /*!
- *  Get the elements by tag name
- *  \param uri the URI
- *  \param localName the local name
- *  \param elements the elements that match the QName
- */
-inline void getElementsByTagName(const Element& e, const xml::lite::QName& n, std::vector<Element*>& elements, bool recurse = false)
-{
-    e.getElementsByTagName(n.getUri().value, n.getName(), elements, recurse);
-}
-
-/*!
- *  \param std::nothrow -- will still throw if MULTIPLE elements are found,
- * returns NULL if none
- */
-Element* getElementByTagName(std::nothrow_t, const Element&, const xml::lite::QName&, bool recurse = false);
-Element& getElementByTagName(const Element&, const xml::lite::QName&, bool recurse = false);
 
 }
 }
