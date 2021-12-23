@@ -50,7 +50,6 @@
 
 #include "XMLReader.h"
 #include "io/StandardStreams.h"
-#include "io/DbgStream.h"
 #include "Document.h"
 
 namespace xml
@@ -83,6 +82,7 @@ public:
     }
 
     virtual void setDocument(Document *newDocument, bool own = true);
+    virtual void setDocument(std::unique_ptr<Document>&&);  // own = true
 
     /**
      * Retrieves the Document.
@@ -94,6 +94,7 @@ public:
             mOwnDocument = false;
         return mDocument;
     }
+    virtual void getDocument(std::unique_ptr<Document>&);  // steal = true
 
     virtual Document *getDocument() const
     {
