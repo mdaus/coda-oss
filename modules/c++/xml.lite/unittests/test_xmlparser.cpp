@@ -237,8 +237,6 @@ TEST_CASE(testXmlParseAndPrintUtf8)
 
 static void testReadEncodedXmlFile(const std::string& testName, const std::string& xmlFile, bool preserveCharacterData)
 {
-    preserveCharacterData = true;  // TODO
-
     const auto coda_oss = findRoot();
     const auto unittests = coda_oss / "modules" / "c++" / "xml.lite" / "unittests";
 
@@ -292,8 +290,6 @@ TEST_CASE(testReadEncodedXmlFiles)
 
 static void testReadXmlFile(const std::string& testName, const std::string& xmlFile, bool preserveCharacterData)
 {
-    preserveCharacterData = true;  // TODO
-
     const auto coda_oss = findRoot();
     const auto unittests = coda_oss / "modules" / "c++" / "xml.lite" / "unittests";
 

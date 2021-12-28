@@ -99,7 +99,7 @@ struct MinidomParser
     virtual Document *getDocument() const;
 
     virtual Document *getDocument(bool steal = false);
-    virtual void getDocument(std::unique_ptr<Document>&); // steal = true
+    void getDocument(std::unique_ptr<Document>&); // steal = true
 
     /*!
      *  Reader accessor
@@ -127,7 +127,7 @@ struct MinidomParser
      *  \param newDocument The new document.
      */
     virtual void setDocument(Document * newDocument, bool own = true);
-    virtual void setDocument(std::unique_ptr<Document>&&);  // own = true
+    void setDocument(std::unique_ptr<Document>&&);  // own = true
 
     /*!
      * @see MinidomHandler::preserveCharacterData
