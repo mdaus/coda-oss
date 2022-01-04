@@ -41,11 +41,10 @@ namespace logging
  * A base class for loggers and handlers which allows them to share
  * common code.
  */
-class Filterer
+struct Filterer
 {
-public:
-    Filterer(){}
-    virtual ~Filterer(){}
+    Filterer() = default;
+    virtual ~Filterer() = default;
 
     /*!
      * Adds a Filter to the managed map of Filters. We do NOT take control of
@@ -53,7 +52,8 @@ public:
      */
     void addFilter(Filter* filter);
 
-    bool filter(const LogRecord* record) const;
+    bool filter(const LogRecord* record) const; // this is probably WRONG, use the virtual
+    virtual bool filter(const LogRecord&) const;
 
     //! Removes the specified Filter
     void removeFilter(Filter* filter);
@@ -61,6 +61,8 @@ public:
 protected:
     std::map<std::string, Filter*> filters;
 
+private:
+    bool filter_(const LogRecord* record) const;
 };
 
 }

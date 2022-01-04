@@ -35,15 +35,22 @@ void logging::Filterer::addFilter(logging::Filter* filter)
     }
 }
 
-bool logging::Filterer::filter(const logging::LogRecord* record) const
+bool logging::Filterer::filter_(const logging::LogRecord* record) const
 {
-    for (std::map<std::string, logging::Filter*>::const_iterator p = filters.begin();
-            p != filters.end(); ++p)
+    for (const auto& p : filters)
     {
-        if (!p->second->filter(record))
+        if (!p.second->filter(record))
             return false;
     }
     return true;
+}
+bool logging::Filterer::filter(const logging::LogRecord* record) const
+{
+    return filter_(record);
+}
+bool logging::Filterer::filter(const logging::LogRecord& record) const
+{
+    return filter_(&record);
 }
 
 void logging::Filterer::removeFilter(logging::Filter* filter)
