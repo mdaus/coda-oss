@@ -24,8 +24,9 @@
 //  Filterer.h
 ///////////////////////////////////////////////////////////
 
-#ifndef __LOGGING_FILTERER_H__
-#define __LOGGING_FILTERER_H__
+#ifndef CODA_OSS_logging_Filterer_h_INCLUDED_
+#define CODA_OSS_logging_Filterer_h_INCLUDED_
+#pragma once
 
 #include <string>
 #include <map>
@@ -51,19 +52,22 @@ struct Filterer
      * the pointer
      */
     void addFilter(Filter* filter);
+    void addFilter(Filter&);
 
-    bool filter(const LogRecord* record) const; // this is probably WRONG, use the virtual
-    virtual bool filter(const LogRecord&) const;
+    virtual bool filter(const LogRecord* record) const;
+    virtual bool filter(const LogRecord& record) const
+    {
+        return filter(&record);
+    }
 
     //! Removes the specified Filter
     void removeFilter(Filter* filter);
+    void removeFilter(Filter&);
 
 protected:
     std::map<std::string, Filter*> filters;
-
-private:
-    bool filter_(const LogRecord* record) const;
 };
 
 }
-#endif
+#endif // CODA_OSS_logging_Filterer_h_INCLUDED_
+

@@ -34,8 +34,12 @@ void logging::Filterer::addFilter(logging::Filter* filter)
         filters[filter->getName()] = filter;
     }
 }
+void logging::Filterer::addFilter(logging::Filter& filter)
+{
+    addFilter(&filter);
+}
 
-bool logging::Filterer::filter_(const logging::LogRecord* record) const
+bool logging::Filterer::filter(const logging::LogRecord* record) const
 {
     for (const auto& p : filters)
     {
@@ -44,18 +48,12 @@ bool logging::Filterer::filter_(const logging::LogRecord* record) const
     }
     return true;
 }
-bool logging::Filterer::filter(const logging::LogRecord* record) const
-{
-    return filter_(record);
-}
-bool logging::Filterer::filter(const logging::LogRecord& record) const
-{
-    return filter_(&record);
-}
 
 void logging::Filterer::removeFilter(logging::Filter* filter)
 {
     filters.erase(filter->getName());
-
 }
-
+void logging::Filterer::removeFilter(logging::Filter& filter)
+{
+    removeFilter(&filter);
+}
