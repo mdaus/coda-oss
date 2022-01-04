@@ -59,6 +59,7 @@ struct Handler : public Filterer
      * Not Threads Safe!
      */ 
     virtual void setFormatter(Formatter* formatter);
+    virtual void setFormatter(std::unique_ptr<Formatter>&&);
 
     //! Sets the minimum LogLevel required to emit LogRecords
     void setLevel(LogLevel level);
