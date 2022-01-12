@@ -43,6 +43,7 @@ static const auto strUtf8Xml = "<root><doc><a>" + utf8Text_ + "</a></doc></root>
 constexpr auto PlatformEncoding = sys::Platform == sys::PlatformType::Windows
         ? xml::lite::StringEncoding::Windows1252
         : xml::lite::StringEncoding::Utf8;
+static const auto platfromText_ = sys::Platform == sys::PlatformType::Linux ? utf8Text_ : iso88591Text_;
 
 namespace fs = std::filesystem;
 
@@ -138,7 +139,6 @@ TEST_CASE(testXmlUtf8_u8string)
 
     sys::U8string actual;
     a.getCharacterData(actual);
-    TEST_ASSERT(actual == utf8Text8);
     TEST_ASSERT_EQ(actual, utf8Text8);
 }
 
@@ -148,7 +148,7 @@ TEST_CASE(testXmlUtf8)
     const auto& a = testXmlUtf8_(xmlParser);
 
     auto actual = a.getCharacterData();
-    const auto expected = sys::Platform == sys::PlatformType::Windows ? iso88591Text_ : utf8Text_;
+    const auto expected = platfromText_;
     TEST_ASSERT_EQ(actual, expected);
 
     auto encoding = a.getEncoding();
@@ -257,11 +257,10 @@ static void testReadEncodedXmlFile(const std::string& testName, const std::strin
     auto characterData = a.getCharacterData();
     const auto encoding = a.getEncoding();
     TEST_ASSERT(encoding == PlatformEncoding);
-    TEST_ASSERT_EQ(characterData, sys::Platform == sys::PlatformType::Linux ? utf8Text_ : iso88591Text_);
+    TEST_ASSERT_EQ(characterData, platfromText_);
 
     std::u8string u8_characterData;
     a.getCharacterData(u8_characterData);
-    TEST_ASSERT(u8_characterData == utf8Text8);     
     TEST_ASSERT_EQ(utf8Text8, u8_characterData);     
 
     const auto& textXML = root.getElementByTagName("text", true /*recurse*/);
@@ -312,11 +311,10 @@ static void testReadXmlFile(const std::string& testName, const std::string& xmlF
     auto characterData = a.getCharacterData();
     const auto encoding = a.getEncoding();
     TEST_ASSERT(encoding == PlatformEncoding);
-    TEST_ASSERT_EQ(characterData, sys::Platform == sys::PlatformType::Linux ? utf8Text_ : iso88591Text_);
+    TEST_ASSERT_EQ(characterData, platfromText_);
 
     std::u8string u8_characterData;
     a.getCharacterData(u8_characterData);
-    TEST_ASSERT(u8_characterData == utf8Text8);    
     TEST_ASSERT_EQ(utf8Text8, u8_characterData);
 
     const auto& textXML = root.getElementByTagName("text", true /*recurse*/);
@@ -392,15 +390,16 @@ TEST_CASE(testReadEmbeddedXml)
      // UTF-8 characters in 50x50.nitf
     const std::string classificationText_iso8859_1("NON CLASSIFI\xc9 / UNCLASSIFIED");  // ISO8859-1 "NON CLASSIFIÉ / UNCLASSIFIED"
     const std::string classificationText_utf_8("NON CLASSIFI\xc3\x89 / UNCLASSIFIED");  // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
-    const auto expectedCharData = sys::Platform == sys::PlatformType::Linux ? classificationText_utf_8 : classificationText_iso8859_1;
+    const auto classificationText_platform = sys::Platform == sys::PlatformType::Linux ? classificationText_utf_8 : classificationText_iso8859_1;
     const auto characterData = classificationXML.getCharacterData();
-    TEST_ASSERT_EQ(characterData, expectedCharData);
+    TEST_ASSERT_EQ(characterData, classificationText_platform);
 
-    const auto u8_expectedCharData8 = str::fromUtf8(classificationText_utf_8);
+    const auto expectedCharDataView = str::EncodedStringView::create<std::u8string>(classificationText_utf_8);
     std::u8string u8_characterData;
     classificationXML.getCharacterData(u8_characterData);
-    TEST_ASSERT(u8_characterData == u8_expectedCharData8);
-    const std::string u8_characterData_(str::c_str<std::string::const_pointer>(u8_characterData));
+    TEST_ASSERT_EQ(u8_characterData, expectedCharDataView);
+    std::string u8_characterData_;
+    str::EncodedStringView(u8_characterData).toUtf8(u8_characterData_);
     TEST_ASSERT_EQ(classificationText_utf_8, u8_characterData_);
 }
 
