@@ -26,23 +26,30 @@
 #include <stdexcept>
 
 #include "str/Convert.h"
+#include "str/Encoding.h"
 
-str::EncodedStringView::EncodedStringView(const sys::U8string& s) :
-    mpU8String(&s)
+str::EncodedStringView::EncodedStringView(const std::string& s) : mpString(&s)
 {
 }
-str::EncodedStringView::EncodedStringView(const str::W1252string& s) :
-    mpW1252String(&s)
+str::EncodedStringView::EncodedStringView(const sys::U8string& s) : mpU8String(&s)
+{
+}
+str::EncodedStringView::EncodedStringView(const str::W1252string& s) : mpW1252String(&s)
 {
 }
 
 size_t str::EncodedStringView::size() const
 {
-    return mpU8String != nullptr ? mpU8String->size() : mpW1252String->size();
+    return mpString != nullptr ? mpString->size() :
+        (mpU8String != nullptr ? mpU8String->size() : mpW1252String->size());
 }
 
 const char* str::EncodedStringView::c_str() const
 {
+    if (mpString != nullptr)
+    {
+        return mpString->c_str();
+    }
     if (mpU8String != nullptr)
     {
         return str::c_str<const char*>(*mpU8String);
@@ -53,4 +60,29 @@ const char* str::EncodedStringView::c_str() const
     }
 
     throw std::logic_error("Can't determine c_str() result");
+}
+
+std::string str::EncodedStringView::native() const
+{
+    if (mpString != nullptr)
+    {
+        // easy-peasy
+        return *mpString;
+    }
+
+    // For a UTF-8 string, str::toString() will convert; see the specialization in Encoding.cpp
+    if (mpU8String != nullptr)
+    {
+        return toString(*mpU8String);
+    }
+
+    // This internal helper routine will convert from Windows-1252 to UTF-8 on Linux
+    if (mpW1252String != nullptr)
+    {
+        std::string retval;
+        str::details::toNative(*mpW1252String, retval);
+        return retval;
+    }
+
+    throw std::logic_error("Can't determine native() result");
 }

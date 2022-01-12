@@ -45,13 +45,16 @@ namespace str
 {
 class EncodedStringView final
 {
-    const str::W1252string* mpW1252String = nullptr;
+    const std::string* mpString = nullptr;
     const sys::U8string* mpU8String = nullptr;
+    const str::W1252string* mpW1252String = nullptr;
 
 public:
     EncodedStringView() = default;
     EncodedStringView(const sys::U8string&);
     EncodedStringView(const str::W1252string&);
+    // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
+    explicit EncodedStringView(const std::string&);  
 
     ~EncodedStringView() = default;
     EncodedStringView(const EncodedStringView&) = default;
@@ -65,9 +68,6 @@ public:
         return size();
     }
 
-    template <typename T>
-    bool has() const;
-
     template<typename T>
     const T& cref() const;  // no conversion, might throw
     template <typename T>
@@ -77,29 +77,28 @@ public:
     }
 
     const char* c_str() const; // either mpString->c_str() or mpU8String->c_str()
+
+    // Regardless of what string we're looking at, return a string in platform
+    // native encoding: UTF-8 on Linux, Windows-1252 on Windows; this
+    // might result in string conversion.
+    std::string native() const; // c.f. std::filesystem::path::native()
 };
 
 // GCC wants the specializations outside of the class
 template <>
-inline bool EncodedStringView::has<str::W1252string>() const
+inline const std::string& EncodedStringView::cref() const  // no conversion, might throw
 {
-    return mpW1252String != nullptr;
-}
-template <>
-inline bool EncodedStringView::has<sys::U8string>() const
-{
-    return mpU8String != nullptr;
-}
-
-template <>
-inline const str::W1252string& EncodedStringView::cref() const  // no conversion, might throw
-{
-    return *mpW1252String;
+    return *mpString;
 }
 template <>
 inline const sys::U8string& EncodedStringView::cref() const  // no conversion, might throw
 {
     return *mpU8String;
+}
+template <>
+inline const str::W1252string& EncodedStringView::cref() const  // no conversion, might throw
+{
+    return *mpW1252String;
 }
 
 }

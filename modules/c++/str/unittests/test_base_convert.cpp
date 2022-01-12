@@ -218,7 +218,8 @@ TEST_CASE(test_u8string_to_string)
     const auto expected = sys::Platform == sys::PlatformType::Linux ? classificationText_utf_8 : classificationText_iso8859_1;
 
     const auto utf8 = str::fromUtf8(classificationText_utf_8);
-    const auto actual = str::toString(utf8);
+    const str::EncodedStringView utf8View(utf8);
+    const auto actual = utf8View.native();
     TEST_ASSERT_EQ(expected, actual);
 }
 

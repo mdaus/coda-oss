@@ -157,20 +157,20 @@ std::map<TValue, TKey> kv_to_vk(const std::map<TKey, TValue>& kv)
     return retval;
 }
 
-// Keeping this "static" for now, don't want to encouarge this converstion.  Client
-// access is via str::toString(). 
-static void toWindows1252(str::U8string::const_pointer p, size_t sz, str::W1252string& result)
+template<typename TChar>
+void toWindows1252_(str::U8string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
 {
+    using value_type = typename std::basic_string<TChar>::value_type;
     for (size_t i = 0; i < sz; i++)
     {
         // ASCII is the same in UTF-8
         if (p[i] < static_cast<str::U8string::value_type>(0x80))
         {
-            result += static_cast<str::W1252string::value_type>(p[i]);  // ASCII
+            result += static_cast<value_type>(p[i]);  // ASCII
             continue;
         }
 
-        constexpr auto invalid = static_cast<str::W1252string::value_type>(0x7F);  // <DEL>
+        constexpr auto invalid = static_cast<value_type>(0x7F);  // <DEL>
         if (!(i + i < sz))
         {
             // No remaining bytes, invalid UTF-8 encoding
@@ -208,7 +208,7 @@ static void toWindows1252(str::U8string::const_pointer p, size_t sz, str::W1252s
         const auto it = map.find(utf8);
         if (it != map.end())
         {
-            result += static_cast<str::W1252string::value_type>(it->second);
+            result += static_cast<value_type>(it->second);
         }
         else
         {
@@ -217,7 +217,18 @@ static void toWindows1252(str::U8string::const_pointer p, size_t sz, str::W1252s
         }
     }
 }
-
+// Keeping this "static" for now, don't want to encouarge this converstion.
+// Client access is via str::toString().
+//static void toWindows1252(str::U8string::const_pointer p, size_t sz, str::W1252string& result)
+//{
+//    toWindows1252_(p, sz, result);
+//}
+static std::string toWindows1252(const str::U8string& utf8)
+{
+    std::string retval;
+    toWindows1252_(utf8.c_str(), utf8.size(), retval);
+    return retval;
+}
 
 struct back_inserter final
 { 
@@ -304,14 +315,33 @@ std::string str::toString(const str::U8string& utf8)
     auto platform = details::Platform;  // "conditional expression is constant"
     if (platform == details::PlatformType::Windows)
     {
-        str::W1252string w1252;
-        toWindows1252(utf8.c_str(), utf8.length(), w1252);
-        return c_str<std::string::const_pointer>(w1252);  // copy
+        return toWindows1252(utf8);
     }
-    else if (platform == details::PlatformType::Linux)
+    if (platform == details::PlatformType::Linux)
     {
         return c_str<std::string::const_pointer>(utf8);  // copy
     }
     
     throw std::logic_error("Unknown platform.");
+}
+
+// Maybe someday "native" will be std::u8string on all platforms?
+static std::string toNative_(const str::W1252string& w1252)
+{
+    auto platform = str::details::Platform;  // "conditional expression is constant"
+    if (platform == str::details::PlatformType::Windows)
+    {
+        return str::c_str<std::string::const_pointer>(w1252);  // copy
+    }
+    if (platform == str::details::PlatformType::Linux)
+    {
+        const auto utf8 = str::to_u8string(w1252);
+        return str::c_str<std::string::const_pointer>(utf8);  // TODO: avoid extra copy
+    }
+
+    throw std::logic_error("Unknown platform.");
+}
+void str::details::toNative(const str::W1252string& w1252, std::string& result)
+{
+    result = toNative_(w1252);
 }

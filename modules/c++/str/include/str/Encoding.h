@@ -159,6 +159,12 @@ inline sys::U8string to_u8string(const std::basic_string<TChar>& s)
     return to_u8string(s.c_str(), s.size());
 }
 
+namespace details
+{
+// YOU should use EncodedStringView
+extern void toNative(const str::W1252string&, std::string&);  // encoding is lost
+}
+
 }
 
 #endif // CODA_OSS_Encoding_h_INCLUDED_
