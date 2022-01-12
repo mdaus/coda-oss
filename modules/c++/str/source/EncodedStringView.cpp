@@ -87,8 +87,16 @@ str::EncodedStringView& str::EncodedStringView::operator=(str::W1252string::cons
     return *this;
 }
 
-const char* str::EncodedStringView::c_str() const
+inline const char* c_str(
+    std::string::const_pointer mpString,
+    sys::U8string::const_pointer mpU8String,
+    str::W1252string::const_pointer mpW1252String)
 {
+    // Be sure we can cast between the different types
+    static_assert(sizeof(*mpString) == sizeof(*mpU8String), "wrong string sizes");
+    static_assert(sizeof(*mpString) == sizeof(*mpW1252String), "wrong string sizes");
+    static_assert(sizeof(*mpU8String) == sizeof(*mpW1252String), "wrong string sizes");
+
     if (mpString != nullptr)
     {
         assert(mpU8String == nullptr);
@@ -109,6 +117,10 @@ const char* str::EncodedStringView::c_str() const
     }
 
     throw std::logic_error("Can't determine c_str() result");
+}
+const void* str::EncodedStringView::data_() const
+{
+    return ::c_str(mpString, mpU8String, mpW1252String);
 }
 
 std::string str::EncodedStringView::native() const
@@ -146,7 +158,7 @@ std::string str::EncodedStringView::native() const
 
 sys::U8string str::EncodedStringView::to_u8string() const
 {
-    const auto sz = strlen(c_str());
+    const auto sz = strlen(::c_str(mpString, mpU8String, mpW1252String));
     if (mpString != nullptr)
     {
         return str::to_u8string(mpString, sz);
@@ -175,7 +187,7 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
 {
     auto& lhs = *this;
 
-    if (lhs.c_str() == rhs.c_str())
+    if (lhs.data_() == rhs.data_())
     {
         // We're looking at the same memory, be sure encoding is the same
         if ((lhs.mpString == rhs.mpString)
@@ -192,11 +204,11 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
     }
     if ((lhs.mpU8String != nullptr) && (rhs.mpU8String != nullptr))
     {
-        return strcmp(str::cast<const char*>(lhs.mpU8String), str::cast<const char*>(rhs.mpU8String)) == 0;
+        return strcmp(lhs.cast<const char*>(), rhs.cast<const char*>()) == 0;
     }
     if ((lhs.mpW1252String != nullptr) && (rhs.mpW1252String != nullptr))
     {
-        return strcmp(str::cast<const char*>(lhs.mpW1252String), str::cast<const char*>(rhs.mpW1252String)) == 0;
+        return strcmp(lhs.cast<const char*>(), rhs.cast<const char*>()) == 0;
     }
 
     // LHS and RHS have different encodings

@@ -25,6 +25,8 @@
 #define CODA_OSS_str_EncodedStringView_h_INCLLUDED_
 #pragma once
 
+#include <assert.h>
+
 #include <string>
 #include <ostream>
 
@@ -107,9 +109,6 @@ public:
         return create<TBasicString>(s.c_str());
     }
 
-    // Return a pointer to the viewed string, no conversion or copying.
-    const char* c_str() const; // either mpString->c_str() or mpU8String->c_str() or mpW1252String->c_str()
-
     // Regardless of what string we're looking at, return a string in platform
     // native encoding: UTF-8 on Linux, Windows-1252 on Windows; this
     // might result in string conversion.
@@ -119,8 +118,51 @@ public:
     sys::U8string to_u8string() const;
     std::string& toUtf8(std::string&) const; // std::string is encoded as UTF-8, always.
 
+    // Only casting done, no conversion.  This should be OK as all three
+    // string types are 8-bit encodings.
+    //
+    // Intentionally a bit of a mouth-full as these routines should be used sparingly.
+    template <typename TConstPointer>
+    TConstPointer cast() const
+    {
+        return static_cast<TConstPointer>(data_());
+    }
+    template <typename TConstPointer>
+    TConstPointer try_cast() const;  // returns NULL if stored pointer not of the desired type
+
     bool operator_eq(const EncodedStringView&) const;
+
+private:
+    const void* data_() const;
+    template <typename TReturn, typename T2, typename T3>
+    TReturn try_cast_(TReturn retval, T2 t2, T3 t3) const
+    {
+        if (retval != nullptr)
+        {
+            assert(t2 == nullptr);
+            assert(t3 == nullptr);
+            return retval;
+        }
+        return nullptr;
+    }
 };
+
+// GCC wants specializations outside of the class
+template <>
+inline std::string::const_pointer EncodedStringView::try_cast() const
+{
+    return try_cast_(mpString, mpU8String, mpW1252String);
+}
+template <>
+inline sys::U8string::const_pointer EncodedStringView::try_cast() const
+{
+    return try_cast_(mpU8String, mpString, mpW1252String);
+}
+template <>
+inline str::W1252string::const_pointer EncodedStringView::try_cast() const
+{
+    return try_cast_(mpW1252String, mpString, mpU8String);
+}
 
 inline bool operator==(const EncodedStringView& lhs, const EncodedStringView& rhs)
 {
