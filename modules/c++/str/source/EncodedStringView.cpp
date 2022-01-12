@@ -187,28 +187,32 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
 {
     auto& lhs = *this;
 
-    if (lhs.data_() == rhs.data_())
+    // If all the pointers are all the same, the views must be equal
+    if ((lhs.mpString == rhs.mpString)
+        && (lhs.mpU8String == rhs.mpU8String)
+        && (lhs.mpW1252String == rhs.mpW1252String))
     {
-        // We're looking at the same memory, be sure encoding is the same
-        if ((lhs.mpString == rhs.mpString)
-            && (lhs.mpU8String == rhs.mpU8String)
-            && (lhs.mpW1252String == rhs.mpW1252String))
-        {
-            return true;
-        }
+        assert(! ((lhs.mpString == nullptr) && (lhs.mpU8String == nullptr) && (lhs.mpW1252String == nullptr)) );
+        return true;
     }
     
     if ((lhs.mpString != nullptr) && (rhs.mpString != nullptr))
     {
+        assert((lhs.mpU8String == nullptr) && (rhs.mpU8String == nullptr));
+        assert((lhs.mpW1252String == nullptr) && (rhs.mpW1252String == nullptr));
         return strcmp(lhs.mpString, rhs.mpString) == 0;
     }
     if ((lhs.mpU8String != nullptr) && (rhs.mpU8String != nullptr))
     {
-        return strcmp(lhs.cast<const char*>(), rhs.cast<const char*>()) == 0;
+        assert((lhs.mpString == nullptr) && (rhs.mpString == nullptr));
+        assert((lhs.mpW1252String == nullptr) && (rhs.mpW1252String == nullptr));
+        return strcmp(str::cast<const char*>(lhs.mpU8String), str::cast<const char*>(rhs.mpU8String)) == 0;
     }
     if ((lhs.mpW1252String != nullptr) && (rhs.mpW1252String != nullptr))
     {
-        return strcmp(lhs.cast<const char*>(), rhs.cast<const char*>()) == 0;
+        assert((lhs.mpString == nullptr) && (rhs.mpString == nullptr));
+        assert((lhs.mpU8String == nullptr) && (rhs.mpU8String == nullptr));
+        return strcmp(str::cast<const char*>(lhs.mpW1252String), str::cast<const char*>(rhs.mpW1252String)) == 0;
     }
 
     // LHS and RHS have different encodings
