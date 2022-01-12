@@ -30,20 +30,26 @@
 #include "str/Convert.h"
 #include "str/Encoding.h"
 
-str::EncodedStringView::EncodedStringView(const std::string& s) : mpString(&s)
+str::EncodedStringView::EncodedStringView(std::string::const_pointer s) : mpString(s)
 {
+    if (s == nullptr)
+    {
+        throw std::invalid_argument("s is NULL.");
+    }
 }
-str::EncodedStringView::EncodedStringView(const sys::U8string& s) : mpU8String(&s)
+str::EncodedStringView::EncodedStringView(sys::U8string::const_pointer s) : mpU8String(s)
 {
+    if (s == nullptr)
+    {
+        throw std::invalid_argument("s is NULL.");
+    }
 }
-str::EncodedStringView::EncodedStringView(const str::W1252string& s) : mpW1252String(&s)
+str::EncodedStringView::EncodedStringView(str::W1252string::const_pointer s) : mpW1252String(s)
 {
-}
-
-size_t str::EncodedStringView::size() const
-{
-    return mpString != nullptr ? mpString->size() :
-        (mpU8String != nullptr ? mpU8String->size() : mpW1252String->size());
+    if (s == nullptr)
+    {
+        throw std::invalid_argument("s is NULL.");
+    }
 }
 
 const char* str::EncodedStringView::c_str() const
@@ -52,19 +58,19 @@ const char* str::EncodedStringView::c_str() const
     {
         assert(mpU8String == nullptr);
         assert(mpW1252String == nullptr);
-        return mpString->c_str();
+        return mpString;
     }
     if (mpU8String != nullptr)
     {
         assert(mpString == nullptr);
         assert(mpW1252String == nullptr);
-        return str::c_str<const char*>(*mpU8String);
+        return str::cast<const char*>(mpU8String);
     }
     if (mpW1252String != nullptr)
     {
         assert(mpString == nullptr);
         assert(mpU8String == nullptr);
-        return str::c_str<const char*>(*mpW1252String);
+        return str::cast<const char*>(mpW1252String);
     }
 
     throw std::logic_error("Can't determine c_str() result");
@@ -76,7 +82,7 @@ std::string str::EncodedStringView::native() const
     {
         assert(mpU8String == nullptr);
         assert(mpW1252String == nullptr);
-        return *mpString; // easy-peasy
+        return mpString; // easy-peasy
     }
 
     // For a UTF-8 string, str::toString() will convert; see the specialization in Encoding.cpp
@@ -84,7 +90,10 @@ std::string str::EncodedStringView::native() const
     {
         assert(mpString == nullptr);
         assert(mpW1252String == nullptr);
-        return toString(*mpU8String);
+
+        std::string retval;
+        str::details::toString(mpU8String, retval);
+        return retval;
     }
 
     // This internal helper routine will convert from Windows-1252 to UTF-8 on Linux
@@ -94,7 +103,7 @@ std::string str::EncodedStringView::native() const
         assert(mpU8String == nullptr);
 
         std::string retval;
-        str::details::toNative(*mpW1252String, retval);
+        str::details::toNative(mpW1252String, retval);
         return retval;
     }
 
@@ -103,25 +112,20 @@ std::string str::EncodedStringView::native() const
 
 sys::U8string str::EncodedStringView::to_u8string() const
 {
+    const auto sz = strlen(c_str());
     if (mpString != nullptr)
     {
-        assert(mpU8String == nullptr);
-        assert(mpW1252String == nullptr);
-        return str::to_u8string(*mpString);
+        return str::to_u8string(mpString, sz);
     }
     if (mpU8String != nullptr)
     {
-        assert(mpString == nullptr);
-        assert(mpW1252String == nullptr);
-        return str::to_u8string(*mpU8String);
+        return str::to_u8string(mpU8String, sz);
     }
-    if (mpW1252String != nullptr)
+    else if (mpW1252String != nullptr)
     {
-        assert(mpString == nullptr);
-        assert(mpU8String == nullptr);
-        return str::to_u8string(*mpW1252String);
+        return str::to_u8string(mpW1252String, sz);
     }
-
+    
     throw std::logic_error("Can't determine to_u8string() result");
 }
 std::string& str::EncodedStringView::toUtf8(std::string& result) const

@@ -229,12 +229,12 @@ void toWindows1252_(str::U8string::const_pointer p, size_t sz, std::basic_string
 //{
 //    toWindows1252_(p, sz, result);
 //}
-static std::string toWindows1252(const str::U8string& utf8)
-{
-    std::string retval;
-    toWindows1252_(utf8.c_str(), utf8.size(), retval);
-    return retval;
-}
+//static std::string toWindows1252(const str::U8string& utf8)
+//{
+//    std::string retval;
+//    toWindows1252_(utf8.c_str(), utf8.size(), retval);
+//    return retval;
+//}
 
 struct back_inserter final
 { 
@@ -315,20 +315,36 @@ sys::U8string str::fromUtf8(std::string::const_pointer p, size_t)
     return cast<sys::U8string::const_pointer>(p); // copy
 }
 
+static void toString_(sys::U8string::const_pointer pUtf8, size_t sz, std::string& result)
+{
+    const auto pUtf8_ = str::cast<std::string::const_pointer>(pUtf8);
+
+    auto platform = str::details::Platform;  // "conditional expression is constant"
+    if (platform == str::details::PlatformType::Windows)
+    {
+        toWindows1252_(pUtf8, sz, result);
+    }
+    else if (platform == str::details::PlatformType::Linux)
+    {
+        result = pUtf8_;  // copy
+    }
+    else
+    {
+        throw std::logic_error("Unknown platform.");
+    }
+}
+void str::details::toString(sys::U8string::const_pointer pUtf8, std::string& result)
+{
+    const auto pUtf8_ = str::cast<std::string::const_pointer>(pUtf8);
+    const auto sz = strlen(pUtf8_);
+    toString_(pUtf8, sz, result);
+}
 template <>
 std::string str::toString(const str::U8string& utf8)
 {
-    auto platform = details::Platform;  // "conditional expression is constant"
-    if (platform == details::PlatformType::Windows)
-    {
-        return toWindows1252(utf8);
-    }
-    if (platform == details::PlatformType::Linux)
-    {
-        return c_str<std::string::const_pointer>(utf8);  // copy
-    }
-    
-    throw std::logic_error("Unknown platform.");
+    std::string retval;
+    toString_(utf8.c_str(), utf8.size(), retval);  // TODO: avoid call to strlen()
+    return retval;
 }
 
 // Maybe someday "native" will be std::u8string on all platforms?

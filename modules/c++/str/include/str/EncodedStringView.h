@@ -45,16 +45,23 @@ namespace str
 {
 class EncodedStringView final
 {
-    const std::string* mpString = nullptr;
-    const sys::U8string* mpU8String = nullptr;
-    const str::W1252string* mpW1252String = nullptr;
+    std::string::const_pointer mpString = nullptr;
+    sys::U8string::const_pointer mpU8String = nullptr;
+    str::W1252string::const_pointer mpW1252String = nullptr;
 
 public:
     EncodedStringView() = default;
-    EncodedStringView(const sys::U8string&);
-    EncodedStringView(const str::W1252string&);
-    // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
-    explicit EncodedStringView(const std::string&);  
+
+    // Need these overload to avoid creating temporary std::basic_string<> instances.
+    // Routnes always return a copy, never a reference, so there's no additional overhead
+    // with storing a raw pointer rather than a pointer to  std::basic_string<>.
+    EncodedStringView(sys::U8string::const_pointer);
+    EncodedStringView(str::W1252string::const_pointer);
+    explicit EncodedStringView(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
+    template<typename TChar>
+    EncodedStringView(const std::basic_string<TChar>& s) : EncodedStringView(s.c_str())
+    {
+    }
 
     ~EncodedStringView() = default;
     EncodedStringView(const EncodedStringView&) = default;
@@ -65,20 +72,6 @@ public:
     //// std::string is encoded as specified on all platforms.
     //static EncodedStringView fromUtf8(const std::string&);
     //static EncodedStringView fromWindows1252(const std::string&);
-
-    size_t size() const;
-    size_t length() const
-    {
-        return size();
-    }
-
-    template<typename T>
-    const T& cref() const;  // no conversion, might throw
-    template <typename T>
-    const T& ref() const
-    {
-        return cref<T>();
-    }
 
     // Return a pointer to the viewed string, no conversion or copying.
     const char* c_str() const; // either mpString->c_str() or mpU8String->c_str() or mpW1252String->c_str()
@@ -92,23 +85,6 @@ public:
     sys::U8string to_u8string() const;
     std::string& toUtf8(std::string&) const; // std::string is encoded as UTF-8, always.
 };
-
-// GCC wants the specializations outside of the class
-template <>
-inline const std::string& EncodedStringView::cref() const  // no conversion, might throw
-{
-    return *mpString;
-}
-template <>
-inline const sys::U8string& EncodedStringView::cref() const  // no conversion, might throw
-{
-    return *mpU8String;
-}
-template <>
-inline const str::W1252string& EncodedStringView::cref() const  // no conversion, might throw
-{
-    return *mpW1252String;
-}
 
 }
 #endif  // CODA_OSS_str_EncodedStringView_h_INCLLUDED_
