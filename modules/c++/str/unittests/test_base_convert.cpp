@@ -230,6 +230,11 @@ TEST_CASE(test_u8string_to_string)
 static void test_EncodedStringView_(const std::string& testName,
     const str::EncodedStringView& utf_8_view, const str::EncodedStringView& iso8859_1_view)
 {
+    TEST_ASSERT_EQ(iso8859_1_view, iso8859_1_view);
+    TEST_ASSERT_EQ(utf_8_view, utf_8_view);
+    TEST_ASSERT_EQ(iso8859_1_view, utf_8_view);
+    TEST_ASSERT_EQ(utf_8_view, iso8859_1_view);
+
     TEST_ASSERT_EQ(iso8859_1_view.native(), utf_8_view.native());
     const auto native = classificationText_platform;
     TEST_ASSERT_EQ(iso8859_1_view.native(), native);

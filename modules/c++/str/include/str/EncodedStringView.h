@@ -26,6 +26,7 @@
 #pragma once
 
 #include <string>
+#include <ostream>
 
 #include "str/Encoding.h"
 
@@ -93,7 +94,24 @@ public:
     // Convert (perhaps) whatever we're looking at to UTF-8
     sys::U8string to_u8string() const;
     std::string& toUtf8(std::string&) const; // std::string is encoded as UTF-8, always.
+
+    bool operator_eq(const EncodedStringView&) const;
 };
+
+inline bool operator==(const EncodedStringView& lhs, const EncodedStringView& rhs)
+{
+    return lhs.operator_eq(rhs);
+}
+inline bool operator!=(const EncodedStringView& lhs, const EncodedStringView& rhs)
+{
+    return !(lhs == rhs);
+}
+
+inline std::ostream& operator<<(std::ostream& os, const EncodedStringView& esv)
+{
+    os << esv.native();
+    return os;
+}
 
 }
 #endif  // CODA_OSS_str_EncodedStringView_h_INCLLUDED_

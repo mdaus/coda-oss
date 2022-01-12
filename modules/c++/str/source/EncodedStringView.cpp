@@ -24,6 +24,7 @@
 #include "str/EncodedStringView.h"
 
 #include <assert.h>
+#include <string.h>
 
 #include <stdexcept>
 
@@ -135,4 +136,50 @@ std::string& str::EncodedStringView::toUtf8(std::string& result) const
     const auto utf8 = to_u8string(); // TODO: avoid this copy
     result = str::c_str<std::string::const_pointer>(utf8);
     return result;
+}
+
+bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
+{
+    auto& lhs = *this;
+
+    if (lhs.c_str() == rhs.c_str())
+    {
+        // We're looking at the same memory, be sure encoding is the same
+        if ((lhs.mpString == rhs.mpString)
+            && (lhs.mpU8String == rhs.mpU8String)
+            && (lhs.mpW1252String == rhs.mpW1252String))
+        {
+            return true;
+        }
+    }
+    
+    if ((lhs.mpString != nullptr) && (rhs.mpString != nullptr))
+    {
+        return strcmp(lhs.mpString, rhs.mpString) == 0;
+    }
+    if ((lhs.mpU8String != nullptr) && (rhs.mpU8String != nullptr))
+    {
+        return strcmp(str::cast<const char*>(lhs.mpU8String), str::cast<const char*>(rhs.mpU8String)) == 0;
+    }
+    if ((lhs.mpW1252String != nullptr) && (rhs.mpW1252String != nullptr))
+    {
+        return strcmp(str::cast<const char*>(lhs.mpW1252String), str::cast<const char*>(rhs.mpW1252String)) == 0;
+    }
+
+    // LHS and RHS have different encodings
+    if (rhs.mpU8String != nullptr) // prefer UTF-8
+    {
+        // We KNOW lhs.mpU8String is NULL because of check above
+        assert(lhs.mpU8String == nullptr); // should have used strcmp(), aboe
+        return lhs.to_u8string() == rhs.mpU8String;
+    }
+    if (rhs.mpString != nullptr) // not UTF-8, try native
+    {
+        // We KNOW lhs.mpString is NULL because of check above
+        assert(lhs.mpString == nullptr);  // should have used strcmp(), aboe
+        return lhs.native() == rhs.mpString;
+    }
+
+    // One side (but not both) must be Windows-1252; convert to UTF-8 for comparison
+    return lhs.to_u8string() == rhs.to_u8string();
 }
