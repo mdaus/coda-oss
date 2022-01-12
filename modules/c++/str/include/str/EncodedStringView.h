@@ -69,9 +69,18 @@ public:
     EncodedStringView(EncodedStringView&&) = default;
     EncodedStringView& operator=(EncodedStringView&&) = default;
 
-    //// std::string is encoded as specified on all platforms.
-    //static EncodedStringView fromUtf8(const std::string&);
-    //static EncodedStringView fromWindows1252(const std::string&);
+    // Input is encoded as specified on all platforms.
+    template <typename TBasicString>
+    static EncodedStringView create(const char* s)
+    {
+        using const_pointer = typename TBasicString::const_pointer;
+        return EncodedStringView(str::cast<const_pointer>(s));
+    }
+    template <typename TBasicString>
+    static EncodedStringView create(const std::string& s)
+    {
+        return create<TBasicString>(s.c_str());
+    }
 
     // Return a pointer to the viewed string, no conversion or copying.
     const char* c_str() const; // either mpString->c_str() or mpU8String->c_str() or mpW1252String->c_str()
