@@ -22,12 +22,13 @@
  */
 
 #include <assert.h>
+#include <string.h>
 
 #include <map>
 #include <locale>
 #include <stdexcept>
 #include <vector>
-#include<iterator>
+#include <iterator>
 
 #include "str/Encoding.h"
 #include "str/Manip.h"
