@@ -53,6 +53,40 @@ str::EncodedStringView::EncodedStringView(str::W1252string::const_pointer s) : m
     }
 }
 
+str::EncodedStringView& str::EncodedStringView::operator=(std::string::const_pointer s)
+{
+    if (s == nullptr)
+    {
+        throw std::invalid_argument("s is NULL.");
+    }
+    mpString = s;
+    mpU8String = nullptr;
+    mpW1252String = nullptr;
+    return *this;
+}
+str::EncodedStringView& str::EncodedStringView::operator=(sys::U8string::const_pointer s)
+{
+    if (s == nullptr)
+    {
+        throw std::invalid_argument("s is NULL.");
+    }
+    mpU8String = s;
+    mpString = nullptr;
+    mpW1252String = nullptr;
+    return *this;
+}
+str::EncodedStringView& str::EncodedStringView::operator=(str::W1252string::const_pointer s)
+{
+    if (s == nullptr)
+    {
+        throw std::invalid_argument("s is NULL.");
+    }
+    mpW1252String = s;
+    mpString = nullptr;
+    mpU8String = nullptr;
+    return *this;
+}
+
 const char* str::EncodedStringView::c_str() const
 {
     if (mpString != nullptr)
@@ -86,7 +120,6 @@ std::string str::EncodedStringView::native() const
         return mpString; // easy-peasy
     }
 
-    // For a UTF-8 string, str::toString() will convert; see the specialization in Encoding.cpp
     if (mpU8String != nullptr)
     {
         assert(mpString == nullptr);

@@ -64,6 +64,30 @@ public:
     {
     }
 
+    EncodedStringView& operator=(sys::U8string::const_pointer);
+    EncodedStringView& operator=(str::W1252string::const_pointer);
+    EncodedStringView& operator=(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
+    template <typename TChar>
+    EncodedStringView& operator=(const std::basic_string<TChar>& s)
+    {
+        *this = s.c_str();
+        return *this;
+    }
+    
+    // Input is encoded as specified on all platforms.
+    template <typename TBasicString>
+    EncodedStringView& assign(const char* s)
+    {
+        using const_pointer = typename TBasicString::const_pointer;
+        *this = str::cast<const_pointer>(s);
+        return *this;
+    }
+    template <typename TBasicString>
+    EncodedStringView& assign(const std::string& s)
+    {
+        return assign<TBasicString>(s.c_str());
+    }
+
     ~EncodedStringView() = default;
     EncodedStringView(const EncodedStringView&) = default;
     EncodedStringView& operator=(const EncodedStringView&) = default;
