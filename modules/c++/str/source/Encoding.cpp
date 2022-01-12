@@ -108,42 +108,48 @@ static std::map<std::u32string::value_type, sys::U8string> Windows1252_to_u8stri
     return retval;
 }
 
-static sys::U8string fromWindows1252(uint8_t ch)
+template<typename TChar>
+static void fromWindows1252_(uint8_t ch, std::basic_string<TChar>& result)
 {
     // ASCII is the same in UTF-8
     if (ch < 0x80)
     {
-        return sys::U8string{cast(ch)};  // ASCII
+        using value_type = typename std::basic_string<TChar>::value_type;
+        result += static_cast<value_type>(ch);  // ASCII
     }
-
-    static const auto map = Windows1252_to_u8string();
-    const auto it = map.find(ch);
-    if (it != map.end())
+    else
     {
-        return it->second;
+        using const_pointer = typename std::basic_string<TChar>::const_pointer;
+
+        static const auto map = Windows1252_to_u8string();
+        const auto it = map.find(ch);
+        if (it != map.end())
+        {
+            result += str::c_str<const_pointer>(it->second); // TODO: avoid extra copy
+        }
+        else
+        {
+            // If the input text contains a character that isn't defined in
+            // Windows-1252; return a "replacement character."  Yes, this will
+            // **corrupt** the input data as information is lost:
+            // https://en.wikipedia.org/wiki/Specials_(Unicode_block)#Replacement_character
+            static const sys::U8string replacement_character_ = utf8_(0xfffd);
+            static const std::basic_string<TChar> replacement_character = str::c_str<const_pointer>(replacement_character_);
+            result += replacement_character;
+        }
     }
-
-    // If the input text contains a character that isn't defined in Windows-1252;
-    // return a "replacement character."  Yes, this will **corrupt** the input data as information is lost:
-    // https://en.wikipedia.org/wiki/Specials_(Unicode_block)#Replacement_character
-    static const sys::U8string replacement_character = utf8_(0xfffd);
-    return replacement_character;
 }
-inline sys::U8string fromWindows1252(std::string::value_type ch)
-{
-    return fromWindows1252(static_cast<uint8_t>(ch));
-}
-inline sys::U8string fromWindows1252(str::W1252string::value_type ch)
-{
-    return fromWindows1252(static_cast<std::string::value_type>(ch));
-}
-
-void str::windows1252to8(W1252string::const_pointer p, size_t sz, sys::U8string& result)
+template<typename TChar>
+void windows1252to8_(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
 {
     for (size_t i = 0; i < sz; i++)
     {
-        result += ::fromWindows1252(p[i]);    
+        fromWindows1252_(static_cast<uint8_t>(p[i]), result);
     }
+}
+void str::windows1252to8(W1252string::const_pointer p, size_t sz, sys::U8string& result)
+{
+    windows1252to8_(p, sz, result);
 }
 
 template<typename TKey, typename TValue>
@@ -335,8 +341,9 @@ static std::string toNative_(const str::W1252string& w1252)
     }
     if (platform == str::details::PlatformType::Linux)
     {
-        const auto utf8 = str::to_u8string(w1252);
-        return str::c_str<std::string::const_pointer>(utf8);  // TODO: avoid extra copy
+        std::string retval;
+        windows1252to8_(w1252.c_str(), w1252.size(), retval);
+        return retval;
     }
 
     throw std::logic_error("Unknown platform.");

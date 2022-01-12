@@ -76,7 +76,8 @@ public:
         return cref<T>();
     }
 
-    const char* c_str() const; // either mpString->c_str() or mpU8String->c_str()
+    // Return a pointer to the viewed string, no conversion or copying.
+    const char* c_str() const; // either mpString->c_str() or mpU8String->c_str() or mpW1252String->c_str()
 
     // Regardless of what string we're looking at, return a string in platform
     // native encoding: UTF-8 on Linux, Windows-1252 on Windows; this
