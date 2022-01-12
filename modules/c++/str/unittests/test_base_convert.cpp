@@ -222,6 +222,29 @@ TEST_CASE(test_u8string_to_string)
     const auto actual = utf8View.native();
     TEST_ASSERT_EQ(expected, actual);
 }
+TEST_CASE(test_EncodedStringView)
+{
+    const std::string classificationText_utf_8_("NON CLASSIFI\xc3\x89 / UNCLASSIFIED");  // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
+    const auto classificationText_utf_8 = str::fromUtf8(classificationText_utf_8_);
+    const std::string classificationText_iso8859_1_("NON CLASSIFI\xc9 / UNCLASSIFIED");  // ISO8859-1 "NON CLASSIFIÉ / UNCLASSIFIED"    
+    const str::W1252string classificationText_iso8859_1 = str::c_str<str::W1252string::const_pointer>(classificationText_iso8859_1_);
+
+    const str::EncodedStringView utf_8_view(classificationText_utf_8);
+    const str::EncodedStringView iso8859_1_view(classificationText_iso8859_1);
+
+    TEST_ASSERT_EQ(iso8859_1_view.native(), utf_8_view.native());
+    const auto expected = sys::Platform == sys::PlatformType::Linux ? classificationText_utf_8_ : classificationText_iso8859_1_;
+    TEST_ASSERT_EQ(iso8859_1_view.native(), expected);
+    TEST_ASSERT_EQ(utf_8_view.native(), expected);
+
+    TEST_ASSERT(utf_8_view.to_u8string() == classificationText_utf_8);
+    TEST_ASSERT(iso8859_1_view.to_u8string() == classificationText_utf_8);
+    TEST_ASSERT(iso8859_1_view.to_u8string() == utf_8_view.to_u8string());
+
+    std::string utf8;
+    TEST_ASSERT_EQ(utf_8_view.toUtf8(utf8), classificationText_utf_8_);
+    TEST_ASSERT_EQ(iso8859_1_view.toUtf8(utf8), classificationText_utf_8_);
+}
 
 int main(int, char**)
 {
@@ -234,4 +257,5 @@ int main(int, char**)
     TEST_CHECK(test_string_to_u8string_iso8859_1);
     TEST_CHECK(test_change_case);
     TEST_CHECK(test_u8string_to_string);
+    TEST_CHECK(test_EncodedStringView);
 }

@@ -62,6 +62,10 @@ public:
     EncodedStringView(EncodedStringView&&) = default;
     EncodedStringView& operator=(EncodedStringView&&) = default;
 
+    //// std::string is encoded as specified on all platforms.
+    //static EncodedStringView fromUtf8(const std::string&);
+    //static EncodedStringView fromWindows1252(const std::string&);
+
     size_t size() const;
     size_t length() const
     {
@@ -83,6 +87,10 @@ public:
     // native encoding: UTF-8 on Linux, Windows-1252 on Windows; this
     // might result in string conversion.
     std::string native() const; // c.f. std::filesystem::path::native()
+
+    // Convert (perhaps) whatever we're looking at to UTF-8
+    sys::U8string to_u8string() const;
+    std::string& toUtf8(std::string&) const; // std::string is encoded as UTF-8, always.
 };
 
 // GCC wants the specializations outside of the class

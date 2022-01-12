@@ -23,6 +23,8 @@
 
 #include "str/EncodedStringView.h"
 
+#include <assert.h>
+
 #include <stdexcept>
 
 #include "str/Convert.h"
@@ -48,14 +50,20 @@ const char* str::EncodedStringView::c_str() const
 {
     if (mpString != nullptr)
     {
+        assert(mpU8String == nullptr);
+        assert(mpW1252String == nullptr);
         return mpString->c_str();
     }
     if (mpU8String != nullptr)
     {
+        assert(mpString == nullptr);
+        assert(mpW1252String == nullptr);
         return str::c_str<const char*>(*mpU8String);
     }
     if (mpW1252String != nullptr)
     {
+        assert(mpString == nullptr);
+        assert(mpU8String == nullptr);
         return str::c_str<const char*>(*mpW1252String);
     }
 
@@ -66,23 +74,61 @@ std::string str::EncodedStringView::native() const
 {
     if (mpString != nullptr)
     {
-        // easy-peasy
-        return *mpString;
+        assert(mpU8String == nullptr);
+        assert(mpW1252String == nullptr);
+        return *mpString; // easy-peasy
     }
 
     // For a UTF-8 string, str::toString() will convert; see the specialization in Encoding.cpp
     if (mpU8String != nullptr)
     {
+        assert(mpString == nullptr);
+        assert(mpW1252String == nullptr);
         return toString(*mpU8String);
     }
 
     // This internal helper routine will convert from Windows-1252 to UTF-8 on Linux
     if (mpW1252String != nullptr)
     {
+        assert(mpString == nullptr);
+        assert(mpU8String == nullptr);
+
         std::string retval;
         str::details::toNative(*mpW1252String, retval);
         return retval;
     }
 
     throw std::logic_error("Can't determine native() result");
+}
+
+sys::U8string str::EncodedStringView::to_u8string() const
+{
+    if (mpString != nullptr)
+    {
+        assert(mpU8String == nullptr);
+        assert(mpW1252String == nullptr);
+        return str::to_u8string(*mpString);
+    }
+    if (mpU8String != nullptr)
+    {
+        assert(mpString == nullptr);
+        assert(mpW1252String == nullptr);
+        return str::to_u8string(*mpU8String);
+    }
+    if (mpW1252String != nullptr)
+    {
+        assert(mpString == nullptr);
+        assert(mpU8String == nullptr);
+        return str::to_u8string(*mpW1252String);
+    }
+
+    throw std::logic_error("Can't determine to_u8string() result");
+}
+std::string& str::EncodedStringView::toUtf8(std::string& result) const
+{
+    // This is easy, but creates "unneeded" sys::U8string; it would be
+    // better to put the result directly into std::string
+    const auto utf8 = to_u8string(); // TODO: avoid this copy
+    result = str::c_str<std::string::const_pointer>(utf8);
+    return result;
 }
