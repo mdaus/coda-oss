@@ -51,7 +51,7 @@ class EncodedStringView final
     str::W1252string::const_pointer mpW1252String = nullptr;
 
 public:
-    EncodedStringView() = default;
+    EncodedStringView() = delete; // use EncodedStringView("") if you must
 
     // Need these overload to avoid creating temporary std::basic_string<> instances.
     // Routnes always return a copy, never a reference, so there's no additional overhead
@@ -127,6 +127,28 @@ inline bool operator==(const EncodedStringView& lhs, const EncodedStringView& rh
     return lhs.operator_eq(rhs);
 }
 inline bool operator!=(const EncodedStringView& lhs, const EncodedStringView& rhs)
+{
+    return !(lhs == rhs);
+}
+
+template<typename TChar>
+inline bool operator==(const EncodedStringView& lhs, const TChar* rhs)
+{
+    return lhs == EncodedStringView(rhs);
+}
+template <typename TChar>
+inline bool operator!=(const EncodedStringView& lhs, const TChar* rhs)
+{
+    return !(lhs == rhs);
+}
+
+template <typename TChar>
+inline bool operator==(const EncodedStringView& lhs, const std::basic_string<TChar>& rhs)
+{
+    return lhs == EncodedStringView(rhs);
+}
+template <typename TChar>
+inline bool operator!=(const EncodedStringView& lhs, const std::basic_string<TChar>& rhs)
 {
     return !(lhs == rhs);
 }

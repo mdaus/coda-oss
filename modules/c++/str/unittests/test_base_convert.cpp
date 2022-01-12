@@ -238,10 +238,16 @@ static void test_EncodedStringView_(const std::string& testName,
     TEST_ASSERT_EQ(iso8859_1_view.native(), utf_8_view.native());
     const auto native = classificationText_platform;
     TEST_ASSERT_EQ(iso8859_1_view.native(), native);
+    TEST_ASSERT_EQ(iso8859_1_view, native);
+    TEST_ASSERT_EQ(native, iso8859_1_view);
     TEST_ASSERT_EQ(utf_8_view.native(), native);
+    TEST_ASSERT_EQ(utf_8_view, native);
+    TEST_ASSERT_EQ(native, utf_8_view);
 
     TEST_ASSERT(utf_8_view.to_u8string() == classificationText_utf_8);
+    TEST_ASSERT_EQ(utf_8_view, classificationText_utf_8);
     TEST_ASSERT(iso8859_1_view.to_u8string() == classificationText_utf_8);
+    TEST_ASSERT_EQ(iso8859_1_view, classificationText_utf_8);
     TEST_ASSERT(iso8859_1_view.to_u8string() == utf_8_view.to_u8string());
 
     std::string utf8;
@@ -251,20 +257,31 @@ static void test_EncodedStringView_(const std::string& testName,
 }
 TEST_CASE(test_EncodedStringView)
 {
-    str::EncodedStringView utf_8_view(classificationText_utf_8);
-    str::EncodedStringView iso8859_1_view(classificationText_iso8859_1);
-    test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
+    {
+        str::EncodedStringView utf_8_view(classificationText_utf_8);
+        str::EncodedStringView iso8859_1_view(classificationText_iso8859_1);
+        test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
 
-    utf_8_view = classificationText_iso8859_1; // clears internal pointers
-    iso8859_1_view = classificationText_utf_8; // clears internal pointers
-    test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
+        utf_8_view = classificationText_iso8859_1;  // clears internal pointers
+        iso8859_1_view = classificationText_utf_8;  // clears internal pointers
+        test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
+    }
+    {
+        auto utf_8_view = str::EncodedStringView::create<sys::U8string>(classificationText_utf_8_);
+        auto iso8859_1_view = str::EncodedStringView::create<str::W1252string>(classificationText_iso8859_1_);
+        test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
 
-    auto utf_8_view_ = str::EncodedStringView::create<sys::U8string>(classificationText_utf_8_);
-    auto iso8859_1_view_ = str::EncodedStringView::create<str::W1252string>(classificationText_iso8859_1_);
-    test_EncodedStringView_(testName, utf_8_view_, iso8859_1_view_);
-    utf_8_view_.assign<str::W1252string>(classificationText_iso8859_1_);  // clears internal pointers
-    iso8859_1_view_.assign<sys::U8string>(classificationText_utf_8_);  // clears internal pointers
-    test_EncodedStringView_(testName, utf_8_view_, iso8859_1_view_);
+        utf_8_view.assign<str::W1252string>(classificationText_iso8859_1_);  // clears internal pointers
+        iso8859_1_view.assign<sys::U8string>(classificationText_utf_8_);  // clears internal pointers
+        test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
+    }
+    {
+        str::EncodedStringView utf_8_view("");
+        utf_8_view.assign<str::W1252string>(classificationText_iso8859_1_);  // clears internal pointers
+        str::EncodedStringView iso8859_1_view("");
+        iso8859_1_view.assign<sys::U8string>(classificationText_utf_8_);  // clears internal pointers
+        test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
+    }
 }
 
 int main(int, char**)
