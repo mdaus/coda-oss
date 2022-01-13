@@ -38,11 +38,15 @@
 
 // Need to look up characters from \x80 (EURO SIGN) to \x9F (LATIN CAPITAL LETTER Y WITH DIAERESIS)
 // in a map: http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
+inline void utf32to8(const std::u32string& s, sys::U8string& result)
+{
+    utf32to8(s.c_str(), s.size(), result);
+}
 static inline str::U8string utf8_(uint32_t ch)
 {
     const std::u32string s{static_cast<std::u32string::value_type>(ch)};
     str::U8string retval;
-    str::utf32to8(s, retval);
+    utf32to8(s, retval);
     return retval;
 };
 static const std::map<std::u32string::value_type, sys::U8string> Windows1252_x80_x9F_to_u8string{

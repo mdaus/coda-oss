@@ -41,11 +41,16 @@ std::string to_std_string(const T& value)
     // implementations. NO: reinterpret_cast<const std::string&>(value)
     return str::c_str<std::string::const_pointer>(value);  // copy
 }
+
+inline void utf32to8(const std::u32string& s, sys::U8string& result)
+{
+    utf32to8(s.c_str(), s.size(), result);
+}
 template<>
 std::string to_std_string(const std::u32string& value)
 {
     str::U8string result;
-    str::utf32to8(value, result);
+    utf32to8(value, result);
     return to_std_string(result);
 }
 template<typename TActual, typename TExpected>
