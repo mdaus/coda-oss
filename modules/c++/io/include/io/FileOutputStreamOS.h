@@ -29,7 +29,7 @@
 #if !defined(USE_IO_STREAMS)
 
 #include "io/SeekableStreams.h"
-#include "sys/Filesystem.h"
+#include "sys/filesystem.h"
 #include "sys/File.h"
 
 #include "sys/CPlusPlus.h"
