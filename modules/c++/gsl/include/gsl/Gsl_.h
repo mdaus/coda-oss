@@ -32,7 +32,6 @@
 
 #include <config/compiler_extensions.h>
 #include "gsl/use_gsl.h" // Can't compile all of GSL with older versions of GCC/MSVC
-#include "gsl/gsl_span_.h"
 
 #if defined(__INTEL_COMPILER) // ICC, high-side
 // Don't have access to Intel compiler on the low-side so just turn this off
