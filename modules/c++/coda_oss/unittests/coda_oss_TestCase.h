@@ -7,13 +7,13 @@
 #include <exception>
 #include <iostream>
 
-
-#define TEST_ASSERT_EQ(X, Y) assert((X) == (Y))
-#define TEST_ASSERT_NOT_EQ(X, Y) assert((X) != (Y))
-#define TEST_ASSERT_GREATER(X, Y) assert((X) > (Y))
-#define TEST_ASSERT_GREATER_EQ(X, Y) assert((X) >= (Y))
-#define TEST_ASSERT_LESSER(X, Y) assert((X) < (Y))
-#define TEST_ASSERT_LESSER_EQ(X, Y) assert((X) <= (Y))
+#define TEST_ASSERT_OP_(X, Y, op) ((void)testName); assert((X) op (Y))
+#define TEST_ASSERT_EQ(X, Y) TEST_ASSERT_OP_(X, Y, ==)
+#define TEST_ASSERT_NOT_EQ(X, Y) TEST_ASSERT_OP_(X, Y, !=)
+#define TEST_ASSERT_GREATER(X, Y) TEST_ASSERT_OP_(X, Y, >)
+#define TEST_ASSERT_GREATER_EQ(X, Y) TEST_ASSERT_OP_(X, Y, >=)
+#define TEST_ASSERT_LESSER(X, Y) TEST_ASSERT_OP_(X, Y, <)
+#define TEST_ASSERT_LESSER_EQ(X, Y) TEST_ASSERT_OP_(X, Y, <=)
 
 #define TEST_ASSERT_TRUE(X) TEST_ASSERT_EQ(X, true)
 #define TEST_ASSERT_FALSE(X) TEST_ASSERT_EQ(X, false)
