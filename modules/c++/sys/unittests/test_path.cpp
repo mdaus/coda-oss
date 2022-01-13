@@ -27,7 +27,7 @@
 #include <sys/Filesystem.h>
 #include "TestCase.h"
 
-namespace fs = coda_oss::filesystem;
+namespace fs = sys::Filesystem;
 
 namespace
 {
@@ -70,7 +70,7 @@ TEST_CASE(testPathMerge)
     path = R"(/dir1/dir2/file.txt)";
     #endif
     components = sys::Path::separate(path, isAbsolute);
-    TEST_ASSERT_EQ(components.size(), 3);
+    TEST_ASSERT_EQ(components.size(), static_cast<size_t>(3));
     result = sys::Path::merge(components, isAbsolute);
     TEST_ASSERT_EQ(result, path);
 }
@@ -80,10 +80,10 @@ TEST_CASE(testExpandEnvTilde)
     auto path = sys::Path::expandEnvironmentVariables("~");
     TEST_ASSERT_TRUE(fs::is_directory(path));
 
-    path = sys::Path::expandEnvironmentVariables("~", sys::Filesystem::FileType::Directory);
+    path = sys::Path::expandEnvironmentVariables("~", sys::Filesystem::file_type::directory);
     TEST_ASSERT_TRUE(fs::is_directory(path));
 
-    path = sys::Path::expandEnvironmentVariables("~", sys::Filesystem::FileType::Regular);
+    path = sys::Path::expandEnvironmentVariables("~", sys::Filesystem::file_type::regular);
     TEST_ASSERT_TRUE(path.empty());
 }
 
@@ -93,7 +93,7 @@ TEST_CASE(testExpandEnvTildePath)
     const std::vector<std::string> exts{"NTUSER.DAT", ".login", ".cshrc", ".bashrc"};
     os.prependEnv("exts", exts, true /*overwrite*/);
 
-    const auto path = sys::Path::expandEnvironmentVariables("~/$(exts)", sys::Filesystem::FileType::Regular);
+    const auto path = sys::Path::expandEnvironmentVariables("~/$(exts)", sys::Filesystem::file_type::regular);
     TEST_ASSERT_TRUE(sys::Filesystem::is_regular_file(path));
 }
 
@@ -188,7 +188,7 @@ TEST_CASE(testExpandEnvPathMultiple)
     }
     TEST_ASSERT_EQ(expanded_path, home);
     auto expanded_paths = sys::Path::expandedEnvironmentVariables("$(paths)");
-    TEST_ASSERT_EQ(expanded_paths.size(), 3);
+    TEST_ASSERT_EQ(expanded_paths.size(), static_cast<size_t>(3));
 
     const std::vector<std::string> apps{"apps"};
     os.prependEnv("apps", apps, true /*overwrite*/);
@@ -218,6 +218,102 @@ TEST_CASE(testExpandEnvPathMultiple)
     TEST_ASSERT_EQ(expanded_paths.back(), expected_path);
 }
 
+
+TEST_CASE(testModifyVar)
+{
+    const sys::OS os;
+
+    const auto argv0_t = sys::Path::expandEnvironmentVariables("${ARGV0@t}", false /*checkIfExists*/);
+    TEST_ASSERT_FALSE(argv0_t.empty());
+
+    const auto result = os.getSpecialEnv("0");  // i.e., ${0)
+    TEST_ASSERT_FALSE(result.empty());
+    const fs::path fsresult(result);
+    const fs::path this_file(__FILE__);
+    TEST_ASSERT_EQ(fsresult.stem(), this_file.stem());
+    TEST_ASSERT_EQ(argv0_t, fsresult.filename());
+}
+
+static std::string modifyEnv(const std::string& envVar, char op)
+{
+  const auto strExpand = "${" + envVar + "@" + op + "}";
+  return sys::Path::expandEnvironmentVariables(strExpand, false /*checkIfExists*/);
+}
+TEST_CASE(testModifyVar2)
+{
+    sys::OS os;
+
+    /*
+      #!/bin/csh -f
+
+      # http://www.kitebird.com/csh-tcsh-book/tcsh.pdf
+      # The word or words in a history reference can be edited, or "modified", by following it with one or more modifiers,
+      # each preceded by a ':':
+      #    h Remove a trailing pathname component, leaving the head.
+      #    t Remove all leading pathname components, leaving the tail.
+      #    r Remove a filename extension '.xxx', leaving the root name.
+      #    e Remove all but the extension.
+
+      set path=/dir1/dir2/file.txt
+      echo "path=$path"
+      echo ":h $path:h"", /dir1/dir2"
+      echo ":t $path:t"", file.txt"
+      echo ":r $path:r"", /dir1/dir2/file"
+      echo ":e $path:e"", txt"
+
+      echo ""
+      set path=/dir1/dir2/
+      echo "path=$path"
+      echo ":h $path:h"", /dir1/dir2"
+      echo ":t $path:t"
+      echo ":r $path:r"", /dir1/dir2/"
+      echo ":e $path:e"
+
+      echo ""
+      set path=/dir1/dir2
+      echo "path=$path"
+      echo ":h $path:h"", /dir1/dir2"
+      echo ":t $path:t", "dir2"
+      echo ":r $path:r"", /dir1/dir2"
+      echo ":e $path:e"
+
+      ------------------------------------------------------
+
+      path=/dir1/dir2/file.txt
+      :h /dir1/dir2, /dir1/dir2
+      :t file.txt, file.txt
+      :r /dir1/dir2/file, /dir1/dir2/file
+      :e txt, txt
+
+      path=/dir1/dir2/
+      :h /dir1/dir2, /dir1/dir2
+      :t 
+      :r /dir1/dir2/, /dir1/dir2/
+      :e 
+
+      path=/dir1/dir2
+      :h /dir1, /dir1/dir2
+      :t dir2, dir2
+      :r /dir1/dir2, /dir1/dir2
+      :e 
+    */
+
+    constexpr auto path = "/dir1/dir2/file.txt";
+    const std::string envVar = "CODA_OSS_test_path_path";
+    os.setEnv(envVar, path, true /*overwrite*/);
+
+    const auto h = modifyEnv(envVar, 'h');
+    TEST_ASSERT_EQ(h, "/dir1/dir2");
+    const auto t = modifyEnv(envVar, 't');
+    TEST_ASSERT_EQ(t, "file.txt");
+    const auto r = modifyEnv(envVar, 'r');
+    // TEST_ASSERT_EQ(r, "/dir1/dir2/file"); // TODO: fix on Windows
+    const auto e = modifyEnv(envVar, 'e');
+    TEST_ASSERT_EQ(e, "txt");
+    const auto s = modifyEnv(envVar, 's');
+    TEST_ASSERT_EQ(s, "file");
+}
+
 }
 
 int main(int, char**)
@@ -228,6 +324,8 @@ int main(int, char**)
     TEST_CHECK(testExpandEnvTildePath);
     TEST_CHECK(testExpandEnvPathExists);
     TEST_CHECK(testExpandEnvPathMultiple);
+    TEST_CHECK(testModifyVar);
+    TEST_CHECK(testModifyVar2);
 
     return 0;
 }

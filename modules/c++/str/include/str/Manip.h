@@ -24,6 +24,7 @@
 #define __STR_MANIP_H__
 
 #include <ctype.h>
+#include <wchar.h>
 
 #include <string>
 #include <vector>
@@ -37,6 +38,8 @@ namespace str
  *  @param  s  String to trim
  */
 void trim(std::string& s);
+extern std::string strip(const std::string& s);
+extern std::string& strip(std::string& s);
 
 /**
  *  Checks the end of s with match
@@ -45,6 +48,7 @@ void trim(std::string& s);
  *  @return true if it matches, otherwise false
  */
 bool endsWith(const std::string& s, const std::string& match);
+extern bool ends_with(const std::string& s, const std::string&) noexcept;
 
 /**
  *  Checks the start of s with match
@@ -53,6 +57,8 @@ bool endsWith(const std::string& s, const std::string& match);
  *  @return true if it matches, otherwise false
  */
 bool startsWith(const std::string& s, const std::string& match);
+extern bool starts_with(const std::string& s, const std::string&) noexcept;
+
 
 /**
  *  finds the first instance of "search" and
@@ -140,9 +146,8 @@ std::vector<std::string> split(const std::string& s,
                                size_t maxSplit = std::string::npos);
 
 //! Uses std::transform to convert all chars to lower case
-void lower(std::string& s);
-
 //! Uses std::transform to convert all chars to upper case
+void lower(std::string& s);
 void upper(std::string& s);
 
 /*!
@@ -157,7 +162,7 @@ std::string join(std::vector<T> toks, std::string with)
     if (toks.empty())
         return "";
 
-    int len = (int)toks.size();
+    const auto len = static_cast<int>(toks.size());
     std::ostringstream oss;
     int i = 0;
     for (; i < len - 1; i++)

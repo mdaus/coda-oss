@@ -25,7 +25,7 @@
 #include <sys/Path.h>
 #include <sys/Filesystem.h>
 
-namespace fs = coda_oss::filesystem;
+namespace fs = sys::Filesystem;
 
 namespace sys
 {
@@ -334,13 +334,15 @@ static void clean_slashes(std::string& path, bool isAbsolute)
     // get rid of multiple "//"s
     while (str::startsWith(path, Path::delimiter()))
     {
-	path = path.substr(1);
+    path = path.substr(1);
     }
     #ifndef _WIN32 // std::filesystem has (some?) support for UNC paths, but not this code
     if (isAbsolute)
     {
         path = Path::delimiter() + path;
     }
+    #else
+    UNREFERENCED_PARAMETER(isAbsolute);
     #endif
 
     // Do this last so that we have the best chance of finding the path on disk
@@ -379,8 +381,11 @@ static std::string merge_path(const separated_path& components)
 
 struct ExtractedEnvironmentVariable final
 {
+    std::string component; // copy of what was passed
+
     std::string begin; // "foo" of "foo$(BAR)baz"
     std::string variable; // "BAR" of "foo$(BAR)baz"
+    std::string op; // for ${FOO@b}, "b"; http://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Shell-Parameter-Expansion
     std::string end; // "baz" of "foo$(BAR)baz"
 };
 
@@ -388,7 +393,7 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::strin
 {
     assert(pos != std::string::npos);
     ExtractedEnvironmentVariable retval;
-    retval.variable = component;  // assume this really isn't an env. var
+    retval.component = retval.variable = component;  // assume this really isn't an env. var
 
     retval.begin = component.substr(0, pos);
     str::replace(component, retval.begin + "$", ""); // don't want to find "(" before "$"
@@ -407,6 +412,23 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::strin
         {
             retval.variable = component.substr(paren + 1, paren_match_pos - 1);
             retval.end = component.substr(paren_match_pos + 1);
+
+            // We're going to support a very specific format for modifiers, just: ${FOO@c}
+            // If it's anythng else, assume it's something else
+            if (paren_match == '}')  // only "${...", not "$(..."
+            {
+                const auto at_pos = retval.variable.find('@');
+                if ((at_pos != std::string::npos) && (at_pos >= 1) && (at_pos < retval.variable.length()))
+                {
+                    auto op = retval.variable.substr(at_pos + 1); // at_pos < length(), from above()
+                    if (op.length() == 1)  // only single-characters
+                    {
+                        retval.variable = retval.variable.substr(0, at_pos);
+                        retval.op = std::move(op);
+                    }
+                }
+            }
+
             return retval;
         }
     }
@@ -484,6 +506,74 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable(const std::string
     return retval;
 }
 
+static std::string apply_edits(const std::string& path, const std::string& op)
+{
+    // http://www.kitebird.com/csh-tcsh-book/tcsh.pdf
+    /* The word or words in a history reference can be edited, or "modified", by following it with one or more modifiers,
+        each preceded by a ':':
+    */
+    if (op.length() == 1)
+    {
+        const fs::path fspath(path);
+        switch (op[0])
+        {
+	   // h Remove a trailing pathname component, leaving the head.
+           case 'h': return fspath.parent_path().string();
+
+	   // t Remove all leading pathname components, leaving the tail.
+           case 't': return fspath.filename().string();
+
+	   // r Remove a filename extension '.xxx', leaving the root name.
+           case 'r': return fspath.root_path().string();
+
+
+	   // e Remove all but the extension.
+          case 'e':
+	  {
+	      // CSH "e" doesn't include the "."
+	      auto ext = fspath.extension().string();
+	      const auto dot_pos = ext.find(".");
+	      if (dot_pos == 0)
+	      {
+	          ext = ext.substr(1);
+	      }    	    
+	      return ext;
+	  }
+
+
+	  // We're already "off the reservation" by combining BASH and CSH syntax/functionality,
+	  // so ... provide access to other std::file_system::path routines too.
+	  // https://en.cppreference.com/w/cpp/filesystem/path
+
+	  // root_name()
+	  case 'n' : break; // return fspath.root_name().string();
+
+	  // root_directory()
+	  case 'd' : break; // return fspath.root_directory().string();
+
+	  // root_path(), 'r' above
+
+	  // relative_path()
+	  case 'p' : break; // return fspath.relative_path().string();
+
+	  // parent_path(), 'h' above
+
+	  // Force use of CSH names rather than providing and alisas: 'f' filename()
+	  // filename(), 't' above
+	  case 'f' : break; // return fspath.filename().string();
+
+	  // stem()
+	  case 's' : return fspath.stem().string();
+
+	  // extension(), 'e' above
+
+          default: break;
+        }
+    }
+
+    return path;
+}
+
 static path_components expandEnvironmentVariable(const std::string& component)
 {
     const auto extractedEnvVar = extractEnvironmentVariable(component);
@@ -499,7 +589,7 @@ static path_components expandEnvironmentVariable(const std::string& component)
     // of a longer path: /foo/$BAR/baz/file.txt
     static const sys::OS os;
     std::string value;
-    if (!os.getEnvIfSet(extractedEnvVar.variable, value))
+    if (!os.getEnvIfSet(extractedEnvVar.variable, value, true /*includeSpecial*/))
     {
         // No value for the purported "environment variable," assume it's just a
         // path with some funky characters: $({})
@@ -515,8 +605,10 @@ static path_components expandEnvironmentVariable(const std::string& component)
     const auto endExpandedEnvVar = expandEnvironmentVariable(extractedEnvVar.end); // note: recursion
 
     path_components updated_paths;
-    for (const auto& path : paths)
+    for (const auto& path_ : paths)
     {
+        const auto path = apply_edits(path_, extractedEnvVar.op);
+
         for (const auto& endVar : endExpandedEnvVar)
         {
             auto p = extractedEnvVar.begin + path + endVar;
@@ -621,27 +713,7 @@ std::vector<path_components> expand(const std::vector<expanded_component>& expan
 static std::string expandTilde()
 {
     static const sys::OS os;
-
-    #ifdef _WIN32
-    constexpr auto home = "USERPROFILE";
-    #else  // assuming *nix
-    // Is there a better way to support ~ on *nix than $HOME ?
-    constexpr auto home = "HOME";
-    #endif
-
-    std::vector<std::string> paths;
-    if (!os.splitEnv(home, paths, sys::Filesystem::FileType::Directory))
-    {
-        // something is horribly wrong
-        throw except::FileNotFoundException(Ctxt(home));
-    }
-
-    if (paths.size() != 1)
-    {
-        // somebody set HOME to multiple directories ... why?
-        throw except::FileNotFoundException(Ctxt(home));
-    }
-    return paths[0];
+    return os.getSpecialEnv("HOME"); // getSpecialEnv manages $HOME vs. %USERPROFILE%
 }
 
 static std::vector<std::string> expandedEnvironmentVariables_(const std::string& path_, bool& specialPath)
@@ -699,13 +771,13 @@ std::vector<std::string> Path::expandedEnvironmentVariables(const std::string& p
     return expandedEnvironmentVariables_(path, unused_specialPath);
 }
 
-static bool path_matches_type(const std::string &path, sys::Filesystem::FileType type)
+static bool path_matches_type(const std::string &path, sys::Filesystem::file_type type)
 {
-    if ((type == Filesystem::FileType::Regular) && Filesystem::is_regular_file(path))
+    if ((type == Filesystem::file_type::regular) && Filesystem::is_regular_file(path))
     {
         return true;
     }
-    if ((type== Filesystem::FileType::Directory) && Filesystem::is_directory(path))
+    if ((type== Filesystem::file_type::directory) && Filesystem::is_directory(path))
     {
         return true;
     }
@@ -713,7 +785,7 @@ static bool path_matches_type(const std::string &path, sys::Filesystem::FileType
 }
 
 static std::string expandEnvironmentVariables_(const std::string& path,
-                                               bool checkIfExists, sys::Filesystem::FileType* pType = nullptr)
+                                               bool checkIfExists, sys::Filesystem::file_type* pType = nullptr)
 {
     bool specialPath;
     const auto expanded_paths = expandedEnvironmentVariables_(path, specialPath);
@@ -724,7 +796,7 @@ static std::string expandEnvironmentVariables_(const std::string& path,
         // more handling for "~"; it's a directory, not a file
         if (path == "~")
         {
-            if ((pType != nullptr) && (*pType == Filesystem::FileType::Regular))
+            if ((pType != nullptr) && (*pType == Filesystem::file_type::regular))
             {
                 return ""; // looking for files, "~" can't be it
             }
@@ -762,7 +834,7 @@ std::string Path::expandEnvironmentVariables(const std::string& path, bool check
 {
     return expandEnvironmentVariables_(path, checkIfExists);
 }
-std::string Path::expandEnvironmentVariables(const std::string& path, sys::Filesystem::FileType type)
+std::string Path::expandEnvironmentVariables(const std::string& path, sys::Filesystem::file_type type)
 {
     bool unused_checkIfExists = true;
     return expandEnvironmentVariables_(path, unused_checkIfExists, &type);

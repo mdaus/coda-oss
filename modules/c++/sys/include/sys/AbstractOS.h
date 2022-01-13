@@ -51,9 +51,8 @@ namespace sys
  *  The AbstractOS class defines the base for a system
  *  independent layer of function calls.
  */
-class AbstractOS
+struct AbstractOS
 {
-public:
     AbstractOS();
 
     virtual ~AbstractOS();
@@ -212,7 +211,7 @@ public:
 
     // A variable like PATH is often several directories, return each one that exists.
     bool splitEnv(const std::string& envVar, std::vector<std::string>&) const;
-    bool splitEnv(const std::string& envVar, std::vector<std::string>&, Filesystem::FileType) const;
+    bool splitEnv(const std::string& envVar, std::vector<std::string>&, Filesystem::file_type) const;
 
     // Modify the specified env-var as indicated.
     void prependEnv(const std::string& envVar, const std::vector<std::string>&, bool overwrite);

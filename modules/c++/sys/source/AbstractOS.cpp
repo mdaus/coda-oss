@@ -27,22 +27,21 @@
 #include <functional>
 #include <map>
 #include <stdexcept>
+#include <string>
 
 #include <sys/Path.h>
 #include <sys/DirectoryEntry.h>
 #include <sys/Filesystem.h>
+#include <sys/DateTime.h>
+#include <sys/Dbg.h>
 
-namespace fs = coda_oss::filesystem;
+namespace fs = sys::Filesystem;
 
 namespace sys
 {
-AbstractOS::AbstractOS()
-{
-}
+AbstractOS::AbstractOS() = default;
 
-AbstractOS::~AbstractOS()
-{
-}
+AbstractOS::~AbstractOS() = default;
 
 std::vector<std::string>
 AbstractOS::search(const std::vector<std::string>& searchPaths,
@@ -183,7 +182,7 @@ std::string AbstractOS::getCurrentExecutable(
 }
 
 // A variable like PATH is often several directories, return each one that exists.
-static bool splitEnv_(const AbstractOS& os, const std::string& envVar, std::vector<std::string>& result, Filesystem::FileType* pType = nullptr)
+static bool splitEnv_(const AbstractOS& os, const std::string& envVar, std::vector<std::string>& result, Filesystem::file_type* pType = nullptr)
 {
     std::string value;
     if (!os.getEnvIfSet(envVar, value))
@@ -196,8 +195,8 @@ static bool splitEnv_(const AbstractOS& os, const std::string& envVar, std::vect
         bool matches = true;
         if (pType != nullptr)
         {
-            const auto isFile = (*pType == Filesystem::FileType::Regular) && Filesystem::is_regular_file(val);
-            const auto isDirectory = (*pType == Filesystem::FileType::Directory) && Filesystem::is_directory(val);
+            const auto isFile = (*pType == Filesystem::file_type::regular) && Filesystem::is_regular_file(val);
+            const auto isDirectory = (*pType == Filesystem::file_type::directory) && Filesystem::is_directory(val);
             matches = isFile || isDirectory;
         }
         if (Filesystem::exists(val) && matches)
@@ -205,9 +204,9 @@ static bool splitEnv_(const AbstractOS& os, const std::string& envVar, std::vect
             result.push_back(val);
         }
     }
-    return true;
+    return !result.empty(); // false for no matches
 }
-bool AbstractOS::splitEnv(const std::string& envVar, std::vector<std::string>& result, Filesystem::FileType type) const
+bool AbstractOS::splitEnv(const std::string& envVar, std::vector<std::string>& result, Filesystem::file_type type) const
 {
     return splitEnv_(*this, envVar, result, &type);
 }
@@ -221,7 +220,7 @@ static void modifyEnv(AbstractOS& os, const std::string& envVar, bool overwrite,
 {
     std::vector<std::string> values;
     auto splitResult = os.splitEnv(envVar, values);
-    if (!overwrite)
+    if (splitResult && !overwrite)
     {
         // envVar already exists and we can't overwrite it
         return;
@@ -243,7 +242,7 @@ static void modifyEnv(AbstractOS& os, const std::string& envVar, bool overwrite,
         }
     }
 
-    os.setEnv(envVar, val, true /*overwrite*/);
+    os.setEnv(envVar, val, overwrite);
 }
 void AbstractOS::prependEnv(const std::string& envVar, const std::vector<std::string>& values, bool overwrite)
 {
@@ -256,6 +255,101 @@ void AbstractOS::appendEnv(const std::string& envVar, const std::vector<std::str
     modifyEnv(*this, envVar, overwrite, empty, values);
 }
 
+static std::string getSpecialEnv_PID(const AbstractOS& os, const std::string& envVar)
+{
+    assert((envVar == "$") || (envVar == "PID"));
+    #if _MSC_VER
+    UNREFERENCED_PARAMETER(envVar);
+    #endif
+    const auto pid = os.getProcessId();
+    return std::to_string(pid);
+}
+
+static std::string getSpecialEnv_USER(const AbstractOS& os, const std::string& envVar)
+{
+    // $USER on *nix, %USERNAME% on Windows; make it so either one always works
+    assert((envVar == "USER") || (envVar == "USERNAME"));
+    #if _WIN32
+    UNREFERENCED_PARAMETER(envVar);
+    return os.getEnv("USERNAME");
+    #else
+    return os.getEnv("USER");
+    #endif
+}
+
+static std::string getSpecialEnv_HOME(const AbstractOS& os, const std::string& envVar)
+{
+    // $HOME on *nix, %USERPROFILE% on Windows; make it so either one always works
+    assert((envVar == "HOME") || (envVar == "USERPROFILE"));
+
+    #ifdef _WIN32
+    UNREFERENCED_PARAMETER(envVar);
+    constexpr auto home = "USERPROFILE";
+    #else  // assuming *nix
+    // Is there a better way to support ~ on *nix than $HOME ?
+    constexpr auto home = "HOME";
+    #endif
+
+    std::vector<std::string> paths;
+    if (!os.splitEnv(home, paths, sys::Filesystem::file_type::directory))
+    {
+        // something is horribly wrong
+        throw except::FileNotFoundException(Ctxt(home));
+    }
+
+    if (paths.size() != 1)
+    {
+        // somebody set HOME to multiple directories ... why?
+        throw except::FileNotFoundException(Ctxt(home));
+    }
+    return paths[0];
+}
+
+static std::string getSpecialEnv_Configuration(const AbstractOS&, const std::string& envVar)
+{
+    assert(envVar == "Configuration");
+    #if _MSC_VER
+    UNREFERENCED_PARAMETER(envVar);
+    #endif
+    // in Visual Studio, by default this is usually "Debug" and "Release"
+    return sys::debug_build() ? "Debug" : "Release";
+}
+static std::string getSpecialEnv_Platform(const AbstractOS&, const std::string& envVar)
+{
+    assert((envVar == "Platform") || (envVar == "HOSTTYPE"));
+
+    // in Visual Studio, this is "Win32" (maybe "x86") or "x64"
+    #ifdef _WIN32
+        UNREFERENCED_PARAMETER(envVar);
+        #ifdef _WIN64
+        return "x64";
+        #else
+        return "Win32"; // "x86" ?
+       #endif
+    #else // assume 64-bit *nix
+    return "x86_64";
+    #endif
+}
+
+static std::string getSpecialEnv_SECONDS_()
+{
+    // https://en.cppreference.com/w/cpp/chrono/c/difftime
+    static const auto start = std::time(nullptr);
+    const auto diff = static_cast<int64_t>(std::difftime(std::time(nullptr), start));
+    return std::to_string(diff);
+}
+static std::string getSpecialEnv_SECONDS(const AbstractOS&, const std::string& envVar)
+{
+    // https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
+    // "This variable expands to the number of seconds since the shell was started. ..."
+    assert(envVar == "SECONDS");
+    #if _MSC_VER
+    UNREFERENCED_PARAMETER(envVar);
+    #endif
+    return getSpecialEnv_SECONDS_();
+}
+static std::string strUnusedSeconds = getSpecialEnv_SECONDS_(); // "start" the "shell"
+
 // See https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
 // and https://wiki.bash-hackers.org/syntax/shellvars
 typedef std::string (*get_env_fp)(const AbstractOS&, const std::string&);
@@ -263,15 +357,19 @@ typedef std::string (*get_env_fp)(const AbstractOS&, const std::string&);
 // others can be done in-line.
 static const std::map<std::string, get_env_fp> s_get_env{
                                                     {"0", nullptr}, {"ARGV0", nullptr},
-                                                    {"$", nullptr}, {"PID", nullptr},
+                                                    {"$", getSpecialEnv_PID}, {"PID", getSpecialEnv_PID},
                                                     {"PWD", nullptr},
-                                                    {"USER", nullptr}, {"USERNAME", nullptr},
+                                                    {"USER", getSpecialEnv_USER}, {"USERNAME", getSpecialEnv_USER},
+                                                    {"HOME", getSpecialEnv_HOME}, {"USERPROFILE", getSpecialEnv_HOME},
                                                     {"EPOCHSECONDS", nullptr},
                                                     {"HOSTNAME", nullptr},
-                                                    {"HOSTTYPE", nullptr}, // x86_64
+                                                    {"HOSTTYPE", getSpecialEnv_Platform}, // x86_64
                                                     {"MACHTYPE", nullptr}, // x86_64-pc-linux-gnu
                                                     {"OSTYPE", nullptr}, // linux-gnu
-                                                    {"SECONDS", nullptr},
+                                                    {"SECONDS", getSpecialEnv_SECONDS},
+                                                    // c.f., Visual Studio
+                                                    {"Configuration", getSpecialEnv_Configuration},
+                                                    {"Platform", getSpecialEnv_Platform},
 };
 bool AbstractOS::isSpecialEnv(const std::string& envVar) const
 {
@@ -285,7 +383,7 @@ std::string AbstractOS::getSpecialEnv(const std::string& envVar) const
     if (it == s_get_env.end())
     {
         // see sys::OSUnix::getEnv()
-        throw sys::SystemException(Ctxt("Unable to get special environment variable " + envVar));
+        throw sys::SystemException(Ctxt("Unable to get special environment variable: " + envVar));
     }
 
     // call the function if there is one
@@ -300,13 +398,29 @@ std::string AbstractOS::getSpecialEnv(const std::string& envVar) const
         return getCurrentExecutable(); // $0
     }
 
-    //if (envVar == "dirname0")
-    //{
-    //    const auto dirname = fs::path(getSpecialEnv("0")).parent_path();
-    //    return dirname.string();
-    //}
+    if (envVar == "PWD")
+    {
+        return getCurrentWorkingDirectory();
+    }
 
-    return ""; // variable was found, so no exception
+    if (envVar == "HOSTNAME")
+    {
+        return getNodeName();
+    }
+
+    if (envVar == "EPOCHSECONDS")
+    {
+        return std::to_string(sys::DateTime::getEpochSeconds());
+    }
+
+    if (envVar == "OSTYPE")
+    {
+        // TODO: Mac
+        return sys::Platform == sys::PlatformType::Linux ? " linux-gnu" : "Windows";
+    }
+    
+    // should explicitly handle all env. vars in some way    
+    throw sys::SystemException(Ctxt("Unable to determine value for special environment variable: " + envVar));
 }
 
 }

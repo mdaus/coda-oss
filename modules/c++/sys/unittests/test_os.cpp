@@ -25,15 +25,19 @@
 #include <fstream>
 #include <sstream>
 #include <numeric> // std::accumulate
+#include <string>
+
+#include <std/filesystem>
 
 #include <sys/OS.h>
 #include <sys/Path.h>
 #include <sys/Filesystem.h>
 #include <sys/Backtrace.h>
 #include <sys/Dbg.h>
+#include <sys/DateTime.h>
 #include "TestCase.h"
 
-namespace fs = coda_oss::filesystem;
+namespace fs = sys::Filesystem;
 
 namespace
 {
@@ -180,16 +184,16 @@ TEST_CASE(testSplitEnv)
     os.setEnv(bogusEnvVar, bogusValue, false /*overwrite*/);
     result = os.splitEnv(bogusEnvVar, paths);
     TEST_ASSERT_TRUE(result);
-    TEST_ASSERT_EQ(paths.size(), 1);
+    TEST_ASSERT_EQ(paths.size(), static_cast<size_t>(1));
 
     // PATHs are directories, not files
     paths.clear();
-    result = os.splitEnv(pathEnvVar, paths, sys::Filesystem::FileType::Directory);
+    result = os.splitEnv(pathEnvVar, paths, sys::Filesystem::file_type::directory);
     TEST_ASSERT_TRUE(result);
-    TEST_ASSERT_GREATER(paths.size(), 0);
+    TEST_ASSERT_GREATER(paths.size(), static_cast<size_t>(0));
     paths.clear();
-    result = os.splitEnv(pathEnvVar, paths, sys::Filesystem::FileType::Regular);
-    TEST_ASSERT_TRUE(result);
+    result = os.splitEnv(pathEnvVar, paths, sys::Filesystem::file_type::regular);
+    TEST_ASSERT_FALSE(result);
     TEST_ASSERT_TRUE(paths.empty());
 
     const std::string notFoundEnvVar = "CODA_OSS_SOME_VAR_THAT_WE_KNOW_WONT_BE_SET";
@@ -241,7 +245,7 @@ static void testFsExtension_(const std::string& testName)
 TEST_CASE(testFsExtension)
 {
     testFsExtension_<sys::Filesystem::path>(testName);
-    testFsExtension_<coda_oss::filesystem::path>(testName);
+    testFsExtension_<std::filesystem::path>(testName);
     #if CODA_OSS_lib_filesystem
     testFsExtension_<std::filesystem::path>(testName);
     #endif
@@ -263,7 +267,7 @@ static void testFsOutput_(const std::string& testName)
 TEST_CASE(testFsOutput)
 {
     testFsOutput_<sys::Filesystem::path>(testName);
-    testFsOutput_<coda_oss::filesystem::path>(testName);
+    testFsOutput_<std::filesystem::path>(testName);
     #if CODA_OSS_lib_filesystem
     testFsOutput_<std::filesystem::path>(testName);
     #endif
@@ -283,6 +287,10 @@ static std::string h(bool& supported, std::vector<std::string>& frames)
 }
 TEST_CASE(testBacktrace)
 {
+    // These don't **have** to be the same; but it would be unusual for build scripts pass
+    // different flags to these pieces ... and likely cause all kinds of weird problems.
+    TEST_ASSERT_EQ(sys::debug_build(), sys::debug);
+
     bool supported;
     std::vector<std::string> frames;
     const auto result = h(supported, frames);
@@ -291,7 +299,8 @@ TEST_CASE(testBacktrace)
     TEST_ASSERT_EQ(failed_pos, std::string::npos);
 
 
-    size_t frames_size = 0;
+    size_t expected = 0;
+    size_t expected_other = 0;
     auto version_sys_backtrace_ = version::sys::backtrace; // "Conditional expression is constant"
     if (version_sys_backtrace_ >= 20210216L)
     {
@@ -299,20 +308,23 @@ TEST_CASE(testBacktrace)
 
         #if _WIN32
         constexpr auto frames_size_RELEASE = 2;
+        constexpr auto frames_size_RELEASE_other = frames_size_RELEASE;
         constexpr auto frames_size_DEBUG = 14;
         #elif defined(__GNUC__)
         constexpr auto frames_size_RELEASE = 6;
+        constexpr auto frames_size_RELEASE_other = 7;
         constexpr auto frames_size_DEBUG = 10;
         #else
         #error "CODA_OSS_sys_Backtrace inconsistency."
         #endif
-        frames_size = sys::debug_build ? frames_size_DEBUG : frames_size_RELEASE;
+        expected = sys::debug_build() ? frames_size_DEBUG : frames_size_RELEASE;
+        expected_other = sys::debug_build() ? frames_size_DEBUG : frames_size_RELEASE_other;
     }
     else
     {
         TEST_ASSERT_FALSE(supported);
     }
-    TEST_ASSERT_EQ(frames.size(), frames_size);
+    TEST_ASSERT( (frames.size() == expected) || (frames.size() == expected_other) );
 
     const auto msg = std::accumulate(frames.begin(), frames.end(), std::string());
     if (supported)
@@ -325,19 +337,64 @@ TEST_CASE(testBacktrace)
     }
 }
 
-TEST_CASE(testARGV0)
+TEST_CASE(testSpecialEnvVars)
 {
     const sys::OS os;
-    const auto result = os.getSpecialEnv("ARGV0");
+    const auto argv0 = os.getSpecialEnv("ARGV0");
+    TEST_ASSERT_FALSE(argv0.empty());
+    auto result = os.getSpecialEnv("0"); // i.e., ${0)
     TEST_ASSERT_FALSE(result.empty());
+    TEST_ASSERT_EQ(result, argv0);
     const fs::path fsresult(result);
-    TEST_ASSERT_EQ(fsresult.stem(), "test_os");
+    const fs::path this_file(__FILE__);
+    TEST_ASSERT_EQ(fsresult.stem(), this_file.stem());
+
+    const auto pid = os.getSpecialEnv("PID");
+    TEST_ASSERT_FALSE(pid.empty());
+    result = os.getSpecialEnv("$"); // i.e., ${$}
+    TEST_ASSERT_FALSE(result.empty());
+    TEST_ASSERT_EQ(result, pid);
+    const auto strPid = std::to_string(os.getProcessId());
+    TEST_ASSERT_EQ(result, strPid);
+
+    result = os.getSpecialEnv("PWD");
+    TEST_ASSERT_FALSE(result.empty());
+
+    result = os.getSpecialEnv("USER");
+    TEST_ASSERT_FALSE(result.empty());
+    const auto username = os.getSpecialEnv("USERNAME");
+    TEST_ASSERT_FALSE(result.empty());
+    TEST_ASSERT_EQ(username, result);
+
+    result = os.getSpecialEnv("HOSTNAME");
+    TEST_ASSERT_FALSE(result.empty());
+
+    result = os.getSpecialEnv("SECONDS");
+    TEST_ASSERT_FALSE(result.empty());
+    const auto seconds = std::stoll(result);
+    TEST_ASSERT_GREATER_EQ(seconds, 0);
+
+    const auto epochSeconds = sys::DateTime::getEpochSeconds();
+    result = os.getSpecialEnv("EPOCHSECONDS");
+    TEST_ASSERT_FALSE(result.empty());
+    const auto resultEpochSeconds = std::stoll(result);
+    TEST_ASSERT_GREATER_EQ(resultEpochSeconds, epochSeconds);
+
+    result = os.getSpecialEnv("OSTYPE");
+    TEST_ASSERT_FALSE(result.empty());
+
+    result = os.getSpecialEnv("Configuration");
+    TEST_ASSERT_FALSE(result.empty());
+    result = os.getSpecialEnv("Platform");
+    TEST_ASSERT_FALSE(result.empty());
 }
 
 }
 
-int main(int, char**)
+int main(int, char** argv)
 {
+    sys::AbstractOS::setArgvPathname(argv[0]);
+
     TEST_CHECK(testRecursiveRemove);
     TEST_CHECK(testForcefulMove);
     TEST_CHECK(testEnvVariables);
@@ -345,7 +402,7 @@ int main(int, char**)
     TEST_CHECK(testFsExtension);
     TEST_CHECK(testFsOutput);
     TEST_CHECK(testBacktrace);
-    TEST_CHECK(testARGV0);
+    TEST_CHECK(testSpecialEnvVars);
 
     return 0;
 }
