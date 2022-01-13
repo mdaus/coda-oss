@@ -26,6 +26,7 @@
 #pragma once
 
 #include <assert.h>
+#include <string.h>
 
 #include <string>
 #include <ostream>
@@ -48,9 +49,65 @@ namespace str
 {
 class EncodedStringView final
 {
-    std::string::const_pointer mpString = nullptr;
-    sys::U8string::const_pointer mpU8String = nullptr;
-    str::W1252string::const_pointer mpW1252String = nullptr;
+    template <typename TChar>
+    struct Pointer final
+    {
+        using string = std::basic_string<TChar>;
+        using const_pointer = typename string::const_pointer;
+        Pointer() = default;
+        Pointer(const_pointer p) : pChars(p)
+        {
+            if (p == nullptr)
+            {
+                throw std::invalid_argument("p is NULL.");
+            }
+        }
+        Pointer(const string& s) : Pointer(s.c_str())
+        {
+        }
+
+        Pointer& operator=(const_pointer s)
+        {
+            if (s == nullptr)
+            {
+                throw std::invalid_argument("s is NULL.");
+            }
+            pChars = s;
+            return *this;
+        }
+        Pointer& operator=(const string& s)
+        {
+            *this = s.c_str();
+            return *this;
+        }
+
+        const_pointer c_str() const
+        {
+            return pChars;
+        }
+
+        bool empty() const
+        {
+            return pChars == nullptr;
+        }
+
+        void clear()
+        {
+            pChars = nullptr;
+        }
+
+        size_t length() const
+        {
+            return strlen(str::cast<const char*>(pChars));
+        }
+
+    private:
+        const_pointer pChars = nullptr;
+    };
+
+    Pointer<std::string::value_type> mString;
+    Pointer<sys::U8string::value_type> mU8String;
+    Pointer<str::W1252string::value_type> mW1252String;
 
 public:
     EncodedStringView() = delete; // use EncodedStringView("") if you must
@@ -58,23 +115,19 @@ public:
     // Need these overload to avoid creating temporary std::basic_string<> instances.
     // Routnes always return a copy, never a reference, so there's no additional overhead
     // with storing a raw pointer rather than a pointer to  std::basic_string<>.
-    EncodedStringView(sys::U8string::const_pointer);
-    EncodedStringView(str::W1252string::const_pointer);
+    explicit EncodedStringView(sys::U8string::const_pointer);
+    explicit EncodedStringView(str::W1252string::const_pointer);
     explicit EncodedStringView(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
-    template<typename TChar>
-    EncodedStringView(const std::basic_string<TChar>& s) : EncodedStringView(s.c_str())
-    {
-    }
+    explicit EncodedStringView(const sys::U8string&);
+    explicit EncodedStringView(const str::W1252string&);
+    explicit EncodedStringView(const std::string&);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
 
     EncodedStringView& operator=(sys::U8string::const_pointer);
     EncodedStringView& operator=(str::W1252string::const_pointer);
     EncodedStringView& operator=(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
-    template <typename TChar>
-    EncodedStringView& operator=(const std::basic_string<TChar>& s)
-    {
-        *this = s.c_str();
-        return *this;
-    }
+    EncodedStringView& operator=(const sys::U8string&);
+    EncodedStringView& operator=(const str::W1252string&);
+    EncodedStringView& operator=(const std::string&);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     
     // Input is encoded as specified on all platforms.
     template <typename TBasicString>
@@ -129,13 +182,13 @@ public:
 
 private:
     template <typename TReturn, typename T2, typename T3>
-    TReturn cast_(TReturn retval, T2 t2, T3 t3) const
+    typename TReturn::const_pointer cast_(const TReturn& retval, const T2& t2, const T3& t3) const
     {
-        if (retval != nullptr)
+        if (!retval.empty())
         {
-            assert(t2 == nullptr);
-            assert(t3 == nullptr);
-            return retval;
+            assert(t2.empty());
+            assert(t3.empty());
+            return retval.c_str();
         }
         return nullptr;
     }
@@ -145,17 +198,17 @@ private:
 template <>
 inline std::string::const_pointer EncodedStringView::cast() const
 {
-    return cast_(mpString, mpU8String, mpW1252String);
+    return cast_(mString, mU8String, mW1252String);
 }
 template <>
 inline sys::U8string::const_pointer EncodedStringView::cast() const
 {
-    return cast_(mpU8String, mpString, mpW1252String);
+    return cast_(mU8String, mString, mW1252String);
 }
 template <>
 inline str::W1252string::const_pointer EncodedStringView::cast() const
 {
-    return cast_(mpW1252String, mpString, mpU8String);
+    return cast_(mW1252String, mString, mU8String);
 }
 
 inline bool operator==(const EncodedStringView& lhs, const EncodedStringView& rhs)
@@ -173,7 +226,17 @@ inline bool operator==(const EncodedStringView& lhs, const TChar* rhs)
     return lhs == EncodedStringView(rhs);
 }
 template <typename TChar>
+inline bool operator==(const TChar* lhs, const EncodedStringView& rhs)
+{
+    return rhs == lhs;
+}
+template <typename TChar>
 inline bool operator!=(const EncodedStringView& lhs, const TChar* rhs)
+{
+    return !(lhs == rhs);
+}
+template <typename TChar>
+inline bool operator!=(const TChar* lhs, const EncodedStringView& rhs)
 {
     return !(lhs == rhs);
 }
@@ -184,7 +247,17 @@ inline bool operator==(const EncodedStringView& lhs, const std::basic_string<TCh
     return lhs == EncodedStringView(rhs);
 }
 template <typename TChar>
+inline bool operator==(const std::basic_string<TChar>& lhs, const EncodedStringView& rhs)
+{
+    return rhs == lhs;
+}
+template <typename TChar>
 inline bool operator!=(const EncodedStringView& lhs, const std::basic_string<TChar>& rhs)
+{
+    return !(lhs == rhs);
+}
+template <typename TChar>
+inline bool operator!=(const std::basic_string<TChar>& lhs, const EncodedStringView& rhs)
 {
     return !(lhs == rhs);
 }
