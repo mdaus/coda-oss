@@ -74,15 +74,15 @@ bool ValidationErrorHandler::handleError(
     return true;
 }
 
-inline std::vector<std::string> convert(const std::vector<sys::Filesystem::path>& schemaPaths)
+inline std::vector<std::string> convert(const std::vector<coda_oss::filesystem::path>& schemaPaths)
 {
     std::vector<std::string> retval;
     std::transform(schemaPaths.begin(), schemaPaths.end(), std::back_inserter(retval),
-                   [](const sys::Filesystem::path& p) { return p.string(); });
+                   [](const coda_oss::filesystem::path& p) { return p.string(); });
     return retval;
 }
 ValidatorXerces::ValidatorXerces(
-        const std::vector<sys::Filesystem::path>& schemaPaths,
+        const std::vector<coda_oss::filesystem::path>& schemaPaths,
         logging::Logger* log,
         bool recursive) :
     ValidatorXerces(convert(schemaPaths), log, recursive)

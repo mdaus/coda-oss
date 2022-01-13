@@ -43,7 +43,7 @@ namespace logging
  */
 struct FileHandler : public StreamHandler
 {
-    FileHandler(const sys::Filesystem::path& fname, LogLevel level = LogLevel::LOG_NOTSET,
+    FileHandler(const coda_oss::filesystem::path& fname, LogLevel level = LogLevel::LOG_NOTSET,
                 int creationFlags = sys::File::CREATE | sys::File::TRUNCATE) :
         StreamHandler(coda_oss::make_unique<io::FileOutputStream>(fname.string(), creationFlags), level)
     {

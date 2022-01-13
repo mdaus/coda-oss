@@ -37,7 +37,7 @@
 #include <sys/DateTime.h>
 #include "TestCase.h"
 
-namespace fs = sys::Filesystem;
+namespace fs = coda_oss::filesystem;
 
 namespace
 {
@@ -172,7 +172,7 @@ TEST_CASE(testSplitEnv)
     TEST_ASSERT_GREATER(paths.size(), 0);
     for (const auto& path : paths)
     {
-        TEST_ASSERT_TRUE(sys::Filesystem::exists(path));
+        TEST_ASSERT_TRUE(coda_oss::filesystem::exists(path));
     }
 
     // create an environemnt variable with a known bogus path
@@ -188,11 +188,11 @@ TEST_CASE(testSplitEnv)
 
     // PATHs are directories, not files
     paths.clear();
-    result = os.splitEnv(pathEnvVar, paths, sys::Filesystem::file_type::directory);
+    result = os.splitEnv(pathEnvVar, paths, coda_oss::filesystem::file_type::directory);
     TEST_ASSERT_TRUE(result);
     TEST_ASSERT_GREATER(paths.size(), static_cast<size_t>(0));
     paths.clear();
-    result = os.splitEnv(pathEnvVar, paths, sys::Filesystem::file_type::regular);
+    result = os.splitEnv(pathEnvVar, paths, coda_oss::filesystem::file_type::regular);
     TEST_ASSERT_FALSE(result);
     TEST_ASSERT_TRUE(paths.empty());
 
@@ -244,7 +244,7 @@ static void testFsExtension_(const std::string& testName)
 }
 TEST_CASE(testFsExtension)
 {
-    testFsExtension_<sys::Filesystem::path>(testName);
+    testFsExtension_<coda_oss::filesystem::path>(testName);
     testFsExtension_<std::filesystem::path>(testName);
     #if CODA_OSS_lib_filesystem
     testFsExtension_<std::filesystem::path>(testName);
@@ -266,7 +266,7 @@ static void testFsOutput_(const std::string& testName)
 }
 TEST_CASE(testFsOutput)
 {
-    testFsOutput_<sys::Filesystem::path>(testName);
+    testFsOutput_<coda_oss::filesystem::path>(testName);
     testFsOutput_<std::filesystem::path>(testName);
     #if CODA_OSS_lib_filesystem
     testFsOutput_<std::filesystem::path>(testName);
