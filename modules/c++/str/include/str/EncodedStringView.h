@@ -186,34 +186,8 @@ public:
 
 private:
     template <typename TReturn, typename T2, typename T3>
-    typename TReturn::const_pointer cast_(const TReturn& retval, const T2& t2, const T3& t3) const
-    {
-        if (!retval.empty())
-        {
-            assert(t2.empty());
-            assert(t3.empty());
-            return retval.c_str();
-        }
-        return nullptr;
-    }
+    typename TReturn::const_pointer cast_(const TReturn& retval, const T2& t2, const T3& t3) const;
 };
-
-// GCC wants specializations outside of the class
-template <>
-inline std::string::const_pointer EncodedStringView::cast() const
-{
-    return cast_(mString, mU8String, mW1252String);
-}
-template <>
-inline sys::U8string::const_pointer EncodedStringView::cast() const
-{
-    return cast_(mU8String, mString, mW1252String);
-}
-template <>
-inline str::W1252string::const_pointer EncodedStringView::cast() const
-{
-    return cast_(mW1252String, mString, mU8String);
-}
 
 inline bool operator==(const EncodedStringView& lhs, const EncodedStringView& rhs)
 {

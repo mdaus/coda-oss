@@ -527,3 +527,34 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
     // One side (but not both) must be Windows-1252; convert to UTF-8 for comparison
     return lhs.to_u8string() == rhs.to_u8string();
 }
+
+
+template <typename TReturn, typename T2, typename T3>
+typename TReturn::const_pointer str::EncodedStringView::cast_(const TReturn& retval, const T2& t2, const T3& t3) const
+{
+    if (!retval.empty())
+    {
+        assert(t2.empty());
+        assert(t3.empty());
+        return retval.c_str();
+    }
+    return nullptr;
+}
+
+// GCC wants specializations outside of the class.  We need these here (now)
+// anyway for access to pImpl.
+template <>
+std::string::const_pointer str::EncodedStringView::cast() const
+{
+    return cast_(mString, mU8String, mW1252String);
+}
+template <>
+sys::U8string::const_pointer str::EncodedStringView::cast() const
+{
+    return cast_(mU8String, mString, mW1252String);
+}
+template <>
+str::W1252string::const_pointer str::EncodedStringView::cast() const
+{
+    return cast_(mW1252String, mString, mU8String);
+}
