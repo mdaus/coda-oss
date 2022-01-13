@@ -1,8 +1,8 @@
 /* =========================================================================
- * This file is part of sys-c++
+ * This file is part of coda_oss-c++
  * =========================================================================
  *
- * (C) Copyright 2021, Maxar Technologies, Inc.
+ * (C) Copyright 2020-2022, Maxar Technologies, Inc.
  *
  * sys-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,17 +20,17 @@
  *
  */
 
-#ifndef CODA_OSS_sys_CPlusPlus_h_INCLUDED_
-#define CODA_OSS_sys_CPlusPlus_h_INCLUDED_
+#ifndef CODA_OSS_coda_oss_string_h_INCLUDED_
+#define CODA_OSS_coda_oss_string_h_INCLUDED_
 #pragma once
 
-#include "coda_oss/CPlusPlus.h"
+#include <string>
 
-// We've got various "replacements" (to a degree) for C++ library functionality
-// only available in later releases.  Adding these names to "std" is technically
-// forbidden, but it makes for fewer (eventual) changes in client code.
-//
-// You can bring these into your code by #include'ng the file from "std"; e.g.,
-//    #include <std/span> // std::span
+namespace coda_oss
+{
+    // char8_t for UTF-8 characters
+    enum class char8_t : unsigned char { }; // https://en.cppreference.com/w/cpp/language/types
+    using u8string = std::basic_string<char8_t>; // https://en.cppreference.com/w/cpp/string
+}
 
-#endif // CODA_OSS_sys_CPlusPlus_h_INCLUDED_
+#endif  // CODA_OSS_coda_oss_string_h_INCLUDED_

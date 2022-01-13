@@ -55,7 +55,7 @@ namespace logging
 #if CODA_OSS_cpp17
 using path = std::filesystem::path;
 #else
-using path = sys::Filesystem::path;
+using path = coda_oss::filesystem::path;
 #endif
 mem::auto_ptr<logging::Logger> setupLogger(
     const path& program, 
