@@ -27,6 +27,7 @@
 #include <string.h>
 
 #include <stdexcept>
+#include "coda_oss/memory.h"
 
 #include "str/Convert.h"
 #include "str/Encoding.h"
@@ -291,14 +292,14 @@ struct str::EncodedStringView::Impl final
     }
 };
 
-str::EncodedStringView::EncodedStringView() : pImpl(new Impl()) { }
+str::EncodedStringView::EncodedStringView() : pImpl(coda_oss::make_unique<Impl>()) { }
 str::EncodedStringView::~EncodedStringView() = default;
 str::EncodedStringView::EncodedStringView(EncodedStringView&&) = default;
 str::EncodedStringView& str::EncodedStringView::operator=(EncodedStringView&&) = default;
 
 str::EncodedStringView& str::EncodedStringView::operator=(const EncodedStringView& other)
 {
-    this->pImpl.reset(new Impl(*other.pImpl));
+    this->pImpl = coda_oss::make_unique<Impl>(*other.pImpl);
     return *this;
 }
 str::EncodedStringView::EncodedStringView(const EncodedStringView& other)
@@ -306,12 +307,12 @@ str::EncodedStringView::EncodedStringView(const EncodedStringView& other)
     *this = other;
 }
 
-str::EncodedStringView::EncodedStringView(std::string::const_pointer p) : pImpl(new Impl(p)) { }
-str::EncodedStringView::EncodedStringView(sys::U8string::const_pointer p) : pImpl(new Impl(p)){ }
-str::EncodedStringView::EncodedStringView(str::W1252string::const_pointer p) :  pImpl(new Impl(p)) { }
-str::EncodedStringView::EncodedStringView(const std::string& s) : pImpl(new Impl(s)) { }
-str::EncodedStringView::EncodedStringView(const sys::U8string& s) : pImpl(new Impl(s)) { }
-str::EncodedStringView::EncodedStringView(const str::W1252string& s) : pImpl(new Impl(s)) { }
+str::EncodedStringView::EncodedStringView(std::string::const_pointer p) : pImpl(coda_oss::make_unique<Impl>(p)) { }
+str::EncodedStringView::EncodedStringView(sys::U8string::const_pointer p) : pImpl(coda_oss::make_unique<Impl>(p)){ }
+str::EncodedStringView::EncodedStringView(str::W1252string::const_pointer p) :  pImpl(coda_oss::make_unique<Impl>(p)) { }
+str::EncodedStringView::EncodedStringView(const std::string& s) : pImpl(coda_oss::make_unique<Impl>(s)) { }
+str::EncodedStringView::EncodedStringView(const sys::U8string& s) : pImpl(coda_oss::make_unique<Impl>(s)) { }
+str::EncodedStringView::EncodedStringView(const str::W1252string& s) : pImpl(coda_oss::make_unique<Impl>(s)) { }
 
 str::EncodedStringView& str::EncodedStringView::operator=(std::string::const_pointer s)
 {
