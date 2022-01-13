@@ -1,5 +1,5 @@
 /* =========================================================================
- * This file is part of mem-c++
+ * This file is part of coda_oss-c++
  * =========================================================================
  *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
@@ -19,33 +19,35 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef CODA_OSS_mem_Span_h_INCLUDED_
-#define CODA_OSS_mem_Span_h_INCLUDED_
+#ifndef CODA_OSS_coda_oss_Span_h_INCLUDED_
+#define CODA_OSS_coda_oss_Span_h_INCLUDED_
 #pragma once
 
-#include "coda_oss/span.h"
+#include "gsl/gsl_span_.h"
 
-namespace mem
+namespace coda_oss
 {
-template <typename T>
-using Span = coda_oss::span<T>;
+    template <typename T>
+    using span = gsl::span<T>;
 
-template <typename T>
-inline Span<T> make_Span(T* d, size_t sz)
-{
-    return coda_oss::make_span<T>(d, sz);
+     template <typename T>
+    inline span<T> make_span(T* d, size_t sz)
+    {
+        return gsl::make_span<T>(d, sz);
+    }
+
+     template <typename TContainer>
+    inline span<typename TContainer::value_type> make_span(TContainer& c)
+    {
+        return gsl::make_span(c);
+    }
+    template <typename TContainer>
+    inline span<typename TContainer::value_type> make_span(const TContainer& c)
+    {
+        return make_span(const_cast<TContainer&>(c));
+    }
+
+#define CODA_OSS_coda_oss_span 202002L  // c.f., __cpp_lib_span
 }
 
-template <typename TContainer>
-inline Span<typename TContainer::value_type> make_Span(TContainer& c)
-{
-    return coda_oss::make_span(c);
-}
-template <typename TContainer>
-inline Span<typename TContainer::value_type> make_Span(const TContainer& c)
-{
-    return make_Span(const_cast<TContainer&>(c));
-}
-}
-
-#endif  // CODA_OSS_mem_Span_h_INCLUDED_
+#endif  // CODA_OSS_coda_oss_Span_h_INCLUDED_

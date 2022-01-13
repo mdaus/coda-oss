@@ -25,8 +25,7 @@
 #include <vector>
 #include <string>
 
-#include <mem/Span.h>
-#include <gsl/gsl.h>
+#include <coda_oss/span.h>
 
 #include "TestCase.h"
 
@@ -51,7 +50,7 @@ TEST_CASE(testSpanBuffer)
 {
     {
         std::vector<int> ints{1, 2, 3, 4, 5};
-        auto span = mem::make_Span(ints.data(), ints.size());
+        auto span = coda_oss::make_span(ints.data(), ints.size());
         testSpanBuffer_(testName, ints, span);
     }
     {
@@ -76,7 +75,7 @@ TEST_CASE(testSpanVector)
 {
     {
         std::vector<int> ints{1, 2, 3, 4, 5};
-        const auto span = mem::make_Span(ints);
+        const auto span = coda_oss::make_span(ints);
         testSpanVector_(testName, ints, span);
     }
     {
