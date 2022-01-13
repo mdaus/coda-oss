@@ -62,11 +62,16 @@ namespace Gsl
             : public std::integral_constant<bool, std::is_signed<T>::value == std::is_signed<U>::value> { };
 
         // this is messy to preserve "constexpr" with C++11
+        CODA_OSS_disable_warning_push
+        #if _MSC_VER
+        #pragma warning(disable : 4702)  // unreachable code
+        #endif
         template <class T>
         constexpr T narrow_throw_exception(T t) noexcept(false)
         {
             return throw_exception(narrowing_error()), t;
         }
+        CODA_OSS_disable_warning_pop
         template <class T, class U>
         constexpr T narrow1_(T t, U u) noexcept(false)
         {
