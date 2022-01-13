@@ -32,7 +32,6 @@
 
 #include <config/compiler_extensions.h>
 #include "gsl/use_gsl.h" // Can't compile all of GSL with older versions of GCC/MSVC
-#include "gsl/gsl_span_.h"
 
 #if defined(__INTEL_COMPILER) // ICC, high-side
 // Don't have access to Intel compiler on the low-side so just turn this off
@@ -98,7 +97,7 @@ namespace Gsl
     }
 }
 
-#if !CODA_OSS_use_real_gsl
+#if !CODA_OSS_gsl_use_real_gsl_
 // Add to "gsl" if we're not using the real thing
 namespace gsl
 {
@@ -114,6 +113,6 @@ namespace gsl
         return Gsl::narrow<T>(u);
     }
  }
-#endif // CODA_OSS_use_real_gsl
+#endif // CODA_OSS_gsl_use_real_gsl_
 
 #endif  // CODA_OSS_gsl_Gsl__h_INCLUDED_

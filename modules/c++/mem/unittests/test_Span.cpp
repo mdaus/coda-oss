@@ -50,12 +50,7 @@ TEST_CASE(testSpanBuffer)
 {
     {
         std::vector<int> ints{1, 2, 3, 4, 5};
-        auto span = coda_oss::make_span(ints.data(), ints.size());
-        testSpanBuffer_(testName, ints, span);
-    }
-    {
-        std::vector<int> ints{1, 2, 3, 4, 5};
-        auto span = gsl::make_span(ints.data(), ints.size());
+        const coda_oss::span<int> span(ints.data(), ints.size());
         testSpanBuffer_(testName, ints, span);
     }
 }
@@ -75,12 +70,7 @@ TEST_CASE(testSpanVector)
 {
     {
         std::vector<int> ints{1, 2, 3, 4, 5};
-        const auto span = coda_oss::make_span(ints);
-        testSpanVector_(testName, ints, span);
-    }
-    {
-        std::vector<int> ints{1, 2, 3, 4, 5};
-        const auto span = gsl::make_span(ints);
+        const coda_oss::span<int> span(ints.data(), ints.size());
         testSpanVector_(testName, ints, span);
     }
 }
