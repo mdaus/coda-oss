@@ -94,18 +94,17 @@ private:
 }
 }
 
-// Need a fairly decent C++ compiler to use the real GSL
-#include "coda_oss/CPlusPlus.h"
-#define CODA_OSS_coda_oss_use_real_gsl_ CODA_OSS_cpp14
+// Need a fairly decent C++ compiler to use the real GSL.  This brings in more than 
+// we really need for span (e.g., gsl::narrow()), but it keeps things simple.
+#include "gsl/gsl.h"  // not gsl/span; need #pragma here to turn off warnings
 
-#if CODA_OSS_coda_oss_use_real_gsl_
-#include "gsl/span"  // span
+#if defined(GSL_SPAN_H) // the above #include'd gsl/span
 namespace coda_oss
 {
 template <typename T>
 using span = gsl::span<T>;
 }
-#else
+#else // no gsl::span, use our own
 namespace coda_oss
 {
 template <typename T>
