@@ -92,7 +92,7 @@ static void testEndianness_std_(const std::string& testName)
 TEST_CASE(testEndianness_std)
 {
     testEndianness_std_<coda_oss::endian>(testName);
-    testEndianness_std_<std::endian>(testName);
+    //testEndianness_std_<std::endian>(testName);
 }
 
 template <typename TByte>
