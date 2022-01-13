@@ -110,7 +110,7 @@ namespace coda_oss
 template <typename T>
 using span = details::span<T>;
 }
-#endif  // CODA_OSS_coda_oss_use_real_gsl_
+#endif  // GSL_SPAN_H
 
 #define CODA_OSS_coda_oss_span 202002L  // c.f., __cpp_lib_span
 
