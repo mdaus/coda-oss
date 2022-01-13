@@ -30,22 +30,6 @@ namespace mem
 template <typename T>
 using Span = coda_oss::span<T>;
 
-template <typename T>
-inline Span<T> make_Span(T* d, size_t sz)
-{
-    return coda_oss::make_span<T>(d, sz);
-}
-
-template <typename TContainer>
-inline Span<typename TContainer::value_type> make_Span(TContainer& c)
-{
-    return coda_oss::make_span(c);
-}
-template <typename TContainer>
-inline Span<typename TContainer::value_type> make_Span(const TContainer& c)
-{
-    return make_Span(const_cast<TContainer&>(c));
-}
 }
 
 #endif  // CODA_OSS_mem_Span_h_INCLUDED_

@@ -30,23 +30,6 @@ namespace coda_oss
     template <typename T>
     using span = gsl::span<T>;
 
-     template <typename T>
-    inline span<T> make_span(T* d, size_t sz)
-    {
-        return gsl::make_span<T>(d, sz);
-    }
-
-     template <typename TContainer>
-    inline span<typename TContainer::value_type> make_span(TContainer& c)
-    {
-        return gsl::make_span(c);
-    }
-    template <typename TContainer>
-    inline span<typename TContainer::value_type> make_span(const TContainer& c)
-    {
-        return make_span(const_cast<TContainer&>(c));
-    }
-
 #define CODA_OSS_coda_oss_span 202002L  // c.f., __cpp_lib_span
 }
 
