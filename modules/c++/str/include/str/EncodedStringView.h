@@ -25,9 +25,6 @@
 #define CODA_OSS_str_EncodedStringView_h_INCLLUDED_
 #pragma once
 
-#include <assert.h>
-#include <string.h>
-
 #include <string>
 #include <ostream>
 #include <memory>
@@ -50,74 +47,24 @@ namespace str
 {
 class EncodedStringView final
 {
-    template <typename TChar>
-    struct Pointer final
-    {
-        using string = std::basic_string<TChar>;
-        using const_pointer = typename string::const_pointer;
-        Pointer() = default;
-        Pointer(const_pointer p) : pChars(p)
-        {
-            if (p == nullptr)
-            {
-                throw std::invalid_argument("p is NULL.");
-            }
-        }
-        Pointer(const string& s) : Pointer(s.c_str())
-        {
-        }
-
-        Pointer& operator=(const_pointer s)
-        {
-            if (s == nullptr)
-            {
-                throw std::invalid_argument("s is NULL.");
-            }
-            pChars = s;
-            return *this;
-        }
-        Pointer& operator=(const string& s)
-        {
-            *this = s.c_str();
-            return *this;
-        }
-
-        const_pointer c_str() const
-        {
-            return pChars;
-        }
-
-        bool empty() const
-        {
-            return pChars == nullptr;
-        }
-
-        void clear()
-        {
-            pChars = nullptr;
-        }
-
-        size_t length() const
-        {
-            return strlen(str::cast<const char*>(pChars));
-        }
-
-    private:
-        const_pointer pChars = nullptr;
-    };
-
     struct Impl;
     std::unique_ptr<Impl> pImpl;
 
 public:
     EncodedStringView();
+    ~EncodedStringView();
+    EncodedStringView(const EncodedStringView&);
+    EncodedStringView& operator=(const EncodedStringView&);
+    EncodedStringView(EncodedStringView&&);
+    EncodedStringView& operator=(EncodedStringView&&);
 
-    // Need these overload to avoid creating temporary std::basic_string<> instances.
+    // Need these overloads to avoid creating temporary std::basic_string<> instances.
     // Routnes always return a copy, never a reference, so there's no additional overhead
     // with storing a raw pointer rather than a pointer to  std::basic_string<>.
     explicit EncodedStringView(sys::U8string::const_pointer);
     explicit EncodedStringView(str::W1252string::const_pointer);
     explicit EncodedStringView(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
+
     explicit EncodedStringView(const sys::U8string&);
     explicit EncodedStringView(const str::W1252string&);
     explicit EncodedStringView(const std::string&);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
@@ -142,12 +89,6 @@ public:
     {
         return assign<TBasicString>(s.c_str());
     }
-
-    ~EncodedStringView();
-    EncodedStringView(const EncodedStringView&);
-    EncodedStringView& operator=(const EncodedStringView&);
-    EncodedStringView(EncodedStringView&&) = default;
-    EncodedStringView& operator=(EncodedStringView&&) = default;
 
     // Input is encoded as specified on all platforms.
     template <typename TBasicString>

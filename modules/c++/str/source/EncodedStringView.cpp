@@ -293,6 +293,9 @@ struct str::EncodedStringView::Impl final
 
 str::EncodedStringView::EncodedStringView() : pImpl(new Impl()) { }
 str::EncodedStringView::~EncodedStringView() = default;
+str::EncodedStringView::EncodedStringView(EncodedStringView&&) = default;
+str::EncodedStringView& str::EncodedStringView::operator=(EncodedStringView&&) = default;
+
 str::EncodedStringView& str::EncodedStringView::operator=(const EncodedStringView& other)
 {
     this->pImpl.reset(new Impl(*other.pImpl));
