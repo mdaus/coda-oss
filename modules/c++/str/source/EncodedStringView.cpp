@@ -33,6 +33,72 @@
 
 struct str::EncodedStringView::Impl final
 {
+    template <typename TChar>
+    struct Pointer final
+    {
+        using string = std::basic_string<TChar>;
+        using const_pointer = typename string::const_pointer;
+        Pointer() = default;
+        Pointer(const_pointer p) : pChars(p)
+        {
+            if (p == nullptr)
+            {
+                throw std::invalid_argument("p is NULL.");
+            }
+        }
+        Pointer(const string& s) : Pointer(s.c_str())
+        {
+        }
+
+        Pointer& operator=(const_pointer s)
+        {
+            if (s == nullptr)
+            {
+                throw std::invalid_argument("s is NULL.");
+            }
+            pChars = s;
+            return *this;
+        }
+        Pointer& operator=(const string& s)
+        {
+            *this = s.c_str();
+            return *this;
+        }
+
+        const_pointer c_str() const
+        {
+            return pChars;
+        }
+
+        bool empty() const
+        {
+            return pChars == nullptr;
+        }
+
+        void clear()
+        {
+            pChars = nullptr;
+        }
+
+        size_t length() const
+        {
+            return strlen(str::cast<const char*>(pChars));
+        }
+
+    private:
+        const_pointer pChars = nullptr;
+    };
+
+    Pointer<std::string::value_type> mString;
+    Pointer<sys::U8string::value_type> mU8String;
+    Pointer<str::W1252string::value_type> mW1252String;
+
+    Impl() = default;
+    Impl(std::string::const_pointer p) : mString(p) { }
+    Impl(sys::U8string::const_pointer p) : mU8String(p) { }
+    Impl(str::W1252string::const_pointer p) : mW1252String(p) { }
+    template<typename TChar>
+    Impl(const std::basic_string<TChar>& s) : Impl(s.c_str()) { }
 };
 
 str::EncodedStringView::EncodedStringView() : pImpl(new Impl())
@@ -49,36 +115,30 @@ str::EncodedStringView::EncodedStringView(const EncodedStringView& other)
     *this = other;
 }
 
-str::EncodedStringView::EncodedStringView(std::string::const_pointer s) : mString(s)
+str::EncodedStringView::EncodedStringView(std::string::const_pointer p) : mString(p), pImpl(new Impl(p))
 {
-    if (s == nullptr)
+    if (p == nullptr)
     {
-        throw std::invalid_argument("s is NULL.");
+        throw std::invalid_argument("p is NULL.");
     }
 }
-str::EncodedStringView::EncodedStringView(sys::U8string::const_pointer s) : mU8String(s)
+str::EncodedStringView::EncodedStringView(sys::U8string::const_pointer p) : mU8String(p), pImpl(new Impl(p))
 {
-    if (s == nullptr)
+    if (p == nullptr)
     {
-        throw std::invalid_argument("s is NULL.");
+        throw std::invalid_argument("p is NULL.");
     }
 }
-str::EncodedStringView::EncodedStringView(str::W1252string::const_pointer s) : mW1252String(s)
+str::EncodedStringView::EncodedStringView(str::W1252string::const_pointer p) : mW1252String(p), pImpl(new Impl(p))
 {
-    if (s == nullptr)
+    if (p == nullptr)
     {
-        throw std::invalid_argument("s is NULL.");
+        throw std::invalid_argument("p is NULL.");
     }
 }
-str::EncodedStringView::EncodedStringView(const std::string& s) : mString(s)
-{
-}
-str::EncodedStringView::EncodedStringView(const sys::U8string& s) : mU8String(s)
-{
-}
-str::EncodedStringView::EncodedStringView(const str::W1252string& s) : mW1252String(s)
-{
-}
+str::EncodedStringView::EncodedStringView(const std::string& s) : mString(s), pImpl(new Impl(s)) { }
+str::EncodedStringView::EncodedStringView(const sys::U8string& s) : mU8String(s), pImpl(new Impl(s)) { }
+str::EncodedStringView::EncodedStringView(const str::W1252string& s) : mW1252String(s), pImpl(new Impl(s)) { }
 
 str::EncodedStringView& str::EncodedStringView::operator=(std::string::const_pointer s)
 {
