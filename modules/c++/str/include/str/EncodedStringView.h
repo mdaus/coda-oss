@@ -123,19 +123,13 @@ public:
     //
     // Intentionally a bit of a mouth-full as these routines should be used sparingly.
     template <typename TConstPointer>
-    TConstPointer cast() const
-    {
-        return static_cast<TConstPointer>(data_());
-    }
-    template <typename TConstPointer>
-    TConstPointer try_cast() const;  // returns NULL if stored pointer not of the desired type
+    TConstPointer cast() const;  // returns NULL if stored pointer not of the desired type
 
     bool operator_eq(const EncodedStringView&) const;
 
 private:
-    const void* data_() const;
     template <typename TReturn, typename T2, typename T3>
-    TReturn try_cast_(TReturn retval, T2 t2, T3 t3) const
+    TReturn cast_(TReturn retval, T2 t2, T3 t3) const
     {
         if (retval != nullptr)
         {
@@ -149,19 +143,19 @@ private:
 
 // GCC wants specializations outside of the class
 template <>
-inline std::string::const_pointer EncodedStringView::try_cast() const
+inline std::string::const_pointer EncodedStringView::cast() const
 {
-    return try_cast_(mpString, mpU8String, mpW1252String);
+    return cast_(mpString, mpU8String, mpW1252String);
 }
 template <>
-inline sys::U8string::const_pointer EncodedStringView::try_cast() const
+inline sys::U8string::const_pointer EncodedStringView::cast() const
 {
-    return try_cast_(mpU8String, mpString, mpW1252String);
+    return cast_(mpU8String, mpString, mpW1252String);
 }
 template <>
-inline str::W1252string::const_pointer EncodedStringView::try_cast() const
+inline str::W1252string::const_pointer EncodedStringView::cast() const
 {
-    return try_cast_(mpW1252String, mpString, mpU8String);
+    return cast_(mpW1252String, mpString, mpU8String);
 }
 
 inline bool operator==(const EncodedStringView& lhs, const EncodedStringView& rhs)

@@ -118,10 +118,6 @@ inline const char* c_str(
 
     throw std::logic_error("Can't determine c_str() result");
 }
-const void* str::EncodedStringView::data_() const
-{
-    return ::c_str(mpString, mpU8String, mpW1252String);
-}
 
 std::string str::EncodedStringView::native() const
 {
