@@ -31,6 +31,24 @@
 #include "str/Convert.h"
 #include "str/Encoding.h"
 
+struct str::EncodedStringView::Impl final
+{
+};
+
+str::EncodedStringView::EncodedStringView() : pImpl(new Impl())
+{
+}
+str::EncodedStringView::~EncodedStringView() = default;
+str::EncodedStringView& str::EncodedStringView::operator=(const EncodedStringView& other)
+{
+    this->pImpl.reset(new Impl(*other.pImpl));
+    return *this;
+}
+str::EncodedStringView::EncodedStringView(const EncodedStringView& other)
+{
+    *this = other;
+}
+
 str::EncodedStringView::EncodedStringView(std::string::const_pointer s) : mString(s)
 {
     if (s == nullptr)

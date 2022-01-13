@@ -30,6 +30,7 @@
 
 #include <string>
 #include <ostream>
+#include <memory>
 
 #include "str/Encoding.h"
 
@@ -109,8 +110,11 @@ class EncodedStringView final
     Pointer<sys::U8string::value_type> mU8String;
     Pointer<str::W1252string::value_type> mW1252String;
 
+    struct Impl;
+    std::unique_ptr<Impl> pImpl;
+
 public:
-    EncodedStringView() = delete; // use EncodedStringView("") if you must
+    EncodedStringView();
 
     // Need these overload to avoid creating temporary std::basic_string<> instances.
     // Routnes always return a copy, never a reference, so there's no additional overhead
@@ -143,9 +147,9 @@ public:
         return assign<TBasicString>(s.c_str());
     }
 
-    ~EncodedStringView() = default;
-    EncodedStringView(const EncodedStringView&) = default;
-    EncodedStringView& operator=(const EncodedStringView&) = default;
+    ~EncodedStringView();
+    EncodedStringView(const EncodedStringView&);
+    EncodedStringView& operator=(const EncodedStringView&);
     EncodedStringView(EncodedStringView&&) = default;
     EncodedStringView& operator=(EncodedStringView&&) = default;
 

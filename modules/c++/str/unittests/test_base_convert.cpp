@@ -257,6 +257,10 @@ static void test_EncodedStringView_(const std::string& testName,
 }
 TEST_CASE(test_EncodedStringView)
 {
+    str::EncodedStringView esv;
+    auto copy(esv);
+    copy = esv; // assignment
+
     {
         str::EncodedStringView utf_8_view(classificationText_utf_8);
         TEST_ASSERT(utf_8_view.cast<str::U8string::const_pointer>() != nullptr);
