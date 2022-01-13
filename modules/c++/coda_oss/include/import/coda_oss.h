@@ -21,49 +21,10 @@
  */
 
 
-#ifndef __IMPORT_SYS_H__
-#define __IMPORT_SYS_H__
+#ifndef CODA_OSS_coda_oss_coda_oss_h_INCLUDED_
+#define CODA_OSS_coda_oss_coda_oss_h_INCLUDED_
 #pragma once
 
-#include "sys/AtomicCounter.h"
-#include "sys/ConditionVar.h"
-#include "sys/Conf.h"
-#include "sys/DateTime.h"
-#include "sys/Dbg.h"
-#include "sys/DirectoryEntry.h"
-#include "sys/DLL.h"
-#include "sys/Err.h"
-#include "sys/Exec.h"
-#include "sys/File.h"
-#include "sys/FileFinder.h"
-#include "sys/LocalDateTime.h"
-#include "sys/Mutex.h"
-#include "sys/OS.h"
-#include "sys/Path.h"
-#include "sys/ReadWriteMutex.h"
-#include "sys/Runnable.h"
-#include "sys/Semaphore.h"
-#include "sys/StopWatch.h"
-#include "sys/SystemException.h"
-#include "sys/TimeStamp.h"
-#include "sys/Thread.h"
-#include "sys/UTCDateTime.h"
-//#include "sys/Process.h"
-#include "sys/String.h"
-#include "sys/Filesystem.h"
-#include "sys/Bit.h"
-#include "sys/CStdDef.h"
+#endif // CODA_OSS_coda_oss_coda_oss_h_INCLUDED_
 
-/*!
-
-\file sys.h
-
-The sys library servers the purpose of creating a common, system-indepenent
-interface layer for cross-platform applications.  It currently supports
-UNIX and Windows, and provides interfaces for sockets, threads, 
-synchronization, conditions, time and operating system-specific function calls.
-
-*/
-
-#endif
 
