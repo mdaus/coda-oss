@@ -106,10 +106,6 @@ class EncodedStringView final
         const_pointer pChars = nullptr;
     };
 
-    Pointer<std::string::value_type> mString;
-    Pointer<sys::U8string::value_type> mU8String;
-    Pointer<str::W1252string::value_type> mW1252String;
-
     struct Impl;
     std::unique_ptr<Impl> pImpl;
 
