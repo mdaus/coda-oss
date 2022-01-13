@@ -20,7 +20,7 @@
  *
  */
 
-#include "TestCase.h"
+#include "coda_oss_TestCase.h"
 
 #include <array>
 #include <ostream>

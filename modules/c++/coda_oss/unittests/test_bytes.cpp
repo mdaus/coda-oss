@@ -20,15 +20,12 @@
  *
  */
 
-#include "TestCase.h"
+#include "coda_oss_TestCase.h"
 
 #include <array>
 
 #include "coda_oss/bit.h" // std::endian
 #include "coda_oss/cstddef.h"
-
-namespace
-{
 
 TEST_CASE(testEndianness)
 {
@@ -39,35 +36,6 @@ TEST_CASE(testEndianness)
     else
     {
         TEST_FAIL("Mixed-endian not supported!");
-    }
-
-    const bool isBigEndianSystem = sys::isBigEndianSystem();
-
-    if (native == coda_oss::endian::big)
-    {
-        TEST_ASSERT(isBigEndianSystem);
-    }
-    else
-    {
-        TEST_ASSERT(!isBigEndianSystem);    
-    }
-    if (native == coda_oss::endian::little)
-    {
-        TEST_ASSERT(!isBigEndianSystem);
-    }
-    else
-    {
-        TEST_ASSERT(isBigEndianSystem);
-    }
-
-
-    if (isBigEndianSystem)
-    {
-        TEST_ASSERT(native == coda_oss::endian::big);
-    }
-    else
-    {
-        TEST_ASSERT(native == coda_oss::endian::little);    
     }
 }
 
@@ -120,8 +88,6 @@ TEST_CASE(testByte)
     test_byte_<std::byte>(testName);
     #endif
 }
-   
-}
 
 int main(int /*argc*/, char** /*argv*/)
 {
@@ -129,5 +95,5 @@ int main(int /*argc*/, char** /*argv*/)
     TEST_CHECK(testEndianness_std);
     TEST_CHECK(testByte);
 
-    return 0;
+    return EXIT_SUCCESS;
 }

@@ -31,6 +31,47 @@
 
 namespace
 {
+TEST_CASE(testEndianness)
+{
+    /*const*/ auto native = coda_oss::endian::native; // "const" causes "conditional expression is constant."
+
+    if (native == coda_oss::endian::big) { }
+    else if (native == coda_oss::endian::little) { }
+    else
+    {
+        TEST_FAIL("Mixed-endian not supported!");
+    }
+
+    const bool isBigEndianSystem = sys::isBigEndianSystem();
+
+    if (native == coda_oss::endian::big)
+    {
+        TEST_ASSERT(isBigEndianSystem);
+    }
+    else
+    {
+        TEST_ASSERT(!isBigEndianSystem);    
+    }
+    if (native == coda_oss::endian::little)
+    {
+        TEST_ASSERT(!isBigEndianSystem);
+    }
+    else
+    {
+        TEST_ASSERT(isBigEndianSystem);
+    }
+
+
+    if (isBigEndianSystem)
+    {
+        TEST_ASSERT(native == coda_oss::endian::big);
+    }
+    else
+    {
+        TEST_ASSERT(native == coda_oss::endian::little);    
+    }
+}
+
 TEST_CASE(testByteSwap)
 {
     ::srand(334);
@@ -66,6 +107,7 @@ TEST_CASE(testByteSwap)
 
 int main(int /*argc*/, char** /*argv*/)
 {
+    TEST_CHECK(testEndianness);
     TEST_CHECK(testByteSwap);
 
     return 0;
