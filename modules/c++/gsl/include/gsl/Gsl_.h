@@ -97,7 +97,7 @@ namespace Gsl
     }
 }
 
-#if !CODA_OSS_use_real_gsl
+#if !CODA_OSS_gsl_use_real_gsl_
 // Add to "gsl" if we're not using the real thing
 namespace gsl
 {
@@ -113,6 +113,6 @@ namespace gsl
         return Gsl::narrow<T>(u);
     }
  }
-#endif // CODA_OSS_use_real_gsl
+#endif // CODA_OSS_gsl_use_real_gsl_
 
 #endif  // CODA_OSS_gsl_Gsl__h_INCLUDED_

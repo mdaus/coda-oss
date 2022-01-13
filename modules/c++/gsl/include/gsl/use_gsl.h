@@ -23,15 +23,8 @@
 #define CODA_OSS_gsl_use_gsl_h_INCLUDED_
 #pragma once
 
-#include "sys/CPlusPlus.h"
-
 // Need a fairly decent C++ compiler to use the real GSL
-#ifndef CODA_OSS_use_real_gsl
-	#if defined(_MSC_VER) && (_MSC_VER < 1910) // VS2017: https://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=msvc-160
-		#define CODA_OSS_use_real_gsl 0
-	#else
-		#define CODA_OSS_use_real_gsl CODA_OSS_cpp14
-	#endif
-#endif
+#include "sys/CPlusPlus.h"
+#define CODA_OSS_gsl_use_real_gsl_ CODA_OSS_cpp14
 
 #endif  // CODA_OSS_gsl_use_gsl_h_INCLUDED_

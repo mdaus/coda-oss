@@ -96,15 +96,9 @@ private:
 
 // Need a fairly decent C++ compiler to use the real GSL
 #include "coda_oss/CPlusPlus.h"
-#ifndef CODA_OSS_coda_oss_use_real_gsl_
-	#if defined(_MSC_VER) && (_MSC_VER < 1910) // VS2017: https://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=msvc-160
-		#define CODA_OSS_coda_oss_use_real_gsl_ 0
-	#else
-		#define CODA_OSS_coda_oss_use_real_gsl_ CODA_OSS_cpp14
-	#endif
-#endif
+#define CODA_OSS_coda_oss_use_real_gsl_ CODA_OSS_cpp14
 
-#if CODA_OSS_use_real_gsl
+#if CODA_OSS_coda_oss_use_real_gsl_
 #include "gsl/span"  // span
 namespace coda_oss
 {
@@ -117,7 +111,7 @@ namespace coda_oss
 template <typename T>
 using span = details::span<T>;
 }
-#endif  // CODA_OSS_use_real_gsl
+#endif  // CODA_OSS_coda_oss_use_real_gsl_
 
 #define CODA_OSS_coda_oss_span 202002L  // c.f., __cpp_lib_span
 
