@@ -1,8 +1,8 @@
 /* =========================================================================
- * This file is part of sys-c++
+ * This file is part of coda_oss-c++
  * =========================================================================
  *
- * (C) Copyright 2021, Maxar Technologies, Inc.
+ * (C) Copyright 2021, 2022, Maxar Technologies, Inc.
  *
  * sys-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef CODA_OSS_sys_CPlusPlus_h_INCLUDED_
-#define CODA_OSS_sys_CPlusPlus_h_INCLUDED_
+#ifndef CODA_OSS_coda_oss_CPlusPlus_h_INCLUDED_
+#define CODA_OSS_coda_oss_CPlusPlus_h_INCLUDED_
 #pragma once
 
 #ifdef CODA_OSS_cplusplus 
@@ -63,11 +63,4 @@
 #define CODA_OSS_cpp20 (CODA_OSS_cplusplus >= 202002L)
 #define CODA_OSS_cpp23 0
 
-// We've got various "replacements" (to a degree) for C++ library functionality
-// only available in later releases.  Adding these names to "std" is technically
-// forbidden, but it makes for fewer (eventual) changes in client code.
-//
-// You can bring these into your code by #include'ng the file from "std"; e.g.,
-//    #include <std/span> // std::span
-
-#endif // CODA_OSS_sys_CPlusPlus_h_INCLUDED_
+#endif // CODA_OSS_coda_oss_CPlusPlus_h_INCLUDED_
