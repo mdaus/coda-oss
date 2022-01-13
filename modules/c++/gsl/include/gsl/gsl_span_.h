@@ -37,23 +37,6 @@
  {
      template <typename T>
      using span = Gsl::Span<T>;
-
-     template <typename T>
-     inline span<T> make_span(T* d, size_t sz)
-     {
-         return Gsl::make_Span<T>(d, sz);
-     }
-
-     template <typename TContainer>
-     inline span<typename TContainer::value_type> make_span(TContainer& c)
-     {
-         return Gsl::make_Span(c);
-     }
-     template <typename TContainer>
-     inline span<typename TContainer::value_type> make_span(const TContainer& c)
-     {
-         return make_span(const_cast<TContainer&>(c));
-     }
  }
 #endif // CODA_OSS_use_real_gsl
 

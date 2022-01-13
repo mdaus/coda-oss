@@ -85,24 +85,6 @@ private:
     pointer p_ = nullptr;
     size_type sz_ = 0;
 };
-
-template <typename T>
-inline Span<T> make_Span(T* d, size_t sz)
-{
-    return Span<T>(d, sz);
-}
-
-template <typename TContainer>
-inline Span<typename TContainer::value_type> make_Span(TContainer& c)
-{
-    using value_type = typename TContainer::value_type;
-    return Span<value_type>(c);
-}
-template <typename TContainer>
-inline Span<typename TContainer::value_type> make_Span(const TContainer& c)
-{
-    return make_Span(const_cast<TContainer&>(c));
-}
 }
 
 #endif  // CODA_OSS_gsl_Span__h_INCLUDED_
