@@ -3,6 +3,7 @@
  * =========================================================================
  *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
+ * (C) Copyright 2020, 2021, 2022, Maxar Technologies, Inc.
  *
  * str-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,8 +21,8 @@
  *
  */
 
-#ifndef CODA_OSS_Encoding_h_INCLUDED_
-#define CODA_OSS_Encoding_h_INCLUDED_
+#ifndef CODA_OSS_str_Encoding_h_INCLUDED_
+#define CODA_OSS_str_Encoding_h_INCLUDED_
 #pragma once
 
 #include <wchar.h>
@@ -132,4 +133,4 @@ extern void toString(sys::U8string::const_pointer, std::string&);  // encoding i
 
 }
 
-#endif // CODA_OSS_Encoding_h_INCLUDED_
+#endif // CODA_OSS_str_Encoding_h_INCLUDED_
