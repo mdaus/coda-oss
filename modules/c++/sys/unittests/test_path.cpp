@@ -24,7 +24,6 @@
 #include <assert.h>
 
 #include <sys/Path.h>
-#include <sys/Filesystem.h>
 #include "TestCase.h"
 
 namespace fs = coda_oss::filesystem;

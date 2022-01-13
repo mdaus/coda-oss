@@ -19,11 +19,9 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
+#include "sys/Path.h"
 
 #include <algorithm>
-
-#include <sys/Path.h>
-#include <sys/Filesystem.h>
 
 namespace fs = coda_oss::filesystem;
 
