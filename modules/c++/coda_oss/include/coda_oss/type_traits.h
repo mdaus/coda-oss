@@ -18,15 +18,15 @@
  * License along with this program; If not, http://www.gnu.org/licenses/.
  *
  */
-#ifndef CODA_OSS_sys_TypeTraits_h_INCLUDED_
-#define CODA_OSS_sys_TypeTraits_h_INCLUDED_
+#ifndef CODA_OSS_coda_oss_type_traits_h_INCLUDED_
+#define CODA_OSS_coda_oss_type_traits_h_INCLUDED_
 #pragma once
 
 #include <type_traits>
 
 #include "CPlusPlus.h"
 
-namespace sys
+namespace coda_oss
 {
 // workaround missing "is_trivially_copyable" in g++ < 5.0
 #if defined(__GNUC__) && (__GNUC__ < 5)
@@ -43,4 +43,4 @@ using IsTriviallyCopyable = std::is_trivially_copyable<T>;
 #endif
 }
 
-#endif  // CODA_OSS_sys_TypeTraits_h_INCLUDED_
+#endif  // CODA_OSS_coda_oss_type_traits_h_INCLUDED_

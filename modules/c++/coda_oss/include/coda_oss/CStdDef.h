@@ -18,20 +18,18 @@
  * License along with this program; If not, http://www.gnu.org/licenses/.
  *
  */
-#ifndef CODA_OSS_sys_CStdDef_h_INCLUDED_
-#define CODA_OSS_sys_CStdDef_h_INCLUDED_
+#ifndef CODA_OSS_coda_oss_cstddef_h_INCLUDED_
+#define CODA_OSS_coda_oss_cstddef_h_INCLUDED_
 #pragma once
 
 #include <cstddef>
 
-#include "CPlusPlus.h"
-
-namespace sys
+namespace coda_oss
 {
     // https://en.cppreference.com/w/cpp/types/byte
-    enum class Byte : unsigned char {};
+    enum class byte : unsigned char {};
 
-    #define CODA_OSS_sys_Byte 201603L  // __cpp_lib_byte
+    #define CODA_OSS_coda_oss_byte 201603L  // __cpp_lib_byte
 }
 
-#endif  // CODA_OSS_sys_CStdDef_h_INCLUDED_
+#endif  // CODA_OSS_coda_oss_cstddef_h_INCLUDED_

@@ -1,8 +1,8 @@
 /* =========================================================================
- * This file is part of sys-c++
+ * This file is part of coda_oss-c++
  * =========================================================================
  *
- * (C) Copyright 2004 - 2014, MDA Information Systems LLC
+ * (C) Copyright 2020-2022, Maxar Technologies, Inc.
  *
  * sys-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,20 +20,17 @@
  *
  */
 
-#ifndef CODA_OSS_sys_String_h_INCLUDED_
-#define CODA_OSS_sys_String_h_INCLUDED_
+#ifndef CODA_OSS_coda_oss_string_h_INCLUDED_
+#define CODA_OSS_coda_oss_string_h_INCLUDED_
 #pragma once
 
-#include "sys/CPlusPlus.h"
-#include "str/String_.h"
+#include <string>
 
-#if !defined(CODA_OSS_sys_U8string_DEFINED_)
-#define CODA_OSS_sys_U8string_DEFINED_ 1
-namespace sys
+namespace coda_oss
 {
-	using Char8_T = str::Char8_T;
-	using U8string = str::U8string;
+    // char8_t for UTF-8 characters
+    enum class char8_t : unsigned char { }; // https://en.cppreference.com/w/cpp/language/types
+    using u8string = std::basic_string<char8_t>; // https://en.cppreference.com/w/cpp/string
 }
-#endif  // CODA_OSS_sys_U8string_DEFINED_
 
-#endif  // CODA_OSS_sys_String_h_INCLUDED_
+#endif  // CODA_OSS_coda_oss_string_h_INCLUDED_
