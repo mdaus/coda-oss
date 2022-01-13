@@ -206,7 +206,7 @@ static bool splitEnv_(const AbstractOS& os, const std::string& envVar, std::vect
     }
     return !result.empty(); // false for no matches
 }
-bool AbstractOS::splitEnv(const std::string& envVar, std::vector<std::string>& result, coda_oss::filesystem::file_type type) const
+bool AbstractOS::splitEnv(const std::string& envVar, std::vector<std::string>& result, fs::file_type type) const
 {
     return splitEnv_(*this, envVar, result, &type);
 }
