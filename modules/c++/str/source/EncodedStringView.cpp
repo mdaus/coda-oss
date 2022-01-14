@@ -37,8 +37,9 @@ struct str::EncodedStringView::Impl final
     template <typename TChar>
     struct Pointer final
     {
-        using string = typename std::basic_string<TChar>;
-        using const_pointer = typename string::const_pointer;
+        using string = std::basic_string<TChar>;
+        //using const_pointer = typename string::const_pointer;
+        using const_pointer = const TChar*;
         Pointer() = default;
         Pointer(const_pointer p) : pChars(p)
         {
@@ -369,8 +370,10 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
 }
 
 
+namespace str
+{
 template <typename TReturn, typename T2, typename T3>
-typename TReturn::const_pointer str::EncodedStringView::cast_(const TReturn& retval, const T2& t2, const T3& t3) const
+typename TReturn::const_pointer EncodedStringView::cast_(const TReturn& retval, const T2& t2, const T3& t3) const
 {
     if (!retval.empty())
     {
@@ -384,17 +387,19 @@ typename TReturn::const_pointer str::EncodedStringView::cast_(const TReturn& ret
 // GCC wants specializations outside of the class.  We need these here (now)
 // anyway for access to pImpl.
 template <>
-std::string::const_pointer str::EncodedStringView::cast() const
+std::string::const_pointer EncodedStringView::cast() const
 {
     return cast_(pImpl->mString, pImpl->mU8String, pImpl->mW1252String);
 }
 template <>
-sys::U8string::const_pointer str::EncodedStringView::cast() const
+sys::U8string::const_pointer EncodedStringView::cast() const
 {
     return cast_(pImpl->mU8String, pImpl->mString, pImpl->mW1252String);
 }
 template <>
-str::W1252string::const_pointer str::EncodedStringView::cast() const
+str::W1252string::const_pointer EncodedStringView::cast() const
 {
     return cast_(pImpl->mW1252String, pImpl->mString, pImpl->mU8String);
 }
+} // namespace str
+
