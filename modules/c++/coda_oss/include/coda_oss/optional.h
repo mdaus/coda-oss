@@ -39,7 +39,7 @@ namespace details
 {
     inline void throw_bad_optional_access()
     {
-        throw std::logic_error("No value for Optional<>.");  // TODO: std::bad_optional_access
+        throw std::logic_error("No value for optional<>.");  // TODO: std::bad_optional_access
     }
 }
 
