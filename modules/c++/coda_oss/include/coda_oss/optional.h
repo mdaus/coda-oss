@@ -22,11 +22,9 @@
 #define CODA_OSS_coda_oss_optional_h_INCLUDED_
 #pragma once
 
-#include <assert.h>
-
-#include <stdexcept>
 #include <utility>
 
+<<<<<<<< HEAD:modules/c++/coda_oss/include/coda_oss/optional.h
 // Simple version of std::optional since that doesn't exist until C++17.
 //
 // This doesn't even TRY to match the actual C++17 specification,
@@ -187,11 +185,20 @@ public:
         return has_value() ? std::move(**this) : static_cast<T>(std::forward<U>(default_value));
     }
 };
+========
+#include "coda_oss/optional.h"
+
+namespace sys
+{
+template <typename T>
+using Optional = coda_oss::optional<T>;
+>>>>>>>> master:modules/c++/sys/include/sys/Optional.h
 
 // https://en.cppreference.com/w/cpp/utility/optional/make_optional
 template <typename T, typename... TArgs>
 inline optional<T> make_optional(TArgs&&... args)
 {
+<<<<<<<< HEAD:modules/c++/coda_oss/include/coda_oss/optional.h
     return optional<T>(T(std::forward<TArgs>(args)...));
 }
 
@@ -350,6 +357,10 @@ template <typename T, typename U>
 inline bool operator>=(const optional<T>& opt, const U& value)
 {
     return opt >= make_optional<U>(value);
+========
+    return coda_oss::make_optional<T>(std::forward<TArgs>(args)...);
+}
+>>>>>>>> master:modules/c++/sys/include/sys/Optional.h
 }
 
 #define CODA_OSS_coda_oss_optional 201606L // c.f., __cpp_lib_optional
