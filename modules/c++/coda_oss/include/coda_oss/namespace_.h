@@ -1,5 +1,5 @@
 /* =========================================================================
- * This file is part of sys-c++
+ * This file is part of coda_oss-c++
  * =========================================================================
  *
  * (C) Copyright 2020, Maxar Technologies, Inc.
@@ -18,35 +18,12 @@
  * License along with this program; If not, http://www.gnu.org/licenses/.
  *
  */
-#ifndef CODA_OSS_sys_Optional_h_INCLUDED_
-#define CODA_OSS_sys_Optional_h_INCLUDED_
+#ifndef CODA_OSS_coda_oss_namespace__h_INCLUDED_
+#define CODA_OSS_coda_oss_namespace__h_INCLUDED_
 #pragma once
 
-#include <utility>
-
-#include "coda_oss/optional.h"
-
-namespace sys
+namespace coda_oss
 {
-template <typename T>
-using Optional = coda_oss::optional<T>;
-
-// https://en.cppreference.com/w/cpp/utility/optional/make_optional
-template <typename T, typename... TArgs>
-inline Optional<T> make_Optional(TArgs&&... args)
-{
-    return coda_oss::make_optional<T>(std::forward<TArgs>(args)...);
-}
 }
 
-#include "str/Convert.h"
-namespace str
-{
-template <typename T>
-std::string toString(const sys::Optional<T>& value)
-{
-    return toString(value.value());
-}
-}
-
-#endif  // CODA_OSS_sys_Optional_h_INCLUDED_
+#endif  // CODA_OSS_coda_oss_namespace__h_INCLUDED_
