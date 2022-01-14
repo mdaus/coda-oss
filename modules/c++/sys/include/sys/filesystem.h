@@ -33,7 +33,7 @@
 #include <ostream>
 
 #include "sys/CPlusPlus.h"
-#include "coda_oss/string.h" // get something in the "coda_oss" namespace
+#include "coda_oss/namespace_.h" // get something in the "coda_oss" namespace
 
 namespace coda_oss // should be in coda_oss, but implementation needs sys::Path
 {
