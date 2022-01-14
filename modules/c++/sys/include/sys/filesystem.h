@@ -18,8 +18,8 @@
  * License along with this program; If not, http://www.gnu.org/licenses/.
  *
  */
-#ifndef CODA_OSS_sys_Filesystem_h_INCLUDED_
-#define CODA_OSS_sys_Filesystem_h_INCLUDED_
+#ifndef CODA_OSS_sys_filesystem_h_INCLUDED_
+#define CODA_OSS_sys_filesystem_h_INCLUDED_
 #pragma once
 
 //
@@ -137,4 +137,4 @@ bool exists(const path& p);  // https://en.cppreference.com/w/cpp/filesystem/exi
 #define CODA_OSS_coda_oss_filesystem 201703L  // c.f., __cpp_lib_filesystem
 }
 
-#endif  // CODA_OSS_sys_Filesystem_h_INCLUDED_
+#endif  // CODA_OSS_sys_filesystem_h_INCLUDED_
