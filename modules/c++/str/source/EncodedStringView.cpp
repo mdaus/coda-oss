@@ -37,7 +37,7 @@ struct str::EncodedStringView::Impl final
     template <typename TChar>
     struct Pointer final
     {
-        using string = std::basic_string<TChar>;
+        using string = typename std::basic_string<TChar>;
         using const_pointer = typename string::const_pointer;
         Pointer() = default;
         Pointer(const_pointer p) : pChars(p)
