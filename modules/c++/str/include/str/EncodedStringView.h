@@ -55,8 +55,8 @@ public:
     ~EncodedStringView();
     EncodedStringView(const EncodedStringView&);
     EncodedStringView& operator=(const EncodedStringView&);
-    EncodedStringView(EncodedStringView&&);
-    EncodedStringView& operator=(EncodedStringView&&);
+    EncodedStringView(EncodedStringView&&) noexcept;
+    EncodedStringView& operator=(EncodedStringView&&) noexcept;
 
     // Need these overloads to avoid creating temporary std::basic_string<> instances.
     // Routnes always return a copy, never a reference, so there's no additional overhead
@@ -68,28 +68,7 @@ public:
     explicit EncodedStringView(const sys::U8string&);
     explicit EncodedStringView(const str::W1252string&);
     explicit EncodedStringView(const std::string&);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
-
-    EncodedStringView& operator=(sys::U8string::const_pointer);
-    EncodedStringView& operator=(str::W1252string::const_pointer);
-    EncodedStringView& operator=(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
-    EncodedStringView& operator=(const sys::U8string&);
-    EncodedStringView& operator=(const str::W1252string&);
-    EncodedStringView& operator=(const std::string&);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     
-    // Input is encoded as specified on all platforms.
-    template <typename TBasicString>
-    EncodedStringView& assign(const char* s)
-    {
-        using const_pointer = typename TBasicString::const_pointer;
-        *this = str::cast<const_pointer>(s);
-        return *this;
-    }
-    template <typename TBasicString>
-    EncodedStringView& assign(const std::string& s)
-    {
-        return assign<TBasicString>(s.c_str());
-    }
-
     // Input is encoded as specified on all platforms.
     template <typename TBasicString>
     static EncodedStringView create(const char* s)
