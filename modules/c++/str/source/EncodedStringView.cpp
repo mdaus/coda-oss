@@ -47,7 +47,7 @@ class BasicStringView final
 public:
     using const_pointer = const CharT*;
     BasicStringView() = default;
-    BasicStringView(const CharT* s, size_t count) : p(s), sz(count) { }
+    BasicStringView(const CharT* s, size_t count) noexcept : p(s), sz(count) { }
     BasicStringView(const_pointer s) : BasicStringView(s, strlen_(s)) { }
 
     const_pointer data() const noexcept
@@ -78,6 +78,20 @@ BasicStringView<CharT> create_string_view(const std::basic_string<CharT>& s)
     return BasicStringView<CharT>(s.c_str(), s.length());
 }
 
+static std::string native(BasicStringView<sys::U8string::value_type> sv)
+{
+    std::string retval;
+    str::details::toString(sv.data(), retval);
+    return retval;
+}
+static std::string native(BasicStringView<str::W1252string::value_type> sv)
+{
+    // This internal helper routine will convert from Windows-1252 to UTF-8 on Linux
+    std::string retval;
+    str::details::toNative(sv.data(), retval);
+    return retval;
+}
+
 struct str::EncodedStringView::Impl final
 {
     BasicStringView<std::string::value_type> mString;
@@ -88,9 +102,9 @@ struct str::EncodedStringView::Impl final
     Impl(std::string::const_pointer p) : mString(p) { }
     Impl(sys::U8string::const_pointer p) : mU8String(p) { }
     Impl(str::W1252string::const_pointer p) : mW1252String(p) { }
-    template<typename TChar>
-    Impl(const std::basic_string<TChar>& s) : Impl(s.c_str()) { }
-
+    Impl(const std::basic_string<std::string::value_type>& s) : mString(create_string_view(s)){ }
+    Impl(const std::basic_string<sys::U8string::value_type>& s) : mU8String(create_string_view(s)){ }
+    Impl(const std::basic_string<str::W1252string::value_type>& s) : mW1252String(create_string_view(s)){ }
 
     std::string native() const
     {
@@ -99,6 +113,7 @@ struct str::EncodedStringView::Impl final
         static_assert(sizeof(*mString.data()) == sizeof(*mW1252String.data()), "wrong string sizes");
         static_assert(sizeof(*mU8String.data()) == sizeof(*mW1252String.data()), "wrong string sizes");
 
+        std::string retval;
         if (!mString.empty())
         {
             assert(mU8String.empty());
@@ -110,22 +125,14 @@ struct str::EncodedStringView::Impl final
         {
             assert(mString.empty());
             assert(mW1252String.empty());
-
-            std::string retval;
-            str::details::toString(mU8String.data(), retval);
-            return retval;
+            return ::native(mU8String);
         }
 
-        // This internal helper routine will convert from Windows-1252 to UTF-8
-        // on Linux
         if (!mW1252String.empty())
         {
             assert(mString.empty());
             assert(mU8String.empty());
-
-            std::string retval;
-            str::details::toNative(mW1252String.data(), retval);
-            return retval;
+            return ::native(mW1252String);
         }
 
         throw std::logic_error("Can't determine native() result");
@@ -135,14 +142,20 @@ struct str::EncodedStringView::Impl final
     {
         if (!mString.empty())
         {
+            assert(mU8String.empty());
+            assert(mW1252String.empty());
             return str::to_u8string(mString.data(), mString.length());
         }
         if (!mU8String.empty())
         {
-            return str::to_u8string(mU8String.data(), mU8String.length());
+            assert(mString.empty());
+            assert(mW1252String.empty());
+            return mU8String.data(); // easy-peasy
         }
         if (!mW1252String.empty())
         {
+            assert(mString.empty());
+            assert(mU8String.empty());
             return str::to_u8string(mW1252String.data(), mW1252String.length());
         }
 
