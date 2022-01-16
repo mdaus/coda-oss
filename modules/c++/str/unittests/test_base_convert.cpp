@@ -265,24 +265,20 @@ TEST_CASE(test_EncodedStringView)
     {
         str::EncodedStringView utf_8_view(classificationText_utf_8);
         TEST_ASSERT(utf_8_view.cast<str::U8string::const_pointer>() != nullptr);
-        TEST_ASSERT_NULL(utf_8_view.cast<std::string::const_pointer>());
         TEST_ASSERT_NULL(utf_8_view.cast<str::W1252string::const_pointer>());
 
         str::EncodedStringView iso8859_1_view(classificationText_iso8859_1);
         TEST_ASSERT(iso8859_1_view.cast<str::W1252string::const_pointer>() != nullptr);
-        TEST_ASSERT_NULL(iso8859_1_view.cast<std::string::const_pointer>());
         TEST_ASSERT_NULL(iso8859_1_view.cast<sys::U8string::const_pointer>());
 
         test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
         //**********************************************************
         utf_8_view = str::EncodedStringView(classificationText_iso8859_1);
         TEST_ASSERT(utf_8_view.cast<str::W1252string::const_pointer>() != nullptr);
-        TEST_ASSERT_NULL(utf_8_view.cast<std::string::const_pointer>());
         TEST_ASSERT_NULL(utf_8_view.cast<str::U8string::const_pointer>());
 
         iso8859_1_view = str::EncodedStringView(classificationText_utf_8);
         TEST_ASSERT(iso8859_1_view.cast<sys::U8string::const_pointer>() != nullptr);
-        TEST_ASSERT_NULL(iso8859_1_view.cast<std::string::const_pointer>());
         TEST_ASSERT_NULL(iso8859_1_view.cast<str::W1252string::const_pointer>());
 
         test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);

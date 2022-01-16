@@ -100,10 +100,6 @@ public:
     TConstPointer cast() const;  // returns NULL if stored pointer not of the desired type
 
     bool operator_eq(const EncodedStringView&) const;
-
-private:
-    template <typename TReturn, typename T2, typename T3>
-    typename TReturn::const_pointer cast_(const TReturn& retval, const T2& t2, const T3& t3) const;
 };
 
 inline bool operator==(const EncodedStringView& lhs, const EncodedStringView& rhs)
