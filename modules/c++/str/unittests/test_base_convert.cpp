@@ -243,11 +243,7 @@ static void test_EncodedStringView_(const std::string& testName,
     TEST_ASSERT_EQ(iso8859_1_view.native(), utf_8_view.native());
     const auto native = classificationText_platform;
     TEST_ASSERT_EQ(iso8859_1_view.native(), native);
-    TEST_ASSERT_EQ(iso8859_1_view, native);
-    TEST_ASSERT_EQ(native, iso8859_1_view);
     TEST_ASSERT_EQ(utf_8_view.native(), native);
-    TEST_ASSERT_EQ(utf_8_view, native);
-    TEST_ASSERT_EQ(native, utf_8_view);
 
     TEST_ASSERT(utf_8_view.to_u8string() == classificationText_utf_8);
     TEST_ASSERT_EQ(utf_8_view, classificationText_utf_8);

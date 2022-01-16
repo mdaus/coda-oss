@@ -58,15 +58,16 @@ public:
     EncodedStringView(EncodedStringView&&) noexcept;
     EncodedStringView& operator=(EncodedStringView&&) noexcept;
 
-    // Need these overloads to avoid creating temporary std::basic_string<> instances.
+    // Need the const char* overloads to avoid creating temporary std::basic_string<> instances.
     // Routnes always return a copy, never a reference, so there's no additional overhead
     // with storing a raw pointer rather than a pointer to  std::basic_string<>.
-    explicit EncodedStringView(sys::U8string::const_pointer);
-    explicit EncodedStringView(str::W1252string::const_pointer);
-    explicit EncodedStringView(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
+    EncodedStringView(sys::U8string::const_pointer);
+    EncodedStringView(const sys::U8string&);
+    EncodedStringView(str::W1252string::const_pointer);
+    EncodedStringView(const str::W1252string&);
 
-    explicit EncodedStringView(const sys::U8string&);
-    explicit EncodedStringView(const str::W1252string&);
+    // Don't want to make it easy to use these; a known encoding is preffered.
+    explicit EncodedStringView(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     explicit EncodedStringView(const std::string&);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     
     // Input is encoded as specified on all platforms.
@@ -110,48 +111,6 @@ inline bool operator==(const EncodedStringView& lhs, const EncodedStringView& rh
     return lhs.operator_eq(rhs);
 }
 inline bool operator!=(const EncodedStringView& lhs, const EncodedStringView& rhs)
-{
-    return !(lhs == rhs);
-}
-
-template<typename TChar>
-inline bool operator==(const EncodedStringView& lhs, const TChar* rhs)
-{
-    return lhs == EncodedStringView(rhs);
-}
-template <typename TChar>
-inline bool operator==(const TChar* lhs, const EncodedStringView& rhs)
-{
-    return rhs == lhs;
-}
-template <typename TChar>
-inline bool operator!=(const EncodedStringView& lhs, const TChar* rhs)
-{
-    return !(lhs == rhs);
-}
-template <typename TChar>
-inline bool operator!=(const TChar* lhs, const EncodedStringView& rhs)
-{
-    return !(lhs == rhs);
-}
-
-template <typename TChar>
-inline bool operator==(const EncodedStringView& lhs, const std::basic_string<TChar>& rhs)
-{
-    return lhs == EncodedStringView(rhs);
-}
-template <typename TChar>
-inline bool operator==(const std::basic_string<TChar>& lhs, const EncodedStringView& rhs)
-{
-    return rhs == lhs;
-}
-template <typename TChar>
-inline bool operator!=(const EncodedStringView& lhs, const std::basic_string<TChar>& rhs)
-{
-    return !(lhs == rhs);
-}
-template <typename TChar>
-inline bool operator!=(const std::basic_string<TChar>& lhs, const EncodedStringView& rhs)
 {
     return !(lhs == rhs);
 }
