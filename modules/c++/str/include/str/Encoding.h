@@ -105,7 +105,7 @@ inline void strto8(std::u32string::const_pointer p, size_t sz, sys::U8string& re
 
 // When the encoding is important, we want to "traffic" in sys::U8string (UTF-8), not
 // str::W1252string (Windows-1252) or std::string (unknown).  Make it easy to get those from other encodings.
-sys::U8string to_u8string(std::string::const_pointer, size_t);  // assume Windows-1252 or UTF-8  based on platform
+sys::U8string to_u8string(std::string::const_pointer, size_t);  // std::string is Windows-1252 or UTF-8  depending on platform
 sys::U8string to_u8string(str::W1252string::const_pointer, size_t);
 inline sys::U8string to_u8string(sys::U8string::const_pointer s, size_t sz)
 {
@@ -122,9 +122,27 @@ namespace details
 // YOU should use EncodedStringView
 extern void toNative(const str::W1252string&, std::string&);  // encoding is lost
 extern void toString(sys::U8string::const_pointer, std::string&);  // encoding is lost
-extern str::W1252string toWindows1252(str::U8string::const_pointer p, size_t sz);
+
+str::W1252string to_w1252string(std::string::const_pointer, size_t); // std::string is Windows-1252 or UTF-8  depending on platform
+str::W1252string to_w1252string(sys::U8string::const_pointer, size_t);
+inline str::W1252string to_w1252string(str::W1252string::const_pointer s, size_t sz)
+{
+    return str::W1252string(s, sz);
 }
 
+std::string to_native(sys::U8string::const_pointer, size_t); // std::string is Windows-1252 or UTF-8  depending on platform
+std::string to_native(str::W1252string::const_pointer s, size_t sz); // std::string is Windows-1252 or UTF-8  depending on platform
+inline std::string to_native(std::string::const_pointer s, size_t sz)
+{
+    return std::string(s, sz);
+}
+template <typename TChar>
+inline std::string to_native(const std::basic_string<TChar>& s)
+{
+    return to_native(s.c_str(), s.size());
+}
+
+}
 }
 
 #endif // CODA_OSS_str_Encoding_h_INCLUDED_

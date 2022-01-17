@@ -86,6 +86,22 @@ public:
     {
         return create<TBasicString>(s.c_str());
     }
+    static EncodedStringView fromUtf8(const char* s)
+    {
+        return create<sys::U8string>(s);
+    }
+    static EncodedStringView fromUtf8(const std::string& s)
+    {
+        return create<sys::U8string>(s);
+    }
+    static EncodedStringView fromWindows1252(const char* s)
+    {
+        return create<str::W1252string>(s);
+    }
+    static EncodedStringView fromWindows1252(const std::string& s)
+    {
+        return create<str::W1252string>(s);
+    }
 
     // Regardless of what string we're looking at, return a string in platform
     // native encoding: UTF-8 on Linux, Windows-1252 on Windows; this

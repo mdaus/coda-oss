@@ -94,7 +94,7 @@ sys::U8string str::EncodedStringView::u8string() const
 
 inline str::W1252string utf8_to_w1252string(coda_oss::span<const char> s)
 {
-    return str::details::toWindows1252(str::cast<str::U8string::const_pointer>(s.data()), s.size());
+    return str::details::to_w1252string(str::cast<str::U8string::const_pointer>(s.data()), s.size());
 }
 inline str::W1252string w1252_to_w1252string(coda_oss::span<const char> s)
 {

@@ -218,13 +218,6 @@ static void toWindows1252_(str::U8string::const_pointer p, size_t sz, std::basic
         }
     }
 }
-// Exposing for unit-tests
-str::W1252string str::details::toWindows1252(str::U8string::const_pointer p, size_t sz)
-{
-    str::W1252string retval;
-    toWindows1252_(p, sz, retval);
-    return retval;
-}
 
 struct back_inserter final
 { 
@@ -284,9 +277,7 @@ sys::U8string str::to_u8string(std::string::const_pointer p, size_t sz)
     auto platform = details::Platform;  // "conditional expression is constant"
     if (platform == details::PlatformType::Windows)
     {    
-        sys::U8string retval;
-        windows1252to8_(cast<W1252string::const_pointer>(p), sz, retval);
-        return retval;
+        to_u8string(cast<W1252string::const_pointer>(p), sz);
     }
     else if (platform == details::PlatformType::Linux)
     {
@@ -297,12 +288,12 @@ sys::U8string str::to_u8string(std::string::const_pointer p, size_t sz)
 
 sys::U8string str::fromWindows1252(std::string::const_pointer p, size_t sz)
 {
-    return to_u8string(cast<W1252string::const_pointer>(p), sz);
+    return to_u8string(cast<str::W1252string::const_pointer>(p), sz);
 }
 
-sys::U8string str::fromUtf8(std::string::const_pointer p, size_t)
+sys::U8string str::fromUtf8(std::string::const_pointer p, size_t sz)
 {
-    return cast<sys::U8string::const_pointer>(p); // copy
+    return to_u8string(cast<sys::U8string::const_pointer>(p), sz);
 }
 
 static void toString_(sys::U8string::const_pointer pUtf8, size_t sz, std::string& result)
@@ -357,4 +348,55 @@ static std::string toNative_(const str::W1252string& w1252)
 void str::details::toNative(const str::W1252string& w1252, std::string& result)
 {
     result = toNative_(w1252);
+}
+
+str::W1252string str::details::to_w1252string(sys::U8string::const_pointer p, size_t sz)
+{
+    str::W1252string retval;
+    toWindows1252_(p, sz, retval);
+    return retval;
+}
+str::W1252string str::details::to_w1252string(std::string::const_pointer p, size_t sz)
+{
+    auto platform = details::Platform;  // "conditional expression is constant"
+    if (platform == details::PlatformType::Windows)
+    {    
+        return cast<str::W1252string ::const_pointer>(p);  // copy
+    }
+    else if (platform == details::PlatformType::Linux)
+    {
+        return to_w1252string(cast<sys::U8string ::const_pointer>(p), sz);
+    }
+    throw std::logic_error("Unknown platform.");
+}
+
+std::string str::details::to_native(sys::U8string::const_pointer p, size_t sz)
+{
+    auto platform = str::details::Platform;  // "conditional expression is constant"
+    if (platform == str::details::PlatformType::Windows)
+    {
+        std::string retval;
+        toWindows1252_(p, sz, retval);
+        return retval;
+    }
+    if (platform == str::details::PlatformType::Linux)
+    {
+        return cast<std::string::const_pointer>(p);  // copy
+    }
+    throw std::logic_error("Unknown platform.");
+}
+std::string str::details::to_native(W1252string::const_pointer p, size_t sz)
+{
+    auto platform = details::Platform;  // "conditional expression is constant"
+    if (platform == details::PlatformType::Windows)
+    {    
+        return cast<std::string::const_pointer>(p);  // copy
+    }
+    if (platform == details::PlatformType::Linux)
+    {
+        std::string retval;
+        windows1252to8_(p, sz, retval);
+        return retval;
+    }
+    throw std::logic_error("Unknown platform.");
 }
