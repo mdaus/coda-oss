@@ -348,19 +348,19 @@ TEST_CASE(test_EncodedStringView)
         test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
     }
     {
-        auto utf_8_view = str::EncodedStringView::create<sys::U8string>(classificationText_utf_8_);
-        auto iso8859_1_view = str::EncodedStringView::create<str::W1252string>(classificationText_iso8859_1_);
+        auto utf_8_view = str::EncodedStringView::fromUtf8(classificationText_utf_8_);
+        auto iso8859_1_view = str::EncodedStringView::fromWindows1252(classificationText_iso8859_1_);
         test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
 
-        utf_8_view = str::EncodedStringView::create<str::W1252string>(classificationText_iso8859_1_);
-        iso8859_1_view = str::EncodedStringView::create<sys::U8string>(classificationText_utf_8_);
+        utf_8_view = str::EncodedStringView::fromWindows1252(classificationText_iso8859_1_);
+        iso8859_1_view = str::EncodedStringView::fromUtf8(classificationText_utf_8_);
         test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
     }
     {
         str::EncodedStringView utf_8_view;
-        utf_8_view = str::EncodedStringView::create<str::W1252string>(classificationText_iso8859_1_);  // clears internal pointers
+        utf_8_view = str::EncodedStringView::fromWindows1252(classificationText_iso8859_1_);  // clears internal pointers
         str::EncodedStringView iso8859_1_view;
-        iso8859_1_view = str::EncodedStringView::create<sys::U8string>(classificationText_utf_8_);  // clears internal pointers
+        iso8859_1_view = str::EncodedStringView::fromUtf8(classificationText_utf_8_);  // clears internal pointers
         test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
     }
 }

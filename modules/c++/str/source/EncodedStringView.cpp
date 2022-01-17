@@ -61,48 +61,31 @@ str::EncodedStringView::EncodedStringView(const std::string& s) : mString(make_s
 str::EncodedStringView::EncodedStringView(const sys::U8string& s) : mString(make_span(s)), mIsUtf8(true) { }
 str::EncodedStringView::EncodedStringView(const str::W1252string& s) : mString(make_span(s)), mIsUtf8(false) { }
 
-static std::string utf8_to_native(coda_oss::span<const char> s)
-{
-    std::string retval;
-    str::details::toString(str::cast<sys::U8string::const_pointer>(s.data()), retval);
-    return retval;
-}
-static std::string w1252_to_native(coda_oss::span<const char> s)
-{
-    // This internal helper routine will convert from Windows-1252 to UTF-8 on Linux
-    std::string retval;
-    str::details::toNative(str::cast<str::W1252string::const_pointer>(s.data()), retval);
-    return retval;
-}
-std::string str::EncodedStringView::native() const
-{
-    return mIsUtf8 ? utf8_to_native(mString) : w1252_to_native(mString);
-}
-
-inline sys::U8string utf8_to_u8string(coda_oss::span<const char> s)
+inline sys::U8string::const_pointer pUtf8_(coda_oss::span<const char> s)
 {
     return str::cast<sys::U8string::const_pointer>(s.data());
 }
-inline sys::U8string w1252_to_u8string(coda_oss::span<const char> s)
-{
-    return str::to_u8string(str::cast<str::W1252string::const_pointer>(s.data()), s.size());
-}
-sys::U8string str::EncodedStringView::u8string() const
-{
-    return mIsUtf8 ? utf8_to_u8string(mString) : w1252_to_u8string(mString);
-}
-
-inline str::W1252string utf8_to_w1252string(coda_oss::span<const char> s)
-{
-    return str::details::to_w1252string(str::cast<str::U8string::const_pointer>(s.data()), s.size());
-}
-inline str::W1252string w1252_to_w1252string(coda_oss::span<const char> s)
+inline str::W1252string::const_pointer pW1252_(coda_oss::span<const char> s)
 {
     return str::cast<str::W1252string::const_pointer>(s.data());
 }
+
+std::string str::EncodedStringView::native() const
+{
+    const auto sz = mString.size();
+    return mIsUtf8 ? details::to_native(pUtf8_(mString), sz) : details::to_native(pW1252_(mString), sz);
+}
+
+sys::U8string str::EncodedStringView::u8string() const
+{
+    const auto sz = mString.size();
+    return mIsUtf8 ? pUtf8_(mString) : str::to_u8string(pW1252_(mString), sz);
+}
+
 str::W1252string str::EncodedStringView::details_w1252string() const
 {
-    return mIsUtf8 ? utf8_to_w1252string(mString) : w1252_to_w1252string(mString);
+    const auto sz = mString.size();
+    return mIsUtf8 ? details::to_w1252string(pUtf8_(mString), sz) : pW1252_(mString);
 }
 
 bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
@@ -151,12 +134,12 @@ std::string::const_pointer EncodedStringView::cast() const
 template <>
 sys::U8string::const_pointer EncodedStringView::cast() const
 {
-    return mIsUtf8 ? str::cast<sys::U8string::const_pointer>(mString.data()) : nullptr;
+    return mIsUtf8 ? pUtf8_(mString) : nullptr;
 }
 template <>
 str::W1252string::const_pointer EncodedStringView::cast() const
 {
-    return mIsUtf8 ? nullptr : str::cast<str::W1252string::const_pointer>(mString.data());
+    return mIsUtf8 ? nullptr : pW1252_(mString);
 }
 } // namespace str
 
