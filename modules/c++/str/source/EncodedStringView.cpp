@@ -68,11 +68,11 @@ static std::string w1252_to_native(coda_oss::span<const char> s)
     return retval;
 }
 
-static sys::U8string utf8_to_u8string(coda_oss::span<const char> s)
+inline sys::U8string utf8_to_u8string(coda_oss::span<const char> s)
 {
-    return str::to_u8string(s.data(), s.size());
+    return str::cast<sys::U8string::const_pointer>(s.data());
 }
-static sys::U8string w1252_to_u8string(coda_oss::span<const char> s)
+inline sys::U8string w1252_to_u8string(coda_oss::span<const char> s)
 {
     return str::to_u8string(str::cast<str::W1252string::const_pointer>(s.data()), s.size());
 }
@@ -128,11 +128,11 @@ struct str::EncodedStringView::Impl final
            
             if (mNativeIsUtf8)
             {
-                return str::cast<str::U8string::const_pointer>(mString.data()) == rhs.to_u8string();
+                return str::cast<str::U8string::const_pointer>(lhs.mString.data()) == rhs.to_u8string();
             }
             else
             {
-                return mString.data() == rhs.native();
+                return lhs.native() == rhs.mString.data();
             }            
         }
 
