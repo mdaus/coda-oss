@@ -96,12 +96,17 @@ inline sys::U8string fromUtf8(const std::string& s)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // These use utf8:: routines; see utf8.h
+
+// UTF-16 is typically uses on Windows (where it is std::wstring::value_type);
+// Linux preferred UTF-32.
 void utf16to8(std::u16string::const_pointer, size_t, sys::U8string&);
 inline void strto8(std::u16string::const_pointer p, size_t sz, sys::U8string& result)
 {
     utf16to8(p, sz, result);
 }
 
+// UTF-32 is convenient because each code-point is a single 32-bit integer.
+// It's typically std::wstring::value_type on Linux, but NOT Windows.
 void utf32to8(std::u32string::const_pointer, size_t, sys::U8string&);
 inline void strto8(std::u32string::const_pointer p, size_t sz, sys::U8string& result)
 {

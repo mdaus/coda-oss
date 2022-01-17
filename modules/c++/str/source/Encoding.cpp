@@ -37,15 +37,11 @@
 
 // Need to look up characters from \x80 (EURO SIGN) to \x9F (LATIN CAPITAL LETTER Y WITH DIAERESIS)
 // in a map: http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
-inline void utf32to8(const std::u32string& s, sys::U8string& result)
+inline str::U8string utf8_(std::u32string::value_type ch)
 {
-    str::utf32to8(s.c_str(), s.size(), result);
-}
-static inline str::U8string utf8_(uint32_t ch)
-{
-    const std::u32string s{static_cast<std::u32string::value_type>(ch)};
+    const std::u32string s{ch};
     str::U8string retval;
-    utf32to8(s, retval);
+    str::utf32to8(s.c_str(), s.size(), retval);
     return retval;
 };
 static const std::map<std::u32string::value_type, sys::U8string> Windows1252_x80_x9F_to_u8string{
@@ -83,14 +79,6 @@ static const std::map<std::u32string::value_type, sys::U8string> Windows1252_x80
     , {0x9F, utf8_(0x0178)  } // LATIN CAPITAL LETTER Y WITH DIAERESIS
 };
 
-// Convert a single Windows-1252 character to UTF-8
-// https://en.wikipedia.org/wiki/ISO/IEC_8859-1
-static constexpr sys::U8string::value_type cast(uint8_t ch)
-{
-    static_assert(sizeof(decltype(ch)) == sizeof(sys::U8string::value_type), "sizeof(uint8_t) != sizeof(Char8_t)");
-    return static_cast<sys::U8string::value_type>(ch);
-}
-
 static std::map<std::u32string::value_type, sys::U8string> Windows1252_to_u8string()
 {
     auto retval = Windows1252_x80_x9F_to_u8string;
@@ -98,15 +86,17 @@ static std::map<std::u32string::value_type, sys::U8string> Windows1252_to_u8stri
     // Add the ISO8859-1 values to the map too.  1) We're already looking
     // in the map anyway for Windows-1252 characters. 2) Need map
     // entires for conversion from UTF-8 to Windows-1252.
-    for (uint32_t ch_ = 0xA0; ch_ <= 0xff; ch_++)
+    for (std::u32string::value_type ch = 0xA0; ch <= 0xff; ch++)
     {
         // ISO8859-1 can be converted to UTF-8 with bit-twiddling
-        const auto ch = static_cast<uint8_t>(ch_);
-
+      
         // https://stackoverflow.com/questions/4059775/convert-iso-8859-1-strings-to-utf-8-in-c-c
         // *out++=0xc2+(*in>0xbf), *out++=(*in++&0x3f)+0x80;
-        sys::U8string s{cast(0xc2 + (ch > 0xbf)), cast((ch & 0x3f) + 0x80)};  // ISO8859-1
-        retval[ch_] = std::move(s);    
+        const auto b1 = 0xc2 + (ch > 0xbf);
+        const auto b2 = (ch & 0x3f) + 0x80;
+        sys::U8string s {static_cast<sys::U8string::value_type>(b1)};
+        s += sys::U8string {static_cast<sys::U8string::value_type>(b2)};
+        retval[ch] = std::move(s);    
     }
 
     return retval;
@@ -182,7 +172,7 @@ static void get_next_utf8_byte(str::U8string::const_pointer p, size_t sz,
     {
         throw std::invalid_argument("Invalid next byte in UTF-8 encoding.");
     }
-    utf8 += str::U8string{cast(b)};
+    utf8 += str::U8string{static_cast<sys::U8string::value_type>(b)};
 }
 
 template<typename TChar>
@@ -200,7 +190,7 @@ void toWindows1252_(str::U8string::const_pointer p, size_t sz, std::basic_string
             continue;
         }
 
-        auto utf8 = str::U8string{cast(b1)};
+        auto utf8 = str::U8string{static_cast<sys::U8string::value_type>(b1)};
 
         get_next_utf8_byte(p, sz, i, utf8);
         if (b1 >= 0xE0)  // 1110xxxx
