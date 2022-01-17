@@ -35,7 +35,6 @@
 #include "str/Convert.h"
 #include "str/utf8.h"
 
-
 // Need to look up characters from \x80 (EURO SIGN) to \x9F (LATIN CAPITAL LETTER Y WITH DIAERESIS)
 // in a map: http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
 inline void utf32to8(const std::u32string& s, sys::U8string& result)
@@ -168,6 +167,39 @@ std::map<TValue, TKey> kv_to_vk(const std::map<TKey, TValue>& kv)
     return retval;
 }
 
+template <typename TChar>
+static bool move_to_next_utf8_byte(size_t sz, size_t& i, std::basic_string<TChar>& result)
+{
+    if (!(i + i < sz))
+    {
+        assert("No remaining bytes, invalid UTF-8 encoding." && 0);
+        result += static_cast<TChar>(0x7F);  // <DEL>
+        return false;
+    }
+
+    i++;  // move to next byte
+    return true;
+}
+
+template <typename TChar>
+static bool get_next_utf8_byte(str::U8string::const_pointer p, size_t i, 
+    str::U8string& utf8, std::basic_string<TChar>& result)
+{
+    const auto b = static_cast<uint8_t>(p[i]);
+
+    // https://en.wikipedia.org/wiki/UTF-8
+    constexpr auto b2_4 = static_cast<uint8_t>(0x80);  // 10xxxxxx
+    if (b < b2_4)  // 10xxxxxx
+    {
+        assert("Invalid next byte in UTF-8 encoding." && 0);
+        result += static_cast<TChar>(0x7F);  // <DEL>
+        return false;
+    }
+
+    utf8 += str::U8string{cast(b)};
+    return true;
+}
+
 template<typename TChar>
 void toWindows1252_(str::U8string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
 {
@@ -183,65 +215,39 @@ void toWindows1252_(str::U8string::const_pointer p, size_t sz, std::basic_string
             continue;
         }
 
-        constexpr auto invalid = static_cast<value_type>(0x7F);  // <DEL>
-        if (!(i + i < sz))
+        if (!move_to_next_utf8_byte(sz, i, result))
         {
-            assert("No remaining bytes, invalid UTF-8 encoding." && 0);
-            result += invalid;
             return;
         }
+        auto utf8 = str::U8string{cast(b1)};
 
-        i++;  // move to second byte
-        const auto b2 = static_cast<uint8_t>(p[i]);
-
-        // https://en.wikipedia.org/wiki/UTF-8
-        constexpr auto b2_4 = static_cast<uint8_t>(0x80);  // 10xxxxxx
-        if (b2 < b2_4)  // 10xxxxxx
+        if (!get_next_utf8_byte(p, i, utf8, result))
         {
-            assert("Invalid second byte in UTF-8 encoding." && 0);
-            result += invalid;  // <DEL>
             continue;
         }
 
-        auto utf8 = str::U8string{cast(b1), cast(b2)}; // at least a two-byte sequence
         if (b1 >= 0xE0)  // 1110xxxx
         {
             // should be a 3- or 4-byte sequence
-            if (!(i + i < sz))
+            if (!move_to_next_utf8_byte(sz, i, result))
             {
-                assert("No remaining bytes, invalid UTF-8 encoding." && 0);
-                result += invalid;
                 return;
             }
-
-            i++;  // move to third byte
-            const auto b3 = static_cast<uint8_t>(p[i]);
-            if (b3 < b2_4)  // 10xxxxxx
+            if (!get_next_utf8_byte(p, i, utf8, result))
             {
-                assert("Invalid third byte in UTF-8 encoding." && 0);
-                result += invalid;  // <DEL>
                 continue;
-            }
-            
-            utf8 += str::U8string{cast(b3)};
+            }            
+
             if (b1 >= 0xF0)  // 1111xxx
             {
-                if (!(i + i < sz))
+                if (!move_to_next_utf8_byte(sz, i, result))
                 {
-                    assert("No remaining bytes, invalid UTF-8 encoding." && 0);
-                    result += invalid;
                     return;
                 }
-
-                i++;  // move to fourth byte
-                const auto b4 = static_cast<uint8_t>(p[i]);
-                if (b4 < b2_4)  // 10xxxxxx
+                if (!get_next_utf8_byte(p, i, utf8, result))
                 {
-                    assert("Invalid fourth byte in UTF-8 encoding." && 0);
-                    result += invalid;  // <DEL>
                     continue;
                 }
-                utf8 += str::U8string{cast(b4)};        
             }
         }
 
@@ -254,7 +260,7 @@ void toWindows1252_(str::U8string::const_pointer p, size_t sz, std::basic_string
         else
         {
             assert("UTF-8 character can't be converted to Windows-1252." && 0);
-            result += invalid;  // <DEL>
+            result += static_cast<TChar>(0x7F);  // <DEL>
         }
     }
 }
