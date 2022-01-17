@@ -67,9 +67,9 @@ static const std::map<std::u32string::value_type, sys::U8string> Windows1252_x80
     , {0x8E, utf8_(0x017D)  } // LATIN CAPITAL LETTER Z WITH CARON
     //, {0x8F, replacement_character } // UNDEFINED
     //, {0x90, replacement_character } // UNDEFINED
-    , {0x91, utf8_(0x017D)  } // LEFT SINGLE QUOTATION MARK
-    , {0x92, utf8_(0x2018)  } // RIGHT SINGLE QUOTATION MARK
-    , {0x93, utf8_(0x2019)  } // LEFT DOUBLE QUOTATION MARK
+    , {0x91, utf8_(0x2018)  } // LEFT SINGLE QUOTATION MARK
+    , {0x92, utf8_(0x2019)  } // RIGHT SINGLE QUOTATION MARK
+    , {0x93, utf8_(0x201C)  } // LEFT DOUBLE QUOTATION MARK
     , {0x94, utf8_(0x201D)  } // RIGHT DOUBLE QUOTATION MARK
     , {0x95, utf8_(0x2022)  } // BULLET
     , {0x96, utf8_(0x2013)  } // EN DASH
@@ -174,46 +174,76 @@ void toWindows1252_(str::U8string::const_pointer p, size_t sz, std::basic_string
     using value_type = typename std::basic_string<TChar>::value_type;
     for (size_t i = 0; i < sz; i++)
     {
+        const auto b1 = static_cast<uint8_t>(p[i]);
+
         // ASCII is the same in UTF-8
-        if (p[i] < static_cast<str::U8string::value_type>(0x80))
+        if (b1 < 0x80) // 0xxxxxxx
         {
-            result += static_cast<value_type>(p[i]);  // ASCII
+            result += static_cast<value_type>(b1);  // ASCII
             continue;
         }
 
         constexpr auto invalid = static_cast<value_type>(0x7F);  // <DEL>
         if (!(i + i < sz))
         {
-            // No remaining bytes, invalid UTF-8 encoding
+            assert("No remaining bytes, invalid UTF-8 encoding." && 0);
             result += invalid;
             return;
         }
 
-        // https://en.wikipedia.org/wiki/UTF-8
-        const auto b1 = static_cast<uint8_t>(p[i]);
         i++;  // move to second byte
+        const auto b2 = static_cast<uint8_t>(p[i]);
+
+        // https://en.wikipedia.org/wiki/UTF-8
+        constexpr auto b2_4 = static_cast<uint8_t>(0x80);  // 10xxxxxx
+        if (b2 < b2_4)  // 10xxxxxx
+        {
+            assert("Invalid second byte in UTF-8 encoding." && 0);
+            result += invalid;  // <DEL>
+            continue;
+        }
+
+        auto utf8 = str::U8string{cast(b1), cast(b2)}; // at least a two-byte sequence
         if (b1 >= 0xE0)  // 1110xxxx
         {
-            // not a two-byte sequence, nothing to convert to Windows-1252
-            result += invalid;  // <DEL>
+            // should be a 3- or 4-byte sequence
+            if (!(i + i < sz))
+            {
+                assert("No remaining bytes, invalid UTF-8 encoding." && 0);
+                result += invalid;
+                return;
+            }
 
-            i++;  // skip third byte
+            i++;  // move to third byte
+            const auto b3 = static_cast<uint8_t>(p[i]);
+            if (b3 < b2_4)  // 10xxxxxx
+            {
+                assert("Invalid third byte in UTF-8 encoding." && 0);
+                result += invalid;  // <DEL>
+                continue;
+            }
+            
+            utf8 += str::U8string{cast(b3)};
             if (b1 >= 0xF0)  // 1111xxx
             {
-                i++;  // skip fourth byte
+                if (!(i + i < sz))
+                {
+                    assert("No remaining bytes, invalid UTF-8 encoding." && 0);
+                    result += invalid;
+                    return;
+                }
+
+                i++;  // move to fourth byte
+                const auto b4 = static_cast<uint8_t>(p[i]);
+                if (b4 < b2_4)  // 10xxxxxx
+                {
+                    assert("Invalid fourth byte in UTF-8 encoding." && 0);
+                    result += invalid;  // <DEL>
+                    continue;
+                }
+                utf8 += str::U8string{cast(b4)};        
             }
-            continue;
         }
-
-        const auto b2 = static_cast<uint8_t>(p[i]);
-        if (b2 < 0x80)  // 10xxxxxx
-        {
-            // invalid second byte
-            result += invalid;  // <DEL>
-            continue;
-        }
-
-        const str::U8string utf8{cast(b1), cast(b2)};
 
         static const auto map = kv_to_vk(Windows1252_to_u8string());
         const auto it = map.find(utf8);
@@ -223,23 +253,22 @@ void toWindows1252_(str::U8string::const_pointer p, size_t sz, std::basic_string
         }
         else
         {
-            // UTF-8 character can't be converted to Windows-1252
+            assert("UTF-8 character can't be converted to Windows-1252." && 0);
             result += invalid;  // <DEL>
         }
     }
 }
-// Keeping this "static" for now, don't want to encouarge this converstion.
-// Client access is via str::toString().
-//static void toWindows1252(str::U8string::const_pointer p, size_t sz, str::W1252string& result)
-//{
-//    toWindows1252_(p, sz, result);
-//}
-//static std::string toWindows1252(const str::U8string& utf8)
-//{
-//    std::string retval;
-//    toWindows1252_(utf8.c_str(), utf8.size(), retval);
-//    return retval;
-//}
+// Exposing for unit-tests
+static void toWindows1252(str::U8string::const_pointer p, size_t sz, str::W1252string& result)
+{
+    toWindows1252_(p, sz, result);
+}
+str::W1252string str::details::toWindows1252(const str::U8string& utf8)
+{
+    str::W1252string retval;
+    ::toWindows1252(utf8.c_str(), utf8.size(), retval);
+    return retval;
+}
 
 struct back_inserter final
 { 
