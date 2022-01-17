@@ -29,7 +29,8 @@
 #include <ostream>
 #include <memory>
 
-#include "str/Encoding.h"
+#include "coda_oss/span.h"
+ #include "str/Encoding.h"
 
 /*!
  * \file EncodedStringView.h
@@ -47,16 +48,19 @@ namespace str
 {
 class EncodedStringView final
 {
-    struct Impl;
-    std::unique_ptr<Impl> pImpl;
+    // Since we only support two encodings--UTF-8 (native on Linux) and Windows-1252
+    // (native on Windows)--both of which are 8-bits, a simple "bool" flag will do.
+    coda_oss::span<const char> mString;
+    static constexpr bool mNativeIsUtf8 = details::Platform == details::PlatformType::Linux ? true : false;
+    bool mIsUtf8 = mNativeIsUtf8;
 
 public:
-    EncodedStringView();
-    ~EncodedStringView();
-    EncodedStringView(const EncodedStringView&);
-    EncodedStringView& operator=(const EncodedStringView&);
-    EncodedStringView(EncodedStringView&&) noexcept;
-    EncodedStringView& operator=(EncodedStringView&&) noexcept;
+    EncodedStringView() = default;
+    ~EncodedStringView() = default;
+    EncodedStringView(const EncodedStringView&) = default;
+    EncodedStringView& operator=(const EncodedStringView&) = default;
+    EncodedStringView(EncodedStringView&&) = default;
+    EncodedStringView& operator=(EncodedStringView&&) = default;
 
     // Need the const char* overloads to avoid creating temporary std::basic_string<> instances.
     // Routnes always return a copy, never a reference, so there's no additional overhead
@@ -66,7 +70,7 @@ public:
     EncodedStringView(str::W1252string::const_pointer);
     EncodedStringView(const str::W1252string&);
 
-    // Don't want to make it easy to use these; a known encoding is preffered.
+    // Don't want to make it easy to use these; a known encoding is preferred.
     explicit EncodedStringView(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     explicit EncodedStringView(const std::string&);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     
