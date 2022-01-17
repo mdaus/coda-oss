@@ -206,8 +206,15 @@ TEST_CASE(test_string_to_u8string_windows_1252)
             // for a single code-point.
             const str::W1252string w1252 = str::details::toWindows1252(actual);
             TEST_ASSERT(input == w1252);
-            const std::string w1252_ = str::c_str<std::string::const_pointer>(w1252);
-            TEST_ASSERT_EQ(input_, w1252_);
+
+            // Can't compare the values with == because TEST_ASSERT_EQ()
+            // wants to do toString() and that doesn't work on Linux as the encoding
+            // is wrong (see above).
+            //const std::string w1252_ = str::c_str<std::string::const_pointer>(w1252);
+            //TEST_ASSERT_EQ(input_, w1252_);
+            const str::EncodedStringView inputView(input);
+            const str::EncodedStringView w1252View(w1252);
+            TEST_ASSERT_EQ(inputView, w1252View);
         }    
     }
 }
