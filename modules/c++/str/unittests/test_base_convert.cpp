@@ -309,11 +309,11 @@ static void test_EncodedStringView_(const std::string& testName,
     TEST_ASSERT_EQ(iso8859_1_view.native(), native);
     TEST_ASSERT_EQ(utf_8_view.native(), native);
 
-    TEST_ASSERT(utf_8_view.to_u8string() == classificationText_utf_8);
+    TEST_ASSERT(utf_8_view.u8string() == classificationText_utf_8);
     TEST_ASSERT_EQ(utf_8_view, classificationText_utf_8);
-    TEST_ASSERT(iso8859_1_view.to_u8string() == classificationText_utf_8);
+    TEST_ASSERT(iso8859_1_view.u8string() == classificationText_utf_8);
     TEST_ASSERT_EQ(iso8859_1_view, classificationText_utf_8);
-    TEST_ASSERT(iso8859_1_view.to_u8string() == utf_8_view.to_u8string());
+    TEST_ASSERT(iso8859_1_view.u8string() == utf_8_view.u8string());
 
     std::string utf8;
     TEST_ASSERT_EQ(utf_8_view.toUtf8(utf8), classificationText_utf_8_);

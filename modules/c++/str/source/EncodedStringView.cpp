@@ -87,7 +87,7 @@ inline sys::U8string w1252_to_u8string(coda_oss::span<const char> s)
 {
     return str::to_u8string(str::cast<str::W1252string::const_pointer>(s.data()), s.size());
 }
-sys::U8string str::EncodedStringView::to_u8string() const
+sys::U8string str::EncodedStringView::u8string() const
 {
     return mIsUtf8 ? utf8_to_u8string(mString) : w1252_to_u8string(mString);
 }
@@ -113,7 +113,7 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
     auto& w1252 = !lhs.mIsUtf8 ? lhs : rhs;
 
     // If UTF-8 is native on this platform, convert to UTF-8; otherwise do a native comparision
-    return mNativeIsUtf8 ? str::cast<str::U8string::const_pointer>(utf8.mString.data()) == w1252.to_u8string() : 
+    return mNativeIsUtf8 ? str::cast<str::U8string::const_pointer>(utf8.mString.data()) == w1252.u8string() : 
         utf8.native() == w1252.mString.data();
 }
 
@@ -121,7 +121,7 @@ std::string& str::EncodedStringView::toUtf8(std::string& result) const
 {
     // This is easy, but creates "unneeded" sys::U8string; it would be
     // better to put the result directly into std::string
-    const auto utf8 = to_u8string(); // TODO: avoid this copy
+    const auto utf8 = u8string();  // TODO: avoid this copy
     result = str::c_str<std::string::const_pointer>(utf8);
     return result;
 }
