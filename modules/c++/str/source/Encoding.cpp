@@ -296,58 +296,10 @@ sys::U8string str::fromUtf8(std::string::const_pointer p, size_t sz)
     return to_u8string(cast<sys::U8string::const_pointer>(p), sz);
 }
 
-static void toString_(sys::U8string::const_pointer pUtf8, size_t sz, std::string& result)
-{
-    const auto pUtf8_ = str::cast<std::string::const_pointer>(pUtf8);
-
-    auto platform = str::details::Platform;  // "conditional expression is constant"
-    if (platform == str::details::PlatformType::Windows)
-    {
-        toWindows1252_(pUtf8, sz, result);
-    }
-    else if (platform == str::details::PlatformType::Linux)
-    {
-        result = pUtf8_;  // copy
-    }
-    else
-    {
-        throw std::logic_error("Unknown platform.");
-    }
-}
-void str::details::toString(sys::U8string::const_pointer pUtf8, std::string& result)
-{
-    const auto pUtf8_ = str::cast<std::string::const_pointer>(pUtf8);
-    const auto sz = strlen(pUtf8_);
-    toString_(pUtf8, sz, result);
-}
 template <>
 std::string str::toString(const str::U8string& utf8)
 {
-    std::string retval;
-    toString_(utf8.c_str(), utf8.size(), retval);  // TODO: avoid call to strlen()
-    return retval;
-}
-
-// Maybe someday "native" will be std::u8string on all platforms?
-static std::string toNative_(const str::W1252string& w1252)
-{
-    auto platform = str::details::Platform;  // "conditional expression is constant"
-    if (platform == str::details::PlatformType::Windows)
-    {
-        return str::c_str<std::string::const_pointer>(w1252);  // copy
-    }
-    if (platform == str::details::PlatformType::Linux)
-    {
-        std::string retval;
-        windows1252to8_(w1252.c_str(), w1252.size(), retval);
-        return retval;
-    }
-
-    throw std::logic_error("Unknown platform.");
-}
-void str::details::toNative(const str::W1252string& w1252, std::string& result)
-{
-    result = toNative_(w1252);
+    return str::details::to_native(utf8);
 }
 
 str::W1252string str::details::to_w1252string(sys::U8string::const_pointer p, size_t sz)

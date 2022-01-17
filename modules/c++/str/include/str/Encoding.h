@@ -120,8 +120,6 @@ inline sys::U8string to_u8string(const std::basic_string<TChar>& s)
 namespace details
 {
 // YOU should use EncodedStringView
-extern void toNative(const str::W1252string&, std::string&);  // encoding is lost
-extern void toString(sys::U8string::const_pointer, std::string&);  // encoding is lost
 
 str::W1252string to_w1252string(std::string::const_pointer, size_t); // std::string is Windows-1252 or UTF-8  depending on platform
 str::W1252string to_w1252string(sys::U8string::const_pointer, size_t);
@@ -141,7 +139,6 @@ inline std::string to_native(const std::basic_string<TChar>& s)
 {
     return to_native(s.c_str(), s.size());
 }
-
 }
 }
 
