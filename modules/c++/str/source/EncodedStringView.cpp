@@ -92,6 +92,19 @@ sys::U8string str::EncodedStringView::u8string() const
     return mIsUtf8 ? utf8_to_u8string(mString) : w1252_to_u8string(mString);
 }
 
+inline str::W1252string utf8_to_w1252string(coda_oss::span<const char> s)
+{
+    return str::details::toWindows1252(str::cast<str::U8string::const_pointer>(s.data()), s.size());
+}
+inline str::W1252string w1252_to_w1252string(coda_oss::span<const char> s)
+{
+    return str::cast<str::W1252string::const_pointer>(s.data());
+}
+str::W1252string str::EncodedStringView::details_w1252string() const
+{
+    return mIsUtf8 ? utf8_to_w1252string(mString) : w1252_to_w1252string(mString);
+}
+
 bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
 {
     auto& lhs = *this;

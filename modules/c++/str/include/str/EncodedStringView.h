@@ -96,6 +96,10 @@ public:
     sys::U8string u8string() const;  // c.f. std::filesystem::path::u8string()
     std::string& toUtf8(std::string&) const; // std::string is encoded as UTF-8, always.
 
+    // Convert (perhaps) whatever we're looking at to Windows-1252
+    // Intended for unit-testing; normal use is native().
+    str::W1252string details_w1252string() const;  // c.f. std::filesystem::path::u8string()
+
     // Only casting done, no conversion.  This should be OK as all three
     // string types are 8-bit encodings.
     //

@@ -78,21 +78,9 @@ inline TReturn c_str(const std::basic_string<TChar>& s)
 // file) as we want to unit-test it. Windows1252_T for Windows-1252 characters
 enum class Windows1252_T : unsigned char { };  // https://en.cppreference.com/w/cpp/language/types
 using W1252string = std::basic_string<Windows1252_T>;  // https://en.cppreference.com/w/cpp/string
-void windows1252to8(W1252string::const_pointer, size_t, sys::U8string&); // c.f. utf16to8
 
-// assume std::string is Windows-1252 **ON ALL PLATFORMS**
-sys::U8string fromWindows1252(std::string::const_pointer, size_t);
-inline sys::U8string fromWindows1252(const std::string& s)
-{
-    return fromWindows1252(s.c_str(), s.size());
-}
-
-// assume std::string is UTF-8 **ON ALL PLATFORMS**
-sys::U8string fromUtf8(std::string::const_pointer, size_t);
-inline sys::U8string fromUtf8(const std::string& s)
-{
-    return fromUtf8(s.c_str(), s.size());
-}
+sys::U8string fromWindows1252(std::string::const_pointer, size_t); // std::string is Windows-1252 **ON ALL PLATFORMS**
+sys::U8string fromUtf8(std::string::const_pointer, size_t); // std::string is UTF-8 **ON ALL PLATFORMS**
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // These use utf8:: routines; see utf8.h
@@ -134,7 +122,7 @@ namespace details
 // YOU should use EncodedStringView
 extern void toNative(const str::W1252string&, std::string&);  // encoding is lost
 extern void toString(sys::U8string::const_pointer, std::string&);  // encoding is lost
-extern str::W1252string toWindows1252(const str::U8string& utf8);
+extern str::W1252string toWindows1252(str::U8string::const_pointer p, size_t sz);
 }
 
 }

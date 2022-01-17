@@ -98,7 +98,7 @@ TEST_CASE(testCharToString)
 static sys::U8string fromWindows1252(const std::string& s)
 {
     // s is Windows-1252 on ALL platforms
-    return str::fromWindows1252(s);
+    return str::fromWindows1252(s.c_str(), s.size());
 }
 
 template<typename T>
@@ -204,7 +204,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
             // are mapped one-by-one.  However, we can test that UTF-8 to Windows-1252
             // works as that walks through a UTF-8 string which can have 1-, 2-, 3- and 4-bytes
             // for a single code-point.
-            const str::W1252string w1252 = str::details::toWindows1252(actual);
+            const str::W1252string w1252 = str::details::toWindows1252(actual.data(), actual.size());
             TEST_ASSERT(input == w1252);
 
             // Can't compare the values with == because TEST_ASSERT_EQ()
@@ -282,7 +282,7 @@ TEST_CASE(test_change_case)
 }
 
 static const std::string classificationText_utf_8_("NON CLASSIFI\xc3\x89 / UNCLASSIFIED");  // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
-static const auto classificationText_utf_8 = str::fromUtf8(classificationText_utf_8_);
+static const auto classificationText_utf_8 = str::fromUtf8(classificationText_utf_8_.c_str(), classificationText_utf_8_.size());
 static const std::string classificationText_iso8859_1_("NON CLASSIFI\xc9 / UNCLASSIFIED");  // ISO8859-1 "NON CLASSIFIÉ / UNCLASSIFIED"    
 static const str::W1252string classificationText_iso8859_1 = str::c_str<str::W1252string::const_pointer>(classificationText_iso8859_1_);
 static const auto classificationText_platform =
@@ -290,7 +290,7 @@ static const auto classificationText_platform =
 
 TEST_CASE(test_u8string_to_string)
 {
-    const auto utf8 = str::fromUtf8(classificationText_utf_8_);
+    const auto utf8 = str::fromUtf8(classificationText_utf_8_.c_str(), classificationText_utf_8_.size());
     const str::EncodedStringView utf8View(utf8);
     const auto actual = utf8View.native();
     TEST_ASSERT_EQ(classificationText_platform, actual);

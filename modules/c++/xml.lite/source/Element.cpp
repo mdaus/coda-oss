@@ -289,7 +289,7 @@ void xml::lite::Element::getCharacterData(sys::U8string& result) const
     }
     else if (encoding == xml::lite::StringEncoding::Windows1252)
     {
-        result = str::fromWindows1252(mCharacterData);
+        result = str::fromWindows1252(mCharacterData.c_str(), mCharacterData.size());
     }
     else
     {
@@ -304,7 +304,7 @@ static void writeCharacterData(io::OutputStream& stream,
     if (encoding == xml::lite::StringEncoding::Windows1252)
     {
         // need to convert before writing
-        const auto utf8 = str::fromWindows1252(characterData);
+        const auto utf8 = str::fromWindows1252(characterData.c_str(), characterData.size());
         stream.write(utf8);
     }
     else if (encoding == xml::lite::StringEncoding::Utf8)
