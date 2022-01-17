@@ -231,10 +231,15 @@ TEST_CASE(test_string_to_u8string_iso8859_1)
         const std::u32string expected{cast32('|'), cast32(ch), cast32('|')};
         test_assert_eq(testName, actual, expected);
 
-        // be sure we can convert back from UTF-8
-        std::string actual_;
-        str::details::toString(actual.c_str(), actual_);
-        TEST_ASSERT_EQ(input_, actual_);
+        // Can't compare the values with == because TEST_ASSERT_EQ()
+        // wants to do toString() and that doesn't work on Linux as the encoding
+        // is wrong (see above).
+        //std::string actual_;
+        //str::details::toString(actual.c_str(), actual_);
+        //TEST_ASSERT_EQ(input_, actual_);
+        const str::EncodedStringView inputView(input);
+        const str::EncodedStringView actualView(actual);
+        TEST_ASSERT_EQ(inputView, actualView);
     }
 }
 
