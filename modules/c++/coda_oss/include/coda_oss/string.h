@@ -40,6 +40,7 @@ namespace coda_oss
     CODA_OSS_disable_warning_pop
 
     using u8string = std::basic_string<char8_t>; // https://en.cppreference.com/w/cpp/string
+    CODA_OSS_disable_warning_pop
 }
 
 #endif  // CODA_OSS_coda_oss_string_h_INCLUDED_
