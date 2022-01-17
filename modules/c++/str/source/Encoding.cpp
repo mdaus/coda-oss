@@ -167,37 +167,22 @@ std::map<TValue, TKey> kv_to_vk(const std::map<TKey, TValue>& kv)
     return retval;
 }
 
-template <typename TChar>
-static bool move_to_next_utf8_byte(size_t sz, size_t& i, std::basic_string<TChar>& result)
+static void get_next_utf8_byte(str::U8string::const_pointer p, size_t sz,
+    size_t& i,  str::U8string& utf8)
 {
     if (!(i + i < sz))
     {
-        assert("No remaining bytes, invalid UTF-8 encoding." && 0);
-        result += static_cast<TChar>(0x7F);  // <DEL>
-        return false;
+        throw std::invalid_argument("No remaining bytes, invalid UTF-8 encoding.");
     }
-
     i++;  // move to next byte
-    return true;
-}
 
-template <typename TChar>
-static bool get_next_utf8_byte(str::U8string::const_pointer p, size_t i, 
-    str::U8string& utf8, std::basic_string<TChar>& result)
-{
+    // Bytes 2, 3 and 4 are always >= 0x80 (10xxxxxx), see https://en.wikipedia.org/wiki/UTF-8
     const auto b = static_cast<uint8_t>(p[i]);
-
-    // https://en.wikipedia.org/wiki/UTF-8
-    constexpr auto b2_4 = static_cast<uint8_t>(0x80);  // 10xxxxxx
-    if (b < b2_4)  // 10xxxxxx
+    if (b < static_cast<uint8_t>(0x80))  // 10xxxxxx
     {
-        assert("Invalid next byte in UTF-8 encoding." && 0);
-        result += static_cast<TChar>(0x7F);  // <DEL>
-        return false;
+        throw std::invalid_argument("Invalid next byte in UTF-8 encoding.");
     }
-
     utf8 += str::U8string{cast(b)};
-    return true;
 }
 
 template<typename TChar>
@@ -215,39 +200,17 @@ void toWindows1252_(str::U8string::const_pointer p, size_t sz, std::basic_string
             continue;
         }
 
-        if (!move_to_next_utf8_byte(sz, i, result))
-        {
-            return;
-        }
         auto utf8 = str::U8string{cast(b1)};
 
-        if (!get_next_utf8_byte(p, i, utf8, result))
-        {
-            continue;
-        }
-
+        get_next_utf8_byte(p, sz, i, utf8);
         if (b1 >= 0xE0)  // 1110xxxx
         {
             // should be a 3- or 4-byte sequence
-            if (!move_to_next_utf8_byte(sz, i, result))
-            {
-                return;
-            }
-            if (!get_next_utf8_byte(p, i, utf8, result))
-            {
-                continue;
-            }            
-
+            get_next_utf8_byte(p, sz, i, utf8);      
             if (b1 >= 0xF0)  // 1111xxx
             {
-                if (!move_to_next_utf8_byte(sz, i, result))
-                {
-                    return;
-                }
-                if (!get_next_utf8_byte(p, i, utf8, result))
-                {
-                    continue;
-                }
+                // should be a 4-byte sequence
+                get_next_utf8_byte(p, sz, i, utf8);     
             }
         }
 
@@ -259,7 +222,7 @@ void toWindows1252_(str::U8string::const_pointer p, size_t sz, std::basic_string
         }
         else
         {
-            assert("UTF-8 character can't be converted to Windows-1252." && 0);
+            assert("UTF-8 sequence can't be converted to Windows-1252." && 0);
             result += static_cast<TChar>(0x7F);  // <DEL>
         }
     }
