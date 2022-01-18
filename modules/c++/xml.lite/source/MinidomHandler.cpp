@@ -109,17 +109,16 @@ bool xml::lite::MinidomHandler::call_vcharacters() const
 
 inline std::string toUtf8(const char16_t* pChars16, const char32_t* pChars32, size_t length)
 {
+    std::string result;
     if (pChars16 != nullptr)
     {
         assert(pChars32 == nullptr);
-        const auto utf8Value = str::to_u8string(pChars16, length);
-        return str::c_str<std::string::const_pointer>(utf8Value);
+        return str::details::to_u8string(pChars16, length, result);
     }
     if (pChars32 != nullptr)
     {
         assert(pChars16 == nullptr);
-        const auto utf8Value = str::to_u8string(pChars16, length);
-        return str::c_str<std::string::const_pointer>(utf8Value);
+        return str::details::to_u8string(pChars32, length, result);
     }
     throw std::invalid_argument("Both pChars16 and pChars32 are NULL.");
 }

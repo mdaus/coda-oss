@@ -116,13 +116,6 @@ public:
     // Intended for unit-testing; normal use is native().
     str::W1252string details_w1252string() const;  // c.f. std::filesystem::path::u8string()
 
-    // Only casting done, no conversion.  This should be OK as all three
-    // string types are 8-bit encodings.
-    //
-    // Intentionally a bit of a mouth-full as these routines should be used sparingly.
-    template <typename TConstPointer>
-    TConstPointer cast() const;  // returns NULL if stored pointer not of the desired type
-
     bool operator_eq(const EncodedStringView&) const;
 };
 

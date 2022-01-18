@@ -107,11 +107,14 @@ inline sys::U8string to_u8string(const std::basic_string<TChar>& s)
     return to_u8string(s.c_str(), s.size());
 }
 
-namespace details
+namespace details // YOU should use EncodedStringView
 {
-// YOU should use EncodedStringView
+sys::U8string to_u8string(std::string::const_pointer, size_t,  bool is_utf8 /* is 's' UTF-8? */);
+std::string& to_u8string(std::u16string::const_pointer, size_t, std::string&); // encoding is lost
+std::string& to_u8string(std::u32string::const_pointer, size_t, std::string&); // encoding is lost
 
 str::W1252string to_w1252string(std::string::const_pointer, size_t); // std::string is Windows-1252 or UTF-8  depending on platform
+str::W1252string to_w1252string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
 str::W1252string to_w1252string(sys::U8string::const_pointer, size_t);
 inline str::W1252string to_w1252string(str::W1252string::const_pointer s, size_t sz)
 {
@@ -120,6 +123,11 @@ inline str::W1252string to_w1252string(str::W1252string::const_pointer s, size_t
 
 std::string to_native(sys::U8string::const_pointer, size_t); // std::string is Windows-1252 or UTF-8  depending on platform
 std::string to_native(str::W1252string::const_pointer s, size_t sz); // std::string is Windows-1252 or UTF-8  depending on platform
+inline std::string to_native(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */) // std::string is Windows-1252 or UTF-8  depending on platform
+{
+    return is_utf8 ? to_native(cast<sys::U8string::const_pointer>(s), sz)
+                   : to_native(cast<str::W1252string::const_pointer>(s), sz);
+}
 inline std::string to_native(std::string::const_pointer s, size_t sz)
 {
     return std::string(s, sz);

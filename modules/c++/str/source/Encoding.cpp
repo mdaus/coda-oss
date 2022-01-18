@@ -252,6 +252,11 @@ sys::U8string str::to_u8string(std::u16string::const_pointer p, size_t sz)
     utf8::utf8to16(begin, begin+result.size(), std::back_inserter(utf16line));
     */
 }
+std::string& str::details::to_u8string(std::u16string::const_pointer p, size_t sz, std::string& result)
+{
+    utf8::utf16to8(p, p + sz, std::back_inserter(result));
+    return result;
+}
 
 sys::U8string str::to_u8string(std::u32string::const_pointer p, size_t sz)
 {
@@ -259,6 +264,12 @@ sys::U8string str::to_u8string(std::u32string::const_pointer p, size_t sz)
     utf8::utf32to8(p, p + sz, back_inserter(retval));
     return retval;
 }
+std::string& str::details::to_u8string(std::u32string::const_pointer p, size_t sz, std::string& result)
+{
+    utf8::utf32to8(p, p + sz, std::back_inserter(result));
+    return result;
+}
+
 
 sys::U8string str::to_u8string(W1252string::const_pointer p, size_t sz)
 {
@@ -267,18 +278,16 @@ sys::U8string str::to_u8string(W1252string::const_pointer p, size_t sz)
     return retval;
 }
 
+sys::U8string str::details::to_u8string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
+{
+    return is_utf8 ?
+        cast<sys::U8string::const_pointer>(p) :  // copy
+        to_u8string(cast<W1252string::const_pointer>(p), sz);
+}
 sys::U8string str::to_u8string(std::string::const_pointer p, size_t sz)
 {
     auto platform = details::Platform;  // "conditional expression is constant"
-    if (platform == details::PlatformType::Windows)
-    {    
-        to_u8string(cast<W1252string::const_pointer>(p), sz);
-    }
-    else if (platform == details::PlatformType::Linux)
-    {
-        return cast<sys::U8string::const_pointer>(p);  // copy
-    }
-    throw std::logic_error("Unknown platform.");
+    return details::to_u8string(p, sz, platform == details::PlatformType::Linux); // std::string is UTF-8 on Linux
 }
 
 str::W1252string str::details::to_w1252string(sys::U8string::const_pointer p, size_t sz)
@@ -288,18 +297,16 @@ str::W1252string str::details::to_w1252string(sys::U8string::const_pointer p, si
     return retval;
 }
 
+str::W1252string str::details::to_w1252string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
+{
+    return is_utf8 ?
+        to_w1252string(cast<sys::U8string ::const_pointer>(p), sz) :
+        cast<str::W1252string ::const_pointer>(p);  // copy
+}
 str::W1252string str::details::to_w1252string(std::string::const_pointer p, size_t sz)
 {
     auto platform = details::Platform;  // "conditional expression is constant"
-    if (platform == details::PlatformType::Windows)
-    {    
-        return cast<str::W1252string ::const_pointer>(p);  // copy
-    }
-    else if (platform == details::PlatformType::Linux)
-    {
-        return to_w1252string(cast<sys::U8string ::const_pointer>(p), sz);
-    }
-    throw std::logic_error("Unknown platform.");
+    return to_w1252string(p, sz, platform == details::PlatformType::Linux); // std::string is UTF-8 on Linux
 }
 
 std::string str::details::to_native(sys::U8string::const_pointer p, size_t sz)
