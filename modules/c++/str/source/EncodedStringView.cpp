@@ -66,15 +66,6 @@ std::string str::EncodedStringView::native() const
     return details::to_native(mString.data(), mString.size(), mIsUtf8);
 }
 
-inline sys::U8string::const_pointer pUtf8_(const coda_oss::span<const char>& s)
-{
-    return str::cast<sys::U8string::const_pointer>(s.data());
-}
-inline str::W1252string::const_pointer pW1252_(const coda_oss::span<const char>& s)
-{
-    return str::cast<str::W1252string::const_pointer>(s.data());
-}
-
 sys::U8string str::EncodedStringView::u8string() const
 {
     return str::details::to_u8string(mString.data(), mString.size(), mIsUtf8);
@@ -110,7 +101,9 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
     auto& w1252 = !lhs.mIsUtf8 ? lhs : rhs;
 
     // If UTF-8 is native on this platform, convert to UTF-8; otherwise do a native comparision
-    return mNativeIsUtf8 ? pUtf8_(utf8.mString) == w1252.u8string() : utf8.native() == w1252.mString.data();
+    return mNativeIsUtf8 ?
+        str::cast<sys::U8string::const_pointer>(utf8.mString.data()) == w1252.u8string()
+        : utf8.native() == w1252.mString.data();
 }
 
 

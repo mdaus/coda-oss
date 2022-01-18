@@ -137,12 +137,13 @@ static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<
     result += replacement_character;
 }
 template<typename TChar>
-static void windows1252to8(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
+std::basic_string<TChar>& windows1252to8(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
 {
     for (size_t i = 0; i < sz; i++)
     {
         fromWindows1252_(static_cast<str::W1252string::value_type>(p[i]), result);
     }
+    return result;
 }
 
 template<typename TKey, typename TValue>
@@ -278,20 +279,14 @@ sys::U8string str::to_u8string(W1252string::const_pointer p, size_t sz)
     return retval;
 }
 
-std::string& str::details::to_u8string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 's' UTF-8? */, std::string& result)
+std::string& str::details::to_u8string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 'p' UTF-8? */, std::string& result)
 {
-    if (is_utf8)
-    {
-        result = p; // copy
-    }
-    else
-    {
-        windows1252to8(cast<W1252string::const_pointer>(p), sz, result);
-    }
-    return result;
+    // https://en.cppreference.com/w/cpp/language/operator_assignment#Builtin_direct_assignment
+    // "...  and returns an lvalue identifying the left operand after modification."
+    return is_utf8 ? (result = p) : windows1252to8(cast<W1252string::const_pointer>(p), sz, result);
 }
 
-sys::U8string str::details::to_u8string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
+sys::U8string str::details::to_u8string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 'p' UTF-8? */)
 {
     return is_utf8 ?
         cast<sys::U8string::const_pointer>(p) :  // copy
