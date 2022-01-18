@@ -27,14 +27,13 @@
 
 #include <string>
 #include <ostream>
-#include <memory>
 
 #include "coda_oss/span.h"
  #include "str/Encoding.h"
 
 /*!
  * \file EncodedStringView.h
- * \brief A String that can be either UTF-8 or "native" 
+ * \brief A read-only "view" onto a string.
  *
  * On Linux, there is good support for UTF-8, so a std::string encoded
  * as UTF-8 will display the "foreign" characters properly.  On Windows,
@@ -117,6 +116,10 @@ public:
     str::W1252string details_w1252string() const;  // c.f. std::filesystem::path::u8string()
 
     bool operator_eq(const EncodedStringView&) const;
+
+    // These are for use by EncodedString, not YOU
+    bool details_isUtf8_() const { return mIsUtf8; }
+    coda_oss::span<const char> details_string_() const { return mString; }
 };
 
 inline bool operator==(const EncodedStringView& lhs, const EncodedStringView& rhs)
