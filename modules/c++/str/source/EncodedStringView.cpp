@@ -81,11 +81,7 @@ sys::U8string str::EncodedStringView::u8string() const
 }
 std::string& str::EncodedStringView::toUtf8(std::string& result) const
 {
-    // This is easy, but creates "unneeded" sys::U8string; it would be
-    // better to put the result directly into std::string
-    const auto utf8 = u8string();  // TODO: avoid this copy
-    result = str::c_str<std::string::const_pointer>(utf8);
-    return result;
+    return str::details::to_u8string(mString.data(), mString.size(), mIsUtf8, result);
 }
 
 str::W1252string str::EncodedStringView::details_w1252string() const

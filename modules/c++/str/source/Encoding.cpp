@@ -278,6 +278,19 @@ sys::U8string str::to_u8string(W1252string::const_pointer p, size_t sz)
     return retval;
 }
 
+std::string& str::details::to_u8string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 's' UTF-8? */, std::string& result)
+{
+    if (is_utf8)
+    {
+        result = p; // copy
+    }
+    else
+    {
+        windows1252to8(cast<W1252string::const_pointer>(p), sz, result);
+    }
+    return result;
+}
+
 sys::U8string str::details::to_u8string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
 {
     return is_utf8 ?

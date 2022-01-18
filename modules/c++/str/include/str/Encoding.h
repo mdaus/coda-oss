@@ -109,7 +109,8 @@ inline sys::U8string to_u8string(const std::basic_string<TChar>& s)
 
 namespace details // YOU should use EncodedStringView
 {
-sys::U8string to_u8string(std::string::const_pointer, size_t,  bool is_utf8 /* is 's' UTF-8? */);
+sys::U8string to_u8string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
+std::string& to_u8string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */, std::string&); // encoding is lost
 std::string& to_u8string(std::u16string::const_pointer, size_t, std::string&); // encoding is lost
 std::string& to_u8string(std::u32string::const_pointer, size_t, std::string&); // encoding is lost
 

@@ -317,6 +317,7 @@ static void test_EncodedStringView_(const std::string& testName,
 
     std::string utf8;
     TEST_ASSERT_EQ(utf_8_view.toUtf8(utf8), classificationText_utf_8_);
+    utf8.clear();
     TEST_ASSERT_EQ(iso8859_1_view.toUtf8(utf8), classificationText_utf_8_);
 }
 TEST_CASE(test_EncodedStringView)
