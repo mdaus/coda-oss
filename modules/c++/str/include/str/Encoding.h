@@ -83,25 +83,6 @@ sys::U8string fromWindows1252(std::string::const_pointer, size_t); // std::strin
 sys::U8string fromUtf8(std::string::const_pointer, size_t); // std::string is UTF-8 **ON ALL PLATFORMS**
 
 //////////////////////////////////////////////////////////////////////////////////////////
-// These use utf8:: routines; see utf8.h
-
-// UTF-16 is typically uses on Windows (where it is std::wstring::value_type);
-// Linux preferred UTF-32.
-void utf16to8(std::u16string::const_pointer, size_t, sys::U8string&);
-inline void strto8(std::u16string::const_pointer p, size_t sz, sys::U8string& result)
-{
-    utf16to8(p, sz, result);
-}
-
-// UTF-32 is convenient because each code-point is a single 32-bit integer.
-// It's typically std::wstring::value_type on Linux, but NOT Windows.
-void utf32to8(std::u32string::const_pointer, size_t, sys::U8string&);
-inline void strto8(std::u32string::const_pointer p, size_t sz, sys::U8string& result)
-{
-    utf32to8(p, sz, result);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
 
 // When the encoding is important, we want to "traffic" in sys::U8string (UTF-8), not
 // str::W1252string (Windows-1252) or std::string (unknown).  Make it easy to get those from other encodings.
@@ -111,6 +92,15 @@ inline sys::U8string to_u8string(sys::U8string::const_pointer s, size_t sz)
 {
     return sys::U8string(s, sz);
 }
+
+// UTF-16 is typically uses on Windows (where it is std::wstring::value_type);
+// Linux preferred UTF-32.
+sys::U8string to_u8string(std::u16string::const_pointer, size_t);
+
+// UTF-32 is convenient because each code-point is a single 32-bit integer.
+// It's typically std::wstring::value_type on Linux, but NOT Windows.
+sys::U8string to_u8string(std::u32string::const_pointer, size_t);
+
 template <typename TChar>
 inline sys::U8string to_u8string(const std::basic_string<TChar>& s)
 {

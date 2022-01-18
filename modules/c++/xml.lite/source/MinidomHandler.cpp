@@ -95,18 +95,6 @@ void xml::lite::MinidomHandler::characters(const char *value, int length)
     characters(value, length, pEncoding);
 }
 
-template<typename CharT, typename ValueT>
-inline std::string toUtf8_(const ValueT* value_, size_t length)
-{
-    const void* const pValue = value_;
-    const auto value = reinterpret_cast<CharT>(pValue);
-    static_assert(sizeof(*value_) == sizeof(*value), "sizeof(*CharT) != sizeof(*ValueT)"); 
-
-    str::U8string utf8Value;
-    str::strto8(value, length, utf8Value);
-    return str::c_str<std::string::const_pointer>(utf8Value);
-}
-
 void xml::lite::MinidomHandler::call_characters(const std::string& s, StringEncoding encoding)
 {
     const auto length = static_cast<int>(s.length());
@@ -124,12 +112,14 @@ inline std::string toUtf8(const char16_t* pChars16, const char32_t* pChars32, si
     if (pChars16 != nullptr)
     {
         assert(pChars32 == nullptr);
-        return toUtf8_<std::u16string::const_pointer>(pChars16, length);
+        const auto utf8Value = str::to_u8string(pChars16, length);
+        return str::c_str<std::string::const_pointer>(utf8Value);
     }
     if (pChars32 != nullptr)
     {
         assert(pChars16 == nullptr);
-        return toUtf8_<std::u32string::const_pointer>(pChars32, length);
+        const auto utf8Value = str::to_u8string(pChars16, length);
+        return str::c_str<std::string::const_pointer>(utf8Value);
     }
     throw std::invalid_argument("Both pChars16 and pChars32 are NULL.");
 }

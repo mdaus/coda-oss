@@ -39,10 +39,7 @@
 // in a map: http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
 inline str::U8string utf8_(std::u32string::value_type ch)
 {
-    const std::u32string s{ch};
-    str::U8string retval;
-    str::utf32to8(s.c_str(), s.size(), retval);
-    return retval;
+    return str::to_u8string(std::u32string{ch});
 };
 static const std::map<std::u32string::value_type, sys::U8string> Windows1252_x80_x9F_to_u8string{
     {0x80, utf8_(0x20AC) } // EURO SIGN
@@ -140,7 +137,7 @@ static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<
     result += replacement_character;
 }
 template<typename TChar>
-void windows1252to8_(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
+static void windows1252to8(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
 {
     for (size_t i = 0; i < sz; i++)
     {
@@ -177,7 +174,7 @@ static void get_next_utf8_byte(str::U8string::const_pointer p, size_t sz,
     utf8 += str::U8string{static_cast<sys::U8string::value_type>(b)};
 }
 template<typename TChar>
-static void toWindows1252_(str::U8string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
+static void utf8to1252(str::U8string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
 {
     using value_type = typename std::basic_string<TChar>::value_type;
     for (size_t i = 0; i < sz; i++)
@@ -232,7 +229,8 @@ struct back_inserter final
     back_inserter& operator*() noexcept { return *this; }
     back_inserter operator++(int) noexcept { return *this; }
 };
-void str::utf16to8(std::u16string::const_pointer p, size_t sz, sys::U8string& result)
+
+sys::U8string str::to_u8string(std::u16string::const_pointer p, size_t sz)
 {
     // http://utfcpp.sourceforge.net/#introsample
     /*
@@ -244,34 +242,31 @@ void str::utf16to8(std::u16string::const_pointer p, size_t sz, sys::U8string& re
     string utf8line;
     utf8::utf16to8(utf16line.begin(), utf16line.end(), back_inserter(utf8line));
     */
-    utf8::utf16to8(p, p + sz, back_inserter(result));
-    
+    sys::U8string retval;
+    utf8::utf16to8(p, p + sz, back_inserter(retval));
+    return retval;
+
     /*
     std::vector<unsigned short> utf16line;
     auto begin = c_str<const uint8_t*>(result);
     utf8::utf8to16(begin, begin+result.size(), std::back_inserter(utf16line));
     */
 }
-void str::utf32to8(std::u32string::const_pointer p, size_t sz, sys::U8string& result)
-{
-    utf8::utf32to8(p, p + sz, back_inserter(result));
-}
 
-inline void wsto8_(std::u16string::const_pointer begin, std::u16string::const_pointer end, sys::U8string& result)
+sys::U8string str::to_u8string(std::u32string::const_pointer p, size_t sz)
 {
-    utf8::utf16to8(begin, end, back_inserter(result));
-}
-inline void wsto8_(std::u32string::const_pointer begin, std::u32string::const_pointer end, sys::U8string& result)
-{
-    utf8::utf32to8(begin, end, back_inserter(result));
+    sys::U8string retval;
+    utf8::utf32to8(p, p + sz, back_inserter(retval));
+    return retval;
 }
 
 sys::U8string str::to_u8string(W1252string::const_pointer p, size_t sz)
 {
     sys::U8string retval;
-    windows1252to8_(p, sz, retval);
+    windows1252to8(p, sz, retval);
     return retval;
 }
+
 sys::U8string str::to_u8string(std::string::const_pointer p, size_t sz)
 {
     auto platform = details::Platform;  // "conditional expression is constant"
@@ -286,28 +281,13 @@ sys::U8string str::to_u8string(std::string::const_pointer p, size_t sz)
     throw std::logic_error("Unknown platform.");
 }
 
-sys::U8string str::fromWindows1252(std::string::const_pointer p, size_t sz)
-{
-    return to_u8string(cast<str::W1252string::const_pointer>(p), sz);
-}
-
-sys::U8string str::fromUtf8(std::string::const_pointer p, size_t sz)
-{
-    return to_u8string(cast<sys::U8string::const_pointer>(p), sz);
-}
-
-template <>
-std::string str::toString(const str::U8string& utf8)
-{
-    return str::details::to_native(utf8);
-}
-
 str::W1252string str::details::to_w1252string(sys::U8string::const_pointer p, size_t sz)
 {
     str::W1252string retval;
-    toWindows1252_(p, sz, retval);
+    utf8to1252(p, sz, retval);
     return retval;
 }
+
 str::W1252string str::details::to_w1252string(std::string::const_pointer p, size_t sz)
 {
     auto platform = details::Platform;  // "conditional expression is constant"
@@ -328,7 +308,7 @@ std::string str::details::to_native(sys::U8string::const_pointer p, size_t sz)
     if (platform == str::details::PlatformType::Windows)
     {
         std::string retval;
-        toWindows1252_(p, sz, retval);
+        utf8to1252(p, sz, retval);
         return retval;
     }
     if (platform == str::details::PlatformType::Linux)
@@ -337,6 +317,7 @@ std::string str::details::to_native(sys::U8string::const_pointer p, size_t sz)
     }
     throw std::logic_error("Unknown platform.");
 }
+
 std::string str::details::to_native(W1252string::const_pointer p, size_t sz)
 {
     auto platform = details::Platform;  // "conditional expression is constant"
@@ -347,8 +328,24 @@ std::string str::details::to_native(W1252string::const_pointer p, size_t sz)
     if (platform == details::PlatformType::Linux)
     {
         std::string retval;
-        windows1252to8_(p, sz, retval);
+        windows1252to8(p, sz, retval);
         return retval;
     }
     throw std::logic_error("Unknown platform.");
+}
+
+sys::U8string str::fromWindows1252(std::string::const_pointer p, size_t sz)
+{
+    return to_u8string(cast<str::W1252string::const_pointer>(p), sz);
+}
+
+sys::U8string str::fromUtf8(std::string::const_pointer p, size_t sz)
+{
+    return to_u8string(cast<sys::U8string::const_pointer>(p), sz);
+}
+
+template <>
+std::string str::toString(const str::U8string& utf8)
+{
+    return str::details::to_native(utf8);
 }
