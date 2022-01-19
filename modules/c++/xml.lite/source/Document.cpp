@@ -70,19 +70,19 @@ xml::lite::Element* xml::lite::Document::createElement(const std::string& qname,
     elem->setCharacterData(characterData);
     return elem;
 }
-xml::lite::Element* xml::lite::Document::createElement(const std::string& qname,
+std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const std::string& qname,
                                    const std::string& uri,
-                                   const std::string& characterData, StringEncoding encoding)
+                                   const std::string& characterData, StringEncoding encoding) const
 {
-    auto elem = newElement(qname, uri);
+    std::unique_ptr<Element> elem(newElement(qname, uri));
     elem->setCharacterData(characterData, encoding);
     return elem;
 }
-xml::lite::Element* xml::lite::Document::createElement(const std::string& qname,
+std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const std::string& qname,
                                    const std::string& uri,
-                                   const sys::U8string& characterData)
+                                   const coda_oss::u8string& characterData) const
 {
-    auto elem = newElement(qname, uri);
+    std::unique_ptr<Element> elem(newElement(qname, uri));
     elem->setCharacterData(characterData);
     return elem;
 }
