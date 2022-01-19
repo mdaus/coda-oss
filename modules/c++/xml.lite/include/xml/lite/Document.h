@@ -93,10 +93,10 @@ public:
                                    const std::string & uri,
                                    std::string characterData = "");
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
-    std::unique_ptr<Element> createElement(const std::string& qname,
+    Element* createElement(const std::string& qname,
                                    const std::string & uri,
                                    const std::string& characterData, StringEncoding) const;
-    std::unique_ptr<Element> createElement(const std::string& qname,
+    Element* createElement(const std::string& qname,
                                    const std::string& uri,
                                    const coda_oss::u8string& characterData) const;
     std::unique_ptr<Element> createElement(const xml::lite::QName& qname, const std::string& characterData) const;
