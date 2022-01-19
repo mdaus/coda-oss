@@ -1,10 +1,10 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of xml.lite-c++
  * =========================================================================
  *
  * (C) Copyright 2004 - 2019, MDA Information Systems LLC
  *
- * io-c++ is free software; you can redistribute it and/or modify
+ * xml.lite-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -21,14 +21,12 @@
  */
 
 #include <std/string>
-#include <clocale>
 #include <std/filesystem>
 
 #include "io/StringStream.h"
 #include "io/FileInputStream.h"
 #include "str/Convert.h"
 #include "str/Encoding.h"
-#include "sys/OS.h"
 #include "str/EncodedStringView.h"
 #include <TestCase.h>
 
@@ -38,12 +36,10 @@ static const std::string text("TEXT");
 static const std::string strXml = "<root><doc><a>" + text + "</a></doc></root>";
 static const std::string iso88591Text_("T\xc9XT");  // ISO8859-1, "TÉXT"
 static const std::string utf8Text_("T\xc3\x89XT");  // UTF-8,  "TÉXT"
-static const auto utf8Text8 = str::EncodedStringView::create<sys::U8string>(utf8Text_).u8string();
+static const auto utf8Text8 = str::EncodedStringView::fromUtf8(utf8Text_).u8string();
 static const auto strUtf8Xml = "<root><doc><a>" + utf8Text_ + "</a></doc></root>";
-constexpr auto PlatformEncoding = sys::Platform == sys::PlatformType::Windows
-        ? xml::lite::StringEncoding::Windows1252
-        : xml::lite::StringEncoding::Utf8;
-static const auto platfromText_ = sys::Platform == sys::PlatformType::Linux ? utf8Text_ : iso88591Text_;
+constexpr auto PlatformEncoding = xml::lite::PlatformEncoding;
+static const auto platfromText_ = PlatformEncoding == xml::lite::StringEncoding::Utf8 ? utf8Text_ : iso88591Text_;
 
 namespace fs = std::filesystem;
 
