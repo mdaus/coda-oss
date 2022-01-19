@@ -32,6 +32,7 @@
 
 #include "str/Convert.h"
 #include "str/Encoding.h"
+#include "str/EncodedString.h"
 
 template <typename CharT>
 inline coda_oss::span<const char> make_span(const CharT* s)
@@ -63,7 +64,7 @@ str::EncodedStringView::EncodedStringView(const str::W1252string& s) : mString(m
 
 std::string str::EncodedStringView::native() const
 {
-    return details::to_native(mString.data(), mString.size(), mIsUtf8);
+    return str::details::to_native(mString.data(), mString.size(), mIsUtf8);
 }
 
 sys::U8string str::EncodedStringView::u8string() const
@@ -106,5 +107,8 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
         : utf8.native() == w1252.mString.data();
 }
 
-
+void str::EncodedStringView::details::assign(const EncodedStringView& view, EncodedString& es)
+{
+    es = view.mIsUtf8 ? EncodedString(view.u8string()) : EncodedString(view.details_w1252string());   
+}
 

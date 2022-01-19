@@ -45,6 +45,7 @@
 
 namespace str
 {
+class EncodedString; // forward
 class EncodedStringView final
 {
     // Since we only support two encodings--UTF-8 (native on Linux) and Windows-1252
@@ -117,9 +118,10 @@ public:
 
     bool operator_eq(const EncodedStringView&) const;
 
-    // These are for use by EncodedString, not YOU
-    bool details_isUtf8_() const { return mIsUtf8; }
-    coda_oss::span<const char> details_string_() const { return mString; }
+    struct details final
+    {
+        static void assign(const EncodedStringView& , EncodedString&);
+    };
 };
 
 inline bool operator==(const EncodedStringView& lhs, const EncodedStringView& rhs)

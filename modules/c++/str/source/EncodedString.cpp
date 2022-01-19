@@ -37,9 +37,7 @@ str::EncodedString::EncodedString(const std::u32string& s) : EncodedString(to_u8
 // create from a view
 str::EncodedString& str::EncodedString::operator=(const EncodedStringView& v)
 {
-    s_ = v.details_string_().data();  // copy the pointer into the std::string
-    // and update the view
-    v_ = v.details_isUtf8_() ? EncodedStringView::fromUtf8(s_) : EncodedStringView::fromWindows1252(s_);
+    EncodedStringView::details::assign(v, *this);
     return *this;
 }
 str::EncodedString::EncodedString(const EncodedStringView& v)
