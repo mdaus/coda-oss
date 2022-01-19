@@ -27,19 +27,27 @@
 #include "io/FileInputStream.h"
 #include "str/Convert.h"
 #include "str/Encoding.h"
-#include "str/EncodedStringView.h"
+#include "str/EncodedString.h"
 #include <TestCase.h>
 
 #include "xml/lite/MinidomParser.h"
 
 static const std::string text("TEXT");
 static const std::string strXml = "<root><doc><a>" + text + "</a></doc></root>";
-static const std::string iso88591Text_("T\xc9XT");  // ISO8859-1, "TÉXT"
-static const std::string utf8Text_("T\xc3\x89XT");  // UTF-8,  "TÉXT"
-static const auto utf8Text8 = str::EncodedStringView::fromUtf8(utf8Text_).u8string();
-static const auto strUtf8Xml = "<root><doc><a>" + utf8Text_ + "</a></doc></root>";
+
+static const auto iso88591Text = str::EncodedString::fromWindows1252("T\xc9XT");  // ISO8859-1, "TÉXT"
+static const auto iso88591Text1252 = str::EncodedStringView::details::w1252string(iso88591Text.view());
+static const auto pIso88591Text_ = str::c_str<std::string::const_pointer>(iso88591Text1252);
+
+static const auto utf8Text = str::EncodedString::fromUtf8("T\xc3\x89XT");  // UTF-8,  "TÉXT"
+static const auto utf8Text8 = utf8Text.u8string();
+static const auto pUtf8Text_ = str::c_str<std::string::const_pointer>(utf8Text8);
+
+static const auto strUtf8Xml8 = str::fromUtf8("<root><doc><a>") + utf8Text8 + str::fromUtf8("</a></doc></root>");
+static const std::string strUtf8Xml = str::c_str<std::string::const_pointer>(strUtf8Xml8);
+
 constexpr auto PlatformEncoding = xml::lite::PlatformEncoding;
-static const auto platfromText_ = PlatformEncoding == xml::lite::StringEncoding::Utf8 ? utf8Text_ : iso88591Text_;
+static const std::string  platfromText_ = PlatformEncoding == xml::lite::StringEncoding::Utf8 ? pUtf8Text_ : pIso88591Text_;
 
 namespace fs = std::filesystem;
 
@@ -119,7 +127,7 @@ TEST_CASE(testXmlUtf8Legacy)
     // This is LEGACY behavior, it is INCORRECT on Linux!
     const auto actual = a.getCharacterData();
     #ifdef _WIN32
-    TEST_ASSERT_EQ(actual, iso88591Text_);
+    TEST_ASSERT_EQ(actual, pIso88591Text_);
     #else
     TEST_ASSERT_EQ(actual.length(), static_cast<size_t>(4));
     #endif
@@ -171,7 +179,7 @@ TEST_CASE(testXml_setCharacterData)
     encoding = a.getCharacterData(actual);
     TEST_ASSERT_TRUE(encoding.has_value());
     TEST_ASSERT(encoding == xml::lite::StringEncoding::Utf8);
-    TEST_ASSERT_EQ(actual, utf8Text_);
+    TEST_ASSERT_EQ(actual, pUtf8Text_);
 }
 
 static std::string testXmlPrint_(std::string& expected, const std::string& characterData)
@@ -197,7 +205,7 @@ TEST_CASE(testXmlPrintLegacy)
 {
     // This is LEGACY behavior, it generates bad XML
     std::string expected;
-    const auto actual = testXmlPrint_(expected, iso88591Text_);
+    const auto actual = testXmlPrint_(expected, pIso88591Text_);
     TEST_ASSERT_EQ(actual, expected);
 }
 
@@ -206,12 +214,12 @@ TEST_CASE(testXmlPrintUtf8)
     xml::lite::MinidomParser xmlParser;
     auto& document = getDocument(xmlParser);
 
-    const auto pRootElement = document.createElement(xml::lite::QName(xml::lite::Uri(), "root"), iso88591Text_, xml::lite::StringEncoding::Windows1252);
+    const auto pRootElement = document.createElement(xml::lite::QName(xml::lite::Uri(), "root"), pIso88591Text_, xml::lite::StringEncoding::Windows1252);
 
     io::StringStream output;
     pRootElement->print(output, xml::lite::StringEncoding::Utf8); // write UTF-8
     const auto actual = output.stream().str();
-    const auto expected = "<root>" + utf8Text_ + "</root>";
+    const auto expected = std::string("<root>") + pUtf8Text_ + "</root>";
     TEST_ASSERT_EQ(actual, expected);
 }
 

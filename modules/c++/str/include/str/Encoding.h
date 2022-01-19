@@ -25,6 +25,7 @@
 #define CODA_OSS_str_Encoding_h_INCLUDED_
 #pragma once
 
+#include <string.h>
 #include <wchar.h>
 
 #include <memory>
@@ -80,7 +81,15 @@ enum class Windows1252_T : unsigned char { };  // https://en.cppreference.com/w/
 using W1252string = std::basic_string<Windows1252_T>;  // https://en.cppreference.com/w/cpp/string
 
 sys::U8string fromWindows1252(std::string::const_pointer, size_t); // std::string is Windows-1252 **ON ALL PLATFORMS**
+inline sys::U8string fromWindows1252(std::string::const_pointer s)
+{
+    return fromWindows1252(s, static_cast<size_t>(strlen(s)));
+}
 sys::U8string fromUtf8(std::string::const_pointer, size_t); // std::string is UTF-8 **ON ALL PLATFORMS**
+inline sys::U8string fromUtf8(std::string::const_pointer s)
+{
+    return fromUtf8(s, static_cast<size_t>(strlen(s)));
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 

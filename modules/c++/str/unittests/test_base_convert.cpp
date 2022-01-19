@@ -32,20 +32,13 @@
 
 #include "TestCase.h"
 
-template<typename T>
-std::string to_std_string(const T& value)
+inline std::string to_std_string(const sys::U8string& value)
 {
-    // This is OK as UTF-8 can be stored in std::string
-    // Note that casting between the string types will CRASH on some
-    // implementations. NO: reinterpret_cast<const std::string&>(value)
     return str::c_str<std::string::const_pointer>(value);  // copy
 }
-
-template<>
-std::string to_std_string(const std::u32string& s)
+inline std::string to_std_string(const std::u32string& s)
 {
-    const auto result = str::to_u8string(s.c_str(), s.size());
-    return to_std_string(result);
+    return to_std_string(str::to_u8string(s));
 }
 template<typename TActual, typename TExpected>
 void test_assert_eq(const std::string& testName,
@@ -316,9 +309,9 @@ static void test_EncodedStringView_(const std::string& testName,
     TEST_ASSERT(iso8859_1_view.u8string() == utf_8_view.u8string());
 
     std::string utf8;
-    TEST_ASSERT_EQ(utf_8_view.toUtf8(utf8), classificationText_utf_8.details_raw());
+    TEST_ASSERT_EQ(utf_8_view.toUtf8(utf8), str::EncodedString::details::string(classificationText_utf_8));
     utf8.clear();
-    TEST_ASSERT_EQ(iso8859_1_view.toUtf8(utf8), classificationText_utf_8.details_raw());
+    TEST_ASSERT_EQ(iso8859_1_view.toUtf8(utf8), str::EncodedString::details::string(classificationText_utf_8));
 }
 TEST_CASE(test_EncodedStringView)
 {
