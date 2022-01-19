@@ -76,9 +76,9 @@ std::string& str::EncodedStringView::toUtf8(std::string& result) const
     return str::details::to_u8string(mString.data(), mString.size(), mIsUtf8, result);
 }
 
-str::W1252string str::EncodedStringView::details_w1252string() const
+str::W1252string str::EncodedStringView::details::w1252string(const EncodedStringView& esv)
 {
-    return str::details::to_w1252string(mString.data(), mString.size(), mIsUtf8);
+    return str::details::to_w1252string(esv.mString.data(), esv.mString.size(), esv.mIsUtf8);
 }
 
 bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
@@ -107,8 +107,8 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
         : utf8.native() == w1252.mString.data();
 }
 
-void str::EncodedStringView::details::assign(const EncodedStringView& view, EncodedString& es)
+void str::EncodedStringView::details::assign(const EncodedStringView& esv, EncodedString& es)
 {
-    es = view.mIsUtf8 ? EncodedString(view.u8string()) : EncodedString(view.details_w1252string());   
+    es = esv.mIsUtf8 ? EncodedString(esv.u8string()) : EncodedString(details::w1252string(esv));   
 }
 

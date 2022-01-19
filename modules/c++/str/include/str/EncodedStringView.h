@@ -112,15 +112,15 @@ public:
     sys::U8string u8string() const;  // c.f. std::filesystem::path::u8string()
     std::string& toUtf8(std::string&) const; // std::string is encoded as UTF-8, always.
 
-    // Convert (perhaps) whatever we're looking at to Windows-1252
-    // Intended for unit-testing; normal use is native().
-    str::W1252string details_w1252string() const;  // c.f. std::filesystem::path::u8string()
-
     bool operator_eq(const EncodedStringView&) const;
 
     struct details final
     {
-        static void assign(const EncodedStringView& , EncodedString&);
+        // Convert (perhaps) whatever we're looking at to Windows-1252
+        // Intended for unit-testing; normal use is native().
+        static str::W1252string w1252string(const EncodedStringView&);  // c.f. std::filesystem::path::u8string()
+
+        static void assign(const EncodedStringView&, EncodedString&);
     };
 };
 
