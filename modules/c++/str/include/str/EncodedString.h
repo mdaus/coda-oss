@@ -59,9 +59,12 @@ public:
     EncodedString(EncodedString&&) = default;
     EncodedString& operator=(EncodedString&&) = default;
 
-    explicit EncodedString(const sys::U8string&);
+    explicit EncodedString(const sys::U8string& s);
+    explicit EncodedString(sys::U8string::const_pointer);
     explicit EncodedString(const str::W1252string&);
+    explicit EncodedString(str::W1252string::const_pointer);
     explicit EncodedString(const std::string&);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
+    explicit EncodedString(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     explicit EncodedString(const std::u16string&); // converted to UTF-8 for storage
     explicit EncodedString(const std::u32string&); // converted to UTF-8 for storage
 
@@ -74,6 +77,15 @@ public:
     static EncodedString fromWindows1252(const std::string&);
     static EncodedString fromUtf16(const std::wstring&); // not currently implemetned, no need
     static EncodedString fromUtf32(const std::wstring&); // not currently implemetned, no need
+
+    void assign(sys::U8string::const_pointer);
+    void assign(str::W1252string::const_pointer);
+    void assign(std::string::const_pointer);
+    template <typename CharT>
+    void assign(const std::basic_string<CharT>& s)
+    {
+        assign(s.c_str());
+    }
     
     // For "complex" operatations, use the view.  While creating a new one
     // is cheap, there's not really any need that.
@@ -95,13 +107,13 @@ public:
     {
         return view().u8string();
     }
-
     //std::string& toUtf8(std::string&) const; // std::string is encoded as UTF-8, always.
-    //str::W1252string details_w1252string() const;  // c.f. std::filesystem::path::u8string()
-    const std::string& details_raw() const // for unit-testing
+    //str::W1252string w1252string() const;  // c.f. std::filesystem::path::u8string()
+
+    struct details final
     {
-        return s_;
-    }
+        static const std::string& string(const EncodedString&);
+    };
 };
 
 inline bool operator==(const EncodedString& lhs, const EncodedStringView& rhs)

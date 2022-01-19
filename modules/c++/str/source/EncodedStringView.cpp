@@ -109,6 +109,15 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
 
 void str::EncodedStringView::details::assign(const EncodedStringView& esv, EncodedString& es)
 {
-    es = esv.mIsUtf8 ? EncodedString(esv.u8string()) : EncodedString(details::w1252string(esv));   
+    if (esv.mIsUtf8)
+    {
+        auto p = str::cast<sys::U8string::const_pointer>(esv.mString.data());
+        es.assign(p);
+    }
+    else
+    {
+        auto p = str::cast<str::W1252string::const_pointer>(esv.mString.data());
+        es.assign(p);    
+    }
 }
 

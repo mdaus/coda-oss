@@ -23,13 +23,41 @@
 
 #include "str/EncodedString.h"
 
-str::EncodedString::EncodedString(const std::string& s) : s_(s), v_(s_) { }
+void str::EncodedString::assign(std::string::const_pointer s)
+{
+    s_ = s; // copy
+    v_ = EncodedStringView(s_);
+}
 
-str::EncodedString::EncodedString(const sys::U8string& s) :
-    s_(c_str<std::string::const_pointer>(s)), v_(EncodedStringView::fromUtf8(s_)) { }
+void str::EncodedString::assign(sys::U8string::const_pointer s)
+{
+    s_ = cast<std::string::const_pointer>(s);  // copy
+    v_ = EncodedStringView(c_str<decltype(s)>(s_));
+}
 
-str::EncodedString::EncodedString(const str::W1252string& s) :
-    s_(c_str<std::string::const_pointer>(s)), v_(EncodedStringView::fromWindows1252(s_)) { }
+void str::EncodedString::assign(str::W1252string::const_pointer s)
+{
+    s_ = cast<std::string::const_pointer>(s);  // copy
+    v_ = EncodedStringView(c_str<decltype(s)>(s_));
+}
+
+str::EncodedString::EncodedString(std::string::const_pointer s)
+{
+    assign(s);
+}
+str::EncodedString::EncodedString(const std::string& s) : EncodedString(s.c_str()) { }
+
+str::EncodedString::EncodedString(sys::U8string::const_pointer s)
+{
+    assign(s);
+}
+str::EncodedString::EncodedString(const sys::U8string& s) : EncodedString(s.c_str()) { }
+
+str::EncodedString::EncodedString(str::W1252string::const_pointer s)
+{
+    assign(s);
+}
+str::EncodedString::EncodedString(const str::W1252string& s) : EncodedString(s.c_str()) { }
 
 str::EncodedString::EncodedString(const std::u16string& s) : EncodedString(to_u8string(s)) { }
 str::EncodedString::EncodedString(const std::u32string& s) : EncodedString(to_u8string(s)) { }
@@ -52,4 +80,9 @@ str::EncodedString str::EncodedString::fromUtf8(const std::string& s)
 str::EncodedString str::EncodedString::fromWindows1252(const std::string& s)
 {
     return str::EncodedStringView::fromWindows1252(s);
+}
+
+const std::string& str::EncodedString::details::string(const EncodedString& es)
+{
+    return es.s_;
 }
