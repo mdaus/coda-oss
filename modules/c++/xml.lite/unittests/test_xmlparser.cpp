@@ -184,10 +184,8 @@ TEST_CASE(testXml_setCharacterData)
 
 static std::string testXmlPrint_(std::string& expected, const std::string& characterData)
 {
-    xml::lite::MinidomParser xmlParser;
-    auto& document = getDocument(xmlParser);
-
-    const auto pRootElement = document.createElement(xml::lite::QName(xml::lite::Uri(), "root"), characterData);
+    const xml::lite::QName qname(xml::lite::Uri(), "root");
+    const auto pRootElement = xml::lite::Document::details::createElement(qname, characterData);
 
     io::StringStream output;
     pRootElement->print(output);
@@ -211,10 +209,8 @@ TEST_CASE(testXmlPrintLegacy)
 
 TEST_CASE(testXmlPrintUtf8)
 {
-    xml::lite::MinidomParser xmlParser;
-    auto& document = getDocument(xmlParser);
-
-    const auto pRootElement = document.createElement(xml::lite::QName(xml::lite::Uri(), "root"), pIso88591Text_, xml::lite::StringEncoding::Windows1252);
+    const xml::lite::QName qname(xml::lite::Uri(), "root");
+    const auto pRootElement = xml::lite::Document::details::createElement(qname, pIso88591Text_, xml::lite::StringEncoding::Windows1252);
 
     io::StringStream output;
     pRootElement->print(output, xml::lite::StringEncoding::Utf8); // write UTF-8

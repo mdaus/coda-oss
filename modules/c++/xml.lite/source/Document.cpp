@@ -70,32 +70,23 @@ xml::lite::Element* xml::lite::Document::createElement(const std::string& qname,
     elem->setCharacterData(characterData);
     return elem;
 }
-xml::lite::Element* xml::lite::Document::createElement(const std::string& qname,
-                                   const std::string& uri,
-                                   const std::string& characterData, StringEncoding encoding)
-{
-    auto elem = newElement(qname, uri);
-    elem->setCharacterData(characterData, encoding);
-    return elem;
-}
-xml::lite::Element* xml::lite::Document::createElement(const std::string& qname,
-                                   const std::string& uri,
-                                   const sys::U8string& characterData)
-{
-    auto elem = newElement(qname, uri);
-    elem->setCharacterData(characterData);
-    return elem;
-}
 
-std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const xml::lite::QName& qname,
-                                    const std::string& characterData) const
+std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(
+        const xml::lite::QName& qname, const coda_oss::u8string& characterData) const
 {
     std::unique_ptr<xml::lite::Element> elem(newElement(qname));
     elem->setCharacterData(characterData);
     return elem;
 }
-std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const xml::lite::QName& qname,
-                                       const std::string& characterData, StringEncoding encoding) const
+std::unique_ptr<xml::lite::Element> xml::lite::Document::details::createElement(
+    const xml::lite::QName& qname, const std::string& characterData)
+{
+    std::unique_ptr<xml::lite::Element> elem(newElement(qname));
+    elem->setCharacterData(characterData);
+    return elem;
+}
+std::unique_ptr<xml::lite::Element> xml::lite::Document::details::createElement(
+    const xml::lite::QName& qname, const std::string& characterData, StringEncoding encoding)
 {
     std::unique_ptr<xml::lite::Element> elem(newElement(qname));
     elem->setCharacterData(characterData, encoding);
