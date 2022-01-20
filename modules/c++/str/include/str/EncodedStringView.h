@@ -53,6 +53,11 @@ class EncodedStringView final
     coda_oss::span<const char> mString;
     static constexpr bool mNativeIsUtf8 = details::Platform == details::PlatformType::Linux ? true : false;
     bool mIsUtf8 = mNativeIsUtf8;
+    
+    // Copy this view into an EncodedString; our EncodedStringView interface doesn't
+    // expose "mIsUtf8" so there's (intentinally) no way for clients to know the encoding.
+    friend EncodedString;
+    void assign(EncodedString&) const;
 
 public:
     EncodedStringView() = default;
@@ -119,8 +124,6 @@ public:
         // Convert (perhaps) whatever we're looking at to Windows-1252
         // Intended for unit-testing; normal use is native().
         static str::W1252string w1252string(const EncodedStringView&);  // c.f. std::filesystem::path::u8string()
-
-        static void assign(const EncodedStringView&, EncodedString&);
     };
 };
 

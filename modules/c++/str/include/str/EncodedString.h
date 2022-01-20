@@ -112,7 +112,7 @@ public:
 
     struct details final
     {
-        static const std::string& string(const EncodedString&);
+        static const std::string& string(const EncodedString&); // for unit-testing
     };
 };
 

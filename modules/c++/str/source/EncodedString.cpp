@@ -65,7 +65,7 @@ str::EncodedString::EncodedString(const std::u32string& s) : EncodedString(to_u8
 // create from a view
 str::EncodedString& str::EncodedString::operator=(const EncodedStringView& v)
 {
-    EncodedStringView::details::assign(v, *this);
+    v.assign(*this);
     return *this;
 }
 str::EncodedString::EncodedString(const EncodedStringView& v)

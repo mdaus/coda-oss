@@ -107,16 +107,16 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
         : utf8.native() == w1252.mString.data();
 }
 
-void str::EncodedStringView::details::assign(const EncodedStringView& esv, EncodedString& es)
+void str::EncodedStringView::assign(EncodedString& es) const
 {
-    if (esv.mIsUtf8)
+    if (mIsUtf8)
     {
-        auto p = str::cast<sys::U8string::const_pointer>(esv.mString.data());
+        auto p = str::cast<sys::U8string::const_pointer>(mString.data());
         es.assign(p);
     }
     else
     {
-        auto p = str::cast<str::W1252string::const_pointer>(esv.mString.data());
+        auto p = str::cast<str::W1252string::const_pointer>(mString.data());
         es.assign(p);    
     }
 }
