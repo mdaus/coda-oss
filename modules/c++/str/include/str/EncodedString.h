@@ -51,6 +51,11 @@ class EncodedString final
     // We can do most everything through the view, so keep one around.
     EncodedStringView v_;
 
+    const std::string& string() const
+    {
+        return s_;
+    }
+
 public:
     EncodedString() = default;
     ~EncodedString() = default;
@@ -112,7 +117,10 @@ public:
 
     struct details final
     {
-        static const std::string& string(const EncodedString&); // for unit-testing
+        static const std::string& string(const EncodedString& es) // for unit-testing
+        {
+            return es.string();
+        }
     };
 };
 

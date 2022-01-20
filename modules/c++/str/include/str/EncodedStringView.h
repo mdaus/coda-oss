@@ -54,10 +54,17 @@ class EncodedStringView final
     static constexpr bool mNativeIsUtf8 = details::Platform == details::PlatformType::Linux ? true : false;
     bool mIsUtf8 = mNativeIsUtf8;
     
-    // Copy this view into an EncodedString; our EncodedStringView interface doesn't
-    // expose "mIsUtf8" so there's (intentinally) no way for clients to know the encoding.
+    // Want to create an EncodedString from EncodedStringView.  The public interface
+    // doesn't expose "mIsUtf8" so there's (intentinally) no way for clients to know the encoding.
     friend EncodedString;
-    void assign(EncodedString&) const;
+
+    template <typename TReturn>
+    TReturn cast() const
+    {
+        return str::cast<TReturn>(mString.data());
+    }
+    
+    str::W1252string w1252string() const;  // c.f. std::filesystem::path::u8string()
 
 public:
     EncodedStringView() = default;
@@ -123,7 +130,10 @@ public:
     {
         // Convert (perhaps) whatever we're looking at to Windows-1252
         // Intended for unit-testing; normal use is native().
-        static str::W1252string w1252string(const EncodedStringView&);  // c.f. std::filesystem::path::u8string()
+        static str::W1252string w1252string(const EncodedStringView& v)
+        {
+            return v.w1252string();
+        }
     };
 };
 
