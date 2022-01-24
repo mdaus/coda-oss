@@ -110,14 +110,14 @@ public:
     {
         if (i > orderX())
             throw except::Exception(
-                Ctxt("Index [" + std::to_string<size_t>(i) +
+                Ctxt("Index [" + std::to_string(i) +
                 "] is out of bounds for orderX [" +
-                std::to_string<size_t>(orderX()) + "]"));
+                std::to_string(orderX()) + "]"));
         else if (p.order() != orderY())
             throw except::Exception(
-                Ctxt("OneD poly [" + std::to_string<size_t>(p.order()) +
+                Ctxt("OneD poly [" + std::to_string(p.order()) +
                 "] is of the incorrect size for orderY [" +
-                std::to_string<size_t>(orderY()) + "]"));
+                std::to_string(orderY()) + "]"));
         else
             mCoef[i] = p;
     }
