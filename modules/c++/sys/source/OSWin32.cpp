@@ -26,6 +26,8 @@
 #include <vector>
 #include <sstream>
 
+#include "str/Convert.h"
+
 #if defined(WIN32) || defined(_WIN32)
 
 #include "sys/OSWin32.h"

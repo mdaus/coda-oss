@@ -39,8 +39,6 @@
 #include "coda_oss/string.h"
 #include "coda_oss/optional.h"
 
-#include "str/Encoding.h"
-
 namespace str
 {
 template <typename T>

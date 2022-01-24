@@ -25,7 +25,6 @@
 
 #include <stdlib.h>
 #include <import/except.h>
-#include <str/Convert.h>
 
 #include "sys/Runnable.h"
 #include "sys/Err.h"

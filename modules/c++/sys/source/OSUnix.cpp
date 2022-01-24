@@ -30,6 +30,7 @@
 #include <set>
 #include <fstream>
 
+#include "str/Convert.h"
 #include "sys/Conf.h"
 
 #if !(defined(WIN32) || defined(_WIN32))

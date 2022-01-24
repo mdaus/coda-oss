@@ -37,17 +37,14 @@
 #include <config/coda_oss_config.h>
 #include <config/Version.h>
 #include <sys/CPlusPlus.h>
-#include <str/Convert.h>
 
 #if defined (__APPLE_CC__)
 #  include <iosfwd>
 #endif
 
 #include <assert.h>
-#include <iostream>
 #include <stdio.h>
 #include <stdint.h>
-#include <algorithm>
 
 #if defined(__sgi) || defined(__sgi__)
 #   include <stdarg.h>
@@ -57,7 +54,11 @@
 #   include <cstdlib>
 #endif
 
+#include <algorithm>
+#include <iostream>
 #include <memory>
+#include <string>
+
 #include "str/Format.h"
 #include "sys/TimeStamp.h"
 
@@ -347,7 +348,7 @@ namespace sys
         if (!p)
             throw except::Exception(Ctxt(
                 "Aligned allocation failure of size [" +
-                str::toString(size) + "] bytes"));
+                std::to_string(size) + "] bytes"));
         return p;
     }
 

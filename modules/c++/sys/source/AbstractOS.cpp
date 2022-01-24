@@ -29,6 +29,7 @@
 #include <stdexcept>
 #include <string>
 
+#include <import/str.h>
 #include <sys/Path.h>
 #include <sys/DirectoryEntry.h>
 #include <sys/DateTime.h>

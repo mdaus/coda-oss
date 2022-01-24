@@ -21,6 +21,8 @@
  */
 
 #include <iterator>
+
+#include "import/str.h"
 #include "sys/FileFinder.h"
 #include "sys/DirectoryEntry.h"
 #include "sys/Path.h"
