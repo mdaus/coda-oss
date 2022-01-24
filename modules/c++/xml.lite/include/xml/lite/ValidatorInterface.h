@@ -35,7 +35,6 @@
 #include <string>
 #include <vector>
 #include <io/InputStream.h>
-#include <str/Convert.h>
 #include <logging/Logger.h>
 #include <sys/filesystem.h>
 #include <xml/lite/Element.h>

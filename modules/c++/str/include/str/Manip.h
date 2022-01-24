@@ -29,8 +29,6 @@
 #include <string>
 #include <vector>
 
-#include "str/Convert.h"
-
 namespace str
 {
 /**
