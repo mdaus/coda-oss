@@ -560,7 +560,7 @@ inline bool getValue(const Element& element, T& value)
 }
 
 /*!
- *  Sets the character data for this element by calling str::toString() on the value.
+ *  Sets the character data for this element by calling std::to_string() on the value.
  *  \param value The data to add to this element
  */
 template <typename T, typename ToString>

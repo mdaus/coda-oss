@@ -140,7 +140,7 @@ public:
         for (size_t ii = 0; ii < mPrevOperations.size(); ++ii)
         {
             const std::string segmentName = std::string(1, mPrevOperations.at(ii).name[0]) +
-                    str::toString(mIteration);
+                    std::to_string(mIteration);
 
             if (mPrevOperations.at(ii).op == "put")
             {
@@ -182,7 +182,7 @@ public:
         {
             unsigned int keyToReleaseIndex = (rand() % notReleasedKeys.size());
             const std::string segmentName = std::string(1, notReleasedKeys.at(keyToReleaseIndex)) +
-                    str::toString(mIteration);
+                    std::to_string(mIteration);
 
             scratch.release(segmentName);
             notReleasedKeys.erase(notReleasedKeys.begin() + keyToReleaseIndex);
@@ -191,7 +191,7 @@ public:
         }
         else
         {
-            const std::string segmentName = std::string(1, bufferName) + str::toString(mIteration);
+            const std::string segmentName = std::string(1, bufferName) + std::to_string(mIteration);
             scratch.put<sys::ubyte>(segmentName, numElements, 1, 1);
             currentOperations.push_back(Operation("put", segmentName, numElements));
             notReleasedKeys.push_back(bufferName);
@@ -222,7 +222,7 @@ public:
         if (testIter == 0 || testIter == 1 || testIter == 2 || testIter == 5)
         {
             const std::string segmentName = std::string(1, bufferName) +
-                    str::toString(mIteration);
+                    std::to_string(mIteration);
             scratch.put<sys::ubyte>(segmentName, numElements, 1, 1);
             currentOperations.push_back(Operation("put", segmentName, numElements));
             ++testIter;
@@ -231,7 +231,7 @@ public:
         else if (testIter == 3)
         {
             const std::string segmentName = std::string(1, bufferName - 2) +
-                    str::toString(mIteration);
+                    std::to_string(mIteration);
             scratch.release(segmentName);
             currentOperations.push_back(Operation("release", segmentName, numElements));
             ++testIter;
@@ -239,7 +239,7 @@ public:
         else if (testIter == 4)
         {
             const std::string segmentName = std::string(1, bufferName - 1) +
-                    str::toString(mIteration);
+                    std::to_string(mIteration);
             scratch.release(segmentName);
             currentOperations.push_back(Operation("release", segmentName, numElements));
             ++testIter;
@@ -247,7 +247,7 @@ public:
         else if (testIter == 6)
         {
             const std::string segmentName = std::string(1, bufferName - 4) +
-                    str::toString(mIteration);
+                    std::to_string(mIteration);
             scratch.release(segmentName);
             currentOperations.push_back(Operation("release", segmentName, numElements));
             testIter = 0;
@@ -275,7 +275,7 @@ public:
         if (testIter == 0 || testIter == 1 || testIter == 3 || testIter == 5)
         {
             const std::string segmentName = std::string(1, bufferName) +
-                    str::toString(mIteration);
+                    std::to_string(mIteration);
             scratch.put<sys::ubyte>(segmentName, numElements, 1, 1);
             currentOperations.push_back(Operation("put", segmentName, numElements));
             ++testIter;
@@ -284,7 +284,7 @@ public:
         else if (testIter == 2)
         {
             const std::string segmentName = std::string(1, bufferName - 1) +
-                    str::toString(mIteration);
+                    std::to_string(mIteration);
             scratch.release(segmentName);
             currentOperations.push_back(Operation("release", segmentName, numElements));
             ++testIter;
@@ -292,7 +292,7 @@ public:
         else if (testIter == 4)
         {
             const std::string segmentName = std::string(1, bufferName - 3) +
-                    str::toString(mIteration);
+                    std::to_string(mIteration);
             scratch.release(segmentName);
             currentOperations.push_back(Operation("release", segmentName, numElements));
             ++testIter;
@@ -300,7 +300,7 @@ public:
         else if (testIter == 6)
         {
             const std::string segmentName = std::string(1, bufferName - 2) +
-                    str::toString(mIteration);
+                    std::to_string(mIteration);
             scratch.release(segmentName);
             currentOperations.push_back(Operation("release", segmentName, numElements));
             testIter = 0;

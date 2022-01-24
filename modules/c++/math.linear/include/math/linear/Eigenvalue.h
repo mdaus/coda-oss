@@ -97,8 +97,8 @@ public:
         {
             throw except::Exception(Ctxt(
                 "Expected square matrix but got rows = " +
-                str::toString(A.rows()) + ", cols = " +
-                str::toString(A.cols())));
+                std::to_string(A.rows()) + ", cols = " +
+                std::to_string(A.cols())));
         }
 
         if (isSymmetric(A))

@@ -41,7 +41,7 @@ TEST_CASE(testValue)
     for(int i = 0; i < 10; ++i)
     {
         floats.push_back(10.0f * i);
-        strings.push_back(str::toString(i));
+        strings.push_back(std::to_string(i));
     }
 
     // floats
@@ -56,7 +56,7 @@ TEST_CASE(testValue)
     v.setContainer(strings);
     for(int i = 0; i < 10; ++i)
     {
-        TEST_ASSERT_EQ(v.at<std::string>(i), str::toString(i));
+        TEST_ASSERT_EQ(v.at<std::string>(i), std::to_string(i));
     }
     TEST_ASSERT_EQ(v.size(), static_cast<size_t>(10));
 }

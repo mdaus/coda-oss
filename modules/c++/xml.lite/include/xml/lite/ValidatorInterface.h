@@ -73,7 +73,7 @@ public:
         std::ostringstream oss;
         oss << "[" << this->getLevel() << "]" << 
             " from File: " << this->getFile() << 
-            " on Line: " << str::toString(this->getLine()) << 
+            " on Line: " << std::to_string(this->getLine()) << 
             " with Message: " << this->getMessage();
         return oss.str();
     }
