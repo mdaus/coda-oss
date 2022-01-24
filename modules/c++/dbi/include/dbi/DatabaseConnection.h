@@ -28,7 +28,9 @@
 #include <map>
 #include <string>
 #include <memory>
+
 #include "except/Exception.h"
+#include "str/Convert.h"
 #include "sys/Conf.h"
 #include "mem/SharedPtr.h"
 
