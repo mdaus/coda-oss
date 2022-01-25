@@ -95,7 +95,7 @@ public:
         {
             throw except::Exception(Ctxt(
                 "ConvexHull constructor error: must use at least 2 input "
-                "points but " + std::to_string(rawPoints.size()) +
+                "points but " + str::toString(rawPoints.size()) +
                 " were used"));
         }
 

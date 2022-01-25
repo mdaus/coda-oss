@@ -32,7 +32,7 @@ namespace str
 template <typename T>
 std::string toString(const coda_oss::optional<T>& value)
 {
-    return std::to_string(value.value());
+    return str::toString(value.value());
 }
 }
 

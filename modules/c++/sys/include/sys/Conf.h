@@ -37,6 +37,7 @@
 #include <config/coda_oss_config.h>
 #include <config/Version.h>
 #include <sys/CPlusPlus.h>
+#include <str/Convert.h>
 
 #if defined (__APPLE_CC__)
 #  include <iosfwd>
@@ -348,7 +349,7 @@ namespace sys
         if (!p)
             throw except::Exception(Ctxt(
                 "Aligned allocation failure of size [" +
-                std::to_string(size) + "] bytes"));
+                str::toString(size) + "] bytes"));
         return p;
     }
 

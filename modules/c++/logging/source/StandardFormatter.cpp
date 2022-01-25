@@ -48,7 +48,7 @@ void StandardFormatter::format(const LogRecord* record, io::OutputStream& os) co
     // populate log
     long threadId = sys::getThreadID();
     std::string format = mFmt;
-    str::replace(format, THREAD_ID, std::to_string(threadId));
+    str::replace(format, THREAD_ID, str::toString(threadId));
     str::replace(format, LOG_NAME,  name);
     str::replace(format, LOG_LEVEL, record->getLevelName());
     str::replace(format, TIMESTAMP, record->getTimeStamp());
@@ -56,7 +56,7 @@ void StandardFormatter::format(const LogRecord* record, io::OutputStream& os) co
     {
         str::replace(format, FILE_NAME, record->getFile());
         str::replace(format, LINE_NUM,  
-                std::to_string(record->getLineNum()));
+                str::toString(record->getLineNum()));
     }
     else
     {

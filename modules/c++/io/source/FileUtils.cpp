@@ -155,7 +155,7 @@ std::string io::FileUtils::createFile(std::string dirname,
             int count = 0;
             while (os.exists(outFilename))
             {
-                std::string base = filename + "-" + std::to_string(++count);
+                std::string base = filename + "-" + str::toString(++count);
                 outFilename = sys::Path::joinPaths(dirname, base);
                 if (!ext.empty())
                 {
