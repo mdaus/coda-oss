@@ -23,8 +23,6 @@
 
 #include <algorithm>
 
-#include "import/str.h"
-
 namespace fs = coda_oss::filesystem;
 
 namespace sys

@@ -29,6 +29,8 @@
 
 #include <sys/Conf.h>
 
+#include <str/Convert.h>
+
 #include <except/Exception.h>
 
 #include <types/RowCol.h>

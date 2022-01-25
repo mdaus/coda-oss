@@ -26,6 +26,7 @@
 #include <memory>
 
 #include <import/except.h>
+#include <str/Convert.h>
 #include <sys/Err.h>
 #include <sys/Exec.h>
 #include <mem/ScopedArray.h>

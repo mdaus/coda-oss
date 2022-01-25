@@ -27,6 +27,7 @@
 
 #include <sys/Conf.h>
 #include <except/Exception.h>
+#include <str/Convert.h>
 #include <math/linear/Matrix2D.h>
 #include <math/linear/Vector.h>
 

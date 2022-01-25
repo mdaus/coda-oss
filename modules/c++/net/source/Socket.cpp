@@ -101,7 +101,9 @@ size_t net::Socket::recv(void* b, size_t len, int flags)
 
         sys::Err err;
         std::ostringstream oss;
-        oss << "When receiving " << str::toString(len) << " bytes: " << err.toString(); 
+        oss << "When receiving " << str::toString<sys::Size_T>(len) << " bytes: " << 
+            err.toString(); 
+
         throw sys::SocketException(Ctxt(oss.str()));
     }
     else if (numBytes == 0)

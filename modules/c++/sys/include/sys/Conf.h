@@ -44,8 +44,10 @@
 #endif
 
 #include <assert.h>
+#include <iostream>
 #include <stdio.h>
 #include <stdint.h>
+#include <algorithm>
 
 #if defined(__sgi) || defined(__sgi__)
 #   include <stdarg.h>
@@ -55,11 +57,7 @@
 #   include <cstdlib>
 #endif
 
-#include <algorithm>
-#include <iostream>
 #include <memory>
-#include <string>
-
 #include "str/Format.h"
 #include "sys/TimeStamp.h"
 

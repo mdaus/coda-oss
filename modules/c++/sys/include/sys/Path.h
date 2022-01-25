@@ -28,6 +28,8 @@
 #include <deque>
 #include <utility>
 
+#include <import/str.h>
+
 #include "sys/OS.h"
 #include "sys/filesystem.h"
 
