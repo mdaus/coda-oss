@@ -29,16 +29,16 @@ void str::EncodedString::assign(std::string::const_pointer s)
     v_ = EncodedStringView(s_);
 }
 
-void str::EncodedString::assign(sys::U8string::const_pointer s)
+void str::EncodedString::assign(coda_oss::u8string::const_pointer s)
 {
     s_ = cast<std::string::const_pointer>(s);  // copy
-    v_ = EncodedStringView(c_str<decltype(s)>(s_));
+    v_ = EncodedStringView(c_str<decltype(s)>(s_)); // avoid copy-paste error
 }
 
 void str::EncodedString::assign(str::W1252string::const_pointer s)
 {
     s_ = cast<std::string::const_pointer>(s);  // copy
-    v_ = EncodedStringView(c_str<decltype(s)>(s_));
+    v_ = EncodedStringView(c_str<decltype(s)>(s_)); // avoid copy-paste error
 }
 
 str::EncodedString::EncodedString(std::string::const_pointer s)
@@ -47,11 +47,11 @@ str::EncodedString::EncodedString(std::string::const_pointer s)
 }
 str::EncodedString::EncodedString(const std::string& s) : EncodedString(s.c_str()) { }
 
-str::EncodedString::EncodedString(sys::U8string::const_pointer s)
+str::EncodedString::EncodedString(coda_oss::u8string::const_pointer s)
 {
     assign(s);
 }
-str::EncodedString::EncodedString(const sys::U8string& s) : EncodedString(s.c_str()) { }
+str::EncodedString::EncodedString(const coda_oss::u8string& s) : EncodedString(s.c_str()) { }
 
 str::EncodedString::EncodedString(str::W1252string::const_pointer s)
 {
@@ -65,7 +65,14 @@ str::EncodedString::EncodedString(const std::u32string& s) : EncodedString(to_u8
 // create from a view
 str::EncodedString& str::EncodedString::operator=(const EncodedStringView& v)
 {
-    EncodedStringView::details::assign(v, *this);
+    if (v.mIsUtf8)
+    {
+        assign(v.cast<coda_oss::u8string::const_pointer>());
+    }
+    else
+    {
+        assign(v.cast<str::W1252string::const_pointer>());
+    }
     return *this;
 }
 str::EncodedString::EncodedString(const EncodedStringView& v)
@@ -80,9 +87,4 @@ str::EncodedString str::EncodedString::fromUtf8(const std::string& s)
 str::EncodedString str::EncodedString::fromWindows1252(const std::string& s)
 {
     return str::EncodedStringView::fromWindows1252(s);
-}
-
-const std::string& str::EncodedString::details::string(const EncodedString& es)
-{
-    return es.s_;
 }
