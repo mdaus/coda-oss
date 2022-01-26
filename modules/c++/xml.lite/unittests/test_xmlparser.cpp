@@ -31,6 +31,7 @@
 #include <TestCase.h>
 
 #include "xml/lite/MinidomParser.h"
+#include "xml/lite/Validator.h"
 
 static const std::string text("TEXT");
 static const std::string strXml = "<root><doc><a>" + text + "</a></doc></root>";
@@ -407,6 +408,35 @@ TEST_CASE(testReadEmbeddedXml)
     TEST_ASSERT_EQ(classificationText_utf_8, u8_characterData_);
 }
 
+TEST_CASE(testValidateXml)
+{
+    const auto coda_oss = findRoot();
+    const auto unittests = coda_oss / "modules" / "c++" / "xml.lite" / "unittests";
+
+    const auto xsd = unittests / "schema" / "doc.xsd";
+    if (!exists(xsd))  // running in "externals" of a different project
+    {
+        std::clog << "Path does not exist: '" << xsd << "'\n";
+        return;
+    }
+    const auto path = unittests / "utf-8.xml";
+    if (!exists(path))  // running in "externals" of a different project
+    {
+        std::clog << "Path does not exist: '" << path << "'\n";
+        return;
+    }
+
+
+    const std::vector<std::filesystem::path> schemaPaths{xsd.parent_path()};
+    xml::lite::Validator validator(schemaPaths, nullptr /*log*/, false /*recursive*/);
+
+    std::vector<xml::lite::ValidationInfo> errors;
+    io::FileInputStream fis(path.string());
+    const auto result = validator.validate(fis, path.string(), errors);
+    TEST_ASSERT_FALSE(result);
+    TEST_ASSERT_TRUE(errors.empty());
+}
+
 int main(int, char**)
 {
     TEST_CHECK(testXmlParseSimple);
@@ -424,4 +454,6 @@ int main(int, char**)
     TEST_CHECK(testReadEncodedXmlFiles);
     TEST_CHECK(testReadXmlFiles);
     TEST_CHECK(testReadEmbeddedXml);
+
+    TEST_CHECK(testValidateXml);
 }
