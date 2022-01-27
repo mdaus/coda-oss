@@ -20,8 +20,9 @@
  *
  */
 
-#ifndef __IO_STRING_STREAM_H__
-#define __IO_STRING_STREAM_H__
+#ifndef CODA_OSS_io_StringStream_h_INCLUDED_
+#define CODA_OSS_io_StringStream_h_INCLUDED_
+#pragma once
 
 /*! \file StringStream.h
  *  \brief  A stream interface to the std::stringstream from C++ STL.
@@ -36,6 +37,8 @@
 #include "io/BidirectionalStream.h"
 #include "sys/Conf.h"
 #include "io/SeekableStreams.h"
+#include "coda_oss/string.h"
+#include "str/Encoding.h"
 
 namespace io
 {
@@ -130,5 +133,96 @@ private:
     std::stringstream mData{std::stringstream::in | std::stringstream::out | std::stringstream::binary};
 };
 
+template<typename CharT>
+struct StringStreamT final : public SeekableBidirectionalStream
+{
+    StringStreamT() = default;
+
+    StringStreamT(const StringStreamT&) = delete;
+    StringStreamT& operator=(const StringStreamT&) = delete;
+
+    using stringstream = std::basic_stringstream<CharT>;
+
+    /*!
+     *  Returns the stringstream associated with this StringStream
+     *  \return the stringstream
+     */
+    const stringstream& stream() const
+    {
+        return mData;
+    }
+
+    sys::Off_T tell()
+    {
+        return mData.tellg();
+    }
+
+    sys::Off_T seek(sys::Off_T offset, Whence whence)
+    {
+        std::ios::seekdir flags = std::ios::cur;
+        switch (whence)
+        {
+        case START:
+            flags = std::ios::beg;
+            break;
+        case END:
+            flags = std::ios::end;
+            break;
+        case CURRENT:
+        default:
+            flags = std::ios::cur;
+            break;
+        }
+
+        // off_t orig = tell();
+        mData.seekg(offset, flags);
+        return tell();
+    }
+
+    /*!
+     *  Returns the available bytes to read from the stream
+     *  \return the available bytes to read
+     */
+    sys::Off_T available();
+
+    using OutputStream::write;
+
+    /*!
+     *  Writes the bytes in data to the stream.
+     *  \param buffer the data to write to the stream
+     *  \param size the number of bytes to write to the stream
+     */
+    void write(const void* buffer, sys::Size_T size);
+
+    //! Returns the internal std::stringstream
+    stringstream& stream()
+    {
+        return mData;
+    }
+
+    void reset()
+    {
+        mData.str("");
+        // clear eof/errors/etc.
+        mData.clear();
+    }
+
+private:
+    /*!
+     * Read up to len bytes of data from this buffer into an array
+     * update the mark
+     * \param buffer Buffer to read into
+     * \param len The length to read
+     * \throw IoException
+     * \return  The number of bytes read
+     */
+    sys::SSize_T readImpl(void* buffer, size_t len) override;
+
+    stringstream mData{stringstream::in | stringstream::out | stringstream::binary};
+};
+
+using U8StringStream = StringStreamT<coda_oss::u8string::value_type>;
+using W1252StringStream = StringStreamT<str::W1252string::value_type>;
+
 }
-#endif //__STRING_STREAM_H__
+#endif // CODA_OSS_io_StringStream_h_INCLUDED_
