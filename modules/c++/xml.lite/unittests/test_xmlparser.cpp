@@ -405,8 +405,7 @@ TEST_CASE(testReadEmbeddedXml)
     TEST_ASSERT_EQ(classificationText_utf_8, u8_characterData_);
 }
 
-static void testValidateXmlFile(const std::string& testName, const std::string& xmlFile,
-    const xml::lite::StringEncoding* pEncoding = nullptr)
+static void testValidateXmlFile_(const std::string& testName, const std::string& xmlFile, const xml::lite::StringEncoding* pEncoding)
 {
     const auto unittests = findRoot() / "modules" / "c++" / "xml.lite" / "unittests";
 
@@ -432,20 +431,28 @@ static void testValidateXmlFile(const std::string& testName, const std::string& 
     TEST_ASSERT_FALSE(result);
     TEST_ASSERT_TRUE(errors.empty());
 }
+static void testValidateXmlFile(const std::string& testName, const std::string& xmlFile)
+{
+    testValidateXmlFile_(testName, xmlFile, nullptr /*pEncoding*/);
+}
+static void testValidateXmlFile(const std::string& testName, const std::string& xmlFile, xml::lite::StringEncoding encoding)
+{
+    testValidateXmlFile_(testName, xmlFile, &encoding);
+}
 TEST_CASE(testValidateXmlFile)
 {
     testValidateXmlFile(testName, "ascii.xml");
     testValidateXmlFile(testName, "ascii_encoding_utf-8.xml");
 
+    // legacy validate() API, new string conversion
     testValidateXmlFile(testName, "utf-8.xml");
     testValidateXmlFile(testName, "encoding_utf-8.xml");
-    auto platfromEncoding = PlatformEncoding; // "conditional expression is constant"
-    if (platfromEncoding == xml::lite::StringEncoding::Windows1252)
-    {
-        // TODO: should these work on Linux? Need to store encoding in FileInputStream
-        testValidateXmlFile(testName, "windows-1252.xml");
-        testValidateXmlFile(testName, "encoding_windows-1252.xml");
-    }
+
+    // new validate() API
+    testValidateXmlFile(testName, "utf-8.xml", xml::lite::StringEncoding::Utf8);
+    testValidateXmlFile(testName, "encoding_utf-8.xml", xml::lite::StringEncoding::Utf8);
+    testValidateXmlFile(testName, "windows-1252.xml", xml::lite::StringEncoding::Windows1252);
+    testValidateXmlFile(testName, "encoding_windows-1252.xml", xml::lite::StringEncoding::Windows1252);
 }
 
 static void testValidateXmlFileLegacy(const std::string& testName, const std::string& xmlFile, bool success=true)
