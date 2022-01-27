@@ -20,18 +20,21 @@
  *
  */
 
-#include <xml/lite/xml_lite_config.h>
-#ifdef USE_XERCES
-#include <xml/lite/ValidatorXerces.h>
-
 #include <algorithm>
 #include <iterator>
+#include <std/filesystem>
+#include <std/memory>
 
 #include <sys/OS.h>
 #include <io/StringStream.h>
 #include <mem/ScopedArray.h>
+#include <str/EncodedStringView.h>
 
-namespace fs = coda_oss::filesystem;
+namespace fs = std::filesystem;
+
+#include <xml/lite/xml_lite_config.h>
+#ifdef USE_XERCES
+#include <xml/lite/ValidatorXerces.h>
 
 namespace xml
 {
@@ -89,6 +92,11 @@ ValidatorXerces::ValidatorXerces(
         bool recursive) :
     ValidatorXerces(convert(schemaPaths), log, recursive)
 {
+    // The string conversion code in validate() doesn't work right on all platforms
+    // for non-ASCII characters.  But changing that to be correct could break
+    // existing code someplace; thus, it's enabled only if using the new
+    // fs::path overload, std::string retains existing behavior.
+    mLegacyStringConversion = false;
 }
 ValidatorXerces::ValidatorXerces(
     const std::vector<std::string>& schemaPaths, 
@@ -187,8 +195,20 @@ bool ValidatorXerces::validate(const std::string& xml,
         xercesc::XMLPlatformUtils::fgMemoryManager);
 
     // expand to the wide character data for use with xerces
-    XercesLocalString xmlWide(xml);
-    input.setStringData(xmlWide.toXMLCh());
+    std::unique_ptr<XercesLocalString> pXmlWide;
+    std::unique_ptr<std::wstring> pWString;
+    if (mLegacyStringConversion)
+    {
+        // This doesn't work right for UTF-8 or Windows-1252
+        pXmlWide = std::make_unique<XercesLocalString>(xml);
+        input.setStringData(pXmlWide->toXMLCh());
+    }
+    else
+    {
+        const str::EncodedStringView xmlView(xml);
+        pWString = std::make_unique<std::wstring>(xmlView.wstring());
+        input.setStringData(pWString->c_str());
+    }
 
     // validate the document
     mValidator->parse(&input)->release();

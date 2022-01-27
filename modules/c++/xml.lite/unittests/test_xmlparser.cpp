@@ -417,7 +417,7 @@ static void testValidateXmlFile(const std::string& testName, const std::string& 
     }
     const auto path = unittests / xmlFile;
 
-    const std::vector<std::filesystem::path> schemaPaths{xsd.parent_path()};
+    const std::vector<std::filesystem::path> schemaPaths{xsd.parent_path()}; // fs::path -> new string-conversion code
     const xml::lite::Validator validator(schemaPaths, nullptr /*log*/);
 
     io::FileInputStream fis(path);
@@ -430,16 +430,20 @@ static void testValidateXmlFile(const std::string& testName, const std::string& 
     TEST_ASSERT_FALSE(result);
     TEST_ASSERT_TRUE(errors.empty());
 }
-
 TEST_CASE(testValidateXmlFile)
 {
     testValidateXmlFile(testName, "ascii.xml");
     testValidateXmlFile(testName, "ascii_encoding_utf-8.xml");
 
-    //testValidateXmlFile(testName, "utf-8.xml");
-    //testValidateXmlFile(testName, "encoding_utf-8.xml");
-    //testValidateXmlFile(testName, "windows-1252.xml");
-    //testValidateXmlFile(testName, "encoding_windows-1252.xml");
+    testValidateXmlFile(testName, "utf-8.xml");
+    testValidateXmlFile(testName, "encoding_utf-8.xml");
+    auto platfromEncoding = PlatformEncoding; // "conditional expression is constant"
+    if (platfromEncoding == xml::lite::StringEncoding::Windows1252)
+    {
+        // TODO: should these work on Linux? Need to store encoding in FileInputStream
+        testValidateXmlFile(testName, "windows-1252.xml");
+        testValidateXmlFile(testName, "encoding_windows-1252.xml");
+    }
 }
 
 static void testValidateXmlFileLegacy(const std::string& testName, const std::string& xmlFile, bool success=true)
@@ -481,7 +485,7 @@ TEST_CASE(testValidateXmlFileLegacy)
     testValidateXmlFile(testName, "ascii.xml");
     testValidateXmlFile(testName, "ascii_encoding_utf-8.xml");
 
-    // These are OK on Windows but fail on Linux
+    // These are OK on Windows but fail on Linux; this is as-expected with "legacy" string conversion.
     constexpr auto success = sys::Platform == sys::PlatformType::Windows ? true : false;
     testValidateXmlFileLegacy(testName, "utf-8.xml", success);
     testValidateXmlFileLegacy(testName, "encoding_utf-8.xml", success);

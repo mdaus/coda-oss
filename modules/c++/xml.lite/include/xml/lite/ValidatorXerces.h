@@ -99,6 +99,7 @@ private:
 class ValidatorXerces : public ValidatorInterface
 {
     XercesContext mCtxt;    //! this must be the first member listed
+    bool mLegacyStringConversion = true; // use exsiting code for XMLCh* conversion
 
 public:
 
@@ -113,7 +114,7 @@ public:
     ValidatorXerces(const std::vector<std::string>& schemaPaths, 
                     logging::Logger* log,
                     bool recursive = true);
-    ValidatorXerces(const std::vector<coda_oss::filesystem::path>&,
+    ValidatorXerces(const std::vector<coda_oss::filesystem::path>&, // fs::path -> mLegacyStringConversion = false
                     logging::Logger* log,
                     bool recursive = true);
 
