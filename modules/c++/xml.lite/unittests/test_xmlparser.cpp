@@ -409,25 +409,19 @@ static void testValidateXmlFile(const std::string& testName, const std::string& 
 {
     const auto unittests = findRoot() / "modules" / "c++" / "xml.lite" / "unittests";
 
-    const auto xsd = unittests / "schema" / "doc.xsd";
+    const auto xsd = unittests / "doc.xsd";
     if (!exists(xsd))  // running in "externals" of a different project
     {
         std::clog << "Path does not exist: '" << xsd << "'\n";
         return;
     }
-
     const auto path = unittests / xmlFile;
-    if (!exists(path))  // running in "externals" of a different project
-    {
-        std::clog << "Path does not exist: '" << path << "'\n";
-        return;
-    }
 
     const std::vector<std::filesystem::path> schemaPaths{xsd.parent_path()};
-    const xml::lite::Validator validator(schemaPaths, nullptr /*log*/, false /*recursive*/);
+    const xml::lite::Validator validator(schemaPaths, nullptr /*log*/);
 
+    io::FileInputStream fis(path);
     std::vector<xml::lite::ValidationInfo> errors;
-    io::FileInputStream fis(path.string());
     const auto result = validator.validate(fis, path.string() /*xmlID*/, errors);
     for (const auto& error : errors)
     {
