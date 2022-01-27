@@ -134,8 +134,14 @@ public:
     virtual bool validate(const std::string& xml,
                           const std::string& xmlID,
                           std::vector<ValidationInfo>& errors) const override;
+    bool validate(const coda_oss::u8string&, const std::string& xmlID, std::vector<ValidationInfo>&) const override;
+    bool validate(const str::W1252string&, const std::string& xmlID, std::vector<ValidationInfo>&) const override;
 
 private:
+    template <typename CharT>
+    bool validate_(const std::basic_string<CharT>& xml, bool legacyStringConversion,
+                   const std::string& xmlID,
+                   std::vector<ValidationInfo>& errors) const;
 
     std::unique_ptr<xercesc::XMLGrammarPool> mSchemaPool;
     std::unique_ptr<xml::lite::ValidationErrorHandler> mErrorHandler;

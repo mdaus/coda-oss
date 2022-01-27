@@ -39,6 +39,8 @@
 #include <logging/Logger.h>
 #include <sys/filesystem.h>
 #include <xml/lite/Element.h>
+#include <coda_oss/string.h>
+#include <str/Encoding.h>
 
 namespace xml
 {
@@ -162,7 +164,14 @@ public:
     virtual bool validate(const std::string& xml,
                           const std::string& xmlID,
                           std::vector<ValidationInfo>& errors) const = 0;
-
+    virtual bool validate(const coda_oss::u8string&, const std::string& /*xmlID*/, std::vector<ValidationInfo>&) const // =0 would cause existing code to break
+    {
+        return true;  // i.e., an error 
+    }
+     virtual bool validate(const str::W1252string&, const std::string& /*xmlID*/, std::vector<ValidationInfo>&) const // =0 would cause existing code to break
+    {
+        return true;  // i.e., an error 
+    }
 };
 
 inline std::ostream& operator<< (std::ostream& out,
