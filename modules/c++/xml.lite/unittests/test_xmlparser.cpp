@@ -242,8 +242,7 @@ TEST_CASE(testXmlParseAndPrintUtf8)
 
 static void testReadEncodedXmlFile(const std::string& testName, const std::string& xmlFile, bool preserveCharacterData)
 {
-    const auto coda_oss = findRoot();
-    const auto unittests = coda_oss / "modules" / "c++" / "xml.lite" / "unittests";
+    const auto unittests = findRoot() / "modules" / "c++" / "xml.lite" / "unittests";
 
     const auto path = unittests / xmlFile;
     if (!exists(path))  // running in "externals" of a different project
@@ -293,8 +292,7 @@ TEST_CASE(testReadEncodedXmlFiles)
 
 static void testReadXmlFile(const std::string& testName, const std::string& xmlFile, bool preserveCharacterData)
 {
-    const auto coda_oss = findRoot();
-    const auto unittests = coda_oss / "modules" / "c++" / "xml.lite" / "unittests";
+    const auto unittests =  findRoot() / "modules" / "c++" / "xml.lite" / "unittests";
 
     const auto path = unittests / xmlFile;
     if (!exists(path))  // running in "externals" of a different project
@@ -371,8 +369,7 @@ static bool find_string(io::FileInputStream& stream, const std::string& s)
 TEST_CASE(testReadEmbeddedXml)
 {
     // This is a binary file with XML burried in it somewhere
-    const auto coda_oss = findRoot();
-    const auto unittests = coda_oss / "modules" / "c++" / "xml.lite" / "unittests";
+    const auto unittests = findRoot() / "modules" / "c++" / "xml.lite" / "unittests";
 
     const auto path = unittests / "embedded_xml.bin";
     if (!exists(path))  // running in "externals" of a different project
@@ -408,10 +405,9 @@ TEST_CASE(testReadEmbeddedXml)
     TEST_ASSERT_EQ(classificationText_utf_8, u8_characterData_);
 }
 
-TEST_CASE(testValidateXml)
+static void testValidateXmlFile(const std::string& testName, const std::string& xmlFile)
 {
-    const auto coda_oss = findRoot();
-    const auto unittests = coda_oss / "modules" / "c++" / "xml.lite" / "unittests";
+    const auto unittests = findRoot() / "modules" / "c++" / "xml.lite" / "unittests";
 
     const auto xsd = unittests / "schema" / "doc.xsd";
     if (!exists(xsd))  // running in "externals" of a different project
@@ -419,22 +415,38 @@ TEST_CASE(testValidateXml)
         std::clog << "Path does not exist: '" << xsd << "'\n";
         return;
     }
-    const auto path = unittests / "utf-8.xml";
+
+    const auto path = unittests / xmlFile;
     if (!exists(path))  // running in "externals" of a different project
     {
         std::clog << "Path does not exist: '" << path << "'\n";
         return;
     }
 
-
     const std::vector<std::filesystem::path> schemaPaths{xsd.parent_path()};
-    xml::lite::Validator validator(schemaPaths, nullptr /*log*/, false /*recursive*/);
+    const xml::lite::Validator validator(schemaPaths, nullptr /*log*/, false /*recursive*/);
 
     std::vector<xml::lite::ValidationInfo> errors;
     io::FileInputStream fis(path.string());
-    const auto result = validator.validate(fis, path.string(), errors);
+    const auto result = validator.validate(fis, path.string() /*xmlID*/, errors);
+    for (const auto& error : errors)
+    {
+        std::clog << error.toString() << "\n";
+    }
     TEST_ASSERT_FALSE(result);
     TEST_ASSERT_TRUE(errors.empty());
+}
+
+TEST_CASE(testValidateXmlFile)
+{
+    testValidateXmlFile(testName, "ascii.xml");
+    testValidateXmlFile(testName, "ascii_encoding_utf-8.xml");
+
+    //testValidateXmlFile(testName, "utf-8.xml");
+    //testValidateXmlFile(testName, "encoding_utf-8.xml");
+
+    //testValidateXmlFile(testName, "windows-1252.xml");
+    //testValidateXmlFile(testName, "encoding_windows-1252.xml");
 }
 
 int main(int, char**)
@@ -455,5 +467,5 @@ int main(int, char**)
     TEST_CHECK(testReadXmlFiles);
     TEST_CHECK(testReadEmbeddedXml);
 
-    TEST_CHECK(testValidateXml);
+    TEST_CHECK(testValidateXmlFile);
 }
