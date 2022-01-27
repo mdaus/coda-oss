@@ -129,6 +129,7 @@ public:
     // Convert whatever we're looking at to UTF-16 or UTF-32
     std::u16string u16string() const;  // c.f. std::filesystem::path::u8string()
     std::u32string u32string() const;  // c.f. std::filesystem::path::u8string()
+    std::wstring wstring() const; // UTF-16 on Windows, UTF-32 on Linux
 
     bool operator_eq(const EncodedStringView&) const;
 

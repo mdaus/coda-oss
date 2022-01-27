@@ -56,6 +56,10 @@ class EncodedString final
         return s_;
     }
 
+    void assign(coda_oss::u8string::const_pointer);
+    void assign(str::W1252string::const_pointer);
+    void assign(std::string::const_pointer);
+
 public:
     EncodedString() = default;
     ~EncodedString() = default;
@@ -86,15 +90,6 @@ public:
     static EncodedString fromWindows1252(const std::string&);
     static EncodedString fromUtf16(const std::wstring&); // not currently implemetned, no need
     static EncodedString fromUtf32(const std::wstring&); // not currently implemetned, no need
-
-    void assign(coda_oss::u8string::const_pointer);
-    void assign(str::W1252string::const_pointer);
-    void assign(std::string::const_pointer);
-    template <typename CharT>
-    void assign(const std::basic_string<CharT>& s)
-    {
-        assign(s.c_str());
-    }
     
     // For "complex" operatations, use the view.  While creating a new one
     // is cheap, there's not really any need that.
@@ -127,6 +122,10 @@ public:
     std::u32string u32string() const  // c.f. std::filesystem::path::u8string()
     {
         return view().u32string();
+    }
+    std::wstring wstring() const // UTF-16 on Windows, UTF-32 on Linux
+    {
+        return view().wstring();
     }
 
     struct details final

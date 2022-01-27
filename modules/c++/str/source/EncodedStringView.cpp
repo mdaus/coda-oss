@@ -70,12 +70,17 @@ std::string& str::EncodedStringView::toUtf8(std::string& result) const
 
 std::u16string str::EncodedStringView::u16string() const
 {
-    return str::to_u16string(c_str(), mString.size());
+    return str::details::to_u16string(mString.data(), mString.size(), mIsUtf8);
 }
 std::u32string str::EncodedStringView::u32string() const
 {
-    return str::to_u32string(c_str(), mString.size());
+    return str::details::to_u32string(mString.data(), mString.size(), mIsUtf8);
 }
+std::wstring str::EncodedStringView::wstring() const  // UTF-16 on Windows, UTF-32 on Linux
+{
+    return str::details::to_wstring(mString.data(), mString.size(), mIsUtf8);
+}
+
 
 str::W1252string str::EncodedStringView::w1252string() const
 {

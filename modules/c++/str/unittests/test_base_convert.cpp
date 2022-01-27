@@ -274,6 +274,7 @@ static const auto classificationText_utf_8 = str::EncodedString::fromUtf8("NON C
 static const auto classificationText_iso8859_1 =  str::EncodedString::fromWindows1252("NON CLASSIFI\xc9 / UNCLASSIFIED");  // ISO8859-1 "NON CLASSIFIÉ / UNCLASSIFIED"    
 // UTF-16 on Windows, UTF-32 on Linux
 static const auto classificationText_wide_ = L"NON CLASSIFI\xc9 / UNCLASSIFIED"; // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
+static const str::EncodedString classificationText_wide(classificationText_wide_);
 static const auto classificationText_platform =
     sys::Platform == sys::PlatformType::Linux ? classificationText_utf_8.native() : classificationText_iso8859_1.native();
 
@@ -300,6 +301,12 @@ TEST_CASE(test_u8string_to_u16string)
     const std::wstring s = str::c_str<std::wstring::const_pointer>(actual); // Windows: std::wstring == std::u16string
     TEST_ASSERT(classificationText_wide_ == s);  // _EQ wants to do toString()
     #endif
+
+    TEST_ASSERT_EQ(classificationText_wide, classificationText_utf_8);
+    TEST_ASSERT_EQ(classificationText_wide, classificationText_iso8859_1);
+
+    TEST_ASSERT(classificationText_wide.u16string() == classificationText_utf_8.u16string()); // _EQ wants to do toString()
+    TEST_ASSERT(classificationText_wide.u16string() == classificationText_iso8859_1.u16string()); // _EQ wants to do toString()
 }
 
 TEST_CASE(test_u8string_to_u32string)
@@ -309,6 +316,12 @@ TEST_CASE(test_u8string_to_u32string)
     const std::wstring s  = str::c_str<std::wstring::const_pointer>(actual); // Linux: std::wstring == std::u32string
     TEST_ASSERT(classificationText_wide_ == s); // _EQ wants to do toString()
     #endif
+
+    TEST_ASSERT_EQ(classificationText_wide, classificationText_utf_8);
+    TEST_ASSERT_EQ(classificationText_wide, classificationText_iso8859_1);
+
+    TEST_ASSERT(classificationText_wide.u32string() == classificationText_utf_8.u32string()); // _EQ wants to do toString()
+    TEST_ASSERT(classificationText_wide.u32string() == classificationText_iso8859_1.u32string()); // _EQ wants to do toString()
 }
 
 static void test_EncodedStringView_(const std::string& testName,
