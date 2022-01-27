@@ -34,6 +34,8 @@
  */
 
 #include <sstream>
+
+#include "gsl/gsl.h"
 #include "io/BidirectionalStream.h"
 #include "sys/Conf.h"
 #include "io/SeekableStreams.h"
@@ -113,7 +115,7 @@ struct StringStream : public SeekableBidirectionalStream
 
     void reset()
     {
-        mData.str("");
+        mData.str(std::string());
         // clear eof/errors/etc.
         mData.clear();
     }
@@ -183,7 +185,16 @@ struct StringStreamT final : public SeekableBidirectionalStream
      *  Returns the available bytes to read from the stream
      *  \return the available bytes to read
      */
-    sys::Off_T available();
+    sys::Off_T available()
+    {
+        const auto where = tell();
+
+        mData.seekg(0, std::ios::end);
+        const auto until = tell();
+
+        mData.seekg(where, std::ios::beg);
+        return (until - where);
+    }
 
     using OutputStream::write;
 
@@ -192,7 +203,11 @@ struct StringStreamT final : public SeekableBidirectionalStream
      *  \param buffer the data to write to the stream
      *  \param size the number of bytes to write to the stream
      */
-    void write(const void* buffer, sys::Size_T size);
+    void write(const void* buffer, sys::Size_T size)
+    {
+        auto buffer_ = static_cast<const CharT*>(buffer);
+        mData.write(buffer_, size);
+    }
 
     //! Returns the internal std::stringstream
     stringstream& stream()
@@ -202,7 +217,7 @@ struct StringStreamT final : public SeekableBidirectionalStream
 
     void reset()
     {
-        mData.str("");
+        mData.str(std::basic_string<CharT>());
         // clear eof/errors/etc.
         mData.clear();
     }
@@ -216,7 +231,25 @@ private:
      * \throw IoException
      * \return  The number of bytes read
      */
-    sys::SSize_T readImpl(void* buffer, size_t len) override;
+    sys::SSize_T readImpl(void* buffer, size_t len) override
+    {
+        const auto maxSize = available();
+        if (maxSize <= 0)
+            return io::InputStream::IS_END;
+            
+        if (maxSize < gsl::narrow<sys::Off_T>(len))
+            len = maxSize;
+            
+        if (len <= 0)
+            return 0;
+            
+        auto buffer_ = static_cast<CharT*>(buffer);
+        mData.read(buffer_, len);
+            
+        // Could be problem if streams are broken alternately could
+        // return gcount in else case above
+        return len;
+    }
 
     stringstream mData{stringstream::in | stringstream::out | stringstream::binary};
 };
