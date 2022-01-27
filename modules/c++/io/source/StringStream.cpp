@@ -24,10 +24,10 @@
 
 sys::Off_T io::StringStream::available()
 {
-    sys::Off_T where = (sys::Off_T)mData.tellg();
+    const auto where = tell();
 
     mData.seekg( 0, std::ios::end );
-    sys::Off_T until = (sys::Off_T)mData.tellg();
+    const auto until = tell();
 
     mData.seekg( where, std::ios::beg );
     return (until - where);
