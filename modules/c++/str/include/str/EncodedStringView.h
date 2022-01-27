@@ -58,12 +58,11 @@ class EncodedStringView final
     // doesn't expose "mIsUtf8" so there's (intentinally) no way for clients to know the encoding.
     friend EncodedString;
 
-    template <typename TReturn>
-    TReturn cast() const
+    coda_oss::u8string::const_pointer c_str() const
     {
-        return str::cast<TReturn>(mString.data());
+        return cast<coda_oss::u8string::const_pointer>(mString.data());
     }
-    
+
     str::W1252string w1252string() const;  // c.f. std::filesystem::path::u8string()
 
 public:
@@ -123,6 +122,10 @@ public:
     // Convert (perhaps) whatever we're looking at to UTF-8
     coda_oss::u8string u8string() const;  // c.f. std::filesystem::path::u8string()
     std::string& toUtf8(std::string&) const; // std::string is encoded as UTF-8, always.
+
+    // Convert whatever we're looking at to UTF-16 or UTF-32
+    std::u16string u16string() const;  // c.f. std::filesystem::path::u8string()
+    std::u32string u32string() const;  // c.f. std::filesystem::path::u8string()
 
     bool operator_eq(const EncodedStringView&) const;
 

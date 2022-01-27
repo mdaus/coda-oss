@@ -115,6 +115,16 @@ public:
     //std::string& toUtf8(std::string&) const; // std::string is encoded as UTF-8, always.
     //str::W1252string w1252string() const;  // c.f. std::filesystem::path::u8string()
 
+    // Convert whatever we're looking at to UTF-16 or UTF-32
+    std::u16string u16string() const  // c.f. std::filesystem::path::u8string()
+    {
+        return view().u16string();
+    }
+    std::u32string u32string() const  // c.f. std::filesystem::path::u8string()
+    {
+        return view().u32string();
+    }
+
     struct details final
     {
         static const std::string& string(const EncodedString& es) // for unit-testing

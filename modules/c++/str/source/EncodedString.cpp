@@ -67,11 +67,12 @@ str::EncodedString& str::EncodedString::operator=(const EncodedStringView& v)
 {
     if (v.mIsUtf8)
     {
-        assign(v.cast<coda_oss::u8string::const_pointer>());
+        assign(v.c_str());
     }
     else
     {
-        assign(v.cast<str::W1252string::const_pointer>());
+        auto p = cast<W1252string::const_pointer>(v.mString.data());
+        assign(p);
     }
     return *this;
 }

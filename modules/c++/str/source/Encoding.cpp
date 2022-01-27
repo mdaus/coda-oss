@@ -258,6 +258,20 @@ std::string& str::details::to_u8string(std::u16string::const_pointer p, size_t s
     utf8::utf16to8(p, p + sz, std::back_inserter(result));
     return result;
 }
+std::u16string str::to_u16string(coda_oss::u8string::const_pointer p_, size_t sz)
+{
+    auto p = str::cast<std::string::const_pointer>(p_);
+    std::u16string retval;
+    utf8::utf8to16(p, p + sz, std::back_inserter(retval));
+    return retval;
+}
+std::u32string str::to_u32string(coda_oss::u8string::const_pointer p_, size_t sz)
+{
+    auto p = str::cast<std::string::const_pointer>(p_);
+    std::u32string retval;
+    utf8::utf8to32(p, p + sz, std::back_inserter(retval));
+    return retval;
+}
 
 coda_oss::u8string str::to_u8string(std::u32string::const_pointer p, size_t sz)
 {
