@@ -84,7 +84,10 @@ public:
     // Don't want to make it easy to use these; a known encoding is preferred.
     explicit EncodedStringView(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     explicit EncodedStringView(const std::string&);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
-    
+
+    // Can't "view" UTF-16 or UTF-32 data; we assume we're looking at an 8-bit encoding,
+    // either UTF-8 or Windows-1252.
+
     // Input is encoded as specified on all platforms.
     template <typename TBasicString>
     static EncodedStringView create(const char* s)

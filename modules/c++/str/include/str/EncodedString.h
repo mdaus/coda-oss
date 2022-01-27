@@ -71,7 +71,11 @@ public:
     explicit EncodedString(const std::string&);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     explicit EncodedString(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     explicit EncodedString(const std::u16string&); // converted to UTF-8 for storage
+    //explicit EncodedString(std::u16string::const_pointer); // no wcslen() for std::u16string::value_type
     explicit EncodedString(const std::u32string&); // converted to UTF-8 for storage
+    //explicit EncodedString(std::u32string::const_pointer); // no wcslen() for std::u32string::value_type
+    explicit EncodedString(const std::wstring&);  // Assume platform native encoding: UTF-32 on Linux, UTF-16 on Windows
+    explicit EncodedString(std::wstring::const_pointer);  // can call wcslen()
 
     // create from a view
     EncodedString(const EncodedStringView&);

@@ -62,6 +62,9 @@ str::EncodedString::EncodedString(const str::W1252string& s) : EncodedString(s.c
 str::EncodedString::EncodedString(const std::u16string& s) : EncodedString(to_u8string(s)) { }
 str::EncodedString::EncodedString(const std::u32string& s) : EncodedString(to_u8string(s)) { }
 
+str::EncodedString::EncodedString(std::wstring::const_pointer s)  : EncodedString(to_u8string(s, wcslen(s))) { }
+str::EncodedString::EncodedString(const std::wstring& s) : EncodedString(to_u8string(s)) { }
+
 // create from a view
 str::EncodedString& str::EncodedString::operator=(const EncodedStringView& v)
 {

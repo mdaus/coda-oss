@@ -100,6 +100,7 @@ inline coda_oss::u8string to_u8string(coda_oss::u8string::const_pointer s, size_
 {
     return coda_oss::u8string(s, sz);
 }
+coda_oss::u8string to_u8string(std::wstring::const_pointer, size_t);  // std::wstring is UTF-16 or UTF-32  depending on platform
 
 // UTF-16 is typically uses on Windows (where it is std::wstring::value_type);
 // Linux preferred UTF-32.
