@@ -273,7 +273,7 @@ TEST_CASE(test_change_case)
 static const auto classificationText_utf_8 = str::EncodedString::fromUtf8("NON CLASSIFI\xc3\x89 / UNCLASSIFIED"); // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
 static const auto classificationText_iso8859_1 =  str::EncodedString::fromWindows1252("NON CLASSIFI\xc9 / UNCLASSIFIED");  // ISO8859-1 "NON CLASSIFIÉ / UNCLASSIFIED"    
 // UTF-16 on Windows, UTF-32 on Linux
-static const std::wstring classificationText_wide = L"NON CLASSIFI\xc9 / UNCLASSIFIED"; // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
+static const auto classificationText_wide_ = L"NON CLASSIFI\xc9 / UNCLASSIFIED"; // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
 static const auto classificationText_platform =
     sys::Platform == sys::PlatformType::Linux ? classificationText_utf_8.native() : classificationText_iso8859_1.native();
 
@@ -297,8 +297,8 @@ TEST_CASE(test_u8string_to_u16string)
 {
     #if _WIN32
     const auto actual = classificationText_utf_8.u16string();
-    const auto p = str::c_str<std::wstring::const_pointer>(actual); // Windows: std::wstring == std::u16string
-    TEST_ASSERT(classificationText_wide == p); // _EQ wants to do toString()
+    const std::wstring s = str::c_str<std::wstring::const_pointer>(actual); // Windows: std::wstring == std::u16string
+    TEST_ASSERT(classificationText_wide_ == s);  // _EQ wants to do toString()
     #endif
 }
 
@@ -306,8 +306,8 @@ TEST_CASE(test_u8string_to_u32string)
 {
     #if !_WIN32
     const auto actual = classificationText_utf_8.u32string();
-    const auto p = str::c_str<std::wstring::const_pointer>(actual); // Linux: std::wstring == std::u32string
-    TEST_ASSERT(classificationText_wide == p); // _EQ wants to do toString()
+    const std::wstring s  = str::c_str<std::wstring::const_pointer>(actual); // Linux: std::wstring == std::u32string
+    TEST_ASSERT(classificationText_wide_ == s); // _EQ wants to do toString()
     #endif
 }
 
