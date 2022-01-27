@@ -158,9 +158,6 @@ public:
         xml->print(oss);
         return validate(oss.stream().str(), xmlID, errors);
     }
-    bool validate(const Element* xml, StringEncoding,
-                  const std::string& xmlID,
-                  std::vector<ValidationInfo>& errors) const;
 
     /*!
      *  Validation against the internal schema pool

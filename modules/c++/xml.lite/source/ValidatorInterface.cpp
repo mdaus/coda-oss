@@ -36,6 +36,14 @@ namespace fs = std::filesystem;
 
 #include <xml/lite/xml_lite_config.h>
 
+template<typename TStringStream>
+bool vallidate_(const xml::lite::ValidatorInterface& validator,
+                io::InputStream& xml, TStringStream&& oss, 
+                const std::string& xmlID, std::vector<xml::lite::ValidationInfo>& errors)
+{
+    xml.streamTo(oss);
+    return validator.validate(oss.stream().str(), xmlID, errors);
+}
 bool xml::lite::ValidatorInterface::validate(
         io::InputStream& xml, StringEncoding encoding,
         const std::string& xmlID,
@@ -44,40 +52,13 @@ bool xml::lite::ValidatorInterface::validate(
     // convert to the correcrt std::basic_string<T> based on "encoding"
     if (encoding == StringEncoding::Utf8)
     {
-        io::U8StringStream oss;
-        xml.streamTo(oss);
-        return validate(oss.stream().str(), xmlID, errors);
+        return vallidate_(*this, xml, io::U8StringStream(), xmlID, errors);
     }
     if (encoding == StringEncoding::Windows1252)
     {
-        io::W1252StringStream oss;
-        xml.streamTo(oss);
-        return validate(oss.stream().str(), xmlID, errors);
+        return vallidate_(*this, xml, io::W1252StringStream(), xmlID, errors);
     }
     
-    // this really shouldn't happen
-    return validate(xml, xmlID, errors);
-}
-
-bool xml::lite::ValidatorInterface::validate(
-        const Element* xml, StringEncoding encoding,
-        const std::string& xmlID,
-        std::vector<ValidationInfo>& errors) const
-{
-    // convert to stream based on "encoding"
-    if (encoding == StringEncoding::Utf8)
-    {
-        io::U8StringStream oss;
-        xml->print(oss, encoding);
-        return validate(oss.stream().str(), xmlID, errors);
-    }
-    if (encoding == StringEncoding::Windows1252)
-    {
-        io::W1252StringStream oss;
-        xml->print(oss, encoding);
-        return validate(oss.stream().str(), xmlID, errors);
-    }
-
     // this really shouldn't happen
     return validate(xml, xmlID, errors);
 }
