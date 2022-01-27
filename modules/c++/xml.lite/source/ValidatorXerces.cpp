@@ -200,13 +200,12 @@ bool ValidatorXerces::validate(const std::string& xml,
     if (mLegacyStringConversion)
     {
         // This doesn't work right for UTF-8 or Windows-1252
-        pXmlWide = std::make_unique<XercesLocalString>(xml);
+        pXmlWide.reset(new XercesLocalString(xml));
         input.setStringData(pXmlWide->toXMLCh());
     }
     else
     {
-        const str::EncodedStringView xmlView(xml);
-        pWString = std::make_unique<std::wstring>(xmlView.wstring());
+        pWString.reset(new std::wstring(str::EncodedStringView(xml).wstring()));
         input.setStringData(pWString->c_str());
     }
 
