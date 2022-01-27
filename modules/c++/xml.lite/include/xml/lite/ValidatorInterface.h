@@ -20,8 +20,9 @@
  *
  */
 
-#ifndef __XML_LITE_VALIDATOR_INTERFACE_H__
-#define __XML_LITE_VALIDATOR_INTERFACE_H__
+#ifndef CODA_OSS_xml_lite_ValidatorInterface_h_INCLUDED_
+#define CODA_OSS_xml_lite_ValidatorInterface_h_INCLUDED_
+#pragma once
 
 /*!
  * \file ValidatorInterface.h
@@ -39,6 +40,7 @@
 #include <logging/Logger.h>
 #include <sys/filesystem.h>
 #include <xml/lite/Element.h>
+#include <xml/lite/QName.h>
 #include <coda_oss/string.h>
 #include <str/Encoding.h>
 
@@ -137,6 +139,9 @@ public:
         xml.streamTo(oss);
         return validate(oss.stream().str(), xmlID, errors);
     }
+    bool validate(io::InputStream& xml, StringEncoding,
+                  const std::string& xmlID,
+                  std::vector<ValidationInfo>& errors) const;
 
     /*!
      *  Validation against the internal schema pool
@@ -153,7 +158,9 @@ public:
         xml->print(oss);
         return validate(oss.stream().str(), xmlID, errors);
     }
-
+    bool validate(const Element* xml, StringEncoding,
+                  const std::string& xmlID,
+                  std::vector<ValidationInfo>& errors) const;
 
     /*!
      *  Validation against the internal schema pool
@@ -183,4 +190,4 @@ inline std::ostream& operator<< (std::ostream& out,
 }
 }
 
-#endif
+#endif  // CODA_OSS_xml_lite_ValidatorInterface_h_INCLUDED_

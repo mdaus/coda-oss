@@ -405,7 +405,8 @@ TEST_CASE(testReadEmbeddedXml)
     TEST_ASSERT_EQ(classificationText_utf_8, u8_characterData_);
 }
 
-static void testValidateXmlFile(const std::string& testName, const std::string& xmlFile)
+static void testValidateXmlFile(const std::string& testName, const std::string& xmlFile,
+    const xml::lite::StringEncoding* pEncoding = nullptr)
 {
     const auto unittests = findRoot() / "modules" / "c++" / "xml.lite" / "unittests";
 
@@ -422,7 +423,8 @@ static void testValidateXmlFile(const std::string& testName, const std::string& 
 
     io::FileInputStream fis(path);
     std::vector<xml::lite::ValidationInfo> errors;
-    const auto result = validator.validate(fis, path.string() /*xmlID*/, errors);
+    const auto result = (pEncoding == nullptr) ? validator.validate(fis, path.string() /*xmlID*/, errors) :
+        validator.validate(fis, *pEncoding, path.string() /*xmlID*/, errors);
     for (const auto& error : errors)
     {
         std::clog << error.toString() << "\n";
