@@ -27,7 +27,7 @@
 // It seems that the WAF build on GitHub gets a old compiler ...? Using just CODA_OSS_cpp14 doesn't work.
 #ifndef CODA_OSS_coda_oss_use_real_gsl_
 	#if defined(_MSC_VER) && (_MSC_VER < 1910) // VS2017: https://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=msvc-160
-		#define CODA_OSS_coda_oss_use_real_gsl_ 0
+		#define CODA_OSS_coda_oss_use_real_gsl_ 0 // need VS2017 or later
 	#else
 		#include "coda_oss/CPlusPlus.h"
 		#define CODA_OSS_coda_oss_use_real_gsl_ CODA_OSS_cpp14
