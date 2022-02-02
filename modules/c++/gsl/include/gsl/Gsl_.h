@@ -20,34 +20,36 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef CODA_OSS_gsl_gsl_h_INCLUDED_
-#define CODA_OSS_gsl_gsl_h_INCLUDED_
+#ifndef CODA_OSS_gsl_Gsl__h_INCLUDED_
+#define CODA_OSS_gsl_Gsl__h_INCLUDED_
 #pragma once
 
-// Need a fairly decent C++ compiler to use the real GSL
-#include "gsl/use_gsl.h"
+#include <assert.h>
 
-// always compile Gsl (not "gsl") code--our own simple implementation
-#include "gsl/Gsl_.h"  // our own "fake" GSL
+#include <exception>
+#include <type_traits>
+#include <utility>
 
-#if CODA_OSS_gsl_use_real_gsl_
-	#if _MSC_VER
-	#pragma warning(push)
-	#pragma warning(disable: 4626) // '...' : assignment operator was implicitly defined as deleted
-	#pragma warning(disable: 5027) // '...' : move assignment operator was implicitly defined as deleted
-	#pragma warning(disable: 26487) // Don 't return a pointer '...' that may be invalid (lifetime.4).
-	#pragma warning(disable: 4814) // '...': in C++14 '...' will not imply '...'; consider explicitly specifying '...'
-	#endif
+#include <config/compiler_extensions.h>
+#include "gsl/use_gsl.h" // Can't compile all of GSL with older versions of GCC/MSVC
+#include "gsl/Gsl_narrow.h"
 
-	#include "gsl/gsl"
-	#include "gsl/byte"
-	#include "gsl/span"
-	#include "gsl/narrow"
+#if !CODA_OSS_gsl_use_real_gsl_
+// Add to "gsl" if we're not using the real thing
+namespace gsl
+{
+    template <class T, class U>
+    constexpr T narrow_cast(U&& u) noexcept
+    {
+        return Gsl::narrow_cast<T>(std::forward<U>(u));
+    }
 
-	#if _MSC_VER
-	#pragma warning(pop)
-	#endif
+   template <class T, class U>
+   constexpr T narrow(U u) noexcept(false)
+    {
+        return Gsl::narrow<T>(u);
+    }
+ }
+#endif // CODA_OSS_gsl_use_real_gsl_
 
-#endif
-
-#endif  // CODA_OSS_gsl_gsl_h_INCLUDED_
+#endif  // CODA_OSS_gsl_Gsl__h_INCLUDED_
