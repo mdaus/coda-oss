@@ -5,9 +5,13 @@ import sys
 
 import pytest
 
-import env  # noqa: F401
+import env
 from pybind11_tests import debug_enabled
 from pybind11_tests import pytypes as m
+
+
+def test_bool(doc):
+    assert doc(m.get_bool) == "get_bool() -> bool"
 
 
 def test_int(doc):
@@ -20,6 +24,10 @@ def test_iterator(doc):
 
 def test_iterable(doc):
     assert doc(m.get_iterable) == "get_iterable() -> Iterable"
+
+
+def test_float(doc):
+    assert doc(m.get_float) == "get_float() -> float"
 
 
 def test_list(capture, doc):
@@ -610,7 +618,7 @@ def test_weakref(create_weakref, create_weakref_with_callback):
 
     obj = WeaklyReferenced()
     assert getweakrefcount(obj) == 0
-    wr = create_weakref(obj)  # noqa: F841
+    wr = create_weakref(obj)
     assert getweakrefcount(obj) == 1
 
     obj = WeaklyReferenced()

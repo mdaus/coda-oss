@@ -5,7 +5,7 @@ import struct
 
 import pytest
 
-import env  # noqa: F401
+import env
 from pybind11_tests import ConstructorStats
 from pybind11_tests import buffers as m
 
@@ -36,6 +36,10 @@ def test_from_python():
 
 
 # https://foss.heptapod.net/pypy/pypy/-/issues/2444
+# TODO: fix on recent PyPy
+@pytest.mark.xfail(
+    env.PYPY, reason="PyPy 7.3.7 doesn't clear this anymore", strict=False
+)
 def test_to_python():
     mat = m.Matrix(5, 4)
     assert memoryview(mat).shape == (5, 4)

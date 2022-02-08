@@ -69,7 +69,7 @@ public:
         // ensure GIL is held during functor destruction
         struct func_handle {
             function f;
-#if !(defined(_MSC_VER) && _MSC_VER == 1916 && defined(PYBIND11_CPP17) && PY_MAJOR_VERSION < 3)
+#if !(defined(_MSC_VER) && _MSC_VER == 1916 && defined(PYBIND11_CPP17))
             // This triggers a syntax error under very special conditions (very weird indeed).
             explicit
 #endif
@@ -113,8 +113,8 @@ public:
         return cpp_function(std::forward<Func>(f_), policy).release();
     }
 
-    PYBIND11_TYPE_CASTER(type, _("Callable[[") + concat(make_caster<Args>::name...) + _("], ")
-                               + make_caster<retval_type>::name + _("]"));
+    PYBIND11_TYPE_CASTER(type, const_name("Callable[[") + concat(make_caster<Args>::name...) + const_name("], ")
+                               + make_caster<retval_type>::name + const_name("]"));
 };
 
 PYBIND11_NAMESPACE_END(detail)

@@ -468,12 +468,19 @@ PYBIND11_NOINLINE std::string error_string() {
         PyFrameObject *frame = trace->tb_frame;
         errorString += "\n\nAt:\n";
         while (frame) {
+#if PY_VERSION_HEX >= 0x03090000
+            PyCodeObject *f_code = PyFrame_GetCode(frame);
+#else
+            PyCodeObject *f_code = frame->f_code;
+            Py_INCREF(f_code);
+#endif
             int lineno = PyFrame_GetLineNumber(frame);
             errorString +=
-                "  " + handle(frame->f_code->co_filename).cast<std::string>() +
+                "  " + handle(f_code->co_filename).cast<std::string>() +
                 "(" + std::to_string(lineno) + "): " +
-                handle(frame->f_code->co_name).cast<std::string>() + "\n";
+                handle(f_code->co_name).cast<std::string>() + "\n";
             frame = frame->f_back;
+            Py_DECREF(f_code);
         }
     }
 #endif
@@ -890,7 +897,7 @@ template <typename type> class type_caster_base : public type_caster_generic {
     using itype = intrinsic_t<type>;
 
 public:
-    static constexpr auto name = _<type>();
+    static constexpr auto name = const_name<type>();
 
     type_caster_base() : type_caster_base(typeid(type)) { }
     explicit type_caster_base(const std::type_info &info) : type_caster_generic(info) { }

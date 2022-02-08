@@ -13,12 +13,16 @@
 
 
 TEST_SUBMODULE(pytypes, m) {
+    // test_bool
+    m.def("get_bool", []{return py::bool_(false);});
     // test_int
     m.def("get_int", []{return py::int_(0);});
     // test_iterator
     m.def("get_iterator", []{return py::iterator();});
     // test_iterable
     m.def("get_iterable", []{return py::iterable();});
+    // test_float
+    m.def("get_float", []{return py::float_(0.0f);});
     // test_list
     m.def("list_no_args", []() { return py::list{}; });
     m.def("list_ssize_t", []() { return py::list{(py::ssize_t) 0}; });
@@ -84,7 +88,7 @@ TEST_SUBMODULE(pytypes, m) {
 #if PY_VERSION_HEX >= 0x03030000
     // test_simple_namespace
     m.def("get_simple_namespace", []() {
-        auto ns = py::make_simple_namespace("attr"_a=42, "x"_a="foo", "wrong"_a=1);
+        auto ns = py::module_::import("types").attr("SimpleNamespace")("attr"_a=42, "x"_a="foo", "wrong"_a=1);
         py::delattr(ns, "wrong");
         py::setattr(ns, "right", py::int_(2));
         return ns;

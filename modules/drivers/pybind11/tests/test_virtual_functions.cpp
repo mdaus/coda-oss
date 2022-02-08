@@ -174,6 +174,25 @@ struct DispatchIssue : Base {
     }
 };
 
+// An abstract adder class that uses visitor pattern to add two data
+// objects and send the result to the visitor functor
+struct AdderBase {
+    struct Data {};
+    using DataVisitor = std::function<void (const Data&)>;
+
+    virtual void operator()(const Data& first, const Data& second, const DataVisitor& visitor) const = 0;
+    virtual ~AdderBase() = default;
+    AdderBase() = default;
+    AdderBase(const AdderBase&) = delete;
+};
+
+struct Adder : AdderBase {
+    void operator()(const Data& first, const Data& second, const DataVisitor& visitor) const override {
+        PYBIND11_OVERRIDE_PURE_NAME(void, AdderBase, "__call__", operator(), first, second, visitor);
+    }
+};
+
+
 static void test_gil() {
     {
         py::gil_scoped_acquire lock;
@@ -194,6 +213,25 @@ static void test_gil_from_thread() {
     std::thread t(test_gil);
     t.join();
 }
+
+class test_override_cache_helper {
+
+public:
+    virtual int func() { return 0; }
+
+    test_override_cache_helper() = default;
+    virtual ~test_override_cache_helper() = default;
+    // Non-copyable
+    test_override_cache_helper &operator=(test_override_cache_helper const &Right) = delete;
+    test_override_cache_helper(test_override_cache_helper const &Copy) = delete;
+};
+
+class test_override_cache_helper_trampoline : public test_override_cache_helper {
+    int func() override { PYBIND11_OVERRIDE(int, test_override_cache_helper, func); }
+};
+
+inline int test_override_cache(std::shared_ptr<test_override_cache_helper> const &instance) { return instance->func(); }
+
 
 
 // Forward declaration (so that we can put the main tests here; the inherited virtual approaches are
@@ -295,6 +333,27 @@ TEST_SUBMODULE(virtual_functions, m) {
 
     m.def("dispatch_issue_go", [](const Base * b) { return b->dispatch(); });
 
+    // test_recursive_dispatch_issue
+    // #3357: Recursive dispatch fails to find python function override
+    pybind11::class_<AdderBase, Adder>(m, "Adder")
+        .def(pybind11::init<>())
+        .def("__call__", &AdderBase::operator());
+
+    pybind11::class_<AdderBase::Data>(m, "Data")
+        .def(pybind11::init<>());
+
+    m.def("add2", [](const AdderBase::Data& first, const AdderBase::Data& second,
+                     const AdderBase& adder, const AdderBase::DataVisitor& visitor) {
+        adder(first, second, visitor);
+    });
+
+    m.def("add3", [](const AdderBase::Data& first, const AdderBase::Data& second, const AdderBase::Data& third,
+                     const AdderBase& adder, const AdderBase::DataVisitor& visitor) {
+        adder(first, second, [&] (const AdderBase::Data& first_plus_second) {
+            adder(first_plus_second, third, visitor); // NOLINT(readability-suspicious-call-argument)
+        });
+    });
+
     // test_override_ref
     // #392/397: overriding reference-returning functions
     class OverrideTest {
@@ -338,6 +397,12 @@ TEST_SUBMODULE(virtual_functions, m) {
 //      .def("str_ref", &OverrideTest::str_ref)
         .def("A_value", &OverrideTest::A_value)
         .def("A_ref", &OverrideTest::A_ref);
+
+    py::class_<test_override_cache_helper, test_override_cache_helper_trampoline, std::shared_ptr<test_override_cache_helper>>(m, "test_override_cache_helper")
+        .def(py::init_alias<>())
+        .def("func", &test_override_cache_helper::func);
+
+    m.def("test_override_cache", test_override_cache);
 }
 
 

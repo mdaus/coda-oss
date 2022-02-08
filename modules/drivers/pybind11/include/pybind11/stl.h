@@ -78,7 +78,7 @@ template <typename Type, typename Key> struct set_caster {
         return s.release();
     }
 
-    PYBIND11_TYPE_CASTER(type, _("Set[") + key_conv::name + _("]"));
+    PYBIND11_TYPE_CASTER(type, const_name("Set[") + key_conv::name + const_name("]"));
 };
 
 template <typename Type, typename Key, typename Value> struct map_caster {
@@ -120,7 +120,7 @@ template <typename Type, typename Key, typename Value> struct map_caster {
         return d.release();
     }
 
-    PYBIND11_TYPE_CASTER(Type, _("Dict[") + key_conv::name + _(", ") + value_conv::name + _("]"));
+    PYBIND11_TYPE_CASTER(Type, const_name("Dict[") + key_conv::name + const_name(", ") + value_conv::name + const_name("]"));
 };
 
 template <typename Type, typename Value> struct list_caster {
@@ -166,7 +166,7 @@ public:
         return l.release();
     }
 
-    PYBIND11_TYPE_CASTER(Type, _("List[") + value_conv::name + _("]"));
+    PYBIND11_TYPE_CASTER(Type, const_name("List[") + value_conv::name + const_name("]"));
 };
 
 template <typename Type, typename Alloc> struct type_caster<std::vector<Type, Alloc>>
@@ -223,7 +223,7 @@ public:
         return l.release();
     }
 
-    PYBIND11_TYPE_CASTER(ArrayType, _("List[") + value_conv::name + _<Resizable>(_(""), _("[") + _<Size>() + _("]")) + _("]"));
+    PYBIND11_TYPE_CASTER(ArrayType, const_name("List[") + value_conv::name + const_name<Resizable>(const_name(""), const_name("[") + const_name<Size>() + const_name("]")) + const_name("]"));
 };
 
 template <typename Type, size_t Size> struct type_caster<std::array<Type, Size>>
@@ -245,17 +245,17 @@ template <typename Key, typename Value, typename Hash, typename Equal, typename 
   : map_caster<std::unordered_map<Key, Value, Hash, Equal, Alloc>, Key, Value> { };
 
 // This type caster is intended to be used for std::optional and std::experimental::optional
-template<typename T> struct optional_caster {
-    using value_conv = make_caster<typename T::value_type>;
+template<typename Type, typename Value = typename Type::value_type> struct optional_caster {
+    using value_conv = make_caster<Value>;
 
-    template <typename T_>
-    static handle cast(T_ &&src, return_value_policy policy, handle parent) {
+    template <typename T>
+    static handle cast(T &&src, return_value_policy policy, handle parent) {
         if (!src)
             return none().inc_ref();
         if (!std::is_lvalue_reference<T>::value) {
-            policy = return_value_policy_override<T>::policy(policy);
+            policy = return_value_policy_override<Value>::policy(policy);
         }
-        return value_conv::cast(*std::forward<T_>(src), policy, parent);
+        return value_conv::cast(*std::forward<T>(src), policy, parent);
     }
 
     bool load(handle src, bool convert) {
@@ -269,11 +269,11 @@ template<typename T> struct optional_caster {
         if (!inner_caster.load(src, convert))
             return false;
 
-        value.emplace(cast_op<typename T::value_type &&>(std::move(inner_caster)));
+        value.emplace(cast_op<Value &&>(std::move(inner_caster)));
         return true;
     }
 
-    PYBIND11_TYPE_CASTER(T, _("Optional[") + value_conv::name + _("]"));
+    PYBIND11_TYPE_CASTER(Type, const_name("Optional[") + value_conv::name + const_name("]"));
 };
 
 #if defined(PYBIND11_HAS_OPTIONAL)
@@ -353,7 +353,7 @@ struct variant_caster<V<Ts...>> {
     }
 
     using Type = V<Ts...>;
-    PYBIND11_TYPE_CASTER(Type, _("Union[") + detail::concat(make_caster<Ts>::name...) + _("]"));
+    PYBIND11_TYPE_CASTER(Type, const_name("Union[") + detail::concat(make_caster<Ts>::name...) + const_name("]"));
 };
 
 #if defined(PYBIND11_HAS_VARIANT)

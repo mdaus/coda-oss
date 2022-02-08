@@ -2,7 +2,7 @@ import nox
 
 nox.options.sessions = ["lint", "tests", "tests_packaging"]
 
-PYTHON_VERISONS = ["2.7", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10"]
+PYTHON_VERISONS = ["2.7", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
 
 
 @nox.session(reuse_venv=True)
@@ -20,7 +20,8 @@ def tests(session: nox.Session) -> None:
     Run the tests (requires a compiler).
     """
     tmpdir = session.create_tmp()
-    session.install("pytest", "cmake")
+    session.install("cmake")
+    session.install("-r", "tests/requirements.txt")
     session.run(
         "cmake",
         "-S",
@@ -56,10 +57,10 @@ def docs(session: nox.Session) -> None:
     session.chdir("docs")
 
     if "pdf" in session.posargs:
-        session.run("sphinx-build", "-M", "latexpdf", ".", "_build")
+        session.run("sphinx-build", "-b", "latexpdf", ".", "_build")
         return
 
-    session.run("sphinx-build", "-M", "html", ".", "_build")
+    session.run("sphinx-build", "-b", "html", ".", "_build")
 
     if "serve" in session.posargs:
         session.log("Launching docs at http://localhost:8000/ - use Ctrl-C to quit")
@@ -84,5 +85,9 @@ def build(session: nox.Session) -> None:
     """
 
     session.install("build")
-    session.run("python", "-m", "build")
-    session.run("python", "-m", "build", env={"PYBIND11_GLOBAL_SDIST": "1"})
+    session.log("Building normal files")
+    session.run("python", "-m", "build", *session.posargs)
+    session.log("Building pybind11-global files (PYBIND11_GLOBAL_SDIST=1)")
+    session.run(
+        "python", "-m", "build", *session.posargs, env={"PYBIND11_GLOBAL_SDIST": "1"}
+    )
