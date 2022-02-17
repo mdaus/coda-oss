@@ -59,7 +59,7 @@ struct Unit final
     // Calls convert() to convert from Unit<int, feet> to Unit<double, meters>.
     // The defaults ensure converting to oneself works.
     template <typename ResultTag = Tag, typename TReturn = T>
-    constexpr Unit<TReturn, ResultTag> to() const noexcept;
+    /*constexpr*/ Unit<TReturn, ResultTag> to() const noexcept;
 };
 
 // Make a unit specifying only the tag, inferring the type T.  Rather than
@@ -75,7 +75,7 @@ inline constexpr Unit<T, Tag> make_Unit(T v) noexcept
 
 // Allow Unit::to() (below) to compile; the routine below normally won't be used.
 template <typename T, typename Tag, typename ResultTag = Tag, typename TResult = T>
-inline constexpr Unit<TResult, ResultTag>& convert(Unit<T, Tag> v, Unit<TResult, ResultTag>& result) noexcept
+inline /*constexpr*/ Unit<TResult, ResultTag>& convert(Unit<T, Tag> v, Unit<TResult, ResultTag>& result) noexcept
 {
     result = make_Unit<Tag, TResult>(v.value()); // or Unit<...>, this ensures make_Unit() works
     return result; // ICC doesn't like "constexpr void"; want to use parameters for type deduction
@@ -91,7 +91,7 @@ inline constexpr Unit<TResult, ResultTag>& convert(Unit<T, Tag> v, Unit<TResult,
 //    const auto meters = feet.to<units::tags::Meters>();
 template <typename T, typename Tag>
 template <typename ResultTag, typename TReturn>
-inline constexpr Unit<TReturn, ResultTag> Unit<T, Tag>::to() const noexcept
+inline /*constexpr*/ Unit<TReturn, ResultTag> Unit<T, Tag>::to() const noexcept
 {
     Unit<TReturn, ResultTag> retval{ 0 };
     return convert(*this, retval);
