@@ -1,10 +1,10 @@
 /* =========================================================================
- * This file is part of std-c++
+ * This file is part of sys-c++
  * =========================================================================
  *
- * (C) Copyright 2021, Maxar Technologies, Inc.
+ * (C) Copyright 2020, Maxar Technologies, Inc.
  *
- * std-c++ is free software; you can redistribute it and/or modify
+ * sys-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -18,11 +18,28 @@
  * License along with this program; If not, http://www.gnu.org/licenses/.
  *
  */
-#ifndef CODA_OSS_std_bit_INCLUDED_
-#define CODA_OSS_std_bit_INCLUDED_
+#ifndef CODA_OSS_sys_sys_filesystem_h_INCLUDED_
+#define CODA_OSS_sys_sys_filesystem_h_INCLUDED_
 #pragma once
 
-#include <bit>
-#include "coda_oss/bit.h"
+#include <filesystem>
 
-#endif  // CODA_OSS_std_bit_INCLUDED_
+namespace sys
+{
+namespace filesystem
+{
+    using std::filesystem::file_type;
+    using std::filesystem::path;
+
+    using std::filesystem::absolute;
+    using std::filesystem::create_directory;
+    using std::filesystem::current_path;
+    using std::filesystem::exists;
+    using std::filesystem::is_directory;
+    using std::filesystem::is_regular_file;
+    using std::filesystem::remove;
+    using std::filesystem::temp_directory_path;
+}
+}
+
+#endif  // CODA_OSS_sys_sys_filesystem_h_INCLUDED_

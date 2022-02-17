@@ -2,9 +2,9 @@
  * This file is part of coda_oss-c++
  * =========================================================================
  *
- * (C) Copyright 2004 - 2014, MDA Information Systems LLC
+ * (C) Copyright 2022, Maxar Technologies, Inc.
  *
- * mem-c++ is free software; you can redistribute it and/or modify
+ * coda_oss-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -19,29 +19,11 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef CODA_OSS_coda_oss_span_h_INCLUDED_
-#define CODA_OSS_coda_oss_span_h_INCLUDED_
+#ifndef CODA_OSS_coda_oss_Span_h_INCLUDED_
+#define CODA_OSS_coda_oss_Span_h_INCLUDED_
 #pragma once
 
-#include <assert.h>
-#include <stddef.h>
+#include <span>
+#include "coda_oss/namespace_.h"  // coda_oss -> std
 
-#include "coda_oss/namespace_.h"
-#include "coda_oss/span_.h"
-
-// Need a fairly decent C++ compiler to use the real GSL.  This brings in more than 
-// we really need for span (e.g., gsl::narrow()), but it keeps things simple.
-#include "gsl/gsl.h"  // not gsl/span; need #pragma here to turn off warnings
-
-namespace coda_oss
-{
-#if defined(GSL_SPAN_H) // the above #include'd gsl/span
-	template <typename T>
-	using span = gsl::span<T>;
-#else // no gsl::span, use our own
-	template <typename T>
-	using span = details::span<T>;
-#endif  // GSL_SPAN_H
-}
-
-#endif  // CODA_OSS_coda_oss_span_h_INCLUDED_
+#endif  // CODA_OSS_coda_oss_Span_h_INCLUDED_

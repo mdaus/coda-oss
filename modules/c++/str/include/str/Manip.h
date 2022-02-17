@@ -33,6 +33,18 @@
 
 namespace str
 {
+// non-const overload for .data() in C++17
+template<typename CharT>
+inline CharT* data(std::basic_string<CharT>& s) noexcept
+{
+    return s.data();
+}
+template <typename CharT>
+inline const CharT* data(const std::basic_string<CharT>& s) noexcept // to make generic programming easier
+{
+    return s.data();
+}
+
 /**
  *  Trim the white space off the back and front of a string
  *  @param  s  String to trim
