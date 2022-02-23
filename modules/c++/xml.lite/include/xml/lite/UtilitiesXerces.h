@@ -112,9 +112,6 @@ typedef xml::lite::AttributeNode  LiteAttributesNode_T;
  *  to be owned elsewhere) it makes a deep copy for its own use.
  */
 
-// We'll get strange errors, possibibly at link-time, if XMLCh is not a wchar_t type.
-static_assert(std::is_same<XMLCh, wchar_t>::value, "XMLCh should be wchar_t");
-
 class XercesLocalString
 {
 public:
