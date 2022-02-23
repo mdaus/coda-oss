@@ -168,7 +168,7 @@ def configure(conf):
                 # This is for a UTF-16 value, 16 bits
                 if sys.platform == 'win32':
                     conf.define('XERCES_XMLCH_T', 'wchar_t', quote=False)
-                else
+                else:
                     conf.define('XERCES_XMLCH_T', 'char16_t', quote=False)
                 if 'HAVE_SSIZE_T=1' in conf.env['DEFINES'] :
                     conf.define('XERCES_SSIZE_T', 'ssize_t', quote=False)
