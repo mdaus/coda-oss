@@ -23,7 +23,11 @@
 #ifndef __XML_LITE_UTILITIES_XERCES_H__
 #define __XML_LITE_UTILITIES_XERCES_H__
 
+#include <stdint.h>
+
+#include <string>
 #include <mutex>
+#include <type_traits>
 
 #include "xml/lite/xml_lite_config.h"
 
@@ -107,6 +111,10 @@ typedef xml::lite::AttributeNode  LiteAttributesNode_T;
  *  non-const it takes ownership, and for const memory (assumed
  *  to be owned elsewhere) it makes a deep copy for its own use.
  */
+
+// We'll get strange errors, possibibly at link-time, if XMLCh is not a wchar_t type.
+static_assert(std::is_same<XMLCh, wchar_t>::value, "XMLCh should be wchar_t");
+
 class XercesLocalString
 {
 public:
