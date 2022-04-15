@@ -11,7 +11,10 @@
  ```
 # coda-oss Release Notes
 
-## (WIP: Release 2022-??-??)
+## WIP: (Release 202?-??-??)
+* Fixed a bug in `Poly2D::atY()`; imporved `flipXY()` behavior.
+
+## (Release 2022-02-22)
 * new `EnocdedString` and `EncodedStringView` to manage strings in different encodings
 * XML containing UTF-8 characters can now be validated
 * Update to [GSL 4.0.0](https://github.com/microsoft/GSL/releases/tag/v4.0.0)
