@@ -63,10 +63,10 @@ class EncodedString final
 public:
     EncodedString() = default;
     ~EncodedString() = default;
-    EncodedString(const EncodedString&) = default;
-    EncodedString& operator=(const EncodedString&) = default;
-    EncodedString(EncodedString&&) = default;
-    EncodedString& operator=(EncodedString&&) = default;
+    EncodedString(const EncodedString&);
+    EncodedString& operator=(const EncodedString&);
+    EncodedString(EncodedString&&) noexcept;
+    EncodedString& operator=(EncodedString&&) noexcept;
 
     explicit EncodedString(const coda_oss::u8string& s);
     explicit EncodedString(coda_oss::u8string::const_pointer);
@@ -91,8 +91,7 @@ public:
     static EncodedString fromUtf16(const std::wstring&); // not currently implemetned, no need
     static EncodedString fromUtf32(const std::wstring&); // not currently implemetned, no need
     
-    // For "complex" operatations, use the view.  While creating a new one
-    // is cheap, there's not really any need that.
+    // For "complex" operatations, use the view.
     const EncodedStringView& view() const
     {
         return v_;
