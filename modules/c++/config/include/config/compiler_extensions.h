@@ -23,8 +23,6 @@
 #define CODA_OSS_config_compiler_extentions_h_INCLUDED_
 #pragma once
 
-#include <config/coda_oss_config.h>
-
 #ifndef CODA_OSS_attribute_noinline_DEFINED_
     #define CODA_OSS_attribute_noinline_DEFINED_ 1
 

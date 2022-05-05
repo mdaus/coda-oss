@@ -103,7 +103,7 @@ str::EncodedString::EncodedString(const EncodedString& es)
     *this = es;
 }
 
-str::EncodedString& str::EncodedString::operator=(EncodedString&& es) noexcept
+str::EncodedString& str::EncodedString::operator=(EncodedString&& es)
 {
     if (this != &es)
     {
@@ -112,7 +112,7 @@ str::EncodedString& str::EncodedString::operator=(EncodedString&& es) noexcept
     }
     return *this;
 }
-str::EncodedString::EncodedString(EncodedString&& es) noexcept
+str::EncodedString::EncodedString(EncodedString&& es)
 {
     *this = std::move(es);
 }
