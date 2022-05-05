@@ -300,6 +300,87 @@
     <ClInclude Include="sys\include\sys\UTCDateTime.h">
       <Filter>sys</Filter>
     </ClInclude>
+    <ClInclude Include="types\include\types\PageRowCol.h">
+      <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="types\include\types\Range.h">
+      <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="types\include\types\RangeList.h">
+      <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="types\include\types\RgAz.h">
+      <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="types\include\types\RowCol.h">
+      <Filter>types</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\include\mem\Align.h">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\include\mem\BufferView.h">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\include\mem\ScopedAlignedArray.h">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\include\mem\ScopedArray.h">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\include\mem\ScopedCloneablePtr.h">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\include\mem\ScopedCopyablePtr.h">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\include\mem\ScopedPtr.h">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\include\mem\ScratchMemory.h">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\include\mem\ScratchMemory.hpp">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\include\mem\SharedPtr.h">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\include\mem\SharedPtrCpp11.h">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\include\mem\Span.h">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\include\mem\SwapBuffer.h">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\include\mem\VectorOfPointers.h">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="math\include\math\Bessel.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\include\math\Constants.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\include\math\ConvexHull.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\include\math\Round.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\include\math\Utilities.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="units\include\units\Angles.h">
+      <Filter>units</Filter>
+    </ClInclude>
+    <ClInclude Include="units\include\units\Lengths.h">
+      <Filter>units</Filter>
+    </ClInclude>
+    <ClInclude Include="units\include\units\Unit.h">
+      <Filter>units</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -477,6 +558,27 @@
     <ClCompile Include="sys\source\UTCDateTime.cpp">
       <Filter>sys</Filter>
     </ClCompile>
+    <ClCompile Include="types\source\Range.cpp">
+      <Filter>types</Filter>
+    </ClCompile>
+    <ClCompile Include="types\source\RangeList.cpp">
+      <Filter>types</Filter>
+    </ClCompile>
+    <ClCompile Include="mem\source\Align.cpp">
+      <Filter>mem</Filter>
+    </ClCompile>
+    <ClCompile Include="mem\source\ScratchMemory.cpp">
+      <Filter>mem</Filter>
+    </ClCompile>
+    <ClCompile Include="math\source\Bessel.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\source\Round.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\source\Utilities.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -499,6 +601,18 @@
     </Filter>
     <Filter Include="sys">
       <UniqueIdentifier>{d8059280-e435-4365-be67-865195b9e813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="types">
+      <UniqueIdentifier>{3613caf2-18d1-4af7-bfa0-a3712a44da45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mem">
+      <UniqueIdentifier>{0e318d08-1ee3-4644-a299-a81e436c9a32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{6d8f380f-54e3-4d0d-bd1a-a2edd0efbaa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="units">
+      <UniqueIdentifier>{1bf84676-4c62-4e2b-b943-59bf82f89126}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

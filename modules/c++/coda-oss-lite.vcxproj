@@ -36,6 +36,25 @@
     <ClInclude Include="gsl\include\gsl\Gsl_.h" />
     <ClInclude Include="gsl\include\gsl\Gsl_narrow.h" />
     <ClInclude Include="gsl\include\gsl\use_gsl.h" />
+    <ClInclude Include="math\include\math\Bessel.h" />
+    <ClInclude Include="math\include\math\Constants.h" />
+    <ClInclude Include="math\include\math\ConvexHull.h" />
+    <ClInclude Include="math\include\math\Round.h" />
+    <ClInclude Include="math\include\math\Utilities.h" />
+    <ClInclude Include="mem\include\mem\Align.h" />
+    <ClInclude Include="mem\include\mem\BufferView.h" />
+    <ClInclude Include="mem\include\mem\ScopedAlignedArray.h" />
+    <ClInclude Include="mem\include\mem\ScopedArray.h" />
+    <ClInclude Include="mem\include\mem\ScopedCloneablePtr.h" />
+    <ClInclude Include="mem\include\mem\ScopedCopyablePtr.h" />
+    <ClInclude Include="mem\include\mem\ScopedPtr.h" />
+    <ClInclude Include="mem\include\mem\ScratchMemory.h" />
+    <ClInclude Include="mem\include\mem\ScratchMemory.hpp" />
+    <ClInclude Include="mem\include\mem\SharedPtr.h" />
+    <ClInclude Include="mem\include\mem\SharedPtrCpp11.h" />
+    <ClInclude Include="mem\include\mem\Span.h" />
+    <ClInclude Include="mem\include\mem\SwapBuffer.h" />
+    <ClInclude Include="mem\include\mem\VectorOfPointers.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="str\include\str\Convert.h" />
     <ClInclude Include="str\include\str\EncodedString.h" />
@@ -112,12 +131,25 @@
     <ClInclude Include="sys\include\sys\ThreadWin32.h" />
     <ClInclude Include="sys\include\sys\TimeStamp.h" />
     <ClInclude Include="sys\include\sys\UTCDateTime.h" />
+    <ClInclude Include="types\include\types\PageRowCol.h" />
+    <ClInclude Include="types\include\types\Range.h" />
+    <ClInclude Include="types\include\types\RangeList.h" />
+    <ClInclude Include="types\include\types\RgAz.h" />
+    <ClInclude Include="types\include\types\RowCol.h" />
+    <ClInclude Include="units\include\units\Angles.h" />
+    <ClInclude Include="units\include\units\Lengths.h" />
+    <ClInclude Include="units\include\units\Unit.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="except\source\Backtrace.cpp" />
     <ClCompile Include="except\source\Context.cpp" />
     <ClCompile Include="except\source\Throwable.cpp" />
     <ClCompile Include="except\source\Trace.cpp" />
+    <ClCompile Include="math\source\Bessel.cpp" />
+    <ClCompile Include="math\source\Round.cpp" />
+    <ClCompile Include="math\source\Utilities.cpp" />
+    <ClCompile Include="mem\source\Align.cpp" />
+    <ClCompile Include="mem\source\ScratchMemory.cpp" />
     <ClCompile Include="pch.cpp">
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ForcedIncludeFiles>
@@ -180,6 +212,8 @@
     <ClCompile Include="sys\source\ThreadSolaris.cpp" />
     <ClCompile Include="sys\source\ThreadWin32.cpp" />
     <ClCompile Include="sys\source\UTCDateTime.cpp" />
+    <ClCompile Include="types\source\Range.cpp" />
+    <ClCompile Include="types\source\RangeList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gsl\include\gsl\algorithm" />
@@ -247,7 +281,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>config\include\;sys\include\;gsl\include\;except\include\;str\include\;coda_oss\include;std\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>config\include\;sys\include\;gsl\include\;except\include\;str\include\;coda_oss\include;std\include\;types\include\;mem\include\;math\include\;units\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -266,7 +300,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>config\include\;sys\include\;gsl\include\;except\include\;str\include\;coda_oss\include;std\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>config\include\;sys\include\;gsl\include\;except\include\;str\include\;coda_oss\include;std\include\;types\include\;mem\include\;math\include\;units\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
