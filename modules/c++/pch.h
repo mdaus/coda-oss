@@ -8,7 +8,32 @@
 #define PCH_H
 
 // add headers that you want to pre-compile here
-#include <limits>
 #include "framework.h"
+
+#include <stdio.h>
+#include <math.h>
+#include <stddef.h>
+#include <assert.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <time.h>
+
+#include <limits>
+#include <complex>
+ #include <memory>
+#include <new>
+#include <numeric>
+#include <utility>
+ #include <string>
+#include <map>
+#include <set>
+#include <vector>
+#include <algorithm>
+#include <iterator>
+#include <typeinfo>
+#include <iomanip>
+#include <iostream>
+#include <ostream>
+#include <sstream>
 
 #endif //PCH_H

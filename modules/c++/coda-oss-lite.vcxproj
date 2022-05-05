@@ -36,6 +36,20 @@
     <ClInclude Include="gsl\include\gsl\Gsl_.h" />
     <ClInclude Include="gsl\include\gsl\Gsl_narrow.h" />
     <ClInclude Include="gsl\include\gsl\use_gsl.h" />
+    <ClInclude Include="math.linear\include\math\linear\Eigenvalue.h" />
+    <ClInclude Include="math.linear\include\math\linear\Line2D.h" />
+    <ClInclude Include="math.linear\include\math\linear\Matrix2D.h" />
+    <ClInclude Include="math.linear\include\math\linear\MatrixMxN.h" />
+    <ClInclude Include="math.linear\include\math\linear\Vector.h" />
+    <ClInclude Include="math.linear\include\math\linear\VectorN.h" />
+    <ClInclude Include="math.poly\include\math\poly\Fit.h" />
+    <ClInclude Include="math.poly\include\math\poly\Fixed1D.h" />
+    <ClInclude Include="math.poly\include\math\poly\Fixed2D.h" />
+    <ClInclude Include="math.poly\include\math\poly\OneD.h" />
+    <ClInclude Include="math.poly\include\math\poly\OneD.hpp" />
+    <ClInclude Include="math.poly\include\math\poly\TwoD.h" />
+    <ClInclude Include="math.poly\include\math\poly\TwoD.hpp" />
+    <ClInclude Include="math.poly\include\math\poly\Utils.h" />
     <ClInclude Include="math\include\math\Bessel.h" />
     <ClInclude Include="math\include\math\Constants.h" />
     <ClInclude Include="math\include\math\ConvexHull.h" />
@@ -56,6 +70,9 @@
     <ClInclude Include="mem\include\mem\SwapBuffer.h" />
     <ClInclude Include="mem\include\mem\VectorOfPointers.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="polygon\include\polygon\DrawPolygon.h" />
+    <ClInclude Include="polygon\include\polygon\Intersections.h" />
+    <ClInclude Include="polygon\include\polygon\PolygonMask.h" />
     <ClInclude Include="str\include\str\Convert.h" />
     <ClInclude Include="str\include\str\EncodedString.h" />
     <ClInclude Include="str\include\str\EncodedStringView.h" />
@@ -145,6 +162,7 @@
     <ClCompile Include="except\source\Context.cpp" />
     <ClCompile Include="except\source\Throwable.cpp" />
     <ClCompile Include="except\source\Trace.cpp" />
+    <ClCompile Include="math.linear\source\Line2D.cpp" />
     <ClCompile Include="math\source\Bessel.cpp" />
     <ClCompile Include="math\source\Round.cpp" />
     <ClCompile Include="math\source\Utilities.cpp" />
@@ -158,6 +176,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="polygon\source\PolygonMask.cpp" />
     <ClCompile Include="str\source\Convert.cpp" />
     <ClCompile Include="str\source\EncodedString.cpp" />
     <ClCompile Include="str\source\EncodedStringView.cpp" />
@@ -281,9 +300,10 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>config\include\;sys\include\;gsl\include\;except\include\;str\include\;coda_oss\include;std\include\;types\include\;mem\include\;math\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>config\include\;sys\include\;gsl\include\;except\include\;str\include\;coda_oss\include;std\include\;types\include\;mem\include\;math\include\;units\include\;math.linear\include\;math.poly\include\;polygon\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -300,9 +320,10 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>config\include\;sys\include\;gsl\include\;except\include\;str\include\;coda_oss\include;std\include\;types\include\;mem\include\;math\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>config\include\;sys\include\;gsl\include\;except\include\;str\include\;coda_oss\include;std\include\;types\include\;mem\include\;math\include\;units\include\;math.linear\include\;math.poly\include\;polygon\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>
