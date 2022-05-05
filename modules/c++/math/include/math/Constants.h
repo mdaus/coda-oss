@@ -23,6 +23,9 @@
 #ifndef __MATH_CONSTANTS_H__
 #define __MATH_CONSTANTS_H__
 
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#endif
 #include <math.h>
 namespace math
 {

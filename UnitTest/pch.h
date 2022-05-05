@@ -9,4 +9,18 @@
 
 // add headers that you want to pre-compile here
 
+#define WIN32_LEAN_AND_MEAN  // Exclude rarely-used stuff from Windows headers
+#include <WinSock.h>
+#include <windows.h>
+#undef min
+#undef max
+
+#include "Test.h"
+
+#include "import/sys.h"
+#include "import/math.h"
+#include "import/str.h"
+#include "import/except.h"
+#include "gsl/gsl.h"
+
 #endif //PCH_H
