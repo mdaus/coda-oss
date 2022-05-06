@@ -40,7 +40,7 @@ namespace except
  * \class Trace
  * \brief Holds stack of context information
  */
-struct Trace final
+struct CODA_OSS_LIBRARY_API Trace final
 {
     /*!
      * Gets size of stack

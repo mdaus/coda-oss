@@ -35,6 +35,7 @@
 #define CODA_OSS_POSIX2008_SOURCE CODA_OSS_POSIX2001_SOURCE && (_POSIX_C_SOURCE >= 200809L)
 
 #include <config/Version.h>
+#include <config/Exports.h>
 #include <sys/CPlusPlus.h>
 #include <str/Convert.h>
 

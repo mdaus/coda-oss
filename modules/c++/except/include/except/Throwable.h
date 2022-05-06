@@ -32,6 +32,8 @@
 #include <numeric> // std::accumulate
 #include <memory>
 
+#include "config/Exports.h"
+#include "config/compiler_extensions.h"
 #include "except/Trace.h"
 
 /*!
@@ -52,7 +54,7 @@ namespace except
  */
 
 class Throwable11;
-class Throwable
+class CODA_OSS_LIBRARY_API Throwable
 {
     void doGetBacktrace();
     template<typename TThrowable>
@@ -197,7 +199,11 @@ private:
  * break existing code as "catch (const std::exception&)" will catch
  * except::Throwable when it didn't before.
  */
-class Throwable11 : public std::exception
+CODA_OSS_disable_warning_push
+#if _MSC_VER
+#pragma warning(disable: 4275) // non dll-interface class '...' used as base for dll-interface class '...'
+#endif
+class CODA_OSS_LIBRARY_API Throwable11 : public std::exception
 {
     void doGetBacktrace();
     template <typename TThrowable>
@@ -337,6 +343,7 @@ private:
     mutable std::string mWhat;
     std::vector<std::string> mBacktrace;
 };
+CODA_OSS_disable_warning_pop
 
 }
 
