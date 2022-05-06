@@ -47,7 +47,13 @@ inline void test_assert_greater_(T&& t, U&& u)
 #define TEST_ASSERT_GREATER(X1, X2) test_assert_greater_(X1, X2)
 
 #define TEST_ASSERT_ALMOST_EQ_EPS(X1, X2, EPS) { Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreEqual(X1, X2, EPS); Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreEqual(X2, X1, EPS); }
-#define TEST_ASSERT_ALMOST_EQ(X1, X2) TEST_ASSERT_ALMOST_EQ_EPS(X1, X2, 0.0001)
+template <typename TX1, typename TX2>
+inline void test_assert_almost_eq_(const TX1& X1, const TX2& X2)
+{
+    constexpr TX1 EPS = 0.0001;
+    TEST_ASSERT_ALMOST_EQ_EPS(X1, X2, EPS);
+}
+#define TEST_ASSERT_ALMOST_EQ(X1, X2) test_assert_almost_eq_(X1, X2)
 
 #define TEST_ASSERT_EQ_MSG(msg, X1, X2) Microsoft::VisualStudio::CppUnitTestFramework::Logger::WriteMessage(msg.c_str()); TEST_ASSERT_EQ(X1, X2)
 
