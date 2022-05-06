@@ -50,7 +50,7 @@ inline void test_assert_greater_(const TX1& X1, const TX2& X2)
 template <typename TX1, typename TX2>
 inline void test_assert_almost_eq_(const TX1& X1, const TX2& X2)
 {
-    constexpr TX1 EPS = 0.0001;
+    constexpr auto EPS = static_cast<TX1>(0.0001);
     TEST_ASSERT_ALMOST_EQ_EPS(X1, X2, EPS);
 }
 #define TEST_ASSERT_ALMOST_EQ(X1, X2) test_assert_almost_eq_(X1, X2)
