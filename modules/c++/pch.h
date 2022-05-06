@@ -10,8 +10,9 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 
-#include <stdio.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
+#include <stdio.h>
 #include <stddef.h>
 #include <assert.h>
 #include <stdlib.h>
