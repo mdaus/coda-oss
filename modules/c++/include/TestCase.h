@@ -302,7 +302,7 @@ inline int main(TFunc f)
 # define TEST_SPECIFIC_EXCEPTION(X, Y) coda_oss::test::specific_exception<Y>([&](){(X);}, \
     "%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName, __FILE__, SYS_FUNC, __LINE__)
 #  define TEST_CASE(X) void X(std::string testName)
-#define TEST_MAIN(X) int main(int argc, char** argv) { return coda_oss::test::main([&](){X;}); }
+#define TEST_MAIN(X) int main() { return coda_oss::test::main([&](){X;}); }
 /*
 #  define TEST_CHECK(X) try{ X(std::string(#X)); std::cerr << #X << ": PASSED" << std::endl; } \
     catch(const except::Throwable& ex) { die_printf("%s: FAILED: Exception thrown: %s\n", std::string(#X).c_str(), ex.toString().c_str()); } \
