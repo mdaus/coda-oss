@@ -25,6 +25,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <math/math_config.h>
 #include <sys/Conf.h>
 #include <cmath>
 

@@ -27,6 +27,7 @@
 
 #include <string>
 #include <ostream>
+#include <config/coda_oss_config.h>
 
 /*!
  * \file
