@@ -23,6 +23,7 @@
     <ClInclude Include="coda_oss\include\coda_oss\string.h" />
     <ClInclude Include="coda_oss\include\coda_oss\type_traits.h" />
     <ClInclude Include="config\include\config\compiler_extensions.h" />
+    <ClInclude Include="config\include\config\Exports.h" />
     <ClInclude Include="config\include\config\Version.h" />
     <ClInclude Include="except\include\except\Backtrace.h" />
     <ClInclude Include="except\include\except\Context.h" />

@@ -432,6 +432,9 @@
     <ClInclude Include="polygon\include\polygon\PolygonMask.h">
       <Filter>polygon</Filter>
     </ClInclude>
+    <ClInclude Include="config\include\config\Exports.h">
+      <Filter>config</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
