@@ -70,10 +70,11 @@ inline TReturn cast(const TChar* s)
     static_assert(sizeof(*retval) == sizeof(*s), "sizeof(*TReturn) != sizeof(*TChar)"); 
     return retval;
 }
-template <typename TReturn, typename TChar>
-inline TReturn c_str(const std::basic_string<TChar>& s)
+template <typename TBasicStringT, typename TChar>
+inline typename TBasicStringT::const_pointer c_str(const std::basic_string<TChar>& s)
 {
-    return cast<TReturn>(s.c_str());
+    using return_t = typename TBasicStringT::const_pointer;
+    return cast<return_t>(s.c_str());
 }
 
 // This is to make it difficult to get encodings mixed up; it's here (in a .h
