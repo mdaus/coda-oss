@@ -66,12 +66,13 @@
     #endif
 #endif
 
+#if defined(SWIG) || defined(SWIGPYTHON) || defined(HAVE_PYTHON_H)  // causes errors with SWIG
+#undef CODA_OSS_LIBRARY_API
+#define CODA_OSS_LIBRARY_API // __declspec() or __attribute__ breaks SWIG
+#endif
+ 
 #if defined(_MSC_VER) && defined(CODA_OSS_LIBRARY_DLL)
 #pragma warning(disable: 4251) // '...' : class '...' needs to have dll-interface to be used by clients of struct '...'
-#endif
-
-#ifdef SWIG
-#undef CODA_OSS_LIBRARY_API
 #endif
 
 #endif // CODA_OSS_Exports_h_INCLUDED_
