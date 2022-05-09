@@ -199,7 +199,7 @@ private:
  * break existing code as "catch (const std::exception&)" will catch
  * except::Throwable when it didn't before.
  */
-class CODA_OSS_LIBRARY_API Throwable11 : public std::exception
+class Throwable11 : public std::exception
 {
     void doGetBacktrace();
     template <typename TThrowable>
