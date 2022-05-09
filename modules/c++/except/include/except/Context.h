@@ -28,6 +28,8 @@
 #include <string>
 #include <ostream>
 
+#include "config/Exports.h"
+
 /*!
  * \file
  * \brief defines a class that contains the information surrounding an
@@ -43,7 +45,7 @@ namespace except
  * This class contains information such as the file, line,
  * function and time
  */
-struct Context final
+struct CODA_OSS_LIBRARY_API Context final
 {
     /*!
      * Constructor
