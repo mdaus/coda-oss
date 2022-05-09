@@ -5,14 +5,11 @@
 
 #include "CppUnitTest.h"
 
-namespace Microsoft{ namespace VisualStudio {namespace CppUnitTestFramework
-{
 template<>
-inline std::wstring ToString(const uint16_t& q)
+inline std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString(const uint16_t& q)
 {
 	return std::to_wstring(q);
 }
-}}}
 
 #define TEST_ASSERT(X) Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsTrue(X)
 
