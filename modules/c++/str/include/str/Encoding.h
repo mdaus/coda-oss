@@ -71,9 +71,15 @@ inline TReturn cast(const TChar* s)
     return retval;
 }
 template <typename TReturn, typename TChar>
-inline TReturn c_str(const std::basic_string<TChar>& s)
+inline TReturn c_str_(const std::basic_string<TChar>& s)
 {
     return cast<TReturn>(s.c_str());
+}
+template <typename TStrReturn, typename TChar>
+inline typename TStrReturn::const_pointer c_str(const std::basic_string<TChar>& s)
+{
+    using return_t = typename TStrReturn::const_pointer;
+    return c_str_<return_t>(s);
 }
 
 // This is to make it difficult to get encodings mixed up; it's here (in a .h
