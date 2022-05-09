@@ -20,11 +20,10 @@
  *
  */
 
-#ifndef __STR_CONVERT_H__
-#define __STR_CONVERT_H__
+#ifndef CODA_OSS_str_Convert_h_INCLUDED_
+#define CODA_OSS_str_Convert_h_INCLUDED_
 #pragma once
 
-#include <import/except.h>
 #include <cerrno>
 #include <complex>
 #include <cstdlib>
@@ -37,22 +36,22 @@
 #include <typeinfo>
 
 #include "config/Exports.h"
-
 #include "coda_oss/string.h"
 #include "coda_oss/optional.h"
+#include "import/except.h"
 
 namespace str
 {
 template <typename T>
-CODA_OSS_LIBRARY_API int getPrecision(const T& type);
+int getPrecision(const T& type);
 
 template <typename T>
-CODA_OSS_LIBRARY_API int getPrecision(const std::complex<T>& type);
+int getPrecision(const std::complex<T>& type);
 
 // Note that std::to_string() doesn't necessarily generate the same output as writing
 // to std::cout; see https://en.cppreference.com/w/cpp/string/basic_string/to_string
 template <typename T>
-CODA_OSS_LIBRARY_API std::string toString(const T& value)
+std::string toString(const T& value)
 {
     std::ostringstream buf;
     buf.precision(getPrecision(value));
@@ -241,4 +240,4 @@ T generic_cast(const std::string& value)
 
 }
 
-#endif
+#endif // CODA_OSS_str_Convert_h_INCLUDED_
