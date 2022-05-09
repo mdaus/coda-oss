@@ -35,7 +35,7 @@
 
 inline std::string to_string(const coda_oss::u8string& value)
 {
-    return str::c_str<std::string::const_pointer>(value);  // copy
+    return str::c_str<std::string>(value);  // copy
 }
 inline std::string to_string(const std::u32string& v)
 {
@@ -189,7 +189,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
         for (const auto& ch : windows1252_characters)
         {
             const std::string input_ { '|', static_cast<std::string::value_type>(ch), '|'};
-            const str::W1252string input(str::c_str<str::W1252string::const_pointer>(input_));
+            const str::W1252string input(str::c_str<str::W1252string>(input_));
             const auto actual = to_u8string(input);
 
             // No "expected" to test against as the UTF-8 values for these Windows-1252 characters
@@ -218,7 +218,7 @@ TEST_CASE(test_string_to_u8string_iso8859_1)
     for (uint32_t ch = nobreak_space; ch <= latin_small_letter_y_with_diaeresis; ch++)  // ISO8859-1
     {
         const std::string input_ { '|', static_cast<std::string::value_type>(ch), '|'};
-        const str::W1252string input(str::c_str<str::W1252string::const_pointer>(input_));
+        const str::W1252string input(str::c_str<str::W1252string>(input_));
         const auto actual = to_u8string(input);
         const std::u32string expected{cast32('|'), cast32(ch), cast32('|')};
         TEST_ASSERT_EQ_STR(actual, expected);
@@ -274,8 +274,8 @@ TEST_CASE(test_change_case)
 }
 
 // https://en.wikipedia.org/wiki/%C3%89#Character_mappings
-static const str::EncodedString classificationText_utf_8 = str::EncodedString::fromUtf8("NON CLASSIFI\xc3\x89 / UNCLASSIFIED"); // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
-static const str::EncodedString classificationText_iso8859_1 =  str::EncodedString::fromWindows1252("NON CLASSIFI\xc9 / UNCLASSIFIED");  // ISO8859-1 "NON CLASSIFIÉ / UNCLASSIFIED"    
+static const str::EncodedString classificationText_utf_8(str::cast<coda_oss::u8string::const_pointer>("NON CLASSIFI\xc3\x89 / UNCLASSIFIED")); // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
+static const str::EncodedString classificationText_iso8859_1(str::cast<str::W1252string::const_pointer>("NON CLASSIFI\xc9 / UNCLASSIFIED"));  // ISO8859-1 "NON CLASSIFIÉ / UNCLASSIFIED"    
 // UTF-16 on Windows, UTF-32 on Linux
 inline const wchar_t* classificationText_wide_() { return L"NON CLASSIFI\xc9 / UNCLASSIFIED"; } // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
 inline str::EncodedString classificationText_wide() { return str::EncodedString(classificationText_wide_()); }
@@ -302,7 +302,7 @@ TEST_CASE(test_u8string_to_u16string)
 {
     #if _WIN32
     const auto actual = classificationText_utf_8.u16string();
-    const std::wstring s = str::c_str<std::wstring::const_pointer>(actual); // Windows: std::wstring == std::u16string
+    const std::wstring s = str::c_str<std::wstring>(actual); // Windows: std::wstring == std::u16string
     TEST_ASSERT(classificationText_wide_() == s);  // _EQ wants to do toString()
     #endif
 
@@ -317,7 +317,7 @@ TEST_CASE(test_u8string_to_u32string)
 {
     #if !_WIN32
     const auto actual = classificationText_utf_8.u32string();
-    const std::wstring s  = str::c_str<std::wstring::const_pointer>(actual); // Linux: std::wstring == std::u32string
+    const std::wstring s  = str::c_str<std::wstring>(actual); // Linux: std::wstring == std::u32string
     TEST_ASSERT(classificationText_wide_() == s); // _EQ wants to do toString()
     #endif
 
