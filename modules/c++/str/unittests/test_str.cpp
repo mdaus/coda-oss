@@ -26,30 +26,28 @@
 #include <import/str.h>
 #include "TestCase.h"
 
-namespace
-{
 TEST_CASE(testTrim)
 {
     std::string s = "  test   ";
     str::trim( s);
-    TEST_ASSERT_EQ(s, "test");
+    TEST_ASSERT_EQ_STR(s, "test");
 }
 
 TEST_CASE(testStrip)
 {
     std::string s = "  test   ";
     str::strip(s);
-    TEST_ASSERT_EQ(s, "test");
+    TEST_ASSERT_EQ_STR(s, "test");
 
     const auto s2 = str::strip(s);
-    TEST_ASSERT_EQ(s2, "test");
+    TEST_ASSERT_EQ_STR(s2, "test");
 
     const auto s3 = str::strip("  test   ");
-    TEST_ASSERT_EQ(s3, "test");
+    TEST_ASSERT_EQ_STR(s3, "test");
 
     const auto s4 = s;
     const auto s5 = str::strip(s4);
-    TEST_ASSERT_EQ(s5, "test");
+    TEST_ASSERT_EQ_STR(s5, "test");
 }
 
 TEST_CASE(testData)
@@ -68,42 +66,42 @@ TEST_CASE(testData)
     std::ignore = strcpy(str::data(s), "abc"); 
     
     CODA_OSS_disable_warning_pop
-    TEST_ASSERT_EQ(s, "abc");
+    TEST_ASSERT_EQ_STR(s, "abc");
 }
 
 TEST_CASE(testUpper)
 {
     std::string s = "test-something1";
     str::upper( s);
-    TEST_ASSERT_EQ(s, "TEST-SOMETHING1");
+    TEST_ASSERT_EQ_STR(s, "TEST-SOMETHING1");
 }
 
 TEST_CASE(testLower)
 {
     std::string s = "TEST1";
     str::lower( s);
-    TEST_ASSERT_EQ(s, "test1");
+    TEST_ASSERT_EQ_STR(s, "test1");
 }
 
 TEST_CASE(testReplace)
 {
     std::string s = "helo world";
     str::replace(s, "l", "ll");
-    TEST_ASSERT_EQ(s, "hello world");
+    TEST_ASSERT_EQ_STR(s, "hello world");
 }
 
 TEST_CASE(testReplaceAllInfinite)
 {
     std::string s = "helo hello";
     str::replaceAll(s, "l", "ll");
-    TEST_ASSERT_EQ(s, "hello hellllo");
+    TEST_ASSERT_EQ_STR(s, "hello hellllo");
 }
 
 TEST_CASE(testReplaceAllRecurse)
 {
     std::string s = "Mississippi";
     str::replaceAll(s, "i", " ");
-    TEST_ASSERT_EQ(s, "M ss ss pp ");
+    TEST_ASSERT_EQ_STR(s, "M ss ss pp ");
 }
 
 TEST_CASE(testContains)
@@ -125,7 +123,7 @@ TEST_CASE(testSplit)
     TEST_ASSERT_EQ(parts.size(), static_cast<size_t>(6));
     parts = str::split(s, " ", 3);
     TEST_ASSERT_EQ(parts.size(), static_cast<size_t>(3));
-    TEST_ASSERT_EQ(parts[2], "values are the best!");
+    TEST_ASSERT_EQ_STR(parts[2], "values are the best!");
 }
 
 TEST_CASE(testIsAlpha)
@@ -201,7 +199,7 @@ TEST_CASE(testEscapeForXMLNoReplace)
     const std::string origMessage("This is a perfectly fine string");
     std::string message(origMessage);
     str::escapeForXML(message);
-    TEST_ASSERT_EQ(message, origMessage);
+    TEST_ASSERT_EQ_STR(message, origMessage);
 }
 
 TEST_CASE(testEscapeForXMLKitchenSink)
@@ -216,12 +214,10 @@ TEST_CASE(testEscapeForXMLKitchenSink)
             "&#13;carriage return at the end?");
 
     str::escapeForXML(message);
-    TEST_ASSERT_EQ(message, expectedMessage);
-}
+    TEST_ASSERT_EQ_STR(message, expectedMessage);
 }
 
-int main(int, char**)
-{
+TEST_MAIN(
     TEST_CHECK(testTrim);
     TEST_CHECK(testStrip);
     TEST_CHECK(testData);
@@ -243,5 +239,4 @@ int main(int, char**)
     TEST_CHECK(testRoundDouble);
     TEST_CHECK(testEscapeForXMLNoReplace);
     TEST_CHECK(testEscapeForXMLKitchenSink);
-    return 0;
-}
+    )

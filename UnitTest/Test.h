@@ -16,13 +16,16 @@ inline std::wstring ToString(const uint16_t& q)
 
 #define TEST_ASSERT(X) Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsTrue(X)
 
-template <typename TX1, typename TX2>
-inline void test_assert_eq_(const TX1& X1, const TX2& X2)
+namespace test
 {
-	Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreEqual(X1, X2);
-	Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreEqual(X2, X1);
+template <typename TX1, typename TX2>
+inline void assert_eq(const TX1& X1, const TX2& X2)
+{
+    Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreEqual(X1, X2);
+    Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreEqual(X2, X1);
 }
-#define TEST_ASSERT_EQ(X1, X2) test_assert_eq_(X1, X2);
+}
+#define TEST_ASSERT_EQ(X1, X2) test::assert_eq(X1, X2);
 #define TEST_ASSERT_EQ_INT(X1, X2) TEST_ASSERT_EQ(X2, X1)
 #define TEST_ASSERT_EQ_STR(X1, X2) TEST_ASSERT_EQ(std::string(X1), std::string(X2))
 #define TEST_ASSERT_EQ_FLOAT(X1, X2) TEST_ASSERT_EQ(static_cast<float>(X1), static_cast<float>(X2))

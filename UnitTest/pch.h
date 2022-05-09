@@ -17,13 +17,18 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <assert.h>
 
 #include "Test.h"
 
+#include <std/string>
+#include <std/span>
 #include "import/sys.h"
 #include "import/math.h"
 #include "import/str.h"
 #include "import/except.h"
 #include "gsl/gsl.h"
+
+#include "str/EncodedString.h"
 
 #endif //PCH_H

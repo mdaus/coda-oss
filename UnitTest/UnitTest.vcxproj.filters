@@ -3,6 +3,7 @@
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="math.cpp" />
+    <ClCompile Include="str.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

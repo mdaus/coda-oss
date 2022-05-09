@@ -99,7 +99,7 @@ private:
     std::list<Context> mStack;
 };
 
-std::ostream& operator<<(std::ostream& os, const Trace& t);
+CODA_OSS_LIBRARY_API std::ostream& operator<<(std::ostream& os, const Trace& t);
 }
 
 #endif
