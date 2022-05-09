@@ -88,35 +88,6 @@ public:
     // Can't "view" UTF-16 or UTF-32 data; we assume we're looking at an 8-bit encoding,
     // either UTF-8 or Windows-1252.
 
-    // Input is encoded as specified on all platforms.
-    template <typename TBasicString>
-    static EncodedStringView create(const char* s)
-    {
-        using const_pointer = typename TBasicString::const_pointer;
-        return EncodedStringView(str::cast<const_pointer>(s));
-    }
-    template <typename TBasicString>
-    static EncodedStringView create(const std::string& s)
-    {
-        return create<TBasicString>(s.c_str());
-    }
-    static EncodedStringView fromUtf8(const char* s)
-    {
-        return create<coda_oss::u8string>(s);
-    }
-    static EncodedStringView fromUtf8(const std::string& s)
-    {
-        return create<coda_oss::u8string>(s);
-    }
-    static EncodedStringView fromWindows1252(const char* s)
-    {
-        return create<str::W1252string>(s);
-    }
-    static EncodedStringView fromWindows1252(const std::string& s)
-    {
-        return create<str::W1252string>(s);
-    }
-
     // Regardless of what string we're looking at, return a string in platform
     // native encoding: UTF-8 on Linux, Windows-1252 on Windows; this
     // might result in string conversion.
