@@ -67,9 +67,9 @@ inline const CharT* data(const std::basic_string<CharT>& s) noexcept // to make 
  *  Trim the white space off the back and front of a string
  *  @param  s  String to trim
  */
- void trim(std::string& s);
- std::string strip(const std::string& s);
- std::string& strip(std::string& s);
+CODA_OSS_LIBRARY_API void trim(std::string& s);
+CODA_OSS_LIBRARY_API std::string strip(const std::string& s);
+CODA_OSS_LIBRARY_API std::string& strip(std::string& s);
 
 /**
  *  Checks the end of s with match
@@ -77,8 +77,8 @@ inline const CharT* data(const std::basic_string<CharT>& s) noexcept // to make 
  *  @param  match  String to compare with
  *  @return true if it matches, otherwise false
  */
- bool endsWith(const std::string& s, const std::string& match);
- bool ends_with(const std::string& s, const std::string&) noexcept;
+CODA_OSS_LIBRARY_API bool endsWith(const std::string& s, const std::string& match);
+CODA_OSS_LIBRARY_API bool ends_with(const std::string& s, const std::string&) noexcept;
 
 /**
  *  Checks the start of s with match
@@ -86,8 +86,8 @@ inline const CharT* data(const std::basic_string<CharT>& s) noexcept // to make 
  *  @param  s  String to compare with
  *  @return true if it matches, otherwise false
  */
- bool startsWith(const std::string& s, const std::string& match);
- bool starts_with(const std::string& s, const std::string&) noexcept;
+CODA_OSS_LIBRARY_API bool startsWith(const std::string& s, const std::string& match);
+CODA_OSS_LIBRARY_API bool starts_with(const std::string& s, const std::string&) noexcept;
 
 
 /**
@@ -101,7 +101,7 @@ inline const CharT* data(const std::basic_string<CharT>& s) noexcept // to make 
  *  @param  start   starting position to start search
  *  @return position of first find, str.length() if not found
  */
- size_t replace(std::string& str, 
+CODA_OSS_LIBRARY_API size_t replace(std::string& str, 
                const std::string& search,
                const std::string& replace,
                size_t start = 0);
@@ -113,56 +113,56 @@ inline const CharT* data(const std::basic_string<CharT>& s) noexcept // to make 
  *  @param  search  String to search for
  *  @param  replace String to replace with
  */
- void replaceAll(std::string& string, 
+CODA_OSS_LIBRARY_API void replaceAll(std::string& string, 
                 const std::string& search,
                 const std::string& replace);
 
 /**
  * Returns true if the string contains the match
  */
- bool contains(const std::string& str, const std::string& match);
+CODA_OSS_LIBRARY_API bool contains(const std::string& str, const std::string& match);
 
 
 /**
  * Returns true if the string contains only letters.
  */
- bool isAlpha(const std::string& s);
+CODA_OSS_LIBRARY_API bool isAlpha(const std::string& s);
 
 /**
  * Returns true if the string contains only letters and spaces.
  */
- bool isAlphaSpace(const std::string& s);
+CODA_OSS_LIBRARY_API bool isAlphaSpace(const std::string& s);
 
 /**
  * Returns true if the string contains only digits. This does not include
  * decimal points.
  */
- bool isNumeric(const std::string& s);
+CODA_OSS_LIBRARY_API bool isNumeric(const std::string& s);
 
 /**
  * Returns true if the string contains only digits and spaces.
  */
- bool isNumericSpace(const std::string& s);
+CODA_OSS_LIBRARY_API bool isNumericSpace(const std::string& s);
 
 /**
  * Returns true if the string contains only whitespace characters (or empty).
  */
- bool isWhitespace(const std::string& s);
+CODA_OSS_LIBRARY_API bool isWhitespace(const std::string& s);
 
 /**
  * Returns true if the string contains only letters and digits.
  */
- bool isAlphanumeric(const std::string& s);
+CODA_OSS_LIBRARY_API bool isAlphanumeric(const std::string& s);
 
 /**
  * Returns true if the string contains only ASCII printable characters.
  */
- bool isAsciiPrintable(const std::string& s);
+CODA_OSS_LIBRARY_API bool isAsciiPrintable(const std::string& s);
 
 /**
  * Returns true if the string contains only the given allowed characters.
  */
- bool containsOnly(const std::string& s, const std::string& validChars);
+CODA_OSS_LIBRARY_API bool containsOnly(const std::string& s, const std::string& validChars);
 
 /**
  *  Splits a string based on a splitter string. Similar to tokenization, except
@@ -171,20 +171,20 @@ inline const CharT* data(const std::basic_string<CharT>& s) noexcept // to make 
  *  @param  splitter  String to split upon
  *  @return vector of strings
  */
- std::vector<std::string> split(const std::string& s,
+CODA_OSS_LIBRARY_API std::vector<std::string> split(const std::string& s,
                                const std::string& splitter = " ",
                                size_t maxSplit = std::string::npos);
 
 //! Uses std::transform to convert all chars to lower case
 //! Uses std::transform to convert all chars to upper case
- void lower(std::string& s);
- void upper(std::string& s);
+CODA_OSS_LIBRARY_API void lower(std::string& s);
+CODA_OSS_LIBRARY_API void upper(std::string& s);
 
 /*!
  * Replaces any characters that are invalid in XML (&, <, >, ', ") with their
  * escaped counterparts
  */
- void escapeForXML(std::string& str);
+CODA_OSS_LIBRARY_API void escapeForXML(std::string& str);
 
 template<typename T>
 std::string join(const std::vector<T>& toks, std::string with)

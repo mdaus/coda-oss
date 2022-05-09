@@ -46,7 +46,7 @@
 
 namespace str
 {
-class  EncodedString final
+class CODA_OSS_LIBRARY_API EncodedString final
 {
     std::string s_;
     // We can do most everything through the view, so keep one around.

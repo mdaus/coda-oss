@@ -45,7 +45,7 @@ namespace except
  * This class contains information such as the file, line,
  * function and time
  */
-struct  Context final
+struct CODA_OSS_LIBRARY_API Context final
 {
     /*!
      * Constructor
