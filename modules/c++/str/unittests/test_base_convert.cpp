@@ -274,10 +274,10 @@ TEST_CASE(test_change_case)
 static const str::EncodedString classificationText_utf_8(str::cast<coda_oss::u8string::const_pointer>("NON CLASSIFI\xc3\x89 / UNCLASSIFIED")); // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
 static const str::EncodedString classificationText_iso8859_1(str::cast<str::W1252string::const_pointer>("NON CLASSIFI\xc9 / UNCLASSIFIED"));  // ISO8859-1 "NON CLASSIFIÉ / UNCLASSIFIED"    
 // UTF-16 on Windows, UTF-32 on Linux
-static const auto classificationText_wide_ = L"NON CLASSIFI\xc9 / UNCLASSIFIED"; // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
-static const str::EncodedString classificationText_wide(classificationText_wide_);
-static const auto classificationText_platform =
-    sys::Platform == sys::PlatformType::Linux ? classificationText_utf_8.native() : classificationText_iso8859_1.native();
+inline const wchar_t* classificationText_wide_() { return L"NON CLASSIFI\xc9 / UNCLASSIFIED"; } // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
+inline str::EncodedString classificationText_wide() { return str::EncodedString(classificationText_wide_()); }
+inline std::string classificationText_platform() { return 
+    sys::Platform == sys::PlatformType::Linux ? classificationText_utf_8.native() : classificationText_iso8859_1.native(); }
 
 TEST_CASE(test_u8string_to_string)
 {
@@ -285,13 +285,13 @@ TEST_CASE(test_u8string_to_string)
         const auto utf8 = classificationText_utf_8.u8string();
         const str::EncodedStringView utf8View(utf8);
         const auto actual = utf8View.native();
-        TEST_ASSERT_EQ(classificationText_platform, actual);
+        TEST_ASSERT_EQ(classificationText_platform(), actual);
     }
     {
         const auto utf8 = classificationText_iso8859_1.u8string();
         const str::EncodedStringView utf8View(utf8);
         const auto actual = utf8View.native();
-        TEST_ASSERT_EQ(classificationText_platform, actual);
+        TEST_ASSERT_EQ(classificationText_platform(), actual);
     }
 }
 
@@ -300,14 +300,14 @@ TEST_CASE(test_u8string_to_u16string)
     #if _WIN32
     const auto actual = classificationText_utf_8.u16string();
     const std::wstring s = str::c_str<std::wstring>(actual); // Windows: std::wstring == std::u16string
-    TEST_ASSERT(classificationText_wide_ == s);  // _EQ wants to do toString()
+    TEST_ASSERT(classificationText_wide_() == s);  // _EQ wants to do toString()
     #endif
 
-    TEST_ASSERT_EQ(classificationText_wide, classificationText_utf_8);
-    TEST_ASSERT_EQ(classificationText_wide, classificationText_iso8859_1);
+    TEST_ASSERT_EQ(classificationText_wide(), classificationText_utf_8);
+    TEST_ASSERT_EQ(classificationText_wide(), classificationText_iso8859_1);
 
-    TEST_ASSERT(classificationText_wide.u16string() == classificationText_utf_8.u16string()); // _EQ wants to do toString()
-    TEST_ASSERT(classificationText_wide.u16string() == classificationText_iso8859_1.u16string()); // _EQ wants to do toString()
+    TEST_ASSERT(classificationText_wide().u16string() == classificationText_utf_8.u16string()); // _EQ wants to do toString()
+    TEST_ASSERT(classificationText_wide().u16string() == classificationText_iso8859_1.u16string()); // _EQ wants to do toString()
 }
 
 TEST_CASE(test_u8string_to_u32string)
@@ -315,14 +315,14 @@ TEST_CASE(test_u8string_to_u32string)
     #if !_WIN32
     const auto actual = classificationText_utf_8.u32string();
     const std::wstring s  = str::c_str<std::wstring>(actual); // Linux: std::wstring == std::u32string
-    TEST_ASSERT(classificationText_wide_ == s); // _EQ wants to do toString()
+    TEST_ASSERT(classificationText_wide_() == s); // _EQ wants to do toString()
     #endif
 
-    TEST_ASSERT_EQ(classificationText_wide, classificationText_utf_8);
-    TEST_ASSERT_EQ(classificationText_wide, classificationText_iso8859_1);
+    TEST_ASSERT_EQ(classificationText_wide(), classificationText_utf_8);
+    TEST_ASSERT_EQ(classificationText_wide(), classificationText_iso8859_1);
 
-    TEST_ASSERT(classificationText_wide.u32string() == classificationText_utf_8.u32string()); // _EQ wants to do toString()
-    TEST_ASSERT(classificationText_wide.u32string() == classificationText_iso8859_1.u32string()); // _EQ wants to do toString()
+    TEST_ASSERT(classificationText_wide().u32string() == classificationText_utf_8.u32string()); // _EQ wants to do toString()
+    TEST_ASSERT(classificationText_wide().u32string() == classificationText_iso8859_1.u32string()); // _EQ wants to do toString()
 }
 
 static void test_EncodedStringView_(const std::string& testName,
@@ -334,7 +334,7 @@ static void test_EncodedStringView_(const std::string& testName,
     TEST_ASSERT_EQ(utf_8_view, iso8859_1_view);
 
     TEST_ASSERT_EQ(iso8859_1_view.native(), utf_8_view.native());
-    const auto native = classificationText_platform;
+    const auto native = classificationText_platform();
     TEST_ASSERT_EQ(iso8859_1_view.native(), native);
     TEST_ASSERT_EQ(utf_8_view.native(), native);
 
