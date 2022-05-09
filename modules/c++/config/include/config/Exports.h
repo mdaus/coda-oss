@@ -66,7 +66,6 @@
     #endif
 #endif
 
-#define CODA_OSS_building_SWIG_ 1
 #ifndef CODA_OSS_building_SWIG_
 #define CODA_OSS_building_SWIG_ (defined(SWIG) || defined(SWIGPYTHON) || defined(HAVE_PYTHON_H)  )
 #endif 
