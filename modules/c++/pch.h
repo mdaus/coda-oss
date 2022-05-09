@@ -21,21 +21,29 @@
 
 #include <limits>
 #include <complex>
- #include <memory>
+#include <memory>
 #include <new>
-#include <numeric>
 #include <utility>
 #include <type_traits>
- #include <string>
+#include <typeinfo>
+#include <string>
 #include <map>
 #include <set>
 #include <vector>
+#include <numeric>
 #include <algorithm>
 #include <iterator>
-#include <typeinfo>
 #include <iomanip>
 #include <iostream>
 #include <ostream>
 #include <sstream>
+
+#include <std/span>
+#include <std/string>
+#include <std/filesystem>
+#include <std/memory>
+#include <std/cstddef>
+#include <std/optional>
+#include <std/type_traits>
 
 #endif //PCH_H
