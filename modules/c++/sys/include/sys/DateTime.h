@@ -38,7 +38,7 @@ namespace sys
 /*!
  *  Representation of a date/time structure.
  */
-class CODA_OSS_LIBRARY_API DateTime
+class DateTime
 {
 protected:
     int mYear = 0;

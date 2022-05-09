@@ -38,6 +38,7 @@
 
 #include "coda_oss/string.h"
 #include "coda_oss/optional.h"
+#include "config/Exports.h"
 
 namespace str
 {
