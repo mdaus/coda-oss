@@ -66,12 +66,13 @@
     #endif
 #endif
 
+#define CODA_OSS_building_SWIG_ 1
 #ifndef CODA_OSS_building_SWIG_
 #define CODA_OSS_building_SWIG_ (defined(SWIG) || defined(SWIGPYTHON) || defined(HAVE_PYTHON_H)  )
 #endif 
 #if CODA_OSS_building_SWIG_
 #undef CODA_OSS_LIBRARY_API // causes errors with SWIG
-#define CODA_OSS_LIBRARY_API // __declspec() or __attribute__ breaks SWIG
+#define CODA_OSS_LIBRARY_API /*SWIG build*/ // __declspec() or __attribute__ breaks SWIG
 #endif
 
 #if defined(_MSC_VER) && !CODA_OSS_building_SWIG_
