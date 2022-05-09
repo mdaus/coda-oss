@@ -116,12 +116,3 @@ str::EncodedString::EncodedString(EncodedString&& es) noexcept
 {
     *this = std::move(es);
 }
-
-str::EncodedString str::EncodedString::fromUtf8(const std::string& s)
-{
-    return str::EncodedStringView::fromUtf8(s);
-}
-str::EncodedString str::EncodedString::fromWindows1252(const std::string& s)
-{
-    return str::EncodedStringView::fromWindows1252(s);
-}
