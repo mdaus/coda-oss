@@ -286,11 +286,11 @@ void xml::lite::Element::getCharacterData(coda_oss::u8string& result) const
     str::EncodedStringView view;
     if (encoding == xml::lite::StringEncoding::Utf8)
     {
-        view = str::EncodedStringView::fromUtf8(mCharacterData);
+        view = str::EncodedStringView::create<coda_oss::u8string>(mCharacterData);
     }
     else if (encoding == xml::lite::StringEncoding::Windows1252)
     {
-        view = str::EncodedStringView::fromWindows1252(mCharacterData);
+        view = str::EncodedStringView::create<str::W1252string>(mCharacterData);
     }
     else
     {
@@ -307,7 +307,7 @@ static void writeCharacterData(io::OutputStream& stream,
     if (encoding == xml::lite::StringEncoding::Windows1252)
     {
         // need to convert before writing
-        const auto view = str::EncodedStringView::fromWindows1252(characterData);
+        const auto view = str::EncodedStringView::create<str::W1252string>(characterData);
         stream.write(view.u8string());
     }
     else if (encoding == xml::lite::StringEncoding::Utf8)

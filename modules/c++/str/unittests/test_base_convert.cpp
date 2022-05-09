@@ -270,8 +270,8 @@ TEST_CASE(test_change_case)
 }
 
 // https://en.wikipedia.org/wiki/%C3%89#Character_mappings
-static const str::EncodedString classificationText_utf_8 = str::EncodedStringView::fromUtf8("NON CLASSIFI\xc3\x89 / UNCLASSIFIED"); // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
-static const str::EncodedString classificationText_iso8859_1 =  str::EncodedStringView::fromWindows1252("NON CLASSIFI\xc9 / UNCLASSIFIED");  // ISO8859-1 "NON CLASSIFIÉ / UNCLASSIFIED"    
+static const str::EncodedString classificationText_utf_8 = str::EncodedStringView::create<coda_oss::u8string>("NON CLASSIFI\xc3\x89 / UNCLASSIFIED"); // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
+static const str::EncodedString classificationText_iso8859_1 =  str::EncodedStringView::create<str::W1252string>("NON CLASSIFI\xc9 / UNCLASSIFIED");  // ISO8859-1 "NON CLASSIFIÉ / UNCLASSIFIED"    
 // UTF-16 on Windows, UTF-32 on Linux
 static const auto classificationText_wide_ = L"NON CLASSIFI\xc9 / UNCLASSIFIED"; // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
 static const str::EncodedString classificationText_wide(classificationText_wide_);
