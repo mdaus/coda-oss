@@ -98,15 +98,15 @@ unsigned long long str::strtoull(const char *str, char **endptr, int base)
 #endif
 }
 
-template<> CODA_OSS_LIBRARY_API int str::getPrecision(const float&)
+template<>  int str::getPrecision(const float&)
 {
     return std::numeric_limits<float>::max_digits10;
 }
-template<> CODA_OSS_LIBRARY_API int str::getPrecision(const double& )
+template<>  int str::getPrecision(const double& )
 {
     return std::numeric_limits<double>::max_digits10;
 }
-template <> CODA_OSS_LIBRARY_API int str::getPrecision(const long double&)
+template <>  int str::getPrecision(const long double&)
 {
     return std::numeric_limits<long double>::max_digits10;
 }
