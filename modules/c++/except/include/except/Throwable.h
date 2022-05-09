@@ -32,8 +32,6 @@
 #include <numeric> // std::accumulate
 #include <memory>
 
-#include "config/Exports.h"
-#include "config/compiler_extensions.h"
 #include "except/Trace.h"
 
 /*!
@@ -54,7 +52,7 @@ namespace except
  */
 
 class Throwable11;
-class CODA_OSS_LIBRARY_API Throwable
+class Throwable
 {
     void doGetBacktrace();
     template<typename TThrowable>
@@ -339,6 +337,7 @@ private:
     mutable std::string mWhat;
     std::vector<std::string> mBacktrace;
 };
+
 }
 
 #endif // CODA_OSS_except_Throwable_h_INCLUDED_

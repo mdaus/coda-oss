@@ -40,7 +40,7 @@ namespace except
  * \class Trace
  * \brief Holds stack of context information
  */
-struct CODA_OSS_LIBRARY_API Trace final
+struct Trace final
 {
     /*!
      * Gets size of stack
@@ -99,7 +99,7 @@ private:
     std::list<Context> mStack;
 };
 
-CODA_OSS_LIBRARY_API std::ostream& operator<<(std::ostream& os, const Trace& t);
+std::ostream& operator<<(std::ostream& os, const Trace& t);
 }
 
 #endif

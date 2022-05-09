@@ -36,18 +36,16 @@
 #include <string>
 #include <typeinfo>
 
-#include "config/Exports.h"
-
 #include "coda_oss/string.h"
 #include "coda_oss/optional.h"
 
 namespace str
 {
 template <typename T>
-CODA_OSS_LIBRARY_API int getPrecision(const T& type);
+int getPrecision(const T& type);
 
 template <typename T>
-CODA_OSS_LIBRARY_API int getPrecision(const std::complex<T>& type);
+int getPrecision(const std::complex<T>& type);
 
 // Note that std::to_string() doesn't necessarily generate the same output as writing
 // to std::cout; see https://en.cppreference.com/w/cpp/string/basic_string/to_string
@@ -127,11 +125,11 @@ std::string toType<std::string>(const std::string& s);
 /**
  *  strtoll wrapper for msvc compatibility.
  */
-CODA_OSS_LIBRARY_API long long strtoll(const char* str, char** endptr, int base);
+long long strtoll(const char* str, char** endptr, int base);
 /**
  *  strtoull wrapper for msvc compatibility.
  */
-CODA_OSS_LIBRARY_API unsigned long long strtoull(const char* str, char** endptr, int base);
+unsigned long long strtoull(const char* str, char** endptr, int base);
 
 /**
  *  Convert a string containing a number in any base to a numerical type.

@@ -26,8 +26,6 @@
 #include <cmath>
 #include <stddef.h>
 
-#include "config/Exports.h"
-
 namespace math
 {
 /*!
@@ -80,7 +78,7 @@ template<typename T> inline T round(T value, size_t fractionalDigits)
  * \return Result of division, rounded up
  * \throw if denominator is 0
  */
-CODA_OSS_LIBRARY_API size_t ceilingDivide(size_t numerator, size_t denominator);
+size_t ceilingDivide(size_t numerator, size_t denominator);
 }
 
 #endif

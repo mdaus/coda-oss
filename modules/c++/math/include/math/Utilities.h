@@ -25,10 +25,9 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include <cmath>
-
+#include <math/math_config.h>
 #include <sys/Conf.h>
-#include "config/Exports.h"
+#include <cmath>
 
 namespace math
 {
@@ -65,9 +64,9 @@ template <typename T> inline bool isNaN(T value) noexcept
 }
 
 // https://man7.org/linux/man-pages/man3/sincos.3.html
-CODA_OSS_LIBRARY_API void SinCos(float angle, float& sin, float& cos) noexcept;
-CODA_OSS_LIBRARY_API void SinCos(double angle, double& sin, double& cos) noexcept;
-CODA_OSS_LIBRARY_API void SinCos(long double angle, long double& sin, long double& cos) noexcept;
+void SinCos(float angle, float& sin, float& cos) noexcept;
+void SinCos(double angle, double& sin, double& cos) noexcept;
+void SinCos(long double angle, long double& sin, long double& cos) noexcept;
 
 /*
  * Calculate the binomial coefficient
@@ -77,7 +76,7 @@ CODA_OSS_LIBRARY_API void SinCos(long double angle, long double& sin, long doubl
  * \param k number of outcomes
  * \return n choose k
  */
-CODA_OSS_LIBRARY_API sys::Uint64_T nChooseK(size_t n, size_t k);
+sys::Uint64_T nChooseK(size_t n, size_t k);
 }
 
 #endif
