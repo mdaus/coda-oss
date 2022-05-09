@@ -52,7 +52,7 @@ CODA_OSS_LIBRARY_API int getPrecision(const std::complex<T>& type);
 // Note that std::to_string() doesn't necessarily generate the same output as writing
 // to std::cout; see https://en.cppreference.com/w/cpp/string/basic_string/to_string
 template <typename T>
-std::string toString(const T& value)
+CODA_OSS_LIBRARY_API std::string toString(const T& value)
 {
     std::ostringstream buf;
     buf.precision(getPrecision(value));
@@ -61,10 +61,10 @@ std::string toString(const T& value)
 }
 
 template <>
-std::string toString(const uint8_t& value);
+CODA_OSS_LIBRARY_API std::string toString(const uint8_t& value);
 
 template <>
-std::string toString(const int8_t& value);
+CODA_OSS_LIBRARY_API std::string toString(const int8_t& value);
 
 template <>
 inline std::string toString(const std::nullptr_t&)
@@ -73,7 +73,7 @@ inline std::string toString(const std::nullptr_t&)
 }
 
 template <>
-std::string toString(const coda_oss::u8string&);
+CODA_OSS_LIBRARY_API std::string toString(const coda_oss::u8string&);
 
 template <typename T>
 std::string toString(const coda_oss::optional<T>& value)

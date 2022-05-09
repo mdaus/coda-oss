@@ -70,4 +70,8 @@
 #pragma warning(disable: 4251) // '...' : class '...' needs to have dll-interface to be used by clients of struct '...'
 #endif
 
+#ifdef SWIG
+#undef CODA_OSS_LIBRARY_API
+#endif
+
 #endif // CODA_OSS_Exports_h_INCLUDED_
