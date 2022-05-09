@@ -61,8 +61,6 @@ class EncodedString final
     void assign(coda_oss::u8string::const_pointer);
     void assign(str::W1252string::const_pointer);
     
-    explicit EncodedString(str::W1252string::const_pointer);
-
 public:
     EncodedString() = default;
     ~EncodedString() = default;
@@ -74,6 +72,7 @@ public:
     explicit EncodedString(coda_oss::u8string::const_pointer);
     explicit EncodedString(const coda_oss::u8string& s);
     explicit EncodedString(const str::W1252string&);
+    explicit EncodedString(str::W1252string::const_pointer);
     explicit EncodedString(const std::string&);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     explicit EncodedString(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     explicit EncodedString(const std::u16string&); // converted to UTF-8 for storage

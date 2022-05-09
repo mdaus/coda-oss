@@ -27,6 +27,7 @@
 #include <import/str.h>
 #include <import/mem.h>
 #include <sys/OS.h>
+#include <str/Encoding.h>
 #include <str/EncodedStringView.h>
 
 constexpr auto PlatformEncoding = sys::Platform == sys::PlatformType::Windows
@@ -286,11 +287,11 @@ void xml::lite::Element::getCharacterData(coda_oss::u8string& result) const
     str::EncodedStringView view;
     if (encoding == xml::lite::StringEncoding::Utf8)
     {
-        view = str::EncodedStringView::create<coda_oss::u8string>(mCharacterData);
+        view = str::c_str<coda_oss::u8string::const_pointer>(mCharacterData);
     }
     else if (encoding == xml::lite::StringEncoding::Windows1252)
     {
-        view = str::EncodedStringView::create<str::W1252string>(mCharacterData);
+        view = str::c_str<str::W1252string::const_pointer>(mCharacterData);
     }
     else
     {
@@ -307,7 +308,7 @@ static void writeCharacterData(io::OutputStream& stream,
     if (encoding == xml::lite::StringEncoding::Windows1252)
     {
         // need to convert before writing
-        const auto view = str::EncodedStringView::create<str::W1252string>(characterData);
+        const str::EncodedStringView view(str::c_str<str::W1252string::const_pointer>(characterData));
         stream.write(view.u8string());
     }
     else if (encoding == xml::lite::StringEncoding::Utf8)
