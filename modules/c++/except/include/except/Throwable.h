@@ -199,9 +199,11 @@ private:
  * break existing code as "catch (const std::exception&)" will catch
  * except::Throwable when it didn't before.
  */
-#if _MSC_VER // SWIG doesn't like CODA_OSS_disable_warning_push ... ?
-#pragma warning(push)
+#ifndef _SWIG
+CODA_OSS_disable_warning_push
+#if _MSC_VER
 #pragma warning(disable: 4275) // non dll-interface class '...' used as base for dll-interface class '...'
+#endif
 #endif
 class CODA_OSS_LIBRARY_API Throwable11 : public std::exception
 {
@@ -343,10 +345,9 @@ private:
     mutable std::string mWhat;
     std::vector<std::string> mBacktrace;
 };
-#if _MSC_VER
-#pragma warning(pop)
+#ifndef _SWIG
+CODA_OSS_disable_warning_pop
 #endif
-
 }
 
 #endif // CODA_OSS_except_Throwable_h_INCLUDED_
