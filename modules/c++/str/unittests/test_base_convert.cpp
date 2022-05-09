@@ -33,22 +33,21 @@
 
 #include "TestCase.h"
 
-inline std::string to_std_string(const coda_oss::u8string& value)
+inline std::string to_string(const coda_oss::u8string& value)
 {
     return str::c_str<std::string::const_pointer>(value);  // copy
 }
-inline std::string to_std_string(const std::u32string& s)
+inline std::string to_string(const std::u32string& v)
 {
-    return to_std_string(str::to_u8string(s));
+    return to_string(str::to_u8string(v));
 }
-template<typename TActual, typename TExpected>
-void test_assert_eq(const std::string& testName,
-                           const TActual& actual, const TExpected& expected)
+inline std::string to_string(const std::string& v)
 {
-    //TEST_ASSERT(actual == expected);
-    const auto actual_ = to_std_string(actual);
-    const auto expected_ = to_std_string(expected);
-    TEST_ASSERT_EQ(actual_, expected_);
+    return v;
+}
+inline std::string to_string(const char* v)
+{
+    return std::string(v);
 }
 
 TEST_CASE(testConvert)
@@ -72,15 +71,15 @@ TEST_CASE(testBadConvert)
 
 TEST_CASE(testEightBitIntToString)
 {
-    TEST_ASSERT_EQ(str::toString<uint8_t>(1), "1");
-    TEST_ASSERT_EQ(str::toString<int8_t>(2), "2");
-    TEST_ASSERT_EQ(str::toString<int8_t>(-2), "-2");
+    TEST_ASSERT_EQ_STR(str::toString<uint8_t>(1), "1");
+    TEST_ASSERT_EQ_STR(str::toString<int8_t>(2), "2");
+    TEST_ASSERT_EQ_STR(str::toString<int8_t>(-2), "-2");
 }
 
 TEST_CASE(testCharToString)
 {
-    TEST_ASSERT_EQ(str::toString<char>('a'), "a");
-    TEST_ASSERT_EQ(str::toString<char>(65), "A");
+    TEST_ASSERT_EQ_STR(str::toString<char>('a'), "a");
+    TEST_ASSERT_EQ_STR(str::toString<char>(65), "A");
 }
 
 static coda_oss::u8string fromWindows1252(const std::string& s)
@@ -106,7 +105,7 @@ TEST_CASE(test_string_to_u8string_ascii)
         const std::string input = "|\x00";  //  ASCII, "|<NULL>"
         const auto actual = fromWindows1252(input);
         const std::u8string expected{cast8('|')}; // '\x00' is the end of the string in C/C++
-        test_assert_eq(testName, actual, expected);
+        TEST_ASSERT_EQ_STR(actual, expected);
     }
     constexpr uint8_t start_of_heading = 0x01;
     constexpr uint8_t delete_character = 0x7f;
@@ -115,9 +114,9 @@ TEST_CASE(test_string_to_u8string_ascii)
         const std::string input { '|', static_cast<std::string::value_type>(ch), '|'};
         const auto actual = fromWindows1252(input);
         const std::u8string expected8{cast8('|'), cast8(ch), cast8('|')}; 
-        test_assert_eq(testName, actual, expected8);
+        TEST_ASSERT_EQ_STR(actual, expected8);
         const std::u32string expected{cast32('|'), cast32(ch), cast32('|')};
-        test_assert_eq(testName, actual, expected);
+        TEST_ASSERT_EQ_STR(actual, expected);
     }
 }
 
@@ -128,17 +127,17 @@ TEST_CASE(test_string_to_u8string_windows_1252)
         const std::string input = "|\x80|";  // Windows-1252, "|€|"
         const auto actual = fromWindows1252(input);
         const std::u8string expected8{cast8('|'), cast8('\xE2'), cast8('\x82'), cast8('\xAC'), cast8('|')};  // UTF-8,  "|€|"
-        test_assert_eq(testName, actual, expected8);
+        TEST_ASSERT_EQ_STR(actual, expected8);
         const std::u32string expected{cast32('|'), 0x20AC, cast32('|')};  // UTF-32,  "|€|"
-        test_assert_eq(testName, actual, expected);
+        TEST_ASSERT_EQ_STR(actual, expected);
     }
     {
         const std::string input = "|\x9F|";  // Windows-1252, "|Ÿ|"
         const auto actual = fromWindows1252(input);
         const std::u8string expected8{cast8('|'), cast8('\xC5'), cast8('\xB8'), cast8('|')};  // UTF-8,  "|Ÿ|"
-        test_assert_eq(testName, actual, expected8);
+        TEST_ASSERT_EQ_STR(actual, expected8);
         const std::u32string expected{cast32('|'), 0x0178, cast32('|')};  // UTF-32,  "|Ÿ|"
-        test_assert_eq(testName, actual, expected);
+        TEST_ASSERT_EQ_STR(actual, expected);
     }
     {
         const std::vector<char> undefined{ '\x81', '\x8d', '\x8f', '\x90', '\x9d' };
@@ -147,9 +146,9 @@ TEST_CASE(test_string_to_u8string_windows_1252)
             const std::string input{'|', ch, '|'};
             const auto actual = fromWindows1252(input);
             static const std::u8string expected8{cast8('|'), cast8('\xEF'), cast8('\xBF'), cast8('\xBD'), cast8('|')};  // UTF-8,  "|<REPLACEMENT CHARACTER>|"
-            test_assert_eq(testName, actual, expected8);
+            TEST_ASSERT_EQ_STR(actual, expected8);
             const std::u32string expected{cast32('|'), 0xfffd, cast32('|')};  // UTF-32,  "|<REPLACEMENT CHARACTER>|"
-            test_assert_eq(testName, actual, expected);
+            TEST_ASSERT_EQ_STR(actual, expected);
         }    
     }
     {
@@ -217,7 +216,7 @@ TEST_CASE(test_string_to_u8string_iso8859_1)
         const str::W1252string input(str::c_str<str::W1252string::const_pointer>(input_));
         const auto actual = to_u8string(input);
         const std::u32string expected{cast32('|'), cast32(ch), cast32('|')};
-        test_assert_eq(testName, actual, expected);
+        TEST_ASSERT_EQ_STR(actual, expected);
 
         // Can't compare the values with == because TEST_ASSERT_EQ()
         // wants to do toString() and that doesn't work on Linux as the encoding
@@ -390,28 +389,27 @@ TEST_CASE(test_EncodedString)
         TEST_ASSERT_TRUE(es_copy.native().empty());
     }
     es = str::EncodedString("abc"); // assignment
-    TEST_ASSERT_EQ(es.native(), "abc");
+    TEST_ASSERT_EQ_STR(es.native(), "abc");
     {
         str::EncodedString es_copy(es);  // copy, again; this time w/o default content
-        TEST_ASSERT_EQ(es_copy.native(), "abc");
+        TEST_ASSERT_EQ_STR(es_copy.native(), "abc");
     }
 
     str::EncodedString abc(es); // copy, for use below
-    TEST_ASSERT_EQ(abc.native(), "abc");
+    TEST_ASSERT_EQ_STR(abc.native(), "abc");
     
     str::EncodedString es2;
     es = std::move(es2);  // move assignment
     TEST_ASSERT_TRUE(es.native().empty());
     str::EncodedString abc_(abc);  // copy
     es = std::move(abc_); // move assignment, w/o default content
-    TEST_ASSERT_EQ(es.native(), "abc");
+    TEST_ASSERT_EQ_STR(es.native(), "abc");
 
     str::EncodedString es3(std::move(abc)); // move constructor
-    TEST_ASSERT_EQ(es3.native(), "abc");
+    TEST_ASSERT_EQ_STR(es3.native(), "abc");
 }
 
-int main(int, char**)
-{
+TEST_MAIN(
     TEST_CHECK(testConvert);
     TEST_CHECK(testBadConvert);
     TEST_CHECK(testEightBitIntToString);
@@ -424,5 +422,6 @@ int main(int, char**)
     TEST_CHECK(test_u8string_to_u16string);
     TEST_CHECK(test_u8string_to_u32string);
     TEST_CHECK(test_EncodedStringView);
+    
     TEST_CHECK(test_EncodedString);
-}
+    )
