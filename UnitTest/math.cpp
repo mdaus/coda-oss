@@ -5,6 +5,8 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 #define TEST_CASE(X) TEST_METHOD(X)
 
+namespace math
+{
 TEST_CLASS(test_bessel_functions){ public:
 #include "math/unittests/test_bessel_functions.cpp"
 };
@@ -28,3 +30,4 @@ TEST_CLASS(test_round){ public:
 TEST_CLASS(test_sign){ public:
 #include "math/unittests/test_sign.cpp"
 };
+}

@@ -27,7 +27,7 @@ inline void assert_eq(const TX1& X1, const TX2& X2)
 }
 #define TEST_ASSERT_EQ(X1, X2) test::assert_eq(X1, X2);
 #define TEST_ASSERT_EQ_INT(X1, X2) TEST_ASSERT_EQ(X2, X1)
-#define TEST_ASSERT_EQ_STR(X1, X2) TEST_ASSERT_EQ(std::string(X1), std::string(X2))
+#define TEST_ASSERT_EQ_STR(X1, X2) TEST_ASSERT_EQ(to_string(X1), to_string(X2))
 #define TEST_ASSERT_EQ_FLOAT(X1, X2) TEST_ASSERT_EQ(static_cast<float>(X1), static_cast<float>(X2))
 
 #define TEST_ASSERT_NULL(X) Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsNull((X))

@@ -25,6 +25,7 @@
 #include <new>
 #include <numeric>
 #include <utility>
+#include <type_traits>
  #include <string>
 #include <map>
 #include <set>
