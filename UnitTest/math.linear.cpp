@@ -61,4 +61,23 @@ TEST_CLASS(test_lin){ public:
 #include "math.linear/unittests/test_lin.cpp"
 };
 
+//TEST_CLASS(test_Matrix2D_serialize){ public:
+//#include "math.linear/unittests/test_Matrix2D_serialize.cpp"
+//};
+
+TEST_CLASS(test_mx){ public:
+#include "math.linear/unittests/test_mx.cpp"
+};
+
+TEST_CLASS(test_Vector){ public:
+#include "math.linear/unittests/test_Vector.cpp"
+};
+
+//TEST_CLASS(test_Vector_serialize){ public:
+//#include "math.linear/unittests/test_Vector_serialize.cpp"
+//};
+
+TEST_CLASS(test_VectorN){ public:
+#include "math.linear/unittests/test_VectorN.cpp"
+};
 }
