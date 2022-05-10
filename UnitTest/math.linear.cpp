@@ -1,45 +1,7 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 
-#include "import/math/linear.h"
-
-namespace Microsoft
-{
-namespace VisualStudio
-{
-namespace CppUnitTestFramework
-{
-
-template <typename T = double>
-inline std::wstring ToString(const math::linear::Vector<T>& q)
-{
-    return ToString(str::toString(q));
-}
-
-template <size_t ND, typename T = double>
-inline std::wstring ToString(const math::linear::VectorN<ND, T>& q)
-{
-    return ToString(str::toString(q));
-}
-
-template <typename T = double>
-inline std::wstring ToString(const math::linear::Matrix2D<T>& q)
-{
-    return ToString(str::toString(q));
-}
-
-template <size_t MD, size_t ND, typename T = double>
-inline std::wstring ToString(const math::linear::MatrixMxN<MD, ND, T>& q)
-{
-    return ToString(str::toString(q));
-}
-
-}
-}
-}
-
-
-
+#include <import/math/linear.h>
 
 namespace math_linear
 {

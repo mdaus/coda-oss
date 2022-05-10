@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 
+#include <import/math.h>
+
 namespace math
 {
 TEST_CLASS(test_bessel_functions){ public:
