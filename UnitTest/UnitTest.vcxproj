@@ -104,7 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Test.h" />
     <ClInclude Include="TestCase.h" />
   </ItemGroup>
   <ItemGroup>

@@ -10,6 +10,5 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="TestCase.h" />
-    <ClInclude Include="Test.h" />
   </ItemGroup>
 </Project>

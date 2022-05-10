@@ -639,6 +639,60 @@
     <ClCompile Include="polygon\source\PolygonMask.cpp">
       <Filter>polygon</Filter>
     </ClCompile>
+    <ClCompile Include="math\unittests\test_bessel_functions.cpp">
+      <Filter>math\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math\unittests\test_convex_hull.cpp">
+      <Filter>math\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math\unittests\test_is_nan.cpp">
+      <Filter>math\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math\unittests\test_n_choose_k.cpp">
+      <Filter>math\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math\unittests\test_round.cpp">
+      <Filter>math\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math\unittests\test_sign.cpp">
+      <Filter>math\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.linear\unittests\test_eigenvalue.cpp">
+      <Filter>math.linear\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.linear\unittests\test_inf_equality.cpp">
+      <Filter>math.linear\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.linear\unittests\test_inverse.cpp">
+      <Filter>math.linear\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.linear\unittests\test_lin.cpp">
+      <Filter>math.linear\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.linear\unittests\test_Matrix2D_serialize.cpp">
+      <Filter>math.linear\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.linear\unittests\test_mx.cpp">
+      <Filter>math.linear\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.linear\unittests\test_Vector.cpp">
+      <Filter>math.linear\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.linear\unittests\test_Vector_serialize.cpp">
+      <Filter>math.linear\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.linear\unittests\test_VectorN.cpp">
+      <Filter>math.linear\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="str\unittests\test_base_convert.cpp">
+      <Filter>str\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="str\unittests\test_str.cpp">
+      <Filter>str\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="units\unittests\test_units.cpp">
+      <Filter>units\unittests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -682,6 +736,18 @@
     </Filter>
     <Filter Include="polygon">
       <UniqueIdentifier>{f2544ccb-0933-44c7-af39-cd986982af3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math\unittests">
+      <UniqueIdentifier>{82d38fbe-b150-411a-8843-b584142c07ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math.linear\unittests">
+      <UniqueIdentifier>{d17adbee-6720-4a93-b45f-2a05eb6a4620}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="str\unittests">
+      <UniqueIdentifier>{4cee5537-9ac0-4bb8-9b9f-78aae69d0084}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="units\unittests">
+      <UniqueIdentifier>{55522351-e752-4be8-9139-f7ac4b91a66d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
