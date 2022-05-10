@@ -43,15 +43,6 @@ static std::string to_string(const std::u32string& s)
     return to_string(str::to_u8string(s));
 }
 
-static std::string to_string(const std::string& s)
-{
-    return s;
-}
-static std::string to_string(const char* s)
-{
-    return s;
-}
-
 TEST_CASE(testConvert)
 {
     TEST_ASSERT_EQ(str::toType<long long>("0x3BC7", 16), (long long) 0x3BC7);
