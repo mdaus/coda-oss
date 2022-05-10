@@ -26,10 +26,11 @@
 #include <utility>
 #include <type_traits>
 #include <typeinfo>
+#include <array>
 #include <string>
+#include <vector>
 #include <map>
 #include <set>
-#include <vector>
 #include <numeric>
 #include <algorithm>
 #include <iterator>

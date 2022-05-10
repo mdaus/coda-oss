@@ -5,6 +5,7 @@
     <ClCompile Include="math.cpp" />
     <ClCompile Include="str.cpp" />
     <ClCompile Include="units.cpp" />
+    <ClCompile Include="math.linear.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

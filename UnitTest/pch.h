@@ -21,13 +21,21 @@
 
 #include "Test.h"
 
+#include <array>
+#include <string>
+
 #include <std/string>
 #include <std/span>
+#include <std/optional>
+#include <std/cstddef>
+#include <std/bit>
+#include "gsl/gsl.h"
 #include "import/sys.h"
 #include "import/math.h"
+#include "import/math/linear.h"
 #include "import/str.h"
 #include "import/except.h"
-#include "gsl/gsl.h"
+#include "import/mem.h"
 
 #include "str/EncodedString.h"
 
