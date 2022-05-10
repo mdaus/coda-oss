@@ -119,3 +119,4 @@ inline void assert_almost_eq(long double X1, long double X2)
 #define TEST_THROWS(X) TEST_EXCEPTION(X)
 
 #define TEST_MAIN(X)
+#define TEST_CASE(X) TEST_METHOD(X)

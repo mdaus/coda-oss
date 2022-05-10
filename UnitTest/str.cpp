@@ -3,7 +3,8 @@
 
 #include <string>
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+#include "import/str.h"
+#include "str/EncodedString.h"
 
 namespace Microsoft
 {
@@ -30,8 +31,6 @@ inline std::wstring ToString(const std::u8string& q)
 }
 }
 
-#define TEST_CASE(X) TEST_METHOD(X)
-
 #include "TestCase.h"
 namespace test
 {
@@ -53,5 +52,5 @@ namespace str
 
     TEST_CLASS(test_str){ public:
     #include "str/unittests/test_str.cpp"
-};
-                            }
+    };
+}

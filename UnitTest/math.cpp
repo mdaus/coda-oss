@@ -1,10 +1,6 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-
-#define TEST_CASE(X) TEST_METHOD(X)
-
 namespace math
 {
 TEST_CLASS(test_bessel_functions){ public:

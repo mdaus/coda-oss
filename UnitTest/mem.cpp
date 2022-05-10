@@ -1,9 +1,7 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-
-#define TEST_CASE(X) TEST_METHOD(X)
+#include "import/mem.h"
 
 namespace mem
 {
