@@ -320,10 +320,14 @@ inline int main(TFunc f)
 #  define TEST_ASSERT_FALSE(X) if ((X)) { die_printf("%s (%s,%s,%d): FAILED: Value should evaluate to false\n", testName.c_str(), __FILE__, SYS_FUNC, __LINE__); }
 #  define TEST_ASSERT_TRUE(X) if (!(X)) { die_printf("%s (%s,%s,%d): FAILED: Value should evaluate to true\n", testName.c_str(), __FILE__, SYS_FUNC, __LINE__); }
 */
-#  define TEST_ASSERT_EQ(X1, X2) if ((X1) != (X2)) { test::diePrintf_eq(testName, __FILE__, SYS_FUNC, __LINE__, X1, X2); }
-#  define TEST_ASSERT_EQ_MSG(msg, X1, X2) if ((X1) != (X2)) { die_printf("%s (%s,%d): FAILED (%s): Recv'd %s, Expected %s\n", testName.c_str(), __FILE__, __LINE__, (msg).c_str(), str::toString((X1)).c_str(), str::toString((X2)).c_str()); }
-#  define TEST_ASSERT_NOT_EQ(X1, X2) if ((X1) == (X2)) { die_printf("%s (%s,%s,%d): FAILED: Recv'd %s should not equal %s\n", testName.c_str(), __FILE__, SYS_FUNC, __LINE__, str::toString(X1).c_str(), str::toString(X2).c_str()); }
-#  define TEST_ASSERT_NOT_EQ_MSG(msg, X1, X2) if ((X1) == (X2)) { die_printf("%s (%s,%d): FAILED (%s): Recv'd %s should not equal %s\n", testName.c_str(), __FILE__, __LINE__, (msg).c_str(), str::toString((X1)).c_str(), str::toString((X2)).c_str()); }
+#define CODA_OSS_test_eq_(X1, X2) (((X1) == (X2)) && ((X2) == (X1)))
+#define CODA_OSS_test_ne_(X1, X2) (((X1) != (X2)) && ((X2) != (X1)))
+#define CODA_OSS_test_ne(X1, X2) (CODA_OSS_test_ne_(X1, X2) && !CODA_OSS_test_eq_(X1, X2))
+#define TEST_ASSERT_EQ(X1, X2) if (CODA_OSS_test_ne((X1), (X2))) { test::diePrintf_eq(testName, __FILE__, SYS_FUNC, __LINE__, X1, X2); }
+#define TEST_ASSERT_EQ_MSG(msg, X1, X2) if (CODA_OSS_test_ne((X1), (X2))) { die_printf("%s (%s,%d): FAILED (%s): Recv'd %s, Expected %s\n", testName.c_str(), __FILE__, __LINE__, (msg).c_str(), str::toString((X1)).c_str(), str::toString((X2)).c_str()); }
+#define CODA_OSS_test_eq(X1, X2) (CODA_OSS_test_eq_(X1, X2) && !CODA_OSS_test_ne_(X1, X2))
+#define TEST_ASSERT_NOT_EQ(X1, X2) if (CODA_OSS_test_eq((X1), (X2))) { die_printf("%s (%s,%s,%d): FAILED: Recv'd %s should not equal %s\n", testName.c_str(), __FILE__, SYS_FUNC, __LINE__, str::toString(X1).c_str(), str::toString(X2).c_str()); }
+#define TEST_ASSERT_NOT_EQ_MSG(msg, X1, X2) if (CODA_OSS_test_eq((X1), (X2))) { die_printf("%s (%s,%d): FAILED (%s): Recv'd %s should not equal %s\n", testName.c_str(), __FILE__, __LINE__, (msg).c_str(), str::toString((X1)).c_str(), str::toString((X2)).c_str()); }
 /*
 #  define TEST_ASSERT_ALMOST_EQ_EPS(X1, X2, EPS) if (std::abs((X1) - (X2)) > EPS || IS_NAN(std::abs((X1) - (X2)))) die_printf("%s (%s,%d): FAILED: Recv'd %s, Expected %s\n", testName.c_str(), __FILE__, __LINE__, str::toString((X1)).c_str(), str::toString((X2)).c_str());
 #  define TEST_ASSERT_ALMOST_EQ(X1, X2) if (std::abs((X1) - (X2)) > std::numeric_limits<float>::epsilon() || IS_NAN(std::abs((X1) - (X2)))) { die_printf("%s (%s,%s,%d): FAILED: Recv'd %s, Expected %s\n", testName.c_str(), __FILE__, SYS_FUNC, __LINE__, str::toString(X1).c_str(), str::toString(X2).c_str()); }
