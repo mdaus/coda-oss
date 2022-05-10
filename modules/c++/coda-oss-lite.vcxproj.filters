@@ -693,6 +693,27 @@
     <ClCompile Include="units\unittests\test_units.cpp">
       <Filter>units\unittests</Filter>
     </ClCompile>
+    <ClCompile Include="mem\unittests\test_scoped_cloneable_ptr.cpp">
+      <Filter>mem\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="mem\unittests\test_scoped_copyable_ptr.cpp">
+      <Filter>mem\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="mem\unittests\test_scratch_memory.cpp">
+      <Filter>mem\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="mem\unittests\test_shared_ptr.cpp">
+      <Filter>mem\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="mem\unittests\test_Span.cpp">
+      <Filter>mem\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="mem\unittests\test_unique_ptr.cpp">
+      <Filter>mem\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="mem\unittests\test_vector_pointers.cpp">
+      <Filter>mem\unittests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -748,6 +769,9 @@
     </Filter>
     <Filter Include="units\unittests">
       <UniqueIdentifier>{55522351-e752-4be8-9139-f7ac4b91a66d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mem\unittests">
+      <UniqueIdentifier>{6a70a638-d58c-4e34-87c1-6d1115690de8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
