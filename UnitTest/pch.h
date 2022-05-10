@@ -33,6 +33,7 @@
 #include "import/str.h"
 #include "import/except.h"
 #include "import/mem.h"
+#include "include/TestCase.h"
 
 #include "TestCase.h"
 
