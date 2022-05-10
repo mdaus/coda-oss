@@ -93,6 +93,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CppUnitTestAssert.cpp" />
     <ClCompile Include="math.linear.cpp" />
     <ClCompile Include="mem.cpp" />
     <ClCompile Include="pch.cpp">

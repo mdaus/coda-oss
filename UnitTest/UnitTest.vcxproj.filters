@@ -7,6 +7,7 @@
     <ClCompile Include="units.cpp" />
     <ClCompile Include="math.linear.cpp" />
     <ClCompile Include="mem.cpp" />
+    <ClCompile Include="CppUnitTestAssert.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

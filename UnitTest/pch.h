@@ -21,16 +21,20 @@
 
 #include <array>
 #include <string>
+#include <locale>
 #include <std/string>
 #include <std/span>
 #include <std/optional>
 #include <std/cstddef>
 #include <std/bit>
 
+#include "CppUnitTest.h"
+
 #include "gsl/gsl.h"
 #include "import/sys.h"
 #include "import/math.h"
 #include "import/str.h"
+#include "str/EncodedStringView.h"
 #include "import/except.h"
 #include "import/mem.h"
 #include "include/TestCase.h"

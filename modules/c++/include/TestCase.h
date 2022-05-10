@@ -61,6 +61,8 @@ inline void diePrintf_eq(const std::string& testName, const char* file, const ch
 {
     diePrintf("%s (%s,%s,%d): FAILED: Recv'd %s, Expected %s\n", testName, file, func, line, X1, X2);
 }
+#define CODA_OSS_test_diePrintf_eq_(X1, X2) test::diePrintf_eq(testName, __FILE__, SYS_FUNC, __LINE__, X1, X2)
+
 
 
 template <typename TFunc>
@@ -323,7 +325,7 @@ inline int main(TFunc f)
 #define CODA_OSS_test_eq_(X1, X2) (((X1) == (X2)) && ((X2) == (X1)))
 #define CODA_OSS_test_ne_(X1, X2) (((X1) != (X2)) && ((X2) != (X1)))
 #define CODA_OSS_test_ne(X1, X2) (CODA_OSS_test_ne_(X1, X2) && !CODA_OSS_test_eq_(X1, X2))
-#define TEST_ASSERT_EQ(X1, X2) if (CODA_OSS_test_ne((X1), (X2))) { test::diePrintf_eq(testName, __FILE__, SYS_FUNC, __LINE__, X1, X2); }
+#define TEST_ASSERT_EQ(X1, X2) if (CODA_OSS_test_ne((X1), (X2))) {CODA_OSS_test_diePrintf_eq_(X1, X2); }
 #define TEST_ASSERT_EQ_MSG(msg, X1, X2) if (CODA_OSS_test_ne((X1), (X2))) { die_printf("%s (%s,%d): FAILED (%s): Recv'd %s, Expected %s\n", testName.c_str(), __FILE__, __LINE__, (msg).c_str(), str::toString((X1)).c_str(), str::toString((X2)).c_str()); }
 #define CODA_OSS_test_eq(X1, X2) (CODA_OSS_test_eq_(X1, X2) && !CODA_OSS_test_ne_(X1, X2))
 #define TEST_ASSERT_NOT_EQ(X1, X2) if (CODA_OSS_test_eq((X1), (X2))) { die_printf("%s (%s,%s,%d): FAILED: Recv'd %s should not equal %s\n", testName.c_str(), __FILE__, SYS_FUNC, __LINE__, str::toString(X1).c_str(), str::toString(X2).c_str()); }

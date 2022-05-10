@@ -6,17 +6,37 @@
 #include "CppUnitTest.h"
 #include "include/TestCase.h"
 
+#undef TEST_CHECK
+#undef TEST_ASSERT
+#undef TEST_ASSERT_NULL 
+#undef TEST_ASSERT_TRUE
+#undef TEST_ASSERT_FALSE
+#undef TEST_MAIN
+#undef TEST_CASE
+#define TEST_CHECK(X) 
+#define TEST_MAIN(X)
+#define TEST_ASSERT_NULL(X) Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsNull((X))
+#define TEST_ASSERT_TRUE(X) Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsTrue((X))
+#define TEST_ASSERT_FALSE(X) Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsFalse((X))
+#define TEST_ASSERT(X) TEST_ASSERT_TRUE(X)
+#define TEST_CASE(X) TEST_METHOD(X)
+
 template<>
 inline std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString(const uint16_t& q)
 {
 	return std::to_wstring(q);
 }
 
-#undef TEST_ASSERT
-#define TEST_ASSERT(X) Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsTrue(X)
-
 namespace test
 {
+    struct Assert final
+    {
+        static void FailOnCondition(bool condition, const unsigned short* message, const Microsoft::VisualStudio::CppUnitTestFramework::__LineInfo* pLineInfo);    
+        static std::wstring GetAssertMessage(bool equality, const std::string& expected, const std::string& actual, const wchar_t *message);
+    };
+#undef EQUALS_MESSAGE
+#define EQUALS_MESSAGE(expected, actual, message) reinterpret_cast<const unsigned short*>(test::Assert::GetAssertMessage(true, str::toString(expected),  str::toString(actual), message).c_str())
+
 template <typename TX1, typename TX2>
 inline void assert_eq__(const TX1& X1, const TX2& X2)
 {
@@ -51,24 +71,19 @@ inline void assert_eq_(const TX1& X1, const TX2& X2)
         assert_ne__(X1, X2); // trigger assert
     }
 }
-template <typename TX1, typename TX2>
-inline void assert_eq(const TX1& X1, const TX2& X2)
+
+// see Assert::AreEqual<>
+template<typename TExpected, typename TActual>
+inline void diePrintf_eq(const TExpected& expected, const TActual& actual,
+    const wchar_t* message = NULL, const Microsoft::VisualStudio::CppUnitTestFramework::__LineInfo* pLineInfo = NULL)
 {
-    assert_eq_(X1, X2);
-    assert_eq_(X2, X1); // X1 == X2 also means X2 == X1; at least for anything normal
+	Assert::FailOnCondition(expected == actual, EQUALS_MESSAGE(expected, actual, message), pLineInfo);
 }
 }
 
-#undef TEST_ASSERT_EQ
-#define TEST_ASSERT_EQ(X1, X2) test::assert_eq(X1, X2);
+#undef CODA_OSS_test_diePrintf_eq_
+#define CODA_OSS_test_diePrintf_eq_(X1, X2) test::diePrintf_eq(X1, X2)
 
-#undef TEST_ASSERT_NULL
-#define TEST_ASSERT_NULL(X) Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsNull((X))
-
-#undef TEST_ASSERT_TRUE
-#undef TEST_ASSERT_FALSE
-#define TEST_ASSERT_TRUE(X) Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsTrue((X))
-#define TEST_ASSERT_FALSE(X) Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsFalse((X))
 
 namespace test
 {
@@ -130,7 +145,4 @@ inline void assert_almost_eq(long double X1, long double X2)
 #define TEST_EXCEPTION(X) try { (X); TEST_ASSERT_FALSE(false); } catch (...) { TEST_ASSERT_TRUE(true); }
 #define TEST_THROWS(X) TEST_EXCEPTION(X)
 
-#undef TEST_MAIN
-#undef TEST_CASE
-#define TEST_MAIN(X)
-#define TEST_CASE(X) TEST_METHOD(X)
+
