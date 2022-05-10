@@ -5,15 +5,29 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-template <>
-inline std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString(const str::EncodedStringView& q)
+namespace Microsoft
+{
+namespace VisualStudio
+{
+namespace CppUnitTestFramework
+{
+inline std::wstring ToString(const str::EncodedStringView& q)
 {
     return q.wstring();
 }
-template <>
-inline std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString(const str::EncodedString& q)
+
+inline std::wstring ToString(const str::EncodedString& q)
 {
     return ToString(q.view());
+}
+
+inline std::wstring ToString(const std::u8string& q)
+{
+    return ToString(str::EncodedStringView(q));
+}
+
+}
+}
 }
 
 #define TEST_CASE(X) TEST_METHOD(X)

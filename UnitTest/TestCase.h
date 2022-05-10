@@ -16,29 +16,75 @@ inline std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString(cons
 namespace test
 {
 template <typename TX1, typename TX2>
+inline void assert_eq__(const TX1& X1, const TX2& X2)
+{
+    if (!(X1 == X2))
+    {
+        // AreEqual<> wants both "expected" and "actual" to be the same type;
+        // that doesn't take into account operator==().
+        const void* pX2 = &X2;
+        const auto pX2_as_X1 = reinterpret_cast<const TX1*>(pX2); // == already failed; this is just to trigger the assert
+        Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreEqual(X1, *pX2_as_X1);
+    }
+}
+template <typename TX1, typename TX2>
+inline void assert_ne__(const TX1& X1, const TX2& X2)
+{
+    if (!(X1 != X2))
+    {
+        // AreEqual<> wants both "expected" and "actual" to be the same type; 
+        // that doesn't take into account operator!=().
+        const void* pX2 = &X2;
+        const auto pX2_as_X1 = reinterpret_cast<const TX1*>(pX2); // != already failed; this is just to trigger the assert
+        Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreNotEqual(X1, *pX2_as_X1);
+    }
+}
+
+template <typename TX1, typename TX2>
+inline void assert_eq_(const TX1& X1, const TX2& X2)
+{
+    assert_eq__(X1, X2);
+    if (X1 != X2)  // X1 == X2 means X1 != X2 can't be true
+    {
+        assert_ne__(X1, X2); // trigger assert
+    }
+}
+template <typename TX1, typename TX2>
 inline void assert_eq(const TX1& X1, const TX2& X2)
 {
-    Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreEqual(X1, X2);
-    Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreEqual(X2, X1);
+    assert_eq_(X1, X2);
+    assert_eq_(X2, X1); // X1 == X2 also means X2 == X1; at least for anything normal
 }
 }
 #define TEST_ASSERT_EQ(X1, X2) test::assert_eq(X1, X2);
 #define TEST_ASSERT_EQ_INT(X1, X2) TEST_ASSERT_EQ(X2, X1)
-#define TEST_ASSERT_EQ_STR(X1, X2) TEST_ASSERT_EQ(to_string(X1), to_string(X2))
-#define TEST_ASSERT_EQ_FLOAT(X1, X2) TEST_ASSERT_EQ(static_cast<float>(X1), static_cast<float>(X2))
+#define TEST_ASSERT_EQ_FLOAT(X1, X2) TEST_ASSERT_EQ(X1, X2)
 
 #define TEST_ASSERT_NULL(X) Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsNull((X))
 #define TEST_ASSERT_NOT_NULL(X) Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsNotNull((X))
 #define TEST_ASSERT_TRUE(X) Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsTrue((X))
 #define TEST_ASSERT_FALSE(X) Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsFalse((X))
 
-template<typename TX1, typename TX2>
-inline void test_assert_not_eq_(const TX1& X1, const TX2& X2)
+namespace test
 {
-	Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreNotEqual(X1, X2);
-	Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreNotEqual(X2, X1);
+template <typename TX1, typename TX2>
+inline void assert_ne_(const TX1& X1, const TX2& X2)
+{
+    assert_ne__(X1, X2);
+    if (X1 == X2)  // X1 != X2 means X1 == X2 can't be true
+    {
+        assert_eq__(X1, X2); // trigger assert
+    }
 }
-#define TEST_ASSERT_NOT_EQ(X1, X2) test_assert_not_eq_(X1, X2);
+template <typename TX1, typename TX2>
+inline void assert_ne(const TX1& X1, const TX2& X2)
+{
+    assert_ne_(X1, X2);
+    assert_ne_(X2, X1); // X1 != X2 means X2 != X1
+}
+}
+#define TEST_ASSERT_NOT_EQ(X1, X2) test::assert_ne(X1, X2);
+
 template <typename TX1, typename TX2>
 inline void test_assert_greater_(const TX1& X1, const TX2& X2)
 {
