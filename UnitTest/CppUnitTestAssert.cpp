@@ -9,15 +9,11 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 // https://stackoverflow.com/questions/6873138/calling-private-method-in-c?msclkid=dd8b1f8bd09711ec8610b4501a04de94
 
 // declare method's type
-template <typename TClass>
-using FailOnCondition_t = void (bool condition, const unsigned short* message, const __LineInfo* pLineInfo);
-template <typename TClass>
+using FailOnCondition_t = void(bool condition, const unsigned short* message, const __LineInfo* pLineInfo);
 using GetAssertMessage_t = std::wstring(bool equality, const std::wstring& expected, const std::wstring& actual, const wchar_t *message);
 
 // helper structure to inject call() code
-template <typename TClass,
-    FailOnCondition_t<TClass> fFailOnCondition,
-    GetAssertMessage_t<TClass> fGetAssertMessage>
+template <FailOnCondition_t fFailOnCondition, GetAssertMessage_t fGetAssertMessage>
 struct caller final
 {
     friend void FailOnCondition(bool condition, const unsigned short* message, const __LineInfo* pLineInfo)
@@ -32,7 +28,7 @@ struct caller final
 };
 
 // even instantiation of the helper
-template struct caller<Assert, &Assert::FailOnCondition, &Assert::GetAssertMessage>;
+template struct caller<&Assert::FailOnCondition, &Assert::GetAssertMessage>;
 
 void FailOnCondition(bool condition, const unsigned short* message, const __LineInfo* pLineInfo);  // declare caller
 void test::Assert::FailOnCondition(bool condition, const unsigned short* message, const __LineInfo* pLineInfo)

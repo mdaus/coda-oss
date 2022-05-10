@@ -21,12 +21,6 @@
 #define TEST_ASSERT(X) TEST_ASSERT_TRUE(X)
 #define TEST_CASE(X) TEST_METHOD(X)
 
-template<>
-inline std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString(const uint16_t& q)
-{
-	return std::to_wstring(q);
-}
-
 namespace test
 {
     struct Assert final
@@ -35,42 +29,9 @@ namespace test
         static std::wstring GetAssertMessage(bool equality, const std::string& expected, const std::string& actual, const wchar_t *message);
     };
 #undef EQUALS_MESSAGE
+#undef NOT_EQUALS_MESSAGE
 #define EQUALS_MESSAGE(expected, actual, message) reinterpret_cast<const unsigned short*>(test::Assert::GetAssertMessage(true, str::toString(expected),  str::toString(actual), message).c_str())
-
-template <typename TX1, typename TX2>
-inline void assert_eq__(const TX1& X1, const TX2& X2)
-{
-    if (!(X1 == X2))
-    {
-        // AreEqual<> wants both "expected" and "actual" to be the same type;
-        // that doesn't take into account operator==().
-        const void* pX2 = &X2;
-        const auto pX2_as_X1 = reinterpret_cast<const TX1*>(pX2); // == already failed; this is just to trigger the assert
-        Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreEqual(X1, *pX2_as_X1);
-    }
-}
-template <typename TX1, typename TX2>
-inline void assert_ne__(const TX1& X1, const TX2& X2)
-{
-    if (!(X1 != X2))
-    {
-        // AreEqual<> wants both "expected" and "actual" to be the same type; 
-        // that doesn't take into account operator!=().
-        const void* pX2 = &X2;
-        const auto pX2_as_X1 = reinterpret_cast<const TX1*>(pX2); // != already failed; this is just to trigger the assert
-        Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreNotEqual(X1, *pX2_as_X1);
-    }
-}
-
-template <typename TX1, typename TX2>
-inline void assert_eq_(const TX1& X1, const TX2& X2)
-{
-    assert_eq__(X1, X2);
-    if (X1 != X2)  // X1 == X2 means X1 != X2 can't be true
-    {
-        assert_ne__(X1, X2); // trigger assert
-    }
-}
+#define NOT_EQUALS_MESSAGE(notExpected, actual, message) reinterpret_cast<const unsigned short*>(GetAssertMessage(false,  str::toString(notExpected),  str::toString(actual), message).c_str())
 
 // see Assert::AreEqual<>
 template<typename TExpected, typename TActual>
@@ -79,32 +40,19 @@ inline void diePrintf_eq(const TExpected& expected, const TActual& actual,
 {
 	Assert::FailOnCondition(expected == actual, EQUALS_MESSAGE(expected, actual, message), pLineInfo);
 }
-}
 
+// see Assert::AreNotEqual<>
+template<typename TExpected, typename TActual>
+inline void diePrintf_ne(const TExpected& notExpected, const TActual& actual,
+    const wchar_t* message = NULL, const Microsoft::VisualStudio::CppUnitTestFramework::__LineInfo* pLineInfo = NULL)
+{
+	Assert::FailOnCondition(!(notExpected == actual), NOT_EQUALS_MESSAGE(notExpected, actual, message), pLineInfo);
+}
+}
 #undef CODA_OSS_test_diePrintf_eq_
+#undef CODA_OSS_test_diePrintf_ne_
 #define CODA_OSS_test_diePrintf_eq_(X1, X2) test::diePrintf_eq(X1, X2)
-
-
-namespace test
-{
-template <typename TX1, typename TX2>
-inline void assert_ne_(const TX1& X1, const TX2& X2)
-{
-    assert_ne__(X1, X2);
-    if (X1 == X2)  // X1 != X2 means X1 == X2 can't be true
-    {
-        assert_eq__(X1, X2); // trigger assert
-    }
-}
-template <typename TX1, typename TX2>
-inline void assert_ne(const TX1& X1, const TX2& X2)
-{
-    assert_ne_(X1, X2);
-    assert_ne_(X2, X1); // X1 != X2 means X2 != X1
-}
-}
-#undef TEST_ASSERT_NOT_EQ
-#define TEST_ASSERT_NOT_EQ(X1, X2) test::assert_ne(X1, X2);
+#define CODA_OSS_test_diePrintf_ne_(X1, X2) test::diePrintf_ne(X1, X2)
 
 template <typename TX1, typename TX2>
 inline void test_assert_greater_(const TX1& X1, const TX2& X2)
