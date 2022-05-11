@@ -42,6 +42,39 @@
     <ClInclude Include="gsl\include\gsl\Gsl_narrow.h" />
     <ClInclude Include="gsl\include\gsl\use_gsl.h" />
     <ClInclude Include="include\TestCase.h" />
+    <ClInclude Include="io\include\io\BidirectionalStream.h" />
+    <ClInclude Include="io\include\io\BufferViewStream.h" />
+    <ClInclude Include="io\include\io\ByteStream.h" />
+    <ClInclude Include="io\include\io\CountingStreams.h" />
+    <ClInclude Include="io\include\io\DataStream.h" />
+    <ClInclude Include="io\include\io\DbgStream.h" />
+    <ClInclude Include="io\include\io\FileInputStream.h" />
+    <ClInclude Include="io\include\io\FileInputStreamIOS.h" />
+    <ClInclude Include="io\include\io\FileInputStreamOS.h" />
+    <ClInclude Include="io\include\io\FileOutputStream.h" />
+    <ClInclude Include="io\include\io\FileOutputStreamIOS.h" />
+    <ClInclude Include="io\include\io\FileOutputStreamOS.h" />
+    <ClInclude Include="io\include\io\FileUtils.h" />
+    <ClInclude Include="io\include\io\InputStream.h" />
+    <ClInclude Include="io\include\io\MMapInputStream.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="io\include\io\NullStreams.h" />
+    <ClInclude Include="io\include\io\OutputStream.h" />
+    <ClInclude Include="io\include\io\PipeStream.h" />
+    <ClInclude Include="io\include\io\ProxyStreams.h" />
+    <ClInclude Include="io\include\io\ReadUtils.h" />
+    <ClInclude Include="io\include\io\RotatingFileOutputStream.h" />
+    <ClInclude Include="io\include\io\Seekable.h" />
+    <ClInclude Include="io\include\io\SeekableStreams.h" />
+    <ClInclude Include="io\include\io\Serializable.h" />
+    <ClInclude Include="io\include\io\SerializableArray.h" />
+    <ClInclude Include="io\include\io\SerializableFile.h" />
+    <ClInclude Include="io\include\io\StandardStreams.h" />
+    <ClInclude Include="io\include\io\StreamSplitter.h" />
+    <ClInclude Include="io\include\io\StringStream.h" />
+    <ClInclude Include="io\include\io\TempFile.h" />
     <ClInclude Include="math.linear\include\math\linear\Eigenvalue.h" />
     <ClInclude Include="math.linear\include\math\linear\Line2D.h" />
     <ClInclude Include="math.linear\include\math\linear\Matrix2D.h" />
@@ -170,6 +203,25 @@
     <ClCompile Include="except\source\Context.cpp" />
     <ClCompile Include="except\source\Throwable.cpp" />
     <ClCompile Include="except\source\Trace.cpp" />
+    <ClCompile Include="io\source\ByteStream.cpp" />
+    <ClCompile Include="io\source\FileInputStreamIOS.cpp" />
+    <ClCompile Include="io\source\FileInputStreamOS.cpp" />
+    <ClCompile Include="io\source\FileOutputStreamIOS.cpp" />
+    <ClCompile Include="io\source\FileOutputStreamOS.cpp" />
+    <ClCompile Include="io\source\FileUtils.cpp" />
+    <ClCompile Include="io\source\InputStream.cpp" />
+    <ClCompile Include="io\source\MMapInputStream.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="io\source\PipeStream.cpp" />
+    <ClCompile Include="io\source\ReadUtils.cpp" />
+    <ClCompile Include="io\source\RotatingFileOutputStream.cpp" />
+    <ClCompile Include="io\source\SerializableFile.cpp" />
+    <ClCompile Include="io\source\StandardStreams.cpp" />
+    <ClCompile Include="io\source\StreamSplitter.cpp" />
+    <ClCompile Include="io\source\StringStream.cpp" />
+    <ClCompile Include="io\source\TempFile.cpp" />
     <ClCompile Include="math.linear\source\Line2D.cpp" />
     <ClCompile Include="math.linear\unittests\test_eigenvalue.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -408,7 +460,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;polygon\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;polygon\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -432,7 +484,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;polygon\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;polygon\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

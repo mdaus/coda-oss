@@ -450,6 +450,96 @@
     <ClInclude Include="cli\include\cli\Value.h">
       <Filter>cli</Filter>
     </ClInclude>
+    <ClInclude Include="io\include\io\BidirectionalStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\BufferViewStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\ByteStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\CountingStreams.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\DataStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\DbgStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\FileInputStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\FileInputStreamIOS.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\FileInputStreamOS.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\FileOutputStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\FileOutputStreamIOS.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\FileOutputStreamOS.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\FileUtils.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\InputStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\MMapInputStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\NullStreams.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\OutputStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\PipeStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\ProxyStreams.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\ReadUtils.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\RotatingFileOutputStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\Seekable.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\SeekableStreams.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\Serializable.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\SerializableArray.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\SerializableFile.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\StandardStreams.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\StreamSplitter.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\StringStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="io\include\io\TempFile.h">
+      <Filter>io</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -735,6 +825,54 @@
     <ClCompile Include="cli\source\ArgumentParser.cpp">
       <Filter>cli</Filter>
     </ClCompile>
+    <ClCompile Include="io\source\ByteStream.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\FileInputStreamIOS.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\FileInputStreamOS.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\FileOutputStreamIOS.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\FileOutputStreamOS.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\FileUtils.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\InputStream.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\MMapInputStream.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\PipeStream.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\ReadUtils.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\RotatingFileOutputStream.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\SerializableFile.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\StandardStreams.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\StreamSplitter.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\StringStream.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="io\source\TempFile.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -799,6 +937,9 @@
     </Filter>
     <Filter Include="cli">
       <UniqueIdentifier>{de76f131-1cd6-4c3d-aa9c-37ca3b5079f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="io">
+      <UniqueIdentifier>{cc681a99-da96-483e-a92a-eab0ea3a0ec0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
