@@ -7,6 +7,11 @@
 #ifndef CODA_OSS_pch_h_INCLUDED_
 #define CODA_OSS_pch_h_INCLUDED_
 
+#pragma warning(disable: 4820) // '...': '...' bytes padding added after data member '...'
+#pragma warning(disable: 4710) // '...': function not inlined
+#pragma warning(disable: 5045) // Compiler will insert Spectre mitigation for memory load if / Qspectre switch specified
+#pragma warning(disable: 4668) // '...' is not defined as a preprocessor macro, replacing with '...' for '...'
+
 // add headers that you want to pre-compile here
 #include "framework.h"
 
@@ -46,5 +51,7 @@
 #include <std/cstddef>
 #include <std/optional>
 #include <std/type_traits>
+
+#pragma warning(disable: 4514) //	'...': unreferenced inline function has been removed
 
 #endif //CODA_OSS_pch_h_INCLUDED_
