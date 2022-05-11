@@ -435,6 +435,9 @@
     <ClInclude Include="config\include\config\Exports.h">
       <Filter>config</Filter>
     </ClInclude>
+    <ClInclude Include="include\TestCase.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -772,6 +775,9 @@
     </Filter>
     <Filter Include="mem\unittests">
       <UniqueIdentifier>{6a70a638-d58c-4e34-87c1-6d1115690de8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{9050a469-23a5-4da0-92b1-a07a8e52e9fc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

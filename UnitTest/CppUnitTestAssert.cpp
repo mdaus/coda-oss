@@ -5,16 +5,16 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+// EQUALS_MESSAGE() wants ToString() specializations (or overloads) for our types, which is a nusiance.
+// This hooks up our existing str::toString() into the VC++ unit-test infrastructure
+
 // C++ hack to call private methods
 // https://stackoverflow.com/questions/6873138/calling-private-method-in-c?msclkid=dd8b1f8bd09711ec8610b4501a04de94
 
-// declare method's type
-using FailOnCondition_t = void(bool condition, const unsigned short* message, const __LineInfo* pLineInfo);
-using GetAssertMessage_t = std::wstring(bool equality, const std::wstring& expected, const std::wstring& actual, const wchar_t *message);
-
-// helper structure to inject call() code
+using FailOnCondition_t = void(bool condition, const unsigned short* message, const __LineInfo* pLineInfo); // declare method's type
+using GetAssertMessage_t = std::wstring(bool equality, const std::wstring& expected, const std::wstring& actual, const wchar_t *message); // declare method's type
 template <FailOnCondition_t fFailOnCondition, GetAssertMessage_t fGetAssertMessage>
-struct caller final
+struct caller final // helper structure to inject call() code
 {
     friend void FailOnCondition(bool condition, const unsigned short* message, const __LineInfo* pLineInfo)
     {
@@ -26,9 +26,7 @@ struct caller final
         return fGetAssertMessage(equality, expected, actual, message);
     }
 };
-
-// even instantiation of the helper
-template struct caller<&Assert::FailOnCondition, &Assert::GetAssertMessage>;
+template struct caller<&Assert::FailOnCondition, &Assert::GetAssertMessage>; // even instantiation of the helper
 
 void FailOnCondition(bool condition, const unsigned short* message, const __LineInfo* pLineInfo);  // declare caller
 void test::Assert::FailOnCondition(bool condition, const unsigned short* message, const __LineInfo* pLineInfo)

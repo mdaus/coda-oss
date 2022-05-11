@@ -28,17 +28,15 @@ namespace test
         static void FailOnCondition(bool condition, const unsigned short* message, const Microsoft::VisualStudio::CppUnitTestFramework::__LineInfo* pLineInfo);    
         static std::wstring GetAssertMessage(bool equality, const std::string& expected, const std::string& actual, const wchar_t *message);
     };
-#undef EQUALS_MESSAGE
-#undef NOT_EQUALS_MESSAGE
-#define EQUALS_MESSAGE(expected, actual, message) reinterpret_cast<const unsigned short*>(test::Assert::GetAssertMessage(true, str::toString(expected),  str::toString(actual), message).c_str())
-#define NOT_EQUALS_MESSAGE(notExpected, actual, message) reinterpret_cast<const unsigned short*>(GetAssertMessage(false,  str::toString(notExpected),  str::toString(actual), message).c_str())
+#define CODA_OSS_equals_message_(expected, actual, message) reinterpret_cast<const unsigned short*>(test::Assert::GetAssertMessage(true, str::toString(expected),  str::toString(actual), message).c_str())
+#define CODA_OSS_not_equals_message_(notExpected, actual, message) reinterpret_cast<const unsigned short*>(GetAssertMessage(false,  str::toString(notExpected),  str::toString(actual), message).c_str())
 
 // see Assert::AreEqual<>
 template<typename TExpected, typename TActual>
 inline void diePrintf_eq(const TExpected& expected, const TActual& actual,
     const wchar_t* message = NULL, const Microsoft::VisualStudio::CppUnitTestFramework::__LineInfo* pLineInfo = NULL)
 {
-	Assert::FailOnCondition(expected == actual, EQUALS_MESSAGE(expected, actual, message), pLineInfo);
+	Assert::FailOnCondition(expected == actual, CODA_OSS_equals_message_(expected, actual, message), pLineInfo);
 }
 
 // see Assert::AreNotEqual<>
@@ -46,7 +44,7 @@ template<typename TExpected, typename TActual>
 inline void diePrintf_ne(const TExpected& notExpected, const TActual& actual,
     const wchar_t* message = NULL, const Microsoft::VisualStudio::CppUnitTestFramework::__LineInfo* pLineInfo = NULL)
 {
-	Assert::FailOnCondition(!(notExpected == actual), NOT_EQUALS_MESSAGE(notExpected, actual, message), pLineInfo);
+	Assert::FailOnCondition(!(notExpected == actual), CODA_OSS_not_equals_message_(notExpected, actual, message), pLineInfo);
 }
 }
 #undef CODA_OSS_test_diePrintf_eq_

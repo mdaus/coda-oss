@@ -37,6 +37,7 @@
     <ClInclude Include="gsl\include\gsl\Gsl_.h" />
     <ClInclude Include="gsl\include\gsl\Gsl_narrow.h" />
     <ClInclude Include="gsl\include\gsl\use_gsl.h" />
+    <ClInclude Include="include\TestCase.h" />
     <ClInclude Include="math.linear\include\math\linear\Eigenvalue.h" />
     <ClInclude Include="math.linear\include\math\linear\Line2D.h" />
     <ClInclude Include="math.linear\include\math\linear\Matrix2D.h" />
