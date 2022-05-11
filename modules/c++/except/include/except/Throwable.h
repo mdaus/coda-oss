@@ -54,7 +54,7 @@ namespace except
  */
 
 class Throwable11;
-class CODA_OSS_LIBRARY_API Throwable
+class CODA_OSS_API Throwable
 {
     void doGetBacktrace();
     template<typename TThrowable>

@@ -33,7 +33,7 @@ namespace sys
 /*!
  *  Representation of a local date/time structure.
  */
-class CODA_OSS_LIBRARY_API LocalDateTime : public DateTime
+class CODA_OSS_API LocalDateTime : public DateTime
 {
 protected:
     int mDST;

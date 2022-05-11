@@ -60,10 +60,10 @@ std::string toString(const T& value)
 }
 
 template <>
-CODA_OSS_LIBRARY_API std::string toString(const uint8_t& value);
+CODA_OSS_API std::string toString(const uint8_t& value);
 
 template <>
-CODA_OSS_LIBRARY_API std::string toString(const int8_t& value);
+CODA_OSS_API std::string toString(const int8_t& value);
 
 template <>
 inline std::string toString(const std::nullptr_t&)
@@ -72,7 +72,7 @@ inline std::string toString(const std::nullptr_t&)
 }
 
 template <>
-CODA_OSS_LIBRARY_API std::string toString(const coda_oss::u8string&);
+CODA_OSS_API std::string toString(const coda_oss::u8string&);
 
 template <typename T>
 std::string toString(const coda_oss::optional<T>& value)
@@ -126,11 +126,11 @@ std::string toType<std::string>(const std::string& s);
 /**
  *  strtoll wrapper for msvc compatibility.
  */
-CODA_OSS_LIBRARY_API long long strtoll(const char* str, char** endptr, int base);
+CODA_OSS_API long long strtoll(const char* str, char** endptr, int base);
 /**
  *  strtoull wrapper for msvc compatibility.
  */
-CODA_OSS_LIBRARY_API unsigned long long strtoull(const char* str, char** endptr, int base);
+CODA_OSS_API unsigned long long strtoull(const char* str, char** endptr, int base);
 
 /**
  *  Convert a string containing a number in any base to a numerical type.
