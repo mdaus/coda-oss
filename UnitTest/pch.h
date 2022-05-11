@@ -19,9 +19,11 @@
 #include <math.h>
 #include <assert.h>
 
+#include <locale>
 #include <array>
 #include <string>
-#include <locale>
+#include <set>
+#include <map>
 #include <std/string>
 #include <std/span>
 #include <std/optional>
