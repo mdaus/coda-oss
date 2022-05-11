@@ -11,6 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cli\include\cli\Argument.h" />
+    <ClInclude Include="cli\include\cli\ArgumentParser.h" />
+    <ClInclude Include="cli\include\cli\Results.h" />
+    <ClInclude Include="cli\include\cli\Value.h" />
     <ClInclude Include="coda_oss\include\coda_oss\bit.h" />
     <ClInclude Include="coda_oss\include\coda_oss\CPlusPlus.h" />
     <ClInclude Include="coda_oss\include\coda_oss\cstddef.h" />
@@ -160,6 +164,8 @@
     <ClInclude Include="units\include\units\Unit.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cli\source\Argument.cpp" />
+    <ClCompile Include="cli\source\ArgumentParser.cpp" />
     <ClCompile Include="except\source\Backtrace.cpp" />
     <ClCompile Include="except\source\Context.cpp" />
     <ClCompile Include="except\source\Throwable.cpp" />
@@ -402,7 +408,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>config\include\;sys\include\;gsl\include\;except\include\;str\include\;coda_oss\include;std\include\;types\include\;mem\include\;math\include\;units\include\;math.linear\include\;math.poly\include\;polygon\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;polygon\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -426,7 +432,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>config\include\;sys\include\;gsl\include\;except\include\;str\include\;coda_oss\include;std\include\;types\include\;mem\include\;math\include\;units\include\;math.linear\include\;math.poly\include\;polygon\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;polygon\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

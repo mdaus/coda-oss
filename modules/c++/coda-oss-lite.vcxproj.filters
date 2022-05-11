@@ -438,6 +438,18 @@
     <ClInclude Include="include\TestCase.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="cli\include\cli\Argument.h">
+      <Filter>cli</Filter>
+    </ClInclude>
+    <ClInclude Include="cli\include\cli\ArgumentParser.h">
+      <Filter>cli</Filter>
+    </ClInclude>
+    <ClInclude Include="cli\include\cli\Results.h">
+      <Filter>cli</Filter>
+    </ClInclude>
+    <ClInclude Include="cli\include\cli\Value.h">
+      <Filter>cli</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -717,6 +729,12 @@
     <ClCompile Include="mem\unittests\test_vector_pointers.cpp">
       <Filter>mem\unittests</Filter>
     </ClCompile>
+    <ClCompile Include="cli\source\Argument.cpp">
+      <Filter>cli</Filter>
+    </ClCompile>
+    <ClCompile Include="cli\source\ArgumentParser.cpp">
+      <Filter>cli</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -778,6 +796,9 @@
     </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{9050a469-23a5-4da0-92b1-a07a8e52e9fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cli">
+      <UniqueIdentifier>{de76f131-1cd6-4c3d-aa9c-37ca3b5079f0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
