@@ -22,23 +22,17 @@
 #define CODA_OSS_std_memory_INCLUDED_
 #pragma once
 
-// Make it (too?) easy for clients to get our various std:: implementations
 #include <memory>
-#include "coda_oss/memory.h"
 
-#include "coda_oss/CPlusPlus.h"
+// Make it (too?) easy for clients to get our various std:: implementations
 #ifndef CODA_OSS_NO_std_make_unique
+    #include "coda_oss/CPlusPlus.h"
     #if CODA_OSS_cpp14
-        #define CODA_OSS_NO_std_make_unique 1  // part of C++14, don't need our own
+        #define CODA_OSS_NO_std_make_unique 1  // part of C++14
     #else
-        static_assert(CODA_OSS_cpp11, "< C++14, should be C++11");
-        // Some C++11 implementations might have std::make_unique ?
-        #if defined(__cpp_lib_make_unique) && (__cpp_lib_make_unique >= 201304L) // https://en.cppreference.com/w/cpp/utility/feature_test
-            #define CODA_OSS_NO_std_make_unique 1  // don't need our own
-        #else
-            #define CODA_OSS_NO_std_make_unique 0 // C++11, use our own
-        #endif
-    #endif // CODA_OSS_cpp14
+        #include "coda_oss/memory.h"
+        #define CODA_OSS_NO_std_make_unique 0  // use our own
+    #endif
 #endif
 
 #if !CODA_OSS_NO_std_make_unique
