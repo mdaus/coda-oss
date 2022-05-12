@@ -29,6 +29,7 @@
 #include <ostream>
 
 #include "coda_oss/span.h"
+#include "config/Exports.h"
  #include "str/Encoding.h"
 
 /*!
@@ -46,7 +47,7 @@
 namespace str
 {
 class EncodedString; // forward
-class EncodedStringView final
+class CODA_OSS_API EncodedStringView final
 {
     // Since we only support two encodings--UTF-8 (native on Linux) and Windows-1252
     // (native on Windows)--both of which are 8-bits, a simple "bool" flag will do.
