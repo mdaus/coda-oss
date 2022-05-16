@@ -48,9 +48,9 @@ inline void diePrintf_ne(const TExpected& notExpected, const TActual& actual,
 }
 }
 #undef CODA_OSS_test_diePrintf_eq_
-#undef CODA_OSS_test_diePrintf_ne_
+#undef CODA_OSS_test_diePrintf_not_eq_
 #define CODA_OSS_test_diePrintf_eq_(X1, X2) test::diePrintf_eq(X1, X2)
-#define CODA_OSS_test_diePrintf_ne_(X1, X2) test::diePrintf_ne(X1, X2)
+#define CODA_OSS_test_diePrintf_not_eq_(X1, X2) test::diePrintf_ne(X1, X2)
 
 template <typename TX1, typename TX2>
 inline void test_assert_greater_(const TX1& X1, const TX2& X2)

@@ -309,11 +309,11 @@ TEST_CASE(testBacktrace)
         #if _WIN32
         constexpr auto frames_size_RELEASE = 2;
         constexpr auto frames_size_RELEASE_other = frames_size_RELEASE;
-        constexpr auto frames_size_DEBUG = 16;
+        constexpr auto frames_size_DEBUG = 14;
         #elif defined(__GNUC__)
         constexpr auto frames_size_RELEASE = 6;
         constexpr auto frames_size_RELEASE_other = frames_size_RELEASE + 1; // 7
-        constexpr auto frames_size_DEBUG = frames_size_RELEASE + 6; // 12
+        constexpr auto frames_size_DEBUG = frames_size_RELEASE + 4; // 10
         #else
         #error "CODA_OSS_sys_Backtrace inconsistency."
         #endif
