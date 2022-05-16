@@ -60,6 +60,7 @@ inline void diePrintf(const char* format, const std::string& testName, const cha
     sys::diePrintf(format, testName.c_str(), file, func, line,
         str::toString(X1).c_str(), str::toString(X2).c_str());
 }
+// older C++ compilers don't like __VA_ARGS__ :-(
 #define test_diePrintf0(format) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__)
 #define test_diePrintf1(format, X1) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__, X1)
 #define test_diePrintf2(format, X1, X2) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__, X1, X2)
@@ -190,7 +191,6 @@ inline int main(TFunc f)
 #  define TEST_ASSERT_LESSER_EQ(X1, X2) if ((X1) > X2) { test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be less than or equal\n"); }
 #  define TEST_ASSERT_LESSER(X1, X2) if ((X1) >= X2) { test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be less than\n"); }
 /*
-#  define TEST_FAIL(msg) die_printf("%s (%s,%s,%d): FAILED: %s\n", testName.c_str(), __FILE__, SYS_FUNC, __LINE__, str::toString(msg).c_str());
 #  define TEST_SPECIFIC_EXCEPTION(X,Y) try{ (X); die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__); } catch(const Y&) { }  \
     catch (const except::Throwable&){ die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__);} \
     catch (const except::Throwable11&){ die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__);} #  define TEST_CASE(X) void X(std::string testName)
