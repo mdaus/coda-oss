@@ -61,30 +61,32 @@ inline void diePrintf(const char* format, const std::string& testName, const cha
     sys::diePrintf(format, testName.c_str(), file, line, msg.c_str(), X1.c_str(), X2.c_str());       
 }
 
+// older C++ compilers don't like __VA_ARGS__ :-(
+#define test_diePrintf0(format) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__)
+
 template<typename TX>
 inline void diePrintf(const char* format, const std::string& testName, const char* file, const char* func, int line,
     const TX& X)
 {
     diePrintf(format, testName, file, func, line, str::toString(X));
 }
+#define test_diePrintf1(format, X1) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__, (X1)) // might not want str::toString()
+
 template<typename TX1, typename TX2>
 inline void diePrintf(const char* format, const std::string& testName, const char* file, const char* func, int line,
     const TX1& X1, const TX2& X2)
 {
     diePrintf(format, testName, file, func, line, str::toString(X1), str::toString(X2));
 }
+#define test_diePrintf2(format, X1, X2) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__, (X1), (X2)) // might not want str::toString()
+
 template<typename TX1, typename TX2>
 inline void diePrintf(const char* format, const std::string& testName, const char* file, int line, const std::string& msg,
     const TX1& X1, const TX2& X2)
 {
     diePrintf(format, testName, file, line, msg, str::toString(X1), str::toString(X2));
 }
-
-// older C++ compilers don't like __VA_ARGS__ :-(
-#define test_diePrintf0(format) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__)
-#define test_diePrintf1(format, X1) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__, (X1))
-#define test_diePrintf2(format, X1, X2) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__, (X1), (X2))
-#define test_diePrintf2_msg(format, msg, X1, X2) test::diePrintf(format, testName, __FILE__, __LINE__, msg, (X1), (X2))
+#define test_diePrintf2_msg(format, msg, X1, X2) test::diePrintf(format, testName, __FILE__, __LINE__, msg, (X1), (X2)) // might not want str::toString()
 
 #define CODA_OSS_test_diePrintf_eq_(X1, X2) test_diePrintf2("%s (%s,%s,%d): FAILED: Recv'd %s, Expected %s\n", (X1), (X2))
 #define CODA_OSS_test_diePrintf_eq_msg_(msg, X1, X2) test_diePrintf2_msg("%s (%s,%d): FAILED (%s): Recv'd %s, Expected %s\n", msg, (X1), (X2))
@@ -108,13 +110,6 @@ inline void assert_almost_eq_eps(const TX1& X1, const TX2& X2, const TEPS& EPS,
     {
         diePrintf("%s (%s,%s,%d): FAILED: Recv'd %s, Expected %s\n", testName, file, func, line, X1, X2);
     }
-}
-template<typename TX1, typename TX2>
-inline void assert_almost_eq(const TX1& X1, const TX2& X2,
-    const std::string& testName,  const char* file, const char* func, int line)
-{
-    const auto eps = std::numeric_limits<float>::epsilon();
-    assert_almost_eq_eps(X1, X2, eps, testName, file, func, line);
 }
 
 template <typename TException, typename TFunc>
@@ -170,7 +165,7 @@ inline int main(TFunc f)
 #define TEST_ASSERT_TRUE(X) if (!(X)) { test_diePrintf0("%s (%s,%s,%d): FAILED: Value should evaluate to true\n"); }
 #define TEST_ASSERT(X) TEST_ASSERT_TRUE(X)
 #define TEST_ASSERT_ALMOST_EQ_EPS(X1, X2, EPS) test::assert_almost_eq_eps(X1, X2, EPS, testName, __FILE__, SYS_FUNC, __LINE__)
-#define TEST_ASSERT_ALMOST_EQ(X1, X2) test::assert_almost_eq(X1, X2, testName, __FILE__, SYS_FUNC, __LINE__)
+#define TEST_ASSERT_ALMOST_EQ(X1, X2) TEST_ASSERT_ALMOST_EQ_EPS(X1, X2,  std::numeric_limits<float>::epsilon())
 #define TEST_FAIL(msg) test_diePrintf1("%s (%s,%s,%d): FAILED: %s\n", str::toString(msg).c_str())
 #define TEST_EXCEPTION(X) try{ (X); test_diePrintf0("%s (%s,%s,%d): FAILED: Should have thrown exception\n"); } catch (const except::Throwable&){} catch (const except::Throwable11&){}
 #define TEST_THROWS(X) try{ (X); test_diePrintf0("%s (%s,%s,%d): FAILED: Should have thrown exception\n"); } catch (...){}
