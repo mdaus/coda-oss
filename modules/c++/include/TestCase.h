@@ -73,29 +73,23 @@ inline void diePrintf(const char* format, const std::string& testName, const cha
 {
     diePrintf(format, testName, file, func, line, str::toString(X1), str::toString(X2));
 }
+template<typename TX1, typename TX2>
+inline void diePrintf(const char* format, const std::string& testName, const char* file, int line, const std::string& msg,
+    const TX1& X1, const TX2& X2)
+{
+    diePrintf(format, testName, file, line, msg, str::toString(X1), str::toString(X2));
+}
+
 // older C++ compilers don't like __VA_ARGS__ :-(
 #define test_diePrintf0(format) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__)
 #define test_diePrintf1(format, X1) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__, (X1))
 #define test_diePrintf2(format, X1, X2) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__, (X1), (X2))
-//#define test_diePrintf2_msg(format, msg, X1, X2) test::diePrintf(format, testName, __FILE__, __LINE__, msg, (X1), (X2))
+#define test_diePrintf2_msg(format, msg, X1, X2) test::diePrintf(format, testName, __FILE__, __LINE__, msg, (X1), (X2))
 
 #define CODA_OSS_test_diePrintf_eq_(X1, X2) test_diePrintf2("%s (%s,%s,%d): FAILED: Recv'd %s, Expected %s\n", (X1), (X2))
-template<typename TX1, typename TX2>
-inline void diePrintf_eq_msg(const std::string& testName, const std::string& msg, const char* file, int line,
-    const TX1& X1, const TX2& X2)
-{
-    diePrintf("%s (%s,%d): FAILED (%s): Recv'd %s, Expected %s\n", testName, file, line, msg, str::toString(X1), str::toString(X2));       
-}
-#define CODA_OSS_test_diePrintf_eq_msg_(msg, X1, X2) test::diePrintf_eq_msg(testName, msg, __FILE__, __LINE__, (X1), (X2))
-
+#define CODA_OSS_test_diePrintf_eq_msg_(msg, X1, X2) test_diePrintf2_msg("%s (%s,%d): FAILED (%s): Recv'd %s, Expected %s\n", msg, (X1), (X2))
 #define CODA_OSS_test_diePrintf_not_eq_(X1, X2) test_diePrintf2("%s (%s,%s,%d): FAILED: Recv'd %s should not equal %s\n", X1, X2)
-template<typename TX1, typename TX2>
-inline void diePrintf_ne_msg(const std::string& testName, const std::string& msg, const char* file, int line,
-    const TX1& X1, const TX2& X2)
-{
-    diePrintf("%s (%s,%d): FAILED (%s): Recv'd %s should not equal %s\n", testName, file, line, msg, str::toString(X1), str::toString(X2));       
-}
-#define CODA_OSS_test_diePrintf_not_eq_msg_(msg, X1, X2) test::diePrintf_ne_msg(testName, msg, __FILE__, __LINE__, (X1), (X2))
+#define CODA_OSS_test_diePrintf_not_eq_msg_(msg, X1, X2) test_diePrintf2_msg("%s (%s,%d): FAILED (%s): Recv'd %s should not equal %s\n", msg, (X1), (X2))
 
 // You might be tempted to write something like
 //   template<typename TX1, typename TX2>
