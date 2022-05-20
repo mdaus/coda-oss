@@ -41,24 +41,37 @@ inline void diePrintf(const char* format, const std::string& testName, const cha
 {
     sys::diePrintf(format, testName.c_str(), s);
 }
-
 inline void diePrintf(const char* format, const std::string& testName, const char* file, const char* func, int line)
 {
     sys::diePrintf(format, testName.c_str(), file, func, line);
 }
+inline void diePrintf(const char* format, const std::string& testName, const char* file, const char* func, int line,
+    const std::string& X)
+{
+    sys::diePrintf(format, testName.c_str(), file, func, line, X.c_str());
+}
+inline void diePrintf(const char* format, const std::string& testName, const char* file, const char* func, int line,
+    const std::string& X1, const std::string& X2)
+{
+    sys::diePrintf(format, testName.c_str(), file, func, line, X1.c_str(), X2.c_str());
+}
+inline void diePrintf(const char* format, const std::string& testName, const char* file, int line, const std::string& msg, 
+    const std::string& X1, const std::string& X2)
+{
+    sys::diePrintf(format, testName.c_str(), file, line, msg.c_str(), X1.c_str(), X2.c_str());       
+}
+
 template<typename TX>
 inline void diePrintf(const char* format, const std::string& testName, const char* file, const char* func, int line,
     const TX& X)
 {
-    sys::diePrintf(format, testName.c_str(), file, func, line,
-        str::toString(X).c_str());
+    diePrintf(format, testName, file, func, line, str::toString(X));
 }
 template<typename TX1, typename TX2>
 inline void diePrintf(const char* format, const std::string& testName, const char* file, const char* func, int line,
     const TX1& X1, const TX2& X2)
 {
-    sys::diePrintf(format, testName.c_str(), file, func, line,
-        str::toString(X1).c_str(), str::toString(X2).c_str());
+    diePrintf(format, testName, file, func, line, str::toString(X1), str::toString(X2));
 }
 // older C++ compilers don't like __VA_ARGS__ :-(
 #define test_diePrintf0(format) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__)
