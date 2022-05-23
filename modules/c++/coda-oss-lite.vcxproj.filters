@@ -873,6 +873,27 @@
     <ClCompile Include="io\source\TempFile.cpp">
       <Filter>io</Filter>
     </ClCompile>
+    <ClCompile Include="math.poly\unittests\test_1d_poly.cpp">
+      <Filter>math.poly\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.poly\unittests\test_1d_poly_serialize.cpp">
+      <Filter>math.poly\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.poly\unittests\test_2d_poly.cpp">
+      <Filter>math.poly\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.poly\unittests\test_2d_poly_serialize.cpp">
+      <Filter>math.poly\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.poly\unittests\test_fixed_1d_poly.cpp">
+      <Filter>math.poly\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.poly\unittests\test_fixed_2d_poly.cpp">
+      <Filter>math.poly\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="math.poly\unittests\test_llsq.cpp">
+      <Filter>math.poly\unittests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -940,6 +961,9 @@
     </Filter>
     <Filter Include="io">
       <UniqueIdentifier>{cc681a99-da96-483e-a92a-eab0ea3a0ec0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math.poly\unittests">
+      <UniqueIdentifier>{20536706-4599-43c0-b34f-14ccfd1bbb2e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
