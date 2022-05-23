@@ -315,8 +315,7 @@ TEST_CASE(testRotateReset)
     cleanupFiles( outFile);
 }
 
-int main(int, char**)
-{
+TEST_MAIN(
     TEST_CHECK(testStringStream);
     TEST_CHECK(testByteStream);
     TEST_CHECK(testProxyOutputStream);
@@ -326,4 +325,4 @@ int main(int, char**)
     TEST_CHECK(testRotate);
     TEST_CHECK(testNeverRotate);
     TEST_CHECK(testRotateReset);
-}
+    )

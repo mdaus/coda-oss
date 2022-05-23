@@ -894,6 +894,15 @@
     <ClCompile Include="math.poly\unittests\test_llsq.cpp">
       <Filter>math.poly\unittests</Filter>
     </ClCompile>
+    <ClCompile Include="io\unittests\test_stream_splitter.cpp">
+      <Filter>io\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="io\unittests\test_streams.cpp">
+      <Filter>io\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="io\unittests\test_tempfile.cpp">
+      <Filter>io\unittests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -964,6 +973,9 @@
     </Filter>
     <Filter Include="math.poly\unittests">
       <UniqueIdentifier>{20536706-4599-43c0-b34f-14ccfd1bbb2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="io\unittests">
+      <UniqueIdentifier>{cc6bd680-830a-4c5d-835c-483349703938}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

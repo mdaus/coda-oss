@@ -9,6 +9,7 @@
     <ClCompile Include="mem.cpp" />
     <ClCompile Include="CppUnitTestAssert.cpp" />
     <ClCompile Include="math.poly.cpp" />
+    <ClCompile Include="io.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
