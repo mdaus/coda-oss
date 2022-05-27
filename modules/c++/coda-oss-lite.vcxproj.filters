@@ -903,6 +903,9 @@
     <ClCompile Include="io\unittests\test_tempfile.cpp">
       <Filter>io\unittests</Filter>
     </ClCompile>
+    <ClCompile Include="cli\unittests\test_cli.cpp">
+      <Filter>cli\unittests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -976,6 +979,9 @@
     </Filter>
     <Filter Include="io\unittests">
       <UniqueIdentifier>{cc6bd680-830a-4c5d-835c-483349703938}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cli\unittests">
+      <UniqueIdentifier>{935ab87f-2430-4a93-a5f5-1047e1a23ae5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

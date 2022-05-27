@@ -31,6 +31,7 @@
 #include <std/optional>
 #include <std/cstddef>
 #include <std/bit>
+#include <iterator>
 
 #include "CppUnitTest.h"
 
@@ -41,6 +42,7 @@
 #include "str/EncodedStringView.h"
 #include "import/except.h"
 #include "import/mem.h"
+#include "import/cli.h"
 #include "include/TestCase.h"
 
 #include "TestCase.h"
