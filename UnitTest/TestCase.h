@@ -92,7 +92,7 @@ inline void assert_almost_eq(long double X1, long double X2)
 
 #undef TEST_EXCEPTION
 #undef TEST_THROWS
-#define TEST_EXCEPTION(X) try { (X); TEST_ASSERT_FALSE(false); } catch (...) { TEST_ASSERT_TRUE(true); }
+#define TEST_EXCEPTION(X) try { (X); TEST_FAIL(#X " should have thrown."); } catch (...) { TEST_ASSERT_TRUE(true); }
 #define TEST_THROWS(X) TEST_EXCEPTION(X)
 
 
