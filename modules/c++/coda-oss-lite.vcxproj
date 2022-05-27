@@ -369,6 +369,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="polygon\source\PolygonMask.cpp" />
+    <ClCompile Include="polygon\unittests\test_polygon_mask.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="str\source\Convert.cpp" />
     <ClCompile Include="str\source\EncodedString.cpp" />
     <ClCompile Include="str\source\EncodedStringView.cpp" />

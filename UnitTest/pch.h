@@ -43,7 +43,8 @@
 #include "import/except.h"
 #include "import/mem.h"
 #include "import/cli.h"
-#include "include/TestCase.h"
+#include "polygon/DrawPolygon.h"
+#include "polygon/PolygonMask.h"
 
 #include "TestCase.h"
 

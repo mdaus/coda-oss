@@ -57,7 +57,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;$(ProjectDir);$(SolutionDir)modules\c++\;$(SolutionDir)modules\c++\cli\include\;$(SolutionDir)modules\c++\config\include\;$(SolutionDir)modules\c++\coda_oss\include\;$(SolutionDir)modules\c++\gsl\include\;$(SolutionDir)modules\c++\io\include\;$(SolutionDir)modules\c++\std\include\;$(SolutionDir)modules\c++\str\include\;$(SolutionDir)modules\c++\sys\include\;$(SolutionDir)modules\c++\except\include\;$(SolutionDir)modules\c++\math\include\;$(SolutionDir)modules\c++\math.linear\include\;$(SolutionDir)modules\c++\math.poly\include\;$(SolutionDir)modules\c++\mem\include\;$(SolutionDir)modules\c++\types\include\;$(SolutionDir)modules\c++\units\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;$(ProjectDir);$(SolutionDir)modules\c++\;$(SolutionDir)modules\c++\cli\include\;$(SolutionDir)modules\c++\config\include\;$(SolutionDir)modules\c++\coda_oss\include\;$(SolutionDir)modules\c++\gsl\include\;$(SolutionDir)modules\c++\io\include\;$(SolutionDir)modules\c++\std\include\;$(SolutionDir)modules\c++\str\include\;$(SolutionDir)modules\c++\sys\include\;$(SolutionDir)modules\c++\except\include\;$(SolutionDir)modules\c++\math\include\;$(SolutionDir)modules\c++\math.linear\include\;$(SolutionDir)modules\c++\math.poly\include\;$(SolutionDir)modules\c++\mem\include\;$(SolutionDir)modules\c++\polygon\include\;$(SolutionDir)modules\c++\types\include\;$(SolutionDir)modules\c++\units\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions);CODA_OSS_DLL</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -81,7 +81,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;$(ProjectDir);$(SolutionDir)modules\c++\;$(SolutionDir)modules\c++\cli\include\;$(SolutionDir)modules\c++\config\include\;$(SolutionDir)modules\c++\coda_oss\include\;$(SolutionDir)modules\c++\gsl\include\;$(SolutionDir)modules\c++\io\include\;$(SolutionDir)modules\c++\std\include\;$(SolutionDir)modules\c++\str\include\;$(SolutionDir)modules\c++\sys\include\;$(SolutionDir)modules\c++\except\include\;$(SolutionDir)modules\c++\math\include\;$(SolutionDir)modules\c++\math.linear\include\;$(SolutionDir)modules\c++\math.poly\include\;$(SolutionDir)modules\c++\mem\include\;$(SolutionDir)modules\c++\types\include\;$(SolutionDir)modules\c++\units\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;$(ProjectDir);$(SolutionDir)modules\c++\;$(SolutionDir)modules\c++\cli\include\;$(SolutionDir)modules\c++\config\include\;$(SolutionDir)modules\c++\coda_oss\include\;$(SolutionDir)modules\c++\gsl\include\;$(SolutionDir)modules\c++\io\include\;$(SolutionDir)modules\c++\std\include\;$(SolutionDir)modules\c++\str\include\;$(SolutionDir)modules\c++\sys\include\;$(SolutionDir)modules\c++\except\include\;$(SolutionDir)modules\c++\math\include\;$(SolutionDir)modules\c++\math.linear\include\;$(SolutionDir)modules\c++\math.poly\include\;$(SolutionDir)modules\c++\mem\include\;$(SolutionDir)modules\c++\polygon\include\;$(SolutionDir)modules\c++\types\include\;$(SolutionDir)modules\c++\units\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);CODA_OSS_DLL</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -108,6 +108,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="math.cpp" />
+    <ClCompile Include="polygon.cpp" />
     <ClCompile Include="str.cpp" />
     <ClCompile Include="units.cpp" />
   </ItemGroup>

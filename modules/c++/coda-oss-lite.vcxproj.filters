@@ -906,6 +906,9 @@
     <ClCompile Include="cli\unittests\test_cli.cpp">
       <Filter>cli\unittests</Filter>
     </ClCompile>
+    <ClCompile Include="polygon\unittests\test_polygon_mask.cpp">
+      <Filter>polygon\unittests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -982,6 +985,9 @@
     </Filter>
     <Filter Include="cli\unittests">
       <UniqueIdentifier>{935ab87f-2430-4a93-a5f5-1047e1a23ae5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="polygon\unittests">
+      <UniqueIdentifier>{7d429b31-4a99-479a-9355-534aa24d7b7a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
