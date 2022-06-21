@@ -20,13 +20,10 @@
  *
  */
 
-#include <assert.h>
-
 #include <fstream>
 #include <sstream>
 #include <numeric> // std::accumulate
 #include <string>
-
 #include <std/filesystem>
 
 #include <sys/OS.h>

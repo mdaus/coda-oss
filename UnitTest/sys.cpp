@@ -27,12 +27,12 @@ TEST_CLASS(test_NaN_testing){ public:
 #include "sys/unittests/test_NaN_testing.cpp"
 };
 
-//TEST_CLASS(test_os){ public:
+TEST_CLASS(test_os){ public:
 //#include "sys/unittests/test_os.cpp"
-//};
-//
-//TEST_CLASS(test_path){ public:
-//#include "sys/unittests/test_path.cpp"
-//};
+};
+
+TEST_CLASS(test_path){ public:
+#include "sys/unittests/test_path.cpp"
+};
 
 }
