@@ -226,8 +226,6 @@ TEST_CASE(test_string_to_u8string_iso8859_1)
 template<typename TString>
 static void test_change_case_(const std::string& testName, const TString& lower, const TString& upper)
 {
-    (void)testName;
-
     auto s = upper;
     str::lower(s);
     TEST_ASSERT(s == lower);
@@ -246,7 +244,7 @@ TEST_CASE(test_change_case)
 {
     const std::string ABC = "ABC";
     const std::string abc = "abc";
-    test_change_case_("test_change_case", abc, ABC);
+    test_change_case_(testName, abc, ABC);
 
     //const std::wstring ABC_w = L"ABC";
     //const std::wstring abc_w = L"abc";
@@ -360,27 +358,27 @@ TEST_CASE(test_EncodedStringView)
     {
         auto utf_8_view(classificationText_utf_8().view());
         auto iso8859_1_view(classificationText_iso8859_1().view());
-        test_EncodedStringView_("test_EncodedStringView", utf_8_view, iso8859_1_view);
+        test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
         
         utf_8_view = classificationText_iso8859_1().view();
         iso8859_1_view = classificationText_utf_8().view();
-        test_EncodedStringView_("test_EncodedStringView", utf_8_view, iso8859_1_view);
+        test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
     }
     {
         auto utf_8_view = classificationText_utf_8().view();
         auto iso8859_1_view = classificationText_iso8859_1().view();
-        test_EncodedStringView_("test_EncodedStringView", utf_8_view, iso8859_1_view);
+        test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
 
         utf_8_view = classificationText_iso8859_1().view();
         iso8859_1_view = classificationText_utf_8().view();
-        test_EncodedStringView_("test_EncodedStringView", utf_8_view, iso8859_1_view);
+        test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
     }
     {
         str::EncodedStringView utf_8_view;
         utf_8_view = classificationText_iso8859_1().view();
         str::EncodedStringView iso8859_1_view;
         iso8859_1_view = classificationText_utf_8().view();
-        test_EncodedStringView_("test_EncodedStringView", utf_8_view, iso8859_1_view);
+        test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
     }
 }
 
