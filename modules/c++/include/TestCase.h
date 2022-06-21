@@ -92,6 +92,10 @@ inline void diePrintf_(const char* format, const std::string& testName, const ch
 #define CODA_OSS_test_diePrintf_eq_msg_(msg, X1, X2) test_diePrintf2_msg("%s (%s,%d): FAILED (%s): Recv'd %s, Expected %s\n", msg, (X1), (X2))
 #define CODA_OSS_test_diePrintf_not_eq_(X1, X2) test_diePrintf2("%s (%s,%s,%d): FAILED: Recv'd %s should not equal %s\n", X1, X2)
 #define CODA_OSS_test_diePrintf_not_eq_msg_(msg, X1, X2) test_diePrintf2_msg("%s (%s,%d): FAILED (%s): Recv'd %s should not equal %s\n", msg, (X1), (X2))
+#define CODA_OSS_test_diePrintf_greater_eq_(X1, X2) test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be greater than or equal\n")
+#define CODA_OSS_test_diePrintf_greater_(X1, X2) test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be greater than\n")
+#define CODA_OSS_test_diePrintf_lesser_eq_(X1, X2) test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be less than or equal\n")
+#define CODA_OSS_test_diePrintf_lesser_(X1, X2) test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be less than\n")
 
 // You might be tempted to write something like
 //   template<typename TX1, typename TX2>
@@ -184,10 +188,19 @@ inline int main(TFunc f)
 #define CODA_OSS_test_eq(X1, X2) (CODA_OSS_test_eq_(X1, X2) && !CODA_OSS_test_ne_(X1, X2))
 #define TEST_ASSERT_NOT_EQ(X1, X2) if (CODA_OSS_test_eq((X1), (X2))) { CODA_OSS_test_diePrintf_not_eq_(X1, X2); }
 #define TEST_ASSERT_NOT_EQ_MSG(msg, X1, X2) if (CODA_OSS_test_eq((X1), (X2))) { CODA_OSS_test_diePrintf_not_eq_msg_(msg, X1, X2); }
-#  define TEST_ASSERT_GREATER_EQ(X1, X2) if ((X1) < X2) { test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be greater than or equal\n"); }
-#  define TEST_ASSERT_GREATER(X1, X2) if ((X1) <= X2) {test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be greater than\n"); }
-#  define TEST_ASSERT_LESSER_EQ(X1, X2) if ((X1) > X2) { test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be less than or equal\n"); }
-#  define TEST_ASSERT_LESSER(X1, X2) if ((X1) >= X2) { test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be less than\n"); }
+
+#define CODA_OSS_test_ge_(X1, X2) (((X1) >= (X2)) && ((X2) < (X1))) // X1 >= X2 means X2 < X1
+#define CODA_OSS_test_gt_(X1, X2) (((X1) > (X2)) && ((X2) <= (X1))) // X1 > X2 means X2 <= X1
+#define CODA_OSS_test_le_(X1, X2) (((X1) <= (X2)) && ((X2) > (X1))) // X1 <= X2 means X2 > X1
+#define CODA_OSS_test_lt_(X1, X2) (((X1) < (X2)) && ((X2) >= (X1))) // X1 < X2 means X2 >= X1
+#define CODA_OSS_test_ge(X1, X2) (CODA_OSS_test_ge_(X1, X2) && !CODA_OSS_test_lt_(X1, X2))
+#define CODA_OSS_test_gt(X1, X2) (CODA_OSS_test_gt_(X1, X2) && !CODA_OSS_test_le_(X1, X2))
+#  define TEST_ASSERT_GREATER_EQ(X1, X2) if (CODA_OSS_test_ge((X1), (X2))) { CODA_OSS_test_diePrintf_greater_eq_(X1, X2); }
+#  define TEST_ASSERT_GREATER(X1, X2) if (CODA_OSS_test_gt((X1), (X2))) { CODA_OSS_test_diePrintf_greater_(X1, X2); }
+#define CODA_OSS_test_le(X1, X2) (CODA_OSS_test_le_(X1, X2) && !CODA_OSS_test_gt_(X1, X2))
+#define CODA_OSS_test_lt(X1, X2) (CODA_OSS_test_lt_(X1, X2) && !CODA_OSS_test_ge_(X1, X2))
+#  define TEST_ASSERT_LESSER_EQ(X1, X2) if (CODA_OSS_test_le((X1), (X2))) { CODA_OSS_test_diePrintf_lesser_eq_(X1, X2); }
+#  define TEST_ASSERT_LESSER(X1, X2) if (CODA_OSS_test_lt((X1), (X2))) { CODA_OSS_test_diePrintf_lesser_(X1, X2); }
 /*
 #  define TEST_SPECIFIC_EXCEPTION(X,Y) try{ (X); die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__); } catch(const Y&) { }  \
     catch (const except::Throwable&){ die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__);} \

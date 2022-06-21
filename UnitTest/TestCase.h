@@ -32,6 +32,7 @@ namespace test
     };
 #define CODA_OSS_equals_message_(expected, actual, message) reinterpret_cast<const unsigned short*>(test::Assert::GetAssertMessage(true, str::toString(expected),  str::toString(actual), message).c_str())
 #define CODA_OSS_not_equals_message_(notExpected, actual, message) reinterpret_cast<const unsigned short*>(test::Assert::GetAssertMessage(false,  str::toString(notExpected),  str::toString(actual), message).c_str())
+#define CODA_OSS_message_(message) reinterpret_cast<const unsigned short*>(test::Assert::GetAssertMessage(false,  "", "", message).c_str())
 
 // see Assert::AreEqual<>
 template<typename TExpected, typename TActual>
@@ -48,11 +49,46 @@ inline void diePrintf_ne(const TExpected& notExpected, const TActual& actual,
 {
 	Assert::FailOnCondition(!(notExpected == actual), CODA_OSS_not_equals_message_(notExpected, actual, message), pLineInfo);
 }
+
+template <typename TX1, typename TX2>
+inline void diePrintf_ge(const TX1& X1, const TX2& X2,
+    const wchar_t* message = NULL, const Microsoft::VisualStudio::CppUnitTestFramework::__LineInfo* pLineInfo = NULL)
+{
+    Assert::FailOnCondition(X1 >= X2, CODA_OSS_message_(message), pLineInfo);
+}
+template <typename TX1, typename TX2>
+inline void diePrintf_gt(const TX1& X1, const TX2& X2,
+    const wchar_t* message = NULL, const Microsoft::VisualStudio::CppUnitTestFramework::__LineInfo* pLineInfo = NULL)
+{
+    Assert::FailOnCondition(X1 > X2, CODA_OSS_message_(message), pLineInfo);
+}
+template <typename TX1, typename TX2>
+inline void diePrintf_le(const TX1& X1, const TX2& X2,
+    const wchar_t* message = NULL, const Microsoft::VisualStudio::CppUnitTestFramework::__LineInfo* pLineInfo = NULL)
+{
+    Assert::FailOnCondition(X1 <= X2, CODA_OSS_message_(message), pLineInfo);
+}
+template <typename TX1, typename TX2>
+inline void diePrintf_lt(const TX1& X1, const TX2& X2,
+    const wchar_t* message = NULL, const Microsoft::VisualStudio::CppUnitTestFramework::__LineInfo* pLineInfo = NULL)
+{
+    Assert::FailOnCondition(X1 < X2, CODA_OSS_message_(message), pLineInfo);
+}
+
 }
 #undef CODA_OSS_test_diePrintf_eq_
 #undef CODA_OSS_test_diePrintf_not_eq_
 #define CODA_OSS_test_diePrintf_eq_(X1, X2) testName, test::diePrintf_eq(X1, X2)
 #define CODA_OSS_test_diePrintf_not_eq_(X1, X2) testName, test::diePrintf_ne(X1, X2)
+
+#undef CODA_OSS_test_diePrintf_greater_eq_
+#undef CODA_OSS_test_diePrintf_greater_
+#undef CODA_OSS_test_diePrintf_lesser_eq_
+#undef CODA_OSS_test_diePrintf_lesser_
+#define CODA_OSS_test_diePrintf_greater_eq_(X1, X2) testName, test::diePrintf_ge(X1, X2)
+#define CODA_OSS_test_diePrintf_greater_(X1, X2) testName, test::diePrintf_gt(X1, X2)
+#define CODA_OSS_test_diePrintf_lesser_eq_(X1, X2) testName, test::diePrintf_le(X1, X2)
+#define CODA_OSS_test_diePrintf_lesser_(X1, X2) testName, test::diePrintf_lt(X1, X2)
 
 template <typename TX1, typename TX2>
 inline void test_assert_greater_(const TX1& X1, const TX2& X2)

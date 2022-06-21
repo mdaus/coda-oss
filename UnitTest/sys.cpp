@@ -19,9 +19,9 @@ TEST_CLASS(test_conditionvar){ public:
 #include "sys/unittests/test_conditionvar.cpp"
 };
 
-//TEST_CLASS(test_datetime){ public:
-//#include "sys/unittests/test_datetime.cpp"
-//};
+TEST_CLASS(test_datetime){ public:
+#include "sys/unittests/test_datetime.cpp"
+};
 
 TEST_CLASS(test_NaN_testing){ public:
 #include "sys/unittests/test_NaN_testing.cpp"
