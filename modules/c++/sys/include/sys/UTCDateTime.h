@@ -26,6 +26,8 @@
 #include <ostream>
 #include <istream>
 
+#include "config/Exports.h"
+
 #include <sys/DateTime.h>
 
 namespace sys
@@ -33,7 +35,7 @@ namespace sys
 /*!
  *  Representation of a UTC date/time structure.
  */
-class UTCDateTime : public DateTime
+class CODA_OSS_API UTCDateTime : public DateTime
 {
 protected:
     /**

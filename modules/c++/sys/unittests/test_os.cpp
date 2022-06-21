@@ -37,10 +37,6 @@
 #include <sys/sys_filesystem.h>
 #include "TestCase.h"
 
-namespace fs = std::filesystem;
-
-namespace
-{
 void createFile(const std::string& pathname)
 {
     std::ofstream oss(pathname.c_str());
@@ -172,7 +168,7 @@ TEST_CASE(testSplitEnv)
     TEST_ASSERT_GREATER(paths.size(), static_cast<size_t>(0));
     for (const auto& path : paths)
     {
-        TEST_ASSERT_TRUE(fs::exists(path));
+        TEST_ASSERT_TRUE(std::filesystem::exists(path));
     }
 
     // create an environemnt variable with a known bogus path
@@ -188,11 +184,11 @@ TEST_CASE(testSplitEnv)
 
     // PATHs are directories, not files
     paths.clear();
-    result = os.splitEnv(pathEnvVar, paths, fs::file_type::directory);
+    result = os.splitEnv(pathEnvVar, paths, std::filesystem::file_type::directory);
     TEST_ASSERT_TRUE(result);
     TEST_ASSERT_GREATER(paths.size(), static_cast<size_t>(0));
     paths.clear();
-    result = os.splitEnv(pathEnvVar, paths, fs::file_type::regular);
+    result = os.splitEnv(pathEnvVar, paths, std::filesystem::file_type::regular);
     TEST_ASSERT_FALSE(result);
     TEST_ASSERT_TRUE(paths.empty());
 
@@ -244,7 +240,7 @@ static void testFsExtension_(const std::string& testName)
 }
 TEST_CASE(testFsExtension)
 {
-    testFsExtension_<fs::path>(testName);
+    testFsExtension_<std::filesystem::path>(testName);
     testFsExtension_<std::filesystem::path>(testName);
     #if CODA_OSS_lib_filesystem
     testFsExtension_<std::filesystem::path>(testName);
@@ -266,7 +262,7 @@ static void testFsOutput_(const std::string& testName)
 }
 TEST_CASE(testFsOutput)
 {
-    testFsOutput_<fs::path>(testName);
+    testFsOutput_<std::filesystem::path>(testName);
     testFsOutput_<std::filesystem::path>(testName);
     #if CODA_OSS_lib_filesystem
     testFsOutput_<std::filesystem::path>(testName);
@@ -345,8 +341,8 @@ TEST_CASE(testSpecialEnvVars)
     auto result = os.getSpecialEnv("0"); // i.e., ${0)
     TEST_ASSERT_FALSE(result.empty());
     TEST_ASSERT_EQ(result, argv0);
-    const fs::path fsresult(result);
-    const fs::path this_file(__FILE__);
+    const std::filesystem::path fsresult(result);
+    const std::filesystem::path this_file(__FILE__);
     TEST_ASSERT_EQ(fsresult.stem(), this_file.stem());
 
     const auto pid = os.getSpecialEnv("PID");
@@ -393,7 +389,7 @@ TEST_CASE(testFsFileSize)
 {
     const sys::OS os;
     {
-        const fs::path argv0(os.getSpecialEnv("ARGV0"));
+        const std::filesystem::path argv0(os.getSpecialEnv("ARGV0"));
         const auto size = file_size(argv0);
         TEST_ASSERT_GREATER(size, static_cast<size_t>(0));
     }
@@ -405,12 +401,8 @@ TEST_CASE(testFsFileSize)
     }
 }
 
-}
-
-int main(int, char** argv)
-{
-    sys::AbstractOS::setArgvPathname(argv[0]);
-
+TEST_MAIN(
+    //sys::AbstractOS::setArgvPathname(argv[0]);
     TEST_CHECK(testRecursiveRemove);
     TEST_CHECK(testForcefulMove);
     TEST_CHECK(testEnvVariables);
@@ -420,7 +412,4 @@ int main(int, char** argv)
     TEST_CHECK(testBacktrace);
     TEST_CHECK(testSpecialEnvVars);
     TEST_CHECK(testFsFileSize);
-
-    return 0;
-}
-
+)

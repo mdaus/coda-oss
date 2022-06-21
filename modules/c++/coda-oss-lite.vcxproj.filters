@@ -540,6 +540,81 @@
     <ClInclude Include="io\include\io\TempFile.h">
       <Filter>io</Filter>
     </ClInclude>
+    <ClInclude Include="mt\include\mt\AbstractCPUAffinityInitializer.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\AbstractCPUAffinityThreadInitializer.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\AbstractThreadPool.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\AbstractTiedThreadPool.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\Algorithm.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\BalancedRunnable1D.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\BasicThreadPool.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\CPUAffinityInitializer.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\CPUAffinityInitializerLinux.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\CPUAffinityInitializerWin32.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\CPUAffinityThreadInitializer.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\CPUAffinityThreadInitializerLinux.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\CPUAffinityThreadInitializerWin32.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\CriticalSection.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\GenerationThreadPool.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\GenericRequestHandler.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\RequestQueue.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\Runnable1D.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\Singleton.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\ThreadGroup.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\ThreadPlanner.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\ThreadPoolException.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\TiedWorkerThread.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\WorkerThread.h">
+      <Filter>mt</Filter>
+    </ClInclude>
+    <ClInclude Include="mt\include\mt\WorkSharingBalancedRunnable1D.h">
+      <Filter>mt</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -918,6 +993,48 @@
     <ClCompile Include="types\unittests\test_range_list.cpp">
       <Filter>types\unittests</Filter>
     </ClCompile>
+    <ClCompile Include="sys\unittests\test_aligned_alloc.cpp">
+      <Filter>sys\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="sys\unittests\test_atomic_counter.cpp">
+      <Filter>sys\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="sys\unittests\test_byte_swap.cpp">
+      <Filter>sys\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="sys\unittests\test_conditionvar.cpp">
+      <Filter>sys\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="sys\unittests\test_datetime.cpp">
+      <Filter>sys\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="sys\unittests\test_NaN_testing.cpp">
+      <Filter>sys\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="sys\unittests\test_os.cpp">
+      <Filter>sys\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="sys\unittests\test_path.cpp">
+      <Filter>sys\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="mt\source\CPUAffinityInitializerLinux.cpp">
+      <Filter>mt</Filter>
+    </ClCompile>
+    <ClCompile Include="mt\source\CPUAffinityThreadInitializerLinux.cpp">
+      <Filter>mt</Filter>
+    </ClCompile>
+    <ClCompile Include="mt\source\GenerationThreadPool.cpp">
+      <Filter>mt</Filter>
+    </ClCompile>
+    <ClCompile Include="mt\source\GenericRequestHandler.cpp">
+      <Filter>mt</Filter>
+    </ClCompile>
+    <ClCompile Include="mt\source\ThreadGroup.cpp">
+      <Filter>mt</Filter>
+    </ClCompile>
+    <ClCompile Include="mt\source\ThreadPlanner.cpp">
+      <Filter>mt</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -1000,6 +1117,12 @@
     </Filter>
     <Filter Include="types\unittests">
       <UniqueIdentifier>{c1058e2d-5f38-4b95-88ca-af494d5b0f42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sys\unittests">
+      <UniqueIdentifier>{bb75eaac-081c-4524-a792-668c6aee3bbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mt">
+      <UniqueIdentifier>{4875d8c0-f285-460a-98a9-38a60f3fcffd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

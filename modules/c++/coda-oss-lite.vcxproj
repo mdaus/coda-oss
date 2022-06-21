@@ -108,6 +108,31 @@
     <ClInclude Include="mem\include\mem\Span.h" />
     <ClInclude Include="mem\include\mem\SwapBuffer.h" />
     <ClInclude Include="mem\include\mem\VectorOfPointers.h" />
+    <ClInclude Include="mt\include\mt\AbstractCPUAffinityInitializer.h" />
+    <ClInclude Include="mt\include\mt\AbstractCPUAffinityThreadInitializer.h" />
+    <ClInclude Include="mt\include\mt\AbstractThreadPool.h" />
+    <ClInclude Include="mt\include\mt\AbstractTiedThreadPool.h" />
+    <ClInclude Include="mt\include\mt\Algorithm.h" />
+    <ClInclude Include="mt\include\mt\BalancedRunnable1D.h" />
+    <ClInclude Include="mt\include\mt\BasicThreadPool.h" />
+    <ClInclude Include="mt\include\mt\CPUAffinityInitializer.h" />
+    <ClInclude Include="mt\include\mt\CPUAffinityInitializerLinux.h" />
+    <ClInclude Include="mt\include\mt\CPUAffinityInitializerWin32.h" />
+    <ClInclude Include="mt\include\mt\CPUAffinityThreadInitializer.h" />
+    <ClInclude Include="mt\include\mt\CPUAffinityThreadInitializerLinux.h" />
+    <ClInclude Include="mt\include\mt\CPUAffinityThreadInitializerWin32.h" />
+    <ClInclude Include="mt\include\mt\CriticalSection.h" />
+    <ClInclude Include="mt\include\mt\GenerationThreadPool.h" />
+    <ClInclude Include="mt\include\mt\GenericRequestHandler.h" />
+    <ClInclude Include="mt\include\mt\RequestQueue.h" />
+    <ClInclude Include="mt\include\mt\Runnable1D.h" />
+    <ClInclude Include="mt\include\mt\Singleton.h" />
+    <ClInclude Include="mt\include\mt\ThreadGroup.h" />
+    <ClInclude Include="mt\include\mt\ThreadPlanner.h" />
+    <ClInclude Include="mt\include\mt\ThreadPoolException.h" />
+    <ClInclude Include="mt\include\mt\TiedWorkerThread.h" />
+    <ClInclude Include="mt\include\mt\WorkerThread.h" />
+    <ClInclude Include="mt\include\mt\WorkSharingBalancedRunnable1D.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="polygon\include\polygon\DrawPolygon.h" />
     <ClInclude Include="polygon\include\polygon\Intersections.h" />
@@ -360,6 +385,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="mt\source\CPUAffinityInitializerLinux.cpp" />
+    <ClCompile Include="mt\source\CPUAffinityThreadInitializerLinux.cpp" />
+    <ClCompile Include="mt\source\GenerationThreadPool.cpp" />
+    <ClCompile Include="mt\source\GenericRequestHandler.cpp" />
+    <ClCompile Include="mt\source\ThreadGroup.cpp" />
+    <ClCompile Include="mt\source\ThreadPlanner.cpp" />
     <ClCompile Include="pch.cpp">
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ForcedIncludeFiles>
@@ -435,6 +466,38 @@
     <ClCompile Include="sys\source\ThreadSolaris.cpp" />
     <ClCompile Include="sys\source\ThreadWin32.cpp" />
     <ClCompile Include="sys\source\UTCDateTime.cpp" />
+    <ClCompile Include="sys\unittests\test_aligned_alloc.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="sys\unittests\test_atomic_counter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="sys\unittests\test_byte_swap.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="sys\unittests\test_conditionvar.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="sys\unittests\test_datetime.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="sys\unittests\test_NaN_testing.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="sys\unittests\test_os.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="sys\unittests\test_path.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="types\source\Range.cpp" />
     <ClCompile Include="types\source\RangeList.cpp" />
     <ClCompile Include="types\unittests\test_page_row_col.cpp">
@@ -517,10 +580,10 @@
     <ClCompile>
       <WarningLevel>EnableAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL;MT_DEFAULT_PINNING=0</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;polygon\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;polygon\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -541,10 +604,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL;MT_DEFAULT_PINNING=0</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;polygon\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;polygon\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

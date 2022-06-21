@@ -19,19 +19,28 @@
 #include <math.h>
 #include <assert.h>
 
+#include <typeinfo>
 #include <locale>
+#include <limits>
+#include <iterator>
 #include <array>
+#include <vector>
 #include <string>
 #include <set>
 #include <map>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <std/string>
 #include <std/span>
 #include <std/optional>
 #include <std/cstddef>
 #include <std/bit>
-#include <iterator>
+#include <algorithm>
+#include <std/bit> // std::endian
+#include <std/cstddef>
+#include <numeric> // std::accumulate
+#include <std/filesystem>
 
 #include "CppUnitTest.h"
 
@@ -49,6 +58,24 @@
 #include <types/PageRowCol.h>
 #include <types/RangeList.h>
 #include <types/Range.h>
+#include <sys/Conf.h>
+#include <sys/Path.h>
+#include <except/Exception.h>
+#include <str/Convert.h>
+#include <sys/AtomicCounter.h>
+#include <sys/Runnable.h>
+#include <sys/Thread.h>
+#include <sys/Conf.h>
+#include <sys/ConditionVar.h>
+#include <sys/LocalDateTime.h>
+#include <sys/UTCDateTime.h>
+#include <sys/OS.h>
+#include <sys/Path.h>
+#include <sys/Backtrace.h>
+#include <sys/Dbg.h>
+#include <sys/DateTime.h>
+#include <sys/sys_filesystem.h>
+#include <mt/CriticalSection.h>
 
 #include "TestCase.h"
 

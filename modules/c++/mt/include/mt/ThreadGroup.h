@@ -34,7 +34,9 @@
 #include <sys/Mutex.h>
 #include <mem/SharedPtr.h>
 
+#if !defined(MT_DEFAULT_PINNING)
 #include "mt/mt_config.h"
+#endif
 #include <mt/CPUAffinityInitializer.h>
 #include <mt/CPUAffinityThreadInitializer.h>
 
