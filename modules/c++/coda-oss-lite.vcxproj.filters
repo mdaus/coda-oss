@@ -909,6 +909,15 @@
     <ClCompile Include="polygon\unittests\test_polygon_mask.cpp">
       <Filter>polygon\unittests</Filter>
     </ClCompile>
+    <ClCompile Include="types\unittests\test_page_row_col.cpp">
+      <Filter>types\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="types\unittests\test_range.cpp">
+      <Filter>types\unittests</Filter>
+    </ClCompile>
+    <ClCompile Include="types\unittests\test_range_list.cpp">
+      <Filter>types\unittests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -988,6 +997,9 @@
     </Filter>
     <Filter Include="polygon\unittests">
       <UniqueIdentifier>{7d429b31-4a99-479a-9355-534aa24d7b7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="types\unittests">
+      <UniqueIdentifier>{c1058e2d-5f38-4b95-88ca-af494d5b0f42}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

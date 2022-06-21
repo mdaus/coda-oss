@@ -45,6 +45,10 @@
 #include "import/cli.h"
 #include "polygon/DrawPolygon.h"
 #include "polygon/PolygonMask.h"
+#include <types/RowCol.h>
+#include <types/PageRowCol.h>
+#include <types/RangeList.h>
+#include <types/Range.h>
 
 #include "TestCase.h"
 

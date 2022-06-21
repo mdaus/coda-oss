@@ -12,6 +12,7 @@
     <ClCompile Include="io.cpp" />
     <ClCompile Include="cli.cpp" />
     <ClCompile Include="polygon.cpp" />
+    <ClCompile Include="types.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
