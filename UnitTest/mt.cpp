@@ -13,15 +13,15 @@ TEST_CLASS(Runnable1DTest){ public:
 };
 
 TEST_CLASS(ThreadGroupTest){ public:
-//#include "mt/unittests/ThreadGroupTest.cpp"
+#include "mt/unittests/ThreadGroupTest.cpp"
 };
 
 TEST_CLASS(ThreadPlannerTest){ public:
-//#include "mt/unittests/ThreadPlannerTest.cpp"
+#include "mt/unittests/ThreadPlannerTest.cpp"
 };
 
 TEST_CLASS(work_sharing_balanced_runnable_1d_test){ public:
-//#include "mt/unittests/work_sharing_balanced_runnable_1d_test.cpp"
+#include "mt/unittests/work_sharing_balanced_runnable_1d_test.cpp"
 };
 
 }

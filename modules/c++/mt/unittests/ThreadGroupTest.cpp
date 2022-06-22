@@ -24,13 +24,8 @@
 #include "import/mt.h"
 #include "TestCase.h"
 
-using namespace sys;
-using namespace mt;
-using namespace std;
-
-class MyRunTask : public Runnable
+struct MyRunTask final : public sys::Runnable
 {
-public:
     int result;
     int *state;
     int *num_deleted;
@@ -53,7 +48,7 @@ public:
     }
 };
 
-TEST_CASE(ThreadGroupTest)
+TEST_CASE(DoThreadGroupTest)
 {
     ThreadGroup *threads = new ThreadGroup();
     int state = 1, numDeleted = 0;
@@ -106,9 +101,7 @@ TEST_CASE(PinToCPUTest)
     TEST_ASSERT_EQ(threads3.isPinToCPUEnabled(), false);
 }
 
-int main(int, char**)
-{
-    TEST_CHECK(ThreadGroupTest);
+TEST_MAIN(
+    TEST_CHECK(DoThreadGroupTest);
     TEST_CHECK(PinToCPUTest);
-    return 0;
-}
+    )
