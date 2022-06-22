@@ -47,7 +47,7 @@ template<typename TExpected, typename TActual>
 inline void diePrintf_ne(const TExpected& notExpected, const TActual& actual,
     const wchar_t* message = NULL, const Microsoft::VisualStudio::CppUnitTestFramework::__LineInfo* pLineInfo = NULL)
 {
-	Assert::FailOnCondition(!(notExpected == actual), CODA_OSS_not_equals_message_(notExpected, actual, message), pLineInfo);
+	Assert::FailOnCondition(notExpected != actual, CODA_OSS_not_equals_message_(notExpected, actual, message), pLineInfo);
 }
 
 template <typename TX1, typename TX2>

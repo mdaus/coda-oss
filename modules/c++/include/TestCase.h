@@ -183,24 +183,25 @@ inline int main(TFunc f)
 #define CODA_OSS_test_eq_(X1, X2) (((X1) == (X2)) && ((X2) == (X1))) // X1 == X2 means X2 == X1
 #define CODA_OSS_test_ne_(X1, X2) (((X1) != (X2)) && ((X2) != (X1))) // X1 != X2 means X2 != X1
 #define CODA_OSS_test_ne(X1, X2) (CODA_OSS_test_ne_(X1, X2) && !CODA_OSS_test_eq_(X1, X2))
-#define TEST_ASSERT_EQ(X1, X2) if (CODA_OSS_test_ne((X1), (X2))) { CODA_OSS_test_diePrintf_eq_(X1, X2); }
-#define TEST_ASSERT_EQ_MSG(msg, X1, X2) if (CODA_OSS_test_ne((X1), (X2))) { CODA_OSS_test_diePrintf_eq_msg_(msg, X1, X2); }
 #define CODA_OSS_test_eq(X1, X2) (CODA_OSS_test_eq_(X1, X2) && !CODA_OSS_test_ne_(X1, X2))
-#define TEST_ASSERT_NOT_EQ(X1, X2) if (CODA_OSS_test_eq((X1), (X2))) { CODA_OSS_test_diePrintf_not_eq_(X1, X2); }
-#define TEST_ASSERT_NOT_EQ_MSG(msg, X1, X2) if (CODA_OSS_test_eq((X1), (X2))) { CODA_OSS_test_diePrintf_not_eq_msg_(msg, X1, X2); }
+#define TEST_ASSERT_EQ(X1, X2) if (!CODA_OSS_test_eq((X1), (X2))) { CODA_OSS_test_diePrintf_eq_(X1, X2); }
+#define TEST_ASSERT_EQ_MSG(msg, X1, X2) if (!CODA_OSS_test_eq((X1), (X2))) { CODA_OSS_test_diePrintf_eq_msg_(msg, X1, X2); }
+#define TEST_ASSERT_NOT_EQ(X1, X2) if (!CODA_OSS_test_ne((X1), (X2))) { CODA_OSS_test_diePrintf_not_eq_(X1, X2); }
+#define TEST_ASSERT_NOT_EQ_MSG(msg, X1, X2) if (!CODA_OSS_test_ne((X1), (X2))) { CODA_OSS_test_diePrintf_not_eq_msg_(msg, X1, X2); }
 
 #define CODA_OSS_test_ge_(X1, X2) (((X1) >= (X2)) && ((X2) < (X1))) // X1 >= X2 means X2 < X1
 #define CODA_OSS_test_gt_(X1, X2) (((X1) > (X2)) && ((X2) <= (X1))) // X1 > X2 means X2 <= X1
 #define CODA_OSS_test_le_(X1, X2) (((X1) <= (X2)) && ((X2) > (X1))) // X1 <= X2 means X2 > X1
 #define CODA_OSS_test_lt_(X1, X2) (((X1) < (X2)) && ((X2) >= (X1))) // X1 < X2 means X2 >= X1
 #define CODA_OSS_test_ge(X1, X2) (CODA_OSS_test_ge_(X1, X2) && !CODA_OSS_test_lt_(X1, X2))
+#define CODA_OSS_test_ge(X1, X2) (CODA_OSS_test_ge_(X1, X2) && !CODA_OSS_test_lt_(X1, X2))
 #define CODA_OSS_test_gt(X1, X2) (CODA_OSS_test_gt_(X1, X2) && !CODA_OSS_test_le_(X1, X2))
-#  define TEST_ASSERT_GREATER_EQ(X1, X2) if (CODA_OSS_test_ge((X1), (X2))) { CODA_OSS_test_diePrintf_greater_eq_(X1, X2); }
-#  define TEST_ASSERT_GREATER(X1, X2) if (CODA_OSS_test_gt((X1), (X2))) { CODA_OSS_test_diePrintf_greater_(X1, X2); }
+#  define TEST_ASSERT_GREATER_EQ(X1, X2) if (!CODA_OSS_test_ge((X1), (X2))) { CODA_OSS_test_diePrintf_greater_eq_(X1, X2); }
+#  define TEST_ASSERT_GREATER(X1, X2) if (!CODA_OSS_test_gt((X1), (X2))) { CODA_OSS_test_diePrintf_greater_(X1, X2); }
 #define CODA_OSS_test_le(X1, X2) (CODA_OSS_test_le_(X1, X2) && !CODA_OSS_test_gt_(X1, X2))
 #define CODA_OSS_test_lt(X1, X2) (CODA_OSS_test_lt_(X1, X2) && !CODA_OSS_test_ge_(X1, X2))
-#  define TEST_ASSERT_LESSER_EQ(X1, X2) if (CODA_OSS_test_le((X1), (X2))) { CODA_OSS_test_diePrintf_lesser_eq_(X1, X2); }
-#  define TEST_ASSERT_LESSER(X1, X2) if (CODA_OSS_test_lt((X1), (X2))) { CODA_OSS_test_diePrintf_lesser_(X1, X2); }
+#  define TEST_ASSERT_LESSER_EQ(X1, X2) if (!CODA_OSS_test_le((X1), (X2))) { CODA_OSS_test_diePrintf_lesser_eq_(X1, X2); }
+#  define TEST_ASSERT_LESSER(X1, X2) if (!CODA_OSS_test_lt((X1), (X2))) { CODA_OSS_test_diePrintf_lesser_(X1, X2); }
 /*
 #  define TEST_SPECIFIC_EXCEPTION(X,Y) try{ (X); die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__); } catch(const Y&) { }  \
     catch (const except::Throwable&){ die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__);} \
