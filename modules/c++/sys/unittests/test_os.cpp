@@ -319,7 +319,7 @@ TEST_CASE(testBacktrace)
     {
         TEST_ASSERT_FALSE(supported);
     }
-    TEST_ASSERT( (frames.size() == expected) || (frames.size() == expected_other) );
+    TEST_ASSERT_GREATER_EQ(frames.size(), expected);
 
     const auto msg = std::accumulate(frames.begin(), frames.end(), std::string());
     if (supported)
