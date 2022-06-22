@@ -756,6 +756,15 @@
     <ClInclude Include="sio.lite\include\sio\lite\FileWriter.h">
       <Filter>sio.lite</Filter>
     </ClInclude>
+    <ClInclude Include="plugin\include\plugin\BasicPluginManager.h">
+      <Filter>plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugin\include\plugin\ErrorHandler.h">
+      <Filter>plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugin\include\plugin\PluginDefines.h">
+      <Filter>plugin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1125,6 +1134,9 @@
     <ClCompile Include="tiff\source\Utils.cpp">
       <Filter>tiff</Filter>
     </ClCompile>
+    <ClCompile Include="plugin\source\ErrorHandler.cpp">
+      <Filter>plugin</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -1195,6 +1207,9 @@
     </Filter>
     <Filter Include="tiff">
       <UniqueIdentifier>{d76b6d3f-51f8-4cf8-bc56-35f720080a8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugin">
+      <UniqueIdentifier>{387bc6cb-323a-42b3-8502-4fac72586d12}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
