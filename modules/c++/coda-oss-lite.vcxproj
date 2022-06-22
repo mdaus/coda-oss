@@ -159,6 +159,15 @@
     <ClInclude Include="re\include\re\Regex.h" />
     <ClInclude Include="re\include\re\RegexException.h" />
     <ClInclude Include="re\include\re\RegexPredicate.h" />
+    <ClInclude Include="sio.lite\include\sio\lite\ElementType.h" />
+    <ClInclude Include="sio.lite\include\sio\lite\FileHeader.h" />
+    <ClInclude Include="sio.lite\include\sio\lite\FileReader.h" />
+    <ClInclude Include="sio.lite\include\sio\lite\FileWriter.h" />
+    <ClInclude Include="sio.lite\include\sio\lite\InvalidHeaderException.h" />
+    <ClInclude Include="sio.lite\include\sio\lite\ReadUtils.h" />
+    <ClInclude Include="sio.lite\include\sio\lite\StreamReader.h" />
+    <ClInclude Include="sio.lite\include\sio\lite\UnsupportedDataTypeException.h" />
+    <ClInclude Include="sio.lite\include\sio\lite\UserDataDictionary.h" />
     <ClInclude Include="str\include\str\Convert.h" />
     <ClInclude Include="str\include\str\EncodedString.h" />
     <ClInclude Include="str\include\str\EncodedStringView.h" />
@@ -306,6 +315,10 @@
     <ClCompile Include="polygon\source\PolygonMask.cpp" />
     <ClCompile Include="re\source\Regex.cpp" />
     <ClCompile Include="re\source\RegexSTL.cpp" />
+    <ClCompile Include="sio.lite\source\FileHeader.cpp" />
+    <ClCompile Include="sio.lite\source\FileReader.cpp" />
+    <ClCompile Include="sio.lite\source\FileWriter.cpp" />
+    <ClCompile Include="sio.lite\source\StreamReader.cpp" />
     <ClCompile Include="str\source\Convert.cpp" />
     <ClCompile Include="str\source\EncodedString.cpp" />
     <ClCompile Include="str\source\EncodedStringView.cpp" />
@@ -429,7 +442,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL;MT_DEFAULT_PINNING=0;RE_ENABLE_STD_REGEX=1</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;polygon\include\;re\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;polygon\include\;re\include\;sio.lite\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -453,7 +466,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL;MT_DEFAULT_PINNING=0;RE_ENABLE_STD_REGEX=1</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;polygon\include\;re\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;polygon\include\;re\include\;sio.lite\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

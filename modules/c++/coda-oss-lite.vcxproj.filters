@@ -681,6 +681,33 @@
     <ClInclude Include="re\include\re\RegexPredicate.h">
       <Filter>re</Filter>
     </ClInclude>
+    <ClInclude Include="sio.lite\include\sio\lite\ElementType.h">
+      <Filter>sio.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="sio.lite\include\sio\lite\FileHeader.h">
+      <Filter>sio.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="sio.lite\include\sio\lite\FileReader.h">
+      <Filter>sio.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="sio.lite\include\sio\lite\FileWriter.h">
+      <Filter>sio.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="sio.lite\include\sio\lite\InvalidHeaderException.h">
+      <Filter>sio.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="sio.lite\include\sio\lite\ReadUtils.h">
+      <Filter>sio.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="sio.lite\include\sio\lite\StreamReader.h">
+      <Filter>sio.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="sio.lite\include\sio\lite\UnsupportedDataTypeException.h">
+      <Filter>sio.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="sio.lite\include\sio\lite\UserDataDictionary.h">
+      <Filter>sio.lite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1005,6 +1032,18 @@
     <ClCompile Include="re\source\RegexSTL.cpp">
       <Filter>re</Filter>
     </ClCompile>
+    <ClCompile Include="sio.lite\source\FileHeader.cpp">
+      <Filter>sio.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="sio.lite\source\FileReader.cpp">
+      <Filter>sio.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="sio.lite\source\FileWriter.cpp">
+      <Filter>sio.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="sio.lite\source\StreamReader.cpp">
+      <Filter>sio.lite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -1069,6 +1108,9 @@
     </Filter>
     <Filter Include="re">
       <UniqueIdentifier>{83ae731c-66f7-468c-bc71-7cb57a363b5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sio.lite">
+      <UniqueIdentifier>{327a7b72-9a2d-48e4-9c23-2b5b9d2f3519}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
