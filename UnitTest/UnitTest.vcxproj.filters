@@ -4,10 +4,8 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="str.cpp" />
     <ClCompile Include="units.cpp" />
-    <ClCompile Include="math.linear.cpp" />
     <ClCompile Include="mem.cpp" />
     <ClCompile Include="CppUnitTestAssert.cpp" />
-    <ClCompile Include="math.poly.cpp" />
     <ClCompile Include="polygon.cpp" />
     <ClCompile Include="types.cpp" />
     <ClCompile Include="mt.cpp">
@@ -94,6 +92,60 @@
     <ClCompile Include="..\modules\c++\math\unittests\test_sign.cpp">
       <Filter>math</Filter>
     </ClCompile>
+    <ClCompile Include="math.linear.cpp">
+      <Filter>math.linear</Filter>
+    </ClCompile>
+    <ClCompile Include="math.poly.cpp">
+      <Filter>math.poly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.linear\unittests\test_eigenvalue.cpp">
+      <Filter>math.linear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.linear\unittests\test_inf_equality.cpp">
+      <Filter>math.linear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.linear\unittests\test_inverse.cpp">
+      <Filter>math.linear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.linear\unittests\test_lin.cpp">
+      <Filter>math.linear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.linear\unittests\test_Matrix2D_serialize.cpp">
+      <Filter>math.linear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.linear\unittests\test_mx.cpp">
+      <Filter>math.linear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.linear\unittests\test_Vector.cpp">
+      <Filter>math.linear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.linear\unittests\test_Vector_serialize.cpp">
+      <Filter>math.linear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.linear\unittests\test_VectorN.cpp">
+      <Filter>math.linear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.poly\unittests\test_1d_poly.cpp">
+      <Filter>math.poly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.poly\unittests\test_1d_poly_serialize.cpp">
+      <Filter>math.poly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.poly\unittests\test_2d_poly.cpp">
+      <Filter>math.poly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.poly\unittests\test_2d_poly_serialize.cpp">
+      <Filter>math.poly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.poly\unittests\test_fixed_1d_poly.cpp">
+      <Filter>math.poly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.poly\unittests\test_fixed_2d_poly.cpp">
+      <Filter>math.poly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.poly\unittests\test_llsq.cpp">
+      <Filter>math.poly</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -114,6 +166,12 @@
     </Filter>
     <Filter Include="math">
       <UniqueIdentifier>{d343bd9f-8b19-4740-bdf8-39d687ab56bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math.linear">
+      <UniqueIdentifier>{a4045a72-e6a4-4421-9eab-818136f2d22c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math.poly">
+      <UniqueIdentifier>{90e2ffd7-1b9a-4096-b2fa-b41159333682}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
