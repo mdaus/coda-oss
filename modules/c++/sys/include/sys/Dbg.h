@@ -188,7 +188,7 @@ namespace sys
  *  \param format
  *  \param ...  Put in any format value here
  */
-void dbgPrintf(const char *format, ...);
+CODA_OSS_API void dbgPrintf(const char *format, ...);
 
 /*!
  *  Prints to DEBUG_STREAM and kills the program

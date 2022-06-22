@@ -204,6 +204,15 @@
     <ClCompile Include="avx.cpp">
       <Filter>avx</Filter>
     </ClCompile>
+    <ClCompile Include="logging.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\logging\unittests\test_exception_logger.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\logging\unittests\test_rotating_log.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -248,6 +257,9 @@
     </Filter>
     <Filter Include="avx">
       <UniqueIdentifier>{0afb2127-0ee7-46d6-963c-132a7830a7d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logging">
+      <UniqueIdentifier>{3baea66d-2852-40fe-8482-e3f6ba1a81e0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

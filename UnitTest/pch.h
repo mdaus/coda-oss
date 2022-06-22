@@ -92,8 +92,12 @@
 #include <mt/CPUAffinityThreadInitializer.h>
 #include <mt/RequestQueue.h>
 #include <mt/ThreadPoolException.h>
+#include <mt/GenerationThreadPool.h>
 #include <import/mt.h>
+
 #include <avx/extractf.h>
+#include <logging/ExceptionLogger.h>
+#include <import/logging.h>
 
 #include "TestCase.h"
 

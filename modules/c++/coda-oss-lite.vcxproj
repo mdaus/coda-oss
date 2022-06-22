@@ -76,6 +76,24 @@
     <ClInclude Include="io\include\io\StreamSplitter.h" />
     <ClInclude Include="io\include\io\StringStream.h" />
     <ClInclude Include="io\include\io\TempFile.h" />
+    <ClInclude Include="logging\include\logging\DefaultLogger.h" />
+    <ClInclude Include="logging\include\logging\Enums.h" />
+    <ClInclude Include="logging\include\logging\ExceptionLogger.h" />
+    <ClInclude Include="logging\include\logging\FileHandler.h" />
+    <ClInclude Include="logging\include\logging\Filter.h" />
+    <ClInclude Include="logging\include\logging\Filterer.h" />
+    <ClInclude Include="logging\include\logging\Formatter.h" />
+    <ClInclude Include="logging\include\logging\Handler.h" />
+    <ClInclude Include="logging\include\logging\Logger.h" />
+    <ClInclude Include="logging\include\logging\LoggerFactory.h" />
+    <ClInclude Include="logging\include\logging\LogRecord.h" />
+    <ClInclude Include="logging\include\logging\MemoryHandler.h" />
+    <ClInclude Include="logging\include\logging\NullLogger.h" />
+    <ClInclude Include="logging\include\logging\RotatingFileHandler.h" />
+    <ClInclude Include="logging\include\logging\Setup.h" />
+    <ClInclude Include="logging\include\logging\StandardFormatter.h" />
+    <ClInclude Include="logging\include\logging\StreamHandler.h" />
+    <ClInclude Include="logging\include\logging\XMLFormatter.h" />
     <ClInclude Include="math.linear\include\math\linear\Eigenvalue.h" />
     <ClInclude Include="math.linear\include\math\linear\Line2D.h" />
     <ClInclude Include="math.linear\include\math\linear\Matrix2D.h" />
@@ -248,6 +266,20 @@
     <ClCompile Include="io\source\StreamSplitter.cpp" />
     <ClCompile Include="io\source\StringStream.cpp" />
     <ClCompile Include="io\source\TempFile.cpp" />
+    <ClCompile Include="logging\source\DefaultLogger.cpp" />
+    <ClCompile Include="logging\source\Filter.cpp" />
+    <ClCompile Include="logging\source\Filterer.cpp" />
+    <ClCompile Include="logging\source\Formatter.cpp" />
+    <ClCompile Include="logging\source\Handler.cpp" />
+    <ClCompile Include="logging\source\Logger.cpp" />
+    <ClCompile Include="logging\source\LoggerFactory.cpp" />
+    <ClCompile Include="logging\source\LogRecord.cpp" />
+    <ClCompile Include="logging\source\MemoryHandler.cpp" />
+    <ClCompile Include="logging\source\RotatingFileHandler.cpp" />
+    <ClCompile Include="logging\source\Setup.cpp" />
+    <ClCompile Include="logging\source\StandardFormatter.cpp" />
+    <ClCompile Include="logging\source\StreamHandler.cpp" />
+    <ClCompile Include="logging\source\XMLFormatter.cpp" />
     <ClCompile Include="math.linear\source\Line2D.cpp" />
     <ClCompile Include="math\source\Bessel.cpp" />
     <ClCompile Include="math\source\Round.cpp" />
@@ -392,7 +424,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL;MT_DEFAULT_PINNING=0</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;polygon\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;polygon\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -416,7 +448,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL;MT_DEFAULT_PINNING=0</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;polygon\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;polygon\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

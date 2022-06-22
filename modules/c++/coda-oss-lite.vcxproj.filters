@@ -618,6 +618,60 @@
     <ClInclude Include="avx\include\avx\extractf.h">
       <Filter>avx</Filter>
     </ClInclude>
+    <ClInclude Include="logging\include\logging\DefaultLogger.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\Enums.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\ExceptionLogger.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\FileHandler.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\Filter.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\Filterer.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\Formatter.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\Handler.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\Logger.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\LoggerFactory.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\LogRecord.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\MemoryHandler.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\NullLogger.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\RotatingFileHandler.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\Setup.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\StandardFormatter.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\StreamHandler.h">
+      <Filter>logging</Filter>
+    </ClInclude>
+    <ClInclude Include="logging\include\logging\XMLFormatter.h">
+      <Filter>logging</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -894,6 +948,48 @@
     <ClCompile Include="mt\source\ThreadPlanner.cpp">
       <Filter>mt</Filter>
     </ClCompile>
+    <ClCompile Include="logging\source\DefaultLogger.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logging\source\Filter.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logging\source\Filterer.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logging\source\Formatter.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logging\source\Handler.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logging\source\Logger.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logging\source\LoggerFactory.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logging\source\LogRecord.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logging\source\MemoryHandler.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logging\source\RotatingFileHandler.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logging\source\Setup.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logging\source\StandardFormatter.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logging\source\StreamHandler.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
+    <ClCompile Include="logging\source\XMLFormatter.cpp">
+      <Filter>logging</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -952,6 +1048,9 @@
     </Filter>
     <Filter Include="avx">
       <UniqueIdentifier>{9720bf2c-6d77-4685-9318-d6e714065c99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="logging">
+      <UniqueIdentifier>{9f9acff4-c149-4908-ae9d-67557974f4ee}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
