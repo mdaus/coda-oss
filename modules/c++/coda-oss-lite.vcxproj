@@ -163,6 +163,8 @@
     <ClInclude Include="sio.lite\include\sio\lite\FileHeader.h" />
     <ClInclude Include="sio.lite\include\sio\lite\FileReader.h" />
     <ClInclude Include="sio.lite\include\sio\lite\FileWriter.h" />
+    <ClInclude Include="sio.lite\include\sio\lite\SioFileReader.h" />
+    <ClInclude Include="sio.lite\include\sio\lite\SioFileWriter.h" />
     <ClInclude Include="sio.lite\include\sio\lite\InvalidHeaderException.h" />
     <ClInclude Include="sio.lite\include\sio\lite\ReadUtils.h" />
     <ClInclude Include="sio.lite\include\sio\lite\StreamReader.h" />
@@ -243,6 +245,20 @@
     <ClInclude Include="sys\include\sys\ThreadWin32.h" />
     <ClInclude Include="sys\include\sys\TimeStamp.h" />
     <ClInclude Include="sys\include\sys\UTCDateTime.h" />
+    <ClInclude Include="tiff\include\tiff\Common.h" />
+    <ClInclude Include="tiff\include\tiff\FileReader.h" />
+    <ClInclude Include="tiff\include\tiff\FileWriter.h" />
+    <ClInclude Include="tiff\include\tiff\TiffFileReader.h" />
+    <ClInclude Include="tiff\include\tiff\TiffFileWriter.h" />
+    <ClInclude Include="tiff\include\tiff\GenericType.h" />
+    <ClInclude Include="tiff\include\tiff\Header.h" />
+    <ClInclude Include="tiff\include\tiff\IFD.h" />
+    <ClInclude Include="tiff\include\tiff\IFDEntry.h" />
+    <ClInclude Include="tiff\include\tiff\ImageReader.h" />
+    <ClInclude Include="tiff\include\tiff\ImageWriter.h" />
+    <ClInclude Include="tiff\include\tiff\KnownTags.h" />
+    <ClInclude Include="tiff\include\tiff\TypeFactory.h" />
+    <ClInclude Include="tiff\include\tiff\Utils.h" />
     <ClInclude Include="types\include\types\PageRowCol.h" />
     <ClInclude Include="types\include\types\Range.h" />
     <ClInclude Include="types\include\types\RangeList.h" />
@@ -316,8 +332,8 @@
     <ClCompile Include="re\source\Regex.cpp" />
     <ClCompile Include="re\source\RegexSTL.cpp" />
     <ClCompile Include="sio.lite\source\FileHeader.cpp" />
-    <ClCompile Include="sio.lite\source\FileReader.cpp" />
-    <ClCompile Include="sio.lite\source\FileWriter.cpp" />
+    <ClCompile Include="sio.lite\source\SioFileReader.cpp" />
+    <ClCompile Include="sio.lite\source\SioFileWriter.cpp" />
     <ClCompile Include="sio.lite\source\StreamReader.cpp" />
     <ClCompile Include="str\source\Convert.cpp" />
     <ClCompile Include="str\source\EncodedString.cpp" />
@@ -373,6 +389,17 @@
     <ClCompile Include="sys\source\ThreadSolaris.cpp" />
     <ClCompile Include="sys\source\ThreadWin32.cpp" />
     <ClCompile Include="sys\source\UTCDateTime.cpp" />
+    <ClCompile Include="tiff\source\Common.cpp" />
+    <ClCompile Include="tiff\source\TiffFileReader.cpp" />
+    <ClCompile Include="tiff\source\TiffFileWriter.cpp" />
+    <ClCompile Include="tiff\source\Header.cpp" />
+    <ClCompile Include="tiff\source\IFD.cpp" />
+    <ClCompile Include="tiff\source\IFDEntry.cpp" />
+    <ClCompile Include="tiff\source\ImageReader.cpp" />
+    <ClCompile Include="tiff\source\ImageWriter.cpp" />
+    <ClCompile Include="tiff\source\KnownTags.cpp" />
+    <ClCompile Include="tiff\source\TypeFactory.cpp" />
+    <ClCompile Include="tiff\source\Utils.cpp" />
     <ClCompile Include="types\source\Range.cpp" />
     <ClCompile Include="types\source\RangeList.cpp" />
   </ItemGroup>
@@ -442,7 +469,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL;MT_DEFAULT_PINNING=0;RE_ENABLE_STD_REGEX=1</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;polygon\include\;re\include\;sio.lite\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;polygon\include\;re\include\;sio.lite\include\;std\include\;str\include\;sys\include\;tiff\include;types\include\;units\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -466,7 +493,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL;MT_DEFAULT_PINNING=0;RE_ENABLE_STD_REGEX=1</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;polygon\include\;re\include\;sio.lite\include\;std\include\;str\include\;sys\include\;types\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;polygon\include\;re\include\;sio.lite\include\;std\include\;str\include\;sys\include\;tiff\include;types\include\;units\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

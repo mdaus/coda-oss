@@ -687,10 +687,10 @@
     <ClInclude Include="sio.lite\include\sio\lite\FileHeader.h">
       <Filter>sio.lite</Filter>
     </ClInclude>
-    <ClInclude Include="sio.lite\include\sio\lite\FileReader.h">
+    <ClInclude Include="sio.lite\include\sio\lite\SioFileReader.h">
       <Filter>sio.lite</Filter>
     </ClInclude>
-    <ClInclude Include="sio.lite\include\sio\lite\FileWriter.h">
+    <ClInclude Include="sio.lite\include\sio\lite\SioFileWriter.h">
       <Filter>sio.lite</Filter>
     </ClInclude>
     <ClInclude Include="sio.lite\include\sio\lite\InvalidHeaderException.h">
@@ -706,6 +706,54 @@
       <Filter>sio.lite</Filter>
     </ClInclude>
     <ClInclude Include="sio.lite\include\sio\lite\UserDataDictionary.h">
+      <Filter>sio.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="tiff\include\tiff\Common.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="tiff\include\tiff\TiffFileReader.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="tiff\include\tiff\TiffFileWriter.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="tiff\include\tiff\GenericType.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="tiff\include\tiff\Header.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="tiff\include\tiff\IFD.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="tiff\include\tiff\IFDEntry.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="tiff\include\tiff\ImageReader.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="tiff\include\tiff\ImageWriter.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="tiff\include\tiff\KnownTags.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="tiff\include\tiff\TypeFactory.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="tiff\include\tiff\Utils.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="tiff\include\tiff\FileReader.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="tiff\include\tiff\FileWriter.h">
+      <Filter>tiff</Filter>
+    </ClInclude>
+    <ClInclude Include="sio.lite\include\sio\lite\FileReader.h">
+      <Filter>sio.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="sio.lite\include\sio\lite\FileWriter.h">
       <Filter>sio.lite</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1035,14 +1083,47 @@
     <ClCompile Include="sio.lite\source\FileHeader.cpp">
       <Filter>sio.lite</Filter>
     </ClCompile>
-    <ClCompile Include="sio.lite\source\FileReader.cpp">
+    <ClCompile Include="sio.lite\source\SioFileReader.cpp">
       <Filter>sio.lite</Filter>
     </ClCompile>
-    <ClCompile Include="sio.lite\source\FileWriter.cpp">
+    <ClCompile Include="sio.lite\source\SioFileWriter.cpp">
       <Filter>sio.lite</Filter>
     </ClCompile>
     <ClCompile Include="sio.lite\source\StreamReader.cpp">
       <Filter>sio.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="tiff\source\Common.cpp">
+      <Filter>tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="tiff\source\TiffFileReader.cpp">
+      <Filter>tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="tiff\source\TiffFileWriter.cpp">
+      <Filter>tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="tiff\source\Header.cpp">
+      <Filter>tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="tiff\source\IFD.cpp">
+      <Filter>tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="tiff\source\IFDEntry.cpp">
+      <Filter>tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="tiff\source\ImageReader.cpp">
+      <Filter>tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="tiff\source\ImageWriter.cpp">
+      <Filter>tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="tiff\source\KnownTags.cpp">
+      <Filter>tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="tiff\source\TypeFactory.cpp">
+      <Filter>tiff</Filter>
+    </ClCompile>
+    <ClCompile Include="tiff\source\Utils.cpp">
+      <Filter>tiff</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1111,6 +1192,9 @@
     </Filter>
     <Filter Include="sio.lite">
       <UniqueIdentifier>{327a7b72-9a2d-48e4-9c23-2b5b9d2f3519}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tiff">
+      <UniqueIdentifier>{d76b6d3f-51f8-4cf8-bc56-35f720080a8b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
