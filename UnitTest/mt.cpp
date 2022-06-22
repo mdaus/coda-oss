@@ -9,7 +9,7 @@ TEST_CLASS(balanced_runnable_1d_test){ public:
 };
 
 TEST_CLASS(Runnable1DTest){ public:
-//#include "mt/unittests/Runnable1DTest.cpp"
+#include "mt/unittests/Runnable1DTest.cpp"
 };
 
 TEST_CLASS(ThreadGroupTest){ public:

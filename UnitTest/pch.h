@@ -28,6 +28,7 @@
 #include <string>
 #include <set>
 #include <map>
+#include <queue>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -41,6 +42,7 @@
 #include <std/cstddef>
 #include <numeric> // std::accumulate
 #include <std/filesystem>
+#include <future>
 
 #include "CppUnitTest.h"
 
@@ -51,6 +53,7 @@
 #include "str/EncodedStringView.h"
 #include "import/except.h"
 #include "import/mem.h"
+#include <mem/SharedPtr.h>
 #include "import/cli.h"
 #include "polygon/DrawPolygon.h"
 #include "polygon/PolygonMask.h"
@@ -79,13 +82,17 @@
 #include <sys/Runnable.h>
 #include <sys/Thread.h>
 #include <sys/Mutex.h>
-#include <mem/SharedPtr.h>
+#include <import/sys.h>
+
 #include <mt/CriticalSection.h>
 #include <mt/ThreadPlanner.h>
 #include <mt/ThreadGroup.h>
 #include <mt/BalancedRunnable1D.h>
 #include <mt/CPUAffinityInitializer.h>
 #include <mt/CPUAffinityThreadInitializer.h>
+#include <mt/RequestQueue.h>
+#include <mt/ThreadPoolException.h>
+#include <import/mt.h>
 
 #include "TestCase.h"
 
