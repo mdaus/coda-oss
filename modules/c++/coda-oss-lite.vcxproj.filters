@@ -819,36 +819,6 @@
     <ClCompile Include="polygon\source\PolygonMask.cpp">
       <Filter>polygon</Filter>
     </ClCompile>
-    <ClCompile Include="str\unittests\test_base_convert.cpp">
-      <Filter>str\unittests</Filter>
-    </ClCompile>
-    <ClCompile Include="str\unittests\test_str.cpp">
-      <Filter>str\unittests</Filter>
-    </ClCompile>
-    <ClCompile Include="units\unittests\test_units.cpp">
-      <Filter>units\unittests</Filter>
-    </ClCompile>
-    <ClCompile Include="mem\unittests\test_scoped_cloneable_ptr.cpp">
-      <Filter>mem\unittests</Filter>
-    </ClCompile>
-    <ClCompile Include="mem\unittests\test_scoped_copyable_ptr.cpp">
-      <Filter>mem\unittests</Filter>
-    </ClCompile>
-    <ClCompile Include="mem\unittests\test_scratch_memory.cpp">
-      <Filter>mem\unittests</Filter>
-    </ClCompile>
-    <ClCompile Include="mem\unittests\test_shared_ptr.cpp">
-      <Filter>mem\unittests</Filter>
-    </ClCompile>
-    <ClCompile Include="mem\unittests\test_Span.cpp">
-      <Filter>mem\unittests</Filter>
-    </ClCompile>
-    <ClCompile Include="mem\unittests\test_unique_ptr.cpp">
-      <Filter>mem\unittests</Filter>
-    </ClCompile>
-    <ClCompile Include="mem\unittests\test_vector_pointers.cpp">
-      <Filter>mem\unittests</Filter>
-    </ClCompile>
     <ClCompile Include="cli\source\Argument.cpp">
       <Filter>cli</Filter>
     </ClCompile>
@@ -902,18 +872,6 @@
     </ClCompile>
     <ClCompile Include="io\source\TempFile.cpp">
       <Filter>io</Filter>
-    </ClCompile>
-    <ClCompile Include="polygon\unittests\test_polygon_mask.cpp">
-      <Filter>polygon\unittests</Filter>
-    </ClCompile>
-    <ClCompile Include="types\unittests\test_page_row_col.cpp">
-      <Filter>types\unittests</Filter>
-    </ClCompile>
-    <ClCompile Include="types\unittests\test_range.cpp">
-      <Filter>types\unittests</Filter>
-    </ClCompile>
-    <ClCompile Include="types\unittests\test_range_list.cpp">
-      <Filter>types\unittests</Filter>
     </ClCompile>
     <ClCompile Include="mt\source\CPUAffinityInitializerLinux.cpp">
       <Filter>mt</Filter>
@@ -977,15 +935,6 @@
     <Filter Include="polygon">
       <UniqueIdentifier>{f2544ccb-0933-44c7-af39-cd986982af3d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="str\unittests">
-      <UniqueIdentifier>{4cee5537-9ac0-4bb8-9b9f-78aae69d0084}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="units\unittests">
-      <UniqueIdentifier>{55522351-e752-4be8-9139-f7ac4b91a66d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="mem\unittests">
-      <UniqueIdentifier>{6a70a638-d58c-4e34-87c1-6d1115690de8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{9050a469-23a5-4da0-92b1-a07a8e52e9fc}</UniqueIdentifier>
     </Filter>
@@ -994,12 +943,6 @@
     </Filter>
     <Filter Include="io">
       <UniqueIdentifier>{cc681a99-da96-483e-a92a-eab0ea3a0ec0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="polygon\unittests">
-      <UniqueIdentifier>{7d429b31-4a99-479a-9355-534aa24d7b7a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="types\unittests">
-      <UniqueIdentifier>{c1058e2d-5f38-4b95-88ca-af494d5b0f42}</UniqueIdentifier>
     </Filter>
     <Filter Include="mt">
       <UniqueIdentifier>{4875d8c0-f285-460a-98a9-38a60f3fcffd}</UniqueIdentifier>

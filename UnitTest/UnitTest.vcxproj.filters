@@ -2,12 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="str.cpp" />
-    <ClCompile Include="units.cpp" />
-    <ClCompile Include="mem.cpp" />
     <ClCompile Include="CppUnitTestAssert.cpp" />
-    <ClCompile Include="polygon.cpp" />
-    <ClCompile Include="types.cpp" />
     <ClCompile Include="mt.cpp">
       <Filter>mt</Filter>
     </ClCompile>
@@ -146,6 +141,63 @@
     <ClCompile Include="..\modules\c++\math.poly\unittests\test_llsq.cpp">
       <Filter>math.poly</Filter>
     </ClCompile>
+    <ClCompile Include="mem.cpp">
+      <Filter>mem</Filter>
+    </ClCompile>
+    <ClCompile Include="polygon.cpp">
+      <Filter>polygon</Filter>
+    </ClCompile>
+    <ClCompile Include="str.cpp">
+      <Filter>str</Filter>
+    </ClCompile>
+    <ClCompile Include="types.cpp">
+      <Filter>types</Filter>
+    </ClCompile>
+    <ClCompile Include="units.cpp">
+      <Filter>units</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\units\unittests\test_units.cpp">
+      <Filter>units</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\types\unittests\test_page_row_col.cpp">
+      <Filter>types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\types\unittests\test_range.cpp">
+      <Filter>types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\types\unittests\test_range_list.cpp">
+      <Filter>types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\str\unittests\test_base_convert.cpp">
+      <Filter>str</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\str\unittests\test_str.cpp">
+      <Filter>str</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\mem\unittests\test_scoped_cloneable_ptr.cpp">
+      <Filter>mem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\mem\unittests\test_scoped_copyable_ptr.cpp">
+      <Filter>mem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\mem\unittests\test_scratch_memory.cpp">
+      <Filter>mem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\mem\unittests\test_shared_ptr.cpp">
+      <Filter>mem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\mem\unittests\test_Span.cpp">
+      <Filter>mem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\mem\unittests\test_unique_ptr.cpp">
+      <Filter>mem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\mem\unittests\test_vector_pointers.cpp">
+      <Filter>mem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\polygon\unittests\test_polygon_mask.cpp">
+      <Filter>polygon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -172,6 +224,21 @@
     </Filter>
     <Filter Include="math.poly">
       <UniqueIdentifier>{90e2ffd7-1b9a-4096-b2fa-b41159333682}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mem">
+      <UniqueIdentifier>{cf1423ec-9599-4936-9563-afdcdda85f62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="polygon">
+      <UniqueIdentifier>{331ec48a-ac3a-4a63-b410-23701adec599}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="str">
+      <UniqueIdentifier>{87b5dc54-ceaf-4f37-b074-41b295b8a92d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="types">
+      <UniqueIdentifier>{d444ddb7-6b00-495a-94d6-a2674cbfea83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="units">
+      <UniqueIdentifier>{7a48027a-9dd9-4700-a6fc-703dc7468721}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
