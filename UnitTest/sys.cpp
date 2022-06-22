@@ -28,7 +28,7 @@ TEST_CLASS(test_NaN_testing){ public:
 };
 
 TEST_CLASS(test_os){ public:
-//#include "sys/unittests/test_os.cpp"
+#include "sys/unittests/test_os.cpp"
 };
 
 TEST_CLASS(test_path){ public:
