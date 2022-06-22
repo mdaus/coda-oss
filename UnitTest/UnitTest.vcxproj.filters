@@ -13,10 +13,62 @@
     <ClCompile Include="cli.cpp" />
     <ClCompile Include="polygon.cpp" />
     <ClCompile Include="types.cpp" />
-    <ClCompile Include="sys.cpp" />
+    <ClCompile Include="mt.cpp">
+      <Filter>mt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\mt\unittests\balanced_runnable_1d_test.cpp">
+      <Filter>mt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\mt\unittests\Runnable1DTest.cpp">
+      <Filter>mt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\mt\unittests\ThreadGroupTest.cpp">
+      <Filter>mt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\mt\unittests\ThreadPlannerTest.cpp">
+      <Filter>mt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\mt\unittests\work_sharing_balanced_runnable_1d_test.cpp">
+      <Filter>mt</Filter>
+    </ClCompile>
+    <ClCompile Include="sys.cpp">
+      <Filter>sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\sys\unittests\test_aligned_alloc.cpp">
+      <Filter>sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\sys\unittests\test_atomic_counter.cpp">
+      <Filter>sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\sys\unittests\test_byte_swap.cpp">
+      <Filter>sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\sys\unittests\test_conditionvar.cpp">
+      <Filter>sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\sys\unittests\test_datetime.cpp">
+      <Filter>sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\sys\unittests\test_NaN_testing.cpp">
+      <Filter>sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\sys\unittests\test_os.cpp">
+      <Filter>sys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\sys\unittests\test_path.cpp">
+      <Filter>sys</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="TestCase.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="mt">
+      <UniqueIdentifier>{ea90a933-47d1-448a-8265-3742d1ce18f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sys">
+      <UniqueIdentifier>{e3f97021-8c19-46cb-962c-d1cea71da3a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
