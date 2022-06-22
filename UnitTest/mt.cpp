@@ -5,7 +5,7 @@ namespace mt
 {
 
 TEST_CLASS(balanced_runnable_1d_test){ public:
-//#include "mt/unittests/balanced_runnable_1d_test.cpp"
+#include "mt/unittests/balanced_runnable_1d_test.cpp"
 };
 
 TEST_CLASS(Runnable1DTest){ public:

@@ -58,7 +58,7 @@
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;$(ProjectDir);$(SolutionDir)modules\c++\;$(SolutionDir)modules\c++\cli\include\;$(SolutionDir)modules\c++\config\include\;$(SolutionDir)modules\c++\coda_oss\include\;$(SolutionDir)modules\c++\gsl\include\;$(SolutionDir)modules\c++\io\include\;$(SolutionDir)modules\c++\std\include\;$(SolutionDir)modules\c++\str\include\;$(SolutionDir)modules\c++\sys\include\;$(SolutionDir)modules\c++\except\include\;$(SolutionDir)modules\c++\math\include\;$(SolutionDir)modules\c++\math.linear\include\;$(SolutionDir)modules\c++\math.poly\include\;$(SolutionDir)modules\c++\mem\include\;$(SolutionDir)modules\c++\mt\include\;$(SolutionDir)modules\c++\polygon\include\;$(SolutionDir)modules\c++\types\include\;$(SolutionDir)modules\c++\units\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions);CODA_OSS_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions);MT_DEFAULT_PINNING=0</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -82,7 +82,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;$(ProjectDir);$(SolutionDir)modules\c++\;$(SolutionDir)modules\c++\cli\include\;$(SolutionDir)modules\c++\config\include\;$(SolutionDir)modules\c++\coda_oss\include\;$(SolutionDir)modules\c++\gsl\include\;$(SolutionDir)modules\c++\io\include\;$(SolutionDir)modules\c++\std\include\;$(SolutionDir)modules\c++\str\include\;$(SolutionDir)modules\c++\sys\include\;$(SolutionDir)modules\c++\except\include\;$(SolutionDir)modules\c++\math\include\;$(SolutionDir)modules\c++\math.linear\include\;$(SolutionDir)modules\c++\math.poly\include\;$(SolutionDir)modules\c++\mem\include\;$(SolutionDir)modules\c++\mt\include\;$(SolutionDir)modules\c++\polygon\include\;$(SolutionDir)modules\c++\types\include\;$(SolutionDir)modules\c++\units\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);CODA_OSS_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);MT_DEFAULT_PINNING=0</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

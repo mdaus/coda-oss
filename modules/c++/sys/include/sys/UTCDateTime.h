@@ -47,8 +47,6 @@ protected:
     virtual void getTime(time_t numSecondsSinceEpoch, tm& t) const;
 
 public:
-    static const char DEFAULT_DATETIME_FORMAT[];
-
     /*!
      *  Construct as current date and time (UTC).
      */
@@ -74,8 +72,8 @@ public:
     /*!
      *  Construct with string/format.
      */
-    UTCDateTime(const std::string& time,
-            const std::string& format = DEFAULT_DATETIME_FORMAT);
+    UTCDateTime(const std::string& time);
+    UTCDateTime(const std::string& time, const std::string& format);
 
     // unhide in the base class format method
     using DateTime::format;

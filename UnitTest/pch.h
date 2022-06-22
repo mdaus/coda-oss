@@ -75,7 +75,17 @@
 #include <sys/Dbg.h>
 #include <sys/DateTime.h>
 #include <sys/sys_filesystem.h>
+#include <except/Error.h>
+#include <sys/Runnable.h>
+#include <sys/Thread.h>
+#include <sys/Mutex.h>
+#include <mem/SharedPtr.h>
 #include <mt/CriticalSection.h>
+#include <mt/ThreadPlanner.h>
+#include <mt/ThreadGroup.h>
+#include <mt/BalancedRunnable1D.h>
+#include <mt/CPUAffinityInitializer.h>
+#include <mt/CPUAffinityThreadInitializer.h>
 
 #include "TestCase.h"
 
