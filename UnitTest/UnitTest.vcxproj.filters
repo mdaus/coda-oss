@@ -2,15 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="math.cpp" />
     <ClCompile Include="str.cpp" />
     <ClCompile Include="units.cpp" />
     <ClCompile Include="math.linear.cpp" />
     <ClCompile Include="mem.cpp" />
     <ClCompile Include="CppUnitTestAssert.cpp" />
     <ClCompile Include="math.poly.cpp" />
-    <ClCompile Include="io.cpp" />
-    <ClCompile Include="cli.cpp" />
     <ClCompile Include="polygon.cpp" />
     <ClCompile Include="types.cpp" />
     <ClCompile Include="mt.cpp">
@@ -58,6 +55,45 @@
     <ClCompile Include="..\modules\c++\sys\unittests\test_path.cpp">
       <Filter>sys</Filter>
     </ClCompile>
+    <ClCompile Include="cli.cpp">
+      <Filter>cli</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\cli\unittests\test_cli.cpp">
+      <Filter>cli</Filter>
+    </ClCompile>
+    <ClCompile Include="io.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\io\unittests\test_stream_splitter.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\io\unittests\test_streams.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\io\unittests\test_tempfile.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="math.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math\unittests\test_bessel_functions.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math\unittests\test_convex_hull.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math\unittests\test_is_nan.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math\unittests\test_n_choose_k.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math\unittests\test_round.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math\unittests\test_sign.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -69,6 +105,15 @@
     </Filter>
     <Filter Include="sys">
       <UniqueIdentifier>{e3f97021-8c19-46cb-962c-d1cea71da3a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cli">
+      <UniqueIdentifier>{4e86a44b-1997-42e6-86bc-f4167698b3a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="io">
+      <UniqueIdentifier>{5f9ed5ed-863e-4dd6-a5dd-e22758218112}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{d343bd9f-8b19-4740-bdf8-39d687ab56bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
