@@ -98,6 +98,7 @@
 #include <avx/extractf.h>
 #include <logging/ExceptionLogger.h>
 #include <import/logging.h>
+#include <import/re.h>
 
 #include "TestCase.h"
 

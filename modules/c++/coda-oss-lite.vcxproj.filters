@@ -672,6 +672,15 @@
     <ClInclude Include="logging\include\logging\XMLFormatter.h">
       <Filter>logging</Filter>
     </ClInclude>
+    <ClInclude Include="re\include\re\Regex.h">
+      <Filter>re</Filter>
+    </ClInclude>
+    <ClInclude Include="re\include\re\RegexException.h">
+      <Filter>re</Filter>
+    </ClInclude>
+    <ClInclude Include="re\include\re\RegexPredicate.h">
+      <Filter>re</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -990,6 +999,12 @@
     <ClCompile Include="logging\source\XMLFormatter.cpp">
       <Filter>logging</Filter>
     </ClCompile>
+    <ClCompile Include="re\source\Regex.cpp">
+      <Filter>re</Filter>
+    </ClCompile>
+    <ClCompile Include="re\source\RegexSTL.cpp">
+      <Filter>re</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -1051,6 +1066,9 @@
     </Filter>
     <Filter Include="logging">
       <UniqueIdentifier>{9f9acff4-c149-4908-ae9d-67557974f4ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="re">
+      <UniqueIdentifier>{83ae731c-66f7-468c-bc71-7cb57a363b5b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

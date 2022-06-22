@@ -213,6 +213,12 @@
     <ClCompile Include="..\modules\c++\logging\unittests\test_rotating_log.cpp">
       <Filter>logging</Filter>
     </ClCompile>
+    <ClCompile Include="re.cpp">
+      <Filter>re</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\re\unittests\test_regex.cpp">
+      <Filter>re</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -260,6 +266,9 @@
     </Filter>
     <Filter Include="logging">
       <UniqueIdentifier>{3baea66d-2852-40fe-8482-e3f6ba1a81e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="re">
+      <UniqueIdentifier>{d205c017-7e98-456f-923f-2f78870a3d7d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
