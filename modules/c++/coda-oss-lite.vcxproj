@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="avx\include\avx\extractf.h" />
     <ClInclude Include="cli\include\cli\Argument.h" />
     <ClInclude Include="cli\include\cli\ArgumentParser.h" />
     <ClInclude Include="cli\include\cli\Results.h" />

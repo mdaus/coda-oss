@@ -93,6 +93,7 @@
 #include <mt/RequestQueue.h>
 #include <mt/ThreadPoolException.h>
 #include <import/mt.h>
+#include <avx/extractf.h>
 
 #include "TestCase.h"
 

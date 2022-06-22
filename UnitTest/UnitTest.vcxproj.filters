@@ -198,6 +198,12 @@
     <ClCompile Include="..\modules\c++\polygon\unittests\test_polygon_mask.cpp">
       <Filter>polygon</Filter>
     </ClCompile>
+    <ClCompile Include="..\modules\c++\avx\unittests\test_m256.cpp">
+      <Filter>avx</Filter>
+    </ClCompile>
+    <ClCompile Include="avx.cpp">
+      <Filter>avx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -239,6 +245,9 @@
     </Filter>
     <Filter Include="units">
       <UniqueIdentifier>{7a48027a-9dd9-4700-a6fc-703dc7468721}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="avx">
+      <UniqueIdentifier>{0afb2127-0ee7-46d6-963c-132a7830a7d7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

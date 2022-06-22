@@ -615,6 +615,9 @@
     <ClInclude Include="mt\include\mt\WorkSharingBalancedRunnable1D.h">
       <Filter>mt</Filter>
     </ClInclude>
+    <ClInclude Include="avx\include\avx\extractf.h">
+      <Filter>avx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -946,6 +949,9 @@
     </Filter>
     <Filter Include="mt">
       <UniqueIdentifier>{4875d8c0-f285-460a-98a9-38a60f3fcffd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="avx">
+      <UniqueIdentifier>{9720bf2c-6d77-4685-9318-d6e714065c99}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
