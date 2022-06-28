@@ -51,7 +51,7 @@ def configure(conf):
             conf.env['MAKE_MINIZIP'] = True
             conf.msg('Building local lib', 'zip (zlib)')
 
-            untarFile(path=conf.path, fname=ZLIB_VERSION + '.tar'))
+            untarFile(path=conf.path, fname=ZLIB_VERSION + '.tar')
 
             # remove minizip's crypt.h and define NOCRYPT and NOUNCRYPT macros
             # minizip crypt.h clashes with glibc crypt.h
