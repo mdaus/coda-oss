@@ -14,7 +14,7 @@ def options(opt):
                    default=True, help='will build the zip (libz) library if not found on the system (default)')
     opt.add_option('--build-zip', action='store_true', dest="build_zip",
                    help='force building zip (zlib) library from scratch',
-                   default=os.path.exists(os.path.join(opt.path.abspath(), ZLIB_VERSION + '.tar.gz')))
+                   default=os.path.exists(os.path.join(opt.path.abspath(), ZLIB_VERSION + '.tar')))
     opt.add_option('--nobuild-zip', action='store_false', dest="build_zip",
                    help='force not building zip (zlib) library from scratch')
 
@@ -44,14 +44,14 @@ def configure(conf):
 
         elif Options.options.build_zip:
             # Build is off by default when tarfile not found, fail if forced on
-            if not os.path.exists(os.path.join(conf.path.abspath(), ZLIB_VERSION + '.tar.gz')):
+            if not os.path.exists(os.path.join(conf.path.abspath(), ZLIB_VERSION + '.tar')):
                 conf.fatal('Missing zlib tarfile')
 
             conf.env['MAKE_ZIP'] = True
             conf.env['MAKE_MINIZIP'] = True
             conf.msg('Building local lib', 'zip (zlib)')
 
-            untarFile(path=conf.path, fname=ZLIB_VERSION + '.tar.gz', mode='r:gz'))
+            untarFile(path=conf.path, fname=ZLIB_VERSION + '.tar'))
 
             # remove minizip's crypt.h and define NOCRYPT and NOUNCRYPT macros
             # minizip crypt.h clashes with glibc crypt.h

@@ -77,8 +77,8 @@ elseif(ENABLE_ZIP)
     message("ZIP_HOME not specified, so zlib and minizip will be built")
     coda_fetch_driver(
         NAME ${TARGET_NAME}
-        ARCHIVE "zlib-1.2.12.tar.gz"
-        HASH "SHA256=91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9")
+        ARCHIVE "zlib-1.2.12.tar"
+        HASH "SHA256=789e49eaa1fae9e186444db3ec0526ad87254406be27e76c687a0761524b7127")
 
     if (MSVC)
         add_compile_options(/wd4996) # '...': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: .... See online help for details.
