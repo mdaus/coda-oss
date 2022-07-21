@@ -8025,7 +8025,6 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { "MinidomParser_setDocument", _wrap_MinidomParser_setDocument, METH_VARARGS, "MinidomParser_setDocument(MinidomParser self, Document newDocument, bool own=True)"},
 	 { "MinidomParser_preserveCharacterData", _wrap_MinidomParser_preserveCharacterData, METH_VARARGS, "MinidomParser_preserveCharacterData(MinidomParser self, bool preserve)"},
-	 { "MinidomParser_storeEncoding", _wrap_MinidomParser_storeEncoding, METH_VARARGS, "MinidomParser_storeEncoding(MinidomParser self, bool preserve)"},
 	 { "MinidomParser_swigregister", MinidomParser_swigregister, METH_O, NULL},
 	 { "MinidomParser_swiginit", MinidomParser_swiginit, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
