@@ -121,23 +121,6 @@ static xml::lite::Element& testXmlUtf8_(xml::lite::MinidomParser& xmlParser)
     return a;
 }
 
-TEST_CASE(testXmlUtf8Legacy)
-{
-    xml::lite::MinidomParser xmlParser;
-    const auto& a = testXmlUtf8_(xmlParser);
-
-    // This is LEGACY behavior, it is INCORRECT on Linux!
-    const auto actual = a.getCharacterData();
-    #ifdef _WIN32
-    TEST_ASSERT_EQ(actual, pIso88591Text_);
-    #else
-    TEST_ASSERT_EQ(actual.length(), static_cast<size_t>(4));
-    #endif
-    
-    const auto encoding = a.getEncoding();
-    TEST_ASSERT_FALSE(encoding.has_value());
-}
-
 TEST_CASE(testXmlUtf8_u8string)
 {
     xml::lite::MinidomParser xmlParser;
@@ -202,14 +185,6 @@ TEST_CASE(testXmlPrintSimple)
 {
     std::string expected;
     const auto actual = testXmlPrint_(expected, text);
-    TEST_ASSERT_EQ(actual, expected);
-}
-
-TEST_CASE(testXmlPrintLegacy)
-{
-    // This is LEGACY behavior, it generates bad XML
-    std::string expected;
-    const auto actual = testXmlPrint_(expected, pIso88591Text_);
     TEST_ASSERT_EQ(actual, expected);
 }
 
@@ -458,64 +433,15 @@ TEST_CASE(testValidateXmlFile)
     testValidateXmlFile(testName, "encoding_windows-1252.xml", xml::lite::StringEncoding::Windows1252);
 }
 
-static void testValidateXmlFileLegacy(const std::string& testName, const std::string& xmlFile, bool success=true)
-{
-    const auto unittests = findRoot() / "modules" / "c++" / "xml.lite" / "unittests";
-
-    const auto xsd = unittests / "doc.xsd";
-    if (!exists(xsd))  // running in "externals" of a different project
-    {
-        std::clog << "Path does not exist: '" << xsd << "'\n";
-        return;
-    }
-    const auto path = unittests / xmlFile;
-
-    const std::vector<std::string> schemaPaths{xsd.parent_path().string()}; // std::string -> legacy behavior
-    const xml::lite::Validator validator(schemaPaths, nullptr /*log*/);
-
-    io::FileInputStream fis(path);
-    std::vector<xml::lite::ValidationInfo> errors;
-    const auto result = validator.validate(fis, path.string() /*xmlID*/, errors);
-    for (const auto& error : errors)
-    {
-        std::clog << error.toString() << "\n";
-    }
-    if (success)
-    {
-        TEST_ASSERT_FALSE(result);
-        TEST_ASSERT_TRUE(errors.empty());
-    }
-    else
-    {
-        TEST_ASSERT_TRUE(result); // errors
-        TEST_ASSERT_FALSE(errors.empty());
-    }
-}
-TEST_CASE(testValidateXmlFileLegacy)
-{
-    // these two work on all platforms
-    testValidateXmlFile(testName, "ascii.xml");
-    testValidateXmlFile(testName, "ascii_encoding_utf-8.xml");
-
-    // These are OK on Windows but fail on Linux; this is as-expected with "legacy" string conversion.
-    constexpr auto success = sys::Platform == sys::PlatformType::Windows ? true : false;
-    testValidateXmlFileLegacy(testName, "utf-8.xml", success);
-    testValidateXmlFileLegacy(testName, "encoding_utf-8.xml", success);
-    testValidateXmlFileLegacy(testName, "windows-1252.xml", success);
-    testValidateXmlFileLegacy(testName, "encoding_windows-1252.xml", success);
-}
-
 int main(int, char**)
 {
     TEST_CHECK(testXmlParseSimple);
     TEST_CHECK(testXmlPreserveCharacterData);
-    TEST_CHECK(testXmlUtf8Legacy);
     TEST_CHECK(testXmlUtf8);
     TEST_CHECK(testXmlUtf8_u8string);    
     TEST_CHECK(testXml_setCharacterData);    
 
     TEST_CHECK(testXmlPrintSimple);
-    TEST_CHECK(testXmlPrintLegacy);
     TEST_CHECK(testXmlParseAndPrintUtf8);
     TEST_CHECK(testXmlPrintUtf8);
     
@@ -524,5 +450,4 @@ int main(int, char**)
     TEST_CHECK(testReadEmbeddedXml);
 
     TEST_CHECK(testValidateXmlFile);
-    TEST_CHECK(testValidateXmlFileLegacy);
 }

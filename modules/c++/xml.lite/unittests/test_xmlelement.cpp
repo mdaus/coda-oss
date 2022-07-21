@@ -159,7 +159,7 @@ TEST_CASE(test_getElementsByTagName)
         const auto characterData = a.getCharacterData();
         TEST_ASSERT_EQ(characterData, text);
         const auto encoding = a.getEncoding();
-        TEST_ASSERT_FALSE(encoding.has_value());
+        TEST_ASSERT_TRUE(encoding.has_value());
     }
 }
 
