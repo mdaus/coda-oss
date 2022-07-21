@@ -61,7 +61,7 @@ struct MinidomParser
     /*!
      *  Constructor.  Set our SAX ContentHandler.
      */
-    MinidomParser(bool storeEncoding = false); // see MinidomHandler::storeEncoding()
+    MinidomParser(bool storeEncoding = true);
 
     //! Destructor.
     virtual ~MinidomParser()
@@ -133,11 +133,6 @@ struct MinidomParser
      * @see MinidomHandler::preserveCharacterData
      */
     virtual void preserveCharacterData(bool preserve);
-
-     /*!
-     * @see MinidomHandler::storeEncoding
-     */
-    virtual void storeEncoding(bool preserve);
 
 protected:
     MinidomHandler mHandler;

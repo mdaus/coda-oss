@@ -49,7 +49,7 @@ void xml::lite::XMLReaderXerces::parse(bool storeEncoding,
     oss.read(buffer.data(), buffer.size());
     parse(storeEncoding, buffer, pEncoding);
 }
-void xml::lite::XMLReaderXerces::parse(bool storeEncoding,
+void xml::lite::XMLReaderXerces::parse(bool,
     const std::vector<sys::byte>& buffer, const StringEncoding* pEncoding)
 {
     // Does not take ownership
@@ -81,33 +81,27 @@ void xml::lite::XMLReaderXerces::parse(bool storeEncoding,
         {
             throw;
         }
-        // legacy code, didn't pass storeEncoding=true to MinidomParser
-        if (!storeEncoding)
-        {
-            throw;
-        }
     }
 
     // If we're here, the initial parse failed and the caller did NOT specify an encoding
     // (pEncoding == NULL).  Since the default is UTF-8 and that failed, try again
     // with Windows-1252.
     assert(pEncoding == nullptr);
-    assert(storeEncoding);
     const auto windows1252 = StringEncoding::Windows1252;
     parse(true /*storeEncoding*/, buffer, &windows1252);
 }
 void xml::lite::XMLReaderXerces::parse(io::InputStream& is, int size)
 {
-    parse(false /*storeEncoding*/, is, size);
+    parse(true /*storeEncoding*/, is, size);
 }
-void xml::lite::XMLReaderXerces::parse(bool storeEncoding, io::InputStream& is, int size)
+void xml::lite::XMLReaderXerces::parse(bool, io::InputStream& is, int size)
 {
-    parse(storeEncoding, is, nullptr /*pEncoding*/, size);
+    parse(true /*storeEncoding*/, is, nullptr /*pEncoding*/, size);
 }
-void xml::lite::XMLReaderXerces::parse(bool storeEncoding, 
+void xml::lite::XMLReaderXerces::parse(bool /* storeEncoding*/, 
     io::InputStream& is, StringEncoding encoding, int size)
 {
-    parse(storeEncoding, is, &encoding, size);
+    parse(true /*storeEncoding*/, is, &encoding, size);
 }
 
 

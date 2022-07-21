@@ -140,7 +140,7 @@ TEST_CASE(testXmlUtf8Legacy)
 
 TEST_CASE(testXmlUtf8_u8string)
 {
-    xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
+    xml::lite::MinidomParser xmlParser;
     const auto& a = testXmlUtf8_(xmlParser);
 
     coda_oss::u8string actual;
@@ -150,7 +150,7 @@ TEST_CASE(testXmlUtf8_u8string)
 
 TEST_CASE(testXmlUtf8)
 {
-    xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
+    xml::lite::MinidomParser xmlParser;
     const auto& a = testXmlUtf8_(xmlParser);
 
     auto actual = a.getCharacterData();
@@ -232,7 +232,7 @@ TEST_CASE(testXmlParseAndPrintUtf8)
     io::StringStream input;
     input.stream() << strUtf8Xml;
 
-    xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
+    xml::lite::MinidomParser xmlParser;
     xmlParser.preserveCharacterData(true);
     xmlParser.parse(input);
     const auto pRootElement = getDocument(xmlParser).getRootElement();
@@ -255,7 +255,7 @@ static void testReadEncodedXmlFile(const std::string& testName, const std::strin
     }
     io::FileInputStream input(path.string());
 
-    xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
+    xml::lite::MinidomParser xmlParser;
     xmlParser.preserveCharacterData(preserveCharacterData);
     xmlParser.parse(input);
     const auto& root = getRootElement(getDocument(xmlParser));
@@ -305,7 +305,7 @@ static void testReadXmlFile(const std::string& testName, const std::string& xmlF
     }
     io::FileInputStream input(path.string());
 
-    xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
+    xml::lite::MinidomParser xmlParser;
     xmlParser.preserveCharacterData(preserveCharacterData);
     xmlParser.parse(input);
     const auto& root = getRootElement(getDocument(xmlParser));
@@ -384,7 +384,7 @@ TEST_CASE(testReadEmbeddedXml)
     const auto result = find_string(input, "<SICD ");
     TEST_ASSERT_TRUE(result);
     
-    xml::lite::MinidomParser xmlParser(true /*storeEncoding*/);
+    xml::lite::MinidomParser xmlParser;
     xmlParser.parse(input);
     const auto& root = getRootElement(getDocument(xmlParser));
     const auto& classificationXML = root.getElementByTagName("Classification", true /*recurse*/);

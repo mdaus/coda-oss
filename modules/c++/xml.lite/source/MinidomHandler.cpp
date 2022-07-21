@@ -68,7 +68,7 @@ void xml::lite::MinidomHandler::characters(const char* value, int length, const 
                 throw std::invalid_argument("New 'encoding' is different than value already set.");
             }
         }
-        else if (storeEncoding())
+        else
         {
             mpEncoding = std::make_shared<const StringEncoding>(*pEncoding);
         }
@@ -105,7 +105,7 @@ void xml::lite::MinidomHandler::call_characters(const std::string& s, StringEnco
 bool xml::lite::MinidomHandler::call_vcharacters() const
 {
     // if we're storing the encoding, get wchar_t so that we can convert
-    return storeEncoding();
+    return true /*storeEncoding()*/;
 }
 
 bool xml::lite::MinidomHandler::vcharacters(const void /*XMLCh*/* chars_, size_t length)
@@ -219,14 +219,4 @@ void xml::lite::MinidomHandler::endElement(const std::string & /*uri*/,
 void xml::lite::MinidomHandler::preserveCharacterData(bool preserve)
 {
     mPreserveCharData = preserve;
-}
-
-void xml::lite::MinidomHandler::storeEncoding(bool value)
-{
-    mStoreEncoding = value;
-}
-
-bool xml::lite::MinidomHandler::storeEncoding() const
-{
-    return mStoreEncoding;
 }

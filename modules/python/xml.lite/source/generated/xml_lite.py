@@ -283,7 +283,7 @@ class MinidomParser(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
-    def __init__(self, storeEncoding: "bool"=False):
+    def __init__(self, storeEncoding: "bool"=True):
         r"""__init__(MinidomParser self, bool storeEncoding=False) -> MinidomParser"""
         _xml_lite.MinidomParser_swiginit(self, _xml_lite.new_MinidomParser(storeEncoding))
     __swig_destroy__ = _xml_lite.delete_MinidomParser

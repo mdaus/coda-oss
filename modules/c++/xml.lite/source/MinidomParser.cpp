@@ -22,20 +22,25 @@
 
 #include "xml/lite/MinidomParser.h"
 
+#include <stdexcept>
+
 xml::lite::MinidomParser::MinidomParser(bool storeEncoding)
 {
+    if (!storeEncoding)
+    {
+        throw std::invalid_argument("'storeEncoding' is no longer used and must always be 'true'");
+    }
     mReader.setContentHandler(&mHandler);
-    mHandler.storeEncoding(storeEncoding);
 }
 
 void xml::lite::MinidomParser::parse(io::InputStream& is,
                                      int size)
 {
-    mReader.parse(mHandler.storeEncoding(), is, size);
+    mReader.parse(true /*storeEncoding()*/, is, size);
 }
 void xml::lite::MinidomParser::parse(io::InputStream& is, StringEncoding encoding, int size)
 {
-    mReader.parse(mHandler.storeEncoding(), is, encoding, size);
+    mReader.parse(true /*storeEncoding()*/, is, encoding, size);
 }
 
 void xml::lite::MinidomParser::clear()
@@ -69,9 +74,4 @@ void xml::lite::MinidomParser::setDocument(std::unique_ptr<Document>&& newDocume
 void xml::lite::MinidomParser::preserveCharacterData(bool preserve)
 {
     mHandler.preserveCharacterData(preserve);
-}
-
-void xml::lite::MinidomParser::storeEncoding(bool preserve)
-{
-    mHandler.storeEncoding(preserve);
 }
