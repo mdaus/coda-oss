@@ -112,9 +112,7 @@ struct MinidomHandler final : public ContentHandler
      * \param length The length of the char data
      */
     virtual void characters(const char* value, int length) override;
-
     bool vcharacters(const void /*XMLCh*/*, size_t length) override;  
-    bool call_vcharacters() const override;
 
     /*!
      * This method is fired when a new tag is entered.
@@ -178,7 +176,6 @@ protected:
     void characters(const char* value, int length, const StringEncoding*);
     void call_characters(const std::string&, StringEncoding);
     std::shared_ptr<const StringEncoding> mpEncoding;
-    bool mStoreEncoding = true;
 };
 }
 }

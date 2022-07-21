@@ -85,7 +85,8 @@ void xml::lite::MinidomHandler::characters(const char* value, int length, const 
 void xml::lite::MinidomHandler::characters(const char *value, int length)
 {
     const StringEncoding* pEncoding = nullptr;
-    if ((sys::Platform == sys::PlatformType::Windows) && call_vcharacters())
+    auto platform = sys::Platform; // "conditional expression is constant"
+    if (platform == sys::PlatformType::Windows)
     {
         // If we're still here despite use_char() being "false" then the wide-character
         // routine "failed."  On Windows, that means the char* value is encoded
@@ -100,12 +101,6 @@ void xml::lite::MinidomHandler::call_characters(const std::string& s, StringEnco
 {
     const auto length = static_cast<int>(s.length());
     characters(s.c_str(), length, &encoding);
-}
-
-bool xml::lite::MinidomHandler::call_vcharacters() const
-{
-    // if we're storing the encoding, get wchar_t so that we can convert
-    return true /*storeEncoding()*/;
 }
 
 bool xml::lite::MinidomHandler::vcharacters(const void /*XMLCh*/* chars_, size_t length)
