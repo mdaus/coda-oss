@@ -31,6 +31,7 @@
 #include <io/InputStream.h>
 #include <io/OutputStream.h>
 #include <str/Convert.h>
+#include <str/EncodedString.h>
 #include "xml/lite/XMLException.h"
 #include "xml/lite/Attributes.h"
 #include "xml/lite/QName.h"
@@ -332,6 +333,7 @@ public:
         return getEncoding();
     }
     void getCharacterData(coda_oss::u8string& result) const;
+    //void getCharacterData(str::EncodedString& result) const;
     #endif // SWIG
 
     /*!
