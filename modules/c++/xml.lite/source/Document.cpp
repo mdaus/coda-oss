@@ -47,30 +47,27 @@ void xml::lite::Document::remove(Element * toDelete)
         remove(toDelete, mRootNode);
 }
 
-static
-xml::lite::Element *
-newElement(const std::string& qname, const std::string& uri)
+static std::unique_ptr<xml::lite::Element> newElement(const std::string& qname, const std::string& uri)
 {
-    auto elem = new xml::lite::Element();
+    std::unique_ptr<xml::lite::Element> elem(new xml::lite::Element());
     elem->setQName(qname);
     //std::cout << "qname: " << qname << std::endl;
 
     elem->setUri(uri);
     return elem;
 }
-static xml::lite::Element* newElement(const xml::lite::QName& qname)
+static std::unique_ptr<xml::lite::Element>newElement(const xml::lite::QName& qname)
 {
     return newElement(qname.getName(), qname.getAssociatedUri());
 }
-xml::lite::Element* xml::lite::Document::createElement(const std::string& qname,
-                                   const std::string& uri,
+xml::lite::Element* xml::lite::Document::createElement(const std::string& qname, const std::string& uri,
                                    std::string characterData)
 {
     auto elem = newElement(qname, uri);
     elem->setCharacterData(characterData);
-    return elem;
+    return elem.release();
 }
-xml::lite::Element* xml::lite::Document::createElement(const std::string& qname,
+std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const std::string& qname,
                                    const std::string& uri,
                                    const std::string& characterData, StringEncoding encoding) const
 {
@@ -78,7 +75,7 @@ xml::lite::Element* xml::lite::Document::createElement(const std::string& qname,
     elem->setCharacterData(characterData, encoding);
     return elem;
 }
-xml::lite::Element* xml::lite::Document::createElement(const std::string& qname,
+std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const std::string& qname,
                                    const std::string& uri,
                                    const coda_oss::u8string& characterData) const
 {
