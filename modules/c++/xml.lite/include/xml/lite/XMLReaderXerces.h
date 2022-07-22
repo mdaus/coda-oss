@@ -102,9 +102,8 @@ public:
 
     void parse(io::InputStream& is, int size = io::InputStream::IS_END);
 
-    void parse(bool storeEncoding, io::InputStream& is, int size = io::InputStream::IS_END);
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
-    void parse(bool storeEncoding, io::InputStream& is, StringEncoding, int size = io::InputStream::IS_END);
+    void parse(io::InputStream& is, StringEncoding, int size = io::InputStream::IS_END);
     #endif  // SWIG
     
     //! Method to create an xml reader
@@ -116,8 +115,8 @@ public:
     std::string getDriverName() const { return "xerces"; }
 
 private:
-    void parse(bool storeEncoding, io::InputStream& is, const StringEncoding*, int size);
-    void parse(bool storeEncoding, const std::vector<sys::byte>&, const StringEncoding* pEncoding);
+    void parse(io::InputStream& is, const StringEncoding*, int size);
+    void parse(const std::vector<sys::byte>&, const StringEncoding* pEncoding);
 
     void write(const void*, size_t) override
     {

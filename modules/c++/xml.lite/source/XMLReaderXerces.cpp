@@ -34,8 +34,7 @@ xml::lite::XMLReaderXerces::XMLReaderXerces()
     create();
 }
 
-void xml::lite::XMLReaderXerces::parse(bool storeEncoding,
-    io::InputStream& is, const StringEncoding* pEncoding, int size)
+void xml::lite::XMLReaderXerces::parse(io::InputStream& is, const StringEncoding* pEncoding, int size)
 {
     io::StringStream oss;
     is.streamTo(oss, size);
@@ -47,10 +46,9 @@ void xml::lite::XMLReaderXerces::parse(bool storeEncoding,
     }
     std::vector<sys::byte> buffer(available);
     oss.read(buffer.data(), buffer.size());
-    parse(storeEncoding, buffer, pEncoding);
+    parse(buffer, pEncoding);
 }
-void xml::lite::XMLReaderXerces::parse(bool,
-    const std::vector<sys::byte>& buffer, const StringEncoding* pEncoding)
+void xml::lite::XMLReaderXerces::parse(const std::vector<sys::byte>& buffer, const StringEncoding* pEncoding)
 {
     // Does not take ownership
     MemBufInputSource memBuffer((const unsigned char *)buffer.data(),
@@ -88,20 +86,15 @@ void xml::lite::XMLReaderXerces::parse(bool,
     // with Windows-1252.
     assert(pEncoding == nullptr);
     const auto windows1252 = StringEncoding::Windows1252;
-    parse(true /*storeEncoding*/, buffer, &windows1252);
+    parse(buffer, &windows1252);
 }
 void xml::lite::XMLReaderXerces::parse(io::InputStream& is, int size)
 {
-    parse(true /*storeEncoding*/, is, size);
+    parse(is, nullptr /*pEncoding*/, size);
 }
-void xml::lite::XMLReaderXerces::parse(bool, io::InputStream& is, int size)
+void xml::lite::XMLReaderXerces::parse(io::InputStream& is, StringEncoding encoding, int size)
 {
-    parse(true /*storeEncoding*/, is, nullptr /*pEncoding*/, size);
-}
-void xml::lite::XMLReaderXerces::parse(bool /* storeEncoding*/, 
-    io::InputStream& is, StringEncoding encoding, int size)
-{
-    parse(true /*storeEncoding*/, is, &encoding, size);
+    parse(is, &encoding, size);
 }
 
 
