@@ -245,21 +245,11 @@ void xml::lite::Element::print(io::OutputStream& stream) const
 {
     depthPrint(stream, 0, "");
 }
-void xml::lite::Element::print(io::OutputStream& stream, StringEncoding encoding) const
-{
-    depthPrint(stream, encoding, 0, "");
-}
 
 void xml::lite::Element::prettyPrint(io::OutputStream& stream,
                                      const std::string& formatter) const
 {
     depthPrint(stream, 0, formatter);
-    stream.writeln("");
-}
-void xml::lite::Element::prettyPrint(io::OutputStream& stream, StringEncoding encoding,
-                                     const std::string& formatter) const
-{
-    depthPrint(stream, encoding, 0, formatter);
     stream.writeln("");
 }
 
@@ -323,29 +313,10 @@ static void writeCharacterData(io::OutputStream& stream,
     }
 }
 
-void xml::lite::Element::depthPrint(io::OutputStream& stream,
-                                    int depth,
-                                    const std::string& formatter) const
+void xml::lite::Element::depthPrint(io::OutputStream& stream, int depth, const std::string& formatter) const
 {
-    // XML must be stored in UTF-8 (or UTF-16/32), in particular, not
-    // Windows-1252. However, existing code did this, so preserve current behavior.
-    depthPrint(stream, false /*utf8*/, depth, formatter);
-}
-void xml::lite::Element::depthPrint(io::OutputStream& stream, StringEncoding encoding,
-                                    int depth,
-                                    const std::string& formatter) const
-{
-    if (encoding != StringEncoding::Utf8)
-    {
-        throw std::invalid_argument("'encoding' must be UTF-8");
-    }
-    // THIS IS CORRECT, but may break existing code; so it must be explicitly requested.
-    depthPrint(stream, true /*utf8*/, depth, formatter);
-}
-void xml::lite::Element::depthPrint(io::OutputStream& stream, bool utf8,
-                                    int depth,
-                                    const std::string& formatter) const
-{
+    // XML must be stored in UTF-8 (or UTF-16/32), in particular, not Windows-1252. 
+
     std::string prefix = "";
     for (int i = 0; i < depth; ++i)
         prefix += formatter;
@@ -372,24 +343,14 @@ void xml::lite::Element::depthPrint(io::OutputStream& stream, bool utf8,
     }
     else
     {
-        stream.write(acc + rBrack);
-        if (utf8)
-        {
-            // Correct behavior, but may break existing code.
-            writeCharacterData(stream, mCharacterData, getEncoding());
-        }
-        else
-        {
-            // Legacy behavior, will generate incorrect XML output if there are western European
-            // characters in "mCharacterData".
-            stream.write(mCharacterData);
-        }
+        stream.write(acc + rBrack);            
+        writeCharacterData(stream, mCharacterData, getEncoding()); // ALWAYS write XML as UTF-8
 
         for (unsigned int i = 0; i < mChildren.size(); i++)
         {
             if (!formatter.empty())
                 stream.write("\n");
-            mChildren[i]->depthPrint(stream, utf8, depth + 1, formatter);
+            mChildren[i]->depthPrint(stream, depth + 1, formatter);
         }
 
         if (!mChildren.empty() && !formatter.empty())

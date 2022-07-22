@@ -196,7 +196,7 @@ TEST_CASE(testXmlPrintUtf8)
     const auto pRootElement = document.createElement(xml::lite::QName(xml::lite::Uri(), "root"), pIso88591Text_, xml::lite::StringEncoding::Windows1252);
 
     io::StringStream output;
-    pRootElement->print(output, xml::lite::StringEncoding::Utf8); // write UTF-8
+    pRootElement->print(output);
     const auto actual = output.stream().str();
     const auto expected = std::string("<root>") + pUtf8Text_ + "</root>";
     TEST_ASSERT_EQ(actual, expected);
@@ -213,7 +213,7 @@ TEST_CASE(testXmlParseAndPrintUtf8)
     const auto pRootElement = getDocument(xmlParser).getRootElement();
 
     io::StringStream output;
-    pRootElement->print(output, xml::lite::StringEncoding::Utf8); // write UTF-8
+    pRootElement->print(output);
     const auto actual = output.stream().str();
     TEST_ASSERT_EQ(actual, strUtf8Xml);
 }

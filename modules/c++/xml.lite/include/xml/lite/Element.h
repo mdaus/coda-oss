@@ -285,27 +285,14 @@ public:
     }
 
     /*!
-     *  Prints the element to the specified OutputStream
+     *  Prints the element to the specified OutputStream as UTF-8
      *  \param stream the OutputStream to write to
      *  \param formatter  The formatter
      *  \todo Add format capability
      */
     void print(io::OutputStream& stream) const;
-
-    // This is another slightly goofy routine to maintain backwards compatibility.
-    // XML documents must be properly (UTF-8, UTF-16 or UTF-32).  The legacy
-    // print() routine (above) can write documents with a Windows-1252 encoding
-    // as the string is just copied to the output.
-    //
-    // The only valid setting for StringEncoding is Utf8; but defaulting that
-    // could change behavior on Windows.
     void prettyPrint(io::OutputStream& stream,
                      const std::string& formatter = "    ") const;
-    #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
-    void print(io::OutputStream& stream, StringEncoding /*=Utf8*/) const;
-    void prettyPrint(io::OutputStream& stream, StringEncoding /*=Utf8*/,
-                     const std::string& formatter = "    ") const;
-    #endif // SWIG
 
     /*!
      *  Determines if a child element exists
@@ -494,8 +481,6 @@ private:
 
     void depthPrint(io::OutputStream& stream, int depth,
                     const std::string& formatter) const;
-    void depthPrint(io::OutputStream& stream, StringEncoding, int depth,
-                    const std::string& formatter) const;
 
     Element* mParent;
     //! The children of this element
@@ -508,9 +493,6 @@ private:
     std::string mCharacterData;
     // ... and how that data is encoded
     coda_oss::optional<StringEncoding> mEncoding;
-
-    void depthPrint(io::OutputStream& stream, bool utf8, int depth,
-            const std::string& formatter) const;
 };
 
 extern Element& add(const xml::lite::QName&, const std::string& value, Element& parent);
