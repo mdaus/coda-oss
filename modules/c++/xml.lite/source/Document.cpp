@@ -60,6 +60,7 @@ static std::unique_ptr<xml::lite::Element>newElement(const xml::lite::QName& qna
 {
     return newElement(qname.getName(), qname.getAssociatedUri());
 }
+
 xml::lite::Element* xml::lite::Document::createElement(const std::string& qname, const std::string& uri,
                                    std::string characterData)
 {
@@ -67,34 +68,32 @@ xml::lite::Element* xml::lite::Document::createElement(const std::string& qname,
     elem->setCharacterData(characterData);
     return elem.release();
 }
-std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const std::string& qname,
-                                   const std::string& uri,
-                                   const std::string& characterData, StringEncoding encoding) const
-{
-    auto elem = newElement(qname, uri);
-    elem->setCharacterData(characterData, encoding);
-    return elem;
-}
-std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const std::string& qname,
-                                   const std::string& uri,
+std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const std::string& qname, const std::string& uri,
                                    const coda_oss::u8string& characterData) const
 {
     auto elem = newElement(qname, uri);
     elem->setCharacterData(characterData);
     return elem;
 }
-
-std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const xml::lite::QName& qname,
-                                    const std::string& characterData) const
+std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const QName& qname,
+                                   const coda_oss::u8string& characterData) const
 {
-    std::unique_ptr<xml::lite::Element> elem(newElement(qname));
+    auto elem = newElement(qname);
     elem->setCharacterData(characterData);
     return elem;
 }
-std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const xml::lite::QName& qname,
+
+std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const QName& qname,
+                                    const std::string& characterData) const
+{
+    auto elem = newElement(qname);
+    elem->setCharacterData(characterData);
+    return elem;
+}
+std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const QName& qname,
                                        const std::string& characterData, StringEncoding encoding) const
 {
-    std::unique_ptr<xml::lite::Element> elem(newElement(qname));
+    auto elem = newElement(qname);
     elem->setCharacterData(characterData, encoding);
     return elem;
 }

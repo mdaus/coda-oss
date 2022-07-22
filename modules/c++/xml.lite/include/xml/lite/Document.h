@@ -39,6 +39,7 @@
 #include <assert.h>
 
 #include "coda_oss/string.h"
+#include "str/EncodedString.h"
 
 #include "xml/lite/Element.h"
 #include "xml/lite/QName.h"
@@ -89,21 +90,17 @@ public:
      * \param characterData The character data (if any)
      * \return A new element
      */
-    virtual Element *createElement(const std::string & qname,
-                                   const std::string & uri,
+    virtual Element *createElement(const std::string & qname, const std::string & uri,
                                    std::string characterData = "");
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
-    Element* createElement(const std::string& qname,
-                                   const std::string & uri,
-                                   const std::string& characterData, StringEncoding) const;
-    Element* createElement(const std::string& qname,
-                                   const std::string& uri,
+    std::unique_ptr<xml::lite::Element> createElement(const std::string& qname, const std::string& uri,
                                    const coda_oss::u8string& characterData) const;
-    std::unique_ptr<Element> createElement(const xml::lite::QName& qname, const std::string& characterData) const;
-    std::unique_ptr<Element> createElement(const xml::lite::QName& qname,
-                                   const std::string& characterData, StringEncoding) const;
-    #endif // SWIG
 
+    std::unique_ptr<Element> createElement(const QName&, const std::string& characterData) const;
+    std::unique_ptr<Element> createElement(const QName&, const coda_oss::u8string& characterData) const;
+    std::unique_ptr<Element> createElement(const QName&, const std::string& characterData, StringEncoding) const;
+    //std::unique_ptr<Element> createElement(const QName&, const str::EncodedString& characterData) const;
+    #endif // SWIG
 
     /*!
      * Blanket destructor.  This thing deletes everything
