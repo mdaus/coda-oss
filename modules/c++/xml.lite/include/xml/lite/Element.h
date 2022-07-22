@@ -59,7 +59,7 @@ namespace lite
  * This class stores all of the element information about an XML
  * document.
  */
-class Element
+class Element final
 {
     Element(const std::string& qname, const std::string& uri, std::nullptr_t) :
         mParent(nullptr), mName(uri, qname)
@@ -104,6 +104,7 @@ public:
     static std::unique_ptr<Element> create(const std::string& qname, const xml::lite::Uri& uri, const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const coda_oss::u8string&);
+
     // Encoding of "characterData" is always UTF-8
     static std::unique_ptr<Element> createU8(const xml::lite::QName&, const std::string& characterData = "");
     #endif // SWIG
@@ -482,8 +483,7 @@ public:
         mParent = parent;
     }
 
-protected:
-
+private:
     void changePrefix(Element* element,
                       const std::string& prefix,
                       const std::string& uri);
@@ -503,14 +503,14 @@ protected:
     xml::lite::QName mName;
     //! The attributes for this element
     xml::lite::Attributes mAttributes;
+
     //! The character data ...
     std::string mCharacterData;
+    // ... and how that data is encoded
+    coda_oss::optional<StringEncoding> mEncoding;
 
-    private:
-        // ... and how that data is encoded
-        coda_oss::optional<StringEncoding> mEncoding;
-        void depthPrint(io::OutputStream& stream, bool utf8, int depth,
-                const std::string& formatter) const;
+    void depthPrint(io::OutputStream& stream, bool utf8, int depth,
+            const std::string& formatter) const;
 };
 
 extern Element& add(const xml::lite::QName&, const std::string& value, Element& parent);
