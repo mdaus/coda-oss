@@ -327,11 +327,6 @@ public:
     {
         return mEncoding;
     }
-   const coda_oss::optional<StringEncoding>& getCharacterData(std::string& result) const
-    {
-        result = getCharacterData();
-        return getEncoding();
-    }
     void getCharacterData(coda_oss::u8string& result) const;
     //void getCharacterData(str::EncodedString& result) const;
     #endif // SWIG
@@ -345,7 +340,8 @@ public:
     void setCharacterData_(const std::string& characters, const StringEncoding*);
     void setCharacterData(const std::string& characters, StringEncoding);
     void setCharacterData(const coda_oss::u8string& characters);
-    #endif // SWIG
+    //void setCharacterData(const str::EncodedStringView&);
+#endif  // SWIG
 
     /*!
      *  Sets the local name for this element.

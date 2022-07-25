@@ -144,12 +144,6 @@ TEST_CASE(testXmlUtf8)
     encoding = a.getEncoding();
     TEST_ASSERT_TRUE(encoding.has_value());
     TEST_ASSERT(*encoding == PlatformEncoding);
-
-    // different getCharacterData() API
-    encoding = a.getCharacterData(actual);
-    TEST_ASSERT_EQ(actual, expected);
-    TEST_ASSERT_TRUE(encoding.has_value());
-    TEST_ASSERT(*encoding == PlatformEncoding);
 }
 
 TEST_CASE(testXml_setCharacterData)
@@ -161,12 +155,6 @@ TEST_CASE(testXml_setCharacterData)
     auto encoding = a.getEncoding();
     TEST_ASSERT_TRUE(encoding.has_value());
     TEST_ASSERT(encoding == xml::lite::StringEncoding::Utf8);
-
-    std::string actual;
-    encoding = a.getCharacterData(actual);
-    TEST_ASSERT_TRUE(encoding.has_value());
-    TEST_ASSERT(encoding == xml::lite::StringEncoding::Utf8);
-    TEST_ASSERT_EQ(actual, pUtf8Text_);
 }
 
 static std::string testXmlPrint_(std::string& expected, const std::string& characterData)
