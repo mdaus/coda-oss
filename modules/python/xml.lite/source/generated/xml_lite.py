@@ -318,6 +318,10 @@ class MinidomParser(object):
         r"""preserveCharacterData(MinidomParser self, bool preserve)"""
         return _xml_lite.MinidomParser_preserveCharacterData(self, preserve)
 
+    def storeEncoding(self, preserve: "bool") -> "void":
+        r"""storeEncoding(MinidomParser self, bool preserve)"""
+        return _xml_lite.MinidomParser_storeEncoding(self, preserve)
+
 # Register MinidomParser in _xml_lite:
 _xml_lite.MinidomParser_swigregister(MinidomParser)
 

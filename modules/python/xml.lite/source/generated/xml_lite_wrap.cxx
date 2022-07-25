@@ -5258,6 +5258,45 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Element__print__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  xml::lite::Element *arg1 = (xml::lite::Element *) 0 ;
+  io::OutputStream *arg2 = 0 ;
+  xml::lite::StringEncoding arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_xml__lite__Element, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Element__print" "', argument " "1"" of type '" "xml::lite::Element const *""'"); 
+  }
+  arg1 = reinterpret_cast< xml::lite::Element * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_io__OutputStream,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Element__print" "', argument " "2"" of type '" "io::OutputStream &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Element__print" "', argument " "2"" of type '" "io::OutputStream &""'"); 
+  }
+  arg2 = reinterpret_cast< io::OutputStream * >(argp2);
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Element__print" "', argument " "3"" of type '" "xml::lite::StringEncoding""'");
+  } 
+  arg3 = static_cast< xml::lite::StringEncoding >(val3);
+  ((xml::lite::Element const *)arg1)->print(*arg2,arg3);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_Element__print(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[4] = {
@@ -5280,11 +5319,32 @@ SWIGINTERN PyObject *_wrap_Element__print(PyObject *self, PyObject *args) {
       }
     }
   }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_xml__lite__Element, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_io__OutputStream, SWIG_POINTER_NO_NULL);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Element__print__SWIG_1(self, argc, argv);
+        }
+      }
+    }
+  }
   
 fail:
   SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'Element__print'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    xml::lite::Element::print(io::OutputStream &) const\n");
+    "    xml::lite::Element::print(io::OutputStream &) const\n"
+    "    xml::lite::Element::print(io::OutputStream &,xml::lite::StringEncoding) const\n");
   return 0;
 }
 
@@ -5362,6 +5422,95 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Element_prettyPrint__SWIG_2(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  xml::lite::Element *arg1 = (xml::lite::Element *) 0 ;
+  io::OutputStream *arg2 = 0 ;
+  xml::lite::StringEncoding arg3 ;
+  std::string *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  
+  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_xml__lite__Element, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Element_prettyPrint" "', argument " "1"" of type '" "xml::lite::Element const *""'"); 
+  }
+  arg1 = reinterpret_cast< xml::lite::Element * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_io__OutputStream,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Element_prettyPrint" "', argument " "2"" of type '" "io::OutputStream &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Element_prettyPrint" "', argument " "2"" of type '" "io::OutputStream &""'"); 
+  }
+  arg2 = reinterpret_cast< io::OutputStream * >(argp2);
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Element_prettyPrint" "', argument " "3"" of type '" "xml::lite::StringEncoding""'");
+  } 
+  arg3 = static_cast< xml::lite::StringEncoding >(val3);
+  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4, SWIGTYPE_p_std__string,  0  | 0);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "Element_prettyPrint" "', argument " "4"" of type '" "std::string const &""'"); 
+  }
+  if (!argp4) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Element_prettyPrint" "', argument " "4"" of type '" "std::string const &""'"); 
+  }
+  arg4 = reinterpret_cast< std::string * >(argp4);
+  ((xml::lite::Element const *)arg1)->prettyPrint(*arg2,arg3,(std::string const &)*arg4);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Element_prettyPrint__SWIG_3(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  xml::lite::Element *arg1 = (xml::lite::Element *) 0 ;
+  io::OutputStream *arg2 = 0 ;
+  xml::lite::StringEncoding arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_xml__lite__Element, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Element_prettyPrint" "', argument " "1"" of type '" "xml::lite::Element const *""'"); 
+  }
+  arg1 = reinterpret_cast< xml::lite::Element * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_io__OutputStream,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Element_prettyPrint" "', argument " "2"" of type '" "io::OutputStream &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Element_prettyPrint" "', argument " "2"" of type '" "io::OutputStream &""'"); 
+  }
+  arg2 = reinterpret_cast< io::OutputStream * >(argp2);
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Element_prettyPrint" "', argument " "3"" of type '" "xml::lite::StringEncoding""'");
+  } 
+  arg3 = static_cast< xml::lite::StringEncoding >(val3);
+  ((xml::lite::Element const *)arg1)->prettyPrint(*arg2,arg3);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_Element_prettyPrint(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[5] = {
@@ -5402,12 +5551,58 @@ SWIGINTERN PyObject *_wrap_Element_prettyPrint(PyObject *self, PyObject *args) {
       }
     }
   }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_xml__lite__Element, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_io__OutputStream, SWIG_POINTER_NO_NULL);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_Element_prettyPrint__SWIG_3(self, argc, argv);
+        }
+      }
+    }
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_xml__lite__Element, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      void *vptr = 0;
+      int res = SWIG_ConvertPtr(argv[1], &vptr, SWIGTYPE_p_io__OutputStream, SWIG_POINTER_NO_NULL);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          int res = SWIG_ConvertPtr(argv[3], 0, SWIGTYPE_p_std__string, SWIG_POINTER_NO_NULL | 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            return _wrap_Element_prettyPrint__SWIG_2(self, argc, argv);
+          }
+        }
+      }
+    }
+  }
   
 fail:
   SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'Element_prettyPrint'.\n"
     "  Possible C/C++ prototypes are:\n"
     "    xml::lite::Element::prettyPrint(io::OutputStream &,std::string const &) const\n"
-    "    xml::lite::Element::prettyPrint(io::OutputStream &) const\n");
+    "    xml::lite::Element::prettyPrint(io::OutputStream &) const\n"
+    "    xml::lite::Element::prettyPrint(io::OutputStream &,xml::lite::StringEncoding,std::string const &) const\n"
+    "    xml::lite::Element::prettyPrint(io::OutputStream &,xml::lite::StringEncoding) const\n");
   return 0;
 }
 
@@ -5571,7 +5766,7 @@ SWIGINTERN PyObject *_wrap_Element_getEncoding(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Element_getEncoding" "', argument " "1"" of type '" "xml::lite::Element const *""'"); 
   }
   arg1 = reinterpret_cast< xml::lite::Element * >(argp1);
-  result = (coda_oss::optional< xml::lite::StringEncoding > *) &((xml::lite::Element const *)arg1)->getEncoding_();
+  result = (coda_oss::optional< xml::lite::StringEncoding > *) &((xml::lite::Element const *)arg1)->getEncoding();
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_coda_oss__optionalT_xml__lite__string_encoding_t, 0 |  0 );
   return resultobj;
 fail:
@@ -5603,7 +5798,7 @@ SWIGINTERN PyObject *_wrap_Element_getCharacterData__SWIG_1(PyObject *SWIGUNUSED
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Element_getCharacterData" "', argument " "2"" of type '" "std::string &""'"); 
   }
   arg2 = reinterpret_cast< std::string * >(argp2);
-  result = (coda_oss::optional< xml::lite::StringEncoding > *) &((xml::lite::Element const *)arg1)->getCharacterData_(*arg2);
+  result = (coda_oss::optional< xml::lite::StringEncoding > *) &((xml::lite::Element const *)arg1)->getCharacterData(*arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_coda_oss__optionalT_xml__lite__string_encoding_t, 0 |  0 );
   return resultobj;
 fail:
@@ -5730,7 +5925,7 @@ SWIGINTERN PyObject *_wrap_Element_setCharacterData_(PyObject *SWIGUNUSEDPARM(se
     SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "Element_setCharacterData_" "', argument " "3"" of type '" "xml::lite::StringEncoding const *""'"); 
   }
   arg3 = reinterpret_cast< xml::lite::StringEncoding * >(argp3);
-  (arg1)->setCharacterData((std::string const &)*arg2,*((xml::lite::StringEncoding const *)arg3));
+  (arg1)->setCharacterData_((std::string const &)*arg2,(xml::lite::StringEncoding const *)arg3);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -6486,6 +6681,123 @@ fail:
   return NULL;
 }
 
+
+SWIGINTERN PyObject *_wrap_Document_createElement__SWIG_2(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  xml::lite::Document *arg1 = (xml::lite::Document *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  std::string *arg4 = 0 ;
+  xml::lite::StringEncoding arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  int val5 ;
+  int ecode5 = 0 ;
+  xml::lite::Element *result = 0 ;
+  
+  if ((nobjs < 5) || (nobjs > 5)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_xml__lite__Document, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Document_createElement" "', argument " "1"" of type '" "xml::lite::Document *""'"); 
+  }
+  arg1 = reinterpret_cast< xml::lite::Document * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_std__string,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Document_createElement" "', argument " "2"" of type '" "std::string const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Document_createElement" "', argument " "2"" of type '" "std::string const &""'"); 
+  }
+  arg2 = reinterpret_cast< std::string * >(argp2);
+  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_std__string,  0  | 0);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "Document_createElement" "', argument " "3"" of type '" "std::string const &""'"); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Document_createElement" "', argument " "3"" of type '" "std::string const &""'"); 
+  }
+  arg3 = reinterpret_cast< std::string * >(argp3);
+  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4, SWIGTYPE_p_std__string,  0  | 0);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "Document_createElement" "', argument " "4"" of type '" "std::string const &""'"); 
+  }
+  if (!argp4) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Document_createElement" "', argument " "4"" of type '" "std::string const &""'"); 
+  }
+  arg4 = reinterpret_cast< std::string * >(argp4);
+  ecode5 = SWIG_AsVal_int(swig_obj[4], &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "Document_createElement" "', argument " "5"" of type '" "xml::lite::StringEncoding""'");
+  } 
+  arg5 = static_cast< xml::lite::StringEncoding >(val5);
+  result = (xml::lite::Element *)(arg1)->createElement((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4,arg5);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_xml__lite__Element, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Document_createElement__SWIG_3(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  xml::lite::Document *arg1 = (xml::lite::Document *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  coda_oss::u8string *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  xml::lite::Element *result = 0 ;
+  
+  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_xml__lite__Document, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Document_createElement" "', argument " "1"" of type '" "xml::lite::Document *""'"); 
+  }
+  arg1 = reinterpret_cast< xml::lite::Document * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_std__string,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Document_createElement" "', argument " "2"" of type '" "std::string const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Document_createElement" "', argument " "2"" of type '" "std::string const &""'"); 
+  }
+  arg2 = reinterpret_cast< std::string * >(argp2);
+  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_std__string,  0  | 0);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "Document_createElement" "', argument " "3"" of type '" "std::string const &""'"); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Document_createElement" "', argument " "3"" of type '" "std::string const &""'"); 
+  }
+  arg3 = reinterpret_cast< std::string * >(argp3);
+  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4, SWIGTYPE_p_sys__U8string,  0  | 0);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "Document_createElement" "', argument " "4"" of type '" "coda_oss::u8string const &""'"); 
+  }
+  if (!argp4) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Document_createElement" "', argument " "4"" of type '" "coda_oss::u8string const &""'"); 
+  }
+  arg4 = reinterpret_cast< coda_oss::u8string * >(argp4);
+  result = (xml::lite::Element *)(arg1)->createElement((std::string const &)*arg2,(std::string const &)*arg3,(coda_oss::u8string const &)*arg4);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_xml__lite__Element, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_Document_createElement(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[6] = {
@@ -6532,12 +6844,62 @@ SWIGINTERN PyObject *_wrap_Document_createElement(PyObject *self, PyObject *args
       }
     }
   }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_xml__lite__Document, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_std__string, SWIG_POINTER_NO_NULL | 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_ConvertPtr(argv[2], 0, SWIGTYPE_p_std__string, SWIG_POINTER_NO_NULL | 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          int res = SWIG_ConvertPtr(argv[3], 0, SWIGTYPE_p_sys__U8string, SWIG_POINTER_NO_NULL | 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            return _wrap_Document_createElement__SWIG_3(self, argc, argv);
+          }
+        }
+      }
+    }
+  }
+  if (argc == 5) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_xml__lite__Document, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_std__string, SWIG_POINTER_NO_NULL | 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_ConvertPtr(argv[2], 0, SWIGTYPE_p_std__string, SWIG_POINTER_NO_NULL | 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          int res = SWIG_ConvertPtr(argv[3], 0, SWIGTYPE_p_std__string, SWIG_POINTER_NO_NULL | 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            {
+              int res = SWIG_AsVal_int(argv[4], NULL);
+              _v = SWIG_CheckState(res);
+            }
+            if (_v) {
+              return _wrap_Document_createElement__SWIG_2(self, argc, argv);
+            }
+          }
+        }
+      }
+    }
+  }
   
 fail:
   SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'Document_createElement'.\n"
     "  Possible C/C++ prototypes are:\n"
     "    xml::lite::Document::createElement(std::string const &,std::string const &,std::string)\n"
-    "    xml::lite::Document::createElement(std::string const &,std::string const &)\n");
+    "    xml::lite::Document::createElement(std::string const &,std::string const &)\n"
+    "    xml::lite::Document::createElement(std::string const &,std::string const &,std::string const &,xml::lite::StringEncoding)\n"
+    "    xml::lite::Document::createElement(std::string const &,std::string const &,coda_oss::u8string const &)\n");
   return 0;
 }
 
@@ -7543,6 +7905,35 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MinidomParser_storeEncoding(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  xml::lite::MinidomParser *arg1 = (xml::lite::MinidomParser *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MinidomParser_storeEncoding", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_xml__lite__MinidomParser, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MinidomParser_storeEncoding" "', argument " "1"" of type '" "xml::lite::MinidomParser *""'"); 
+  }
+  arg1 = reinterpret_cast< xml::lite::MinidomParser * >(argp1);
+  ecode2 = SWIG_AsVal_bool(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MinidomParser_storeEncoding" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = static_cast< bool >(val2);
+  (arg1)->storeEncoding(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *MinidomParser_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
@@ -7591,9 +7982,11 @@ static PyMethodDef SwigMethods[] = {
 	 { "Element_setNamespaceURI", _wrap_Element_setNamespaceURI, METH_VARARGS, "Element_setNamespaceURI(Element self, std::string prefix, std::string uri)"},
 	 { "Element__print", _wrap_Element__print, METH_VARARGS, "\n"
 		"Element__print(Element self, io::OutputStream & stream)\n"
+		"Element__print(Element self, io::OutputStream & stream, xml::lite::StringEncoding arg3)\n"
 		""},
 	 { "Element_prettyPrint", _wrap_Element_prettyPrint, METH_VARARGS, "\n"
 		"Element_prettyPrint(Element self, io::OutputStream & stream, std::string const & formatter=\"    \")\n"
+		"Element_prettyPrint(Element self, io::OutputStream & stream, xml::lite::StringEncoding arg3, std::string const & formatter=\"    \")\n"
 		""},
 	 { "Element_hasElement", _wrap_Element_hasElement, METH_VARARGS, "\n"
 		"Element_hasElement(Element self, std::string const & localName) -> bool\n"
@@ -7661,6 +8054,7 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { "MinidomParser_setDocument", _wrap_MinidomParser_setDocument, METH_VARARGS, "MinidomParser_setDocument(MinidomParser self, Document newDocument, bool own=True)"},
 	 { "MinidomParser_preserveCharacterData", _wrap_MinidomParser_preserveCharacterData, METH_VARARGS, "MinidomParser_preserveCharacterData(MinidomParser self, bool preserve)"},
+	 { "MinidomParser_storeEncoding", _wrap_MinidomParser_storeEncoding, METH_VARARGS, "MinidomParser_storeEncoding(MinidomParser self, bool preserve)"},
 	 { "MinidomParser_swigregister", MinidomParser_swigregister, METH_O, NULL},
 	 { "MinidomParser_swiginit", MinidomParser_swiginit, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }

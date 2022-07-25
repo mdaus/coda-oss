@@ -27,16 +27,15 @@
 #include <memory>
 #include <string>
 #include <new> // std::nothrow_t
-#include "coda_oss/optional.h"
 
 #include <io/InputStream.h>
 #include <io/OutputStream.h>
 #include <str/Convert.h>
-#include <str/EncodedString.h>
 #include "xml/lite/XMLException.h"
 #include "xml/lite/Attributes.h"
 #include "xml/lite/QName.h"
 #include "sys/Conf.h"
+#include "coda_oss/optional.h"
 #include "mem/SharedPtr.h"
 
 /*!
@@ -60,7 +59,7 @@ namespace lite
  * This class stores all of the element information about an XML
  * document.
  */
-class Element final
+class Element
 {
     Element(const std::string& qname, const std::string& uri, std::nullptr_t) :
         mParent(nullptr), mName(uri, qname)
@@ -105,7 +104,6 @@ public:
     static std::unique_ptr<Element> create(const std::string& qname, const xml::lite::Uri& uri, const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const coda_oss::u8string&);
-
     // Encoding of "characterData" is always UTF-8
     static std::unique_ptr<Element> createU8(const xml::lite::QName&, const std::string& characterData = "");
     #endif // SWIG
@@ -286,14 +284,27 @@ public:
     }
 
     /*!
-     *  Prints the element to the specified OutputStream as UTF-8
+     *  Prints the element to the specified OutputStream
      *  \param stream the OutputStream to write to
      *  \param formatter  The formatter
      *  \todo Add format capability
      */
     void print(io::OutputStream& stream) const;
+
+    // This is another slightly goofy routine to maintain backwards compatibility.
+    // XML documents must be properly (UTF-8, UTF-16 or UTF-32).  The legacy
+    // print() routine (above) can write documents with a Windows-1252 encoding
+    // as the string is just copied to the output.
+    //
+    // The only valid setting for StringEncoding is Utf8; but defaulting that
+    // could change behavior on Windows.
     void prettyPrint(io::OutputStream& stream,
                      const std::string& formatter = "    ") const;
+    #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
+    void print(io::OutputStream& stream, StringEncoding /*=Utf8*/) const;
+    void prettyPrint(io::OutputStream& stream, StringEncoding /*=Utf8*/,
+                     const std::string& formatter = "    ") const;
+    #endif // SWIG
 
     /*!
      *  Determines if a child element exists
@@ -322,26 +333,18 @@ public:
     {
         return mCharacterData;
     }
-    StringEncoding getEncoding() const
+    #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
+    const coda_oss::optional<StringEncoding>& getEncoding() const
     {
-       return mEncoding;
+        return mEncoding;
     }
-    void getCharacterData(coda_oss::u8string& result) const;
-    //void getCharacterData(str::EncodedString& result) const;
-    
-
-    // For existing SWIG bindings :-(
-    const coda_oss::optional<StringEncoding>& getEncoding_() const
-    {
-       static coda_oss::optional<StringEncoding> retval;
-       retval = getEncoding();
-       return retval;
-    }
-    const coda_oss::optional<StringEncoding>& getCharacterData_(std::string& result) const
+   const coda_oss::optional<StringEncoding>& getCharacterData(std::string& result) const
     {
         result = getCharacterData();
-        return getEncoding_();
+        return getEncoding();
     }
+    void getCharacterData(coda_oss::u8string& result) const;
+    #endif // SWIG
 
     /*!
      *  Sets the character data for this element.
@@ -349,10 +352,10 @@ public:
      */
     void setCharacterData(const std::string& characters);
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
+    void setCharacterData_(const std::string& characters, const StringEncoding*);
     void setCharacterData(const std::string& characters, StringEncoding);
     void setCharacterData(const coda_oss::u8string& characters);
-    //void setCharacterData(const str::EncodedStringView&);
-#endif  // SWIG
+    #endif // SWIG
 
     /*!
      *  Sets the local name for this element.
@@ -479,7 +482,8 @@ public:
         mParent = parent;
     }
 
-private:
+protected:
+
     void changePrefix(Element* element,
                       const std::string& prefix,
                       const std::string& uri);
@@ -490,6 +494,8 @@ private:
 
     void depthPrint(io::OutputStream& stream, int depth,
                     const std::string& formatter) const;
+    void depthPrint(io::OutputStream& stream, StringEncoding, int depth,
+                    const std::string& formatter) const;
 
     Element* mParent;
     //! The children of this element
@@ -497,11 +503,14 @@ private:
     xml::lite::QName mName;
     //! The attributes for this element
     xml::lite::Attributes mAttributes;
-
     //! The character data ...
     std::string mCharacterData;
-    // ... and how that data is encoded
-    StringEncoding mEncoding;
+
+    private:
+        // ... and how that data is encoded
+        coda_oss::optional<StringEncoding> mEncoding;
+        void depthPrint(io::OutputStream& stream, bool utf8, int depth,
+                const std::string& formatter) const;
 };
 
 extern Element& add(const xml::lite::QName&, const std::string& value, Element& parent);

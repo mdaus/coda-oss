@@ -74,3 +74,8 @@ void xml::lite::MinidomParser::preserveCharacterData(bool preserve)
 {
     mHandler.preserveCharacterData(preserve);
 }
+
+ void xml::lite::MinidomParser::storeEncoding(bool)
+{
+     throw std::logic_error("'storeEncoding()' is no longer used.");
+}

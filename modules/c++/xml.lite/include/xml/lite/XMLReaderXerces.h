@@ -102,8 +102,10 @@ public:
 
     void parse(io::InputStream& is, int size = io::InputStream::IS_END);
 
+    void parse(bool storeEncoding, io::InputStream& is, int size = io::InputStream::IS_END);
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
     void parse(io::InputStream& is, StringEncoding, int size = io::InputStream::IS_END);
+    void parse(bool storeEncoding, io::InputStream& is, StringEncoding, int size = io::InputStream::IS_END);
     #endif  // SWIG
     
     //! Method to create an xml reader

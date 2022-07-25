@@ -133,6 +133,7 @@ struct MinidomParser
      * @see MinidomHandler::preserveCharacterData
      */
     virtual void preserveCharacterData(bool preserve);
+    virtual void storeEncoding(bool preserve);
 
 protected:
     MinidomHandler mHandler;
