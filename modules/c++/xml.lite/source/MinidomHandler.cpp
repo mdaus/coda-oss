@@ -20,6 +20,8 @@
  *
  */
 
+#include <assert.h>
+
 #include <stdexcept>
 
 #include "str/Manip.h"
@@ -191,7 +193,8 @@ void xml::lite::MinidomHandler::endElement(const std::string & /*uri*/,
     xml::lite::Element * current = nodeStack.top();
     nodeStack.pop();
 
-    current->setCharacterData_(adjustCharacterData(), mpEncoding.get());
+    assert(mpEncoding.get() != nullptr);
+    current->setCharacterData(adjustCharacterData(), *mpEncoding);
 
     // Remove corresponding int on bytes stack
     bytesForElement.pop();

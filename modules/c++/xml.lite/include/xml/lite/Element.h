@@ -337,7 +337,6 @@ public:
      */
     void setCharacterData(const std::string& characters);
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
-    void setCharacterData_(const std::string& characters, const StringEncoding*);
     void setCharacterData(const std::string& characters, StringEncoding);
     void setCharacterData(const coda_oss::u8string& characters);
     //void setCharacterData(const str::EncodedStringView&);
