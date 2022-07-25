@@ -508,3 +508,23 @@ xml::lite::Element& xml::lite::add(const QName& qname,
     return parent.addChild(std::move(elem));
 }
 
+ void xml::lite::Element::print(io::OutputStream& stream, StringEncoding encoding) const
+{
+    if (encoding != StringEncoding::Utf8)
+    {
+        throw std::invalid_argument("'encoding' must always be UTF-8");
+    }
+    print(stream);
+}
+void xml::lite::Element::setCharacterData_(const std::string& characters, const StringEncoding* pEncoding)
+{
+    if (pEncoding != nullptr)
+    {
+        if (*pEncoding != StringEncoding::Utf8)
+        {
+            throw std::invalid_argument("'encoding' must always be UTF-8");
+        }
+        setCharacterData(characters, *pEncoding);
+    }
+    setCharacterData(characters, xml::lite::PlatformEncoding);
+}
