@@ -95,13 +95,13 @@ TEST_CASE(test_CloneCopy_root_encoding)
         copy.clearChildren();
         TEST_ASSERT(copy.getEncoding() == xml::lite::StringEncoding::Utf8);
         copy.setCharacterData("xyz", xml::lite::StringEncoding::Windows1252);
-        TEST_ASSERT(copy.getEncoding() == xml::lite::PlatformEncoding);
+        TEST_ASSERT(copy.getEncoding() == xml::lite::StringEncoding::Windows1252);
         TEST_ASSERT(root.getEncoding() == xml::lite::StringEncoding::Utf8);
         TEST_ASSERT(root.getEncoding() != copy.getEncoding());
 
         root_.setCharacterData("123");
         TEST_ASSERT(root.getEncoding() == xml::lite::PlatformEncoding);
-        TEST_ASSERT(copy.getEncoding() == xml::lite::PlatformEncoding);
+        TEST_ASSERT(copy.getEncoding() == xml::lite::StringEncoding::Windows1252);
     }
 }
 
