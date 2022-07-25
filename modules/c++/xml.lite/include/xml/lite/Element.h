@@ -59,7 +59,7 @@ namespace lite
  * This class stores all of the element information about an XML
  * document.
  */
-class Element
+class Element final
 {
     Element(const std::string& qname, const std::string& uri, std::nullptr_t) :
         mParent(nullptr), mName(uri, qname)
@@ -333,15 +333,22 @@ public:
     {
         return mCharacterData;
     }
-    #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
-    const coda_oss::optional<StringEncoding>& getEncoding() const
+    StringEncoding getEncoding() const
     {
         return mEncoding;
     }
-   const coda_oss::optional<StringEncoding>& getCharacterData(std::string& result) const
+
+    #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
+    const coda_oss::optional<StringEncoding>& getEncoding_() const
+    {
+        static coda_oss::optional<StringEncoding> retval;
+        retval = mEncoding;
+        return retval;
+    }
+   const coda_oss::optional<StringEncoding>& getCharacterData_(std::string& result) const
     {
         result = getCharacterData();
-        return getEncoding();
+        return getEncoding_();
     }
     void getCharacterData(coda_oss::u8string& result) const;
     #endif // SWIG
@@ -482,8 +489,7 @@ public:
         mParent = parent;
     }
 
-protected:
-
+private:
     void changePrefix(Element* element,
                       const std::string& prefix,
                       const std::string& uri);
@@ -503,14 +509,11 @@ protected:
     xml::lite::QName mName;
     //! The attributes for this element
     xml::lite::Attributes mAttributes;
+
     //! The character data ...
     std::string mCharacterData;
-
-    private:
-        // ... and how that data is encoded
-        coda_oss::optional<StringEncoding> mEncoding;
-        void depthPrint(io::OutputStream& stream, bool utf8, int depth,
-                const std::string& formatter) const;
+    // ... and how that data is encoded
+    StringEncoding mEncoding = StringEncoding::Unknown;
 };
 
 extern Element& add(const xml::lite::QName&, const std::string& value, Element& parent);
