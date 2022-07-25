@@ -34,7 +34,7 @@ xml::lite::XMLReaderXerces::XMLReaderXerces()
     create();
 }
 
-void xml::lite::XMLReaderXerces::parse(io::InputStream& is, const StringEncoding* pEncoding, int size)
+void xml::lite::XMLReaderXerces::parse(io::InputStream& is, StringEncoding encoding, int size)
 {
     io::StringStream oss;
     is.streamTo(oss, size);
@@ -46,9 +46,9 @@ void xml::lite::XMLReaderXerces::parse(io::InputStream& is, const StringEncoding
     }
     std::vector<sys::byte> buffer(available);
     oss.read(buffer.data(), buffer.size());
-    parse(buffer, pEncoding);
+    parse(buffer, encoding);
 }
-void xml::lite::XMLReaderXerces::parse(const std::vector<sys::byte>& buffer, const StringEncoding* pEncoding)
+void xml::lite::XMLReaderXerces::parse(const std::vector<sys::byte>& buffer, StringEncoding encoding)
 {
     // Does not take ownership
     MemBufInputSource memBuffer((const unsigned char *)buffer.data(),
@@ -56,7 +56,7 @@ void xml::lite::XMLReaderXerces::parse(const std::vector<sys::byte>& buffer, con
                                 XMLReaderXerces::MEM_BUFFER_ID(),
                                 false);
 
-    if ((pEncoding != nullptr) && (*pEncoding == StringEncoding::Windows1252))
+    if (encoding == StringEncoding::Windows1252)
     {
         // The only other value is StringEncoding::Utf8 which is the default
         memBuffer.setEncoding(XMLUni::fgWin1252EncodingString);
@@ -75,7 +75,7 @@ void xml::lite::XMLReaderXerces::parse(const std::vector<sys::byte>& buffer, con
             throw;
         }
         // Caller specified an encoding; don't try calling parse() again
-        if (pEncoding != nullptr)
+        if (encoding != StringEncoding::Unknown)
         {
             throw;
         }
@@ -84,19 +84,12 @@ void xml::lite::XMLReaderXerces::parse(const std::vector<sys::byte>& buffer, con
     // If we're here, the initial parse failed and the caller did NOT specify an encoding
     // (pEncoding == NULL).  Since the default is UTF-8 and that failed, try again
     // with Windows-1252.
-    assert(pEncoding == nullptr);
-    const auto windows1252 = StringEncoding::Windows1252;
-    parse(buffer, &windows1252);
+    parse(buffer, StringEncoding::Windows1252);
 }
 void xml::lite::XMLReaderXerces::parse(io::InputStream& is, int size)
 {
-    parse(is, nullptr /*pEncoding*/, size);
+    parse(is, StringEncoding::Unknown, size);
 }
-void xml::lite::XMLReaderXerces::parse(io::InputStream& is, StringEncoding encoding, int size)
-{
-    parse(is, &encoding, size);
-}
-
 
 // This function creates the parser
 void xml::lite::XMLReaderXerces::create()

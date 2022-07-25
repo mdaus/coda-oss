@@ -117,8 +117,7 @@ public:
     std::string getDriverName() const { return "xerces"; }
 
 private:
-    void parse(io::InputStream& is, const StringEncoding*, int size);
-    void parse(const std::vector<sys::byte>&, const StringEncoding* pEncoding);
+    void parse(const std::vector<sys::byte>&, StringEncoding);
 
     void write(const void*, size_t) override
     {
