@@ -173,7 +173,7 @@ protected:
     bool mPreserveCharData;
 
  private:
-    void characters(const char* value, int length, const StringEncoding*);
+    void characters(const char* value, int length, StringEncoding);
     void call_characters(const std::string&, StringEncoding);
     StringEncoding mEncoding = StringEncoding::Unknown;
 };

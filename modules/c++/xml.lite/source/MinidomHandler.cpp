@@ -20,8 +20,6 @@
  *
  */
 
-#include <assert.h>
-
 #include <stdexcept>
 
 #include "str/Manip.h"
@@ -58,15 +56,14 @@ void xml::lite::MinidomHandler::clear()
     assert(nodeStack.empty());
 }
 
-void xml::lite::MinidomHandler::characters(const char* value, int length, const StringEncoding* pEncoding)
+void xml::lite::MinidomHandler::characters(const char* value, int length, StringEncoding encoding)
 {
      // be sure the given encoding matches any encoding already set
-    assert(pEncoding != nullptr);
-    if ((mEncoding != StringEncoding::Unknown) && (*pEncoding != mEncoding))
+    if ((mEncoding != StringEncoding::Unknown) && (encoding != mEncoding))
     {
         throw std::invalid_argument("New 'encoding' is different than value already set.");
     }
-    mEncoding = *pEncoding;
+    mEncoding = encoding;
 
     // Append new data
     if (length)
@@ -78,23 +75,22 @@ void xml::lite::MinidomHandler::characters(const char* value, int length, const 
 }
 void xml::lite::MinidomHandler::characters(const char *value, int length)
 {
-    const StringEncoding* pEncoding = nullptr;
+    StringEncoding encoding = xml::lite::PlatformEncoding;
     auto platform = sys::Platform; // "conditional expression is constant"
     if (platform == sys::PlatformType::Windows)
     {
         // If we're still here despite use_char() being "false" then the wide-character
         // routine "failed."  On Windows, that means the char* value is encoded
         // as Windows-1252 (more-or-less ISO8859-1).
-        static const auto encoding = StringEncoding::Windows1252;
-        pEncoding = &encoding;
+        encoding = StringEncoding::Windows1252;
     }
-    characters(value, length, pEncoding);
+    characters(value, length, encoding);
 }
 
 void xml::lite::MinidomHandler::call_characters(const std::string& s, StringEncoding encoding)
 {
     const auto length = static_cast<int>(s.length());
-    characters(s.c_str(), length, &encoding);
+    characters(s.c_str(), length, encoding);
 }
 
 bool xml::lite::MinidomHandler::vcharacters(const void /*XMLCh*/* chars_, size_t length)
