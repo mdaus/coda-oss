@@ -71,18 +71,18 @@ TEST_CASE(test_CloneCopy_root_encoding)
         auto& root_ = xmlParser.getRootElement();
         root_.setCharacterData("abc", xml::lite::StringEncoding::Utf8);
         const auto& root = root_;
-        TEST_ASSERT_TRUE(root.getEncoding().has_value());
+        TEST_ASSERT(root.getEncoding() == xml::lite::StringEncoding::Utf8);
 
         xml::lite::Element copy;
         copy.clone(root);
         copy.clearChildren();
-        TEST_ASSERT_TRUE(copy.getEncoding().has_value());
+        TEST_ASSERT(copy.getEncoding() == xml::lite::StringEncoding::Utf8);
         copy.setCharacterData("xyz");
-        TEST_ASSERT_FALSE(copy.getEncoding().has_value());
-        TEST_ASSERT_TRUE(root.getEncoding().has_value());
+        TEST_ASSERT(copy.getEncoding() == xml::lite::PlatformEncoding);
+        TEST_ASSERT(root.getEncoding() == xml::lite::StringEncoding::Utf8);
 
         root_.setCharacterData("123");
-        TEST_ASSERT_FALSE(root.getEncoding().has_value());
+        TEST_ASSERT(root.getEncoding() == xml::lite::PlatformEncoding);
     }
     {
         test_MinidomParser xmlParser;
@@ -93,15 +93,15 @@ TEST_CASE(test_CloneCopy_root_encoding)
         xml::lite::Element copy;
         copy.clone(root);
         copy.clearChildren();
-        TEST_ASSERT_TRUE(copy.getEncoding().has_value());
+        TEST_ASSERT(copy.getEncoding() == xml::lite::StringEncoding::Utf8);
         copy.setCharacterData("xyz", xml::lite::StringEncoding::Windows1252);
-        TEST_ASSERT_TRUE(copy.getEncoding().has_value());
-        TEST_ASSERT_TRUE(root.getEncoding().has_value());
-        TEST_ASSERT(*root.getEncoding() != *copy.getEncoding());
+        TEST_ASSERT(copy.getEncoding() == xml::lite::PlatformEncoding);
+        TEST_ASSERT(root.getEncoding() == xml::lite::StringEncoding::Utf8);
+        TEST_ASSERT(root.getEncoding() != copy.getEncoding());
 
         root_.setCharacterData("123");
-        TEST_ASSERT_FALSE(root.getEncoding().has_value());
-        TEST_ASSERT_TRUE(copy.getEncoding().has_value());
+        TEST_ASSERT(root.getEncoding() == xml::lite::PlatformEncoding);
+        TEST_ASSERT(copy.getEncoding() == xml::lite::PlatformEncoding);
     }
 }
 
@@ -111,15 +111,13 @@ TEST_CASE(test_CloneCopy_copy_encoding)
     auto& root_ = xmlParser.getRootElement();
     root_.setCharacterData("abc");
     const auto& root = root_;
-    TEST_ASSERT_FALSE(root.getEncoding().has_value());
 
     xml::lite::Element copy;
     copy.clone(root);
     copy.clearChildren();
-    TEST_ASSERT_FALSE(copy.getEncoding().has_value());
     copy.setCharacterData("xyz", xml::lite::StringEncoding::Utf8);
-    TEST_ASSERT_TRUE(copy.getEncoding().has_value());
-    TEST_ASSERT_FALSE(root.getEncoding().has_value());
+    TEST_ASSERT(copy.getEncoding() == xml::lite::StringEncoding::Utf8);
+    TEST_ASSERT(root.getEncoding() == xml::lite::PlatformEncoding);
 }
 
 TEST_CASE(test_getRootElement)
@@ -159,7 +157,7 @@ TEST_CASE(test_getElementsByTagName)
         const auto characterData = a.getCharacterData();
         TEST_ASSERT_EQ(characterData, text);
         const auto encoding = a.getEncoding();
-        TEST_ASSERT_TRUE(encoding.has_value());
+        TEST_ASSERT(encoding == xml::lite::PlatformEncoding);
     }
 }
 

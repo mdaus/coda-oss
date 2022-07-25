@@ -20,6 +20,8 @@
  *
  */
 
+#include <assert.h>
+
 #include <stdexcept>
 #include <tuple>
 
@@ -487,18 +489,12 @@ void xml::lite::Element::setNamespaceURI(
 void xml::lite::Element::setCharacterData_(const std::string& characters, const StringEncoding* pEncoding)
 {
     mCharacterData = characters;
-    if (pEncoding != nullptr)
-    {
-        mEncoding = *pEncoding;
-    }
-    else
-    {
-        mEncoding.reset();
-    }
+    assert(pEncoding != nullptr);
+    mEncoding = *pEncoding;
 }
 void xml::lite::Element::setCharacterData(const std::string& characters)
 {
-    setCharacterData_(characters, nullptr /*pEncoding*/);
+    setCharacterData_(characters, &PlatformEncoding);
 }
 void xml::lite::Element::setCharacterData(const std::string& characters, StringEncoding encoding)
 {

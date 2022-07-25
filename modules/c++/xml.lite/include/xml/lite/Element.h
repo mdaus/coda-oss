@@ -323,9 +323,9 @@ public:
         return mCharacterData;
     }
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
-    const coda_oss::optional<StringEncoding>& getEncoding() const
+   StringEncoding getEncoding() const
     {
-        return mEncoding;
+       return mEncoding;
     }
     void getCharacterData(coda_oss::u8string& result) const;
     //void getCharacterData(str::EncodedString& result) const;
@@ -490,7 +490,7 @@ private:
     //! The character data ...
     std::string mCharacterData;
     // ... and how that data is encoded
-    coda_oss::optional<StringEncoding> mEncoding;
+    StringEncoding mEncoding;
 };
 
 extern Element& add(const xml::lite::QName&, const std::string& value, Element& parent);

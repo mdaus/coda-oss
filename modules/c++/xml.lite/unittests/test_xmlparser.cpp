@@ -153,7 +153,6 @@ TEST_CASE(testXml_setCharacterData)
 
     a.setCharacterData(utf8Text8);
     auto encoding = a.getEncoding();
-    TEST_ASSERT_TRUE(encoding.has_value());
     TEST_ASSERT(encoding == xml::lite::StringEncoding::Utf8);
 }
 
