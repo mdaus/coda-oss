@@ -333,15 +333,19 @@ public:
     {
         return mCharacterData;
     }
+    StringEncoding getEncoding() const
+    {
+        return *mEncoding;
+    }
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
-    const coda_oss::optional<StringEncoding>& getEncoding() const
+    const coda_oss::optional<StringEncoding>& getEncoding_() const
     {
         return mEncoding;
     }
-   const coda_oss::optional<StringEncoding>& getCharacterData(std::string& result) const
+   const coda_oss::optional<StringEncoding>& getCharacterData_(std::string& result) const
     {
         result = getCharacterData();
-        return getEncoding();
+        return getEncoding_();
     }
     void getCharacterData(coda_oss::u8string& result) const;
     #endif // SWIG
@@ -482,8 +486,7 @@ public:
         mParent = parent;
     }
 
-protected:
-
+private:
     void changePrefix(Element* element,
                       const std::string& prefix,
                       const std::string& uri);
@@ -503,14 +506,11 @@ protected:
     xml::lite::QName mName;
     //! The attributes for this element
     xml::lite::Attributes mAttributes;
+
     //! The character data ...
     std::string mCharacterData;
-
-    private:
-        // ... and how that data is encoded
-        coda_oss::optional<StringEncoding> mEncoding;
-        void depthPrint(io::OutputStream& stream, bool utf8, int depth,
-                const std::string& formatter) const;
+    // ... and how that data is encoded
+    coda_oss::optional<StringEncoding> mEncoding;
 };
 
 extern Element& add(const xml::lite::QName&, const std::string& value, Element& parent);
