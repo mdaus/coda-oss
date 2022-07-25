@@ -6699,7 +6699,7 @@ SWIGINTERN PyObject *_wrap_Document_createElement__SWIG_2(PyObject *SWIGUNUSEDPA
   int res4 = 0 ;
   int val5 ;
   int ecode5 = 0 ;
-  xml::lite::Element *result = 0 ;
+  std::unique_ptr<xml::lite::Element> result;
   
   if ((nobjs < 5) || (nobjs > 5)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_xml__lite__Document, 0 |  0 );
@@ -6736,8 +6736,8 @@ SWIGINTERN PyObject *_wrap_Document_createElement__SWIG_2(PyObject *SWIGUNUSEDPA
     SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "Document_createElement" "', argument " "5"" of type '" "xml::lite::StringEncoding""'");
   } 
   arg5 = static_cast< xml::lite::StringEncoding >(val5);
-  result = (xml::lite::Element *)(arg1)->createElement((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4,arg5);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_xml__lite__Element, 0 |  0 );
+  result = (arg1)->createElement((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4,arg5);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result.release()), SWIGTYPE_p_xml__lite__Element, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -6758,7 +6758,7 @@ SWIGINTERN PyObject *_wrap_Document_createElement__SWIG_3(PyObject *SWIGUNUSEDPA
   int res3 = 0 ;
   void *argp4 = 0 ;
   int res4 = 0 ;
-  xml::lite::Element *result = 0 ;
+  std::unique_ptr<xml::lite::Element> result;
   
   if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_xml__lite__Document, 0 |  0 );
@@ -6790,8 +6790,8 @@ SWIGINTERN PyObject *_wrap_Document_createElement__SWIG_3(PyObject *SWIGUNUSEDPA
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Document_createElement" "', argument " "4"" of type '" "coda_oss::u8string const &""'"); 
   }
   arg4 = reinterpret_cast< coda_oss::u8string * >(argp4);
-  result = (xml::lite::Element *)(arg1)->createElement((std::string const &)*arg2,(std::string const &)*arg3,(coda_oss::u8string const &)*arg4);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_xml__lite__Element, 0 |  0 );
+  result = (arg1)->createElement((std::string const &)*arg2,(std::string const &)*arg3,(coda_oss::u8string const &)*arg4);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result.release()), SWIGTYPE_p_xml__lite__Element, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
