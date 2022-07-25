@@ -60,21 +60,13 @@ void xml::lite::MinidomHandler::clear()
 
 void xml::lite::MinidomHandler::characters(const char* value, int length, const StringEncoding* pEncoding)
 {
-    if (pEncoding != nullptr)
+     // be sure the given encoding matches any encoding already set
+    assert(pEncoding != nullptr);
+    if ((mEncoding != StringEncoding::Unknown) && (*pEncoding != mEncoding))
     {
-        if (mpEncoding != nullptr)
-        {
-            // be sure the given encoding matches any encoding already set
-            if (*pEncoding != *mpEncoding)
-            {
-                throw std::invalid_argument("New 'encoding' is different than value already set.");
-            }
-        }
-        else
-        {
-            mpEncoding = std::make_shared<const StringEncoding>(*pEncoding);
-        }
+        throw std::invalid_argument("New 'encoding' is different than value already set.");
     }
+    mEncoding = *pEncoding;
 
     // Append new data
     if (length)
@@ -193,8 +185,7 @@ void xml::lite::MinidomHandler::endElement(const std::string & /*uri*/,
     xml::lite::Element * current = nodeStack.top();
     nodeStack.pop();
 
-    assert(mpEncoding.get() != nullptr);
-    current->setCharacterData(adjustCharacterData(), *mpEncoding);
+    current->setCharacterData(adjustCharacterData(), mEncoding);
 
     // Remove corresponding int on bytes stack
     bytesForElement.pop();

@@ -175,7 +175,7 @@ protected:
  private:
     void characters(const char* value, int length, const StringEncoding*);
     void call_characters(const std::string&, StringEncoding);
-    std::shared_ptr<const StringEncoding> mpEncoding;
+    StringEncoding mEncoding = StringEncoding::Unknown;
 };
 }
 }

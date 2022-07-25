@@ -67,6 +67,7 @@ enum class StringEncoding
 {
     Windows1252  // more-or-less ISO5589-1, https://en.wikipedia.org/wiki/Windows-1252
     , Utf8
+    , Unknown // TODO: remove?
 };
 constexpr auto PlatformEncoding = sys::Platform == sys::PlatformType::Windows
         ? xml::lite::StringEncoding::Windows1252
