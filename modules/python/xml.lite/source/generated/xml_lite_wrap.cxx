@@ -5571,7 +5571,7 @@ SWIGINTERN PyObject *_wrap_Element_getEncoding(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Element_getEncoding" "', argument " "1"" of type '" "xml::lite::Element const *""'"); 
   }
   arg1 = reinterpret_cast< xml::lite::Element * >(argp1);
-  result = (coda_oss::optional< xml::lite::StringEncoding > *) &((xml::lite::Element const *)arg1)->getEncoding();
+  result = (coda_oss::optional< xml::lite::StringEncoding > *) &((xml::lite::Element const *)arg1)->getEncoding_();
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_coda_oss__optionalT_xml__lite__string_encoding_t, 0 |  0 );
   return resultobj;
 fail:
@@ -5603,7 +5603,7 @@ SWIGINTERN PyObject *_wrap_Element_getCharacterData__SWIG_1(PyObject *SWIGUNUSED
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Element_getCharacterData" "', argument " "2"" of type '" "std::string &""'"); 
   }
   arg2 = reinterpret_cast< std::string * >(argp2);
-  result = (coda_oss::optional< xml::lite::StringEncoding > *) &((xml::lite::Element const *)arg1)->getCharacterData(*arg2);
+  result = (coda_oss::optional< xml::lite::StringEncoding > *) &((xml::lite::Element const *)arg1)->getCharacterData_(*arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_coda_oss__optionalT_xml__lite__string_encoding_t, 0 |  0 );
   return resultobj;
 fail:
@@ -5730,7 +5730,7 @@ SWIGINTERN PyObject *_wrap_Element_setCharacterData_(PyObject *SWIGUNUSEDPARM(se
     SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "Element_setCharacterData_" "', argument " "3"" of type '" "xml::lite::StringEncoding const *""'"); 
   }
   arg3 = reinterpret_cast< xml::lite::StringEncoding * >(argp3);
-  (arg1)->setCharacterData_((std::string const &)*arg2,(xml::lite::StringEncoding const *)arg3);
+  (arg1)->setCharacterData((std::string const &)*arg2,*((xml::lite::StringEncoding const *)arg3));
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:

@@ -27,6 +27,7 @@
 #include <memory>
 #include <string>
 #include <new> // std::nothrow_t
+#include "coda_oss/optional.h"
 
 #include <io/InputStream.h>
 #include <io/OutputStream.h>
@@ -36,7 +37,6 @@
 #include "xml/lite/Attributes.h"
 #include "xml/lite/QName.h"
 #include "sys/Conf.h"
-#include "coda_oss/optional.h"
 #include "mem/SharedPtr.h"
 
 /*!
@@ -322,14 +322,26 @@ public:
     {
         return mCharacterData;
     }
-    #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
-   StringEncoding getEncoding() const
+    StringEncoding getEncoding() const
     {
        return mEncoding;
     }
     void getCharacterData(coda_oss::u8string& result) const;
     //void getCharacterData(str::EncodedString& result) const;
-    #endif // SWIG
+    
+
+    // For existing SWIG bindings :-(
+    const coda_oss::optional<StringEncoding>& getEncoding_() const
+    {
+       static coda_oss::optional<StringEncoding> retval;
+       retval = getEncoding();
+       return retval;
+    }
+    const coda_oss::optional<StringEncoding>& getCharacterData_(std::string& result) const
+    {
+        result = getCharacterData();
+        return getEncoding_();
+    }
 
     /*!
      *  Sets the character data for this element.
