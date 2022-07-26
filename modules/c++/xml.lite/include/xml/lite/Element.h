@@ -59,7 +59,7 @@ namespace lite
  * This class stores all of the element information about an XML
  * document.
  */
-class Element
+class Element final
 {
     Element(const std::string& qname, const std::string& uri, std::nullptr_t) :
         mParent(nullptr), mName(uri, qname), mEncoding(StringEncoding::Unknown)
@@ -476,8 +476,7 @@ public:
         mParent = parent;
     }
 
-protected:
-
+private:
     void changePrefix(Element* element,
                       const std::string& prefix,
                       const std::string& uri);
@@ -487,8 +486,6 @@ protected:
                    const std::string& uri);
 
     void depthPrint(io::OutputStream& stream, int depth,
-                    const std::string& formatter) const;
-    void depthPrint(io::OutputStream& stream, StringEncoding, int depth,
                     const std::string& formatter) const;
 
     Element* mParent;
