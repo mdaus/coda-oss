@@ -338,10 +338,14 @@ public:
     {
         return mEncoding;
     }
-   const coda_oss::optional<StringEncoding>& getCharacterData(std::string& result) const
+    const coda_oss::optional<StringEncoding>& getEncoding_() const
+    {
+        return mEncoding;
+    }
+   const coda_oss::optional<StringEncoding>& getCharacterData_(std::string& result) const
     {
         result = getCharacterData();
-        return getEncoding();
+        return getEncoding_();
     }
     void getCharacterData(coda_oss::u8string& result) const;
     #endif // SWIG
@@ -506,10 +510,9 @@ protected:
     //! The character data ...
     std::string mCharacterData;
 
-    private:
-        // ... and how that data is encoded
-        coda_oss::optional<StringEncoding> mEncoding;
-        void depthPrint(io::OutputStream& stream, bool utf8, int depth,
+    // ... and how that data is encoded
+    coda_oss::optional<StringEncoding> mEncoding;
+    void depthPrint(io::OutputStream& stream, bool utf8, int depth,
                 const std::string& formatter) const;
 };
 
