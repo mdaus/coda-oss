@@ -137,14 +137,12 @@ class Element(object):
     def _print(self, *args) -> "void":
         r"""
         _print(Element self, io::OutputStream & stream)
-        _print(Element self, io::OutputStream & stream, xml::lite::StringEncoding arg3)
         """
         return _xml_lite.Element__print(self, *args)
 
     def prettyPrint(self, *args) -> "void":
         r"""
         prettyPrint(Element self, io::OutputStream & stream, std::string const & formatter="    ")
-        prettyPrint(Element self, io::OutputStream & stream, xml::lite::StringEncoding arg3, std::string const & formatter="    ")
         """
         return _xml_lite.Element_prettyPrint(self, *args)
 
