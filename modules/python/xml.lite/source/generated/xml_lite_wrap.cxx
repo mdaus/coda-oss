@@ -5823,46 +5823,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Element_setCharacterData_(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  xml::lite::Element *arg1 = (xml::lite::Element *) 0 ;
-  std::string *arg2 = 0 ;
-  xml::lite::StringEncoding *arg3 = (xml::lite::StringEncoding *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  void *argp3 = 0 ;
-  int res3 = 0 ;
-  PyObject *swig_obj[3] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "Element_setCharacterData_", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_xml__lite__Element, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Element_setCharacterData_" "', argument " "1"" of type '" "xml::lite::Element *""'"); 
-  }
-  arg1 = reinterpret_cast< xml::lite::Element * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_std__string,  0  | 0);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Element_setCharacterData_" "', argument " "2"" of type '" "std::string const &""'"); 
-  }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Element_setCharacterData_" "', argument " "2"" of type '" "std::string const &""'"); 
-  }
-  arg2 = reinterpret_cast< std::string * >(argp2);
-  res3 = SWIG_ConvertPtr(swig_obj[2], &argp3,SWIGTYPE_p_xml__lite__string_encoding, 0 |  0 );
-  if (!SWIG_IsOK(res3)) {
-    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "Element_setCharacterData_" "', argument " "3"" of type '" "xml::lite::StringEncoding const *""'"); 
-  }
-  arg3 = reinterpret_cast< xml::lite::StringEncoding * >(argp3);
-  (arg1)->setCharacterData_((std::string const &)*arg2,(xml::lite::StringEncoding const *)arg3);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_Element_setCharacterData__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   xml::lite::Element *arg1 = (xml::lite::Element *) 0 ;
@@ -7926,7 +7886,6 @@ static PyMethodDef SwigMethods[] = {
 		"Element_getCharacterData(Element self) -> std::string\n"
 		"Element_getCharacterData(Element self, coda_oss::u8string & result)\n"
 		""},
-	 { "Element_setCharacterData_", _wrap_Element_setCharacterData_, METH_VARARGS, "Element_setCharacterData_(Element self, std::string const & characters, xml::lite::StringEncoding const * arg3)"},
 	 { "Element_setCharacterData", _wrap_Element_setCharacterData, METH_VARARGS, "\n"
 		"Element_setCharacterData(Element self, std::string const & characters)\n"
 		"Element_setCharacterData(Element self, std::string const & characters, xml::lite::StringEncoding arg3)\n"

@@ -162,10 +162,6 @@ class Element(object):
         """
         return _xml_lite.Element_getCharacterData(self, *args)
 
-    def setCharacterData_(self, characters: "std::string const &", arg3: "xml::lite::StringEncoding const *") -> "void":
-        r"""setCharacterData_(Element self, std::string const & characters, xml::lite::StringEncoding const * arg3)"""
-        return _xml_lite.Element_setCharacterData_(self, characters, arg3)
-
     def setCharacterData(self, *args) -> "void":
         r"""
         setCharacterData(Element self, std::string const & characters)
