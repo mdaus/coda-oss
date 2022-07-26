@@ -334,9 +334,9 @@ public:
         return mCharacterData;
     }
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
-    const coda_oss::optional<StringEncoding>& getEncoding() const
+    StringEncoding getEncoding() const
     {
-        return mEncoding;
+        return *mEncoding;
     }
     const coda_oss::optional<StringEncoding>& getEncoding_() const
     {

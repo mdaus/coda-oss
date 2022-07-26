@@ -274,7 +274,7 @@ static xml::lite::StringEncoding getEncoding_(const coda_oss::optional<xml::lite
 
 void xml::lite::Element::getCharacterData(coda_oss::u8string& result) const
 {
-    const auto encoding = ::getEncoding_(this->getEncoding_());
+    const auto encoding = ::getEncoding_(this->getEncoding());
 
     str::EncodedStringView view;
     if (encoding == xml::lite::StringEncoding::Utf8)
@@ -346,7 +346,7 @@ void xml::lite::Element::depthPrint(io::OutputStream& stream, int depth, const s
     else
     {
         stream.write(acc + rBrack);            
-        writeCharacterData(stream, mCharacterData, getEncoding_()); // ALWAYS write XML as UTF-8
+        writeCharacterData(stream, mCharacterData, getEncoding()); // ALWAYS write XML as UTF-8
 
         for (unsigned int i = 0; i < mChildren.size(); i++)
         {
