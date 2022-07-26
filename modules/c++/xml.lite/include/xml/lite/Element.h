@@ -62,7 +62,7 @@ namespace lite
 class Element
 {
     Element(const std::string& qname, const std::string& uri, std::nullptr_t) :
-        mParent(nullptr), mName(uri, qname)
+        mParent(nullptr), mName(uri, qname), mEncoding(StringEncoding::Unknown)
     {
     }
 
@@ -336,7 +336,7 @@ public:
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
     StringEncoding getEncoding() const
     {
-        return *mEncoding;
+        return mEncoding;
     }
     void getCharacterData(coda_oss::u8string& result) const;
     #endif // SWIG
@@ -501,7 +501,7 @@ protected:
     //! The character data ...
     std::string mCharacterData;
     // ... and how that data is encoded
-    coda_oss::optional<StringEncoding> mEncoding;
+    StringEncoding mEncoding;
 };
 
 extern Element& add(const xml::lite::QName&, const std::string& value, Element& parent);
