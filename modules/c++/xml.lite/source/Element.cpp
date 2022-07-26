@@ -255,9 +255,9 @@ void xml::lite::Element::prettyPrint(io::OutputStream& stream,
     stream.writeln("");
 }
 
-static xml::lite::StringEncoding getEncoding_(const coda_oss::optional<xml::lite::StringEncoding>& encoding)
+static xml::lite::StringEncoding getEncoding_(xml::lite::StringEncoding encoding)
 {
-    if (encoding.has_value())
+    if (encoding != xml::lite::StringEncoding::Unknown)
     {
         if (encoding == xml::lite::StringEncoding::Utf8) { }
         else if (encoding == xml::lite::StringEncoding::Windows1252) { }
@@ -265,7 +265,7 @@ static xml::lite::StringEncoding getEncoding_(const coda_oss::optional<xml::lite
         {
             throw std::logic_error("Unknown encoding.");
         }
-        return *encoding;
+        return encoding;
     }
 
     // don't know the encoding ... assume a default based on the platform
@@ -294,7 +294,7 @@ void xml::lite::Element::getCharacterData(coda_oss::u8string& result) const
 }
 
 static void writeCharacterData(io::OutputStream& stream,
-    const std::string& characterData, const coda_oss::optional<xml::lite::StringEncoding>& encoding_)
+    const std::string& characterData, xml::lite::StringEncoding encoding_)
 {
     const auto encoding = getEncoding_(encoding_);
     if (encoding == xml::lite::StringEncoding::Windows1252)
@@ -346,7 +346,7 @@ void xml::lite::Element::depthPrint(io::OutputStream& stream, int depth, const s
     else
     {
         stream.write(acc + rBrack);            
-        writeCharacterData(stream, mCharacterData, getEncoding()); // ALWAYS write XML as UTF-8
+        writeCharacterData(stream, mCharacterData, getEncoding());
 
         for (unsigned int i = 0; i < mChildren.size(); i++)
         {

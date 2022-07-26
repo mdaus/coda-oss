@@ -507,13 +507,11 @@ protected:
     xml::lite::QName mName;
     //! The attributes for this element
     xml::lite::Attributes mAttributes;
+    
     //! The character data ...
     std::string mCharacterData;
-
     // ... and how that data is encoded
     coda_oss::optional<StringEncoding> mEncoding;
-    void depthPrint(io::OutputStream& stream, bool utf8, int depth,
-                const std::string& formatter) const;
 };
 
 extern Element& add(const xml::lite::QName&, const std::string& value, Element& parent);
