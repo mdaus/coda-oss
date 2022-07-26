@@ -231,7 +231,6 @@ class Document(object):
     def createElement(self, *args) -> "xml::lite::Element *":
         r"""
         createElement(Document self, std::string const & qname, std::string const & uri, std::string characterData="") -> Element
-        createElement(Document self, std::string const & qname, std::string const & uri, std::string const & characterData, xml::lite::StringEncoding arg5) -> Element
         createElement(Document self, std::string const & qname, std::string const & uri, coda_oss::u8string const & characterData) -> Element
         """
         return _xml_lite.Document_createElement(self, *args)
