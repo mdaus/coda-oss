@@ -338,15 +338,6 @@ public:
     {
         return *mEncoding;
     }
-    const coda_oss::optional<StringEncoding>& getEncoding_() const
-    {
-        return mEncoding;
-    }
-   const coda_oss::optional<StringEncoding>& getCharacterData_(std::string& result) const
-    {
-        result = getCharacterData();
-        return getEncoding_();
-    }
     void getCharacterData(coda_oss::u8string& result) const;
     #endif // SWIG
 

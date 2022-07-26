@@ -155,14 +155,9 @@ class Element(object):
         """
         return _xml_lite.Element_hasElement(self, *args)
 
-    def getEncoding(self) -> "coda_oss::optional< xml::lite::StringEncoding > const &":
-        r"""getEncoding(Element self) -> coda_oss::optional< xml::lite::StringEncoding > const &"""
-        return _xml_lite.Element_getEncoding(self)
-
     def getCharacterData(self, *args) -> "void":
         r"""
         getCharacterData(Element self) -> std::string
-        getCharacterData(Element self, std::string & result) -> coda_oss::optional< xml::lite::StringEncoding > const
         getCharacterData(Element self, coda_oss::u8string & result)
         """
         return _xml_lite.Element_getCharacterData(self, *args)
