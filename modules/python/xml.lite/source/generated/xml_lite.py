@@ -165,7 +165,6 @@ class Element(object):
     def setCharacterData(self, *args) -> "void":
         r"""
         setCharacterData(Element self, std::string const & characters)
-        setCharacterData(Element self, std::string const & characters, xml::lite::StringEncoding arg3)
         setCharacterData(Element self, coda_oss::u8string const & characters)
         """
         return _xml_lite.Element_setCharacterData(self, *args)
