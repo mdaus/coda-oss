@@ -516,6 +516,16 @@ xml::lite::Element& xml::lite::add(const QName& qname,
     }
     print(stream);
 }
+void  xml::lite::Element::prettyPrint(io::OutputStream& stream, StringEncoding encoding,
+                const std::string& formatter) const
+{
+    if (encoding != StringEncoding::Utf8)
+    {
+        throw std::invalid_argument("'encoding' must always be UTF-8");
+    }
+    prettyPrint(stream, formatter);
+}
+
 void xml::lite::Element::setCharacterData_(const std::string& characters, const StringEncoding* pEncoding)
 {
     if (pEncoding != nullptr)
