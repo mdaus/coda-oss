@@ -300,11 +300,6 @@ public:
     // could change behavior on Windows.
     void prettyPrint(io::OutputStream& stream,
                      const std::string& formatter = "    ") const;
-    #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
-    void print(io::OutputStream& stream, StringEncoding /*=Utf8*/) const;
-    void prettyPrint(io::OutputStream& stream, StringEncoding /*=Utf8*/,
-                     const std::string& formatter = "    ") const;
-    #endif // SWIG
 
     /*!
      *  Determines if a child element exists
