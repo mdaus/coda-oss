@@ -113,6 +113,10 @@ public:
     {
         return mIsUtf8 ? cast<coda_oss::u8string::const_pointer>(c_str()) : nullptr;
     }
+    size_t size() const
+    {
+        return mString.size();
+    }
 
     // Input is encoded as specified on all platforms.
     static EncodedStringView fromUtf8(const std::string& s)

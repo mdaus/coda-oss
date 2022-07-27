@@ -56,8 +56,13 @@ void xml::lite::MinidomHandler::clear()
     assert(nodeStack.empty());
 }
 
-void xml::lite::MinidomHandler::characters(const char* value, int length, StringEncoding encoding)
+void xml::lite::MinidomHandler::characters(const str::EncodedStringView& view)
 {
+    const auto value = view.c_str();
+    const auto encoding = value == nullptr ? StringEncoding::Unknown
+            : (view.c_u8str() != nullptr ? StringEncoding::Utf8 : StringEncoding::Windows1252);
+    const auto length = static_cast<int>(view.size());
+
      // be sure the given encoding matches any encoding already set
     if ((mEncoding != StringEncoding::Unknown) && (encoding != mEncoding))
     {
@@ -75,22 +80,11 @@ void xml::lite::MinidomHandler::characters(const char* value, int length, String
 }
 void xml::lite::MinidomHandler::characters(const char *value, int length)
 {
-    StringEncoding encoding = xml::lite::PlatformEncoding;
-    auto platform = sys::Platform; // "conditional expression is constant"
-    if (platform == sys::PlatformType::Windows)
-    {
-        // If we're still here despite use_char() being "false" then the wide-character
-        // routine "failed."  On Windows, that means the char* value is encoded
-        // as Windows-1252 (more-or-less ISO8859-1).
-        encoding = StringEncoding::Windows1252;
-    }
-    characters(value, length, encoding);
-}
-
-void xml::lite::MinidomHandler::call_characters(const std::string& s, StringEncoding encoding)
-{
-    const auto length = static_cast<int>(s.length());
-    characters(s.c_str(), length, encoding);
+    // If we're still here despite use_char() being "false" then the
+    // wide-character routine "failed."  On Windows, that means the char* value
+    // is encoded as Windows-1252 (more-or-less ISO8859-1).
+    const str::EncodedString chars(std::string(value, length)); 
+    characters(chars.view());
 }
 
 bool xml::lite::MinidomHandler::vcharacters(const void /*XMLCh*/* chars_, size_t length)
@@ -107,11 +101,11 @@ bool xml::lite::MinidomHandler::vcharacters(const void /*XMLCh*/* chars_, size_t
     static_assert(sizeof(XMLCh) == sizeof(char16_t), "XMLCh should be 16-bits.");
     auto pChars16 = static_cast<const char16_t*>(chars_);
 
-    std::string chars;
+    str::EncodedString chars;
     auto platformEncoding = xml::lite::PlatformEncoding;  // "conditional expression is constant"
     if (platformEncoding == xml::lite::StringEncoding::Utf8)
     {
-        str::details::to_u8string(pChars16, length, chars);
+        chars = str::EncodedString(std::u16string(pChars16, length));  
     }
     else if (platformEncoding == xml::lite::StringEncoding::Windows1252)
     {
@@ -122,14 +116,14 @@ bool xml::lite::MinidomHandler::vcharacters(const void /*XMLCh*/* chars_, size_t
         // on Windows, but all existing code uses std::string instead of std::wstring.
         assert(pChars16 != nullptr);  // XMLCh == wchar_t == char16_t on Windows
         auto pChars = static_cast<const XMLCh*>(chars_);
-        chars = xml::lite::XercesLocalString(pChars).str();
+       chars = str::EncodedString(xml::lite::XercesLocalString(pChars).str());
     }
     else
     {
         throw std::logic_error("Unknown xml::lite::StringEncoding");
     }
 
-    call_characters(chars, platformEncoding);
+    characters(chars.view());
     return true; // vcharacters() processed
 }
 

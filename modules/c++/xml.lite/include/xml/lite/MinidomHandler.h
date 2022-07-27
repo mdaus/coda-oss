@@ -48,6 +48,8 @@
 #include <stack>
 #include <memory>
 
+#include "str/EncodedString.h"
+#include "str/EncodedStringView.h"
 #include "XMLReader.h"
 #include "io/StandardStreams.h"
 #include "Document.h"
@@ -173,8 +175,7 @@ protected:
     bool mPreserveCharData;
 
  private:
-    void characters(const char* value, int length, StringEncoding);
-    void call_characters(const std::string&, StringEncoding);
+    void characters(const str::EncodedStringView&);
     StringEncoding mEncoding = StringEncoding::Unknown;
 };
 }
