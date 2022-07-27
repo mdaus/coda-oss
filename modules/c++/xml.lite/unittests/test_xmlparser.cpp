@@ -41,15 +41,38 @@ static const str::EncodedString iso88591Text(str::cast<str::W1252string::const_p
 static const auto iso88591Text1252 = str::EncodedStringView::details::w1252string(iso88591Text.view());
 static const auto pIso88591Text_ = str::c_str<std::string>(iso88591Text1252);
 
-static const str::EncodedString utf8Text(str::cast<coda_oss::u8string::const_pointer>("T\xc3\x89XT"));  // UTF-8,  "TÉXT"
+static const str::EncodedString utf8Text(str::u8("T\xc3\x89XT"));  // UTF-8,  "TÉXT"
 static const auto utf8Text8 = utf8Text.u8string();
 static const auto pUtf8Text_ = str::c_str<std::string>(utf8Text8);
 
-static const auto strUtf8Xml8 = str::fromUtf8("<root><doc><a>") + utf8Text8 + str::fromUtf8("</a></doc></root>");
+static const auto strUtf8Xml8 = str::u8("<root><doc><a>") + utf8Text8 + str::u8("</a></doc></root>");
 static const std::string strUtf8Xml = str::c_str<std::string>(strUtf8Xml8);
 
 constexpr auto PlatformEncoding = xml::lite::PlatformEncoding;
 static const std::string  platfromText_ = PlatformEncoding == xml::lite::StringEncoding::Utf8 ? pUtf8Text_ : pIso88591Text_;
+
+static inline xml::lite::StringEncoding getEncoding(const xml::lite::Element& element)
+{
+    return element.getEncoding();
+}
+static void test_assert_eq(const std::string& testName,
+    xml::lite::StringEncoding lhs, xml::lite::StringEncoding rhs)
+{
+    TEST_ASSERT(lhs == rhs);
+}
+static void test_assert_eq(const std::string& testName,
+    const xml::lite::Element& lhs, xml::lite::StringEncoding rhs)
+{
+    test_assert_eq(testName, getEncoding(lhs), rhs);
+}
+static void test_assert_utf8(const std::string& testName, const xml::lite::Element& e)
+{
+    test_assert_eq(testName, e, xml::lite::StringEncoding::Utf8);
+}
+static void test_assert_platform(const std::string& testName, const xml::lite::Element& e)
+{
+    test_assert_eq(testName, e, xml::lite::PlatformEncoding);
+}
 
 namespace fs = std::filesystem;
 
@@ -140,10 +163,7 @@ TEST_CASE(testXmlUtf8)
     const auto expected = platfromText_;
     TEST_ASSERT_EQ(actual, expected);
 
-    std::optional<xml::lite::StringEncoding> encoding; // avoid compiler warning about possible uninitialized variable
-    encoding = a.getEncoding();
-    TEST_ASSERT_TRUE(encoding.has_value());
-    TEST_ASSERT(*encoding == PlatformEncoding);
+    test_assert_platform(testName, a);
 }
 
 TEST_CASE(testXml_setCharacterData)
@@ -152,8 +172,7 @@ TEST_CASE(testXml_setCharacterData)
     auto& a = testXmlUtf8_(xmlParser);
 
     a.setCharacterData(utf8Text8);
-    auto encoding = a.getEncoding();
-    TEST_ASSERT(encoding == xml::lite::StringEncoding::Utf8);
+    test_assert_utf8(testName, a);
 }
 
 static std::string testXmlPrint_(std::string& expected, const std::string& characterData)
@@ -226,8 +245,7 @@ static void testReadEncodedXmlFile(const std::string& testName, const std::strin
 
     const auto& a = root.getElementByTagName("a", true /*recurse*/);
     auto characterData = a.getCharacterData();
-    const auto encoding = a.getEncoding();
-    TEST_ASSERT(encoding == PlatformEncoding);
+    test_assert_platform(testName, a);
     TEST_ASSERT_EQ(characterData, platformText);
 
     std::u8string u8_characterData;
@@ -282,8 +300,7 @@ static void testReadXmlFile(const std::string& testName, const std::string& xmlF
     const auto& a = *(aElements[0]);
 
     auto characterData = a.getCharacterData();
-    const auto encoding = a.getEncoding();
-    TEST_ASSERT(encoding == PlatformEncoding);
+    test_assert_platform(testName, a);
     TEST_ASSERT_EQ(characterData, platformText);
 
     std::u8string u8_characterData;
@@ -357,9 +374,7 @@ TEST_CASE(testReadEmbeddedXml)
     xmlParser.parse(input);
     const auto& root = getRootElement(getDocument(xmlParser));
     const auto& classificationXML = root.getElementByTagName("Classification", true /*recurse*/);
-
-     const auto encoding = classificationXML.getEncoding();
-    TEST_ASSERT(encoding == PlatformEncoding);
+    test_assert_platform(testName, classificationXML);
 
      // UTF-8 characters in 50x50.nitf
     const std::string classificationText_iso8859_1("NON CLASSIFI\xc9 / UNCLASSIFIED");  // ISO8859-1 "NON CLASSIFIÉ / UNCLASSIFIED"
