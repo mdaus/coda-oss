@@ -114,6 +114,24 @@ public:
         return mIsUtf8 ? cast<coda_oss::u8string::const_pointer>(c_str()) : nullptr;
     }
 
+    // Input is encoded as specified on all platforms.
+    static EncodedStringView fromUtf8(const std::string& s)
+    {
+        return EncodedStringView(str::c_str<coda_oss::u8string>(s));
+    }
+    static EncodedStringView fromUtf8(std::string::const_pointer p)
+    {
+        return EncodedStringView(str::cast<coda_oss::u8string::const_pointer>(p));
+    }
+    static EncodedStringView fromWindows1252(const std::string& s)
+    {
+        return EncodedStringView(str::c_str<str::W1252string>(s));
+    }
+    static EncodedStringView fromWindows1252(std::string::const_pointer p)
+    {
+        return EncodedStringView(str::cast<str::W1252string::const_pointer>(p));
+    }
+
     bool operator_eq(const EncodedStringView&) const;
 
     struct details final

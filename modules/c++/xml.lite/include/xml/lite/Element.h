@@ -27,11 +27,11 @@
 #include <memory>
 #include <string>
 #include <new> // std::nothrow_t
+#include <coda_oss/string.h>
 
 #include <io/InputStream.h>
 #include <io/OutputStream.h>
 #include <str/Convert.h>
-#include <str/EncodedString.h>
 #include "xml/lite/XMLException.h"
 #include "xml/lite/Attributes.h"
 #include "xml/lite/QName.h"
@@ -344,14 +344,6 @@ public:
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
     void setCharacterData(const std::string& characters, StringEncoding);
     void setCharacterData(const coda_oss::u8string&);
-    void setCharacterData(const str::EncodedString& characters)
-    {
-        mEncodedCharacterData = characters;
-    }
-    void setCharacterData(str::EncodedString&& characters)
-    {
-        mEncodedCharacterData = characters;
-    }
 #endif  // SWIG
 
     /*!
@@ -502,7 +494,7 @@ private:
     std::string mCharacterData;
     // ... and how that data is encoded
     StringEncoding mEncoding;
-    str::EncodedString mEncodedCharacterData;
+    coda_oss::u8string mU8CharacterData;
 };
 
 extern Element& add(const xml::lite::QName&, const std::string& value, Element& parent);

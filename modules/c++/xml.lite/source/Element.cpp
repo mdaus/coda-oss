@@ -488,6 +488,7 @@ void xml::lite::Element::setNamespaceURI(
 
 void xml::lite::Element::setCharacterData(const std::string& characters)
 {
+    mU8CharacterData = str::EncodedStringView(characters).u8string();
     setCharacterData(characters, PlatformEncoding);
 }
 void xml::lite::Element::setCharacterData(const std::string& characters, StringEncoding encoding)
@@ -496,11 +497,11 @@ void xml::lite::Element::setCharacterData(const std::string& characters, StringE
     mEncoding = encoding;
     if (encoding == StringEncoding::Utf8)
     {
-        mEncodedCharacterData = str::EncodedString(str::c_str<coda_oss::u8string>(characters));    
+        mU8CharacterData = str::c_str<coda_oss::u8string>(characters);    
     }
     else if (encoding == StringEncoding::Windows1252)
     {
-         mEncodedCharacterData = str::EncodedString(str::c_str<str::W1252string>(characters));    
+         mU8CharacterData = str::EncodedStringView::fromWindows1252(characters).u8string();   
     }
     else
     {
@@ -509,6 +510,7 @@ void xml::lite::Element::setCharacterData(const std::string& characters, StringE
 }
 void xml::lite::Element::setCharacterData(const coda_oss::u8string& characters)
 {
+    mU8CharacterData = characters;
     setCharacterData(str::c_str<std::string>(characters), StringEncoding::Utf8);
 }
 
