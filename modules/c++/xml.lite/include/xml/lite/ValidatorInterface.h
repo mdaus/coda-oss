@@ -130,18 +130,22 @@ public:
      *  \param xmlID   Identifier for this input xml within the error log
      *  \param errors  Object for returning errors found (errors are appended)
      */
+    template <typename TStringStream>
+    bool vallidateT(io::InputStream& xml,
+                    TStringStream&& oss,
+                    const std::string& xmlID,
+                    std::vector<ValidationInfo>& errors) const
+    {
+        // convert to std::string
+        xml.streamTo(oss);
+        return validate(oss.stream().str(), xmlID, errors);
+    }
     bool validate(io::InputStream& xml,
                   const std::string& xmlID,
                   std::vector<ValidationInfo>& errors) const
     {
-        // convert to std::string
-        io::StringStream oss;
-        xml.streamTo(oss);
-        return validate(oss.stream().str(), xmlID, errors);
+        return vallidateT(xml, io::StringStream(), xmlID, errors);
     }
-    bool validate(io::InputStream& xml, StringEncoding,
-                  const std::string& xmlID,
-                  std::vector<ValidationInfo>& errors) const;
 
     /*!
      *  Validation against the internal schema pool

@@ -377,7 +377,8 @@ TEST_CASE(testReadEmbeddedXml)
     TEST_ASSERT_EQ(classificationText_utf_8, u8_characterData_);
 }
 
-static void testValidateXmlFile_(const std::string& testName, const std::string& xmlFile, const xml::lite::StringEncoding* pEncoding)
+template <typename TStringStream>
+static void testValidateXmlFile_(const std::string& testName, const std::string& xmlFile, TStringStream* pStringStream)
 {
     const auto unittests = findRoot() / "modules" / "c++" / "xml.lite" / "unittests";
 
@@ -394,8 +395,8 @@ static void testValidateXmlFile_(const std::string& testName, const std::string&
 
     io::FileInputStream fis(path);
     std::vector<xml::lite::ValidationInfo> errors;
-    const auto result = (pEncoding == nullptr) ? validator.validate(fis, path.string() /*xmlID*/, errors) :
-        validator.validate(fis, *pEncoding, path.string() /*xmlID*/, errors);
+    const auto result = (pStringStream == nullptr) ? validator.validate(fis, path.string() /*xmlID*/, errors) :
+        validator.vallidateT(fis, *pStringStream, path.string() /*xmlID*/, errors);
     for (const auto& error : errors)
     {
         std::clog << error.toString() << "\n";
@@ -405,11 +406,12 @@ static void testValidateXmlFile_(const std::string& testName, const std::string&
 }
 static void testValidateXmlFile(const std::string& testName, const std::string& xmlFile)
 {
-    testValidateXmlFile_(testName, xmlFile, nullptr /*pEncoding*/);
+    testValidateXmlFile_<io::StringStream>(testName, xmlFile, nullptr /*pStringStream*/);
 }
-static void testValidateXmlFile(const std::string& testName, const std::string& xmlFile, xml::lite::StringEncoding encoding)
+template <typename TStringStream>
+static void testValidateXmlFile(const std::string& testName, const std::string& xmlFile, TStringStream&& oss)
 {
-    testValidateXmlFile_(testName, xmlFile, &encoding);
+    testValidateXmlFile_(testName, xmlFile, &oss);
 }
 TEST_CASE(testValidateXmlFile)
 {
@@ -422,10 +424,10 @@ TEST_CASE(testValidateXmlFile)
     testValidateXmlFile(testName, "encoding_windows-1252.xml");
 
     // new validate() API
-    testValidateXmlFile(testName, "utf-8.xml", xml::lite::StringEncoding::Utf8);
-    testValidateXmlFile(testName, "encoding_utf-8.xml", xml::lite::StringEncoding::Utf8);
-    testValidateXmlFile(testName, "windows-1252.xml", xml::lite::StringEncoding::Windows1252);
-    testValidateXmlFile(testName, "encoding_windows-1252.xml", xml::lite::StringEncoding::Windows1252);
+    testValidateXmlFile(testName, "utf-8.xml", io::U8StringStream());
+    testValidateXmlFile(testName, "encoding_utf-8.xml", io::U8StringStream());
+    testValidateXmlFile(testName, "windows-1252.xml", io::W1252StringStream());
+    testValidateXmlFile(testName, "encoding_windows-1252.xml", io::W1252StringStream());
 }
 
 int main(int, char**)
