@@ -463,11 +463,11 @@ void xml::lite::Element::setCharacterData(const std::string& characters, StringE
 {
     if (encoding == StringEncoding::Utf8)
     {
-        mCharacterData = str::c_str<coda_oss::u8string>(characters);    
+        mCharacterData = str::EncodedString(str::c_str<coda_oss::u8string>(characters));    
     }
     else if (encoding == StringEncoding::Windows1252)
     {
-        mCharacterData = str::c_str<str::W1252string>(characters);
+        mCharacterData = str::EncodedString(str::c_str<str::W1252string>(characters));
     }
     else
     {
@@ -476,7 +476,7 @@ void xml::lite::Element::setCharacterData(const std::string& characters, StringE
 }
 void xml::lite::Element::setCharacterData(const coda_oss::u8string& characters)
 {
-    mCharacterData = characters;
+    mCharacterData = str::EncodedString(characters);
     setCharacterData(str::c_str<std::string>(characters), StringEncoding::Utf8);
 }
 

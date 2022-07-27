@@ -72,12 +72,10 @@ public:
     // Need the const char* overloads to avoid creating temporary std::basic_string<> instances.
     // Routnes always return a copy, never a reference, so there's no additional overhead
     // with storing a raw pointer rather than a pointer to  std::basic_string<>.
-    EncodedStringView(coda_oss::u8string::const_pointer);
-    EncodedStringView(const coda_oss::u8string&);
-    EncodedStringView(str::W1252string::const_pointer);
-    EncodedStringView(const str::W1252string&);
-
-    // Don't want to make it easy to use these; a known encoding is preferred.
+    explicit EncodedStringView(coda_oss::u8string::const_pointer);
+    explicit EncodedStringView(const coda_oss::u8string&);
+    explicit EncodedStringView(str::W1252string::const_pointer);
+    explicit EncodedStringView(const str::W1252string&);
     explicit EncodedStringView(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     explicit EncodedStringView(const std::string&);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
 
@@ -161,6 +159,25 @@ inline bool operator==(const EncodedStringView& lhs, const EncodedStringView& rh
     return lhs.operator_eq(rhs);
 }
 inline bool operator!=(const EncodedStringView& lhs, const EncodedStringView& rhs)
+{
+    return !(lhs == rhs);
+}
+
+// Since we'd really like to "traffic" in UTF-8 strings (at least when encoding is a consideration)
+// make that comparision easy.
+inline bool operator==(const EncodedStringView& lhs, const coda_oss::u8string& rhs)
+{
+    return lhs == EncodedStringView(rhs);
+}
+inline bool operator!=(const EncodedStringView& lhs, const coda_oss::u8string& rhs)
+{
+    return !(lhs == rhs);
+}
+inline bool operator==(const coda_oss::u8string& lhs, const EncodedStringView& rhs)
+{
+    return rhs == lhs;
+}
+inline bool operator!=(const coda_oss::u8string& lhs, const EncodedStringView& rhs)
 {
     return !(lhs == rhs);
 }
