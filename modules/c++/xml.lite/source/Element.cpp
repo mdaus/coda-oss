@@ -253,6 +253,18 @@ void xml::lite::Element::prettyPrint(io::OutputStream& stream,
     stream.writeln("");
 }
 
+void xml::lite::Element::consoleOutput_(io::OutputStream& stream) const
+{
+    depthPrint(stream, 0, "", true /*isConsoleOutput*/);
+}
+void xml::lite::Element::prettyConsoleOutput_(io::OutputStream& stream,
+                                     const std::string& formatter) const
+{
+    depthPrint(stream, 0, formatter, true /*isConsoleOutput*/);
+    stream.writeln("");
+}
+
+
 std::string xml::lite::Element::getCharacterData() const
 {
     if (getEncoding() == StringEncoding::Utf8)
@@ -279,14 +291,26 @@ xml::lite::StringEncoding xml::lite::Element::getEncoding() const
     return mCharacterData.view().c_u8str() != nullptr ? StringEncoding::Utf8 : StringEncoding::Windows1252;
 }
 
-static void writeCharacterData(io::OutputStream& stream, const coda_oss::u8string& characterData)
+static void writeCharacterData(io::OutputStream& stream, const str::EncodedStringView& characterData, bool isConsoleOutput)
 {
-    stream.write(characterData);  // call UTF-8 overload
+    if (!isConsoleOutput)
+    {
+        stream.write(characterData.u8string());  // call UTF-8 overload
+    }
+    else
+    {
+        stream.write(characterData.native()); // write to the console using the platform native encoding
+    }
 }
 
-void xml::lite::Element::depthPrint(io::OutputStream& stream, int depth, const std::string& formatter) const
+void xml::lite::Element::depthPrint(io::OutputStream& stream, int depth, const std::string& formatter, bool isConsoleOutput) const
 {
     // XML must be stored in UTF-8 (or UTF-16/32), in particular, not Windows-1252. 
+    //
+    // Except for a special exception for writing to the console: UTF-8 won't display well on Windows
+    // and Windows-1252 won't display nicely on Linux.  Of course, "console output" is a bit
+    // iffy since both Windows and Linux support redirection ... so the user could still generate
+    // a bad XML file.
 
     std::string prefix = "";
     for (int i = 0; i < depth; ++i)
@@ -315,13 +339,13 @@ void xml::lite::Element::depthPrint(io::OutputStream& stream, int depth, const s
     else
     {
         stream.write(acc + rBrack);            
-        writeCharacterData(stream, mCharacterData.u8string());
+        writeCharacterData(stream, mCharacterData.view(), isConsoleOutput);
 
         for (unsigned int i = 0; i < mChildren.size(); i++)
         {
             if (!formatter.empty())
                 stream.write("\n");
-            mChildren[i]->depthPrint(stream, depth + 1, formatter);
+            mChildren[i]->depthPrint(stream, depth + 1, formatter, isConsoleOutput);
         }
 
         if (!mChildren.empty() && !formatter.empty())

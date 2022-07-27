@@ -209,6 +209,46 @@ TEST_CASE(testXmlPrintUtf8)
     TEST_ASSERT_EQ(actual, expected);
 }
 
+
+TEST_CASE(testXmlConsoleOutput)
+{
+    const auto expected = "<root>" + platfromText_ + "</root>";
+    {
+        xml::lite::MinidomParser xmlParser;
+        auto& document = getDocument(xmlParser);
+
+        const auto view1252 = str::EncodedStringView::fromWindows1252(pIso88591Text_);
+        const auto pRootElement = document.createElement(xml::lite::QName(xml::lite::Uri(), "root"), view1252);
+
+        io::StringStream output;
+        pRootElement->consoleOutput_(output);
+        const auto actual = output.stream().str();
+        TEST_ASSERT_EQ(actual, expected);
+    }
+    {
+        xml::lite::MinidomParser xmlParser;
+        auto& document = getDocument(xmlParser);
+
+        const auto pRootElement = document.createElement(xml::lite::QName(xml::lite::Uri(), "root"), utf8Text8);
+
+        io::StringStream output;
+        pRootElement->consoleOutput_(output);
+        const auto actual = output.stream().str();
+        TEST_ASSERT_EQ(actual, expected);
+    }
+    {
+        xml::lite::MinidomParser xmlParser;
+        auto& document = getDocument(xmlParser);
+
+        const auto pRootElement = document.createElement(xml::lite::QName(xml::lite::Uri(), "root"), platfromText_);
+
+        io::StringStream output;
+        pRootElement->consoleOutput_(output);
+        const auto actual = output.stream().str();
+        TEST_ASSERT_EQ(actual, expected);
+    }
+}
+
 TEST_CASE(testXmlParseAndPrintUtf8)
 {
     io::StringStream input;
@@ -456,6 +496,7 @@ int main(int, char**)
     TEST_CHECK(testXmlPrintSimple);
     TEST_CHECK(testXmlParseAndPrintUtf8);
     TEST_CHECK(testXmlPrintUtf8);
+    TEST_CHECK(testXmlConsoleOutput);
     
     TEST_CHECK(testReadEncodedXmlFiles);
     TEST_CHECK(testReadXmlFiles);

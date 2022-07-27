@@ -477,8 +477,7 @@ private:
                    const std::string& prefix,
                    const std::string& uri);
 
-    void depthPrint(io::OutputStream& stream, int depth,
-                    const std::string& formatter) const;
+    void depthPrint(io::OutputStream& stream, int depth, const std::string& formatter, bool isConsoleOutput = false) const;
 
     Element* mParent;
     //! The children of this element
