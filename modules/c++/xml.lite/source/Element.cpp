@@ -494,6 +494,18 @@ void xml::lite::Element::setCharacterData(const std::string& characters, StringE
 {
     mCharacterData = characters;
     mEncoding = encoding;
+    if (encoding == StringEncoding::Utf8)
+    {
+        mEncodedCharacterData = str::EncodedString(str::c_str<coda_oss::u8string>(characters));    
+    }
+    else if (encoding == StringEncoding::Windows1252)
+    {
+         mEncodedCharacterData = str::EncodedString(str::c_str<str::W1252string>(characters));    
+    }
+    else
+    {
+        throw std::invalid_argument("Unknown 'encoding'.");
+    }
 }
 void xml::lite::Element::setCharacterData(const coda_oss::u8string& characters)
 {

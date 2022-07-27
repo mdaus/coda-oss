@@ -340,11 +340,19 @@ public:
      *  Sets the character data for this element.
      *  \param characters The data to add to this element
      */
-    void setCharacterData(const std::string& characters);
+    void setCharacterData(const std::string&);
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
     void setCharacterData(const std::string& characters, StringEncoding);
-    void setCharacterData(const coda_oss::u8string& characters);
-    #endif // SWIG
+    void setCharacterData(const coda_oss::u8string&);
+    void setCharacterData(const str::EncodedString& characters)
+    {
+        mEncodedCharacterData = characters;
+    }
+    void setCharacterData(str::EncodedString&& characters)
+    {
+        mEncodedCharacterData = characters;
+    }
+#endif  // SWIG
 
     /*!
      *  Sets the local name for this element.
