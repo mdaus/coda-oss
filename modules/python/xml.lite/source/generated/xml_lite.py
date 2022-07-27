@@ -154,14 +154,12 @@ class Element(object):
     def getCharacterData(self, *args) -> "void":
         r"""
         getCharacterData(Element self) -> std::string
-        getCharacterData(Element self, coda_oss::u8string & result)
         """
         return _xml_lite.Element_getCharacterData(self, *args)
 
     def setCharacterData(self, *args) -> "void":
         r"""
         setCharacterData(Element self, std::string const & characters)
-        setCharacterData(Element self, coda_oss::u8string const & characters)
         """
         return _xml_lite.Element_setCharacterData(self, *args)
 
@@ -229,7 +227,6 @@ class Document(object):
     def createElement(self, *args) -> "xml::lite::Element *":
         r"""
         createElement(Document self, std::string const & qname, std::string const & uri, std::string characterData="") -> Element
-        createElement(Document self, std::string const & qname, std::string const & uri, coda_oss::u8string const & characterData) -> Element
         """
         return _xml_lite.Document_createElement(self, *args)
 
