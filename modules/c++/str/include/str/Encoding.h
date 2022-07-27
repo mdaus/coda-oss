@@ -61,7 +61,7 @@ constexpr auto Platform = PlatformType::Linux;
 namespace str
 {
 template <typename TReturn, typename TChar>
-inline constexpr TReturn cast(const TChar* s)
+inline TReturn cast(const TChar* s)
 {
     // This is OK as UTF-8 can be stored in std::string
     // Note that casting between the string types will CRASH on some
@@ -80,7 +80,7 @@ inline typename TBasicStringT::const_pointer c_str(const std::basic_string<TChar
 
 // The u8 string literal is available in C++11, but the type changes in C++20 to char8_t.
 // https://en.cppreference.com/w/cpp/language/string_literal
-inline constexpr coda_oss::u8string::const_pointer u8(const char* p) // using "char8_t" w/o C++20 generates compiler warnings
+inline coda_oss::u8string::const_pointer u8(const char* p) // using "char8_t" w/o C++20 generates compiler warnings
 {
     return cast<coda_oss::u8string::const_pointer>(p);
 }
