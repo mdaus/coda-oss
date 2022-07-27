@@ -70,13 +70,6 @@ xml::lite::Element* xml::lite::Document::createElement(const std::string& qname,
     elem->setCharacterData(characterData);
     return elem.release();
 }
-std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const std::string& qname, const std::string& uri,
-                                   const coda_oss::u8string& characterData) const
-{
-    auto elem = newElement(qname, uri);
-    elem->setCharacterData(characterData);
-    return elem;
-}
 std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const QName& qname,
                                    const coda_oss::u8string& characterData) const
 {
@@ -84,18 +77,6 @@ std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const QNa
     elem->setCharacterData(characterData);
     return elem;
 }
-std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const std::string& qname, const std::string & uri,
-                                const std::string& characterData, StringEncoding encoding) const
-{
-    if (encoding != StringEncoding::Utf8)
-    {
-        throw std::invalid_argument("'encoding' must always be UTF-8");
-    }
-    auto elem = newElement(qname, uri);
-    elem->setCharacterData(characterData);
-    return elem;
-}
-
 std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const QName& qname,
                                     const std::string& characterData) const
 {

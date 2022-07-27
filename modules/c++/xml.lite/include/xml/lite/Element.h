@@ -333,7 +333,7 @@ public:
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
     void setCharacterData(const std::string& characters, StringEncoding);
     void setCharacterData(const coda_oss::u8string&);
-#endif  // SWIG
+   #endif  // SWIG
 
     /*!
      *  Sets the local name for this element.

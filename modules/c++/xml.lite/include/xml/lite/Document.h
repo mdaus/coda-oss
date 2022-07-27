@@ -93,15 +93,12 @@ public:
     virtual Element *createElement(const std::string & qname, const std::string & uri,
                                    std::string characterData = "");
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
-    std::unique_ptr<Element> createElement(const std::string& qname, const std::string & uri,
-                                   const std::string& characterData, StringEncoding) const;
-    std::unique_ptr<Element> createElement(const std::string& qname, const std::string& uri,
-                                   const coda_oss::u8string& characterData) const;
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const std::string& characterData) const;
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const coda_oss::u8string& characterData) const;
-    std::unique_ptr<Element> createElement(const xml::lite::QName&,
-                                   const std::string& characterData, StringEncoding) const;
     //std::unique_ptr<Element> createElement(const QName&, const str::EncodedString& characterData) const;
+
+    std::unique_ptr<Element> createElement(const xml::lite::QName&,
+                                const std::string& characterData, StringEncoding) const;
     #endif // SWIG
 
 
