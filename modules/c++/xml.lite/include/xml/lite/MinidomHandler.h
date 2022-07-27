@@ -77,7 +77,7 @@ struct MinidomHandler final : public ContentHandler
     }
 
     //! Destructor
-    virtual ~ MinidomHandler()
+    ~ MinidomHandler()
     {
         setDocument(nullptr, true);
     }
@@ -86,14 +86,14 @@ struct MinidomHandler final : public ContentHandler
     MinidomHandler(MinidomHandler&&) = default;
     MinidomHandler& operator=(MinidomHandler&&) = default;
 
-    virtual void setDocument(Document *newDocument, bool own = true);
+    void setDocument(Document *newDocument, bool own = true);
     void setDocument(std::unique_ptr<Document>&&);  // own = true
 
     /**
      * Retrieves the Document.
      * @param steal     if specified, ownership will be given up (if owned)
      */
-    virtual Document *getDocument(bool steal = false)
+    Document *getDocument(bool steal = false)
     {
         if (steal)
             mOwnDocument = false;
@@ -101,7 +101,7 @@ struct MinidomHandler final : public ContentHandler
     }
     void getDocument(std::unique_ptr<Document>&);  // steal = true
 
-    virtual Document *getDocument() const
+    Document *getDocument() const
     {
         return mDocument;
     }
@@ -113,7 +113,7 @@ struct MinidomHandler final : public ContentHandler
      * \param value The value of the char data
      * \param length The length of the char data
      */
-    virtual void characters(const char* value, int length) override;
+    void characters(const char* value, int length) override;
     bool vcharacters(const void /*XMLCh*/*, size_t length) override;  
 
     /*!
@@ -127,10 +127,10 @@ struct MinidomHandler final : public ContentHandler
      * \param qname  The qname
      * \param atts  The attributes
      */
-    virtual void startElement(const std::string & uri,
+    void startElement(const std::string & uri,
                               const std::string & localName,
                               const std::string & qname,
-                              const Attributes & atts);
+                              const Attributes & atts) override;
 
     /*!
      * We want to push only the proper amount of bytes
@@ -138,7 +138,7 @@ struct MinidomHandler final : public ContentHandler
      * up the pieces we take as we are taking them.
      * \return The chracter data for the node
      */
-    virtual std::string adjustCharacterData();
+    std::string adjustCharacterData();
 
     /*!
      * Handles the actual popping of the node off the node
@@ -148,11 +148,11 @@ struct MinidomHandler final : public ContentHandler
      * \param localName The local name
      * \param qname  The qname
      */
-    virtual void endElement(const std::string & uri,
+    void endElement(const std::string & uri,
                             const std::string & localName,
-                            const std::string & qname);
+                            const std::string & qname) override;
 
-    virtual void clear();
+    void clear();
 
     /*!
      *  Trim the white space off the back and front of a string
@@ -164,17 +164,15 @@ struct MinidomHandler final : public ContentHandler
      * If set to true, whitespaces will be preserved in the parsed
      * character data. Otherwise, it will be trimmed.
      */
-    virtual void preserveCharacterData(bool preserve);
+    void preserveCharacterData(bool preserve);
     
-protected:
+private:
     std::string currentCharacterData;
     std::stack<int> bytesForElement;
     std::stack<Element *> nodeStack;
     Document *mDocument;
     bool mOwnDocument;
     bool mPreserveCharData;
-
- private:
     void characters(const str::EncodedStringView&);
     StringEncoding mEncoding = StringEncoding::Unknown;
 };
