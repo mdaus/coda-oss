@@ -164,12 +164,6 @@ struct MinidomHandler final : public ContentHandler
      */
     virtual void preserveCharacterData(bool preserve);
     
-    /*!
-     * These are no longer used; they're stlll here to avoid regenerating Python bindings.
-     */
-    virtual void storeEncoding(bool value);
-    bool storeEncoding() const;
-
 protected:
     std::string currentCharacterData;
     std::stack<int> bytesForElement;

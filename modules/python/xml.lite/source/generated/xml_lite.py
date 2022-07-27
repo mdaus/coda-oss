@@ -266,7 +266,7 @@ class MinidomParser(object):
     __repr__ = _swig_repr
 
     def __init__(self, storeEncoding: "bool"=True):
-        r"""__init__(MinidomParser self, bool storeEncoding=False) -> MinidomParser"""
+        r"""__init__(MinidomParser self, bool storeEncoding=True) -> MinidomParser"""
         _xml_lite.MinidomParser_swiginit(self, _xml_lite.new_MinidomParser(storeEncoding))
     __swig_destroy__ = _xml_lite.delete_MinidomParser
 
@@ -299,10 +299,6 @@ class MinidomParser(object):
     def preserveCharacterData(self, preserve: "bool") -> "void":
         r"""preserveCharacterData(MinidomParser self, bool preserve)"""
         return _xml_lite.MinidomParser_preserveCharacterData(self, preserve)
-
-    def storeEncoding(self, preserve: "bool") -> "void":
-        r"""storeEncoding(MinidomParser self, bool preserve)"""
-        return _xml_lite.MinidomParser_storeEncoding(self, preserve)
 
 # Register MinidomParser in _xml_lite:
 _xml_lite.MinidomParser_swigregister(MinidomParser)

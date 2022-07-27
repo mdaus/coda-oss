@@ -206,11 +206,3 @@ void xml::lite::MinidomHandler::preserveCharacterData(bool preserve)
     mPreserveCharData = preserve;
 }
 
-void xml::lite::MinidomHandler::storeEncoding(bool)
-{
-    throw std::logic_error("'storeEncoding()' is no longer used.");
-}
-bool xml::lite::MinidomHandler::storeEncoding() const
-{
-    throw std::logic_error("'storeEncoding()' is no longer used.");
-}
