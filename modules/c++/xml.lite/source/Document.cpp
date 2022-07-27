@@ -84,11 +84,10 @@ std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const QNa
     elem->setCharacterData(characterData);
     return elem;
 }
-std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const QName& qname,
-                                       const std::string& characterData, StringEncoding encoding) const
+std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const QName& qname, const str::EncodedStringView& characterData) const
 {
     auto elem = newElement(qname);
-    elem->setCharacterData(characterData, encoding);
+    elem->setCharacterData(characterData);
     return elem;
 }
 

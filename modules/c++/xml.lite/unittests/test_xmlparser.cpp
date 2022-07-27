@@ -180,7 +180,8 @@ TEST_CASE(testXmlPrintUtf8)
     xml::lite::MinidomParser xmlParser;
     auto& document = getDocument(xmlParser);
 
-    const auto pRootElement = document.createElement(xml::lite::QName(xml::lite::Uri(), "root"), pIso88591Text_, xml::lite::StringEncoding::Windows1252);
+    const auto view1252 = str::EncodedStringView::fromWindows1252(pIso88591Text_);
+    const auto pRootElement = document.createElement(xml::lite::QName(xml::lite::Uri(), "root"), view1252);
 
     io::StringStream output;
     pRootElement->print(output);
