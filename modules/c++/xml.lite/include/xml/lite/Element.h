@@ -86,14 +86,13 @@ public:
     {
         setCharacterData(characterData);
     }
-    #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
+    #ifndef SWIG  // SWIG doesn't like unique_ptr
     Element(const xml::lite::QName& qname, const coda_oss::u8string& characterData) :
         Element(qname.getName(), qname.getUri().value, nullptr)
     {
         setCharacterData(characterData);
     }
 
-    // StringEncoding is assumed based on the platform: Windows-1252 or UTF-8.
     static std::unique_ptr<Element> create(const std::string& qname, const std::string& uri = "", const std::string& characterData = "");
     static std::unique_ptr<Element> create(const std::string& qname, const xml::lite::Uri& uri, const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const std::string& characterData = "");
@@ -285,15 +284,16 @@ public:
      *  \todo Add format capability
      */
     void print(io::OutputStream& stream) const;
-
-    // This is another slightly goofy routine to maintain backwards compatibility.
-    // XML documents must be properly (UTF-8, UTF-16 or UTF-32).  The legacy
-    // print() routine (above) can write documents with a Windows-1252 encoding
-    // as the string is just copied to the output.
-    //
-    // The only valid setting for StringEncoding is Utf8; but defaulting that
-    // could change behavior on Windows.
     void prettyPrint(io::OutputStream& stream,
+                     const std::string& formatter = "    ") const;
+
+    // Outputs (presumablly to the console) using the **NATIVE** encoding.
+    // For most XML processing, **THIS IS WRONG** as output should
+    // always be UTF-8.  However, for displaying XML on the console in Windows,
+    // the native (Windows-1252) encoding will work better as "special" characters
+    // will be displayed.
+    void consoleOutput_(io::OutputStream& stream) const; // be sure OutputStream is the console, not a file
+    void prettyConsoleOutput_(io::OutputStream& stream, // be sure OutputStream is the console, not a file
                      const std::string& formatter = "    ") const;
 
     /*!

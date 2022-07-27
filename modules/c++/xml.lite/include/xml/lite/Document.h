@@ -92,12 +92,11 @@ public:
      */
     virtual Element *createElement(const std::string & qname, const std::string & uri,
                                    std::string characterData = "");
-    #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
+    #ifndef SWIG  // SWIG doesn't like unique_ptr
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const std::string& characterData) const;
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const coda_oss::u8string& characterData) const;
     std::unique_ptr<Element> createElement(const QName&, const str::EncodedStringView&) const;
     #endif // SWIG
-
 
     /*!
      * Blanket destructor.  This thing deletes everything
