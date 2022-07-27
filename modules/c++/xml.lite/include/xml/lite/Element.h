@@ -31,11 +31,11 @@
 #include <io/InputStream.h>
 #include <io/OutputStream.h>
 #include <str/Convert.h>
+#include <str/EncodedString.h>
 #include "xml/lite/XMLException.h"
 #include "xml/lite/Attributes.h"
 #include "xml/lite/QName.h"
 #include "sys/Conf.h"
-#include "coda_oss/optional.h"
 #include "mem/SharedPtr.h"
 
 /*!
@@ -494,6 +494,7 @@ private:
     std::string mCharacterData;
     // ... and how that data is encoded
     StringEncoding mEncoding;
+    str::EncodedString mEncodedCharacterData;
 };
 
 extern Element& add(const xml::lite::QName&, const std::string& value, Element& parent);
