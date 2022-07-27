@@ -32,6 +32,7 @@
 #include "config/compiler_extensions.h"
 #include "config/Exports.h"
 #include "coda_oss/CPlusPlus.h"
+#include "coda_oss/string.h"
 #include "str/Convert.h"
 
 namespace str
@@ -70,6 +71,7 @@ inline const CharT* data(const std::basic_string<CharT>& s) noexcept // to make 
 CODA_OSS_API void trim(std::string& s);
 CODA_OSS_API std::string strip(const std::string& s);
 CODA_OSS_API std::string& strip(std::string& s);
+CODA_OSS_API coda_oss::u8string& strip(coda_oss::u8string&);
 
 /**
  *  Checks the end of s with match

@@ -97,6 +97,12 @@ std::string strip(const std::string& str)
     auto retval = str;
     return strip(retval);
 }
+coda_oss::u8string& strip(coda_oss::u8string& str)
+{
+    static const auto isspace_ = [](coda_oss::u8string::value_type ch) { return ::isspace(static_cast<int>(ch)); };
+    str.erase(std::remove_if(str.begin(), str.end(), isspace_), str.end());
+    return str;
+}
 
 bool ends_with(const std::string& s, const std::string& match) noexcept
 {
