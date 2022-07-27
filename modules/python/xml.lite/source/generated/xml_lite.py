@@ -80,7 +80,6 @@ class Element(object):
         r"""
         __init__(Element self) -> Element
         __init__(Element self, std::string const & qname, std::string const & uri="", std::string const & characterData="") -> Element
-        __init__(Element self, std::string const & qname, std::string const & uri, coda_oss::u8string const & characterData) -> Element
         __init__(Element self, Element element) -> Element
         """
         _xml_lite.Element_swiginit(self, _xml_lite.new_Element(*args))
