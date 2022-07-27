@@ -32,6 +32,7 @@
 #include <io/InputStream.h>
 #include <io/OutputStream.h>
 #include <str/Convert.h>
+#include <str/EncodedString.h>
 #include "xml/lite/XMLException.h"
 #include "xml/lite/Attributes.h"
 #include "xml/lite/QName.h"
@@ -62,7 +63,7 @@ namespace lite
 class Element final
 {
     Element(const std::string& qname, const std::string& uri, std::nullptr_t) :
-        mParent(nullptr), mName(uri, qname), mEncoding(StringEncoding::Unknown)
+        mParent(nullptr), mName(uri, qname)
     {
     }
 
@@ -324,15 +325,9 @@ public:
      *  Returns the character data of this element.
      *  \return the charater data
      */
-    std::string getCharacterData() const
-    {
-        return mCharacterData;
-    }
+    std::string getCharacterData() const;
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
-    StringEncoding getEncoding() const
-    {
-        return mEncoding;
-    }
+    StringEncoding getEncoding() const;
     void getCharacterData(coda_oss::u8string& result) const;
     #endif // SWIG
 
@@ -489,12 +484,7 @@ private:
     xml::lite::QName mName;
     //! The attributes for this element
     xml::lite::Attributes mAttributes;
-    
-    //! The character data ...
-    std::string mCharacterData;
-    // ... and how that data is encoded
-    StringEncoding mEncoding;
-    coda_oss::u8string mU8CharacterData;
+    str::EncodedString mCharacterData;
 };
 
 extern Element& add(const xml::lite::QName&, const std::string& value, Element& parent);

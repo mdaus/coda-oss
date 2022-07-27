@@ -132,6 +132,13 @@ public:
         return EncodedStringView(str::cast<str::W1252string::const_pointer>(p));
     }
 
+    std::string asUtf8() const
+    {
+        std::string retval;
+        return toUtf8(retval);
+    }
+    std::string asWindows1252() const;
+
     bool operator_eq(const EncodedStringView&) const;
 
     struct details final

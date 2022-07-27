@@ -67,11 +67,9 @@ xml::lite::Element& xml::lite::Element::operator=(const xml::lite::Element& node
     {
         mName = node.mName;
         mCharacterData = node.mCharacterData;
-        mEncoding = node.mEncoding;
         mAttributes = node.mAttributes;
         mChildren = node.mChildren;
         mParent = node.mParent;
-        mEncoding = node.mEncoding;
     }
     return *this;
 }
@@ -255,64 +253,35 @@ void xml::lite::Element::prettyPrint(io::OutputStream& stream,
     stream.writeln("");
 }
 
-static xml::lite::StringEncoding getEncoding_(xml::lite::StringEncoding encoding)
+std::string xml::lite::Element::getCharacterData() const
 {
-    if (encoding != xml::lite::StringEncoding::Unknown)
+    if (getEncoding() == StringEncoding::Utf8)
     {
-        if (encoding == xml::lite::StringEncoding::Utf8) { }
-        else if (encoding == xml::lite::StringEncoding::Windows1252) { }
-        else
-        {
-            throw std::logic_error("Unknown encoding.");
-        }
-        return encoding;
+        return mCharacterData.view().asUtf8();
     }
-
-    // don't know the encoding ... assume a default based on the platform
-    return PlatformEncoding;
+    if (getEncoding() == StringEncoding::Windows1252)
+    {
+        return mCharacterData.view().asWindows1252();
+    }
+    return mCharacterData.view().native();
 }
-
 void xml::lite::Element::getCharacterData(coda_oss::u8string& result) const
 {
-    const auto encoding = ::getEncoding_(this->getEncoding());
-
-    str::EncodedStringView view;
-    if (encoding == xml::lite::StringEncoding::Utf8)
-    {
-        view = str::c_str<coda_oss::u8string>(mCharacterData);
-    }
-    else if (encoding == xml::lite::StringEncoding::Windows1252)
-    {
-        view = str::c_str<str::W1252string>(mCharacterData);
-    }
-    else
-    {
-        throw std::logic_error("getCharacterData(): unknown encoding");
-    }
-
-    result = view.u8string(); // copy or conversion
+    result = mCharacterData.u8string();
 }
 
-static void writeCharacterData(io::OutputStream& stream,
-    const std::string& characterData, xml::lite::StringEncoding encoding_)
+xml::lite::StringEncoding xml::lite::Element::getEncoding() const
 {
-    const auto encoding = getEncoding_(encoding_);
-    if (encoding == xml::lite::StringEncoding::Windows1252)
+    if (mCharacterData.view().c_str() == nullptr)
     {
-        // need to convert before writing
-        const str::EncodedStringView view(str::c_str<str::W1252string>(characterData));
-        stream.write(view.u8string());
+        return StringEncoding::Unknown;
     }
-    else if (encoding == xml::lite::StringEncoding::Utf8)
-    {
-        // already in UTF-8, no converstion necessary
-        auto pUtf8 = str::c_str<coda_oss::u8string>(characterData);
-        stream.write(pUtf8, characterData.length()); // call UTF-8 overload
-    }
-    else
-    {
-        throw std::logic_error("writeCharacterData(): unknown encoding");
-    }
+    return mCharacterData.view().c_u8str() != nullptr ? StringEncoding::Utf8 : StringEncoding::Windows1252;
+}
+
+static void writeCharacterData(io::OutputStream& stream, const coda_oss::u8string& characterData)
+{
+    stream.write(characterData);  // call UTF-8 overload
 }
 
 void xml::lite::Element::depthPrint(io::OutputStream& stream, int depth, const std::string& formatter) const
@@ -338,7 +307,7 @@ void xml::lite::Element::depthPrint(io::OutputStream& stream, int depth, const s
         acc += std::string("\"");
     }
 
-    if (mCharacterData.empty()&& mChildren.empty())
+    if (mCharacterData.empty() && mChildren.empty())
     {
         //simple type - just end it here
         stream.write(acc + "/" + rBrack);
@@ -346,7 +315,7 @@ void xml::lite::Element::depthPrint(io::OutputStream& stream, int depth, const s
     else
     {
         stream.write(acc + rBrack);            
-        writeCharacterData(stream, mCharacterData, getEncoding());
+        writeCharacterData(stream, mCharacterData.u8string());
 
         for (unsigned int i = 0; i < mChildren.size(); i++)
         {
@@ -488,20 +457,17 @@ void xml::lite::Element::setNamespaceURI(
 
 void xml::lite::Element::setCharacterData(const std::string& characters)
 {
-    mU8CharacterData = str::EncodedStringView(characters).u8string();
     setCharacterData(characters, PlatformEncoding);
 }
 void xml::lite::Element::setCharacterData(const std::string& characters, StringEncoding encoding)
 {
-    mCharacterData = characters;
-    mEncoding = encoding;
     if (encoding == StringEncoding::Utf8)
     {
-        mU8CharacterData = str::c_str<coda_oss::u8string>(characters);    
+        mCharacterData = str::c_str<coda_oss::u8string>(characters);    
     }
     else if (encoding == StringEncoding::Windows1252)
     {
-         mU8CharacterData = str::EncodedStringView::fromWindows1252(characters).u8string();   
+        mCharacterData = str::c_str<str::W1252string>(characters);
     }
     else
     {
@@ -510,7 +476,7 @@ void xml::lite::Element::setCharacterData(const std::string& characters, StringE
 }
 void xml::lite::Element::setCharacterData(const coda_oss::u8string& characters)
 {
-    mU8CharacterData = characters;
+    mCharacterData = characters;
     setCharacterData(str::c_str<std::string>(characters), StringEncoding::Utf8);
 }
 
