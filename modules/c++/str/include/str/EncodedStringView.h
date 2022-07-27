@@ -59,11 +59,6 @@ class CODA_OSS_API EncodedStringView final
     // doesn't expose "mIsUtf8" so there's (intentinally) no way for clients to know the encoding.
     friend EncodedString;
 
-    coda_oss::u8string::const_pointer c_str() const
-    {
-        return cast<coda_oss::u8string::const_pointer>(mString.data());
-    }
-
     str::W1252string w1252string() const;  // c.f. std::filesystem::path::u8string()
 
 public:
@@ -108,6 +103,16 @@ public:
     // With some older C++ compilers, uint16_t may be used instead of char16_t :-(
     // Using this routine can avoid an extra copy.
     str::ui16string ui16string_() const; // use sparingly!
+
+    // These are for "advanced" use, most "normal" code should use the routines above.
+    std::string::const_pointer c_str() const
+    {
+        return mString.data();
+    }
+    coda_oss::u8string::const_pointer c_u8str() const
+    {
+        return mIsUtf8 ? cast<coda_oss::u8string::const_pointer>(c_str()) : nullptr;
+    }
 
     bool operator_eq(const EncodedStringView&) const;
 
