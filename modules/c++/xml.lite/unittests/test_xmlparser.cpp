@@ -255,8 +255,8 @@ TEST_CASE(testReadEncodedXmlFiles)
     testReadEncodedXmlFile(testName, "encoding_utf-8.xml", false /*preserveCharacterData*/, platfromText_ , utf8Text8);
     testReadEncodedXmlFile(testName, "encoding_windows-1252.xml", true /*preserveCharacterData*/, platfromText_ , utf8Text8);
     testReadEncodedXmlFile(testName, "encoding_windows-1252.xml", false /*preserveCharacterData*/, platfromText_ , utf8Text8);
-    testReadEncodedXmlFile(testName, "ascii_encoding_utf-8.xml", true /*preserveCharacterData*/, "TEXT" , str::cast<std::u8string::const_pointer>("TEXT"));
-    testReadEncodedXmlFile(testName, "ascii_encoding_utf-8.xml", false /*preserveCharacterData*/, "TEXT" , str::cast<std::u8string::const_pointer>("TEXT"));
+    testReadEncodedXmlFile(testName, "ascii_encoding_utf-8.xml", true /*preserveCharacterData*/, "TEXT" , str::u8("TEXT"));
+    testReadEncodedXmlFile(testName, "ascii_encoding_utf-8.xml", false /*preserveCharacterData*/, "TEXT" , str::u8("TEXT"));
 }
 
 static void testReadXmlFile(const std::string& testName, const std::string& xmlFile, bool preserveCharacterData,
@@ -311,8 +311,8 @@ TEST_CASE(testReadXmlFiles)
     testReadXmlFile(testName, "utf-8.xml", false /*preserveCharacterData*/, platfromText_ , utf8Text8);
     testReadXmlFile(testName, "windows-1252.xml", true /*preserveCharacterData*/, platfromText_ , utf8Text8);
     testReadXmlFile(testName, "windows-1252.xml", false /*preserveCharacterData*/, platfromText_ , utf8Text8);
-    testReadXmlFile(testName, "ascii.xml", true /*preserveCharacterData*/, "TEXT" , str::cast<std::u8string::const_pointer>("TEXT"));
-    testReadXmlFile(testName, "ascii.xml", false /*preserveCharacterData*/, "TEXT" , str::cast<std::u8string::const_pointer>("TEXT"));
+    testReadXmlFile(testName, "ascii.xml", true /*preserveCharacterData*/, "TEXT" , str::u8("TEXT"));
+    testReadXmlFile(testName, "ascii.xml", false /*preserveCharacterData*/, "TEXT" , str::u8("TEXT"));
 }
 
 static bool find_string(io::FileInputStream& stream, const std::string& s)
@@ -419,6 +419,7 @@ TEST_CASE(testValidateXmlFile)
     // legacy validate() API, new string conversion
     testValidateXmlFile(testName, "utf-8.xml");
     testValidateXmlFile(testName, "encoding_utf-8.xml");
+    testValidateXmlFile(testName, "encoding_windows-1252.xml");
 
     // new validate() API
     testValidateXmlFile(testName, "utf-8.xml", xml::lite::StringEncoding::Utf8);
