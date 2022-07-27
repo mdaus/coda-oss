@@ -75,29 +75,24 @@ TEST_CASE(testCharToString)
     TEST_ASSERT_EQ(str::toString<char>(65), "A");
 }
 
-static coda_oss::u8string fromWindows1252(const std::string& s)
+static inline coda_oss::u8string fromWindows1252(const std::string& s)
 {
     // s is Windows-1252 on ALL platforms
     return str::fromWindows1252(s.c_str(), s.size());
 }
 
-template<typename T>
-static constexpr std::u8string::value_type cast8(T ch)
-{
-    static_assert(sizeof(std::u8string::value_type) == sizeof(char), "sizeof(Char8_T) != sizeof(char)");
-    return static_cast<std::u8string::value_type>(ch);
-}
-template <typename T>
-static constexpr std::u32string::value_type cast32(T ch)
+template<typename TChar>
+static inline constexpr std::u32string::value_type U(TChar ch)
 {
     return static_cast<std::u32string::value_type>(ch);
 }
+
 TEST_CASE(test_string_to_u8string_ascii)
 {
     {
         const std::string input = "|\x00";  //  ASCII, "|<NULL>"
         const auto actual = fromWindows1252(input);
-        const std::u8string expected{cast8('|')}; // '\x00' is the end of the string in C/C++
+        const std::u8string expected{str::u8('|')}; // '\x00' is the end of the string in C/C++
         TEST_ASSERT_EQ(actual, expected);
     }
     constexpr uint8_t start_of_heading = 0x01;
@@ -106,9 +101,9 @@ TEST_CASE(test_string_to_u8string_ascii)
     {
         const std::string input { '|', static_cast<std::string::value_type>(ch), '|'};
         const auto actual = fromWindows1252(input);
-        const std::u8string expected8{cast8('|'), cast8(ch), cast8('|')}; 
+        const std::u8string expected8{str::u8('|'), str::u8(ch), str::u8('|')}; 
         TEST_ASSERT_EQ(actual, expected8);
-        const std::u32string expected{cast32('|'), cast32(ch), cast32('|')};
+        const std::u32string expected{U'|', U(ch), U'|'};
         TEST_ASSERT_EQ(to_string(actual), to_string(expected));
     }
 }
@@ -119,17 +114,17 @@ TEST_CASE(test_string_to_u8string_windows_1252)
     {
         const std::string input = "|\x80|";  // Windows-1252, "|€|"
         const auto actual = fromWindows1252(input);
-        const std::u8string expected8{cast8('|'), cast8('\xE2'), cast8('\x82'), cast8('\xAC'), cast8('|')};  // UTF-8,  "|€|"
+        const std::u8string expected8{str::u8("|\xE2\x82\xAC|")};  // UTF-8,  "|€|"
         TEST_ASSERT_EQ(actual, expected8);
-        const std::u32string expected{cast32('|'), 0x20AC, cast32('|')};  // UTF-32,  "|€|"
+        const std::u32string expected{U'|', 0x20AC, U'|'};  // UTF-32,  "|€|"
         TEST_ASSERT_EQ(to_string(actual), to_string(expected));
     }
     {
         const std::string input = "|\x9F|";  // Windows-1252, "|Ÿ|"
         const auto actual = fromWindows1252(input);
-        const std::u8string expected8{cast8('|'), cast8('\xC5'), cast8('\xB8'), cast8('|')};  // UTF-8,  "|Ÿ|"
+        const std::u8string expected8{str::u8("|\xC5\xB8|")};  // UTF-8,  "|Ÿ|"
         TEST_ASSERT_EQ(actual, expected8);
-        const std::u32string expected{cast32('|'), 0x0178, cast32('|')};  // UTF-32,  "|Ÿ|"
+        const std::u32string expected{U'|', 0x0178, U'|'};  // UTF-32,  "|Ÿ|"
         TEST_ASSERT_EQ(to_string(actual), to_string(expected));
     }
     {
@@ -138,9 +133,9 @@ TEST_CASE(test_string_to_u8string_windows_1252)
         {
             const std::string input{'|', ch, '|'};
             const auto actual = fromWindows1252(input);
-            static const std::u8string expected8{cast8('|'), cast8('\xEF'), cast8('\xBF'), cast8('\xBD'), cast8('|')};  // UTF-8,  "|<REPLACEMENT CHARACTER>|"
+            static const std::u8string expected8{str::u8("|\xEF\xBF\xBD|")};  // UTF-8,  "|<REPLACEMENT CHARACTER>|"
             TEST_ASSERT_EQ(actual, expected8);
-            const std::u32string expected{cast32('|'), 0xfffd, cast32('|')};  // UTF-32,  "|<REPLACEMENT CHARACTER>|"
+            const std::u32string expected{U'|', 0xfffd, U'|'};  // UTF-32,  "|<REPLACEMENT CHARACTER>|"
             TEST_ASSERT_EQ(to_string(actual), to_string(expected));
         }    
     }
@@ -208,7 +203,7 @@ TEST_CASE(test_string_to_u8string_iso8859_1)
         const std::string input_ { '|', static_cast<std::string::value_type>(ch), '|'};
         const str::W1252string input(str::c_str<str::W1252string>(input_));
         const auto actual = to_u8string(input);
-        const std::u32string expected{cast32('|'), cast32(ch), cast32('|')};
+        const std::u32string expected{U'|', U(ch), U'|'};
         TEST_ASSERT_EQ(to_string(actual), to_string(expected));
 
         // Can't compare the values with == because TEST_ASSERT_EQ()

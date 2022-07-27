@@ -88,6 +88,14 @@ inline constexpr coda_oss::u8string::const_pointer u8(coda_oss::u8string::const_
 {
     return p;
 }
+inline coda_oss::u8string::value_type u8(char ch) // using "char8_t" w/o C++20 generates compiler warnings
+{
+    return *(u8(&ch));
+}
+inline constexpr coda_oss::u8string::value_type u8(coda_oss::u8string::value_type ch)
+{
+    return ch;
+}
 
 // This is to make it difficult to get encodings mixed up; it's here (in a .h
 // file) as we want to unit-test it. Windows1252_T for Windows-1252 characters
