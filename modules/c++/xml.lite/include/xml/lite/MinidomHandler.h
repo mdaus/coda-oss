@@ -174,7 +174,7 @@ private:
     Document *mDocument;
     bool mOwnDocument;
     bool mPreserveCharData;
-    void characters(const coda_oss::u8string&);
+    void characters(coda_oss::u8string&&);
 };
 }
 }

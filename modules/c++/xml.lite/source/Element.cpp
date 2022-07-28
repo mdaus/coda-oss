@@ -465,22 +465,7 @@ void xml::lite::Element::setNamespaceURI(
 
 void xml::lite::Element::setCharacterData(const std::string& characters)
 {
-    setCharacterData(characters, PlatformEncoding);
-}
-void xml::lite::Element::setCharacterData(const std::string& characters, StringEncoding encoding)
-{
-    if (encoding == StringEncoding::Utf8)
-    {
-        mCharacterData = str::c_str<coda_oss::u8string>(characters);    
-    }
-    else if (encoding == StringEncoding::Windows1252)
-    {
-        mCharacterData = str::EncodedStringView(str::c_str<str::W1252string>(characters)).u8string();
-    }
-    else
-    {
-        throw std::invalid_argument("Unknown 'encoding'.");
-    }
+    mCharacterData = str::EncodedStringView(characters).u8string();
 }
 
 xml::lite::Element& xml::lite::add(const QName& qname,

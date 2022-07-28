@@ -22,6 +22,7 @@
 
 #include <stdexcept>
 #include <std/string>
+#include <utility>
 
 #include "str/Manip.h"
 #include "str/Convert.h"
@@ -58,14 +59,14 @@ void xml::lite::MinidomHandler::clear()
     assert(nodeStack.empty());
 }
 
-void xml::lite::MinidomHandler::characters(const std::u8string& s)
+void xml::lite::MinidomHandler::characters(std::u8string&& s)
 {
-    // Append new data
-    currentCharacterData += s;
-
     // Append number of bytes added to this node's stack value
     assert(bytesForElement.size());
     bytesForElement.top() += static_cast<int>(s.length());
+
+    // Append new data
+    currentCharacterData += std::move(s);
 }
 void xml::lite::MinidomHandler::characters(const char *value, int length)
 {
@@ -90,8 +91,8 @@ bool xml::lite::MinidomHandler::vcharacters(const void /*XMLCh*/* chars_, size_t
     static_assert(sizeof(XMLCh) == sizeof(char16_t), "XMLCh should be 16-bits.");
     auto pChars16 = static_cast<const char16_t*>(chars_);
 
-    const auto chars = str::EncodedString(std::u16string(pChars16, length)).u8string();
-    characters(chars);
+    auto chars = str::EncodedString(std::u16string(pChars16, length)).u8string();
+    characters(std::move(chars));
     return true; // vcharacters() processed
 }
 
