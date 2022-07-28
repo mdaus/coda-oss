@@ -207,6 +207,14 @@ inline void reset(str::EncodedStringView xmlView, std::unique_ptr<str::ui16strin
 }
 
 using XMLCh_string = std::basic_string<XMLCh_t>;
+static std::unique_ptr<XMLCh_string> setStringData(xercesc::DOMLSInputImpl& input, const std::u8string& xml)
+{
+    // expand to the wide character data for use with xerces
+    std::unique_ptr<XMLCh_string> retval;
+    reset(str::EncodedStringView(xml), retval);
+    input.setStringData(retval->c_str());
+    return retval;
+}
 
 bool ValidatorXerces::validate_(const std::u8string& xml, 
                                const std::string& xmlID,
@@ -226,9 +234,7 @@ bool ValidatorXerces::validate_(const std::u8string& xml,
         xercesc::XMLPlatformUtils::fgMemoryManager);
 
     // expand to the wide character data for use with xerces
-    std::unique_ptr<XMLCh_string> pWString;
-    reset(str::EncodedStringView(xml), pWString);
-    input.setStringData(pWString->c_str());
+    auto pWString = setStringData(input, xml);
 
     // validate the document
     mValidator->parse(&input)->release();
