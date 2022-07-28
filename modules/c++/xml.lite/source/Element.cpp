@@ -267,14 +267,6 @@ void xml::lite::Element::prettyConsoleOutput_(io::OutputStream& stream,
 
 std::string xml::lite::Element::getCharacterData() const
 {
-    if (getEncoding() == StringEncoding::Utf8)
-    {
-        return mCharacterData.view().asUtf8();
-    }
-    if (getEncoding() == StringEncoding::Windows1252)
-    {
-        return mCharacterData.view().asWindows1252();
-    }
     return mCharacterData.view().native();
 }
 void xml::lite::Element::getCharacterData(coda_oss::u8string& result) const
