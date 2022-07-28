@@ -78,9 +78,8 @@ struct MinidomParser final
      *  \param size  This is the size of the stream to feed the parser
      */
     void parse(io::InputStream& is, int size = io::InputStream::IS_END);
-    #ifndef SWIG  // SWIG doesn't like unique_ptr
-    void parse(io::InputStream& is, StringEncoding, int size = io::InputStream::IS_END);
-    #endif // SWIG
+    void parse(io::InputStream& is, const void*pInitialEncoding, const void* pFallbackEncoding,
+        int size = io::InputStream::IS_END);
 
     /*!
      *  This clears the MinidomHandler, killing its underlying Document

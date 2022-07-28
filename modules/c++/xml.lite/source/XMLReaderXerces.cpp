@@ -34,19 +34,9 @@ xml::lite::XMLReaderXerces::XMLReaderXerces()
     create();
 }
 
-void xml::lite::XMLReaderXerces::parse(io::InputStream& is, StringEncoding encoding, int size)
+const void* xml::lite::XMLReaderXerces::getWindows1252Encoding()
 {
-    io::StringStream oss;
-    is.streamTo(oss, size);
-
-    const auto available = oss.available();
-    if ( available <= 0 )
-    {
-        throw xml::lite::XMLParseException(Ctxt("No stream available"));
-    }
-    std::vector<sys::byte> buffer(available);
-    oss.read(buffer.data(), buffer.size());
-    parse(buffer, encoding);
+    return XMLUni::fgWin1252EncodingString;
 }
 
 static void parse(SAX2XMLReader& parser, const std::vector<sys::byte>& buffer, const XMLCh* pEncoding)
@@ -90,27 +80,27 @@ static void parse(SAX2XMLReader& parser, const std::vector<sys::byte>& buffer,
     parse(parser, buffer, pFallbackEncoding);
 }
 
-void xml::lite::XMLReaderXerces::parse(const std::vector<sys::byte>& buffer, StringEncoding encoding)
+void xml::lite::XMLReaderXerces::parse(io::InputStream& is, const void*pInitialEncoding_, const void* pFallbackEncoding_, int size)
 {
-    if (encoding == StringEncoding::Windows1252)
+    io::StringStream oss;
+    is.streamTo(oss, size);
+
+    const auto available = oss.available();
+    if ( available <= 0 )
     {
-        // This will try parsing as Windows1252 first, then the default (UTF-8)
-        ::parse(*mNative, buffer, XMLUni::fgWin1252EncodingString, nullptr /*pFallbackEncoding*/);
+        throw xml::lite::XMLParseException(Ctxt("No stream available"));
     }
-    else if (encoding == StringEncoding::Utf8)
-    {
-        // This will only try parsing the default (UTF-8)
-        ::parse(*mNative, buffer, nullptr /*pInitialEncoding*/, nullptr /*pFallbackEncoding*/);
-    }
-    else
-    {
-        // This will try parsing the default (UTF-8) first, then Windows1252
-        ::parse(*mNative, buffer, nullptr /*pInitialEncoding*/, XMLUni::fgWin1252EncodingString);
-    }
+    std::vector<sys::byte> buffer(available);
+    oss.read(buffer.data(), buffer.size());
+
+    const auto pInitialEncoding = static_cast<const XMLCh*>(pInitialEncoding_);
+    const auto pFallbackEncoding = static_cast<const XMLCh*>(pFallbackEncoding_);
+    ::parse(*mNative, buffer, pInitialEncoding, pFallbackEncoding);
 }
 void xml::lite::XMLReaderXerces::parse(io::InputStream& is, int size)
 {
-    parse(is, StringEncoding::Unknown, size);
+    // This will try parsing the default (UTF-8) first, then Windows1252
+    parse(is, nullptr /*pInitialEncoding*/, getWindows1252Encoding(), size);
 }
 
 // This function creates the parser

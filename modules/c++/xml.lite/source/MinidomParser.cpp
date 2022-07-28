@@ -37,9 +37,9 @@ void xml::lite::MinidomParser::parse(io::InputStream& is, int size)
 {
     mReader.parse(is, size);
 }
-void xml::lite::MinidomParser::parse(io::InputStream& is, StringEncoding encoding, int size)
+void xml::lite::MinidomParser::parse(io::InputStream& is, const void*pInitialEncoding, const void* pFallbackEncoding, int size)
 {
-    mReader.parse(is, encoding, size);
+    mReader.parse(is, pInitialEncoding, pFallbackEncoding, size);
 }
 
 void xml::lite::MinidomParser::clear()
