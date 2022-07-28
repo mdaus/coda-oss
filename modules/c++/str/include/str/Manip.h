@@ -69,9 +69,9 @@ inline const CharT* data(const std::basic_string<CharT>& s) noexcept // to make 
  *  @param  s  String to trim
  */
 CODA_OSS_API void trim(std::string& s);
-CODA_OSS_API std::string strip(const std::string& s);
-CODA_OSS_API std::string& strip(std::string& s);
-CODA_OSS_API coda_oss::u8string& strip(coda_oss::u8string&);
+CODA_OSS_API std::string trim(const std::string& s);
+CODA_OSS_API void trim(coda_oss::u8string& s);
+CODA_OSS_API coda_oss::u8string trim(const coda_oss::u8string& s);
 
 /**
  *  Checks the end of s with match
