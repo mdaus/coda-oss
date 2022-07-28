@@ -56,17 +56,15 @@ namespace lite
  * bloat of the spec.  It was inspired by python's xml.dom.minidom
  * module.
  */
-struct MinidomParser
+struct MinidomParser final
 {
     /*!
      *  Constructor.  Set our SAX ContentHandler.
      */
-    MinidomParser(bool storeEncoding = true);
+    explicit MinidomParser(bool storeEncoding = true);
 
     //! Destructor.
-    virtual ~MinidomParser()
-    {
-    }
+    ~MinidomParser() = default;
 
     MinidomParser(const MinidomParser&) = delete;
     MinidomParser& operator=(const MinidomParser&) = delete;
@@ -79,9 +77,9 @@ struct MinidomParser
      *  \param is  This is the input stream to feed the parser
      *  \param size  This is the size of the stream to feed the parser
      */
-    virtual void parse(io::InputStream& is, int size = io::InputStream::IS_END);
+    void parse(io::InputStream& is, int size = io::InputStream::IS_END);
     #ifndef SWIG  // SWIG doesn't like unique_ptr
-    virtual void parse(io::InputStream& is, StringEncoding, int size = io::InputStream::IS_END);
+    void parse(io::InputStream& is, StringEncoding, int size = io::InputStream::IS_END);
     #endif // SWIG
 
     /*!
@@ -89,16 +87,15 @@ struct MinidomParser
      *  tree.  The Document node is preserved, however -- it must
      *  be explicitly reset to another document to change element type.
      */
-    virtual void clear();
+    void clear();
 
     /*!
      *  Return a pointer to the document.  Note that its a reference
      *  so you dont get to keep it.
      *  \return Pointer to document.
      */
-    virtual Document *getDocument() const;
-
-    virtual Document *getDocument(bool steal = false);
+    Document *getDocument() const;
+    Document *getDocument(bool steal = false);
     void getDocument(std::unique_ptr<Document>&); // steal = true
 
     /*!
@@ -126,15 +123,15 @@ struct MinidomParser
      *
      *  \param newDocument The new document.
      */
-    virtual void setDocument(Document * newDocument, bool own = true);
+    void setDocument(Document * newDocument, bool own = true);
     void setDocument(std::unique_ptr<Document>&&);  // own = true
 
     /*!
      * @see MinidomHandler::preserveCharacterData
      */
-    virtual void preserveCharacterData(bool preserve);
+    void preserveCharacterData(bool preserve);
 
-protected:
+private:
     MinidomHandler mHandler;
     XMLReader mReader;
 };
