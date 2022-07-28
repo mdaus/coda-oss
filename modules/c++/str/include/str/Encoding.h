@@ -78,25 +78,6 @@ inline typename TBasicStringT::const_pointer c_str(const std::basic_string<TChar
     return cast<return_t>(s.c_str());
 }
 
-// The u8 string literal is available in C++11, but the type changes in C++20 to char8_t.
-// https://en.cppreference.com/w/cpp/language/string_literal
-inline coda_oss::u8string::const_pointer u8(const char* p) // using "char8_t" w/o C++20 generates compiler warnings
-{
-    return cast<coda_oss::u8string::const_pointer>(p);
-}
-inline constexpr coda_oss::u8string::const_pointer u8(coda_oss::u8string::const_pointer p)
-{
-    return p;
-}
-inline coda_oss::u8string::value_type u8(char ch) // using "char8_t" w/o C++20 generates compiler warnings
-{
-    return *(u8(&ch));
-}
-inline constexpr coda_oss::u8string::value_type u8(coda_oss::u8string::value_type ch)
-{
-    return ch;
-}
-
 // This is to make it difficult to get encodings mixed up; it's here (in a .h
 // file) as we want to unit-test it. Windows1252_T for Windows-1252 characters
 enum class Windows1252_T : unsigned char { };  // https://en.cppreference.com/w/cpp/language/types

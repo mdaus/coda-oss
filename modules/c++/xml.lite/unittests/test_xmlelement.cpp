@@ -20,12 +20,22 @@
  *
  */
 
-#include <string>
-
+#include <std/string>
+#include "coda_oss/CPlusPlus.h"
 #include "io/StringStream.h"
 #include <TestCase.h>
 
 #include "xml/lite/MinidomParser.h"
+
+// It seems that a macro is better than a utility routine, see https://github.com/tahonermann/char8_t-remediation
+// C++20 changed the type of u8 to char8_t* https://en.cppreference.com/w/cpp/language/string_literal
+// Not putting this everywhere because (1) well, it's a macro, and (2) it's mostly
+// only test code that uses string literals.
+#if CODA_OSS_cpp20
+#define U8(s) u8##s
+#else
+#define U8(s) static_cast<const std::char8_t*>(static_cast<const void*>(s))
+#endif
 
 static inline xml::lite::StringEncoding getEncoding(const xml::lite::Element& element)
 {
@@ -92,7 +102,7 @@ TEST_CASE(test_CloneCopy_root_encoding)
     {
         test_MinidomParser xmlParser;
         auto& root_ = xmlParser.getRootElement();
-        root_.setCharacterData(str::u8("abc"));
+        root_.setCharacterData(U8("abc"));
         const auto& root = root_;
         test_assert_utf8(testName, root);
 
@@ -110,7 +120,7 @@ TEST_CASE(test_CloneCopy_root_encoding)
     {
         test_MinidomParser xmlParser;
         auto& root_ = xmlParser.getRootElement();
-        root_.setCharacterData(str::u8("abc"));
+        root_.setCharacterData(U8("abc"));
         const auto& root = root_;
 
         xml::lite::Element copy;
@@ -138,7 +148,7 @@ TEST_CASE(test_CloneCopy_copy_encoding)
     xml::lite::Element copy;
     copy.clone(root);
     copy.clearChildren();
-    copy.setCharacterData(str::u8("xyz"));
+    copy.setCharacterData(U8("xyz"));
     test_assert_utf8(testName, copy);
     test_assert_platform(testName, root);
 }

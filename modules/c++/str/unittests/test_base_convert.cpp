@@ -25,8 +25,9 @@
 #include <vector>
 #include <string>
 #include <iterator>
-
 #include <std/string>
+
+#include "coda_oss/CPlusPlus.h"
 
 #include <import/str.h>
 #include <str/EncodedString.h>
@@ -34,7 +35,19 @@
 
 #include "TestCase.h"
 
-static std::string to_string(const coda_oss::u8string& value)
+// It seems that a macro is better than a utility routine, see https://github.com/tahonermann/char8_t-remediation
+// C++20 changed the type of u8 to char8_t* https://en.cppreference.com/w/cpp/language/string_literal
+// Not putting this everywhere because (1) well, it's a macro, and (2) it's mostly
+// only test code that uses string literals.
+#if CODA_OSS_cpp20
+#define U8(ch) u8##ch
+#define U8s(s) u8##s
+#else
+#define U8(ch) static_cast<std::char8_t>(ch)
+#define U8s(s) static_cast<const std::char8_t*>(static_cast<const void*>(s))
+#endif
+
+static std::string to_string(const std::u8string& value)
 {
     return str::c_str<std::string>(value);  // copy
 }
@@ -75,7 +88,7 @@ TEST_CASE(testCharToString)
     TEST_ASSERT_EQ(str::toString<char>(65), "A");
 }
 
-static inline coda_oss::u8string fromWindows1252(const std::string& s)
+static inline std::u8string fromWindows1252(const std::string& s)
 {
     // s is Windows-1252 on ALL platforms
     return str::fromWindows1252(s.c_str(), s.size());
@@ -92,7 +105,7 @@ TEST_CASE(test_string_to_u8string_ascii)
     {
         const std::string input = "|\x00";  //  ASCII, "|<NULL>"
         const auto actual = fromWindows1252(input);
-        const std::u8string expected{str::u8('|')}; // '\x00' is the end of the string in C/C++
+        const std::u8string expected{U8('|')}; // '\x00' is the end of the string in C/C++
         TEST_ASSERT_EQ(actual, expected);
     }
     constexpr uint8_t start_of_heading = 0x01;
@@ -101,7 +114,7 @@ TEST_CASE(test_string_to_u8string_ascii)
     {
         const std::string input { '|', static_cast<std::string::value_type>(ch), '|'};
         const auto actual = fromWindows1252(input);
-        const std::u8string expected8{str::u8('|'), str::u8(ch), str::u8('|')}; 
+        const std::u8string expected8{U8('|'), U8(ch), U8('|')}; 
         TEST_ASSERT_EQ(actual, expected8);
         const std::u32string expected{U'|', U(ch), U'|'};
         TEST_ASSERT_EQ(to_string(actual), to_string(expected));
@@ -114,7 +127,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
     {
         const std::string input = "|\x80|";  // Windows-1252, "|€|"
         const auto actual = fromWindows1252(input);
-        const std::u8string expected8{str::u8("|\xE2\x82\xAC|")};  // UTF-8,  "|€|"
+        const std::u8string expected8{U8s("|\xE2\x82\xAC|")};  // UTF-8,  "|€|"
         TEST_ASSERT_EQ(actual, expected8);
         const std::u32string expected{U'|', 0x20AC, U'|'};  // UTF-32,  "|€|"
         TEST_ASSERT_EQ(to_string(actual), to_string(expected));
@@ -122,7 +135,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
     {
         const std::string input = "|\x9F|";  // Windows-1252, "|Ÿ|"
         const auto actual = fromWindows1252(input);
-        const std::u8string expected8{str::u8("|\xC5\xB8|")};  // UTF-8,  "|Ÿ|"
+        const std::u8string expected8{U8s("|\xC5\xB8|")};  // UTF-8,  "|Ÿ|"
         TEST_ASSERT_EQ(actual, expected8);
         const std::u32string expected{U'|', 0x0178, U'|'};  // UTF-32,  "|Ÿ|"
         TEST_ASSERT_EQ(to_string(actual), to_string(expected));
@@ -133,7 +146,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
         {
             const std::string input{'|', ch, '|'};
             const auto actual = fromWindows1252(input);
-            static const std::u8string expected8{str::u8("|\xEF\xBF\xBD|")};  // UTF-8,  "|<REPLACEMENT CHARACTER>|"
+            static const std::u8string expected8{U8s("|\xEF\xBF\xBD|")};  // UTF-8,  "|<REPLACEMENT CHARACTER>|"
             TEST_ASSERT_EQ(actual, expected8);
             const std::u32string expected{U'|', 0xfffd, U'|'};  // UTF-32,  "|<REPLACEMENT CHARACTER>|"
             TEST_ASSERT_EQ(to_string(actual), to_string(expected));
@@ -259,7 +272,7 @@ TEST_CASE(test_change_case)
 // https://en.wikipedia.org/wiki/%C3%89#Character_mappings
 static const str::EncodedString& classificationText_utf_8()
 {
-    static const str::EncodedString retval(str::cast<coda_oss::u8string::const_pointer>("A\xc3\x89IOU")); // UTF-8 "AÉIOU"
+    static const str::EncodedString retval(str::cast<std::u8string::const_pointer>("A\xc3\x89IOU")); // UTF-8 "AÉIOU"
     return retval;
  }
 static const str::EncodedString& classificationText_iso8859_1()
