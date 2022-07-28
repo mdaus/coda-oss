@@ -69,11 +69,6 @@ enum class StringEncoding
     , Utf8
     , Unknown // TODO: remove?
 };
-constexpr auto PlatformEncoding = sys::Platform == sys::PlatformType::Windows
-        ? xml::lite::StringEncoding::Windows1252
-        : xml::lite::StringEncoding::Utf8;
-// Could do the same for std::wstring, but there isn't any code needing it right now.
-// Probably better to use std::u16string and std::u32string anyway.
 #endif
 
 /*!

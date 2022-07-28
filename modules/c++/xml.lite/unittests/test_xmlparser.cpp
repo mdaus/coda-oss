@@ -30,6 +30,7 @@
 #include "str/Encoding.h"
 #include "str/EncodedString.h"
 #include "coda_oss/CPlusPlus.h"
+#include "sys/OS.h"
 #include <TestCase.h>
 
 #include "xml/lite/MinidomParser.h"
@@ -59,7 +60,7 @@ static const auto pUtf8Text_ = str::c_str<std::string>(utf8Text8);
 static const auto strUtf8Xml8 = U8("<root><doc><a>") + utf8Text8 + U8("</a></doc></root>");
 static const std::string strUtf8Xml = str::c_str<std::string>(strUtf8Xml8);
 
-static const std::string  platfromText_ = xml::lite::PlatformEncoding == xml::lite::StringEncoding::Utf8 ? pUtf8Text_ : pIso88591Text_;
+static const std::string  platfromText_ = sys::Platform == sys::PlatformType::Windows ?  pIso88591Text_ : pUtf8Text_;
 
 namespace fs = std::filesystem;
 
