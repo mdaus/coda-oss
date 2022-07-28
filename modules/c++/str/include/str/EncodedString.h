@@ -28,6 +28,7 @@
 #include <string>
 #include <ostream>
 
+#include "config/Exports.h"
  #include "str/EncodedStringView.h"
 
 /*!
@@ -45,7 +46,7 @@
 
 namespace str
 {
-class EncodedString final
+class CODA_OSS_API EncodedString final
 {
     std::string s_;
     // We can do most everything through the view, so keep one around.
@@ -66,8 +67,8 @@ public:
     ~EncodedString() = default;
     EncodedString(const EncodedString&);
     EncodedString& operator=(const EncodedString&);
-    EncodedString(EncodedString&&) noexcept;
-    EncodedString& operator=(EncodedString&&) noexcept;
+    EncodedString(EncodedString&&);
+    EncodedString& operator=(EncodedString&&);
 
     explicit EncodedString(coda_oss::u8string::const_pointer);
     explicit EncodedString(const coda_oss::u8string& s);
