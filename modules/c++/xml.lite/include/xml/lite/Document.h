@@ -39,7 +39,6 @@
 #include <assert.h>
 
 #include "coda_oss/string.h"
-#include "str/EncodedString.h"
 
 #include "xml/lite/Element.h"
 #include "xml/lite/QName.h"
@@ -95,7 +94,6 @@ public:
     #ifndef SWIG  // SWIG doesn't like unique_ptr
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const std::string& characterData) const;
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const coda_oss::u8string& characterData) const;
-    std::unique_ptr<Element> createElement(const QName&, const str::EncodedStringView&) const;
     #endif // SWIG
 
     /*!

@@ -186,8 +186,8 @@ TEST_CASE(testXmlPrintUtf8)
         xml::lite::MinidomParser xmlParser;
         auto& document = getDocument(xmlParser);
 
-        const auto view1252 = str::EncodedStringView::fromWindows1252(pIso88591Text_);
-        const auto pRootElement = document.createElement(xml::lite::QName(xml::lite::Uri(), "root"), view1252);
+        const auto s8_w1252 = str::fromWindows1252(pIso88591Text_);
+        const auto pRootElement = document.createElement(xml::lite::QName(xml::lite::Uri(), "root"), s8_w1252);
 
         io::StringStream output;
         pRootElement->print(output);
@@ -225,8 +225,8 @@ TEST_CASE(testXmlConsoleOutput)
         xml::lite::MinidomParser xmlParser;
         auto& document = getDocument(xmlParser);
 
-        const auto view1252 = str::EncodedStringView::fromWindows1252(pIso88591Text_);
-        const auto pRootElement = document.createElement(xml::lite::QName(xml::lite::Uri(), "root"), view1252);
+        const auto s8_w1252 = str::fromWindows1252(pIso88591Text_);
+        const auto pRootElement = document.createElement(xml::lite::QName(xml::lite::Uri(), "root"), s8_w1252);
 
         io::StringStream output;
         pRootElement->consoleOutput_(output);
