@@ -58,19 +58,14 @@ void xml::lite::MinidomHandler::clear()
     assert(nodeStack.empty());
 }
 
-void xml::lite::MinidomHandler::characters(const str::EncodedStringView& view)
+void xml::lite::MinidomHandler::characters(const std::u8string& s)
 {
-    const auto native = view.native();
-    const auto value = native.c_str();
-    const auto length = static_cast<int>(native.size());
-
     // Append new data
-    if (length)
-        currentCharacterData += std::string(value, length);
+    currentCharacterData += s;
 
     // Append number of bytes added to this node's stack value
     assert(bytesForElement.size());
-    bytesForElement.top() += length;
+    bytesForElement.top() += static_cast<int>(s.length());
 }
 void xml::lite::MinidomHandler::characters(const char *value, int length)
 {
@@ -78,7 +73,7 @@ void xml::lite::MinidomHandler::characters(const char *value, int length)
     // wide-character routine "failed."  On Windows, that means the char* value
     // is encoded as Windows-1252 (more-or-less ISO8859-1).
     const str::EncodedString chars(std::string(value, length)); 
-    characters(chars.view());
+    characters(chars.u8string());
 }
 
 bool xml::lite::MinidomHandler::vcharacters(const void /*XMLCh*/* chars_, size_t length)
@@ -96,7 +91,7 @@ bool xml::lite::MinidomHandler::vcharacters(const void /*XMLCh*/* chars_, size_t
     auto pChars16 = static_cast<const char16_t*>(chars_);
 
     const auto chars = str::EncodedString(std::u16string(pChars16, length)).u8string();
-    characters(str::EncodedStringView(chars));
+    characters(chars);
     return true; // vcharacters() processed
 }
 
@@ -116,14 +111,14 @@ void xml::lite::MinidomHandler::startElement(const std::string & uri,
 }
 
 // This function subtracts off the char place from the push
-std::string xml::lite::MinidomHandler::adjustCharacterData()
+std::u8string xml::lite::MinidomHandler::adjustCharacterData()
 {
     // Edit the string with regard to this node's char data
     // Get rid of what we take on char data accumulator
 
     int diff = (int) (currentCharacterData.length()) - bytesForElement.top();
 
-    std::string newCharacterData(currentCharacterData.substr(
+    auto newCharacterData(currentCharacterData.substr(
                                  diff,
                                  currentCharacterData.length())
                 );
@@ -135,7 +130,7 @@ std::string xml::lite::MinidomHandler::adjustCharacterData()
     return newCharacterData;
 }
 
-void xml::lite::MinidomHandler::trim(std::string & s)
+void xml::lite::MinidomHandler::trim(std::u8string& s)
 {
     str::trim(s);
 }
@@ -148,7 +143,7 @@ void xml::lite::MinidomHandler::endElement(const std::string & /*uri*/,
     xml::lite::Element * current = nodeStack.top();
     nodeStack.pop();
 
-    current->setCharacterData(adjustCharacterData(), xml::lite::PlatformEncoding);
+    current->setCharacterData(adjustCharacterData());
 
     // Remove corresponding int on bytes stack
     bytesForElement.pop();
