@@ -21,11 +21,13 @@
  */
 
 #include <stdexcept>
+#include <std/string>
 
 #include "str/Manip.h"
 #include "str/Convert.h"
 #include "str/Encoding.h"
 #include "sys/OS.h"
+#include "str/EncodedStringView.h"
 
 #include "xml/lite/MinidomHandler.h"
 
@@ -58,8 +60,9 @@ void xml::lite::MinidomHandler::clear()
 
 void xml::lite::MinidomHandler::characters(const str::EncodedStringView& view)
 {
-    const auto value = view.c_str();
-    const auto length = static_cast<int>(view.size());
+    const auto native = view.native();
+    const auto value = native.c_str();
+    const auto length = static_cast<int>(native.size());
 
     // Append new data
     if (length)
@@ -92,29 +95,8 @@ bool xml::lite::MinidomHandler::vcharacters(const void /*XMLCh*/* chars_, size_t
     static_assert(sizeof(XMLCh) == sizeof(char16_t), "XMLCh should be 16-bits.");
     auto pChars16 = static_cast<const char16_t*>(chars_);
 
-    str::EncodedString chars;
-    auto platformEncoding = xml::lite::PlatformEncoding;  // "conditional expression is constant"
-    if (platformEncoding == xml::lite::StringEncoding::Utf8)
-    {
-        chars = str::EncodedString(std::u16string(pChars16, length));  
-    }
-    else if (platformEncoding == xml::lite::StringEncoding::Windows1252)
-    {
-        // On Windows, we want std::string encoded as Windows-1252 so that
-        // western European characters will be displayed.  We can't convert
-        // to UTF-8 (as above on Linux), because Windows doesn't have good
-        // support for displaying such strings.  Using UTF-16 would be preferred
-        // on Windows, but all existing code uses std::string instead of std::wstring.
-        assert(pChars16 != nullptr);  // XMLCh == wchar_t == char16_t on Windows
-        auto pChars = static_cast<const XMLCh*>(chars_);
-       chars = str::EncodedString(xml::lite::XercesLocalString(pChars).str());
-    }
-    else
-    {
-        throw std::logic_error("Unknown xml::lite::StringEncoding");
-    }
-
-    characters(chars.view());
+    const auto chars = str::EncodedString(std::u16string(pChars16, length)).u8string();
+    characters(str::EncodedStringView(chars));
     return true; // vcharacters() processed
 }
 
