@@ -133,14 +133,6 @@ struct MinidomHandler final : public ContentHandler
                               const Attributes & atts) override;
 
     /*!
-     * We want to push only the proper amount of bytes
-     * to the node when we start writing.  Here we chew
-     * up the pieces we take as we are taking them.
-     * \return The chracter data for the node
-     */
-    std::string adjustCharacterData();
-
-    /*!
      * Handles the actual popping of the node off the node
      * stack, and the adjustment of that node's character data.
      * Here we add the node to the tree
@@ -155,18 +147,26 @@ struct MinidomHandler final : public ContentHandler
     void clear();
 
     /*!
-     *  Trim the white space off the back and front of a string
-     *  \param  s  String to trim
-     */
-    static void trim(std::string & s);
-
-    /*!
      * If set to true, whitespaces will be preserved in the parsed
      * character data. Otherwise, it will be trimmed.
      */
     void preserveCharacterData(bool preserve);
     
 private:
+    /*!
+     * We want to push only the proper amount of bytes
+     * to the node when we start writing.  Here we chew
+     * up the pieces we take as we are taking them.
+     * \return The chracter data for the node
+     */
+    std::string adjustCharacterData();
+
+    /*!
+     *  Trim the white space off the back and front of a string
+     *  \param  s  String to trim
+     */
+    static void trim(std::string& s);
+
     std::string currentCharacterData;
     std::stack<int> bytesForElement;
     std::stack<Element *> nodeStack;

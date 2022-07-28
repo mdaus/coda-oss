@@ -51,7 +51,7 @@ void  xml::lite::MinidomHandler::getDocument(std::unique_ptr<Document>& pDocumen
 void xml::lite::MinidomHandler::clear()
 {
     mDocument->destroy();
-    currentCharacterData = "";
+    currentCharacterData.clear();
     assert(bytesForElement.empty());
     assert(nodeStack.empty());
 }
