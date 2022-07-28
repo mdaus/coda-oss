@@ -320,7 +320,7 @@ public:
      *  \return the charater data
      */
     std::string getCharacterData() const;
-    #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
+    #ifndef SWIG  // SWIG doesn't like unique_ptr
     void getCharacterData(coda_oss::u8string& result) const;
     #endif // SWIG
 
@@ -329,7 +329,7 @@ public:
      *  \param characters The data to add to this element
      */
     void setCharacterData(const std::string&);
-    #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
+    #ifndef SWIG  // SWIG doesn't like unique_ptr
     void setCharacterData(const coda_oss::u8string& s)
     {
         mCharacterData = s;

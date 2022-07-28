@@ -33,10 +33,6 @@
 #include <str/Encoding.h>
 #include <str/EncodedStringView.h>
 
-constexpr auto PlatformEncoding = sys::Platform == sys::PlatformType::Windows
-        ? xml::lite::StringEncoding::Windows1252
-        : xml::lite::StringEncoding::Utf8;
-
 std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const std::string& qname, const std::string& uri, const std::string& characterData)
 {
     return coda_oss::make_unique<Element>(qname, uri, characterData);

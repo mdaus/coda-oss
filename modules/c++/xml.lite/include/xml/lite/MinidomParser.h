@@ -80,7 +80,7 @@ struct MinidomParser
      *  \param size  This is the size of the stream to feed the parser
      */
     virtual void parse(io::InputStream& is, int size = io::InputStream::IS_END);
-    #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
+    #ifndef SWIG  // SWIG doesn't like unique_ptr
     virtual void parse(io::InputStream& is, StringEncoding, int size = io::InputStream::IS_END);
     #endif // SWIG
 

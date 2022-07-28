@@ -59,8 +59,7 @@ static const auto pUtf8Text_ = str::c_str<std::string>(utf8Text8);
 static const auto strUtf8Xml8 = U8("<root><doc><a>") + utf8Text8 + U8("</a></doc></root>");
 static const std::string strUtf8Xml = str::c_str<std::string>(strUtf8Xml8);
 
-constexpr auto PlatformEncoding = xml::lite::PlatformEncoding;
-static const std::string  platfromText_ = PlatformEncoding == xml::lite::StringEncoding::Utf8 ? pUtf8Text_ : pIso88591Text_;
+static const std::string  platfromText_ = xml::lite::PlatformEncoding == xml::lite::StringEncoding::Utf8 ? pUtf8Text_ : pIso88591Text_;
 
 namespace fs = std::filesystem;
 
