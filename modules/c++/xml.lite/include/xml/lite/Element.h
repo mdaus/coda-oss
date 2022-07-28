@@ -331,12 +331,11 @@ public:
     void setCharacterData(const std::string&);
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
     void setCharacterData(const std::string& characters, StringEncoding);
-    void setCharacterData(const coda_oss::u8string&);
-    void setCharacterData(const str::EncodedStringView& v)
+    void setCharacterData(const coda_oss::u8string& s)
     {
-        mCharacterData = v;
+        mCharacterData = s;
     }
-    void setCharacterData(str::EncodedString&& s)
+    void setCharacterData(coda_oss::u8string&& s)
     {
         mCharacterData = s;
     }
@@ -484,7 +483,7 @@ private:
     xml::lite::QName mName;
     //! The attributes for this element
     xml::lite::Attributes mAttributes;
-    str::EncodedString mCharacterData;
+    coda_oss::u8string mCharacterData;
 };
 
 extern Element& add(const xml::lite::QName&, const std::string& value, Element& parent);

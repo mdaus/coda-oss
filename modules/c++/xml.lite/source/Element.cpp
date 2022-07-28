@@ -24,6 +24,7 @@
 
 #include <stdexcept>
 #include <tuple>
+#include <std/string>
 
 #include "xml/lite/Element.h"
 #include <import/str.h>
@@ -267,22 +268,22 @@ void xml::lite::Element::prettyConsoleOutput_(io::OutputStream& stream,
 
 std::string xml::lite::Element::getCharacterData() const
 {
-    return mCharacterData.view().native();
+    return str::EncodedStringView(mCharacterData).native();
 }
 void xml::lite::Element::getCharacterData(coda_oss::u8string& result) const
 {
-    result = mCharacterData.u8string();
+    result = mCharacterData;
 }
 
-static void writeCharacterData(io::OutputStream& stream, const str::EncodedStringView& characterData, bool isConsoleOutput)
+static void writeCharacterData(io::OutputStream& stream, const std::u8string& characterData, bool isConsoleOutput)
 {
     if (!isConsoleOutput)
     {
-        stream.write(characterData.u8string());  // call UTF-8 overload
+        stream.write(characterData);  // call UTF-8 overload
     }
     else
     {
-        stream.write(characterData.native()); // write to the console using the platform native encoding
+        stream.write(str::EncodedStringView(characterData).native()); // write to the console using the platform native encoding
     }
 }
 
@@ -322,7 +323,7 @@ void xml::lite::Element::depthPrint(io::OutputStream& stream, int depth, const s
     else
     {
         stream.write(acc + rBrack);            
-        writeCharacterData(stream, mCharacterData.view(), isConsoleOutput);
+        writeCharacterData(stream, mCharacterData, isConsoleOutput);
 
         for (unsigned int i = 0; i < mChildren.size(); i++)
         {
@@ -470,21 +471,16 @@ void xml::lite::Element::setCharacterData(const std::string& characters, StringE
 {
     if (encoding == StringEncoding::Utf8)
     {
-        mCharacterData = str::EncodedString(str::c_str<coda_oss::u8string>(characters));    
+        mCharacterData = str::c_str<coda_oss::u8string>(characters);    
     }
     else if (encoding == StringEncoding::Windows1252)
     {
-        mCharacterData = str::EncodedString(str::c_str<str::W1252string>(characters));
+        mCharacterData = str::EncodedStringView(str::c_str<str::W1252string>(characters)).u8string();
     }
     else
     {
         throw std::invalid_argument("Unknown 'encoding'.");
     }
-}
-void xml::lite::Element::setCharacterData(const coda_oss::u8string& characters)
-{
-    mCharacterData = str::EncodedString(characters);
-    setCharacterData(str::c_str<std::string>(characters), StringEncoding::Utf8);
 }
 
 xml::lite::Element& xml::lite::add(const QName& qname,
