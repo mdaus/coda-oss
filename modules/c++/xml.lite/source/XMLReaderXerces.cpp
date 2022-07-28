@@ -63,24 +63,12 @@ static void parse(SAX2XMLReader& parser, const std::vector<sys::byte>& buffer, c
     }
     parser.parse(memBuffer);
 }
-static inline void parse(SAX2XMLReader& parser, const std::vector<sys::byte>& buffer, xml::lite::StringEncoding encoding)
-{
-    if (encoding == xml::lite::StringEncoding::Windows1252)
-    {
-        // The only other value is StringEncoding::Utf8 which is the default
-        parse(parser, buffer, XMLUni::fgWin1252EncodingString);
-    }
-    else
-    {
-        parse(parser, buffer, nullptr /*pEncoding*/);
-    }
-}
-
-void xml::lite::XMLReaderXerces::parse(const std::vector<sys::byte>& buffer, StringEncoding encoding)
+static void parse(SAX2XMLReader& parser, const std::vector<sys::byte>& buffer,
+    const XMLCh* pInitialEncoding, const XMLCh* pFallbackEncoding)
 {
     try
     {
-        ::parse(*mNative, buffer, encoding);
+        parse(parser, buffer, pInitialEncoding);
         return; // successful parse
     }
     catch (const except::Error& e)
@@ -90,17 +78,35 @@ void xml::lite::XMLReaderXerces::parse(const std::vector<sys::byte>& buffer, Str
         {
             throw;
         }
-        // Caller specified an encoding; don't try calling parse() again
-        if (encoding != StringEncoding::Unknown)
+        
+        // Trying again will fail, so don't bother
+        if (pFallbackEncoding == pInitialEncoding)
         {
             throw;
         }
     }
 
-    // If we're here, the initial parse failed and the caller did NOT specify an encoding
-    // (pEncoding == NULL).  Since the default is UTF-8 and that failed, try again
-    // with Windows-1252.
-    parse(buffer, StringEncoding::Windows1252);
+    // Try again using the fallback encoding
+    parse(parser, buffer, pFallbackEncoding);
+}
+
+void xml::lite::XMLReaderXerces::parse(const std::vector<sys::byte>& buffer, StringEncoding encoding)
+{
+    if (encoding == StringEncoding::Windows1252)
+    {
+        // This will try parsing as Windows1252 first, then the default (UTF-8)
+        ::parse(*mNative, buffer, XMLUni::fgWin1252EncodingString, nullptr /*pFallbackEncoding*/);
+    }
+    else if (encoding == StringEncoding::Utf8)
+    {
+        // This will only try parsing the default (UTF-8)
+        ::parse(*mNative, buffer, nullptr /*pInitialEncoding*/, nullptr /*pFallbackEncoding*/);
+    }
+    else
+    {
+        // This will try parsing the default (UTF-8) first, then Windows1252
+        ::parse(*mNative, buffer, nullptr /*pInitialEncoding*/, XMLUni::fgWin1252EncodingString);
+    }
 }
 void xml::lite::XMLReaderXerces::parse(io::InputStream& is, int size)
 {
