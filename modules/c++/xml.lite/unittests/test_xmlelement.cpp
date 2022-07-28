@@ -37,29 +37,6 @@
 #define U8(s) static_cast<const std::char8_t*>(static_cast<const void*>(s))
 #endif
 
-static inline xml::lite::StringEncoding getEncoding(const xml::lite::Element& element)
-{
-    return element.getEncoding();
-}
-static void test_assert_eq(const std::string& testName,
-    xml::lite::StringEncoding lhs, xml::lite::StringEncoding rhs)
-{
-    TEST_ASSERT(lhs == rhs);
-}
-static void test_assert_eq(const std::string& testName,
-    const xml::lite::Element& lhs, xml::lite::StringEncoding rhs)
-{
-    test_assert_eq(testName, getEncoding(lhs), rhs);
-}
-static void test_assert_utf8(const std::string& testName, const xml::lite::Element& e)
-{
-    test_assert_eq(testName, e, xml::lite::StringEncoding::Utf8);
-}
-static void test_assert_platform(const std::string& testName, const xml::lite::Element& e)
-{
-    test_assert_eq(testName, e, xml::lite::PlatformEncoding);
-}
-
 static const std::string text = "TEXT";
 static const std::string strXml1_ = R"(
 <root>
@@ -97,62 +74,6 @@ struct test_MinidomParser final
     }
 };
 
-TEST_CASE(test_CloneCopy_root_encoding)
-{
-    {
-        test_MinidomParser xmlParser;
-        auto& root_ = xmlParser.getRootElement();
-        root_.setCharacterData(U8("abc"));
-        const auto& root = root_;
-        test_assert_utf8(testName, root);
-
-        xml::lite::Element copy;
-        copy.clone(root);
-        copy.clearChildren();
-        test_assert_utf8(testName, copy);
-        copy.setCharacterData("xyz");
-        test_assert_platform(testName, copy);
-        test_assert_utf8(testName, root);
-
-        root_.setCharacterData("123");
-        test_assert_platform(testName, root);
-    }
-    {
-        test_MinidomParser xmlParser;
-        auto& root_ = xmlParser.getRootElement();
-        root_.setCharacterData(U8("abc"));
-        const auto& root = root_;
-
-        xml::lite::Element copy;
-        copy.clone(root);
-        copy.clearChildren();
-        test_assert_utf8(testName, copy);
-        copy.setCharacterData("xyz", xml::lite::StringEncoding::Windows1252);
-        TEST_ASSERT(copy.getEncoding() == xml::lite::StringEncoding::Windows1252);
-        test_assert_utf8(testName, root);
-        TEST_ASSERT(root.getEncoding() != copy.getEncoding());
-
-        root_.setCharacterData("123");
-        test_assert_platform(testName, root);
-        TEST_ASSERT(copy.getEncoding() == xml::lite::StringEncoding::Windows1252);
-    }
-}
-
-TEST_CASE(test_CloneCopy_copy_encoding)
-{
-    test_MinidomParser xmlParser;
-    auto& root_ = xmlParser.getRootElement();
-    root_.setCharacterData("abc");
-    const auto& root = root_;
-
-    xml::lite::Element copy;
-    copy.clone(root);
-    copy.clearChildren();
-    copy.setCharacterData(U8("xyz"));
-    test_assert_utf8(testName, copy);
-    test_assert_platform(testName, root);
-}
-
 TEST_CASE(test_getRootElement)
 {
     io::StringStream ss;
@@ -189,7 +110,6 @@ TEST_CASE(test_getElementsByTagName)
 
         const auto characterData = a.getCharacterData();
         TEST_ASSERT_EQ(characterData, text);
-        test_assert_platform(testName, a);
     }
 }
 
@@ -428,9 +348,6 @@ TEST_CASE(test_setValue)
 
 int main(int, char**)
 {
-    TEST_CHECK(test_CloneCopy_root_encoding);
-    TEST_CHECK(test_CloneCopy_copy_encoding);
-
     TEST_CHECK(test_getRootElement);
     TEST_CHECK(test_getElementsByTagName);
     TEST_CHECK(test_getElementsByTagName_duplicate);

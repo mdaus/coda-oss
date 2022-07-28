@@ -62,29 +62,6 @@ static const std::string strUtf8Xml = str::c_str<std::string>(strUtf8Xml8);
 constexpr auto PlatformEncoding = xml::lite::PlatformEncoding;
 static const std::string  platfromText_ = PlatformEncoding == xml::lite::StringEncoding::Utf8 ? pUtf8Text_ : pIso88591Text_;
 
-static inline xml::lite::StringEncoding getEncoding(const xml::lite::Element& element)
-{
-    return element.getEncoding();
-}
-static void test_assert_eq(const std::string& testName,
-    xml::lite::StringEncoding lhs, xml::lite::StringEncoding rhs)
-{
-    TEST_ASSERT(lhs == rhs);
-}
-static void test_assert_eq(const std::string& testName,
-    const xml::lite::Element& lhs, xml::lite::StringEncoding rhs)
-{
-    test_assert_eq(testName, getEncoding(lhs), rhs);
-}
-static void test_assert_utf8(const std::string& testName, const xml::lite::Element& e)
-{
-    test_assert_eq(testName, e, xml::lite::StringEncoding::Utf8);
-}
-static void test_assert_platform(const std::string& testName, const xml::lite::Element& e)
-{
-    test_assert_eq(testName, e, xml::lite::PlatformEncoding);
-}
-
 namespace fs = std::filesystem;
 
 static fs::path findRoot(const fs::path& p)
@@ -173,8 +150,6 @@ TEST_CASE(testXmlUtf8)
     auto actual = a.getCharacterData();
     const auto expected = platfromText_;
     TEST_ASSERT_EQ(actual, expected);
-
-    test_assert_platform(testName, a);
 }
 
 TEST_CASE(testXml_setCharacterData)
@@ -183,7 +158,6 @@ TEST_CASE(testXml_setCharacterData)
     auto& a = testXmlUtf8_(xmlParser);
 
     a.setCharacterData(utf8Text8);
-    test_assert_utf8(testName, a);
 }
 
 static std::string testXmlPrint_(std::string& expected, const std::string& characterData)
@@ -319,7 +293,6 @@ static void testReadEncodedXmlFile(const std::string& testName, const std::strin
 
     const auto& a = root.getElementByTagName("a", true /*recurse*/);
     auto characterData = a.getCharacterData();
-    test_assert_platform(testName, a);
     TEST_ASSERT_EQ(characterData, platformText);
 
     std::u8string u8_characterData;
@@ -374,7 +347,6 @@ static void testReadXmlFile(const std::string& testName, const std::string& xmlF
     const auto& a = *(aElements[0]);
 
     auto characterData = a.getCharacterData();
-    test_assert_platform(testName, a);
     TEST_ASSERT_EQ(characterData, platformText);
 
     std::u8string u8_characterData;
@@ -448,7 +420,6 @@ TEST_CASE(testReadEmbeddedXml)
     xmlParser.parse(input);
     const auto& root = getRootElement(getDocument(xmlParser));
     const auto& classificationXML = root.getElementByTagName("Classification", true /*recurse*/);
-    test_assert_platform(testName, classificationXML);
 
      // UTF-8 characters in 50x50.nitf
     const std::string classificationText_iso8859_1("NON CLASSIFI\xc9 / UNCLASSIFIED");  // ISO8859-1 "NON CLASSIFIÉ / UNCLASSIFIED"
