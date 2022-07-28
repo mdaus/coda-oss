@@ -25,11 +25,13 @@
 #include <std/filesystem>
 #include <std/memory>
 #include <std/string>
+#include <regex>
 
 #include <sys/OS.h>
 #include <io/StringStream.h>
 #include <mem/ScopedArray.h>
 #include <str/EncodedStringView.h>
+#include <str/utf8.h>
 
 namespace fs = std::filesystem;
 
@@ -241,12 +243,37 @@ bool ValidatorXerces::validate_(const std::u8string& xml,
 
     return (!mErrorHandler->getErrorLog().empty());
 }
+
+static str::EncodedStringView encodeXml(const std::string& xml)
+{
+    // The XML might contain contain a specific encoding, if it does;
+    // we want to use it, otherwise we'll corrupt the data.
+
+    // UTF-8 is the normal case, so check it first
+    const std::regex reUtf8("<\?.*encoding=.*['\"]?.*utf-8.*['\"]?.*\?>", std::regex::icase);
+    std::cmatch m;
+    if (std::regex_search(xml.c_str(), m, reUtf8))
+    {
+        return str::EncodedStringView::fromUtf8(xml);
+    }
+
+    // Maybe this is is poor XML with Windows-1252 encoding :-(
+    const std::regex reWindows1252("<\?.*encoding=.*['\"]?.*windows-1252.*['\"]?.*\?>", std::regex::icase);
+    if (std::regex_search(xml.c_str(), m, reWindows1252))
+    {
+        return str::EncodedStringView::fromWindows1252(xml);
+    }
+
+    // No "... encoding= ..."; let EncodedStringView deal with it   
+    return str::EncodedStringView(xml);
+}
+
 bool ValidatorXerces::validate(const std::string& xml,
                                const std::string& xmlID,
                                std::vector<ValidationInfo>& errors) const
 {
-    const str::EncodedStringView xmlView(xml);
-    return validate(xmlView.u8string(), xmlID, errors);
+    const auto view = encodeXml(xml);
+    return validate(view.u8string(), xmlID, errors);
 }
 bool ValidatorXerces::validate(const coda_oss::u8string& xml,
                                const std::string& xmlID,
