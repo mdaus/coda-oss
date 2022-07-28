@@ -274,15 +274,6 @@ void xml::lite::Element::getCharacterData(coda_oss::u8string& result) const
     result = mCharacterData.u8string();
 }
 
-xml::lite::StringEncoding xml::lite::Element::getEncoding() const
-{
-    if (mCharacterData.view().c_str() == nullptr)
-    {
-        return StringEncoding::Unknown;
-    }
-    return mCharacterData.view().c_u8str() != nullptr ? StringEncoding::Utf8 : StringEncoding::Windows1252;
-}
-
 static void writeCharacterData(io::OutputStream& stream, const str::EncodedStringView& characterData, bool isConsoleOutput)
 {
     if (!isConsoleOutput)

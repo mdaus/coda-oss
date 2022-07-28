@@ -321,7 +321,6 @@ public:
      */
     std::string getCharacterData() const;
     #ifndef SWIG  // SWIG doesn't like unique_ptr or StringEncoding
-    StringEncoding getEncoding() const;
     void getCharacterData(coda_oss::u8string& result) const;
     #endif // SWIG
 
