@@ -273,7 +273,15 @@ bool ValidatorXerces::validate(const std::string& xml,
                                std::vector<ValidationInfo>& errors) const
 {
     const auto view = encodeXml(xml);
-    return validate(view.u8string(), xmlID, errors);
+    try
+    {
+      return validate(view.u8string(), xmlID, errors);
+    }
+    catch (const utf8::invalid_utf8&) { }
+
+    // Can't process as "native" (UTF-8 on Linux, Windows-1252 on Windows).
+    // Must be Windows-1252 on Linux.
+    return validate(str::c_str<str::W1252string>(xml), xmlID, errors);
 }
 bool ValidatorXerces::validate(const coda_oss::u8string& xml,
                                const std::string& xmlID,
