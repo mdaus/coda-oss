@@ -59,16 +59,7 @@ void xml::lite::MinidomHandler::clear()
 void xml::lite::MinidomHandler::characters(const str::EncodedStringView& view)
 {
     const auto value = view.c_str();
-    const auto encoding = value == nullptr ? StringEncoding::Unknown
-            : (view.c_u8str() != nullptr ? StringEncoding::Utf8 : StringEncoding::Windows1252);
     const auto length = static_cast<int>(view.size());
-
-     // be sure the given encoding matches any encoding already set
-    if ((mEncoding != StringEncoding::Unknown) && (encoding != mEncoding))
-    {
-        throw std::invalid_argument("New 'encoding' is different than value already set.");
-    }
-    mEncoding = encoding;
 
     // Append new data
     if (length)
@@ -175,7 +166,7 @@ void xml::lite::MinidomHandler::endElement(const std::string & /*uri*/,
     xml::lite::Element * current = nodeStack.top();
     nodeStack.pop();
 
-    current->setCharacterData(adjustCharacterData(), mEncoding);
+    current->setCharacterData(adjustCharacterData(), xml::lite::PlatformEncoding);
 
     // Remove corresponding int on bytes stack
     bytesForElement.pop();

@@ -174,7 +174,6 @@ private:
     bool mOwnDocument;
     bool mPreserveCharData;
     void characters(const str::EncodedStringView&);
-    StringEncoding mEncoding = StringEncoding::Unknown;
 };
 }
 }
