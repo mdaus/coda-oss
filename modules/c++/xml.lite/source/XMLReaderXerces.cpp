@@ -48,23 +48,39 @@ void xml::lite::XMLReaderXerces::parse(io::InputStream& is, StringEncoding encod
     oss.read(buffer.data(), buffer.size());
     parse(buffer, encoding);
 }
-void xml::lite::XMLReaderXerces::parse(const std::vector<sys::byte>& buffer, StringEncoding encoding)
+
+static void parse(SAX2XMLReader& parser, const std::vector<sys::byte>& buffer, const XMLCh* pEncoding)
 {
     // Does not take ownership
-    MemBufInputSource memBuffer((const unsigned char *)buffer.data(),
+    MemBufInputSource memBuffer((const unsigned char*)buffer.data(),
                                 buffer.size(),
-                                XMLReaderXerces::MEM_BUFFER_ID(),
+                                xml::lite::XMLReaderXerces::MEM_BUFFER_ID(),
                                 false);
 
-    if (encoding == StringEncoding::Windows1252)
+    if (pEncoding != nullptr)
+    {
+        memBuffer.setEncoding(pEncoding);
+    }
+    parser.parse(memBuffer);
+}
+static inline void parse(SAX2XMLReader& parser, const std::vector<sys::byte>& buffer, xml::lite::StringEncoding encoding)
+{
+    if (encoding == xml::lite::StringEncoding::Windows1252)
     {
         // The only other value is StringEncoding::Utf8 which is the default
-        memBuffer.setEncoding(XMLUni::fgWin1252EncodingString);
+        parse(parser, buffer, XMLUni::fgWin1252EncodingString);
     }
+    else
+    {
+        parse(parser, buffer, nullptr /*pEncoding*/);
+    }
+}
 
+void xml::lite::XMLReaderXerces::parse(const std::vector<sys::byte>& buffer, StringEncoding encoding)
+{
     try
     {
-        mNative->parse(memBuffer);
+        ::parse(*mNative, buffer, encoding);
         return; // successful parse
     }
     catch (const except::Error& e)
