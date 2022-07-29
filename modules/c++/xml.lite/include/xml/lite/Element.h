@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef __XML_LITE_ELEMENT_H__
-#define __XML_LITE_ELEMENT_H__
+#ifndef CODA_OSS_xml_lite_Element_h_INCLUDED_
+#define CODA_OSS_xml_lite_Element_h_INCLUDED_
 #pragma once
 
 #include <memory>
@@ -568,4 +568,4 @@ inline Element* addNewOptionalElement(const xml::lite::QName& name, const coda_o
 }
 }
 
-#endif
+#endif // CODA_OSS_xml_lite_Element_h_INCLUDED_
