@@ -23,7 +23,6 @@
 #include <wchar.h>
 
 #include <vector>
-#include <string>
 #include <iterator>
 #include <std/string>
 
@@ -40,12 +39,22 @@
 // Not putting this everywhere because (1) well, it's a macro, and (2) it's mostly
 // only test code that uses string literals.
 #if CODA_OSS_cpp20
-#define U8(ch) u8##ch
-#define U8s(s) u8##s
+#define U8(ch) u8 ## ch
+#define U8s(s) u8 ## s
 #else
 #define U8(ch) static_cast<std::char8_t>(ch)
 #define U8s(s) static_cast<const std::char8_t*>(static_cast<const void*>(s))
 #endif
+
+inline std::u8string::value_type u8cast(char ch) // char8_t can cause compiler warnings
+{
+    return static_cast<std::u8string::value_type>(ch);
+}
+inline std::u8string::const_pointer u8cast(const char* s) // char8_t can cause compiler warnings
+{
+    return static_cast<std::u8string::const_pointer>(static_cast<const void*>(s));
+}
+
 
 static std::string to_string(const std::u8string& value)
 {
@@ -114,7 +123,7 @@ TEST_CASE(test_string_to_u8string_ascii)
     {
         const std::string input { '|', static_cast<std::string::value_type>(ch), '|'};
         const auto actual = fromWindows1252(input);
-        const std::u8string expected8{U8('|'), U8(ch), U8('|')}; 
+        const std::u8string expected8{U8('|'), u8cast(ch), U8('|')}; 
         TEST_ASSERT_EQ(actual, expected8);
         const std::u32string expected{U'|', U(ch), U'|'};
         TEST_ASSERT_EQ(to_string(actual), to_string(expected));
