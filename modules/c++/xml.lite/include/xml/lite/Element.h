@@ -81,10 +81,12 @@ struct Element final
         setCharacterData(characterData);
     }
 
+    #ifndef SWIG // SWIG doesn't like std::unique_ptr
     static std::unique_ptr<Element> create(const std::string& qname, const std::string& uri = "", const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const coda_oss::u8string&);
-
+    #endif // SWIG
+    
     //! Destructor
     ~Element()
     {
@@ -402,7 +404,9 @@ struct Element final
      *  Adds a child element to this element
      *  \param node the child element to add
      */
+    #ifndef SWIG // SWIG doesn't like std::unique_ptr
     virtual Element& addChild(std::unique_ptr<Element>&& node);
+    #endif // SWIG
     #if CODA_OSS_autoptr_is_std  // std::auto_ptr removed in C++17
     virtual Element& addChild(mem::auto_ptr<Element> node);
     #endif
