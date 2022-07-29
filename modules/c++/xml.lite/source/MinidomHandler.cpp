@@ -46,9 +46,10 @@ void xml::lite::MinidomHandler::setDocument(std::unique_ptr<Document>&& newDocum
 {
     setDocument(newDocument.release(), true /*own*/);
 }
-void  xml::lite::MinidomHandler::getDocument(std::unique_ptr<Document>& pDocument)
+std::unique_ptr<xml::lite::Document>& xml::lite::MinidomHandler::getDocument(std::unique_ptr<Document>& pDocument)
 {
     pDocument.reset(getDocument(true /*steal*/));
+    return pDocument;
 }
 
 void xml::lite::MinidomHandler::clear()

@@ -81,12 +81,9 @@ struct Element final
         setCharacterData(characterData);
     }
 
-    #ifndef SWIG  // SWIG doesn't like unique_ptr
     static std::unique_ptr<Element> create(const std::string& qname, const std::string& uri = "", const std::string& characterData = "");
-    static std::unique_ptr<Element> create(const std::string& qname, const xml::lite::Uri& uri, const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const coda_oss::u8string&);
-    #endif // SWIG
 
     //! Destructor
     ~Element()
@@ -306,7 +303,7 @@ struct Element final
      *  \return the charater data
      */
     std::string getCharacterData() const;
-    void getCharacterData(coda_oss::u8string& result) const;
+    coda_oss::u8string& getCharacterData(coda_oss::u8string& result) const;
 
     /*!
      *  Sets the character data for this element.
@@ -466,7 +463,7 @@ private:
     coda_oss::u8string mCharacterData;
 };
 
-extern Element& add(const xml::lite::QName&, const std::string& value, Element& parent);
+Element& add(const xml::lite::QName&, const std::string& value, Element& parent);
 
 #ifndef SWIG
 // The (old) version of SWIG we're using doesn't like certain C++11 features.

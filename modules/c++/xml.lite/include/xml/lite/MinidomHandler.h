@@ -47,8 +47,9 @@
 
 #include <stack>
 #include <memory>
-
 #include "coda_oss/string.h"
+#include "coda_oss/memory.h"
+
 #include "str/EncodedString.h"
 #include "str/EncodedStringView.h"
 #include "XMLReader.h"
@@ -71,10 +72,9 @@ namespace lite
 struct MinidomHandler final : public ContentHandler
 {
     //! Constructor.  Uses default document
-    MinidomHandler() :
-        mDocument(nullptr), mOwnDocument(true), mPreserveCharData(false)
+    MinidomHandler() 
     {
-        setDocument(new Document());
+        setDocument(coda_oss::make_unique<Document>());
     }
 
     //! Destructor
@@ -100,7 +100,7 @@ struct MinidomHandler final : public ContentHandler
             mOwnDocument = false;
         return mDocument;
     }
-    void getDocument(std::unique_ptr<Document>&);  // steal = true
+    std::unique_ptr<Document>& getDocument(std::unique_ptr<Document>&);  // steal = true
 
     Document *getDocument() const
     {
@@ -171,9 +171,9 @@ private:
     coda_oss::u8string currentCharacterData;
     std::stack<int> bytesForElement;
     std::stack<Element *> nodeStack;
-    Document *mDocument;
-    bool mOwnDocument;
-    bool mPreserveCharData;
+    Document* mDocument = nullptr;
+    bool mOwnDocument = true;
+    bool mPreserveCharData = false;
     void characters(coda_oss::u8string&&);
 };
 }

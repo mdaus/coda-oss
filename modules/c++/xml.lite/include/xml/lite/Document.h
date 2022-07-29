@@ -38,7 +38,9 @@
 
 #include <assert.h>
 
+#include <utility>
 #include "coda_oss/string.h"
+#include "coda_oss/memory.h"
 
 #include "xml/lite/Element.h"
 #include "xml/lite/QName.h"
@@ -61,6 +63,10 @@ struct Document final
         mRootNode(rootNode), mOwnRoot(own)
     {
     }
+    explicit Document(std::unique_ptr<Element>&& rootNode) : // implicitly own=true
+        Document(rootNode.release(), true /*own*/)
+    {
+    }
 
     /*!
      * Destroy the xml tree.  This deletes the nodes if they exist
@@ -71,14 +77,19 @@ struct Document final
         destroy();
     }
 
+    std::unique_ptr<Document>& clone(std::unique_ptr<Document>& doc) const
+    {
+        doc = coda_oss::make_unique<Document>();
+
+        auto cloneRoot = coda_oss::make_unique<Element>();
+        cloneRoot->clone(*mRootNode);
+        doc->setRootElement(std::move(cloneRoot));
+        return doc;
+    }
     Document* clone() const
     {
-        Document* doc = new Document();
-
-        Element* cloneRoot = new Element();
-        cloneRoot->clone(*mRootNode);
-        doc->setRootElement(cloneRoot);
-        return doc;
+        std::unique_ptr<Document> doc;
+        return clone(doc).release();
     }
 
     /*!
@@ -88,12 +99,9 @@ struct Document final
      * \param characterData The character data (if any)
      * \return A new element
      */
-    Element *createElement(const std::string & qname, const std::string & uri,
-                                   std::string characterData = "");
-    #ifndef SWIG  // SWIG doesn't like unique_ptr
+    Element *createElement(const std::string & qname, const std::string & uri, std::string characterData = "");
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const std::string& characterData) const;
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const coda_oss::u8string& characterData) const;
-    #endif // SWIG
 
     /*!
      * Blanket destructor.  This thing deletes everything
@@ -130,6 +138,10 @@ struct Document final
      * \param element The node to set.
      */
     void setRootElement(Element * element, bool own = true);
+    void setRootElement(std::unique_ptr<Element>&& element) // implicitly own=true
+    {
+        setRootElement(element.release(), true /*own*/);
+    }
 
     /*!
      * Retrieves the internal root element
@@ -141,7 +153,11 @@ struct Document final
             mOwnRoot = false;
         return mRootNode;
     }
-
+    std::unique_ptr<Element>& getRootElement(std::unique_ptr<Element>& rootNode) // implicitly steal=true
+    {
+        rootNode.reset(getRootElement(true /*steal*/));
+        return rootNode;
+    }
     Element *getRootElement() const
     {
         return mRootNode;

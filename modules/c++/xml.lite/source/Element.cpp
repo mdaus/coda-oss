@@ -37,13 +37,9 @@ std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const std::string
 {
     return coda_oss::make_unique<Element>(qname, uri, characterData);
 }
-std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const std::string& qname, const Uri& uri, const std::string& characterData)
-{
-    return create(qname, uri.value, characterData);
-}
 std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const QName& qname, const std::string& characterData)
 {
-    return create(qname.getName(), qname.getUri(), characterData);
+    return create(qname.getName(), qname.getUri().value, characterData);
 }
 std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const QName& qname, const coda_oss::u8string& characterData)
 {
@@ -262,9 +258,10 @@ std::string xml::lite::Element::getCharacterData() const
 {
     return str::EncodedStringView(mCharacterData).native();
 }
-void xml::lite::Element::getCharacterData(coda_oss::u8string& result) const
+coda_oss::u8string& xml::lite::Element::getCharacterData(coda_oss::u8string& result) const
 {
     result = mCharacterData;
+    return result;
 }
 
 static void writeCharacterData(io::OutputStream& stream, const std::u8string& characterData, bool isConsoleOutput)

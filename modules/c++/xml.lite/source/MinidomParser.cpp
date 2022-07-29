@@ -56,9 +56,9 @@ xml::lite::Document* xml::lite::MinidomParser::getDocument(bool steal)
 {
     return mHandler.getDocument(steal);
 }
-void xml::lite::MinidomParser::getDocument(std::unique_ptr<Document>& pDocument)
+std::unique_ptr<xml::lite::Document>& xml::lite::MinidomParser::getDocument(std::unique_ptr<Document>& pDocument)
 {
-    mHandler.getDocument(pDocument);
+    return mHandler.getDocument(pDocument);
 }
 
 void xml::lite::MinidomParser::setDocument(xml::lite::Document* newDocument, bool own)
