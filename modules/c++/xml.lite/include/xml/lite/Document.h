@@ -54,9 +54,8 @@ namespace lite
  * Use the Document to access the Element nodes contained within.
  * The DocumentParser will build a tree that you can use.
  */
-class Document
+struct Document final
 {
-public:
     //! Constructor
     Document(Element* rootNode = nullptr, bool own = true) :
         mRootNode(rootNode), mOwnRoot(own)
@@ -67,12 +66,12 @@ public:
      * Destroy the xml tree.  This deletes the nodes if they exist
      * Careful, this may delete your copy if you are not careful
      */
-    virtual ~Document()
+    ~Document()
     {
         destroy();
     }
 
-    virtual Document* clone() const
+    Document* clone() const
     {
         Document* doc = new Document();
 
@@ -89,7 +88,7 @@ public:
      * \param characterData The character data (if any)
      * \return A new element
      */
-    virtual Element *createElement(const std::string & qname, const std::string & uri,
+    Element *createElement(const std::string & qname, const std::string & uri,
                                    std::string characterData = "");
     #ifndef SWIG  // SWIG doesn't like unique_ptr
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const std::string& characterData) const;
@@ -109,13 +108,13 @@ public:
      * \param element Element to add
      * \param underThis Element to add element to
      */
-    virtual void insert(Element * element, Element * underThis);
+    void insert(Element * element, Element * underThis);
 
     /*!
      * Remove an element from the tree, starting at the root
      * \param toDelete The node to delete (This DOES do deletion)
      */
-    virtual void remove(Element * toDelete);
+    void remove(Element * toDelete);
 
     /*!
      * Remove an element from the tree, starting at the second param
@@ -124,7 +123,7 @@ public:
      * be an optimization depending on the task, so I allow it to remain
      * public
      */
-    virtual void remove(Element * toDelete, Element * fromHere);
+    void remove(Element * toDelete, Element * fromHere);
 
     /*!
      * Sets the internal root element
@@ -148,11 +147,8 @@ public:
         return mRootNode;
     }
 
-protected:
-    //! Copy constructor
+private:
     Document(const Document&);
-
-    //! Assignment operator
     Document& operator=(const Document&);
 
     //! The root node element

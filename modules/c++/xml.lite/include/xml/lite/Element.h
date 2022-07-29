@@ -60,19 +60,9 @@ namespace lite
  * This class stores all of the element information about an XML
  * document.
  */
-class Element final
+struct Element final
 {
-    Element(const std::string& qname, const std::string& uri, std::nullptr_t) :
-        mParent(nullptr), mName(uri, qname)
-    {
-    }
-
-public:
-    //! Default constructor
-    Element() :
-        mParent(nullptr)
-    {
-    }
+    Element() = default;
 
     /*!
      * Constructor taking the namespace prefix and the local name 
@@ -80,30 +70,26 @@ public:
      * \param uri The uri of the object
      * \param characterData The character data (if any)
      */
-    Element(const std::string& qname, const std::string& uri = "",
-            const std::string& characterData = "") :
-        Element(qname, uri, nullptr)
+    explicit Element(const std::string& qname, const std::string& uri = "", const std::string& characterData = "") :
+        mName(uri, qname)
     {
         setCharacterData(characterData);
     }
-    #ifndef SWIG  // SWIG doesn't like unique_ptr
     Element(const xml::lite::QName& qname, const coda_oss::u8string& characterData) :
-        Element(qname.getName(), qname.getUri().value, nullptr)
+        mName(qname.getName(), qname.getUri().value)
     {
         setCharacterData(characterData);
     }
 
+    #ifndef SWIG  // SWIG doesn't like unique_ptr
     static std::unique_ptr<Element> create(const std::string& qname, const std::string& uri = "", const std::string& characterData = "");
     static std::unique_ptr<Element> create(const std::string& qname, const xml::lite::Uri& uri, const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const coda_oss::u8string&);
-
-    // Encoding of "characterData" is always UTF-8
-    static std::unique_ptr<Element> createU8(const xml::lite::QName&, const std::string& characterData = "");
     #endif // SWIG
 
     //! Destructor
-    virtual ~Element()
+    ~Element()
     {
         destroyChildren();
     }
@@ -112,14 +98,14 @@ public:
     void destroyChildren();
 
     // use clone() to duplicate an Element
-#if !(defined(SWIG) || defined(SWIGPYTHON) || defined(HAVE_PYTHON_H))  // SWIG needs these
-//private: // encoded as part of the C++ name mangling by some compilers
-#endif
+    #if !(defined(SWIG) || defined(SWIGPYTHON) || defined(HAVE_PYTHON_H))  // SWIG needs these
+    //private: // encoded as part of the C++ name mangling by some compilers
+    #endif
     Element(const Element&);
     Element& operator=(const Element&);
-#if !(defined(SWIG) || defined(SWIGPYTHON) || defined(HAVE_PYTHON_H))
-public:
-#endif
+    #if !(defined(SWIG) || defined(SWIGPYTHON) || defined(HAVE_PYTHON_H))
+    public:
+    #endif
 
     Element(Element&&) = default;
     Element& operator=(Element&&) = default;
@@ -320,25 +306,20 @@ public:
      *  \return the charater data
      */
     std::string getCharacterData() const;
-    #ifndef SWIG  // SWIG doesn't like unique_ptr
     void getCharacterData(coda_oss::u8string& result) const;
-    #endif // SWIG
 
     /*!
      *  Sets the character data for this element.
      *  \param characters The data to add to this element
      */
     void setCharacterData(const std::string&);
-    #ifndef SWIG  // SWIG doesn't like unique_ptr
-    void setCharacterData(const coda_oss::u8string& s)
+    void setCharacterData(coda_oss::u8string s)
     {
-        mCharacterData = s;
+        // See Item #41 in "Effective Modern C++" by Scott Meyers.
+        // std::basic_string<T> is "cheap to move" and "always copied"
+        // into mCharacterData.
+        mCharacterData = std::move(s);
     }
-    void setCharacterData(coda_oss::u8string&& s)
-    {
-        mCharacterData = s;
-    }
-   #endif  // SWIG
 
     /*!
      *  Sets the local name for this element.
@@ -476,7 +457,7 @@ private:
 
     void depthPrint(io::OutputStream& stream, int depth, const std::string& formatter, bool isConsoleOutput = false) const;
 
-    Element* mParent;
+    Element* mParent = nullptr;
     //! The children of this element
     std::vector<Element*> mChildren;
     xml::lite::QName mName;

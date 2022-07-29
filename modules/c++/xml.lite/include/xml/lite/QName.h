@@ -68,7 +68,7 @@ namespace lite
 struct Uri final // help prevent mixups with std::string
 {
     Uri() = default;
-    Uri(const std::string& v);
+    explicit Uri(const std::string& v);
     std::string value;
     bool empty() const
     {
@@ -118,7 +118,7 @@ public:
      * Constructor taking just the local name (no namespace). 
      * \param lName  Just the local name of the object. 
      */
-    QName(const std::string& lName)
+    explicit QName(const std::string& lName)
     {
         setName(lName);
     }
