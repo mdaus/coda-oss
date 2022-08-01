@@ -427,7 +427,7 @@ coda_oss::u8string str::details::fromUtf8(std::string::const_pointer p, size_t s
 }
 
 template <>
-std::string str::toString(const coda_oss::u8string& utf8)
+std::string str::toString(const coda_oss::u8string& s)
 {
-    return str::details::to_native(utf8);
+    return str::details::to_native(s.c_str(), s.size());
 }

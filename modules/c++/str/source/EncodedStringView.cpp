@@ -54,9 +54,15 @@ str::EncodedStringView::EncodedStringView(const std::string& s) : mString(make_s
 str::EncodedStringView::EncodedStringView(const coda_oss::u8string& s) : mString(make_span(s)), mIsUtf8(true) { }
 str::EncodedStringView::EncodedStringView(const str::W1252string& s) : mString(make_span(s)), mIsUtf8(false) { }
 
+
+inline std::string to_native_(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */) // std::string is Windows-1252 or UTF-8  depending on platform
+{
+    return is_utf8 ? str::details::to_native(str::cast<coda_oss::u8string::const_pointer>(s), sz)
+                   : str::details::to_native(str::cast<str::W1252string::const_pointer>(s), sz);
+}
 std::string str::EncodedStringView::native() const
 {
-    return str::details::to_native(mString.data(), mString.size(), mIsUtf8);
+    return to_native_(mString.data(), mString.size(), mIsUtf8);
 }
 
 coda_oss::u8string str::EncodedStringView::u8string() const
