@@ -145,12 +145,32 @@ static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<
     append(result, replacement_character);
 }
 template<typename TChar>
-void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
+void windows1252_to_string_(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
 {
     for (size_t i = 0; i < sz; i++)
     {
         fromWindows1252_(p[i], result);
     }
+}
+inline void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, coda_oss::u8string& result)
+{
+    windows1252_to_string_(p, sz, result);
+}
+void str::details::windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::string& result)
+{
+    windows1252_to_string_(p, sz, result);
+}
+inline void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u16string& result)
+{
+    windows1252_to_string_(p, sz, result);
+}
+inline void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, str::ui16string& result)
+{
+    windows1252_to_string_(p, sz, result);
+}
+inline void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u32string& result)
+{
+    windows1252_to_string_(p, sz, result);
 }
 
 template<typename TKey, typename TValue>
@@ -291,19 +311,6 @@ coda_oss::u8string str::to_u8string(W1252string::const_pointer p, size_t sz)
     return retval;
 }
 
-std::string& str::details::to_u8string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 'p' UTF-8? */, std::string& result)
-{
-    if (is_utf8)
-    {
-        result = p; // copy
-    }
-    else
-    {
-        windows1252_to_string(cast<W1252string::const_pointer>(p), sz, result);
-    }
-    return result;
-}
-
 coda_oss::u8string str::details::to_u8string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 'p' UTF-8? */)
 {
     return is_utf8 ?
@@ -349,7 +356,7 @@ std::u32string str::details::to_u32string(std::string::const_pointer s, size_t s
     }
 
     std::u32string retval;
-    windows1252_to_string(cast<str::W1252string::const_pointer>(s), sz, retval);
+    ::windows1252_to_string(cast<str::W1252string::const_pointer>(s), sz, retval);
     return retval;
 }
 

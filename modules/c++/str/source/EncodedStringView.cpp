@@ -69,9 +69,20 @@ coda_oss::u8string str::EncodedStringView::u8string() const
 {
     return str::details::to_u8string(mString.data(), mString.size(), mIsUtf8);
 }
+
 std::string& str::EncodedStringView::toUtf8(std::string& result) const
 {
-    return str::details::to_u8string(mString.data(), mString.size(), mIsUtf8, result);
+    const auto p = mString.data();
+    const auto sz = mString.size();
+    if (mIsUtf8)
+    {
+        result = p; // copy
+    }
+    else
+    {
+        str::details::windows1252_to_string(cast<W1252string::const_pointer>(p), sz, result);
+    }
+    return result;
 }
 
 std::u16string str::EncodedStringView::u16string() const
