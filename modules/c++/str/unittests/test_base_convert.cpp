@@ -76,7 +76,7 @@ TEST_CASE(testCharToString)
 static std::u8string fromWindows1252(const std::string& s)
 {
     // s is Windows-1252 on ALL platforms
-    return str::fromWindows1252(s.c_str(), s.size());
+    return str::EncodedStringView::fromWindows1252(s).u8string();
 }
 
 template<typename T>
@@ -183,7 +183,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
             // are mapped one-by-one.  However, we can test that UTF-8 to Windows-1252
             // works as that walks through a UTF-8 string which can have 1-, 2-, 3- and 4-bytes
             // for a single code-point.
-            const str::W1252string w1252 = str::details::to_w1252string(actual.data(), actual.size());
+            const auto w1252 = str::EncodedStringView::details::w1252string(str::EncodedStringView(actual));
             TEST_ASSERT(input == w1252);
 
             // Can't compare the values with == because TEST_ASSERT_EQ()
@@ -345,13 +345,11 @@ static void test_EncodedStringView_(const std::string& testName,
 
     const auto expected = str::EncodedString::details::string(classificationText_utf_8());
     {
-        std::string buf;
-        const auto& actual = utf_8_view.toUtf8(buf);
+        const auto actual = utf_8_view.asUtf8();
         TEST_ASSERT_EQ(actual, expected);
     }
     {
-        std::string buf;
-        const auto& actual = iso8859_1_view.toUtf8(buf);
+        const auto actual = iso8859_1_view.asUtf8();
         TEST_ASSERT_EQ(actual, expected);
     }
 }
@@ -391,9 +389,11 @@ TEST_CASE(test_EncodedStringView)
 TEST_CASE(test_EncodedString)
 {
     str::EncodedString es;
+    TEST_ASSERT_TRUE(es.empty());
     TEST_ASSERT_TRUE(es.native().empty());
     {
         str::EncodedString es_copy(es);  // copy
+        TEST_ASSERT_TRUE(es_copy.empty());
         TEST_ASSERT_TRUE(es_copy.native().empty());
     }
     es = str::EncodedString("abc"); // assignment
@@ -408,6 +408,7 @@ TEST_CASE(test_EncodedString)
     
     str::EncodedString es2;
     es = std::move(es2);  // move assignment
+    TEST_ASSERT_TRUE(es.empty());
     TEST_ASSERT_TRUE(es.native().empty());
     str::EncodedString abc_(abc);  // copy
     es = std::move(abc_); // move assignment, w/o default content
