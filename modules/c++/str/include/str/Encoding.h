@@ -99,16 +99,13 @@ static_assert(!std::is_same<wchar_t, int32_t>::value, "wchar_t should not be the
 
 // When the encoding is important, we want to "traffic" in coda_oss::u8string (UTF-8), not
 // str::W1252string (Windows-1252) or std::string (unknown).  Make it easy to get those from other encodings.
-CODA_OSS_API coda_oss::u8string to_u8string(std::string::const_pointer, size_t);  // std::string is Windows-1252 or UTF-8  depending on platform
 CODA_OSS_API coda_oss::u8string to_u8string(str::W1252string::const_pointer, size_t);
 inline coda_oss::u8string to_u8string(coda_oss::u8string::const_pointer s, size_t sz)
 {
     return coda_oss::u8string(s, sz);
 }
-CODA_OSS_API coda_oss::u8string to_u8string(std::wstring::const_pointer, size_t);  // std::wstring is UTF-16 or UTF-32  depending on platform
 
-// UTF-16 is typically uses on Windows (where it is std::wstring::value_type);
-// Linux preferred UTF-32.
+// UTF-16 is typically uses on Windows (where it is std::wstring::value_type); Linux prefers UTF-32.
 CODA_OSS_API coda_oss::u8string to_u8string(std::u16string::const_pointer, size_t);
 CODA_OSS_API std::u16string to_u16string(coda_oss::u8string::const_pointer, size_t);
 
@@ -145,6 +142,11 @@ inline coda_oss::u8string fromUtf8(std::string::const_pointer s)
 {
     return fromUtf8(s, gsl::narrow<size_t>(strlen(s)));
 }
+
+// When the encoding is important, we want to "traffic" in coda_oss::u8string (UTF-8), not
+// str::W1252string (Windows-1252) or std::string (unknown).  Make it easy to get those from other encodings.
+coda_oss::u8string to_u8string(std::string::const_pointer, size_t);  // std::string is Windows-1252 or UTF-8  depending on platform
+coda_oss::u8string to_u8string(std::wstring::const_pointer, size_t);  // std::wstring is UTF-16 or UTF-32  depending on platform
 
 coda_oss::u8string to_u8string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
 std::u16string to_u16string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
