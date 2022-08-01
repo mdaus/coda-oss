@@ -183,7 +183,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
             // are mapped one-by-one.  However, we can test that UTF-8 to Windows-1252
             // works as that walks through a UTF-8 string which can have 1-, 2-, 3- and 4-bytes
             // for a single code-point.
-            const str::W1252string w1252 = str::details::to_w1252string(actual.data(), actual.size());
+            const auto w1252 = str::EncodedStringView::details::w1252string(str::EncodedStringView(actual));
             TEST_ASSERT(input == w1252);
 
             // Can't compare the values with == because TEST_ASSERT_EQ()

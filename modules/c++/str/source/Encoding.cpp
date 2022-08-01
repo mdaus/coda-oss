@@ -363,17 +363,16 @@ std::u32string str::details::to_u32string(std::string::const_pointer s, size_t s
     return retval;
 }
 
-str::W1252string str::details::to_w1252string(coda_oss::u8string::const_pointer p, size_t sz)
+inline str::W1252string to_w1252string_(coda_oss::u8string::const_pointer p, size_t sz)
 {
     str::W1252string retval;
     utf8to1252(p, sz, retval);
     return retval;
 }
-
 str::W1252string str::details::to_w1252string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
 {
     return is_utf8 ?
-        to_w1252string(cast<coda_oss::u8string ::const_pointer>(p), sz) :
+        to_w1252string_(cast<coda_oss::u8string ::const_pointer>(p), sz) :
         cast<str::W1252string ::const_pointer>(p);  // copy
 }
 str::W1252string str::details::to_w1252string(std::string::const_pointer p, size_t sz)
