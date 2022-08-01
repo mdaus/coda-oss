@@ -30,7 +30,7 @@ void str::EncodedString::assign(coda_oss::u8string::const_pointer s)
     using char_t = std::remove_pointer<decltype(s)>::type; // avoid copy-paste error
     using string_t = std::basic_string<std::remove_const<char_t>::type>;
     s_ = cast<std::string::const_pointer>(s);  // copy
-    v_ = EncodedStringView(c_str<string_t>(s_));
+    v_ = EncodedStringView(str::c_str<string_t>(s_));
 }
 
 void str::EncodedString::assign(str::W1252string::const_pointer s)
@@ -38,7 +38,7 @@ void str::EncodedString::assign(str::W1252string::const_pointer s)
     using char_t = std::remove_pointer<decltype(s)>::type; // avoid copy-paste error
     using string_t = std::basic_string<std::remove_const<char_t>::type>;
     s_ = cast<std::string::const_pointer>(s);  // copy
-    v_ = EncodedStringView(c_str<string_t>(s_));  // avoid copy-paste error
+    v_ = EncodedStringView(str::c_str<string_t>(s_));  // avoid copy-paste error
 }
 
 static str::EncodedStringView make_EncodedStringView(const std::string& s, bool isUtf8)
@@ -52,9 +52,9 @@ static str::EncodedStringView make_EncodedStringView(const std::string& s, bool 
     return str::EncodedStringView(str::c_str<str::W1252string>(s));
 }
 
-str::EncodedString::EncodedString(std::string::const_pointer s) :  s_(s) /*copy*/, v_ (s_)  { }
-str::EncodedString::EncodedString(const std::string& s) :  s_(s) /*copy*/, v_ (s_) { }
-str::EncodedString::EncodedString() : EncodedString(s_) {}
+str::EncodedString::EncodedString(std::string::const_pointer s) :  s_(s) /*copy*/, v_(s_)  { }
+str::EncodedString::EncodedString(const std::string& s) :  s_(s) /*copy*/, v_(s_) { }
+str::EncodedString::EncodedString() : EncodedString(""){ }
 
 str::EncodedString::EncodedString(coda_oss::u8string::const_pointer s)
 {
