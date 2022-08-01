@@ -51,11 +51,11 @@ static inline TReturn to_16string(std::string::const_pointer s, size_t sz, bool 
     }
     return retval;
 }
-std::u16string str::details::to_u16string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
+inline std::u16string to_u16string_(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
 {
     return to_16string<std::u16string>(s, sz, is_utf8);
 }
-str::ui16string str::details::to_ui16string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
+inline str::ui16string to_ui16string_(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
 {
     return to_16string<str::ui16string>(s, sz, is_utf8);
 }
@@ -80,20 +80,19 @@ str::EncodedStringView::EncodedStringView(const std::string& s) : mString(make_s
 str::EncodedStringView::EncodedStringView(const coda_oss::u8string& s) : mString(make_span(s)), mIsUtf8(true) { }
 str::EncodedStringView::EncodedStringView(const str::W1252string& s) : mString(make_span(s)), mIsUtf8(false) { }
 
-
-inline std::string to_native_(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */) // std::string is Windows-1252 or UTF-8  depending on platform
-{
-    return is_utf8 ? str::details::to_native(str::cast<coda_oss::u8string::const_pointer>(s), sz)
-                   : str::details::to_native(str::cast<str::W1252string::const_pointer>(s), sz);
-}
 std::string str::EncodedStringView::native() const
 {
-    return to_native_(mString.data(), mString.size(), mIsUtf8);
+    const auto s = mString.data();
+    const auto sz = mString.size();
+    return mIsUtf8 ? str::details::to_native(str::cast<coda_oss::u8string::const_pointer>(s), sz)
+                   : str::details::to_native(str::cast<str::W1252string::const_pointer>(s), sz);
 }
 
 coda_oss::u8string str::EncodedStringView::u8string() const
 {
-    return str::details::to_u8string(mString.data(), mString.size(), mIsUtf8);
+    return mIsUtf8 ?
+        str::cast<coda_oss::u8string::const_pointer>(mString.data()) :  // copy
+        str::to_u8string(str::cast<str::W1252string::const_pointer>(mString.data()), mString.size());
 }
 
 std::string& str::EncodedStringView::toUtf8(std::string& result) const
@@ -113,11 +112,11 @@ std::string& str::EncodedStringView::toUtf8(std::string& result) const
 
 std::u16string str::EncodedStringView::u16string() const
 {
-    return str::details::to_u16string(mString.data(), mString.size(), mIsUtf8);
+    return to_u16string_(mString.data(), mString.size(), mIsUtf8);
 }
 str::ui16string str::EncodedStringView::ui16string_() const
 {
-    return str::details::to_ui16string(mString.data(), mString.size(), mIsUtf8);
+    return to_ui16string_(mString.data(), mString.size(), mIsUtf8);
 }
 
 std::u32string str::EncodedStringView::u32string() const
@@ -142,7 +141,7 @@ std::wstring str::EncodedStringView::wstring() const  // UTF-16 on Windows, UTF-
     const auto s =
     // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
     #if _WIN32
-    str::details::to_u16string(p, sz, mIsUtf8);  // std::wstring is UTF-16 on Windows
+    to_u16string_(p, sz, mIsUtf8);  // std::wstring is UTF-16 on Windows
     #endif
     #if !_WIN32
     str::details::to_u32string(p, sz, mIsUtf8);  // std::wstring is UTF-32 on Linux

@@ -311,18 +311,6 @@ coda_oss::u8string str::to_u8string(W1252string::const_pointer p, size_t sz)
     return retval;
 }
 
-coda_oss::u8string str::details::to_u8string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 'p' UTF-8? */)
-{
-    return is_utf8 ?
-        cast<coda_oss::u8string::const_pointer>(p) :  // copy
-        to_u8string(cast<W1252string::const_pointer>(p), sz);
-}
-coda_oss::u8string str::details::to_u8string(std::string::const_pointer p, size_t sz)
-{
-    auto platform = details::Platform;  // "conditional expression is constant"
-    return details::to_u8string(p, sz, platform == details::PlatformType::Linux); // std::string is UTF-8 on Linux
-}
-
 inline str::W1252string to_w1252string_(coda_oss::u8string::const_pointer p, size_t sz)
 {
     str::W1252string retval;
