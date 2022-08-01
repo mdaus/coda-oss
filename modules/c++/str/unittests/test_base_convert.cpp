@@ -395,6 +395,7 @@ TEST_CASE(test_EncodedString)
     TEST_ASSERT_TRUE(es.native().empty());
     {
         str::EncodedString es_copy(es);  // copy
+        TEST_ASSERT_TRUE(es_copy.empty());
         TEST_ASSERT_TRUE(es_copy.native().empty());
     }
     es = str::EncodedString("abc"); // assignment
@@ -409,6 +410,7 @@ TEST_CASE(test_EncodedString)
     
     str::EncodedString es2;
     es = std::move(es2);  // move assignment
+    TEST_ASSERT_TRUE(es.empty());
     TEST_ASSERT_TRUE(es.native().empty());
     str::EncodedString abc_(abc);  // copy
     es = std::move(abc_); // move assignment, w/o default content

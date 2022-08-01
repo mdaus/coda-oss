@@ -165,7 +165,7 @@ inline void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, 
 {
     windows1252_to_string_(p, sz, result);
 }
-std::string str::details::to_string(str::W1252string::const_pointer p, size_t sz)
+std::string str::details::as_utf8(str::W1252string::const_pointer p, size_t sz)
 {
     return to_Tstring<std::string>(p, sz);
 }
@@ -181,7 +181,7 @@ std::u32string str::to_u32string(str::W1252string::const_pointer p, size_t sz)
 {
     return to_Tstring<std::u32string>(p, sz);
 }
-std::wstring str::details::to_wstring(str::W1252string::const_pointer p, size_t sz)
+std::wstring str::details::as_wstring(str::W1252string::const_pointer p, size_t sz)
 {
     return to_Tstring<std::wstring>(p, sz);
 }
@@ -256,13 +256,17 @@ static void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::basi
         }
     }
 }
-void str::details::utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::string& result)
+std::string str::details::as_w1252(coda_oss::u8string::const_pointer p, size_t sz)
 {
-    ::utf8to1252(p, sz, result);
+    std::string retval; 
+    utf8to1252(p, sz, retval);
+    return retval;
 }
-void str::utf8to1252(coda_oss::u8string::const_pointer p, size_t sz,  str::W1252string& result)
+str::W1252string str::to_w1252string(coda_oss::u8string::const_pointer p, size_t sz)
 {
-    ::utf8to1252(p, sz, result);
+    str::W1252string retval;
+    utf8to1252(p, sz, retval);
+    return retval;
 }
 
 struct back_inserter final
@@ -301,10 +305,11 @@ coda_oss::u8string str::to_u8string(std::u16string::const_pointer p, size_t sz)
     utf8::utf8to16(begin, begin+result.size(), std::back_inserter(utf16line));
     */
 }
-std::string& str::details::to_u8string(std::u16string::const_pointer p, size_t sz, std::string& result)
+std::string str::details::as_utf8(std::u16string::const_pointer p, size_t sz)
 {
-    utf8::utf16to8(p, p + sz, std::back_inserter(result));
-    return result;
+    std::string retval;
+    utf8::utf16to8(p, p + sz, std::back_inserter(retval));
+    return retval;
 }
 
 std::u16string str::to_u16string(coda_oss::u8string::const_pointer p_, size_t sz)

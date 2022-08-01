@@ -126,7 +126,7 @@ bool xml::lite::MinidomHandler::vcharacters(const void /*XMLCh*/* chars_, size_t
     auto platformEncoding = xml::lite::PlatformEncoding;  // "conditional expression is constant"
     if (platformEncoding == xml::lite::StringEncoding::Utf8)
     {
-        str::details::to_u8string(pChars16, length, chars);
+        chars = str::details::as_utf8(pChars16, length);
     }
     else if (platformEncoding == xml::lite::StringEncoding::Windows1252)
     {

@@ -33,7 +33,6 @@
 #include "str/Convert.h"
 #include "str/Encoding.h"
 #include "str/EncodedString.h"
-#include "str/utf8.h"
 
 enum class PlatformType
 {
@@ -69,9 +68,7 @@ static std::string to_native(coda_oss::u8string::const_pointer p, size_t sz)
 {
     if (Platform == PlatformType::Windows)
     {
-        std::string retval;
-        str::details::utf8to1252(p, sz, retval);
-        return retval;
+        return str::details::as_w1252(p, sz);
     }
     if (Platform == PlatformType::Linux)
     {
@@ -88,7 +85,7 @@ static std::string to_native(str::W1252string::const_pointer p, size_t sz)
     }
     if (Platform == PlatformType::Linux)
     {
-        return str::details::to_string(p, sz);
+        return str::details::as_utf8(p, sz);
     }
     throw std::logic_error("Unknown platform.");
 }
@@ -138,7 +135,7 @@ std::string& str::EncodedStringView::toUtf8(std::string& result) const
     }
     else
     {
-        result = str::details::to_string(cast<W1252string::const_pointer>(p), sz);
+        result = str::details::as_utf8(cast<W1252string::const_pointer>(p), sz);
     }
     return result;
 }
@@ -180,16 +177,10 @@ std::wstring str::EncodedStringView::wstring() const  // UTF-16 on Windows, UTF-
     return str::c_str<std::wstring>(s); // copy
 }
 
-inline str::W1252string to_w1252string(coda_oss::u8string::const_pointer p, size_t sz)
-{
-    str::W1252string retval;
-    str::utf8to1252(p, sz, retval);
-    return retval;
-}
 str::W1252string str::EncodedStringView::w1252string() const
 {
     return mIsUtf8 ?
-        to_w1252string(str::cast<coda_oss::u8string ::const_pointer>(mString.data()), mString.size()) :
+        str::to_w1252string(str::cast<coda_oss::u8string ::const_pointer>(mString.data()), mString.size()) :
         str::cast<str::W1252string ::const_pointer>(mString.data());  // copy
 }
 std::string str::EncodedStringView::asWindows1252() const

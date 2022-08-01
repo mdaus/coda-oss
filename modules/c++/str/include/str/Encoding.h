@@ -104,14 +104,15 @@ inline coda_oss::u8string to_u8string(const std::basic_string<TChar>& s)
     return to_u8string(s.c_str(), s.size());
 }
 
-void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, str::W1252string&);
+str::W1252string to_w1252string(coda_oss::u8string::const_pointer p, size_t sz);
 
 namespace details // YOU should use EncodedStringView
 {
-std::string to_string(str::W1252string::const_pointer p, size_t sz);
-std::wstring to_wstring(str::W1252string::const_pointer p, size_t sz);
-void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::string&);
-std::string& to_u8string(std::u16string::const_pointer, size_t, std::string&); // encoding is lost
+std::string as_utf8(str::W1252string::const_pointer p, size_t sz);
+std::wstring as_wstring(str::W1252string::const_pointer p, size_t sz);
+
+std::string as_w1252(coda_oss::u8string::const_pointer p, size_t sz);
+std::string as_utf8(std::u16string::const_pointer, size_t);  // encoding is lost
 }
 }
 
