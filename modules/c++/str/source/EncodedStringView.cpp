@@ -189,7 +189,7 @@ std::wstring str::EncodedStringView::wstring() const  // UTF-16 on Windows, UTF-
     ::to_u16string(p, sz, mIsUtf8);  // std::wstring is UTF-16 on Windows
     #endif
     #if !_WIN32
-    ::to_u32string(p, sz, mIsUtf8);  // std::wstring is UTF-32 on Linux
+    str::details::to_u32string(p, sz, mIsUtf8);  // std::wstring is UTF-32 on Linux
     #endif    
     return str::c_str<std::wstring>(s); // copy
 }
