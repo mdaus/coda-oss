@@ -359,18 +359,6 @@ coda_oss::u8string str::to_u8string(std::string::const_pointer p, size_t sz)
     return details::to_u8string(p, sz, platform == details::PlatformType::Linux); // std::string is UTF-8 on Linux
 }
 
-std::u32string str::details::to_u32string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
-{
-    if (is_utf8)
-    {
-        return str::to_u32string(cast<coda_oss::u8string::const_pointer>(s), sz);
-    }
-
-    std::u32string retval;
-    windows1252_to_string(cast<str::W1252string::const_pointer>(s), sz, retval);
-    return retval;
-}
-
 coda_oss::u8string str::to_u8string(std::wstring::const_pointer p_, size_t sz)  // std::wstring is UTF-16 or UTF-32  depending on platform
 {
     const auto p =
