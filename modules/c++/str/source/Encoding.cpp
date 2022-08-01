@@ -161,15 +161,15 @@ void str::details::windows1252_to_string(str::W1252string::const_pointer p, size
 {
     windows1252_to_string_(p, sz, result);
 }
-void str::details::windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u16string& result)
+void str::windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u16string& result)
 {
     windows1252_to_string_(p, sz, result);
 }
-void str::details::windows1252_to_string(str::W1252string::const_pointer p, size_t sz, str::ui16string& result)
+void str::windows1252_to_string(str::W1252string::const_pointer p, size_t sz, str::ui16string& result)
 {
     windows1252_to_string_(p, sz, result);
 }
-void str::details::windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u32string& result)
+void str::windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u32string& result)
 {
     windows1252_to_string_(p, sz, result);
 }
@@ -313,7 +313,7 @@ coda_oss::u8string str::to_u8string(std::u32string::const_pointer p, size_t sz)
 coda_oss::u8string str::to_u8string(W1252string::const_pointer p, size_t sz)
 {
     coda_oss::u8string retval;
-    windows1252_to_string(p, sz, retval);
+    ::windows1252_to_string(p, sz, retval);
     return retval;
 }
 

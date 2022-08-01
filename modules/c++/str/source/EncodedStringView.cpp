@@ -47,7 +47,7 @@ static inline TReturn to_16string(std::string::const_pointer s, size_t sz, bool 
     }
     else
     {
-        str::details::windows1252_to_string(str::cast<str::W1252string::const_pointer>(s), sz, retval);
+        str::windows1252_to_string(str::cast<str::W1252string::const_pointer>(s), sz, retval);
     }
     return retval;
 }
@@ -164,7 +164,7 @@ std::u32string str::EncodedStringView::u32string() const
     }
 
     std::u32string retval;
-    str::details::windows1252_to_string(cast<str::W1252string::const_pointer>(s), sz, retval);
+    str::windows1252_to_string(cast<str::W1252string::const_pointer>(s), sz, retval);
     return retval;
 }
 

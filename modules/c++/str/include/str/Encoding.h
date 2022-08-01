@@ -130,13 +130,15 @@ inline std::u32string to_u32string(const std::basic_string<TChar>& s)
     return to_u32string(s.c_str(), s.size());
 }
 
+void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u32string&);
+void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u16string&);
+void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, str::ui16string&);
+
 namespace details // YOU should use EncodedStringView
 {
 str::W1252string to_w1252string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
 void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::string&);
-void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u32string&);
-void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u16string&);
-void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, str::ui16string&);
+
 void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::string&);
 
 }
