@@ -73,23 +73,6 @@ inline str::ui16string to_ui16string(std::string::const_pointer s, size_t sz, bo
     return to_16string<str::ui16string>(s, sz, is_utf8);
 }
 
-static inline std::wstring to_u32string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
-{
-    std::wstring retval;
-    if (is_utf8)
-    {
-        auto p_ = str::cast<coda_oss::u8string::const_pointer>(s);
-        auto p = str::cast<std::string::const_pointer>(p_);
-        utf8::utf8to32(p, p + sz, std::back_inserter(retval));
-    }
-    else
-    {
-        str::details::windows1252_to_wstring(str::cast<str::W1252string::const_pointer>(s), sz, retval);
-    }
-    return retval;
-}
-
-
 static std::string to_native(coda_oss::u8string::const_pointer p, size_t sz)
 {
     if (Platform == PlatformType::Windows)
@@ -188,7 +171,7 @@ std::u32string str::EncodedStringView::u32string() const
 
     if (mIsUtf8)
     {
-        return to_u32string(cast<coda_oss::u8string::const_pointer>(s), sz);
+        return str::to_u32string(str::cast<coda_oss::u8string::const_pointer>(s), sz);
     }
 
     std::u32string retval;
