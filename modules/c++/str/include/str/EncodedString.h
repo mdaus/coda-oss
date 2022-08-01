@@ -120,10 +120,10 @@ public:
     {
         return view().u32string();
     }
-    //std::wstring wstring() const // UTF-16 on Windows, UTF-32 on Linux
-    //{
-    //    return view().wstring();
-    //}
+    std::wstring wstring() const // UTF-16 on Windows, UTF-32 on Linux
+    {
+        return view().wstring();
+    }
 
     bool empty() const
     {

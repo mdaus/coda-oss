@@ -196,20 +196,20 @@ std::u32string str::EncodedStringView::u32string() const
     return retval;
 }
 
-//std::wstring str::EncodedStringView::wstring() const  // UTF-16 on Windows, UTF-32 on Linux
-//{
-//    const auto p = mString.data();
-//    const auto sz = mString.size();
-//    const auto s =
-//    // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
-//    #if _WIN32
-//    ::to_u16string(p, sz, mIsUtf8);  // std::wstring is UTF-16 on Windows
-//    #endif
-//    #if !_WIN32
-//    ::to_u32string(p, sz, mIsUtf8);  // std::wstring is UTF-32 on Linux
-//    #endif    
-//    return str::c_str<std::wstring>(s); // copy
-//}
+std::wstring str::EncodedStringView::wstring() const  // UTF-16 on Windows, UTF-32 on Linux
+{
+    const auto p = mString.data();
+    const auto sz = mString.size();
+    const auto s =
+    // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
+    #if _WIN32
+    ::to_u16string(p, sz, mIsUtf8);  // std::wstring is UTF-16 on Windows
+    #endif
+    #if !_WIN32
+    ::to_u32string(p, sz, mIsUtf8);  // std::wstring is UTF-32 on Linux
+    #endif    
+    return str::c_str<std::wstring>(s); // copy
+}
 
 inline str::W1252string to_w1252string(coda_oss::u8string::const_pointer p, size_t sz)
 {
