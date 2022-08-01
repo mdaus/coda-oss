@@ -173,6 +173,10 @@ void str::windows1252_to_string(str::W1252string::const_pointer p, size_t sz, st
 {
     windows1252_to_string_(p, sz, result);
 }
+void str::details::windows1252_to_wstring(str::W1252string::const_pointer p, size_t sz, std::wstring& result)
+{
+    windows1252_to_string_(p, sz, result);
+}
 
 template<typename TKey, typename TValue>
 std::map<TValue, TKey> kv_to_vk(const std::map<TKey, TValue>& kv)

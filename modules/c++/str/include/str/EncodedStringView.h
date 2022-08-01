@@ -100,7 +100,7 @@ public:
     std::u32string u32string() const;  // c.f. std::filesystem::path::u8string()
     // This is especially useful on Windows because the default for characters
     // is WCHAR (char* is converted to UTF-16).
-    std::wstring wstring() const; // UTF-16 on Windows, UTF-32 on Linux
+    //std::wstring wstring() const; // UTF-16 on Windows, UTF-32 on Linux
 
     // With some older C++ compilers, uint16_t may be used instead of char16_t :-(
     // Using this routine can avoid an extra copy.
