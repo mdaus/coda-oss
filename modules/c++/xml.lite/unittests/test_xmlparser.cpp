@@ -53,7 +53,7 @@ static const str::EncodedString iso88591Text(str::cast<str::W1252string::const_p
 static const auto iso88591Text1252 = str::EncodedStringView::details::w1252string(iso88591Text.view());
 static const auto pIso88591Text_ = str::c_str<std::string>(iso88591Text1252);
 
-static const str::EncodedString utf8Text(U8("T\xc3\x89XT"));  // UTF-8,  "TÉXT"
+static const str::EncodedString utf8Text(U8("T\u00c9XT"));  // UTF-8,  "TÉXT"
 static const auto utf8Text8 = utf8Text.u8string();
 static const auto pUtf8Text_ = str::c_str<std::string>(utf8Text8);
 
