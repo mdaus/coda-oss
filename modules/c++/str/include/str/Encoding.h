@@ -145,8 +145,6 @@ ui16string to_ui16string(std::string::const_pointer, size_t, bool is_utf8 /* is 
 std::u32string to_u32string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
 
 std::string& to_u8string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */, std::string&); // encoding is lost
-std::string& to_u8string(std::u16string::const_pointer, size_t, std::string&); // encoding is lost
-std::string& to_u8string(std::u32string::const_pointer, size_t, std::string&); // encoding is lost
 
 str::W1252string to_w1252string(std::string::const_pointer, size_t); // std::string is Windows-1252 or UTF-8  depending on platform
 str::W1252string to_w1252string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
