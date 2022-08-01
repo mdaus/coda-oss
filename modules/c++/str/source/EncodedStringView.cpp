@@ -33,6 +33,32 @@
 #include "str/Convert.h"
 #include "str/Encoding.h"
 #include "str/EncodedString.h"
+#include "str/utf8.h"
+
+template<typename TReturn>
+static inline TReturn to_16string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
+{
+    TReturn retval;
+    if (is_utf8)
+    {
+        auto p_ = str::cast<coda_oss::u8string::const_pointer>(s);
+        auto p = str::cast<std::string::const_pointer>(p_);
+        utf8::utf8to16(p, p + sz, std::back_inserter(retval));
+    }
+    else
+    {
+        str::details::windows1252_to_string(str::cast<str::W1252string::const_pointer>(s), sz, retval);
+    }
+    return retval;
+}
+std::u16string str::details::to_u16string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
+{
+    return to_16string<std::u16string>(s, sz, is_utf8);
+}
+str::ui16string str::details::to_ui16string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
+{
+    return to_16string<str::ui16string>(s, sz, is_utf8);
+}
 
 template <typename CharT>
 inline coda_oss::span<const char> make_span(const CharT* s)
