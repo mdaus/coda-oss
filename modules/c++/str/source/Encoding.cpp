@@ -365,11 +365,6 @@ str::W1252string str::details::to_w1252string(std::string::const_pointer p, size
         to_w1252string_(cast<coda_oss::u8string ::const_pointer>(p), sz) :
         cast<str::W1252string ::const_pointer>(p);  // copy
 }
-str::W1252string str::details::to_w1252string(std::string::const_pointer p, size_t sz)
-{
-    auto platform = details::Platform;  // "conditional expression is constant"
-    return to_w1252string(p, sz, platform == details::PlatformType::Linux); // std::string is UTF-8 on Linux
-}
 
 std::string str::details::to_native(coda_oss::u8string::const_pointer p, size_t sz)
 {
