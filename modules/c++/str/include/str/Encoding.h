@@ -173,22 +173,6 @@ inline str::W1252string to_w1252string(str::W1252string::const_pointer s, size_t
     return str::W1252string(s, sz);
 }
 
-std::string to_native(coda_oss::u8string::const_pointer, size_t); // std::string is Windows-1252 or UTF-8  depending on platform
-std::string to_native(str::W1252string::const_pointer s, size_t sz); // std::string is Windows-1252 or UTF-8  depending on platform
-inline std::string to_native(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */) // std::string is Windows-1252 or UTF-8  depending on platform
-{
-    return is_utf8 ? to_native(cast<coda_oss::u8string::const_pointer>(s), sz)
-                   : to_native(cast<str::W1252string::const_pointer>(s), sz);
-}
-inline std::string to_native(std::string::const_pointer s, size_t sz)
-{
-    return std::string(s, sz);
-}
-template <typename TChar>
-inline std::string to_native(const std::basic_string<TChar>& s)
-{
-    return to_native(s.c_str(), s.size());
-}
 }
 }
 
