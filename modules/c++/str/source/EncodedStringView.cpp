@@ -77,6 +77,11 @@ static std::string to_native(coda_oss::u8string::const_pointer p, size_t sz)
     throw std::logic_error("Unknown platform.");
 }
 
+inline std::string as_utf8(str::W1252string::const_pointer p, size_t sz)
+{
+    return str::details::as_utf8(p, sz);
+}
+
 static std::string to_native(str::W1252string::const_pointer p, size_t sz)
 {
     if (Platform == PlatformType::Windows)
@@ -85,7 +90,7 @@ static std::string to_native(str::W1252string::const_pointer p, size_t sz)
     }
     if (Platform == PlatformType::Linux)
     {
-        return str::details::as_utf8(p, sz);
+        return as_utf8(p, sz);
     }
     throw std::logic_error("Unknown platform.");
 }
@@ -135,7 +140,7 @@ std::string& str::EncodedStringView::toUtf8(std::string& result) const
     }
     else
     {
-        result = str::details::as_utf8(cast<W1252string::const_pointer>(p), sz);
+        result = as_utf8(cast<W1252string::const_pointer>(p), sz);
     }
     return result;
 }

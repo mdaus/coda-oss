@@ -181,10 +181,6 @@ std::u32string str::to_u32string(str::W1252string::const_pointer p, size_t sz)
 {
     return to_Tstring<std::u32string>(p, sz);
 }
-std::wstring str::details::as_wstring(str::W1252string::const_pointer p, size_t sz)
-{
-    return to_Tstring<std::wstring>(p, sz);
-}
 
 template<typename TKey, typename TValue>
 std::map<TValue, TKey> kv_to_vk(const std::map<TKey, TValue>& kv)
