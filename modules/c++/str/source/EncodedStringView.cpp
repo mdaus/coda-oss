@@ -48,29 +48,21 @@ static auto Platform = PlatformType::Windows;
 static auto Platform = PlatformType::Linux;
 #endif
 
-template<typename TReturn>
-static inline TReturn to_16string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
-{
-    TReturn retval;
-    if (is_utf8)
-    {
-        auto p_ = str::cast<coda_oss::u8string::const_pointer>(s);
-        auto p = str::cast<std::string::const_pointer>(p_);
-        utf8::utf8to16(p, p + sz, std::back_inserter(retval));
-    }
-    else
-    {
-        str::windows1252_to_string(str::cast<str::W1252string::const_pointer>(s), sz, retval);
-    }
-    return retval;
-}
 inline std::u16string to_u16string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
 {
-    return to_16string<std::u16string>(s, sz, is_utf8);
+    if (is_utf8)
+    {
+        return str::to_u16string(str::cast<coda_oss::u8string::const_pointer>(s), sz);
+    }
+    return str::to_u16string(str::cast<str::W1252string::const_pointer>(s), sz);
 }
 inline str::ui16string to_ui16string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
 {
-    return to_16string<str::ui16string>(s, sz, is_utf8);
+    if (is_utf8)
+    {
+        return str::to_ui16string(str::cast<coda_oss::u8string::const_pointer>(s), sz);
+    }
+    return str::to_ui16string(str::cast<str::W1252string::const_pointer>(s), sz);
 }
 
 static std::string to_native(coda_oss::u8string::const_pointer p, size_t sz)
