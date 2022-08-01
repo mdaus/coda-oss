@@ -165,14 +165,6 @@ std::string& to_u8string(std::string::const_pointer, size_t, bool is_utf8 /* is 
 std::string& to_u8string(std::u16string::const_pointer, size_t, std::string&); // encoding is lost
 std::string& to_u8string(std::u32string::const_pointer, size_t, std::string&); // encoding is lost
 
-str::W1252string to_w1252string(std::string::const_pointer, size_t); // std::string is Windows-1252 or UTF-8  depending on platform
-str::W1252string to_w1252string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
-CODA_OSS_API str::W1252string to_w1252string(coda_oss::u8string::const_pointer, size_t);
-inline str::W1252string to_w1252string(str::W1252string::const_pointer s, size_t sz)
-{
-    return str::W1252string(s, sz);
-}
-
 }
 }
 
