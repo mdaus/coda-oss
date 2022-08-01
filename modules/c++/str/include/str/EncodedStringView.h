@@ -52,7 +52,11 @@ class CODA_OSS_API EncodedStringView final
     // Since we only support two encodings--UTF-8 (native on Linux) and Windows-1252
     // (native on Windows)--both of which are 8-bits, a simple "bool" flag will do.
     coda_oss::span<const char> mString;
-    static constexpr bool mNativeIsUtf8 = details::Platform == details::PlatformType::Linux ? true : false;
+    #if _WIN32
+    static constexpr bool mNativeIsUtf8 = false; // Windows-1252
+    #else
+    static constexpr bool mNativeIsUtf8 = true;  // !_WIN32, assume Linux
+    #endif
     bool mIsUtf8 = mNativeIsUtf8;
     
     // Want to create an EncodedString from EncodedStringView.  The public interface

@@ -35,6 +35,19 @@
 #include "str/EncodedString.h"
 #include "str/utf8.h"
 
+enum class PlatformType
+{
+    Windows,
+    Linux,
+    // MacOS
+};
+
+#if _WIN32
+static auto Platform = PlatformType::Windows;
+#else
+static auto Platform = PlatformType::Linux;
+#endif
+
 template<typename TReturn>
 static inline TReturn to_16string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
 {
@@ -62,14 +75,13 @@ inline str::ui16string to_ui16string_(std::string::const_pointer s, size_t sz, b
 
 static std::string to_native(coda_oss::u8string::const_pointer p, size_t sz)
 {
-    auto platform = str::details::Platform;  // "conditional expression is constant"
-    if (platform == str::details::PlatformType::Windows)
+    if (Platform == PlatformType::Windows)
     {
         std::string retval;
         str::details::utf8to1252(p, sz, retval);
         return retval;
     }
-    if (platform == str::details::PlatformType::Linux)
+    if (Platform == PlatformType::Linux)
     {
         auto retval = str::cast<std::string::const_pointer>(p);
         return retval != nullptr ? retval /* copy */ : "";
@@ -79,13 +91,12 @@ static std::string to_native(coda_oss::u8string::const_pointer p, size_t sz)
 
 static std::string to_native(str::W1252string::const_pointer p, size_t sz)
 {
-    auto platform = str::details::Platform;  // "conditional expression is constant"
-    if (platform == str::details::PlatformType::Windows)
+    if (Platform == PlatformType::Windows)
     {    
         auto retval = str::cast<std::string::const_pointer>(p);
         return retval != nullptr ? retval /* copy */ : "";
     }
-    if (platform == str::details::PlatformType::Linux)
+    if (Platform == PlatformType::Linux)
     {
         std::string retval;
         str::details::windows1252_to_string(p, sz, retval);
