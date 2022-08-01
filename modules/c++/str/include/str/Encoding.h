@@ -116,10 +116,8 @@ inline coda_oss::u8string to_u8string(coda_oss::u8string::const_pointer s, size_
 {
     return coda_oss::u8string(s, sz);
 }
-CODA_OSS_API coda_oss::u8string to_u8string(std::wstring::const_pointer, size_t);  // std::wstring is UTF-16 or UTF-32  depending on platform
 
-// UTF-16 is typically uses on Windows (where it is std::wstring::value_type);
-// Linux preferred UTF-32.
+// UTF-16 is typically uses on Windows (where it is std::wstring::value_type); Linux prefers UTF-32.
 CODA_OSS_API coda_oss::u8string to_u8string(std::u16string::const_pointer, size_t);
 CODA_OSS_API std::u16string to_u16string(coda_oss::u8string::const_pointer, size_t);
 
@@ -133,16 +131,6 @@ inline coda_oss::u8string to_u8string(const std::basic_string<TChar>& s)
 {
     return to_u8string(s.c_str(), s.size());
 }
-template <typename TChar>
-inline std::u16string to_u16string(const std::basic_string<TChar>& s)
-{
-    return to_u16string(s.c_str(), s.size());
-}
-template <typename TChar>
-inline std::u32string to_u32string(const std::basic_string<TChar>& s)
-{
-    return to_u32string(s.c_str(), s.size());
-}
 
 void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u32string&);
 void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u16string&);
@@ -155,11 +143,7 @@ void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::st
 void windows1252_to_wstring(str::W1252string::const_pointer p, size_t sz, std::wstring&);
 void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::string&);
 
-coda_oss::u8string to_u8string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
-
-std::string& to_u8string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */, std::string&); // encoding is lost
 std::string& to_u8string(std::u16string::const_pointer, size_t, std::string&); // encoding is lost
-std::string& to_u8string(std::u32string::const_pointer, size_t, std::string&); // encoding is lost
 
 }
 }

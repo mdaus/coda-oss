@@ -321,55 +321,12 @@ coda_oss::u8string str::to_u8string(std::u32string::const_pointer p, size_t sz)
     utf8::utf32to8(p, p + sz, back_inserter(retval));
     return retval;
 }
-std::string& str::details::to_u8string(std::u32string::const_pointer p, size_t sz, std::string& result)
-{
-    utf8::utf32to8(p, p + sz, std::back_inserter(result));
-    return result;
-}
 
 coda_oss::u8string str::to_u8string(W1252string::const_pointer p, size_t sz)
 {
     coda_oss::u8string retval;
     ::windows1252_to_string(p, sz, retval);
     return retval;
-}
-
-std::string& str::details::to_u8string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 'p' UTF-8? */, std::string& result)
-{
-    if (is_utf8)
-    {
-        result = p; // copy
-    }
-    else
-    {
-        windows1252_to_string(cast<W1252string::const_pointer>(p), sz, result);
-    }
-    return result;
-}
-
-coda_oss::u8string str::details::to_u8string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 'p' UTF-8? */)
-{
-    return is_utf8 ?
-        cast<coda_oss::u8string::const_pointer>(p) :  // copy
-        to_u8string(cast<W1252string::const_pointer>(p), sz);
-}
-coda_oss::u8string str::to_u8string(std::string::const_pointer p, size_t sz)
-{
-    auto platform = details::Platform;  // "conditional expression is constant"
-    return details::to_u8string(p, sz, platform == details::PlatformType::Linux); // std::string is UTF-8 on Linux
-}
-
-coda_oss::u8string str::to_u8string(std::wstring::const_pointer p_, size_t sz)  // std::wstring is UTF-16 or UTF-32  depending on platform
-{
-    const auto p =
-    // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
-    #if _WIN32
-    str::cast<std::u16string::const_pointer>(p_); // std::wstring is UTF-16 on Windows
-    #endif
-    #if !_WIN32
-    str::cast<std::u32string::const_pointer>(p_); // std::wstring is UTF-32 on Linux
-    #endif    
-    return to_u8string(p, sz);
 }
 
 template <>
