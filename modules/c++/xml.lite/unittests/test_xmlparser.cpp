@@ -36,25 +36,24 @@
 #include "xml/lite/MinidomParser.h"
 #include "xml/lite/Validator.h"
 
-template<typename T>
-static constexpr std::u8string::value_type cast8(T ch)
+static inline std::u8string fromUtf8(const std::string& utf8)
 {
-    static_assert(sizeof(std::u8string::value_type) == sizeof(char), "sizeof(Char8_T) != sizeof(char)");
-    return static_cast<std::u8string::value_type>(ch);
+    return str::EncodedStringView::fromUtf8(utf8).u8string();
 }
 
 static const std::string text("TEXT");
 static const std::string strXml = "<root><doc><a>" + text + "</a></doc></root>";
+static const std::u8string text8 = fromUtf8(text);
 
 static const str::EncodedString iso88591Text(str::cast<str::W1252string::const_pointer>("T\xc9XT"));  // ISO8859-1, "TÉXT"
 static const auto iso88591Text1252 = str::EncodedStringView::details::w1252string(iso88591Text.view());
 static const auto pIso88591Text_ = str::c_str<std::string>(iso88591Text1252);
 
-static const str::EncodedString utf8Text{cast8('T'), cast8('\xc9'), cast8('X'), cast8('T')};  // UTF-8,  "TÉXT"
+static const str::EncodedString utf8Text(str::cast<coda_oss::u8string::const_pointer>("T\xc3\x89XT"));  // UTF-8,  "TÉXT"
 static const auto utf8Text8 = utf8Text.u8string();
 static const auto pUtf8Text_ = str::c_str<std::string>(utf8Text8);
 
-static const auto strUtf8Xml8 = U8("<root><doc><a>") + utf8Text8 + U8("</a></doc></root>");
+static const auto strUtf8Xml8 = fromUtf8("<root><doc><a>") + utf8Text8 + fromUtf8("</a></doc></root>");
 static const std::string strUtf8Xml = str::c_str<std::string>(strUtf8Xml8);
 
 static const std::string  platfromText_ = sys::Platform == sys::PlatformType::Windows ?  pIso88591Text_ : pUtf8Text_;
@@ -277,7 +276,7 @@ TEST_CASE(testXmlParseAndPrintUtf8)
 }
 
 static void testReadEncodedXmlFile(const std::string& testName, const std::string& xmlFile, bool preserveCharacterData,
-    const std::string& platformText, const std::u8string& text8)
+    const std::string& platformText, const std::u8string& text8_)
 {
     const auto unittests = findRoot() / "modules" / "c++" / "xml.lite" / "unittests";
 
@@ -300,7 +299,7 @@ static void testReadEncodedXmlFile(const std::string& testName, const std::strin
 
     std::u8string u8_characterData;
     a.getCharacterData(u8_characterData);
-    TEST_ASSERT_EQ(text8, u8_characterData);     
+    TEST_ASSERT_EQ(text8_, u8_characterData);     
 
     const auto& textXML = root.getElementByTagName("text", true /*recurse*/);
     characterData = textXML.getCharacterData();
@@ -323,12 +322,12 @@ TEST_CASE(testReadEncodedXmlFiles)
     testReadEncodedXmlFile(testName, "encoding_utf-8.xml", false /*preserveCharacterData*/, platfromText_ , utf8Text8);
     testReadEncodedXmlFile(testName, "encoding_windows-1252.xml", true /*preserveCharacterData*/, platfromText_ , utf8Text8);
     testReadEncodedXmlFile(testName, "encoding_windows-1252.xml", false /*preserveCharacterData*/, platfromText_ , utf8Text8);
-    testReadEncodedXmlFile(testName, "ascii_encoding_utf-8.xml", true /*preserveCharacterData*/, text , U8("TEXT"));
-    testReadEncodedXmlFile(testName, "ascii_encoding_utf-8.xml", false /*preserveCharacterData*/, text , U8("TEXT"));
+    testReadEncodedXmlFile(testName, "ascii_encoding_utf-8.xml", true /*preserveCharacterData*/, text , text8);
+    testReadEncodedXmlFile(testName, "ascii_encoding_utf-8.xml", false /*preserveCharacterData*/, text , text8);
 }
 
 static void testReadXmlFile(const std::string& testName, const std::string& xmlFile, bool preserveCharacterData,
-        const std::string& platformText, const std::u8string& text8)
+        const std::string& platformText, const std::u8string& text8_)
 {
     const auto unittests =  findRoot() / "modules" / "c++" / "xml.lite" / "unittests";
 
@@ -354,7 +353,7 @@ static void testReadXmlFile(const std::string& testName, const std::string& xmlF
 
     std::u8string u8_characterData;
     a.getCharacterData(u8_characterData);
-    TEST_ASSERT_EQ(text8, u8_characterData);
+    TEST_ASSERT_EQ(text8_, u8_characterData);
 
     const auto& textXML = root.getElementByTagName("text", true /*recurse*/);
     characterData = textXML.getCharacterData();
@@ -377,8 +376,8 @@ TEST_CASE(testReadXmlFiles)
     testReadXmlFile(testName, "utf-8.xml", false /*preserveCharacterData*/, platfromText_ , utf8Text8);
     testReadXmlFile(testName, "windows-1252.xml", true /*preserveCharacterData*/, platfromText_ , utf8Text8);
     testReadXmlFile(testName, "windows-1252.xml", false /*preserveCharacterData*/, platfromText_ , utf8Text8);
-    testReadXmlFile(testName, "ascii.xml", true /*preserveCharacterData*/, text , U8("TEXT"));
-    testReadXmlFile(testName, "ascii.xml", false /*preserveCharacterData*/, text , U8("TEXT"));
+    testReadXmlFile(testName, "ascii.xml", true /*preserveCharacterData*/, text , text8);
+    testReadXmlFile(testName, "ascii.xml", false /*preserveCharacterData*/, text , text8);
 }
 
 static bool find_string(io::FileInputStream& stream, const std::string& s)
