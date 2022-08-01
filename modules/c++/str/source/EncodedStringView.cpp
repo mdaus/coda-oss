@@ -60,6 +60,40 @@ inline str::ui16string to_ui16string_(std::string::const_pointer s, size_t sz, b
     return to_16string<str::ui16string>(s, sz, is_utf8);
 }
 
+static std::string to_native(coda_oss::u8string::const_pointer p, size_t sz)
+{
+    auto platform = str::details::Platform;  // "conditional expression is constant"
+    if (platform == str::details::PlatformType::Windows)
+    {
+        std::string retval;
+        str::details::utf8to1252(p, sz, retval);
+        return retval;
+    }
+    if (platform == str::details::PlatformType::Linux)
+    {
+        auto retval = str::cast<std::string::const_pointer>(p);
+        return retval != nullptr ? retval /* copy */ : "";
+    }
+    throw std::logic_error("Unknown platform.");
+}
+
+static std::string to_native(str::W1252string::const_pointer p, size_t sz)
+{
+    auto platform = str::details::Platform;  // "conditional expression is constant"
+    if (platform == str::details::PlatformType::Windows)
+    {    
+        auto retval = str::cast<std::string::const_pointer>(p);
+        return retval != nullptr ? retval /* copy */ : "";
+    }
+    if (platform == str::details::PlatformType::Linux)
+    {
+        std::string retval;
+        str::details::windows1252_to_string(p, sz, retval);
+        return retval;
+    }
+    throw std::logic_error("Unknown platform.");
+}
+
 template <typename CharT>
 inline coda_oss::span<const char> make_span(const CharT* s)
 {
@@ -84,8 +118,8 @@ std::string str::EncodedStringView::native() const
 {
     const auto s = mString.data();
     const auto sz = mString.size();
-    return mIsUtf8 ? str::details::to_native(str::cast<coda_oss::u8string::const_pointer>(s), sz)
-                   : str::details::to_native(str::cast<str::W1252string::const_pointer>(s), sz);
+    return mIsUtf8 ? to_native(str::cast<coda_oss::u8string::const_pointer>(s), sz)
+                   : to_native(str::cast<str::W1252string::const_pointer>(s), sz);
 }
 
 coda_oss::u8string str::EncodedStringView::u8string() const

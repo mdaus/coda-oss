@@ -34,6 +34,7 @@
 #include "str/Manip.h"
 #include "str/Convert.h"
 #include "str/utf8.h"
+#include "str/EncodedStringView.h"
 
 // Need to look up characters from \x80 (EURO SIGN) to \x9F (LATIN CAPITAL LETTER Y WITH DIAERESIS)
 // in a map: http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
@@ -244,6 +245,11 @@ static void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::basi
     }
 }
 
+void str::details::utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::string& result)
+{
+    ::utf8to1252(p, sz, result);
+}
+
 struct back_inserter final
 { 
     coda_oss::u8string* container = nullptr; // pointer instead of reference for copy
@@ -324,42 +330,8 @@ str::W1252string str::details::to_w1252string(std::string::const_pointer p, size
         cast<str::W1252string ::const_pointer>(p);  // copy
 }
 
-std::string str::details::to_native(coda_oss::u8string::const_pointer p, size_t sz)
-{
-    auto platform = str::details::Platform;  // "conditional expression is constant"
-    if (platform == str::details::PlatformType::Windows)
-    {
-        std::string retval;
-        utf8to1252(p, sz, retval);
-        return retval;
-    }
-    if (platform == str::details::PlatformType::Linux)
-    {
-        auto retval = cast<std::string::const_pointer>(p);
-        return retval != nullptr ? retval /* copy */ : "";
-    }
-    throw std::logic_error("Unknown platform.");
-}
-
-std::string str::details::to_native(W1252string::const_pointer p, size_t sz)
-{
-    auto platform = details::Platform;  // "conditional expression is constant"
-    if (platform == details::PlatformType::Windows)
-    {    
-        auto retval = cast<std::string::const_pointer>(p);
-        return retval != nullptr ? retval /* copy */ : "";
-    }
-    if (platform == details::PlatformType::Linux)
-    {
-        std::string retval;
-        windows1252_to_string(p, sz, retval);
-        return retval;
-    }
-    throw std::logic_error("Unknown platform.");
-}
-
 template <>
 std::string str::toString(const coda_oss::u8string& s)
 {
-    return str::details::to_native(s.c_str(), s.size());
+    return str::EncodedStringView(s).native();
 }

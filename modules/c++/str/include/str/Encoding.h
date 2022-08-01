@@ -137,9 +137,7 @@ void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::st
 void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u32string&);
 void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u16string&);
 void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, str::ui16string&);
-
-std::string to_native(coda_oss::u8string::const_pointer, size_t); // std::string is Windows-1252 or UTF-8  depending on platform
-std::string to_native(str::W1252string::const_pointer s, size_t sz); // std::string is Windows-1252 or UTF-8  depending on platform
+void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::string&);
 
 }
 }
