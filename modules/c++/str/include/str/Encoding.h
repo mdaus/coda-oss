@@ -133,15 +133,7 @@ inline std::u32string to_u32string(const std::basic_string<TChar>& s)
 namespace details // YOU should use EncodedStringView
 {
 coda_oss::u8string fromWindows1252(std::string::const_pointer, size_t); // std::string is Windows-1252 **ON ALL PLATFORMS**
-inline coda_oss::u8string fromWindows1252(std::string::const_pointer s)
-{
-    return fromWindows1252(s, gsl::narrow<size_t>(strlen(s)));
-}
 coda_oss::u8string fromUtf8(std::string::const_pointer, size_t); // std::string is UTF-8 **ON ALL PLATFORMS**
-inline coda_oss::u8string fromUtf8(std::string::const_pointer s)
-{
-    return fromUtf8(s, gsl::narrow<size_t>(strlen(s)));
-}
 
 // When the encoding is important, we want to "traffic" in coda_oss::u8string (UTF-8), not
 // str::W1252string (Windows-1252) or std::string (unknown).  Make it easy to get those from other encodings.
