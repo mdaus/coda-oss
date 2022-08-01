@@ -70,8 +70,21 @@ str::EncodedString::EncodedString(const str::W1252string& s) : EncodedString(s.c
 str::EncodedString::EncodedString(const std::u16string& s) : EncodedString(to_u8string(s)) { }
 str::EncodedString::EncodedString(const std::u32string& s) : EncodedString(to_u8string(s)) { }
 
-str::EncodedString::EncodedString(std::wstring::const_pointer s)  : EncodedString(str::details::to_u8string(s, wcslen(s))) { }
-str::EncodedString::EncodedString(const std::wstring& s) : EncodedString(str::details::to_u8string(s.c_str(), s.size())) { }
+static inline coda_oss::u8string to_u8string_(std::wstring::const_pointer p_, size_t sz)  // std::wstring is UTF-16 or UTF-32  depending on platform
+{
+    const auto p =
+    // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
+    #if _WIN32
+    str::cast<std::u16string::const_pointer>(p_); // std::wstring is UTF-16 on Windows
+    #endif
+    #if !_WIN32
+    str::cast<std::u32string::const_pointer>(p_); // std::wstring is UTF-32 on Linux
+    #endif    
+    return str::to_u8string(p, sz);
+}
+
+str::EncodedString::EncodedString(std::wstring::const_pointer s)  : EncodedString(to_u8string_(s, wcslen(s))) { }
+str::EncodedString::EncodedString(const std::wstring& s) : EncodedString(to_u8string_(s.c_str(), s.size())) { }
 
 // create from a view
 str::EncodedString& str::EncodedString::operator=(const EncodedStringView& v)

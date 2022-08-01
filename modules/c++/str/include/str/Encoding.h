@@ -146,7 +146,6 @@ inline coda_oss::u8string fromUtf8(std::string::const_pointer s)
 // When the encoding is important, we want to "traffic" in coda_oss::u8string (UTF-8), not
 // str::W1252string (Windows-1252) or std::string (unknown).  Make it easy to get those from other encodings.
 coda_oss::u8string to_u8string(std::string::const_pointer, size_t);  // std::string is Windows-1252 or UTF-8  depending on platform
-coda_oss::u8string to_u8string(std::wstring::const_pointer, size_t);  // std::wstring is UTF-16 or UTF-32  depending on platform
 
 coda_oss::u8string to_u8string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
 std::u16string to_u16string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
