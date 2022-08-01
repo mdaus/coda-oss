@@ -362,18 +362,6 @@ std::u32string str::details::to_u32string(std::string::const_pointer s, size_t s
     windows1252_to_string(cast<str::W1252string::const_pointer>(s), sz, retval);
     return retval;
 }
-std::wstring str::details::to_wstring(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
-{
-    const auto s =
-    // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
-    #if _WIN32
-    to_u16string(p, sz, is_utf8);  // std::wstring is UTF-16 on Windows
-    #endif
-    #if !_WIN32
-    to_u32string(p, sz, is_utf8);  // std::wstring is UTF-32 on Linux
-    #endif    
-    return str::c_str<std::wstring>(s); // copy
-}
 
 str::W1252string str::details::to_w1252string(coda_oss::u8string::const_pointer p, size_t sz)
 {

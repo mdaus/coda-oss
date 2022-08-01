@@ -81,11 +81,23 @@ std::u32string str::EncodedStringView::u32string() const
 {
     return str::details::to_u32string(mString.data(), mString.size(), mIsUtf8);
 }
+
+inline static std::wstring to_wstring_(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
+{
+    const auto s =
+    // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
+    #if _WIN32
+    str::details::to_u16string(p, sz, is_utf8);  // std::wstring is UTF-16 on Windows
+    #endif
+    #if !_WIN32
+    str::details::to_u32string(p, sz, is_utf8);  // std::wstring is UTF-32 on Linux
+    #endif    
+    return str::c_str<std::wstring>(s); // copy
+}
 std::wstring str::EncodedStringView::wstring() const  // UTF-16 on Windows, UTF-32 on Linux
 {
-    return str::details::to_wstring(mString.data(), mString.size(), mIsUtf8);
+    return to_wstring_(mString.data(), mString.size(), mIsUtf8);
 }
-
 
 str::W1252string str::EncodedStringView::w1252string() const
 {

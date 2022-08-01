@@ -151,7 +151,6 @@ coda_oss::u8string to_u8string(std::string::const_pointer, size_t, bool is_utf8 
 std::u16string to_u16string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
 ui16string to_ui16string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */); // older C++ compilers
 std::u32string to_u32string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
-std::wstring to_wstring(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
 
 std::string& to_u8string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */, std::string&); // encoding is lost
 std::string& to_u8string(std::u16string::const_pointer, size_t, std::string&); // encoding is lost
