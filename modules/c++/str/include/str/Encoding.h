@@ -108,8 +108,8 @@ void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, str::W1252string
 
 namespace details // YOU should use EncodedStringView
 {
-void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::string&);
-void windows1252_to_wstring(str::W1252string::const_pointer p, size_t sz, std::wstring&);
+std::string to_string(str::W1252string::const_pointer p, size_t sz);
+std::wstring to_wstring(str::W1252string::const_pointer p, size_t sz);
 void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::string&);
 std::string& to_u8string(std::u16string::const_pointer, size_t, std::string&); // encoding is lost
 }

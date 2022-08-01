@@ -165,9 +165,9 @@ inline void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, 
 {
     windows1252_to_string_(p, sz, result);
 }
-void str::details::windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::string& result)
+std::string str::details::to_string(str::W1252string::const_pointer p, size_t sz)
 {
-    windows1252_to_string_(p, sz, result);
+    return to_Tstring<std::string>(p, sz);
 }
 std::u16string str::to_u16string(str::W1252string::const_pointer p, size_t sz)
 {
@@ -181,9 +181,9 @@ std::u32string str::to_u32string(str::W1252string::const_pointer p, size_t sz)
 {
     return to_Tstring<std::u32string>(p, sz);
 }
-void str::details::windows1252_to_wstring(str::W1252string::const_pointer p, size_t sz, std::wstring& result)
+std::wstring str::details::to_wstring(str::W1252string::const_pointer p, size_t sz)
 {
-    windows1252_to_string_(p, sz, result);
+    return to_Tstring<std::wstring>(p, sz);
 }
 
 template<typename TKey, typename TValue>

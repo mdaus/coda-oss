@@ -90,9 +90,7 @@ static std::string to_native(str::W1252string::const_pointer p, size_t sz)
     }
     if (Platform == PlatformType::Linux)
     {
-        std::string retval;
-        str::details::windows1252_to_string(p, sz, retval);
-        return retval;
+        return str::details::to_string(p, sz);
     }
     throw std::logic_error("Unknown platform.");
 }
@@ -142,7 +140,7 @@ std::string& str::EncodedStringView::toUtf8(std::string& result) const
     }
     else
     {
-        str::details::windows1252_to_string(cast<W1252string::const_pointer>(p), sz, result);
+        result = str::details::to_string(cast<W1252string::const_pointer>(p), sz);
     }
     return result;
 }
