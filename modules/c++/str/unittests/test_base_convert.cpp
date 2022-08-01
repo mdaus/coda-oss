@@ -345,13 +345,11 @@ static void test_EncodedStringView_(const std::string& testName,
 
     const auto expected = str::EncodedString::details::string(classificationText_utf_8());
     {
-        std::string buf;
-        const auto& actual = utf_8_view.toUtf8(buf);
+        const auto actual = utf_8_view.asUtf8();
         TEST_ASSERT_EQ(actual, expected);
     }
     {
-        std::string buf;
-        const auto& actual = iso8859_1_view.toUtf8(buf);
+        const auto actual = iso8859_1_view.asUtf8();
         TEST_ASSERT_EQ(actual, expected);
     }
 }

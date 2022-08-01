@@ -408,8 +408,7 @@ TEST_CASE(testReadEmbeddedXml)
     std::u8string u8_characterData;
     classificationXML.getCharacterData(u8_characterData);
     TEST_ASSERT_EQ(u8_characterData, expectedCharDataView);
-    std::string u8_characterData_;
-    str::EncodedStringView(u8_characterData).toUtf8(u8_characterData_);
+    const auto u8_characterData_ = str::EncodedStringView(u8_characterData).asUtf8();
     TEST_ASSERT_EQ(classificationText_utf_8, u8_characterData_);
 }
 

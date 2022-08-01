@@ -93,7 +93,6 @@ public:
 
     // Convert (perhaps) whatever we're looking at to UTF-8
     coda_oss::u8string u8string() const;  // c.f. std::filesystem::path::u8string()
-    std::string& toUtf8(std::string&) const; // std::string is encoded as UTF-8, always.
 
     // Convert whatever we're looking at to UTF-16 or UTF-32
     std::u16string u16string() const;  // c.f. std::filesystem::path::u8string()
@@ -114,6 +113,10 @@ public:
     coda_oss::u8string::const_pointer c_u8str() const
     {
         return mIsUtf8 ? cast<coda_oss::u8string::const_pointer>(c_str()) : nullptr;
+    }
+    str::W1252string::const_pointer c_w1252str() const
+    {
+        return mIsUtf8 ? nullptr : cast<str::W1252string::const_pointer>(c_str());
     }
     size_t size() const
     {
@@ -138,11 +141,7 @@ public:
         return EncodedStringView(str::cast<str::W1252string::const_pointer>(pW1252));
     }
 
-    std::string asUtf8() const
-    {
-        std::string retval;
-        return toUtf8(retval);
-    }
+    std::string asUtf8() const;
     std::string asWindows1252() const;
 
     bool operator_eq(const EncodedStringView&) const;
