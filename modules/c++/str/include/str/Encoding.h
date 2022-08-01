@@ -83,17 +83,6 @@ inline typename TBasicStringT::const_pointer c_str(const std::basic_string<TChar
 enum class Windows1252_T : unsigned char { };  // https://en.cppreference.com/w/cpp/language/types
 using W1252string = std::basic_string<Windows1252_T>;  // https://en.cppreference.com/w/cpp/string
 
-CODA_OSS_API coda_oss::u8string fromWindows1252(std::string::const_pointer, size_t); // std::string is Windows-1252 **ON ALL PLATFORMS**
-inline coda_oss::u8string fromWindows1252(std::string::const_pointer s)
-{
-    return fromWindows1252(s, gsl::narrow<size_t>(strlen(s)));
-}
-CODA_OSS_API coda_oss::u8string fromUtf8(std::string::const_pointer, size_t); // std::string is UTF-8 **ON ALL PLATFORMS**
-inline coda_oss::u8string fromUtf8(std::string::const_pointer s)
-{
-    return fromUtf8(s, gsl::narrow<size_t>(strlen(s)));
-}
-
 // With some older C++ compilers, uint16_t may be used instead of char16_t :-(
 using ui16string = std::basic_string<uint16_t>;  // ui = UInt16_t
 
@@ -110,7 +99,6 @@ static_assert(!std::is_same<wchar_t, int32_t>::value, "wchar_t should not be the
 
 // When the encoding is important, we want to "traffic" in coda_oss::u8string (UTF-8), not
 // str::W1252string (Windows-1252) or std::string (unknown).  Make it easy to get those from other encodings.
-CODA_OSS_API coda_oss::u8string to_u8string(std::string::const_pointer, size_t);  // std::string is Windows-1252 or UTF-8  depending on platform
 CODA_OSS_API coda_oss::u8string to_u8string(str::W1252string::const_pointer, size_t);
 inline coda_oss::u8string to_u8string(coda_oss::u8string::const_pointer s, size_t sz)
 {
@@ -142,9 +130,7 @@ namespace details // YOU should use EncodedStringView
 void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::string&);
 void windows1252_to_wstring(str::W1252string::const_pointer p, size_t sz, std::wstring&);
 void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::string&);
-
 std::string& to_u8string(std::u16string::const_pointer, size_t, std::string&); // encoding is lost
-
 }
 }
 
