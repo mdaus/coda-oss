@@ -117,21 +117,21 @@ public:
     }
 
     // Input is encoded as specified on all platforms.
-    static EncodedStringView fromUtf8(const std::string& s)
+    static EncodedStringView fromUtf8(const std::string& utf8)
     {
-        return EncodedStringView(str::c_str<coda_oss::u8string>(s));
+        return EncodedStringView(str::c_str<coda_oss::u8string>(utf8));
     }
-    static EncodedStringView fromUtf8(std::string::const_pointer p)
+    static EncodedStringView fromUtf8(std::string::const_pointer pUtf8)
     {
-        return EncodedStringView(str::cast<coda_oss::u8string::const_pointer>(p));
+        return EncodedStringView(str::cast<coda_oss::u8string::const_pointer>(pUtf8));
     }
-    static EncodedStringView fromWindows1252(const std::string& s)
+    static EncodedStringView fromWindows1252(const std::string& w1252)
     {
-        return EncodedStringView(str::c_str<str::W1252string>(s));
+        return EncodedStringView(str::c_str<str::W1252string>(w1252));
     }
-    static EncodedStringView fromWindows1252(std::string::const_pointer p)
+    static EncodedStringView fromWindows1252(std::string::const_pointer pW1252)
     {
-        return EncodedStringView(str::cast<str::W1252string::const_pointer>(p));
+        return EncodedStringView(str::cast<str::W1252string::const_pointer>(pW1252));
     }
 
     std::string asUtf8() const

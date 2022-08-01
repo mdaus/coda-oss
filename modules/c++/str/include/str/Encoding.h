@@ -83,17 +83,6 @@ inline typename TBasicStringT::const_pointer c_str(const std::basic_string<TChar
 enum class Windows1252_T : unsigned char { };  // https://en.cppreference.com/w/cpp/language/types
 using W1252string = std::basic_string<Windows1252_T>;  // https://en.cppreference.com/w/cpp/string
 
-CODA_OSS_API coda_oss::u8string fromWindows1252(std::string::const_pointer, size_t); // std::string is Windows-1252 **ON ALL PLATFORMS**
-inline coda_oss::u8string fromWindows1252(std::string::const_pointer s)
-{
-    return fromWindows1252(s, gsl::narrow<size_t>(strlen(s)));
-}
-CODA_OSS_API coda_oss::u8string fromUtf8(std::string::const_pointer, size_t); // std::string is UTF-8 **ON ALL PLATFORMS**
-inline coda_oss::u8string fromUtf8(std::string::const_pointer s)
-{
-    return fromUtf8(s, gsl::narrow<size_t>(strlen(s)));
-}
-
 // With some older C++ compilers, uint16_t may be used instead of char16_t :-(
 using ui16string = std::basic_string<uint16_t>;  // ui = UInt16_t
 
@@ -146,6 +135,17 @@ inline std::u32string to_u32string(const std::basic_string<TChar>& s)
 
 namespace details // YOU should use EncodedStringView
 {
+coda_oss::u8string fromWindows1252(std::string::const_pointer, size_t); // std::string is Windows-1252 **ON ALL PLATFORMS**
+inline coda_oss::u8string fromWindows1252(std::string::const_pointer s)
+{
+    return fromWindows1252(s, gsl::narrow<size_t>(strlen(s)));
+}
+coda_oss::u8string fromUtf8(std::string::const_pointer, size_t); // std::string is UTF-8 **ON ALL PLATFORMS**
+inline coda_oss::u8string fromUtf8(std::string::const_pointer s)
+{
+    return fromUtf8(s, gsl::narrow<size_t>(strlen(s)));
+}
+
 coda_oss::u8string to_u8string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
 std::u16string to_u16string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
 ui16string to_ui16string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */); // older C++ compilers

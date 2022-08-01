@@ -441,14 +441,14 @@ std::string str::details::to_native(W1252string::const_pointer p, size_t sz)
     throw std::logic_error("Unknown platform.");
 }
 
-coda_oss::u8string str::fromWindows1252(std::string::const_pointer p, size_t sz)
+coda_oss::u8string str::details::fromWindows1252(std::string::const_pointer p, size_t sz)
 {
     return to_u8string(cast<str::W1252string::const_pointer>(p), sz);
 }
 
-coda_oss::u8string str::fromUtf8(std::string::const_pointer p, size_t sz)
+coda_oss::u8string str::details::fromUtf8(std::string::const_pointer p, size_t sz)
 {
-    return to_u8string(cast<coda_oss::u8string::const_pointer>(p), sz);
+    return str::to_u8string(cast<coda_oss::u8string::const_pointer>(p), sz);
 }
 
 template <>

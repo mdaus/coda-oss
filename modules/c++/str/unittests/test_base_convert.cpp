@@ -76,7 +76,7 @@ TEST_CASE(testCharToString)
 static std::u8string fromWindows1252(const std::string& s)
 {
     // s is Windows-1252 on ALL platforms
-    return str::fromWindows1252(s.c_str(), s.size());
+    return str::EncodedStringView::fromWindows1252(s).u8string();
 }
 
 template<typename T>
