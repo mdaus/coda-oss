@@ -244,8 +244,11 @@ static void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::basi
         }
     }
 }
-
 void str::details::utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::string& result)
+{
+    ::utf8to1252(p, sz, result);
+}
+void str::utf8to1252(coda_oss::u8string::const_pointer p, size_t sz,  str::W1252string& result)
 {
     ::utf8to1252(p, sz, result);
 }
@@ -315,19 +318,6 @@ coda_oss::u8string str::to_u8string(W1252string::const_pointer p, size_t sz)
     coda_oss::u8string retval;
     ::windows1252_to_string(p, sz, retval);
     return retval;
-}
-
-inline str::W1252string to_w1252string_(coda_oss::u8string::const_pointer p, size_t sz)
-{
-    str::W1252string retval;
-    utf8to1252(p, sz, retval);
-    return retval;
-}
-str::W1252string str::details::to_w1252string(std::string::const_pointer p, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
-{
-    return is_utf8 ?
-        to_w1252string_(cast<coda_oss::u8string ::const_pointer>(p), sz) :
-        cast<str::W1252string ::const_pointer>(p);  // copy
 }
 
 template <>

@@ -183,9 +183,17 @@ std::wstring str::EncodedStringView::wstring() const  // UTF-16 on Windows, UTF-
     return str::c_str<std::wstring>(s); // copy
 }
 
+inline str::W1252string to_w1252string(coda_oss::u8string::const_pointer p, size_t sz)
+{
+    str::W1252string retval;
+    str::utf8to1252(p, sz, retval);
+    return retval;
+}
 str::W1252string str::EncodedStringView::w1252string() const
 {
-    return str::details::to_w1252string(mString.data(), mString.size(), mIsUtf8);
+    return mIsUtf8 ?
+        to_w1252string(str::cast<coda_oss::u8string ::const_pointer>(mString.data()), mString.size()) :
+        str::cast<str::W1252string ::const_pointer>(mString.data());  // copy
 }
 std::string str::EncodedStringView::asWindows1252() const
 {
