@@ -391,6 +391,7 @@ TEST_CASE(test_EncodedStringView)
 TEST_CASE(test_EncodedString)
 {
     str::EncodedString es;
+    TEST_ASSERT_TRUE(es.empty());
     TEST_ASSERT_TRUE(es.native().empty());
     {
         str::EncodedString es_copy(es);  // copy

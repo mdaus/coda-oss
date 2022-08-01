@@ -54,6 +54,7 @@ static str::EncodedStringView make_EncodedStringView(const std::string& s, bool 
 
 str::EncodedString::EncodedString(std::string::const_pointer s) :  s_(s) /*copy*/, v_ (s_)  { }
 str::EncodedString::EncodedString(const std::string& s) :  s_(s) /*copy*/, v_ (s_) { }
+str::EncodedString::EncodedString() : EncodedString(s_) {}
 
 str::EncodedString::EncodedString(coda_oss::u8string::const_pointer s)
 {

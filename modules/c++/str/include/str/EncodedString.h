@@ -63,7 +63,7 @@ class CODA_OSS_API EncodedString final
     void assign(str::W1252string::const_pointer);
     
 public:
-    EncodedString() = default;
+    EncodedString();
     ~EncodedString() = default;
     EncodedString(const EncodedString&);
     EncodedString& operator=(const EncodedString&);

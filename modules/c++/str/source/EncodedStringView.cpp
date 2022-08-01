@@ -75,8 +75,7 @@ static std::string to_native(coda_oss::u8string::const_pointer p, size_t sz)
     }
     if (Platform == PlatformType::Linux)
     {
-        auto retval = str::cast<std::string::const_pointer>(p);
-        return retval != nullptr ? retval /* copy */ : "";
+        return str::cast<std::string::const_pointer>(p); // copy
     }
     throw std::logic_error("Unknown platform.");
 }
@@ -85,8 +84,7 @@ static std::string to_native(str::W1252string::const_pointer p, size_t sz)
 {
     if (Platform == PlatformType::Windows)
     {    
-        auto retval = str::cast<std::string::const_pointer>(p);
-        return retval != nullptr ? retval /* copy */ : "";
+        return str::cast<std::string::const_pointer>(p); // copy
     }
     if (Platform == PlatformType::Linux)
     {
