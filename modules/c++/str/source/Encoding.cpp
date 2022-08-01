@@ -153,6 +153,14 @@ void windows1252_to_string_(str::W1252string::const_pointer p, size_t sz, std::b
         fromWindows1252_(p[i], result);
     }
 }
+template<typename TReturn>
+inline TReturn to_Tstring(str::W1252string::const_pointer p, size_t sz)
+{
+    TReturn retval;
+    windows1252_to_string_(p, sz, retval);
+    return retval;
+}
+
 inline void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, coda_oss::u8string& result)
 {
     windows1252_to_string_(p, sz, result);
@@ -169,9 +177,9 @@ void str::windows1252_to_string(str::W1252string::const_pointer p, size_t sz, st
 {
     windows1252_to_string_(p, sz, result);
 }
-void str::windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u32string& result)
+std::u32string str::to_u32string(str::W1252string::const_pointer p, size_t sz)
 {
-    windows1252_to_string_(p, sz, result);
+    return to_Tstring<std::u32string>(p, sz);
 }
 void str::details::windows1252_to_wstring(str::W1252string::const_pointer p, size_t sz, std::wstring& result)
 {
