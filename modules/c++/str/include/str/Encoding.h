@@ -139,10 +139,10 @@ coda_oss::u8string to_u8string(std::string::const_pointer, size_t);  // std::str
 coda_oss::u8string to_u8string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
 std::u16string to_u16string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
 ui16string to_ui16string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */); // older C++ compilers
-std::u32string to_u32string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
 
 str::W1252string to_w1252string(std::string::const_pointer, size_t, bool is_utf8 /* is 's' UTF-8? */);
 void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::string& result);
+void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u32string& result);
 
 std::string to_native(coda_oss::u8string::const_pointer, size_t); // std::string is Windows-1252 or UTF-8  depending on platform
 std::string to_native(str::W1252string::const_pointer s, size_t sz); // std::string is Windows-1252 or UTF-8  depending on platform

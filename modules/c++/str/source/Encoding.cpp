@@ -168,7 +168,7 @@ inline void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, 
 {
     windows1252_to_string_(p, sz, result);
 }
-inline void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u32string& result)
+void str::details::windows1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u32string& result)
 {
     windows1252_to_string_(p, sz, result);
 }
@@ -346,18 +346,6 @@ std::u16string str::details::to_u16string(std::string::const_pointer s, size_t s
 str::ui16string str::details::to_ui16string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
 {
     return to_16string<str::ui16string>(s, sz, is_utf8);
-}
-
-std::u32string str::details::to_u32string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
-{
-    if (is_utf8)
-    {
-        return str::to_u32string(cast<coda_oss::u8string::const_pointer>(s), sz);
-    }
-
-    std::u32string retval;
-    ::windows1252_to_string(cast<str::W1252string::const_pointer>(s), sz, retval);
-    return retval;
 }
 
 inline str::W1252string to_w1252string_(coda_oss::u8string::const_pointer p, size_t sz)

@@ -96,7 +96,17 @@ str::ui16string str::EncodedStringView::ui16string_() const
 
 std::u32string str::EncodedStringView::u32string() const
 {
-    return str::details::to_u32string(mString.data(), mString.size(), mIsUtf8);
+    const auto s = mString.data();
+    const auto sz = mString.size();
+
+    if (mIsUtf8)
+    {
+        return str::to_u32string(cast<coda_oss::u8string::const_pointer>(s), sz);
+    }
+
+    std::u32string retval;
+    str::details::windows1252_to_string(cast<str::W1252string::const_pointer>(s), sz, retval);
+    return retval;
 }
 
 std::wstring str::EncodedStringView::wstring() const  // UTF-16 on Windows, UTF-32 on Linux
