@@ -37,27 +37,6 @@
 #include "gsl/gsl.h"
 #include "config/Exports.h"
 
-// This can be useful for code that will compile on all platforms, but needs
-// different platform-specific behavior.  This avoids the use of more #ifdefs
-// (no preprocessor) and also squelches compiler-warnings about unused local
-// functions.
-namespace str { namespace details  // YOU should be using sys::PlatformType
-{
-enum class PlatformType
-{
-    Windows,
-    Linux,
-    // MacOS
-};
-
-#if _WIN32
-constexpr auto Platform = PlatformType::Windows;
-#else
-constexpr auto Platform = PlatformType::Linux;
-#endif
-} }
-
-
 namespace str
 {
 template <typename TReturn, typename TChar>
