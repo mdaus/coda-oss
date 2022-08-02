@@ -104,7 +104,7 @@ inline coda_oss::u8string to_u8string(const std::basic_string<TChar>& s)
     return to_u8string(s.c_str(), s.size());
 }
 
-str::W1252string to_w1252string(coda_oss::u8string::const_pointer p, size_t sz);
+CODA_OSS_API str::W1252string to_w1252string(coda_oss::u8string::const_pointer p, size_t sz);
 
 namespace details // YOU should use EncodedStringView
 {
