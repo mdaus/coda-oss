@@ -88,7 +88,7 @@ struct Element final
     #endif // SWIG
     
     //! Destructor
-    ~Element()
+    ~Element() noexcept(false)
     {
         destroyChildren();
     }

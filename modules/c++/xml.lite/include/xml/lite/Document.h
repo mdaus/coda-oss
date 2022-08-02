@@ -74,7 +74,7 @@ struct Document final
      * Destroy the xml tree.  This deletes the nodes if they exist
      * Careful, this may delete your copy if you are not careful
      */
-    ~Document()
+    ~Document() noexcept(false)
     {
         destroy();
     }
