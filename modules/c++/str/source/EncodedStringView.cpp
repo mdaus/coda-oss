@@ -68,7 +68,9 @@ static std::string to_native(coda_oss::u8string::const_pointer p, size_t sz)
 {
     if (Platform == PlatformType::Windows)
     {
-        return str::details::as_w1252(p, sz);
+        std::string retval;
+        str::details::utf8to1252(p, sz, retval);
+        return retval;
     }
     if (Platform == PlatformType::Linux)
     {
@@ -85,7 +87,9 @@ static std::string to_native(str::W1252string::const_pointer p, size_t sz)
     }
     if (Platform == PlatformType::Linux)
     {
-        return str::details::as_utf8(p, sz);
+        std::string retval;
+        str::details::w1252to8(p, sz, retval);
+        return retval;
     }
     throw std::logic_error("Unknown platform.");
 }
