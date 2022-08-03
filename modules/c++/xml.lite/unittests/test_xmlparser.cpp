@@ -162,8 +162,7 @@ TEST_CASE(testXmlUtf8)
     const auto expected = platfromText_;
     TEST_ASSERT_EQ(actual, expected);
 
-    std::optional<xml::lite::StringEncoding> encoding; // avoid compiler warning about possible uninitialized variable
-    encoding = a.getEncoding();
+    auto encoding = a.getEncoding();
     TEST_ASSERT_TRUE(encoding.has_value());
     TEST_ASSERT(*encoding == PlatformEncoding);
 
