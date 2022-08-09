@@ -396,21 +396,24 @@ TEST_CASE(test_Windows1252)
 
     // https://en.wikipedia.org/wiki/Windows-1252
     // "¡¢þÿ" <INVERTED EXCLAMATION MARK><CENT SIGN><LATIN SMALL LETTER THORN><LATIN SMALL LETTER Y WITH DIAERESIS>
+    // These won't work on Linux: it thinks a string is encoded as UTF-8, which makes "\xa1\xa2\xfe\xff" invalid.
+    #if _WIN32
     constexpr auto w1262_a1_ff = "\xa1\xa2\xfe\xff"; // can convert with bit-twiddling
     constexpr auto u16_w1262_a1_ff = u"\u00a1\u00a2\u00fe\u00ff";
-    test_Windows1252_(testName, w1262_a1_ff, u16_w1262_a1_ff);
+    test_Windows1252_(testName, w1262_a1_ff.c_str(), u16_w1262_a1_ff);
 
     // "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ"
     constexpr auto w1262 = "\x80\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8e" // these values must be mapped
         "\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9e\x9f";
     constexpr auto u16_w1262 = u"\u20ac\u201a\u0192\u201e\u2026\u2020\u2021\u02c6\u2030\u0160\u2039\u0152\u017d"
         "\u2018\u2019\u201c\u201d\u2022\u2013\u2014\u02dc\u2122\u0161\u203a\u0153\u017e\u0178";
-    test_Windows1252_(testName, w1262, u16_w1262);
+    test_Windows1252_(testName, w1262.c_str(), u16_w1262);
     
     //// This only works with "relaxed" (i.e., not "strict") conversion; which is what _bstr_t does
     //constexpr auto w1262_unassigned = "\x81\x8d\x8f\x90\x9d";
     //constexpr auto u16_w1262_unassigned = u"\x81\x8d\x8f\x90\x9d";
     //test_Windows1252_(testName, w1262_unassigned, u16_w1262_unassigned);
+    #endif
 }
 
 static void test_EncodedStringView_(const std::string& testName,
