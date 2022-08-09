@@ -25,6 +25,9 @@
 #include <vector>
 #include <std/string>
 #include <iterator>
+#if _WIN32
+#include <comdef.h>
+#endif
 
 #include <import/str.h>
 #include <str/EncodedString.h>
@@ -320,6 +323,48 @@ TEST_CASE(test_u8string_to_u32string)
     TEST_ASSERT(classificationText_wide().u32string() == classificationText_iso8859_1().u32string()); // _EQ wants to do toString()
 }
 
+static void test_Windows1252_ascii(const std::string& testName, const char* pStr, const wchar_t* pWide)
+{
+    const auto view8 = str::EncodedStringView::fromUtf8(pStr);
+    TEST_ASSERT_EQ(pStr, view8.native());
+    const auto view1252 = str::EncodedStringView::fromWindows1252(pStr);
+    TEST_ASSERT_EQ(pStr, view1252.native());
+    {
+        const str::EncodedString encoded(pStr);
+        TEST_ASSERT(encoded.wstring() == pWide);
+        #if _WIN32
+        const _bstr_t str(pStr);
+        const std::wstring wstr(static_cast<const wchar_t*>(str));
+        TEST_ASSERT(encoded.wstring() == wstr);
+        #endif
+    }
+    {
+        const str::EncodedString encoded(pWide);
+        TEST_ASSERT(encoded.native() == pStr);
+        TEST_ASSERT_EQ(view8, encoded.view());
+        TEST_ASSERT_EQ(view1252, encoded.view());
+    }
+}
+TEST_CASE(test_Windows1252)
+{
+    // https://en.cppreference.com/w/cpp/language/escape
+    constexpr auto escapes = "|\'|\"|\?|\\|\a|\b|\f|\n|\r|\t|\v|";
+    constexpr auto wide_escapes = L"|\'|\"|\?|\\|\a|\b|\f|\n|\r|\t|\v|";
+    test_Windows1252_ascii(testName, escapes, wide_escapes);
+
+    // https://en.cppreference.com/w/cpp/language/escape
+    constexpr auto controls = "|\x01|\x02|\x03|\x04|\x05|\x06|\x07|\x08|\x09|\x0a|\x0b|\x0c|\x0d|\x0e|\x0f"
+            "|\x10|\x11|\x12|\x13|\x14|\x15|\x16|\x17|\x18|\x19|\x1a|\x1b|\x1c|\x1d|\x1e|\x1f";
+    constexpr auto wide_controls = L"|\x01|\x02|\x03|\x04|\x05|\x06|\x07|\x08|\x09|\x0a|\x0b|\x0c|\x0d|\x0e|\x0f"
+            L"|\x10|\x11|\x12|\x13|\x14|\x15|\x16|\x17|\x18|\x19|\x1a|\x1b|\x1c|\x1d|\x1e|\x1f";
+    test_Windows1252_ascii(testName, controls, wide_controls);
+
+    // https://en.cppreference.com/w/cpp/language/ascii
+    constexpr auto ascii = " !\"#0@AZaz~\x7f";
+    constexpr auto wide_ascii = L" !\"#0@AZaz~\x7f";
+    test_Windows1252_ascii(testName, ascii, wide_ascii);
+}
+
 static void test_EncodedStringView_(const std::string& testName,
     const str::EncodedStringView& utf_8_view, const str::EncodedStringView& iso8859_1_view)
 {
@@ -414,6 +459,7 @@ TEST_CASE(test_EncodedString)
     str::EncodedString es3(std::move(abc)); // move constructor
     TEST_ASSERT_EQ(es3.native(), "abc");
 }
+
 TEST_MAIN(
     TEST_CHECK(testConvert);
     TEST_CHECK(testBadConvert);
@@ -426,6 +472,7 @@ TEST_MAIN(
     TEST_CHECK(test_u8string_to_string);
     TEST_CHECK(test_u8string_to_u16string);
     TEST_CHECK(test_u8string_to_u32string);
+    TEST_CHECK(test_Windows1252);
     TEST_CHECK(test_EncodedStringView);
     TEST_CHECK(test_EncodedString);
     )
