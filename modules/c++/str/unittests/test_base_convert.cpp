@@ -138,11 +138,11 @@ TEST_CASE(test_string_to_u8string_windows_1252)
             const std::string input{'|', ch, '|'};
             const auto actual = fromWindows1252(input);
             TEST_ASSERT_TRUE(!actual.empty());
-            const std::u8string expected8{cast8('|'), cast8('\xEF'), cast8('\xBF'), cast8('\xBD'), cast8('|')};  // UTF-8,  "|<REPLACEMENT CHARACTER>|"
-            //const std::u8string expected8{cast8('|'), cast8(194), cast8(ch), cast8('|')};
+            //const std::u8string expected8{cast8('|'), cast8('\xEF'), cast8('\xBF'), cast8('\xBD'), cast8('|')};  // UTF-8,  "|<REPLACEMENT CHARACTER>|"
+            const std::u8string expected8{cast8('|'), cast8(194), cast8(ch), cast8('|')};
             TEST_ASSERT_EQ(actual, expected8);
-            const std::u32string expected{U"|\ufffd|"};  // UTF-32,  "|<REPLACEMENT CHARACTER>|"
-            //const auto expected = str::EncodedString(expected8).u32string();
+            //const std::u32string expected{U"|\ufffd|"};  // UTF-32,  "|<REPLACEMENT CHARACTER>|"
+            const auto expected = str::EncodedString(expected8).u32string();
             test_assert_eq(testName, actual, expected);
         }    
     }
@@ -407,9 +407,10 @@ TEST_CASE(test_Windows1252)
         "\u2018\u2019\u201c\u201d\u2022\u2013\u2014\u02dc\u2122\u0161\u203a\u0153\u017e\u0178";
     test_Windows1252_(testName, w1262, u16_w1262);
     
-    //constexpr auto w1262_unassigned = "\x81\x8d\x8f\x90\x9d";
-    //constexpr auto u16_w1262_unassigned = u"\x81\x8d\x8f\x90\x9d";
-    //test_Windows1252_(testName, w1262_unassigned, u16_w1262_unassigned);
+    // This only works with "relaxed" (i.e., not "strict") conversion; which is what _bstr_t does
+    constexpr auto w1262_unassigned = "\x81\x8d\x8f\x90\x9d";
+    constexpr auto u16_w1262_unassigned = u"\x81\x8d\x8f\x90\x9d";
+    test_Windows1252_(testName, w1262_unassigned, u16_w1262_unassigned);
 }
 
 static void test_EncodedStringView_(const std::string& testName,

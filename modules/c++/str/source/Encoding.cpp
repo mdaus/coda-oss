@@ -124,7 +124,7 @@ inline void append(std::u32string& result, const coda_oss::u8string& utf8)
 }
 
 template<typename TChar>
-static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<TChar>& result, bool strict=true)
+static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<TChar>& result, bool strict=false)
 {
     // ASCII is the same in UTF-8
     if (ch < static_cast<str::W1252string::value_type>(0x80))
@@ -242,7 +242,7 @@ static void get_next_utf8_byte(coda_oss::u8string::const_pointer p, size_t sz,
     utf8 += coda_oss::u8string{static_cast<coda_oss::u8string::value_type>(b)};
 }
 template<typename TChar>
-static void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::basic_string<TChar>& result, bool strict=true)
+static void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::basic_string<TChar>& result, bool strict=false)
 {
     using value_type = typename std::basic_string<TChar>::value_type;
     for (size_t i = 0; i < sz; i++)
