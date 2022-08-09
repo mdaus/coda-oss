@@ -323,7 +323,7 @@ TEST_CASE(test_u8string_to_u32string)
     TEST_ASSERT(classificationText_wide().u32string() == classificationText_iso8859_1().u32string()); // _EQ wants to do toString()
 }
 
-static void test_Windows1252_ascii(const std::string& testName, const char* pStr, std::u32string::const_pointer pWide)
+static void test_Windows1252_ascii(const std::string& testName, const char* pStr, std::u16string::const_pointer pWide)
 {
     const auto view8 = str::EncodedStringView::fromUtf8(pStr);
     TEST_ASSERT_EQ(pStr, view8.native());
@@ -331,7 +331,7 @@ static void test_Windows1252_ascii(const std::string& testName, const char* pStr
     TEST_ASSERT_EQ(pStr, view1252.native());
     {
         const str::EncodedString encoded(pStr);
-        TEST_ASSERT(encoded.u32string() == pWide);
+        TEST_ASSERT(encoded.u16string() == pWide);
         #if _WIN32
         const _bstr_t str(pStr);
         const std::wstring wstr(static_cast<const wchar_t*>(str));
@@ -345,24 +345,49 @@ static void test_Windows1252_ascii(const std::string& testName, const char* pStr
         TEST_ASSERT_EQ(view1252, encoded);
     }
 }
+static void test_Windows1252_(const std::string& testName, const char* pStr, std::u16string::const_pointer pWide)
+{
+    const auto view1252 = str::EncodedStringView::fromWindows1252(pStr);
+    TEST_ASSERT_EQ(pStr, view1252.native());
+    {
+        const str::EncodedString encoded(pStr);
+        TEST_ASSERT(encoded.u16string() == pWide);
+        #if _WIN32
+        const _bstr_t str(pStr);
+        const std::wstring wstr(static_cast<const wchar_t*>(str));
+        TEST_ASSERT(encoded.wstring() == wstr);
+        #endif
+    }
+    {
+        const str::EncodedString encoded(pWide);
+        TEST_ASSERT_EQ(encoded.native(), pStr);
+        TEST_ASSERT_EQ(view1252, encoded);
+    }
+}
 TEST_CASE(test_Windows1252)
 {
     // https://en.cppreference.com/w/cpp/language/escape
     constexpr auto escapes = "|\'|\"|\?|\\|\a|\b|\f|\n|\r|\t|\v|";
-    constexpr auto u32_escapes = U"|\'|\"|\?|\\|\a|\b|\f|\n|\r|\t|\v|";
-    test_Windows1252_ascii(testName, escapes, u32_escapes);
+    constexpr auto u16_escapes = u"|\'|\"|\?|\\|\a|\b|\f|\n|\r|\t|\v|";
+    test_Windows1252_ascii(testName, escapes, u16_escapes);
 
     // https://en.cppreference.com/w/cpp/language/escape
     constexpr auto controls = "|\x01|\x02|\x03|\x04|\x05|\x06|\x07|\x08|\x09|\x0a|\x0b|\x0c|\x0d|\x0e|\x0f"
             "|\x10|\x11|\x12|\x13|\x14|\x15|\x16|\x17|\x18|\x19|\x1a|\x1b|\x1c|\x1d|\x1e|\x1f";
-    constexpr auto u32_controls = U"|\x01|\x02|\x03|\x04|\x05|\x06|\x07|\x08|\x09|\x0a|\x0b|\x0c|\x0d|\x0e|\x0f"
-            U"|\x10|\x11|\x12|\x13|\x14|\x15|\x16|\x17|\x18|\x19|\x1a|\x1b|\x1c|\x1d|\x1e|\x1f";
-    test_Windows1252_ascii(testName, controls, u32_controls);
+    constexpr auto u16_controls = u"|\x01|\x02|\x03|\x04|\x05|\x06|\x07|\x08|\x09|\x0a|\x0b|\x0c|\x0d|\x0e|\x0f"
+            u"|\x10|\x11|\x12|\x13|\x14|\x15|\x16|\x17|\x18|\x19|\x1a|\x1b|\x1c|\x1d|\x1e|\x1f";
+    test_Windows1252_ascii(testName, controls, u16_controls);
 
     // https://en.cppreference.com/w/cpp/language/ascii
     constexpr auto ascii = " !\"#0@AZaz~\x7f";
-    constexpr auto u32_ascii = U" !\"#0@AZaz~\x7f";
-    test_Windows1252_ascii(testName, ascii, u32_ascii);
+    constexpr auto u16_ascii = u" !\"#0@AZaz~\x7f";
+    test_Windows1252_ascii(testName, ascii, u16_ascii);
+
+    // https://en.wikipedia.org/wiki/Windows-1252
+    // "¡¢þÿ" <INVERTED EXCLAMATION MARK><CENT SIGN><LATIN SMALL LETTER THORN><LATIN SMALL LETTER Y WITH DIAERESIS>
+    constexpr auto w1262_a1_ff = "\xa1\xa2\xfe\xff"; // can convert with bit-twiddling
+    constexpr auto u16_w1262_a1_ff = u"\u00a1\u00a2\u00fe\u00ff";
+    test_Windows1252_(testName, w1262_a1_ff, u16_w1262_a1_ff);
 }
 
 static void test_EncodedStringView_(const std::string& testName,

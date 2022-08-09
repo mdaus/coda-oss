@@ -205,7 +205,7 @@ std::map<TValue, TKey> kv_to_vk(const std::map<TKey, TValue>& kv)
 static void get_next_utf8_byte(coda_oss::u8string::const_pointer p, size_t sz,
     size_t& i,  coda_oss::u8string& utf8)
 {
-    if (!(i + i < sz))
+    if (!(i + 1 < sz))
     {
         throw std::invalid_argument("No remaining bytes, invalid UTF-8 encoding.");
     }
