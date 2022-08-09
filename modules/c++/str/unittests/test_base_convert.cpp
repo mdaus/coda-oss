@@ -323,46 +323,54 @@ TEST_CASE(test_u8string_to_u32string)
     TEST_ASSERT(classificationText_wide().u32string() == classificationText_iso8859_1().u32string()); // _EQ wants to do toString()
 }
 
+static void test_bstr_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16, const str::EncodedString& encoded)
+{
+    #if _WIN32
+    // Since we're using UTF-16, on Windows that can be cast to wchar_t
+    auto pWide = str::cast<const wchar_t*>(pUtf16);
+
+    const _bstr_t str(pStr);
+    std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+    TEST_ASSERT(encoded.wstring() == std_wstr);
+    TEST_ASSERT(std_wstr == pWide);
+
+    const _bstr_t wide_str(pWide);
+    std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+    TEST_ASSERT_EQ(encoded.native(), std_str);
+    TEST_ASSERT(std_str == pStr);
+    #endif
+}
+
 static void test_Windows1252_ascii(const std::string& testName, const char* pStr, std::u16string::const_pointer pWide)
 {
     const auto view8 = str::EncodedStringView::fromUtf8(pStr);
     TEST_ASSERT_EQ(pStr, view8.native());
     const auto view1252 = str::EncodedStringView::fromWindows1252(pStr);
     TEST_ASSERT_EQ(pStr, view1252.native());
-    {
-        const str::EncodedString encoded(pStr);
-        TEST_ASSERT(encoded.u16string() == pWide);
-        #if _WIN32
-        const _bstr_t str(pStr);
-        const std::wstring wstr(static_cast<const wchar_t*>(str));
-        TEST_ASSERT(encoded.wstring() == wstr);
-        #endif
-    }
-    {
-        const str::EncodedString encoded(pWide);
-        TEST_ASSERT(encoded.native() == pStr);
-        TEST_ASSERT_EQ(view8, encoded);
-        TEST_ASSERT_EQ(view1252, encoded);
-    }
+
+    const str::EncodedString encoded(pStr);
+    TEST_ASSERT(encoded.u16string() == pWide);
+    test_bstr_(testName, pStr, pWide, encoded);
+
+    const str::EncodedString wide_encoded(pWide);
+    TEST_ASSERT_EQ(wide_encoded.native(), pStr);
+    TEST_ASSERT_EQ(view8, wide_encoded);
+    TEST_ASSERT_EQ(view1252, wide_encoded);
+    test_bstr_(testName, pStr, pWide, wide_encoded);
 }
 static void test_Windows1252_(const std::string& testName, const char* pStr, std::u16string::const_pointer pWide)
 {
     const auto view1252 = str::EncodedStringView::fromWindows1252(pStr);
     TEST_ASSERT_EQ(pStr, view1252.native());
-    {
-        const str::EncodedString encoded(pStr);
-        TEST_ASSERT(encoded.u16string() == pWide);
-        #if _WIN32
-        const _bstr_t str(pStr);
-        const std::wstring wstr(static_cast<const wchar_t*>(str));
-        TEST_ASSERT(encoded.wstring() == wstr);
-        #endif
-    }
-    {
-        const str::EncodedString encoded(pWide);
-        TEST_ASSERT_EQ(encoded.native(), pStr);
-        TEST_ASSERT_EQ(view1252, encoded);
-    }
+
+    const str::EncodedString encoded(pStr);
+    TEST_ASSERT(encoded.u16string() == pWide);
+    test_bstr_(testName, pStr, pWide, encoded);
+
+    const str::EncodedString wide_encoded(pWide);
+    TEST_ASSERT_EQ(wide_encoded.native(), pStr);
+    TEST_ASSERT_EQ(view1252, wide_encoded);
+    test_bstr_(testName, pStr, pWide, wide_encoded);
 }
 TEST_CASE(test_Windows1252)
 {
