@@ -138,11 +138,11 @@ TEST_CASE(test_string_to_u8string_windows_1252)
             const std::string input{'|', ch, '|'};
             const auto actual = fromWindows1252(input);
             TEST_ASSERT_TRUE(!actual.empty());
-            const std::u8string expected8{cast8('|'), cast8('\xEF'), cast8('\xBF'), cast8('\xBD'), cast8('|')};  // UTF-8,  "|<REPLACEMENT CHARACTER>|"
-            //const std::u8string expected8{cast8('|'), cast8(194), cast8(ch), cast8('|')};
+            //const std::u8string expected8{cast8('|'), cast8('\xEF'), cast8('\xBF'), cast8('\xBD'), cast8('|')};  // UTF-8,  "|<REPLACEMENT CHARACTER>|"
+            const std::u8string expected8{cast8('|'), cast8(194), cast8(ch), cast8('|')};
             TEST_ASSERT_EQ(actual, expected8);
-            const std::u32string expected{U"|\ufffd|"};  // UTF-32,  "|<REPLACEMENT CHARACTER>|"
-            //const auto expected = str::EncodedString(expected8).u32string();
+            //const std::u32string expected{U"|\ufffd|"};  // UTF-32,  "|<REPLACEMENT CHARACTER>|"
+            const auto expected = str::EncodedString(expected8).u32string();
             test_assert_eq(testName, actual, expected);
         }    
     }
@@ -400,19 +400,19 @@ TEST_CASE(test_Windows1252)
     #if _WIN32
     constexpr auto w1262_a1_ff = "\xa1\xa2\xfe\xff"; // can convert with bit-twiddling
     constexpr auto u16_w1262_a1_ff = u"\u00a1\u00a2\u00fe\u00ff";
-    test_Windows1252_(testName, w1262_a1_ff.c_str(), u16_w1262_a1_ff);
+    test_Windows1252_(testName, w1262_a1_ff, u16_w1262_a1_ff);
 
     // "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ"
     constexpr auto w1262 = "\x80\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8e" // these values must be mapped
         "\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9e\x9f";
     constexpr auto u16_w1262 = u"\u20ac\u201a\u0192\u201e\u2026\u2020\u2021\u02c6\u2030\u0160\u2039\u0152\u017d"
         "\u2018\u2019\u201c\u201d\u2022\u2013\u2014\u02dc\u2122\u0161\u203a\u0153\u017e\u0178";
-    test_Windows1252_(testName, w1262.c_str(), u16_w1262);
+    test_Windows1252_(testName, w1262, u16_w1262);
     
-    //// This only works with "relaxed" (i.e., not "strict") conversion; which is what _bstr_t does
-    //constexpr auto w1262_unassigned = "\x81\x8d\x8f\x90\x9d";
-    //constexpr auto u16_w1262_unassigned = u"\x81\x8d\x8f\x90\x9d";
-    //test_Windows1252_(testName, w1262_unassigned, u16_w1262_unassigned);
+    // This only works with "relaxed" (i.e., not "strict") conversion; which is what _bstr_t does
+    constexpr auto w1262_unassigned = "\x81\x8d\x8f\x90\x9d";
+    constexpr auto u16_w1262_unassigned = u"\x81\x8d\x8f\x90\x9d";
+    test_Windows1252_(testName, w1262_unassigned, u16_w1262_unassigned);
     #endif
 }
 
