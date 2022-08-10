@@ -25,6 +25,7 @@
 #include <vector>
 #include <std/string>
 #include <iterator>
+#include <map>
 #if _WIN32
 #include <comdef.h>
 #endif
@@ -341,8 +342,13 @@ TEST_CASE(test_u8string_to_u32string)
     TEST_ASSERT(classificationText_wide().u32string() == classificationText_iso8859_1().u32string()); // _EQ wants to do toString()
 }
 
-static void test_bstr_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16, const str::EncodedString& encoded)
+static void test_wide_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16, const str::EncodedString& encoded)
 {
+    // from UTF-16 back to Windows-1252
+    const auto w1252 = str::EncodedStringView::details::w1252string(encoded.view());
+    const std::string str_w1252 = str::c_str<std::string>(w1252);
+    TEST_ASSERT_EQ(str_w1252, pStr);
+
     #if _WIN32
     // Since we're using UTF-16, on Windows that can be cast to wchar_t
     auto pWide = str::cast<const wchar_t*>(pUtf16);
@@ -359,38 +365,25 @@ static void test_bstr_(const std::string& testName, const char* pStr, std::u16st
     #endif
 }
 
-static void test_Windows1252_ascii(const std::string& testName, const char* pStr, std::u16string::const_pointer pWide)
+static void test_Windows1252_ascii(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16)
 {
+    // For both UTF-8 and Windows-1252, ASCII is the same (they only differ for 0x80-0xff).
     const auto view8 = str::EncodedStringView::fromUtf8(pStr);
-    TEST_ASSERT_EQ(pStr, view8.native());
+    TEST_ASSERT_EQ(pStr, view8.native()); // native() is the same on all platforms/encodings for ASCII
     const auto view1252 = str::EncodedStringView::fromWindows1252(pStr);
-    TEST_ASSERT_EQ(pStr, view1252.native());
+    TEST_ASSERT_EQ(pStr, view1252.native()); // native() is the same on all platforms/encodings for ASCII
 
     const str::EncodedString encoded(pStr);
-    TEST_ASSERT(encoded.u16string() == pWide);
-    test_bstr_(testName, pStr, pWide, encoded);
+    TEST_ASSERT(encoded.u16string() == pUtf16);
+    test_wide_(testName, pStr, pUtf16, encoded);
 
-    const str::EncodedString wide_encoded(pWide);
-    TEST_ASSERT_EQ(wide_encoded.native(), pStr);
+    const str::EncodedString wide_encoded(pUtf16);
+    TEST_ASSERT_EQ(wide_encoded.native(), pStr); // native() is the same on all platforms/encodings for ASCII
     TEST_ASSERT_EQ(view8, wide_encoded);
     TEST_ASSERT_EQ(view1252, wide_encoded);
-    test_bstr_(testName, pStr, pWide, wide_encoded);
+    test_wide_(testName, pStr, pUtf16, wide_encoded);
 }
-static void test_Windows1252_(const std::string& testName, const char* pStr, std::u16string::const_pointer pWide)
-{
-    const auto view1252 = str::EncodedStringView::fromWindows1252(pStr);
-    TEST_ASSERT_EQ(pStr, view1252.native());
-
-    const str::EncodedString encoded(pStr);
-    TEST_ASSERT(encoded.u16string() == pWide);
-    test_bstr_(testName, pStr, pWide, encoded);
-
-    const str::EncodedString wide_encoded(pWide);
-    TEST_ASSERT_EQ(wide_encoded.native(), pStr);
-    TEST_ASSERT_EQ(view1252, wide_encoded);
-    test_bstr_(testName, pStr, pWide, wide_encoded);
-}
-TEST_CASE(test_Windows1252)
+TEST_CASE(test_ASCII)
 {
     // https://en.cppreference.com/w/cpp/language/escape
     constexpr auto escapes = "|\'|\"|\?|\\|\a|\b|\f|\n|\r|\t|\v|";
@@ -399,16 +392,31 @@ TEST_CASE(test_Windows1252)
 
     // https://en.cppreference.com/w/cpp/language/escape
     constexpr auto controls = "|\x01|\x02|\x03|\x04|\x05|\x06|\x07|\x08|\x09|\x0a|\x0b|\x0c|\x0d|\x0e|\x0f"
-            "|\x10|\x11|\x12|\x13|\x14|\x15|\x16|\x17|\x18|\x19|\x1a|\x1b|\x1c|\x1d|\x1e|\x1f";
+                              "|\x10|\x11|\x12|\x13|\x14|\x15|\x16|\x17|\x18|\x19|\x1a|\x1b|\x1c|\x1d|\x1e|\x1f";
     constexpr auto u16_controls = u"|\x01|\x02|\x03|\x04|\x05|\x06|\x07|\x08|\x09|\x0a|\x0b|\x0c|\x0d|\x0e|\x0f"
-            u"|\x10|\x11|\x12|\x13|\x14|\x15|\x16|\x17|\x18|\x19|\x1a|\x1b|\x1c|\x1d|\x1e|\x1f";
+                                  u"|\x10|\x11|\x12|\x13|\x14|\x15|\x16|\x17|\x18|\x19|\x1a|\x1b|\x1c|\x1d|\x1e|\x1f";
     test_Windows1252_ascii(testName, controls, u16_controls);
 
     // https://en.cppreference.com/w/cpp/language/ascii
     constexpr auto ascii = " !\"#0@AZaz~\x7f";
     constexpr auto u16_ascii = u" !\"#0@AZaz~\x7f";
     test_Windows1252_ascii(testName, ascii, u16_ascii);
+}
 
+static void test_Windows1252_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16)
+{
+    const auto view = str::EncodedStringView::fromWindows1252(pStr);
+
+    const str::EncodedString encoded(view);
+    TEST_ASSERT(view.u16string() == pUtf16);
+    test_wide_(testName, pStr, pUtf16, encoded);
+
+    const str::EncodedString wide_encoded(pUtf16);
+    TEST_ASSERT_EQ(view, wide_encoded);
+    test_wide_(testName, pStr, pUtf16, wide_encoded);
+}
+TEST_CASE(test_Windows1252_WIN32)
+{
     // https://en.wikipedia.org/wiki/Windows-1252
     #if _WIN32
     // can convert with bit-twiddling
@@ -429,6 +437,67 @@ TEST_CASE(test_Windows1252)
     constexpr auto u16_w1252_unassigned = u"\x81\x8d\x8f\x90\x9d";
     test_Windows1252_(testName, w1252_unassigned, u16_w1252_unassigned);
     #endif
+}
+
+TEST_CASE(test_Windows1252)
+{
+    // Use a map of integers to avoid interpreting string literals
+    // https://en.wikipedia.org/wiki/Windows-1252
+    const std::map<int, int> w1252_to_utf16{
+        {0x80, 0x20AC } // EURO SIGN
+        // , {0x81, replacement_character } // UNDEFINED
+        , {0x82, 0x201A } // SINGLE LOW-9 QUOTATION MARK
+        , {0x83, 0x0192  } // LATIN SMALL LETTER F WITH HOOK
+        , {0x84, 0x201E  } // DOUBLE LOW-9 QUOTATION MARK
+        , {0x85, 0x2026  } // HORIZONTAL ELLIPSIS
+        , {0x86, 0x2020  } // DAGGER
+        , {0x87, 0x2021  } // DOUBLE DAGGER
+        , {0x88, 0x02C6  } // MODIFIER LETTER CIRCUMFLEX ACCENT
+        , {0x89, 0x2030  } // PER MILLE SIGN
+        , {0x8A, 0x0160  } // LATIN CAPITAL LETTER S WITH CARON
+        , {0x8B, 0x2039  } // SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+        , {0x8C, 0x0152  } // LATIN CAPITAL LIGATURE OE
+        //, {0x8D, replacement_character } // UNDEFINED
+        , {0x8E, 0x017D  } // LATIN CAPITAL LETTER Z WITH CARON
+        //, {0x8F, replacement_character } // UNDEFINED
+        //, {0x90, replacement_character } // UNDEFINED
+        , {0x91, 0x2018  } // LEFT SINGLE QUOTATION MARK
+        , {0x92, 0x2019  } // RIGHT SINGLE QUOTATION MARK
+        , {0x93, 0x201C  } // LEFT DOUBLE QUOTATION MARK
+        , {0x94, 0x201D  } // RIGHT DOUBLE QUOTATION MARK
+        , {0x95, 0x2022  } // BULLET
+        , {0x96, 0x2013  } // EN DASH
+        , {0x97, 0x2014  } // EM DASH
+        , {0x98, 0x02DC  } // SMALL TILDE
+        , {0x99, 0x2122  } // TRADE MARK SIGN
+        , {0x9A, 0x0161  } // LATIN SMALL LETTER S WITH CARON
+        , {0x9B, 0x203A  } // SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+        , {0x9C, 0x0153  } // LATIN SMALL LIGATURE OE
+        //, {0x9D, replacement_character } // UNDEFINED
+        , {0x9E, 0x017E  } // LATIN SMALL LETTER Z WITH CARON
+        , {0x9F, 0x0178  } // LATIN CAPITAL LETTER Y WITH DIAERESIS
+
+        , {0xA1, 0x00A1  } // INVERTED EXCLAMATION MARK
+        , {0xA2, 0x00A2  } // CENT SIGN
+        // ...
+        , {0xFE, 0x00FE  } // LATIN SMALL LETTER THORN
+        , {0xFF, 0x00FF  } // LATIN SMALL LETTER Y WITH DIAERESIS
+    };
+    std::string running_w1252;
+    std::u16string running_utf16;
+    for (auto&& ch : w1252_to_utf16)
+    {
+        TEST_ASSERT(ch.first <= 0xff);
+        TEST_ASSERT(ch.second <= 0xffff);
+
+        const std::string w1252{static_cast<std::string::value_type>(ch.first)};
+        const std::u16string utf16{static_cast<std::u16string::value_type>(ch.second)};
+        test_Windows1252_(testName, w1252.c_str(), utf16.c_str());
+
+        running_w1252 += w1252;
+        running_utf16 += utf16;
+        test_Windows1252_(testName, running_w1252.c_str(), running_utf16.c_str());
+    }
 }
 
 static void test_EncodedStringView_(const std::string& testName,
@@ -538,6 +607,8 @@ TEST_MAIN(
     TEST_CHECK(test_u8string_to_string);
     TEST_CHECK(test_u8string_to_u16string);
     TEST_CHECK(test_u8string_to_u32string);
+    TEST_CHECK(test_ASCII);
+    TEST_CHECK(test_Windows1252_WIN32);
     TEST_CHECK(test_Windows1252);
     TEST_CHECK(test_EncodedStringView);
     TEST_CHECK(test_EncodedString);
