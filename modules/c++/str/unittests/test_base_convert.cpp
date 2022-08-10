@@ -112,6 +112,27 @@ TEST_CASE(test_string_to_u8string_ascii)
     }
 }
 
+static void test_string_to_u8string_windows_1252_(const std::string& testName, const std::string& input_)
+{
+    const str::W1252string input(str::c_str<str::W1252string>(input_));
+    const auto actual = to_u8string(input);
+
+    // No "expected" to test against as the UTF-8 values for these Windows-1252 characters
+    // are mapped one-by-one.  However, we can test that UTF-8 to Windows-1252
+    // works as that walks through a UTF-8 string which can have 1-, 2-, 3- and 4-bytes
+    // for a single code-point.
+    const auto w1252 = str::to_w1252string(actual.data(), actual.size());
+    TEST_ASSERT(input == w1252);
+
+    // Can't compare the values with == because TEST_ASSERT_EQ()
+    // wants to do toString() and that doesn't work on Linux as the encoding
+    // is wrong (see above).
+    //const std::string w1252_ = str::c_str<std::string::const_pointer>(w1252);
+    //TEST_ASSERT_EQ(input_, w1252_);
+    const str::EncodedStringView inputView(input);
+    const str::EncodedStringView w1252View(w1252);
+    TEST_ASSERT_EQ(inputView, w1252View);
+}
 TEST_CASE(test_string_to_u8string_windows_1252)
 {
     // Windows-1252 only characters must be mapped to UTF-8
@@ -149,18 +170,18 @@ TEST_CASE(test_string_to_u8string_windows_1252)
     {
         //  http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
         const std::vector<uint8_t> windows1252_characters{
-                //0x80,  // EURO SIGN
-                //0x82,  // SINGLE LOW-9 QUOTATION MARK
-                //0x83,  // LATIN SMALL LETTER F WITH HOOK
-                //0x84,  // DOUBLE LOW-9 QUOTATION MARK
-                //0x85,  // HORIZONTAL ELLIPSIS
-                //0x86,  // DAGGER
-                //0x87,  // DOUBLE DAGGER
-                //0x88,  // MODIFIER LETTER CIRCUMFLEX ACCENT
-                //0x89,  // PER MILLE SIGN
-                //0x8A,  // LATIN CAPITAL LETTER S WITH CARON
-                //0x8B,  // SINGLE LEFT-POINTING ANGLE QUOTATION MARK
-                //0x8C,  // LATIN CAPITAL LIGATURE OE
+                0x80,  // EURO SIGN
+                0x82,  // SINGLE LOW-9 QUOTATION MARK
+                0x83,  // LATIN SMALL LETTER F WITH HOOK
+                0x84,  // DOUBLE LOW-9 QUOTATION MARK
+                0x85,  // HORIZONTAL ELLIPSIS
+                0x86,  // DAGGER
+                0x87,  // DOUBLE DAGGER
+                0x88,  // MODIFIER LETTER CIRCUMFLEX ACCENT
+                0x89,  // PER MILLE SIGN
+                0x8A,  // LATIN CAPITAL LETTER S WITH CARON
+                0x8B,  // SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+                0x8C,  // LATIN CAPITAL LIGATURE OE
                 0x8E,  // LATIN CAPITAL LETTER Z WITH CARON
                 0x91,  // LEFT SINGLE QUOTATION MARK
                 0x92,  // RIGHT SINGLE QUOTATION MARK
@@ -176,27 +197,21 @@ TEST_CASE(test_string_to_u8string_windows_1252)
                 0x9C,  // LATIN SMALL LIGATURE OE
                 0x9E,  // LATIN SMALL LETTER Z WITH CARON
                 0x9F};  // LATIN CAPITAL LETTER Y WITH DIAERESIS
-        for (const auto& ch : windows1252_characters)
+        std::string runningInput1;
+        std::string runningInput2;
+        for (const auto& ch_ : windows1252_characters)
         {
-            const std::string input_ { '|', static_cast<std::string::value_type>(ch), '|'};
-            const str::W1252string input(str::c_str<str::W1252string>(input_));
-            const auto actual = to_u8string(input);
+            const auto ch = static_cast<std::string::value_type>(ch_);
+            const std::string input_{'[', ch, ']'};
+            test_string_to_u8string_windows_1252_(testName, input_);
 
-            // No "expected" to test against as the UTF-8 values for these Windows-1252 characters
-            // are mapped one-by-one.  However, we can test that UTF-8 to Windows-1252
-            // works as that walks through a UTF-8 string which can have 1-, 2-, 3- and 4-bytes
-            // for a single code-point.
-            const auto w1252 = str::to_w1252string(actual.data(), actual.size());
-            TEST_ASSERT(input == w1252);
+            runningInput1 += ch;
+            test_string_to_u8string_windows_1252_(testName, runningInput1);
 
-            // Can't compare the values with == because TEST_ASSERT_EQ()
-            // wants to do toString() and that doesn't work on Linux as the encoding
-            // is wrong (see above).
-            //const std::string w1252_ = str::c_str<std::string::const_pointer>(w1252);
-            //TEST_ASSERT_EQ(input_, w1252_);
-            const str::EncodedStringView inputView(input);
-            const str::EncodedStringView w1252View(w1252);
-            TEST_ASSERT_EQ(inputView, w1252View);
+            runningInput2 += input_;
+            test_string_to_u8string_windows_1252_(testName, runningInput2);
+            test_string_to_u8string_windows_1252_(testName, runningInput1+runningInput2);
+            test_string_to_u8string_windows_1252_(testName, runningInput2+runningInput1);
         }    
     }
 }
@@ -395,24 +410,24 @@ TEST_CASE(test_Windows1252)
     test_Windows1252_ascii(testName, ascii, u16_ascii);
 
     // https://en.wikipedia.org/wiki/Windows-1252
-    // "¡¢þÿ" <INVERTED EXCLAMATION MARK><CENT SIGN><LATIN SMALL LETTER THORN><LATIN SMALL LETTER Y WITH DIAERESIS>
-    // These won't work on Linux: it thinks a string is encoded as UTF-8, which makes "\xa1\xa2\xfe\xff" invalid.
     #if _WIN32
-    constexpr auto w1262_a1_ff = "\xa1\xa2\xfe\xff"; // can convert with bit-twiddling
-    constexpr auto u16_w1262_a1_ff = u"\u00a1\u00a2\u00fe\u00ff";
-    test_Windows1252_(testName, w1262_a1_ff, u16_w1262_a1_ff);
+    // can convert with bit-twiddling
+    constexpr auto w1252_a1_ff = "¡¢þÿ"; // <INVERTED EXCLAMATION MARK><CENT SIGN><LATIN SMALL LETTER THORN><LATIN SMALL LETTER Y WITH DIAERESIS>
+    //constexpr auto w1252_a1_ff = "\xa1\xa2\xfe\xff"; 
+    constexpr auto u16_w1252_a1_ff = u"\u00a1\u00a2\u00fe\u00ff";
+    test_Windows1252_(testName, w1252_a1_ff, u16_w1252_a1_ff);
 
-    // "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ"
-    constexpr auto w1262 = "\x80\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8e" // these values must be mapped
-        "\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9e\x9f";
-    constexpr auto u16_w1262 = u"\u20ac\u201a\u0192\u201e\u2026\u2020\u2021\u02c6\u2030\u0160\u2039\u0152\u017d"
+    constexpr auto w1252 = "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ"; // these values must be mapped
+    //constexpr auto w1252 = "\x80\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8e" // these values must be mapped
+    //    "\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9e\x9f";
+    constexpr auto u16_utf8 = u"\u20ac\u201a\u0192\u201e\u2026\u2020\u2021\u02c6\u2030\u0160\u2039\u0152\u017d"
         "\u2018\u2019\u201c\u201d\u2022\u2013\u2014\u02dc\u2122\u0161\u203a\u0153\u017e\u0178";
-    test_Windows1252_(testName, w1262, u16_w1262);
+    test_Windows1252_(testName, w1252, u16_utf8);
     
     // This only works with "relaxed" (i.e., not "strict") conversion; which is what _bstr_t does
-    constexpr auto w1262_unassigned = "\x81\x8d\x8f\x90\x9d";
-    constexpr auto u16_w1262_unassigned = u"\x81\x8d\x8f\x90\x9d";
-    test_Windows1252_(testName, w1262_unassigned, u16_w1262_unassigned);
+    constexpr auto w1252_unassigned = "\x81\x8d\x8f\x90\x9d";
+    constexpr auto u16_w1252_unassigned = u"\x81\x8d\x8f\x90\x9d";
+    test_Windows1252_(testName, w1252_unassigned, u16_w1252_unassigned);
     #endif
 }
 
