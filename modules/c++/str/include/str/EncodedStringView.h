@@ -76,10 +76,15 @@ public:
     // Need the const char* overloads to avoid creating temporary std::basic_string<> instances.
     // Routnes always return a copy, never a reference, so there's no additional overhead
     // with storing a raw pointer rather than a pointer to  std::basic_string<>.
+    EncodedStringView(coda_oss::u8string::const_pointer, coda_oss::u8string::size_type);
     explicit EncodedStringView(coda_oss::u8string::const_pointer);
     explicit EncodedStringView(const coda_oss::u8string&);
+
+    EncodedStringView(str::W1252string::const_pointer, str::W1252string::size_type);
     explicit EncodedStringView(str::W1252string::const_pointer);
     explicit EncodedStringView(const str::W1252string&);
+
+    EncodedStringView(std::string::const_pointer, std::string::size_type);
     explicit EncodedStringView(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     explicit EncodedStringView(const std::string&);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
 
