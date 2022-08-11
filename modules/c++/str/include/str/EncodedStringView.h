@@ -52,13 +52,15 @@ class CODA_OSS_API EncodedStringView final
     // Since we only support two encodings--UTF-8 (native on Linux) and Windows-1252
     // (native on Windows)--both of which are 8-bits, a simple "bool" flag will do.
     coda_oss::span<const char> mString;
+    explicit EncodedStringView(coda_oss::span<const coda_oss::u8string::value_type>);
+    explicit EncodedStringView(coda_oss::span<const str::W1252string::value_type>);
+
 #if _WIN32
     static constexpr bool mNativeIsUtf8 = false; // Windows-1252
     #else
     static constexpr bool mNativeIsUtf8 = true;  // !_WIN32, assume Linux
     #endif
     bool mIsUtf8 = mNativeIsUtf8;
-    EncodedStringView(coda_oss::span<const char>, bool isUtf8);
 
     // Want to create an EncodedString from EncodedStringView.  The public interface
     // doesn't expose "mIsUtf8" so there's (intentinally) no way for clients to know the encoding.
@@ -132,7 +134,7 @@ public:
     // Input is encoded as specified on all platforms.
     static EncodedStringView fromUtf8(const std::string& utf8)
     {
-        return EncodedStringView(str::c_str<coda_oss::u8string>(utf8));
+        return EncodedStringView(str::c_str<coda_oss::u8string>(utf8),  utf8.length());
     }
     static EncodedStringView fromUtf8(std::string::const_pointer pUtf8)
     {
@@ -140,7 +142,7 @@ public:
     }
     static EncodedStringView fromWindows1252(const std::string& w1252)
     {
-        return EncodedStringView(str::c_str<str::W1252string>(w1252));
+        return EncodedStringView(str::c_str<str::W1252string>(w1252), w1252.length());
     }
     static EncodedStringView fromWindows1252(std::string::const_pointer pW1252)
     {
