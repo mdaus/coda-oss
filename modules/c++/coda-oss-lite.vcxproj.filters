@@ -765,6 +765,9 @@
     <ClInclude Include="plugin\include\plugin\PluginDefines.h">
       <Filter>plugin</Filter>
     </ClInclude>
+    <ClInclude Include="enums\include\enums\Convert.h">
+      <Filter>enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1210,6 +1213,9 @@
     </Filter>
     <Filter Include="plugin">
       <UniqueIdentifier>{387bc6cb-323a-42b3-8502-4fac72586d12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="enums">
+      <UniqueIdentifier>{2540c414-2ef4-43b7-a20f-4f3ee64e50e5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
