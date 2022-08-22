@@ -83,7 +83,7 @@ inline std::multimap<TValue, TKey> value_to_keys(const std::map<TKey, TValue>& k
 template <typename T>
 inline coda_oss::optional<std::string> find_value(const T& v, const std::map<T, std::string>& value_to_string)
 {
-    return find(value_to_string, v);
+    return details::find(value_to_string, v);
 }
 
 /**
@@ -104,7 +104,7 @@ inline std::vector<std::string> find_value(const T& v, const std::multimap<T, st
 template <typename T>
 inline coda_oss::optional<T> find_string(const std::string& s, const std::map<std::string, T>& string_to_value)
 {
-    return find(string_to_value, s);
+    return details::find(string_to_value, s);
 }
 
 // template <typename T>

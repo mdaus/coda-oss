@@ -34,7 +34,7 @@ namespace test
 {
 enum class letters
 {
-	a, b, c
+	a, b, c, q, x, y, z
 };
 inline std::map<std::string, letters> coda_oss_enum_string_to_value_(const letters&)
 {
@@ -42,7 +42,12 @@ inline std::map<std::string, letters> coda_oss_enum_string_to_value_(const lette
     {
         {"a", letters::a}, {"A", letters::a}
         , { "b", letters::b }, { "B", letters::b }
-        , { "c", letters::c }, { "C", letters::c }        
+        , { "c", letters::c }, { "C", letters::c }
+        // intentionally lacking "q" for testing
+
+        , { "x", letters::x } // no upper-case
+        , { "Y", letters::y} // no lower-case
+        , {"zee", letters::z} // phonetic-spelling only
     };
     return retval;
 }
