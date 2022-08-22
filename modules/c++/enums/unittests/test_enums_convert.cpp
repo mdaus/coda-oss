@@ -60,6 +60,34 @@ TEST_CASE(test_enums_find_value)
     TEST_ASSERT_NOT_EQ(results[0], "Z");
     TEST_ASSERT_EQ(results[0], "zee");
 }
+TEST_CASE(test_enums_toStrings)
+{
+    auto results = enums::toStrings(enums::test::letters::a);
+    TEST_ASSERT_EQ(results.size(), 2);
+    for (auto&& r: results)
+    {
+        TEST_ASSERT((r == "a") || (r == "A"));    
+    }
+
+    results = enums::toStrings(enums::test::letters::q);
+    TEST_ASSERT_TRUE(results.empty()); // no "q" for q in map
+
+    results = enums::toStrings(enums::test::letters::x);
+    TEST_ASSERT_EQ(results.size(), 1);
+    TEST_ASSERT_EQ(results[0], "x");
+    TEST_ASSERT_NOT_EQ(results[0], "X");
+
+    results = enums::toStrings(enums::test::letters::y);
+    TEST_ASSERT_EQ(results.size(), 1);
+    TEST_ASSERT_NOT_EQ(results[0], "y");
+    TEST_ASSERT_EQ(results[0], "Y");
+
+    results = enums::toStrings(enums::test::letters::z);
+    TEST_ASSERT_EQ(results.size(), 1);
+    TEST_ASSERT_NOT_EQ(results[0], "z");
+    TEST_ASSERT_NOT_EQ(results[0], "Z");
+    TEST_ASSERT_EQ(results[0], "zee");
+}
 
 TEST_CASE(test_enums_find_string)
 {
@@ -141,6 +169,8 @@ TEST_CASE(test_enums_fromString)
 
 TEST_MAIN(
     TEST_CHECK(test_enums_find_value);
+    TEST_CHECK(test_enums_toStrings);
+
     TEST_CHECK(test_enums_find_string);
     TEST_CHECK(test_enums_fromString_nothrow);
     TEST_CHECK(test_enums_fromString_ex);

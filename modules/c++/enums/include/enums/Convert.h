@@ -125,6 +125,12 @@ inline coda_oss::optional<T> find_string(const std::string& s, const std::map<st
     return details::find(string_to_value, s);
 }
 
+template <typename T>
+inline std::vector<std::string> toStrings(const T& v)
+{
+    static const auto value_to_strings = details::value_to_keys(coda_oss_enum_string_to_value_(v));
+    return find_value(v, value_to_strings);
+}
 // template <typename T>
 //inline coda_oss::optional<std::string> toString(const T& v, std::nothrow_t)
 //{
