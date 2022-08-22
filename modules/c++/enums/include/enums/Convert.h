@@ -76,6 +76,23 @@ inline std::multimap<TValue, TKey> value_to_keys(const std::map<TKey, TValue>& k
     return retval;
 }
 
+// Extracts the value from the given optional<>, throwing the
+// specified exception if has_value()==false.
+template<typename T, typename TException>
+inline T value(const coda_oss::optional<T>& v, const TException& ex)
+{
+    if (!v.has_value())
+    {
+        throw ex;
+    }
+    return *v;
+}
+template<typename T>
+inline T value(const coda_oss::optional<T>& v)
+{
+    return value(v, std::invalid_argument("key not found."));
+}
+
 }  // namespace details
 
 /**
@@ -120,14 +137,21 @@ inline coda_oss::optional<T> find_string(const std::string& s, const std::map<st
 // }
 
  template <typename T>
- inline coda_oss::optional<T> fromString(const std::string& v, std::nothrow_t)
+ inline coda_oss::optional<T> fromString(const std::string& s, std::nothrow_t)
 {
-     return find_string(v, coda_oss_enum_string_to_value_(T()));
+     return find_string(s, coda_oss_enum_string_to_value_(T()));
  }
- template <typename T>
- inline T fromString(const std::string& v)
+template <typename T, typename TException>
+inline T fromString(const std::string& s, const TException& ex)
 {
-     return find_string(v, coda_oss_enum_string_to_value_(T()));
+    const auto result = fromString<T>(s, std::nothrow);
+    return details::value(result, ex);
+}
+ template <typename T>
+ inline T fromString(const std::string& s)
+{
+     const auto result = fromString<T>(s, std::nothrow);
+     return details::value(result);
  }
 
 }
