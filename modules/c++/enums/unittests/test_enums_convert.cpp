@@ -25,7 +25,34 @@
 #include <iterator>
 #include <map>
 
+#include "enums/Convert.h"
+#include "enums/Test.h"
+
 #include "TestCase.h"
 
+TEST_CASE(test_enums_toString)
+{
+    //auto result = enums::toString(enums::test::letters::a);
+    //TEST_ASSERT_EQ(result, "a");
+
+    static const auto value_to_strings = enums::details::value_to_keys(coda_oss_enum_string_to_value_(enums::test::letters()));
+    const auto results = enums::find_value(enums::test::letters::a, value_to_strings);
+    TEST_ASSERT_EQ(results.size(), 2);
+    for (auto&& r: results)
+    {
+        TEST_ASSERT((r == "a") || (r == "A"));    
+    }
+}
+
+TEST_CASE(test_enums_fromString)
+{
+    //auto result = enums::fromString<enums::test::letters>("a");
+    //TEST_ASSERT(result == enums::test::letters::a);
+    //result = enums::fromString<enums::test::letters>("A");
+    //TEST_ASSERT(result == enums::test::letters::a);
+}
+
 TEST_MAIN(
+    TEST_CHECK(test_enums_toString);
+    TEST_CHECK(test_enums_fromString);
     )

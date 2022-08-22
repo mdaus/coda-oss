@@ -768,6 +768,9 @@
     <ClInclude Include="enums\include\enums\Convert.h">
       <Filter>enums</Filter>
     </ClInclude>
+    <ClInclude Include="enums\include\enums\Test.h">
+      <Filter>enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />

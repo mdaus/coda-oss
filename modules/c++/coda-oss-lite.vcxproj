@@ -31,6 +31,7 @@
     <ClInclude Include="config\include\config\Exports.h" />
     <ClInclude Include="config\include\config\Version.h" />
     <ClInclude Include="enums\include\enums\Convert.h" />
+    <ClInclude Include="enums\include\enums\Test.h" />
     <ClInclude Include="except\include\except\Backtrace.h" />
     <ClInclude Include="except\include\except\Context.h" />
     <ClInclude Include="except\include\except\Error.h" />
