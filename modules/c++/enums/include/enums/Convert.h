@@ -79,7 +79,7 @@ inline std::multimap<TValue, TKey> value_to_keys(const std::map<TKey, TValue>& k
 // Extracts the value from the given optional<>, throwing the
 // specified exception if has_value()==false.
 template<typename T, typename TException>
-inline T value(const coda_oss::optional<T>& v, const TException& ex)
+inline const T& value(const coda_oss::optional<T>& v, const TException& ex)
 {
     if (!v.has_value())
     {
@@ -88,10 +88,35 @@ inline T value(const coda_oss::optional<T>& v, const TException& ex)
     return *v;
 }
 template<typename T>
-inline T value(const coda_oss::optional<T>& v)
+inline const T& value(const coda_oss::optional<T>& v)
 {
     return value(v, std::invalid_argument("key not found."));
 }
+
+ template <typename T, typename TExceptionEmpty, typename TExceptionMultiple=TExceptionEmpty>
+ inline const T& value(const std::vector<T>& values, const TExceptionEmpty& ex0, const TExceptionMultiple& ex2=ex0)
+ {
+     if (values.size() == 1)
+     {
+         return values[0];
+     }
+     if (values.empty())
+     {
+         throw ex0;
+     }
+     throw ex2;
+ }
+ template <typename T>
+ inline const T& value(const std::vector<T>& values)
+ {
+     return value(values, std::invalid_argument("key not found."), std::invalid_argument("multiple keys found."));
+ }
+
+  template <typename T>
+ inline coda_oss::optional<T> make_optional(const std::vector<T>& values)
+ {
+     return values.size() != 1 ? coda_oss::optional<T>() : coda_oss::optional<T>(values[0]);
+ }
 
 }  // namespace details
 
@@ -144,13 +169,20 @@ inline std::vector<std::string> toStrings(const T& v)
 inline coda_oss::optional<std::string> toString(const T& v, std::nothrow_t)
 {
      const auto results = toStrings(v);
-     return results.size() != 1 ? coda_oss::optional<std::string>() : coda_oss::optional<std::string>(results[0]);
-}
- // template <typename T>
-// inline std::string toString(const T& v)
-// {
-//     return find_value(v, coda_oss_enum_strings_to_values_(T()));
-// }
+     return details::make_optional(results);
+ }
+ template <typename T, typename TExceptionEmpty, typename TExceptionMultiple=TExceptionEmpty>
+ inline std::string toString(const T& v, const TExceptionEmpty& ex0, const TExceptionMultiple& ex2=ex0)
+ {
+     const auto results = toStrings(v);
+     return details::value(results, ex0, ex2);
+ }
+ template <typename T>
+ inline std::string toString(const T& v)
+ {
+     const auto results = toStrings(v);
+     return details::value(results);
+ }
 
  template <typename T>
  inline coda_oss::optional<T> fromString(const std::string& s, std::nothrow_t)

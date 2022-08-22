@@ -114,7 +114,20 @@ TEST_CASE(test_enums_toString_nothrow)
         TEST_ASSERT_EQ(*result, "zee");
     }
 }
+TEST_CASE(test_enums_toString)
+{
+    TEST_THROWS(enums::toString(enums::test::letters::a)); // entries for both "A" and "a"
+    TEST_THROWS(enums::toString(enums::test::letters::q));  // no "q" for q in map
 
+    auto result = enums::toString(enums::test::letters::x);
+    TEST_ASSERT_EQ(result, "x");
+
+    result = enums::toString(enums::test::letters::y);
+    TEST_ASSERT_EQ(result, "Y");
+
+    result = enums::toString(enums::test::letters::z);
+    TEST_ASSERT_EQ(result, "zee");
+}
 
 TEST_CASE(test_enums_find_string)
 {
@@ -198,6 +211,7 @@ TEST_MAIN(
     TEST_CHECK(test_enums_find_value);
     TEST_CHECK(test_enums_toStrings);
     TEST_CHECK(test_enums_toString_nothrow);
+    TEST_CHECK(test_enums_toString);
 
     TEST_CHECK(test_enums_find_string);
     TEST_CHECK(test_enums_fromString_nothrow);
