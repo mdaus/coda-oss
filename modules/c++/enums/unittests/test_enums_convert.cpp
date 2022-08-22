@@ -88,6 +88,33 @@ TEST_CASE(test_enums_toStrings)
     TEST_ASSERT_NOT_EQ(results[0], "Z");
     TEST_ASSERT_EQ(results[0], "zee");
 }
+TEST_CASE(test_enums_toString_nothrow)
+{
+    {
+        const auto result = enums::toString(enums::test::letters::a, std::nothrow);
+        TEST_ASSERT_FALSE(result.has_value()); // entries for both "A" and "a"
+    }
+    {
+        const auto result = enums::toString(enums::test::letters::q, std::nothrow);
+        TEST_ASSERT_FALSE(result.has_value());  // no "q" for q in map
+    }
+    {
+        const auto result = enums::toString(enums::test::letters::x, std::nothrow);
+        TEST_ASSERT_TRUE(result.has_value());
+        TEST_ASSERT_EQ(*result, "x");
+    }
+    {
+        const auto result = enums::toString(enums::test::letters::y, std::nothrow);
+        TEST_ASSERT_TRUE(result.has_value());
+        TEST_ASSERT_EQ(*result, "Y");
+    }
+    {
+        const auto result = enums::toString(enums::test::letters::z, std::nothrow);
+        TEST_ASSERT_TRUE(result.has_value());
+        TEST_ASSERT_EQ(*result, "zee");
+    }
+}
+
 
 TEST_CASE(test_enums_find_string)
 {
@@ -170,6 +197,7 @@ TEST_CASE(test_enums_fromString)
 TEST_MAIN(
     TEST_CHECK(test_enums_find_value);
     TEST_CHECK(test_enums_toStrings);
+    TEST_CHECK(test_enums_toString_nothrow);
 
     TEST_CHECK(test_enums_find_string);
     TEST_CHECK(test_enums_fromString_nothrow);

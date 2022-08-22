@@ -125,18 +125,28 @@ inline coda_oss::optional<T> find_string(const std::string& s, const std::map<st
     return details::find(string_to_value, s);
 }
 
+/**
+ * Lookup the specified value in the map, return all the corresponding strings; see find_value()
+ */
 template <typename T>
 inline std::vector<std::string> toStrings(const T& v)
 {
     static const auto value_to_strings = details::value_to_keys(coda_oss_enum_string_to_value_(v));
     return find_value(v, value_to_strings);
 }
-// template <typename T>
-//inline coda_oss::optional<std::string> toString(const T& v, std::nothrow_t)
-//{
-//     return find_value(v, coda_oss_enum_strings_to_values_(T()));
-// }
-// template <typename T>
+
+/**
+ * Lookup the specified value in the map, if there is just ONE corresponding string, return it;
+ * otherwise NULL.  This routine provides no way to distingish between ZERO return values
+ * and MULTIPLE return values: both return NULL.
+ */
+ template <typename T>
+inline coda_oss::optional<std::string> toString(const T& v, std::nothrow_t)
+{
+     const auto results = toStrings(v);
+     return results.size() != 1 ? coda_oss::optional<std::string>() : coda_oss::optional<std::string>(results[0]);
+}
+ // template <typename T>
 // inline std::string toString(const T& v)
 // {
 //     return find_value(v, coda_oss_enum_strings_to_values_(T()));
