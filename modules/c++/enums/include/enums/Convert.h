@@ -24,9 +24,10 @@
 #define CODA_OSS_enums_Convert_h_INCLUDED_
 #pragma once
 
+
+#include <vector>
 #include <string>
 #include <map>
-#include <vector>
 #include <new> // std::nothrow_t
 #include "coda_oss/optional.h"
 

@@ -19,11 +19,7 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
-#include <vector>
 #include <std/string>
-#include <iterator>
-#include <map>
 #include <std/optional>
 
 #include "enums/Convert.h"
