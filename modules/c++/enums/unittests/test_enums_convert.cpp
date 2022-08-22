@@ -86,7 +86,29 @@ TEST_CASE(test_enums_find_string)
     }
 }
 
+TEST_CASE(test_enums_fromString_nothrow)
+{
+    static const auto& string_to_value = coda_oss_enum_string_to_value_(enums::test::letters());
+    {
+        const auto result = enums::fromString<enums::test::letters>("a", std::nothrow);
+        TEST_ASSERT(result == enums::test::letters::a);
+    }
+    {
+        const auto result = enums::fromString<enums::test::letters>("A", std::nothrow);
+        TEST_ASSERT(result == enums::test::letters::a);
+    }
+    {
+        const auto result = enums::fromString<enums::test::letters>("q", std::nothrow);
+        TEST_ASSERT_FALSE(result.has_value());
+    }
+    {
+        const auto result = enums::fromString<enums::test::letters>("Q", std::nothrow);
+        TEST_ASSERT_FALSE(result.has_value());
+    }
+}
+
 TEST_MAIN(
     TEST_CHECK(test_enums_find_value);
     TEST_CHECK(test_enums_find_string);
+    TEST_CHECK(test_enums_fromString_nothrow);
     )

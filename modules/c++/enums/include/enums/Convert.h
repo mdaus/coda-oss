@@ -27,6 +27,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <new> // std::nothrow_t
 #include "coda_oss/optional.h"
 
 // Utilities to convert enums to/from strings.
@@ -118,16 +119,16 @@ inline coda_oss::optional<T> find_string(const std::string& s, const std::map<st
 //     return find_value(v, coda_oss_enum_strings_to_values_(T()));
 // }
 
-// template <typename T>
-// inline coda_oss::optional<T> fromString(const std::string& v, std::nothrow_t)
-//{
-//     return find_string(v, coda_oss_enum_string_to_value_(T()));
-// }
-// template <typename T>
-// inline T fromString(const std::string& v)
-//{
-//     return find_string(v, coda_oss_enum_string_to_value_(T()));
-// }
+ template <typename T>
+ inline coda_oss::optional<T> fromString(const std::string& v, std::nothrow_t)
+{
+     return find_string(v, coda_oss_enum_string_to_value_(T()));
+ }
+ template <typename T>
+ inline T fromString(const std::string& v)
+{
+     return find_string(v, coda_oss_enum_string_to_value_(T()));
+ }
 
 }
 
