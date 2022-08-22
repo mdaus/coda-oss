@@ -171,11 +171,16 @@ inline coda_oss::optional<std::string> toString(const T& v, std::nothrow_t)
      const auto results = toStrings(v);
      return details::make_optional(results);
  }
- template <typename T, typename TExceptionEmpty, typename TExceptionMultiple=TExceptionEmpty>
- inline std::string toString(const T& v, const TExceptionEmpty& ex0, const TExceptionMultiple& ex2=ex0)
+ template <typename T, typename TExceptionEmpty, typename TExceptionMultiple>
+ inline std::string toString(const T& v, const TExceptionEmpty& ex0, const TExceptionMultiple& ex2)
  {
      const auto results = toStrings(v);
      return details::value(results, ex0, ex2);
+ }
+  template <typename T, typename TException>
+ inline std::string toString(const T& v, const TException& ex)
+ {
+     return toString(v, ex, ex);
  }
  template <typename T>
  inline std::string toString(const T& v)

@@ -114,6 +114,32 @@ TEST_CASE(test_enums_toString_nothrow)
         TEST_ASSERT_EQ(*result, "zee");
     }
 }
+TEST_CASE(test_enums_toString_ex)
+{
+    const std::invalid_argument ex("toString() failed.");
+    const std::invalid_argument ex0("key not found.");
+    const std::invalid_argument ex2("multiple keys found.");
+
+    TEST_THROWS(enums::toString(enums::test::letters::a, ex)); // entries for both "A" and "a"
+    TEST_THROWS(enums::toString(enums::test::letters::a, ex0, ex2)); // entries for both "A" and "a"
+    TEST_THROWS(enums::toString(enums::test::letters::q, ex));  // no "q" for q in map
+    TEST_THROWS(enums::toString(enums::test::letters::q, ex0, ex2));  // no "q" for q in map
+
+    auto result = enums::toString(enums::test::letters::x, ex);
+    TEST_ASSERT_EQ(result, "x");
+    result = enums::toString(enums::test::letters::x, ex0, ex2);
+    TEST_ASSERT_EQ(result, "x");
+
+    result = enums::toString(enums::test::letters::y, ex);
+    TEST_ASSERT_EQ(result, "Y");
+    result = enums::toString(enums::test::letters::y, ex0, ex2);
+    TEST_ASSERT_EQ(result, "Y");
+
+    result = enums::toString(enums::test::letters::z, ex);
+    TEST_ASSERT_EQ(result, "zee");
+    result = enums::toString(enums::test::letters::z, ex0, ex2);
+    TEST_ASSERT_EQ(result, "zee");
+}
 TEST_CASE(test_enums_toString)
 {
     TEST_THROWS(enums::toString(enums::test::letters::a)); // entries for both "A" and "a"
@@ -211,6 +237,7 @@ TEST_MAIN(
     TEST_CHECK(test_enums_find_value);
     TEST_CHECK(test_enums_toStrings);
     TEST_CHECK(test_enums_toString_nothrow);
+    TEST_CHECK(test_enums_toString_ex);
     TEST_CHECK(test_enums_toString);
 
     TEST_CHECK(test_enums_find_string);
