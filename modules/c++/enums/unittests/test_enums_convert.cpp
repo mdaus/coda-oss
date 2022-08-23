@@ -29,7 +29,7 @@
 
 TEST_CASE(test_enums_find_value)
 {
-    static const auto value_to_strings = enums::details::value_to_keys(coda_oss_enum_string_to_value_(enums::test::letters()));
+    static const auto value_to_strings = enums::details::value_to_keys(coda_oss_enums_string_to_value_(enums::test::letters()));
     auto results = enums::find_value(enums::test::letters::a, value_to_strings);
     TEST_ASSERT_EQ(results.size(), 2);
     for (auto&& r: results)
@@ -153,7 +153,7 @@ TEST_CASE(test_enums_toString)
 
 TEST_CASE(test_enums_find_string)
 {
-    static const auto& string_to_value = coda_oss_enum_string_to_value_(enums::test::letters());
+    static const auto& string_to_value = coda_oss_enums_string_to_value_(enums::test::letters());
     {
         const auto result = enums::find_string("a", string_to_value);
         TEST_ASSERT_TRUE(result.has_value());
@@ -178,7 +178,7 @@ TEST_CASE(test_enums_find_string)
 
 TEST_CASE(test_enums_fromString_nothrow)
 {
-    static const auto& string_to_value = coda_oss_enum_string_to_value_(enums::test::letters());
+    static const auto& string_to_value = coda_oss_enums_string_to_value_(enums::test::letters());
     {
         const auto result = enums::fromString<enums::test::letters>("a", std::nothrow);
         TEST_ASSERT(result == enums::test::letters::a);
@@ -201,7 +201,7 @@ TEST_CASE(test_enums_fromString_ex)
 {
     const std::invalid_argument ex("key not found.");
 
-    static const auto& string_to_value = coda_oss_enum_string_to_value_(enums::test::letters());
+    static const auto& string_to_value = coda_oss_enums_string_to_value_(enums::test::letters());
     {
         const auto result = enums::fromString<enums::test::letters>("a", ex);
         TEST_ASSERT(result == enums::test::letters::a);
@@ -216,7 +216,7 @@ TEST_CASE(test_enums_fromString_ex)
 
 TEST_CASE(test_enums_fromString)
 {
-    static const auto& string_to_value = coda_oss_enum_string_to_value_(enums::test::letters());
+    static const auto& string_to_value = coda_oss_enums_string_to_value_(enums::test::letters());
     {
         const auto result = enums::fromString<enums::test::letters>("a");
         TEST_ASSERT(result == enums::test::letters::a);
