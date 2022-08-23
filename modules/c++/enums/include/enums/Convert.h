@@ -95,7 +95,7 @@ inline const T& value(const coda_oss::optional<T>& v)
 }
 
  template <typename T, typename TExceptionEmpty, typename TExceptionMultiple=TExceptionEmpty>
- inline const T& value(const std::vector<T>& values, const TExceptionEmpty& ex0, const TExceptionMultiple& ex2=ex0)
+ inline const T& value(const std::vector<T>& values, const TExceptionEmpty& ex0, const TExceptionMultiple& ex2)
  {
      if (values.size() == 1)
      {
