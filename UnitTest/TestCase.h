@@ -78,17 +78,17 @@ inline void diePrintf_lt(const TX1& X1, const TX2& X2,
 }
 #undef CODA_OSS_test_diePrintf_eq_
 #undef CODA_OSS_test_diePrintf_not_eq_
-#define CODA_OSS_test_diePrintf_eq_(X1, X2) testName, test::diePrintf_eq(X1, X2)
-#define CODA_OSS_test_diePrintf_not_eq_(X1, X2) testName, test::diePrintf_ne(X1, X2)
+#define CODA_OSS_test_diePrintf_eq_(X1, X2) testName, ::test::diePrintf_eq(X1, X2)
+#define CODA_OSS_test_diePrintf_not_eq_(X1, X2) testName, ::test::diePrintf_ne(X1, X2)
 
 #undef CODA_OSS_test_diePrintf_greater_eq_
 #undef CODA_OSS_test_diePrintf_greater_
 #undef CODA_OSS_test_diePrintf_lesser_eq_
 #undef CODA_OSS_test_diePrintf_lesser_
-#define CODA_OSS_test_diePrintf_greater_eq_(X1, X2) testName, test::diePrintf_ge(X1, X2)
-#define CODA_OSS_test_diePrintf_greater_(X1, X2) testName, test::diePrintf_gt(X1, X2)
-#define CODA_OSS_test_diePrintf_lesser_eq_(X1, X2) testName, test::diePrintf_le(X1, X2)
-#define CODA_OSS_test_diePrintf_lesser_(X1, X2) testName, test::diePrintf_lt(X1, X2)
+#define CODA_OSS_test_diePrintf_greater_eq_(X1, X2) testName, ::test::diePrintf_ge(X1, X2)
+#define CODA_OSS_test_diePrintf_greater_(X1, X2) testName, ::test::diePrintf_gt(X1, X2)
+#define CODA_OSS_test_diePrintf_lesser_eq_(X1, X2) testName, ::test::diePrintf_le(X1, X2)
+#define CODA_OSS_test_diePrintf_lesser_(X1, X2) testName, ::test::diePrintf_lt(X1, X2)
 
 template <typename TX1, typename TX2>
 inline void test_assert_greater_(const TX1& X1, const TX2& X2)
