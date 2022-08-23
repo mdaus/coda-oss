@@ -216,15 +216,11 @@ TEST_CASE(test_enums_fromString_ex)
 
 TEST_CASE(test_enums_fromString)
 {
-    static const auto& string_to_value = coda_oss_enums_string_to_value_(enums::test::letters());
-    {
-        const auto result = enums::fromString<enums::test::letters>("a");
-        TEST_ASSERT(result == enums::test::letters::a);
-    }
-    {
-        const auto result = enums::fromString<enums::test::letters>("A");
-        TEST_ASSERT(result == enums::test::letters::a);
-    }
+    auto result = enums::fromString<enums::test::letters>("a");
+    TEST_ASSERT(result == enums::test::letters::a);
+    result = enums::fromString<enums::test::letters>("A");
+    TEST_ASSERT(result == enums::test::letters::a);
+
     TEST_THROWS(enums::fromString<enums::test::letters>("q"));
     TEST_THROWS(enums::fromString<enums::test::letters>("Q"));
 }

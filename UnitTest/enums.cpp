@@ -10,4 +10,8 @@ namespace enums
     TEST_CLASS(test_enums_convert){ public:
     #include "enums/unittests/test_enums_convert.cpp"
     };
+
+    TEST_CLASS(test_enums_macros){ public:
+    #include "enums/unittests/test_enums_macros.cpp"
+    };
 }

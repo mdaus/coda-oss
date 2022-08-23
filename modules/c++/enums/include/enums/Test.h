@@ -53,6 +53,27 @@ inline std::map<std::string, letters> coda_oss_enums_string_to_value_(const lett
 }
 
 } // namespace test
+} // namespace enums
+
+#include "enums/Macros.h"
+// test other namespaces ... and macros
+namespace coda_oss
+{
+    CODA_OSS_enums_scoped_enum(3, test_Letters, A, B, C);
+    CODA_OSS_enums_scoped_enum(3, test_letters, a, b, c);
+    namespace test
+    {
+        CODA_OSS_enums_scoped_enum(3, letters, a, b, c); // not to be confused with enums::test::letters
+    }
+
+    namespace enums // not to be confused with ::enums, this is coda_oss::enums
+    {
+        CODA_OSS_enums_scoped_enum(3, letters, a, b, c); // not to be confused with enums::test::letters
+        namespace test
+        {
+            CODA_OSS_enums_scoped_enum(3, letters, a, b, c); // not to be confused with enums::test::letters
+        }
+    }
 }
 
 #endif // CODA_OSS_enums_Test_h_INCLUDED_
