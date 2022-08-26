@@ -133,7 +133,7 @@ namespace test
         Numbers(value_t v) : Enum(v) {}
         explicit Numbers(underlying_type_t i) : Enum(i) {}
     };
-    inline std::map<std::string, Numbers> coda_oss_enums_string_to_value_(const Numbers&) // see Convert.h for details
+    inline const std::map<std::string, Numbers>& coda_oss_enums_string_to_value_(const Numbers&) // see Convert.h for details
     {
         static const std::map<std::string, Numbers> retval
         {
@@ -147,7 +147,7 @@ namespace test
 
     // `Numbers` (a "struct enum") and `numbers` (C++11 "enum class") should behave (about) the same.
     enum class numbers { zero, one, two, three };
-    inline std::map<std::string, numbers> coda_oss_enums_string_to_value_(const numbers&)  // see Convert.h for details
+    inline const std::map<std::string, numbers>& coda_oss_enums_string_to_value_(const numbers&)  // see Convert.h for details
     {
         static const std::map<std::string, numbers> retval
         {
@@ -158,7 +158,29 @@ namespace test
         };
         return retval;
     }
-}
+
+    // Copied from SIX: https://github.com/ngageoint/six-library/blob/master/six/modules/c%2B%2B/six/include/six/Enums.h
+    namespace details { namespace Enum
+    {
+        struct PolarizationSequenceType 
+        {
+            enum values { OTHER, V, H, UNKNOWN }; // there are actually more values
+        };
+    } }
+    class PolarizationSequenceType final : public enums::Enum<details::Enum::PolarizationSequenceType>
+    {
+        std::string other_;  // value of OTHER.* for SIDD 3.0/SICD 1.3
+    public:
+        PolarizationSequenceType() = default;
+        PolarizationSequenceType(const PolarizationSequenceType&) = default;
+        PolarizationSequenceType(PolarizationSequenceType&&) = default;
+        PolarizationSequenceType& operator=(const PolarizationSequenceType&) = default;
+        PolarizationSequenceType& operator=(PolarizationSequenceType&&) = default;
+
+        PolarizationSequenceType(value_t v) : Enum(v) {}
+        explicit PolarizationSequenceType(underlying_type_t i) : Enum(i) {}
+    };
+} // namespace test
 
 }
 
