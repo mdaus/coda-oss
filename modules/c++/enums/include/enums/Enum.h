@@ -42,13 +42,13 @@ namespace enums
 // that uses "struct enums" to simulate "enum class".
 
 // Base class for a "struct enum."  The "trick" is to define the enum values
-// in a separate struct first so that it can be passed as TClassValues.
+// in a separate struct first so that this class can derive from it.
 // See example code below, although most clients will want to use the macros.
-template <typename T,  typename TClassValues,
-    typename std::enable_if<std::is_class<TClassValues>::value, bool>::type = true>
-struct Enum : public TClassValues
+template <typename T,  typename std::enable_if<std::is_class<T>::value, bool>::type = true>
+struct Enum : public T
 {
-    using value_t = typename TClassValues::values;
+    using struct_enum_t = T; // i.e., struct T { enum values { ... } } ;
+    using value_t = typename struct_enum_t::values;
 
     Enum() = default;
     Enum(const Enum&) = default;
@@ -71,9 +71,10 @@ struct Enum : public TClassValues
         return value_;
     }
 
-    // explicit conversion to the underlying type; e.g., int
+    // Be sure we're looking at a C-style "enum" not C++11 "enum class".
     using underlying_type_t_ = typename std::underlying_type<value_t>::type;
     using underlying_type_t = typename std::enable_if<std::is_enum<value_t>::value, underlying_type_t_>::type;
+    // Explicit conversion to the underlying type; e.g., int
     explicit operator underlying_type_t() const
     {
         return static_cast<underlying_type_t>(value_);
@@ -91,21 +92,21 @@ namespace details
     template <typename T, typename TEnable = void> struct underlying_type { };  // primary template
 
     // Get the underlying type for a "struct Enum<T>" instance (above).
-    // The std::enable_if<> gunk restricts this to a class.
-    template <typename T>
-    struct underlying_type<T, typename std::enable_if<std::is_class<T>::value>::type>
+    // The std::enable_if<> gunk restricts this to Enum<T> classes
+    template <typename TEnum>
+    struct underlying_type<TEnum, typename std::enable_if<std::is_base_of<typename TEnum::struct_enum_t, TEnum>::value>::type>
     {
-        using type = typename T::underlying_type_t;
+        using type = typename TEnum::underlying_type_t;
     }; // specialization for is_class<T>
 
     // Get the underlying type for a C++11 "enum class".
     // is_scoped_enum<> is C++23 https://en.cppreference.com/w/cpp/types/is_scoped_enum
-    // so do !is_class<> instead.  (Trying to use Enum<T> needs another template parameter.)
-    template <typename T>
-    struct underlying_type<T, typename std::enable_if<!std::is_class<T>::value>::type> // TODO: is_scoped_enum
+    // so do !is_class<> instead. 
+    template <typename TScopedEnum>
+    struct underlying_type<TScopedEnum, typename std::enable_if<!std::is_class<TScopedEnum>::value>::type> // TODO: is_scoped_enum
     {
         // https://en.cppreference.com/w/cpp/types/underlying_type
-        using type = typename std::underlying_type<T>::type;
+        using type = typename std::underlying_type<TScopedEnum>::type;
     }; // specialization for is_scoped_enum<>
 }
 template <typename T>
@@ -121,9 +122,14 @@ namespace test
             enum values { Zero, One, Two, Three };
         };
     } }
-    struct Numbers final : public enums::Enum<Numbers, details::Enum::Numbers>
+    struct Numbers final : public enums::Enum<details::Enum::Numbers>
     {
         Numbers() = default;
+        Numbers(const Numbers&) = default;
+        Numbers(Numbers&&) = default;
+        Numbers& operator=(const Numbers&) = default;
+        Numbers& operator=(Numbers&&) = default;
+
         Numbers(value_t v) : Enum(v) {}
         explicit Numbers(underlying_type_t i) : Enum(i) {}
     };
