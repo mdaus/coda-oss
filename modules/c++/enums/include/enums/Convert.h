@@ -163,7 +163,7 @@ inline std::vector<std::string> toStrings(const T& v)
 
 /**
  * Lookup the specified value in the map, if there is just ONE corresponding string, return it;
- * otherwise NULL.  This routine provides no way to distingish between ZERO return values
+ * otherwise NULL.  This routine provides no way to distinguish between ZERO return values
  * and MULTIPLE return values: both return NULL.
  */
  template <typename T>

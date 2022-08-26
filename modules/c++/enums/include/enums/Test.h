@@ -34,7 +34,7 @@ namespace test
 {
 enum class letters
 {
-	a, b, c, q, x, y, z
+    a, b, c, q, x, y, z
 };
 inline std::map<std::string, letters> coda_oss_enums_string_to_value_(const letters&)
 {
