@@ -42,9 +42,9 @@ namespace enums
 // to support a situation like SIX.  It also supports legacy code
 // that uses "struct enums" to simulate "enum class".
 
-template <typename T, typename std::enable_if<std::is_class<T>::value, bool>::type = true>
-using underlying_type_t = typename T::underlying_type_t;
-
+// Base class for a "struct enum."  The "trick" is to define the enum values
+// in a separate struct first so that it can be passed as TClassValues.
+// See example code below, although most clients will want to use the macros.
 template <typename T,  typename TClassValues,
     typename std::enable_if<std::is_class<TClassValues>::value, bool>::type = true>
 struct Enum : public TClassValues
@@ -86,6 +86,32 @@ private:
     value_t value_;
 };
 
+namespace details
+{
+    // See example at https://en.cppreference.com/w/cpp/types/enable_if
+    template <typename T, typename TEnable = void> struct underlying_type { };  // primary template
+
+    // Get the underlying type for a "struct Enum<T>" instance (above).
+    // The std::enable_if<> gunk restricts this to a class.
+    template <typename T>
+    struct underlying_type<T, typename std::enable_if<std::is_class<T>::value>::type>
+    {
+        using type = typename T::underlying_type_t;
+    }; // specialization for is_class<T>
+
+    // Get the underlying type for a C++11 "enum class".
+    // is_scoped_enum<> is C++23 https://en.cppreference.com/w/cpp/types/is_scoped_enum
+    // so do !is_class<> instead.  (Trying to use Enum<T> needs another template parameter.)
+    template <typename T>
+    struct underlying_type<T, typename std::enable_if<!std::is_class<T>::value>::type> // TODO: is_scoped_enum
+    {
+        // https://en.cppreference.com/w/cpp/types/underlying_type
+        using type = typename std::underlying_type<T>::type;
+    }; // specialization for is_scoped_enum<>
+}
+template <typename T>
+using underlying_type_t = typename details::underlying_type<T>::type;
+
 namespace test
 {
     // "Spell out" everything (i.e., no macros) to make it "clear" (ha!) what's going on.
@@ -93,7 +119,7 @@ namespace test
     {
         struct Numbers
         {
-            enum values { One, Two, Three };
+            enum values { Zero, One, Two, Three };
         };
     } }
     struct Numbers final : public enums::Enum<Numbers, details::Enum::Numbers>
@@ -103,7 +129,7 @@ namespace test
     };
 
     // `Numbers` (a "struct enum") and `numbers` (C++11 "enum class") should behave (about) the same.
-    enum class numbers { one, two, three };
+    enum class numbers { zero, one, two, three };
 }
 
 }

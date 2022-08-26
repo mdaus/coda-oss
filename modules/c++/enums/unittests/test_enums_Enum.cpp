@@ -30,11 +30,25 @@ template<typename TEnum>
 static void test_enums_Enum_(const std::string& testName, TEnum one, TEnum two)
 {
     TEnum v = one;
-    //const auto i = static_cast<enums::underlying_type_t<TEnum>>(v);
-    //v = static_cast<TEnum>(i);
+    TEST_ASSERT(v == one);
+    TEST_ASSERT(v != two);
+
+    auto i = static_cast<enums::underlying_type_t<TEnum>>(v);
+    TEST_ASSERT_EQ(i, 1);
+
+    v = static_cast<TEnum>(i);
+    TEST_ASSERT(v == one);
+
     v = two;
+    TEST_ASSERT(v == two);
+    i = static_cast<enums::underlying_type_t<TEnum>>(v);
+    TEST_ASSERT_EQ(i, 2);
+
     auto v2 = one;
+    TEST_ASSERT(v2 == one);
     v2 = v;
+    TEST_ASSERT(v2 == two);
+
     TEST_ASSERT(v == v2);
     TEST_ASSERT(!(v != v2));
 }
