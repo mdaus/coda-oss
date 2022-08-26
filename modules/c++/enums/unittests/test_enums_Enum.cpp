@@ -22,7 +22,7 @@
 #include <std/string>
 #include <std/optional>
 
-#include "enums/Enum.h"
+#include "enums/Test.h"
 
 #include "TestCase.h"
 
@@ -109,7 +109,36 @@ TEST_CASE(test_enums_Enum_number)
     TEST_ASSERT_EQ(result, "one");
 }
 
+TEST_CASE(test_enums_Enum_PolarizationSequenceType)
+{
+    static const enums::test::PolarizationSequenceType T{};
+    auto v = fromString(T, "V");
+    TEST_ASSERT(v == enums::test::PolarizationSequenceType::V);
+    auto s = toString(v);
+    TEST_ASSERT_EQ(s, "V");
+
+    // only one-way conversion for UNKOWN
+    v = enums::test::PolarizationSequenceType::UNKNOWN;
+    s = toString(v);
+    TEST_ASSERT_EQ(s, "UNKNOWN");
+    TEST_THROWS(fromString(T, s));
+
+    // and OTHER
+    std::string other = "OTHER";
+    v = fromString(T, other);
+    TEST_ASSERT(v == enums::test::PolarizationSequenceType::OTHER);
+    s = toString(v);
+    TEST_ASSERT_EQ(s, other);
+
+    other = "OTHER_abc";
+    v = fromString(T, other);
+    TEST_ASSERT(v == enums::test::PolarizationSequenceType::OTHER);
+    s = toString(v);
+    TEST_ASSERT_EQ(s, other); // be sure we get the "special" value back
+}
+
 TEST_MAIN(
     TEST_CHECK(test_enums_Enum_Number);
     TEST_CHECK(test_enums_Enum_number);
+    TEST_CHECK(test_enums_Enum_PolarizationSequenceType);
     )

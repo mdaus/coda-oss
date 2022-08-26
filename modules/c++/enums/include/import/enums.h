@@ -26,6 +26,7 @@
 #pragma once
 
 #include "enums/Convert.h"
+#include "enums/Macros.h"
 #include "enums/Enum.h"
 
 #endif  // CODA_OSS_enums_import_enums_h_INCLUDED_

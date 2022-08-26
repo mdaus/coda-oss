@@ -27,6 +27,12 @@
 #include <string>
 #include <map>
 
+#include "str/Manip.h"
+
+#include "enums/Macros.h"
+#include "enums/Enum.h"
+#include "enums/Convert.h"
+
 // Some test frameworks don't place nice with "namespace" in the test code
 namespace enums
 {
@@ -74,6 +80,113 @@ namespace coda_oss
             CODA_OSS_enums_scoped_enum(3, letters, a, b, c); // not to be confused with enums::test::letters
         }
     }
+}
+
+namespace enums
+{
+namespace test
+{
+    // "Spell out" everything (i.e., no macros) to make it "clear" (ha!) what's going on.
+    namespace details { namespace Enum
+    {
+        struct Numbers
+        {
+            enum values { Zero, One, Two, Three };
+        };
+    } }
+    struct Numbers final : public enums::Enum<details::Enum::Numbers>
+    {
+        Numbers() = default;
+        Numbers(const Numbers&) = default;
+        Numbers(Numbers&&) = default;
+        Numbers& operator=(const Numbers&) = default;
+        Numbers& operator=(Numbers&&) = default;
+
+        Numbers(value_t v) : Enum(v) {}
+        explicit Numbers(underlying_type_t i) : Enum(i) {}
+    };
+    inline const std::map<std::string, Numbers>& coda_oss_enums_string_to_value_(const Numbers&) // see Convert.h for details
+    {
+        static const std::map<std::string, Numbers> retval
+        {
+                {"Zero", Numbers::Zero}
+                , {"One", Numbers::One}
+                // , {"Two", Numbers::Two}, // intentionlly omitting for test purposes
+                , {"Three", Numbers::Three}
+        };
+        return retval;
+    }
+
+    // `Numbers` (a "struct enum") and `numbers` (C++11 "enum class") should behave (about) the same.
+    enum class numbers { zero, one, two, three };
+    inline const std::map<std::string, numbers>& coda_oss_enums_string_to_value_(const numbers&)  // see Convert.h for details
+    {
+        static const std::map<std::string, numbers> retval
+        {
+                {"zero", numbers::zero},
+                {"one", numbers::one}
+                // , {"two", numbers::two}, // intentionlly omitting for test purposes
+                , {"three", numbers::three}
+        };
+        return retval;
+    }
+
+    // Copied from SIX: https://github.com/ngageoint/six-library/blob/master/six/modules/c%2B%2B/six/include/six/Enums.h
+    namespace details { namespace Enum
+    {
+        struct PolarizationSequenceType 
+        {
+            enum values { OTHER, V, H, UNKNOWN }; // there are actually more values
+        };
+    } }
+    struct PolarizationSequenceType final : public enums::Enum<details::Enum::PolarizationSequenceType>
+    {
+        PolarizationSequenceType() = default;
+        PolarizationSequenceType(const PolarizationSequenceType&) = default;
+        PolarizationSequenceType(PolarizationSequenceType&&) = default;
+        PolarizationSequenceType& operator=(const PolarizationSequenceType&) = default;
+        PolarizationSequenceType& operator=(PolarizationSequenceType&&) = default;
+
+        PolarizationSequenceType(value_t v) : Enum(v) {}
+        explicit PolarizationSequenceType(underlying_type_t i) : Enum(i) {}
+
+        std::string other_;  // value of OTHER.* for SIDD 3.0/SICD 1.3
+    };
+    inline const std::map<std::string, PolarizationSequenceType>& coda_oss_enums_string_to_value_(const PolarizationSequenceType&) // see Convert.h for details
+    {
+        static const std::map<std::string, PolarizationSequenceType> retval
+        {
+                {"OTHER", PolarizationSequenceType::OTHER}
+                , {"V", PolarizationSequenceType::V}
+                , {"H", PolarizationSequenceType::H}
+                , {"UNKNOWN", PolarizationSequenceType::UNKNOWN}
+        };
+        return retval;
+    }
+    inline std::string toString(const PolarizationSequenceType& v)
+    {
+        if ((v == PolarizationSequenceType::OTHER) && !v.other_.empty())
+        {
+            return v.other_;
+        }
+        return enums::toString(v);
+    }
+    inline PolarizationSequenceType fromString(const PolarizationSequenceType& t, const std::string& s)
+    {
+        if (str::starts_with(s, "OTHER_"))
+        {
+            PolarizationSequenceType retval = PolarizationSequenceType::OTHER;
+            retval.other_ = s;
+            return retval;
+        }
+        if (s == "UNKNOWN") // don't convert from "UNKNOWN" 
+        {
+            throw std::invalid_argument("'" + s + "' is invalid.");
+        }
+        return enums::fromString(t, s);
+    }
+} // namespace test
+
 }
 
 #endif // CODA_OSS_enums_Test_h_INCLUDED_
