@@ -94,7 +94,7 @@ TEST_CASE(test_enums_Enum_number)
     test_enums_Enum_<numbers>(testName, numbers::one, numbers::two, "one");
 
     numbers v = numbers::one;
-    const auto i = static_cast<std::underlying_type_t<numbers>>(v);
+    const auto i = static_cast<std::underlying_type<numbers>::type>(v);
     v = static_cast<numbers>(i);
     v = numbers::two;
     auto v2 = numbers::one;
