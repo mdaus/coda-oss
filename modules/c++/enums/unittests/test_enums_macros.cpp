@@ -53,29 +53,29 @@ TEST_CASE(test_enums_namespaces_fromString)
     // Simple checks to ensure we generated enums correctly with the macros
     // and that everything works.
     {
-        const auto result = enums::fromString<enums::test::letters>("a");
+        const auto result = enums::fromString(enums::test::letters(), "a");
         TEST_ASSERT(result == enums::test::letters::a);
     }
 
     // the enums generated with macros provide operator<<() so TEST_ASSERT_EQ works
     {
-        const auto result = enums::fromString<coda_oss::test_Letters>("A");
+        const auto result = enums::fromString(coda_oss::test_Letters(), "A");
         TEST_ASSERT_EQ(result, coda_oss::test_Letters::A);
     }
     {
-        const auto result = enums::fromString<coda_oss::test_letters>("a");
+        const auto result = enums::fromString(coda_oss::test_letters (), "a");
         TEST_ASSERT_EQ(result, coda_oss::test_letters::a);
     }
     {
-        const auto result = enums::fromString<coda_oss::test::letters>("a");
+        const auto result = enums::fromString(coda_oss::test::letters(), "a");
         TEST_ASSERT_EQ(result, coda_oss::test::letters::a);
     }
     {
-        const auto result = enums::fromString<coda_oss::enums::letters>("a");
+        const auto result = enums::fromString(coda_oss::enums::letters(), "a");
         TEST_ASSERT_EQ(result, coda_oss::enums::letters::a);
     }
     {
-        const auto result = enums::fromString<coda_oss::enums::test::letters>("a");
+        const auto result = enums::fromString(coda_oss::enums::test::letters(), "a");
         TEST_ASSERT_EQ(result, coda_oss::enums::test::letters::a);
     }
 }

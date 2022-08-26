@@ -179,20 +179,21 @@ TEST_CASE(test_enums_find_string)
 TEST_CASE(test_enums_fromString_nothrow)
 {
     static const auto& string_to_value = coda_oss_enums_string_to_value_(enums::test::letters());
+    static const enums::test::letters T;
     {
-        const auto result = enums::fromString<enums::test::letters>("a", std::nothrow);
+        const auto result = enums::fromString(T, "a", std::nothrow);
         TEST_ASSERT(result == enums::test::letters::a);
     }
     {
-        const auto result = enums::fromString<enums::test::letters>("A", std::nothrow);
+        const auto result = enums::fromString(T, "A", std::nothrow);
         TEST_ASSERT(result == enums::test::letters::a);
     }
     {
-        const auto result = enums::fromString<enums::test::letters>("q", std::nothrow);
+        const auto result = enums::fromString(T, "q", std::nothrow);
         TEST_ASSERT_FALSE(result.has_value());
     }
     {
-        const auto result = enums::fromString<enums::test::letters>("Q", std::nothrow);
+        const auto result = enums::fromString(T, "Q", std::nothrow);
         TEST_ASSERT_FALSE(result.has_value());
     }
 }
@@ -202,27 +203,30 @@ TEST_CASE(test_enums_fromString_ex)
     const std::invalid_argument ex("key not found.");
 
     static const auto& string_to_value = coda_oss_enums_string_to_value_(enums::test::letters());
+    static const enums::test::letters T;
     {
-        const auto result = enums::fromString<enums::test::letters>("a", ex);
+        const auto result = enums::fromString(T, "a", ex);
         TEST_ASSERT(result == enums::test::letters::a);
     }
     {
-        const auto result = enums::fromString<enums::test::letters>("A", ex);
+        const auto result = enums::fromString(T, "A", ex);
         TEST_ASSERT(result == enums::test::letters::a);
     }
-    TEST_THROWS(enums::fromString<enums::test::letters>("q", ex));
-    TEST_THROWS(enums::fromString<enums::test::letters>("Q", ex));
+    TEST_THROWS(enums::fromString(T, "q", ex));
+    TEST_THROWS(enums::fromString(T, "Q", ex));
 }
 
 TEST_CASE(test_enums_fromString)
 {
-    auto result = enums::fromString<enums::test::letters>("a");
+    static const enums::test::letters T;
+
+    auto result = enums::fromString(T, "a");
     TEST_ASSERT(result == enums::test::letters::a);
-    result = enums::fromString<enums::test::letters>("A");
+    result = enums::fromString(T, "A");
     TEST_ASSERT(result == enums::test::letters::a);
 
-    TEST_THROWS(enums::fromString<enums::test::letters>("q"));
-    TEST_THROWS(enums::fromString<enums::test::letters>("Q"));
+    TEST_THROWS(enums::fromString(T, "q"));
+    TEST_THROWS(enums::fromString(T, "Q"));
 }
 
 TEST_MAIN(

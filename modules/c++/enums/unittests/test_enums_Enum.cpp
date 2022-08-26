@@ -58,10 +58,11 @@ static void test_enums_Enum_(const std::string& testName, TEnum one, TEnum two, 
     const auto result = enums::toString(v);
     TEST_ASSERT_EQ(result, strOne);
 
-    TEST_THROWS(enums::fromString<TEnum>("abc"));
-    TEST_THROWS(enums::fromString<TEnum>("two"));  // no "Two"/"two" in map
-    TEST_THROWS(enums::fromString<TEnum>("Two"));  // no "Two"/"two" in map
-    const auto v3 = enums::fromString<TEnum>(result);
+    static const TEnum T{};
+    TEST_THROWS(enums::fromString(T, "abc"));
+    TEST_THROWS(enums::fromString(T, "two"));  // no "Two"/"two" in map
+    TEST_THROWS(enums::fromString(T, "Two"));  // no "Two"/"two" in map
+    const auto v3 = enums::fromString(T, result);
     TEST_ASSERT(v3 == v);
     TEST_ASSERT(v3 == one);
 }
