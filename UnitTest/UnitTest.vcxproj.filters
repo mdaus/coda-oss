@@ -228,6 +228,9 @@
     <ClCompile Include="..\modules\c++\enums\unittests\test_enums_macros.cpp">
       <Filter>enums</Filter>
     </ClCompile>
+    <ClCompile Include="..\modules\c++\enums\unittests\test_enums_Enum.cpp">
+      <Filter>enums</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

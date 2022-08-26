@@ -24,11 +24,7 @@
 #define CODA_OSS_enums_Enum_h_INCLUDED_
 #pragma once
 
-
-#include <vector>
-#include <string>
-#include <map>
-#include <new> // std::nothrow_t
+#include <type_traits>
 #include "coda_oss/optional.h"
 
 #include "enums/Convert.h"
@@ -46,29 +42,69 @@ namespace enums
 // to support a situation like SIX.  It also supports legacy code
 // that uses "struct enums" to simulate "enum class".
 
-// First, "spell out" everything by hand for illustration purposes
+template <typename T, typename std::enable_if<std::is_class<T>::value, bool>::type = true>
+using underlying_type_t = typename T::underlying_type_t;
+
+template <typename T,  typename TClassValues,
+    typename std::enable_if<std::is_class<TClassValues>::value, bool>::type = true>
+struct Enum : public TClassValues
+{
+    using value_t = typename TClassValues::values;
+
+    Enum() = default;
+    Enum(const Enum&) = default;
+    Enum(Enum&&) = default;
+    Enum& operator=(const Enum&) = default;
+    Enum& operator=(Enum&&) = default;
+
+    // implicit conversion to the underlying enum
+    Enum& operator=(value_t v)
+    {
+        value_ = v;
+        return *this;
+    }
+    Enum(value_t v)
+    {
+        *this = v;
+    }
+    operator value_t() const
+    {
+        return value_;
+    }
+
+    // explicit conversion to the underlying type; e.g., int
+    using underlying_type_t_ = typename std::underlying_type<value_t>::type;
+    using underlying_type_t = typename std::enable_if<std::is_enum<value_t>::value, underlying_type_t_>::type;
+    explicit operator underlying_type_t() const
+    {
+        return static_cast<underlying_type_t>(value_);
+    }
+    // allow `Enum e = static_cast<Enum>(i);` to work
+    explicit Enum(underlying_type_t i) : Enum(static_cast<value_t>(i)) { }
+
+private:
+    value_t value_;
+};
+
 namespace test
 {
-namespace details { namespace Enum { namespace values {
-struct numbers
-{
-    enum values { one, two, three };
-}; 
-} } }
-struct numbers final : public details::Enum::values::numbers
-{
-};
-inline std::map<std::string, numbers> coda_oss_enums_string_to_value_(const numbers&)
-{
-    static const std::map<std::string, numbers> retval
+    // "Spell out" everything (i.e., no macros) to make it "clear" (ha!) what's going on.
+    namespace details { namespace Enum
     {
-        {"one", numbers::one }, 
-        //, { "two", numbers::two } // intentionally leaving out for testing purposes
-        , { "three", numbers::three }
+        struct Numbers
+        {
+            enum values { One, Two, Three };
+        };
+    } }
+    struct Numbers final : public enums::Enum<Numbers, details::Enum::Numbers>
+    {
+        Numbers(value_t v) : Enum(v) {}
+        explicit Numbers(underlying_type_t i) : Enum(i) {}
     };
-    return retval;
+
+    // `Numbers` (a "struct enum") and `numbers` (C++11 "enum class") should behave (about) the same.
+    enum class numbers { one, two, three };
 }
-} // namespace test
 
 }
 

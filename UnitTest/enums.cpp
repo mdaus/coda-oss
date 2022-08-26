@@ -14,4 +14,8 @@ namespace enums
     TEST_CLASS(test_enums_macros){ public:
     #include "enums/unittests/test_enums_macros.cpp"
     };
+
+    TEST_CLASS(test_enums_Enum){ public:
+    #include "enums/unittests/test_enums_Enum.cpp"
+    };
 }
