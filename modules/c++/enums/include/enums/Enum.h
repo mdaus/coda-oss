@@ -27,8 +27,7 @@
 #include <type_traits>
 #include "coda_oss/optional.h"
 
-#include "enums/Convert.h"
-#include "enums/Test.h"
+#include "enums/Test.h" // so we don't clobber other stuff
 
 namespace enums
 {
@@ -127,9 +126,31 @@ namespace test
         Numbers(value_t v) : Enum(v) {}
         explicit Numbers(underlying_type_t i) : Enum(i) {}
     };
+    inline std::map<std::string, Numbers> coda_oss_enums_string_to_value_(const Numbers&) // see Convert.h for details
+    {
+        static const std::map<std::string, Numbers> retval
+        {
+                {"Zero", Numbers::Zero}
+                , {"One", Numbers::One}
+                // , {"Two", Numbers::Two}, // intentionlly omitting for test purposes
+                , {"Three", Numbers::Three}
+        };
+        return retval;
+    }
 
     // `Numbers` (a "struct enum") and `numbers` (C++11 "enum class") should behave (about) the same.
     enum class numbers { zero, one, two, three };
+    inline std::map<std::string, numbers> coda_oss_enums_string_to_value_(const numbers&)  // see Convert.h for details
+    {
+        static const std::map<std::string, numbers> retval
+        {
+                {"zero", numbers::zero},
+                {"one", numbers::one}
+                // , {"two", numbers::two}, // intentionlly omitting for test purposes
+                , {"three", numbers::three}
+        };
+        return retval;
+    }
 }
 
 }

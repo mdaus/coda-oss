@@ -27,7 +27,7 @@
 #include "TestCase.h"
 
 template<typename TEnum>
-static void test_enums_Enum_(const std::string& testName, TEnum one, TEnum two)
+static void test_enums_Enum_(const std::string& testName, TEnum one, TEnum two, const std::string& strOne)
 {
     TEnum v = one;
     TEST_ASSERT(v == one);
@@ -51,13 +51,19 @@ static void test_enums_Enum_(const std::string& testName, TEnum one, TEnum two)
 
     TEST_ASSERT(v == v2);
     TEST_ASSERT(!(v != v2));
+
+    TEST_ASSERT(v == two);
+    TEST_THROWS(enums::toString(v));  // no "Two"/"two" in map
+    v = one;
+    const auto result = enums::toString(v);
+    TEST_ASSERT_EQ(result, strOne);
 }
 
 TEST_CASE(test_enums_Enum_Number)
 {
     using namespace enums::test;
 
-    test_enums_Enum_<Numbers>(testName, Numbers::One, Numbers::Two);
+    test_enums_Enum_<Numbers>(testName, Numbers::One, Numbers::Two, "One");
 
     Numbers v = Numbers::One;
     const auto i = static_cast<enums::underlying_type_t<Numbers>>(v);
@@ -67,13 +73,18 @@ TEST_CASE(test_enums_Enum_Number)
     v2 = v;
     TEST_ASSERT(v == v2);
     TEST_ASSERT(!(v != v2));
+
+    TEST_THROWS(enums::toString(v)); // no "Two" in map
+    v = Numbers::One;
+    const auto result = enums::toString(v);
+    TEST_ASSERT_EQ(result, "One");
 }
 
 TEST_CASE(test_enums_Enum_number)
 {
     using namespace enums::test;
 
-    test_enums_Enum_<numbers>(testName, numbers::one, numbers::two);
+    test_enums_Enum_<numbers>(testName, numbers::one, numbers::two, "one");
 
     numbers v = numbers::one;
     const auto i = static_cast<std::underlying_type_t<numbers>>(v);
@@ -83,6 +94,11 @@ TEST_CASE(test_enums_Enum_number)
     v2 = v;
     TEST_ASSERT(v == v2);
     TEST_ASSERT(!(v != v2));
+
+    TEST_THROWS(enums::toString(v));  // no "two" in map
+    v = numbers::one;
+    const auto result = enums::toString(v);
+    TEST_ASSERT_EQ(result, "one");
 }
 
 TEST_MAIN(
