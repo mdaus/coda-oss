@@ -790,6 +790,9 @@ def options(opt):
                    help='Specify a prebuilt modules config file (created from dumpconfig)')
     opt.add_option('--disable-swig-silent-leak', action='store_false', dest='swig_silent_leak',
                    default=True, help='Allow swig to print memory leaks it detects')
+    opt.add_option('--junit-report', action='store', default=None,
+                    help='Generates a junit formmated report file for unit test'
+                    'results. NOOP if junit_xml cannot be imported')
 
 
 def ensureCpp11Support(self):
@@ -1750,6 +1753,41 @@ def addSourceTargets(bld, env, path, target):
 
         target.targets_to_add += wscriptTargets
 
+def junitUnitTestResults(bld):
+    '''
+    Summary calback function to generate JUnit formatted XML
+    '''
+    import junit_xml
+
+    # we also want a logged summary still
+    waf_unit_test.summary(bld)
+
+    # now generate a report
+    lst = getattr(bld,'utest_results',[])
+    test_cases = []
+    for name, retcode, stdout, stderr in lst:
+        so = stdout.decode()
+        se = stderr.decode()
+        tc = junit_xml.TestCase(name=name,
+                                status=retcode,
+                                stdout=so,
+                                stderr=se)
+        if retcode:
+            messages = []
+            lines = se.split('\n')
+            for line in lines:
+                if 'FAILED' in line:
+                    messages.append(line)
+            if len(messages) == 0:
+                messages = ['Unknown error occured that caused non-zero return code']
+
+            tc.add_failure_info('\n'.join(messages))
+        test_cases.append(tc)
+    ts = junit_xml.TestSuite('unit tests', test_cases)
+    with open(bld.options.junit_report, 'w') as fh:
+        fh.write(junit_xml.TestSuite.to_xml_string([ts]))
+
+
 def enableWafUnitTests(bld, set_exit_code=True):
     """
     If called, run all C++ unit tests after building
@@ -1758,7 +1796,16 @@ def enableWafUnitTests(bld, set_exit_code=True):
     # TODO: This does not work for Python files.
     # The "nice" way to handle this is possibly not
     # supported in this version of Waf.
-    bld.add_post_fun(waf_unit_test.summary)
+    if bld.options.junit_report is not None:
+        try:
+            import junit_xml
+            bld.add_post_fun(junitUnitTestResults)
+        except ImportError:
+            Logs.pprint('RED', 'Cannot generate requested junit report because we can\'t import junit-xml')
+            bld.add_post_fun(waf_unit_test.summary)
+    else:
+        bld.add_post_fun(waf_unit_test.summary)
+
     if set_exit_code:
         bld.add_post_fun(waf_unit_test.set_exit_code)
 
