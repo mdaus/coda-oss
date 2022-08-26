@@ -123,6 +123,7 @@ namespace test
     } }
     struct Numbers final : public enums::Enum<Numbers, details::Enum::Numbers>
     {
+        Numbers() = default;
         Numbers(value_t v) : Enum(v) {}
         explicit Numbers(underlying_type_t i) : Enum(i) {}
     };
