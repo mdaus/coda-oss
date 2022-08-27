@@ -179,7 +179,7 @@ TEST_CASE(test_enums_find_string)
 TEST_CASE(test_enums_fromString_nothrow)
 {
     static const auto& string_to_value = coda_oss_enums_string_to_value_(enums::test::letters());
-    static const enums::test::letters T;
+    static const enums::test::letters T{};
     {
         const auto result = enums::fromString(T, "a", std::nothrow);
         TEST_ASSERT(result == enums::test::letters::a);
@@ -203,7 +203,7 @@ TEST_CASE(test_enums_fromString_ex)
     const std::invalid_argument ex("key not found.");
 
     static const auto& string_to_value = coda_oss_enums_string_to_value_(enums::test::letters());
-    static const enums::test::letters T;
+    static const enums::test::letters T{};
     {
         const auto result = enums::fromString(T, "a", ex);
         TEST_ASSERT(result == enums::test::letters::a);
@@ -218,7 +218,7 @@ TEST_CASE(test_enums_fromString_ex)
 
 TEST_CASE(test_enums_fromString)
 {
-    static const enums::test::letters T;
+    static const enums::test::letters T{};
 
     auto result = enums::fromString(T, "a");
     TEST_ASSERT(result == enums::test::letters::a);
