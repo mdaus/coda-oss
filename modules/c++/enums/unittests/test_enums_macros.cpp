@@ -80,7 +80,17 @@ TEST_CASE(test_enums_namespaces_fromString)
     }
 }
 
+TEST_CASE(test_enums_OrientationType)
+{
+    static const enums::test::OrientationType T{};
+    const auto v = fromString(T, "UP");
+    TEST_ASSERT(v == enums::test::OrientationType::UP);
+    const auto s = toString(v);
+    TEST_ASSERT_EQ(s, "UP");
+}
+
 TEST_MAIN(
     TEST_CHECK(test_enums_namespaces_toString);
     TEST_CHECK(test_enums_namespaces_fromString);
+    TEST_CHECK(test_enums_OrientationType);
     )

@@ -91,7 +91,7 @@ namespace test
     {
         struct Numbers
         {
-            enum values { Zero, One, Two, Three };
+            enum values { One = 1, Two, Three };
         };
     } }
     struct Numbers final : public enums::Enum<details::Enum::Numbers>
@@ -109,23 +109,21 @@ namespace test
     {
         static const std::map<std::string, Numbers> retval
         {
-                {"Zero", Numbers::Zero}
-                , {"One", Numbers::One}
-                // , {"Two", Numbers::Two}, // intentionlly omitting for test purposes
+                {"One", Numbers::One}
+                // , {"Two", Numbers::Two}, // intentionally omitting for test purposes
                 , {"Three", Numbers::Three}
         };
         return retval;
     }
 
     // `Numbers` (a "struct enum") and `numbers` (C++11 "enum class") should behave (about) the same.
-    enum class numbers { zero, one, two, three };
+    enum class numbers { one = 1, two, three };
     inline const std::map<std::string, numbers>& coda_oss_enums_string_to_value_(const numbers&)  // see Convert.h for details
     {
         static const std::map<std::string, numbers> retval
         {
-                {"zero", numbers::zero},
                 {"one", numbers::one}
-                // , {"two", numbers::two}, // intentionlly omitting for test purposes
+                // , {"two", numbers::two}, // intentionally omitting for test purposes
                 , {"three", numbers::three}
         };
         return retval;
@@ -185,6 +183,10 @@ namespace test
         }
         return enums::fromString(t, s);
     }
+
+    // Something simple, swiped from SIX again
+    CODA_OSS_enums_struct_enum(5, OrientationType, UP, DOWN, LEFT, RIGHT, ARBITRARY);
+
 } // namespace test
 
 }
