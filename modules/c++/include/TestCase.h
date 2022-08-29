@@ -65,10 +65,33 @@ inline void diePrintf(const char* format, const std::string& testName, const cha
 // older C++ compilers don't like __VA_ARGS__ :-(
 #define test_diePrintf0(format) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__)
 
-template <typename TX>
-inline std::string toString(TX&& X)
+// https://stackoverflow.com/questions/1005476/how-to-detect-whether-there-is-a-specific-member-variable-in-class/1007175#1007175
+namespace details
 {
-    return str::toString(std::forward<TX>(X));
+    // https://stackoverflow.com/a/9154394/8877
+    template<typename T>
+    inline auto toString_imp(const T& obj, int) -> decltype(toString(obj), std::string())
+    {
+        return toString(obj);
+    }
+
+    template<typename T>
+    inline auto toString_imp(const T& obj, long) -> decltype(str::toString(obj), std::string())
+    {
+        return str::toString(obj);
+    }
+
+    template<typename T>
+    inline auto toString(const T& obj) -> decltype(toString_imp(obj, 0), std::string())
+    {
+        return toString_imp(obj, 0);
+    }
+}
+
+template <typename TX>
+inline std::string toString(const TX& X)
+{
+    return details::toString(X);
 }
 
 template<typename TX>

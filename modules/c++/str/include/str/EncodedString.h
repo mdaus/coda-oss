@@ -29,7 +29,7 @@
 #include <ostream>
 
 #include "config/Exports.h"
- #include "str/EncodedStringView.h"
+#include "str/EncodedStringView.h"
 
 /*!
  * \file EncodedString.h
@@ -156,9 +156,13 @@ inline bool operator!=(const EncodedString& lhs, const EncodedString& rhs)
     return !(lhs == rhs);
 }
 
+inline std::string toString(const EncodedString& es)
+{
+    return es.native();
+}
 inline std::ostream& operator<<(std::ostream& os, const EncodedString& es)
 {
-    os << es.native();
+    os << toString(es);
     return os;
 }
 
