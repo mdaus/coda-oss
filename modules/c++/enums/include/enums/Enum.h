@@ -28,6 +28,9 @@
 #include <stdexcept>
 #include "coda_oss/optional.h"
 
+#include "str/Convert.h"
+#include "enums/Convert.h"
+
 namespace enums
 {
 // There are scenarios that can't be done with the string<->value map.
@@ -56,16 +59,16 @@ struct Enum : public T
     Enum& operator=(Enum&&) = default;
 
     // implicit conversion to the underlying enum
-    Enum& operator=(value_t v)
+    Enum& operator=(value_t v) noexcept
     {
         value_ = v;
         return *this;
     }
-    Enum(value_t v)
+    Enum(value_t v) noexcept
     {
         *this = v;
     }
-    operator value_t() const
+    operator value_t() const noexcept
     {
         return value_;
     }
@@ -74,12 +77,12 @@ struct Enum : public T
     using underlying_type_t_ = typename std::underlying_type<value_t>::type;
     using underlying_type_t = typename std::enable_if<std::is_enum<value_t>::value, underlying_type_t_>::type;
     // Explicit conversion to the underlying type; e.g., int
-    explicit operator underlying_type_t() const
+    explicit operator underlying_type_t() const noexcept
     {
         return static_cast<underlying_type_t>(value_);
     }
     // allow `Enum e = static_cast<Enum>(i);` to work
-    explicit Enum(underlying_type_t i) : Enum(static_cast<value_t>(i)) { }
+    explicit Enum(underlying_type_t i) noexcept : Enum(static_cast<value_t>(i)) { }
 
 private:
     value_t value_;
@@ -87,9 +90,6 @@ private:
 
 namespace details
 {
-    // See example at https://en.cppreference.com/w/cpp/types/enable_if
-    template <typename T, typename TEnable = void> struct underlying_type { };  // primary template
-
     // Get the underlying type for a "struct Enum<T>" instance (above).
     // The std::enable_if<> gunk restricts this to Enum<T> classes
     template <typename TEnum>
@@ -97,19 +97,17 @@ namespace details
     {
         using type = typename TEnum::underlying_type_t;
     }; // specialization for is_class<T>
+} // namespace details
 
-    // Get the underlying type for a C++11 "enum class".
-    // is_scoped_enum<> is C++23 https://en.cppreference.com/w/cpp/types/is_scoped_enum
-    // so do !is_class<> instead. 
-    template <typename TScopedEnum>
-    struct underlying_type<TScopedEnum, typename std::enable_if<!std::is_class<TScopedEnum>::value>::type> // TODO: is_scoped_enum
-    {
-        // https://en.cppreference.com/w/cpp/types/underlying_type
-        using type = typename std::underlying_type<TScopedEnum>::type;
-    }; // specialization for is_scoped_enum<>
+
+// https://en.cppreference.com/w/cpp/utility/to_underlying
+template<typename T>
+enums::underlying_type_t<T> to_underlying(const Enum<T>& e) noexcept
+{
+    // "Equivalent to return static_cast<std::underlying_type_t<Enum>>(e);."
+    return static_cast<enums::underlying_type_t<T>>(e);
 }
-template <typename T>
-using underlying_type_t = typename details::underlying_type<T>::type;
+
 }
 
 #endif // CODA_OSS_enums_Enum_h_INCLUDED_
