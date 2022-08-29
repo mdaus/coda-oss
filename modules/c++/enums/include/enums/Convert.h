@@ -140,8 +140,7 @@ template <typename T>
 using underlying_type_t = typename details::underlying_type<T>::type;
 
 // https://en.cppreference.com/w/cpp/utility/to_underlying
-// Our "struct enums" are a class, so !std::is_class works even if it's a bit of a hack.
-template<typename T, typename = std::enable_if<!std::is_class<T>::value>::type> // TODO: specializations for is_enum and is_scoped_enum
+template<typename T>
 enums::underlying_type_t<T> to_underlying(T e) noexcept
 {
     // "Equivalent to return static_cast<std::underlying_type_t<Enum>>(e);."

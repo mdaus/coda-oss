@@ -76,10 +76,14 @@ struct Enum : public T
     // Be sure we're looking at a C-style "enum" not C++11 "enum class".
     using underlying_type_t_ = typename std::underlying_type<value_t>::type;
     using underlying_type_t = typename std::enable_if<std::is_enum<value_t>::value, underlying_type_t_>::type;
+    underlying_type_t to_underlying() const noexcept
+    {
+        return static_cast<underlying_type_t>(value_);
+    }
     // Explicit conversion to the underlying type; e.g., int
     explicit operator underlying_type_t() const noexcept
     {
-        return static_cast<underlying_type_t>(value_);
+        return to_underlying();
     }
     // allow `Enum e = static_cast<Enum>(i);` to work
     explicit Enum(underlying_type_t i) noexcept : Enum(static_cast<value_t>(i)) { }
@@ -98,15 +102,6 @@ namespace details
         using type = typename TEnum::underlying_type_t;
     }; // specialization for is_class<T>
 } // namespace details
-
-
-// https://en.cppreference.com/w/cpp/utility/to_underlying
-template<typename T>
-enums::underlying_type_t<T> to_underlying(const Enum<T>& e) noexcept
-{
-    // "Equivalent to return static_cast<std::underlying_type_t<Enum>>(e);."
-    return static_cast<enums::underlying_type_t<T>>(e);
-}
 
 }
 

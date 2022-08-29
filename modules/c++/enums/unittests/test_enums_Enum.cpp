@@ -33,7 +33,7 @@ static void test_enums_Enum_(const std::string& testName, TEnum one, TEnum two, 
     TEST_ASSERT(v == one);
     TEST_ASSERT(v != two);
 
-    auto i = static_cast<enums::underlying_type_t<TEnum>>(v);
+    auto i = enums::to_underlying<TEnum>(v);
     TEST_ASSERT_EQ(i, 1);
 
     v = static_cast<TEnum>(i);
@@ -41,7 +41,7 @@ static void test_enums_Enum_(const std::string& testName, TEnum one, TEnum two, 
 
     v = two;
     TEST_ASSERT(v == two);
-    i = static_cast<enums::underlying_type_t<TEnum>>(v);
+    i = enums::to_underlying<TEnum>(v);
     TEST_ASSERT_EQ(i, 2);
 
     auto v2 = one;
@@ -74,7 +74,7 @@ TEST_CASE(test_enums_Enum_Number)
     test_enums_Enum_<Numbers>(testName, Numbers::One, Numbers::Two, "One");
 
     Numbers v = Numbers::One;
-    const auto i = static_cast<enums::underlying_type_t<Numbers>>(v);
+    const auto i = enums::to_underlying(v);
     v = static_cast<Numbers>(i);
     v = Numbers::Two;
     auto v2 = Numbers::One;
@@ -95,7 +95,7 @@ TEST_CASE(test_enums_Enum_number)
     test_enums_Enum_<numbers>(testName, numbers::one, numbers::two, "one");
 
     numbers v = numbers::one;
-    const auto i = static_cast<std::underlying_type<numbers>::type>(v);
+    const auto i = enums::to_underlying(v);
     v = static_cast<numbers>(i);
     v = numbers::two;
     auto v2 = numbers::one;
