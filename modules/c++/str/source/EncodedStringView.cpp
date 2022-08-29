@@ -223,5 +223,3 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
     // If UTF-8 is native on this platform, convert to UTF-8; otherwise do a native comparision
     return mNativeIsUtf8 ? utf8.c_u8str() == w1252.u8string() : utf8.native() == w1252.mString.data();
 }
-
-

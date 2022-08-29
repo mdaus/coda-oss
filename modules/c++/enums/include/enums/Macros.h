@@ -40,15 +40,14 @@
 #define CODA_OSS_enums_map_entry_4(name, n1, n2, n3, n4)  CODA_OSS_enums_map_entry(name, n1), CODA_OSS_enums_map_entry_3(name, n2, n3, n4)
 #define CODA_OSS_enums_map_entry_5(name, n1, n2, n3, n4, n5)  CODA_OSS_enums_map_entry(name, n1), CODA_OSS_enums_map_entry_4(name, n2, n3, n4, n5)
 
-#define CODA_OSS_enums_define_ostream_op_insert_(name, toString) \
-    inline std::ostream& operator<<(std::ostream& os, const name& v) { os << toString(v); return os; }
-#define CODA_OSS_enums_define_ostream_toString(name) CODA_OSS_enums_define_ostream_op_insert_(name, ::enums::toString)
+#define CODA_OSS_enums_define_ostream_op_insert(name) \
+    inline std::ostream& operator<<(std::ostream& os, const name& v) { os << ::enums::toString(v); return os; }
 
-#define CODA_OSS_enums_define_string_to_value_begin(name)  CODA_OSS_enums_define_ostream_toString(name) \
+#define CODA_OSS_enums_define_string_to_value_BEGIN(name)  CODA_OSS_enums_define_ostream_op_insert(name) \
    inline const std::map<std::string, name>& coda_oss_enums_string_to_value_(const name&) { static const std::map<std::string, name> retval {
-#define CODA_OSS_enums_define_string_to_value_end }; return retval; }
-#define CODA_OSS_enums_define_string_to_value_(name, ...) CODA_OSS_enums_define_string_to_value_begin(name) __VA_ARGS__  \
-    CODA_OSS_enums_define_string_to_value_end
+#define CODA_OSS_enums_define_string_to_value_END }; return retval; }
+#define CODA_OSS_enums_define_string_to_value_(name, ...) CODA_OSS_enums_define_string_to_value_BEGIN(name) __VA_ARGS__  \
+    CODA_OSS_enums_define_string_to_value_END
 
 #define CODA_OSS_enums_scoped_enum(n, name, ...) CODA_OSS_enums_define_scoped_enum_(name, __VA_ARGS__); \
         CODA_OSS_enums_define_string_to_value_(name, CODA_OSS_enums_map_entry_##n(name, __VA_ARGS__))

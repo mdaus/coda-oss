@@ -113,7 +113,7 @@ TEST_CASE(test_enums_Enum_PolarizationSequenceType)
 {
     static const enums::test::PolarizationSequenceType T{};
     auto v = fromString(T, "V");
-    TEST_ASSERT(v == enums::test::PolarizationSequenceType::V);
+    TEST_ASSERT_EQ(v, enums::test::PolarizationSequenceType::V);
     auto s = toString(v);
     TEST_ASSERT_EQ(s, "V");
 
@@ -126,13 +126,13 @@ TEST_CASE(test_enums_Enum_PolarizationSequenceType)
     // and OTHER
     std::string other = "OTHER";
     v = fromString(T, other);
-    TEST_ASSERT(v == enums::test::PolarizationSequenceType::OTHER);
+    TEST_ASSERT_EQ(v, enums::test::PolarizationSequenceType::OTHER);
     s = toString(v);
     TEST_ASSERT_EQ(s, other);
 
     other = "OTHER_abc";
     v = fromString(T, other);
-    TEST_ASSERT(v == enums::test::PolarizationSequenceType::OTHER);
+    TEST_ASSERT_EQ(v, enums::test::PolarizationSequenceType::OTHER);
     s = toString(v);
     TEST_ASSERT_EQ(s, other); // be sure we get the "special" value back
 }
