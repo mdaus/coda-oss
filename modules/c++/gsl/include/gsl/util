@@ -17,7 +17,7 @@
 #ifndef GSL_UTIL_H
 #define GSL_UTIL_H
 
-#include <gsl/assert> // for Expects
+#include "assert" // for Expects
 
 #include <array>
 #include <cstddef>          // for ptrdiff_t, size_t
@@ -44,6 +44,12 @@
 #else
 #define GSL_NODISCARD
 #endif // defined(__cplusplus) && (__cplusplus >= 201703L)
+
+#if defined(__cpp_inline_variables)
+#define GSL_INLINE inline
+#else
+#define GSL_INLINE
+#endif
 
 namespace gsl
 {
