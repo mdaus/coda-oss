@@ -12,15 +12,6 @@
     <ClInclude Include="gsl\include\gsl\gsl.h">
       <Filter>gsl</Filter>
     </ClInclude>
-    <ClInclude Include="gsl\include\gsl\Gsl_.h">
-      <Filter>gsl</Filter>
-    </ClInclude>
-    <ClInclude Include="gsl\include\gsl\Gsl_narrow.h">
-      <Filter>gsl</Filter>
-    </ClInclude>
-    <ClInclude Include="gsl\include\gsl\use_gsl.h">
-      <Filter>gsl</Filter>
-    </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\bit.h">
       <Filter>coda_oss</Filter>
     </ClInclude>
