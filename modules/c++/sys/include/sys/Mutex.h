@@ -21,38 +21,39 @@
  */
 
 
-#ifndef __SYS_MUTEX_H__
-#define __SYS_MUTEX_H__ 
+#ifndef CODA_OSS_sys_Mutex_h_INCLUDED_
+#define CODA_OSS_sys_Mutex_h_INCLUDED_
+#pragma once
+
+#include "sys/Conf.h"
+
 /**
- *  \file 
+ *  \file
  *  \brief Include the right mutex.
  *
  *  This file will auto-select the mutex of choice,
- *  if one is to be defined.  
+ *  if one is to be defined.
  *  \note We need to change the windows part to check _MT
  *  because that is how it determines reentrance!
  *
  */
 
-#    if defined(USE_NSPR_THREADS)
-#        include "sys/MutexNSPR.h"
+#if defined(_WIN32)
+#include "sys/MutexWin32.h"
 namespace sys
 {
-typedef MutexNSPR Mutex;
-}
-#    elif (defined(WIN32) || defined(_WIN32))
-#        include "sys/MutexWin32.h"
-namespace sys
-{
-typedef MutexWin32 Mutex;
+using Mutex = MutexWin32;
 }
 
-#    else
-#        include "sys/MutexPosix.h"
+#elif defined(CODA_OSS_POSIX_SOURCE)
+#include "sys/MutexPosix.h"
 namespace sys
 {
-typedef MutexPosix Mutex;
+using Mutex = MutexPosix;
 }
-#    endif // Which thread package?
 
-#endif // End of header
+#else
+#error "Which thread package?"
+#endif
+
+#endif  // CODA_OSS_sys_Mutex_h_INCLUDED_
