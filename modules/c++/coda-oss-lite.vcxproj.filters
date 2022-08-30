@@ -99,15 +99,6 @@
     <ClInclude Include="sys\include\sys\AtomicCounterCpp11.h">
       <Filter>sys</Filter>
     </ClInclude>
-    <ClInclude Include="sys\include\sys\AtomicCounterMutex.h">
-      <Filter>sys</Filter>
-    </ClInclude>
-    <ClInclude Include="sys\include\sys\AtomicCounterWin32.h">
-      <Filter>sys</Filter>
-    </ClInclude>
-    <ClInclude Include="sys\include\sys\AtomicCounterX86.h">
-      <Filter>sys</Filter>
-    </ClInclude>
     <ClInclude Include="sys\include\sys\Backtrace.h">
       <Filter>sys</Filter>
     </ClInclude>

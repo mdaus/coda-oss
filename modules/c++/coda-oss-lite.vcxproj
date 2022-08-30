@@ -181,9 +181,6 @@
     <ClInclude Include="sys\include\sys\AbstractOS.h" />
     <ClInclude Include="sys\include\sys\AtomicCounter.h" />
     <ClInclude Include="sys\include\sys\AtomicCounterCpp11.h" />
-    <ClInclude Include="sys\include\sys\AtomicCounterMutex.h" />
-    <ClInclude Include="sys\include\sys\AtomicCounterWin32.h" />
-    <ClInclude Include="sys\include\sys\AtomicCounterX86.h" />
     <ClInclude Include="sys\include\sys\Backtrace.h" />
     <ClInclude Include="sys\include\sys\ConditionVar.h" />
     <ClInclude Include="sys\include\sys\ConditionVarInterface.h" />
