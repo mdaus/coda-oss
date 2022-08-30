@@ -20,64 +20,34 @@
  *
  */
 
+#include "sys/MutexCpp11.h"
 
-#ifndef CODA_OSS_sys_MutexInterface_h_INCLUDED_
-#define CODA_OSS_sys_MutexInterface_h_INCLUDED_
-#pragma once
-
-
-#include <typeinfo>
-
-#include "config/Exports.h"
-#include "sys/SystemException.h"
-#include "sys/Dbg.h"
-
-namespace sys
+sys::MutexCpp11::MutexCpp11()
 {
-
-/*!
- *  \class MutexInterface
- *  \brief The interface for any mutex
- *
- *  This class defines the interface for any mutex in any package that
- *  is wrapped herein
- */
-class CODA_OSS_API MutexInterface
-{
-public:
-    //!  Constructor
-    MutexInterface()
-    {
-#ifdef THREAD_DEBUG
-        dbg_printf("Creating a mutex\n");
-#endif
-
-    }
-
-    //!  Destructor
-    virtual ~MutexInterface()
-    {
-#ifdef THREAD_DEBUG
-        dbg_printf("Destroying a mutex\n");
-#endif
-
-    }
-
-    MutexInterface(const MutexInterface&) = delete;
-    MutexInterface& operator=(const MutexInterface&) = delete;
-
-    /*!
-     *  Lock the mutex up.
-     */
-    virtual void lock() = 0;
-
-    /*!
-     *  Unlock the mutex.
-     */
-    virtual void unlock() = 0;
-
-};
-
 }
 
-#endif  // CODA_OSS_sys_MutexInterface_h_INCLUDED_
+sys::MutexCpp11::~MutexCpp11()
+{
+}
+
+void sys::MutexCpp11::lock()
+{
+#ifdef THREAD_DEBUG
+    dbg_printf("Locking mutex\n");
+#endif
+    mNative.lock();
+}
+
+void sys::MutexCpp11::unlock()
+{
+#ifdef THREAD_DEBUG
+    dbg_printf("Unlocking mutex\n");
+#endif
+    mNative.unlock();
+}
+
+std::mutex& sys::MutexCpp11::getNative()
+{
+    return mNative;
+}
+

@@ -705,6 +705,9 @@
     <ClInclude Include="plugin\include\plugin\PluginDefines.h">
       <Filter>plugin</Filter>
     </ClInclude>
+    <ClInclude Include="sys\include\sys\MutexCpp11.h">
+      <Filter>sys</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1040,6 +1043,9 @@
     </ClCompile>
     <ClCompile Include="plugin\source\ErrorHandler.cpp">
       <Filter>plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="sys\source\MutexCpp11.cpp">
+      <Filter>sys</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
