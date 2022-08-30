@@ -31,7 +31,6 @@ CODA_OSS_disable_warning_push
 #pragma warning(disable: 4626) // '...' : assignment operator was implicitly defined as deleted
 #pragma warning(disable: 5027) // '...' : move assignment operator was implicitly defined as deleted
 #pragma warning(disable: 26487) // Don 't return a pointer '...' that may be invalid (lifetime.4).
-#pragma warning(disable: 4814) // '...': in C++14 '...' will not imply '...'; consider explicitly specifying '...'
 #endif
 
 #include "gsl/gsl"
