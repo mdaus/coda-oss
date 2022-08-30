@@ -48,18 +48,6 @@ namespace sys
 {
 typedef ThreadWin32 Thread;
 }
-#    elif defined(__sun)
-#        include "sys/ThreadSolaris.h"
-namespace sys
-{
-typedef ThreadSolaris Thread;
-}
-#    elif defined(__sgi)
-#        include "sys/ThreadIrix.h"
-namespace sys
-{
-typedef ThreadIrix Thread;
-}
 // If they havent defined anything and its !windows, we'll give 'em posix
 #    else
 #        include "sys/ThreadPosix.h"

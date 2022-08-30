@@ -36,18 +36,6 @@ namespace sys
 {
 typedef ConditionVarWin32 ConditionVar;
 }
-#    elif defined(__sun)
-#        include "sys/ConditionVarSolaris.h"
-namespace sys
-{
-typedef ConditionVarSolaris ConditionVar;
-}
-#    elif defined(__sgi)
-#        include "sys/ConditionVarIrix.h"
-namespace sys
-{
-typedef ConditionVarIrix ConditionVar;
-}
 //default to POSIX
 #    else
 #        include "sys/ConditionVarPosix.h"

@@ -46,20 +46,6 @@ namespace sys
 {
 typedef SemaphoreWin32 Semaphore;
 }
-#    elif defined(__sun)
-#        include "sys/SemaphoreSolaris.h"
-namespace sys
-{
-typedef SemaphoreSolaris Semaphore;
-}
-#    elif defined(__sgi)
-#        include "sys/SemaphoreIrix.h"
-namespace sys
-{
-typedef SemaphoreIrix Semaphore;
-}
-#    elif defined(__APPLE_CC__)
-typedef int Semaphore;
 // Give 'em Posix
 #    else
 #        include "sys/SemaphorePosix.h"

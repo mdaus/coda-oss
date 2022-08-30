@@ -111,9 +111,6 @@
     <ClInclude Include="sys\include\sys\AtomicCounterMutex.h">
       <Filter>sys</Filter>
     </ClInclude>
-    <ClInclude Include="sys\include\sys\AtomicCounterSolaris.h">
-      <Filter>sys</Filter>
-    </ClInclude>
     <ClInclude Include="sys\include\sys\AtomicCounterWin32.h">
       <Filter>sys</Filter>
     </ClInclude>
@@ -129,16 +126,10 @@
     <ClInclude Include="sys\include\sys\ConditionVarInterface.h">
       <Filter>sys</Filter>
     </ClInclude>
-    <ClInclude Include="sys\include\sys\ConditionVarIrix.h">
-      <Filter>sys</Filter>
-    </ClInclude>
     <ClInclude Include="sys\include\sys\ConditionVarNSPR.h">
       <Filter>sys</Filter>
     </ClInclude>
     <ClInclude Include="sys\include\sys\ConditionVarPosix.h">
-      <Filter>sys</Filter>
-    </ClInclude>
-    <ClInclude Include="sys\include\sys\ConditionVarSolaris.h">
       <Filter>sys</Filter>
     </ClInclude>
     <ClInclude Include="sys\include\sys\ConditionVarWin32.h">
@@ -186,16 +177,10 @@
     <ClInclude Include="sys\include\sys\MutexInterface.h">
       <Filter>sys</Filter>
     </ClInclude>
-    <ClInclude Include="sys\include\sys\MutexIrix.h">
-      <Filter>sys</Filter>
-    </ClInclude>
     <ClInclude Include="sys\include\sys\MutexNSPR.h">
       <Filter>sys</Filter>
     </ClInclude>
     <ClInclude Include="sys\include\sys\MutexPosix.h">
-      <Filter>sys</Filter>
-    </ClInclude>
-    <ClInclude Include="sys\include\sys\MutexSolaris.h">
       <Filter>sys</Filter>
     </ClInclude>
     <ClInclude Include="sys\include\sys\MutexWin32.h">
@@ -243,16 +228,10 @@
     <ClInclude Include="sys\include\sys\SemaphoreInterface.h">
       <Filter>sys</Filter>
     </ClInclude>
-    <ClInclude Include="sys\include\sys\SemaphoreIrix.h">
-      <Filter>sys</Filter>
-    </ClInclude>
     <ClInclude Include="sys\include\sys\SemaphoreNSPR.h">
       <Filter>sys</Filter>
     </ClInclude>
     <ClInclude Include="sys\include\sys\SemaphorePosix.h">
-      <Filter>sys</Filter>
-    </ClInclude>
-    <ClInclude Include="sys\include\sys\SemaphoreSolaris.h">
       <Filter>sys</Filter>
     </ClInclude>
     <ClInclude Include="sys\include\sys\SemaphoreWin32.h">
@@ -279,16 +258,10 @@
     <ClInclude Include="sys\include\sys\ThreadInterface.h">
       <Filter>sys</Filter>
     </ClInclude>
-    <ClInclude Include="sys\include\sys\ThreadIrix.h">
-      <Filter>sys</Filter>
-    </ClInclude>
     <ClInclude Include="sys\include\sys\ThreadNSPR.h">
       <Filter>sys</Filter>
     </ClInclude>
     <ClInclude Include="sys\include\sys\ThreadPosix.h">
-      <Filter>sys</Filter>
-    </ClInclude>
-    <ClInclude Include="sys\include\sys\ThreadSolaris.h">
       <Filter>sys</Filter>
     </ClInclude>
     <ClInclude Include="sys\include\sys\ThreadWin32.h">
@@ -804,16 +777,10 @@
     <ClCompile Include="sys\source\AbstractOS.cpp">
       <Filter>sys</Filter>
     </ClCompile>
-    <ClCompile Include="sys\source\ConditionVarIrix.cpp">
-      <Filter>sys</Filter>
-    </ClCompile>
     <ClCompile Include="sys\source\ConditionVarNSPR.cpp">
       <Filter>sys</Filter>
     </ClCompile>
     <ClCompile Include="sys\source\ConditionVarPosix.cpp">
-      <Filter>sys</Filter>
-    </ClCompile>
-    <ClCompile Include="sys\source\ConditionVarSolaris.cpp">
       <Filter>sys</Filter>
     </ClCompile>
     <ClCompile Include="sys\source\ConditionVarWin32.cpp">
@@ -861,16 +828,10 @@
     <ClCompile Include="sys\source\LocalDateTime.cpp">
       <Filter>sys</Filter>
     </ClCompile>
-    <ClCompile Include="sys\source\MutexIrix.cpp">
-      <Filter>sys</Filter>
-    </ClCompile>
     <ClCompile Include="sys\source\MutexNSPR.cpp">
       <Filter>sys</Filter>
     </ClCompile>
     <ClCompile Include="sys\source\MutexPosix.cpp">
-      <Filter>sys</Filter>
-    </ClCompile>
-    <ClCompile Include="sys\source\MutexSolaris.cpp">
       <Filter>sys</Filter>
     </ClCompile>
     <ClCompile Include="sys\source\MutexWin32.cpp">
@@ -900,13 +861,7 @@
     <ClCompile Include="sys\source\ScopedCPUAffinityUnix.cpp">
       <Filter>sys</Filter>
     </ClCompile>
-    <ClCompile Include="sys\source\SemaphoreIrix.cpp">
-      <Filter>sys</Filter>
-    </ClCompile>
     <ClCompile Include="sys\source\SemaphorePosix.cpp">
-      <Filter>sys</Filter>
-    </ClCompile>
-    <ClCompile Include="sys\source\SemaphoreSolaris.cpp">
       <Filter>sys</Filter>
     </ClCompile>
     <ClCompile Include="sys\source\SemaphoreWin32.cpp">
@@ -924,16 +879,10 @@
     <ClCompile Include="sys\source\sys_filesystem.cpp">
       <Filter>sys</Filter>
     </ClCompile>
-    <ClCompile Include="sys\source\ThreadIrix.cpp">
-      <Filter>sys</Filter>
-    </ClCompile>
     <ClCompile Include="sys\source\ThreadNSPR.cpp">
       <Filter>sys</Filter>
     </ClCompile>
     <ClCompile Include="sys\source\ThreadPosix.cpp">
-      <Filter>sys</Filter>
-    </ClCompile>
-    <ClCompile Include="sys\source\ThreadSolaris.cpp">
       <Filter>sys</Filter>
     </ClCompile>
     <ClCompile Include="sys\source\ThreadWin32.cpp">

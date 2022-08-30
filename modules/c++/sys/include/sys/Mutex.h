@@ -47,22 +47,6 @@ namespace sys
 typedef MutexWin32 Mutex;
 }
 
-/* #    elif defined(USE_BOOST) */
-/* #        include "MutexBoost.h" */
-/*          typedef MutexBoost Mutex; */
-#    elif defined(__sun)
-#        include "sys/MutexSolaris.h"
-namespace sys
-{
-typedef MutexSolaris Mutex;
-}
-#    elif defined(__sgi)
-#        include "sys/MutexIrix.h"
-namespace sys
-{
-typedef MutexIrix Mutex;
-}
-// Give 'em POSIX
 #    else
 #        include "sys/MutexPosix.h"
 namespace sys
