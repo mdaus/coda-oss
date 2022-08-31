@@ -62,7 +62,6 @@ if (MSVC AND (GSL_CXX_STANDARD GREATER_EQUAL 17))
     set(GSL_CPLUSPLUS_OPT -Zc:__cplusplus -permissive-)
 endif()
 
-include(CheckCXXCompilerFlag)
 # this interface adds compile options to how the tests are run
 # please try to keep entries ordered =)
 add_library(gsl_tests_config INTERFACE)
@@ -89,7 +88,6 @@ if(MSVC) # MSVC or simulating MSVC
         >
         $<$<CXX_COMPILER_ID:Clang>:
           -Weverything
-          -Wfloat-equal
           -Wno-c++98-compat
           -Wno-c++98-compat-pedantic
           -Wno-covered-switch-default # GTest
@@ -107,10 +105,6 @@ if(MSVC) # MSVC or simulating MSVC
           >
         >
     )
-    check_cxx_compiler_flag("-Wno-reserved-identifier" WARN_RESERVED_ID)
-    if (WARN_RESERVED_ID)
-        target_compile_options(gsl_tests_config INTERFACE "-Wno-reserved-identifier")
-    endif()
 else()
     target_compile_options(gsl_tests_config INTERFACE
         -fno-strict-aliasing
@@ -123,7 +117,6 @@ else()
         -Wpedantic
         -Wshadow
         -Wsign-conversion
-        -Wfloat-equal
         -Wno-deprecated-declarations # Allow tests for [[deprecated]] elements
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
           -Weverything
@@ -229,17 +222,12 @@ if(MSVC) # MSVC or simulating MSVC
         >
         $<$<CXX_COMPILER_ID:Clang>:
           -Weverything
-          -Wfloat-equal
           -Wno-c++98-compat
           -Wno-c++98-compat-pedantic
           -Wno-missing-prototypes
           -Wno-unknown-attributes
         >
     )
-    check_cxx_compiler_flag("-Wno-reserved-identifier" WARN_RESERVED_ID)
-    if (WARN_RESERVED_ID)
-        target_compile_options(gsl_tests_config_noexcept INTERFACE "-Wno-reserved-identifier")
-    endif()
 else()
     target_compile_options(gsl_tests_config_noexcept INTERFACE
         -fno-exceptions
@@ -253,7 +241,6 @@ else()
         -Wpedantic
         -Wshadow
         -Wsign-conversion
-        -Wfloat-equal
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
           -Weverything
           -Wno-c++98-compat
