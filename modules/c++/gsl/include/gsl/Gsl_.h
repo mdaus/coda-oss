@@ -20,34 +20,31 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef CODA_OSS_gsl_gsl_h_INCLUDED_
-#define CODA_OSS_gsl_gsl_h_INCLUDED_
+#ifndef CODA_OSS_gsl_Gsl__h_INCLUDED_
+#define CODA_OSS_gsl_Gsl__h_INCLUDED_
 #pragma once
 
-#include <config/compiler_extensions.h>
+#include <utility>
 
-// Need a fairly decent C++ compiler to use the real GSL
-#include "gsl/use_gsl.h"
+#include "gsl/Gsl_narrow.h"
 
-// always compile Gsl (not "gsl") code--our own simple implementation
-#include "gsl/Gsl_.h"  // our own "fake" GSL
+#include "gsl/use_gsl.h" // Can't compile all of GSL with older versions of GCC/MSVC
+#if !CODA_OSS_gsl_use_real_gsl_
+// Add to "gsl" if we're not using the real thing
+namespace gsl
+{
+    template <class T, class U>
+    constexpr T narrow_cast(U&& u) noexcept
+    {
+        return Gsl::narrow_cast<T>(std::forward<U>(u));
+    }
 
-#if CODA_OSS_gsl_use_real_gsl_
-     CODA_OSS_disable_warning_push
-	#if _MSC_VER
-	#pragma warning(disable: 4626) // '...' : assignment operator was implicitly defined as deleted
-	#pragma warning(disable: 5027) // '...' : move assignment operator was implicitly defined as deleted
-	#pragma warning(disable: 26487) // Don 't return a pointer '...' that may be invalid (lifetime.4).
-	#pragma warning(disable: 4814) // '...': in C++14 '...' will not imply '...'; consider explicitly specifying '...'
-	#endif
+   template <class T, class U>
+   constexpr T narrow(U u) noexcept(false)
+    {
+        return Gsl::narrow<T>(u);
+    }
+ }
+#endif // CODA_OSS_gsl_use_real_gsl_
 
-	#include "gsl/gsl"
-	#include "gsl/byte"
-	#include "gsl/span"
-	#include "gsl/narrow"
-
-	CODA_OSS_disable_warning_pop
-
-#endif
-
-#endif  // CODA_OSS_gsl_gsl_h_INCLUDED_
+#endif  // CODA_OSS_gsl_Gsl__h_INCLUDED_

@@ -2,7 +2,6 @@
  * This file is part of gsl-c++
  * =========================================================================
  *
- * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  * (C) Copyright 2021, Maxar Technologies, Inc.
  *
  * gsl-c++ is free software; you can redistribute it and/or modify
@@ -20,34 +19,23 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef CODA_OSS_gsl_gsl_h_INCLUDED_
-#define CODA_OSS_gsl_gsl_h_INCLUDED_
+#ifndef CODA_OSS_gsl_use_gsl_h_INCLUDED_
+#define CODA_OSS_gsl_use_gsl_h_INCLUDED_
 #pragma once
 
-#include <config/compiler_extensions.h>
-
 // Need a fairly decent C++ compiler to use the real GSL
-#include "gsl/use_gsl.h"
-
-// always compile Gsl (not "gsl") code--our own simple implementation
-#include "gsl/Gsl_.h"  // our own "fake" GSL
-
-#if CODA_OSS_gsl_use_real_gsl_
-     CODA_OSS_disable_warning_push
-	#if _MSC_VER
-	#pragma warning(disable: 4626) // '...' : assignment operator was implicitly defined as deleted
-	#pragma warning(disable: 5027) // '...' : move assignment operator was implicitly defined as deleted
-	#pragma warning(disable: 26487) // Don 't return a pointer '...' that may be invalid (lifetime.4).
-	#pragma warning(disable: 4814) // '...': in C++14 '...' will not imply '...'; consider explicitly specifying '...'
+#ifndef CODA_OSS_coda_oss_use_real_gsl_
+	#if defined(_MSC_VER)
+		// need VS2017 or later to compile the real GSL code
+		#define CODA_OSS_coda_oss_use_real_gsl_ (_MSC_VER >= 1910) // VS2017: https://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=msvc-160
+	#elif defined (__GNUC__)
+		// GCC 4.9.1 and 4.9.4 won't compile GSL
+		#define CODA_OSS_coda_oss_use_real_gsl_ (__GNUC__ >= 5) 
+	#else 
+		// assume GSL can be compiled with any C++14 compiler
+		#include "coda_oss/CPlusPlus.h"
+		#define CODA_OSS_coda_oss_use_real_gsl_ CODA_OSS_cpp14
 	#endif
-
-	#include "gsl/gsl"
-	#include "gsl/byte"
-	#include "gsl/span"
-	#include "gsl/narrow"
-
-	CODA_OSS_disable_warning_pop
-
 #endif
 
-#endif  // CODA_OSS_gsl_gsl_h_INCLUDED_
+#endif  // CODA_OSS_gsl_use_gsl_h_INCLUDED_
