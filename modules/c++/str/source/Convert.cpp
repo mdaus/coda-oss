@@ -40,19 +40,54 @@ template<> std::string str::toType<std::string>(const std::string& s)
     return s;
 }
 
-template<> std::string str::toString(const uint8_t& value)
+std::string str::toString(int value)
 {
-    return str::toString(static_cast<unsigned int>(value));
+    return details::toString(value);
+}
+std::string str::toString(long value)
+{
+    return details::toString(value);
+}
+std::string str::toString(long long value)
+{
+    return details::toString(value);
+}
+std::string str::toString(unsigned value)
+{
+    return details::toString(value);
+}
+std::string str::toString(unsigned long value)
+{
+    return details::toString(value);
+}
+std::string str::toString(unsigned long long value)
+{
+    return details::toString(value);
+}
+std::string str::toString(float value)
+{
+    return details::toString(value);
+}
+std::string str::toString(double value)
+{
+    return details::toString(value);
+}
+std::string str::toString(long double value)
+{
+    return details::toString(value);
 }
 
-template<> std::string str::toString(const int8_t& value)
+std::string str::toString(uint8_t value)
 {
-    return str::toString(static_cast<int>(value));
+    return toString(static_cast<unsigned int>(value));
 }
-
-template<> std::string str::toString(const coda_oss::byte& value)
+std::string str::toString(int8_t value)
 {
-    return str::toString(static_cast<uint8_t>(value));
+    return toString(static_cast<int>(value));
+}
+std::string str::toString(coda_oss::byte value)
+{
+    return toString(static_cast<uint8_t>(value));
 }
 
 template<> bool str::toType<bool>(const std::string& s)

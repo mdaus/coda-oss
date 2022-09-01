@@ -71,34 +71,51 @@ std::string toString(const T& value)
     return details::toString(value);
 }
 
-template <>
-CODA_OSS_API std::string toString(const uint8_t& value);
+// C++11 has a bunch of overloads, do the same
+CODA_OSS_API std::string toString(int value);
+CODA_OSS_API std::string toString(long value);
+CODA_OSS_API std::string toString(long long value);
+CODA_OSS_API std::string toString(unsigned value);
+CODA_OSS_API std::string toString(unsigned long value);
+CODA_OSS_API std::string toString(unsigned long long value);
+CODA_OSS_API std::string toString(float value);
+CODA_OSS_API std::string toString(double value);
+CODA_OSS_API std::string toString(long double value);
 
-template <>
-CODA_OSS_API std::string toString(const int8_t& value);
-
-template <>
-CODA_OSS_API std::string toString(const coda_oss::byte& value);
-
-template <>
-inline std::string toString(const std::nullptr_t&)
+CODA_OSS_API std::string toString(uint8_t value);
+CODA_OSS_API std::string toString(int8_t value);
+CODA_OSS_API std::string toString(coda_oss::byte value);
+inline std::string toString(std::nullptr_t)
 {
     return "<nullptr>";
 }
 
-template <>
 CODA_OSS_API std::string toString(const coda_oss::u8string&);
+inline std::string toString(const std::string& value)
+{
+    return value;
+}
+inline std::string toString(char value)
+{
+    return std::string(1, value);
+}
 
 template <typename T>
 std::string toString(const coda_oss::optional<T>& value)
 {
-    return toString(value.value());
+    return details::toString(value.value());
 }
 
 template <typename T>
 std::string toString(const T& real, const T& imag)
 {
-    return toString(std::complex<T>(real, imag));
+    return details::toString(std::complex<T>(real, imag));
+}
+
+template <typename T>
+std::string toString(const T* ptr)
+{
+    return details::toString(ptr);
 }
 
 template <typename T>
