@@ -88,6 +88,8 @@ namespace details
     }
 }
 
+// Route all toString() for unittests through here ... so that we can have more control
+// over the routine used.
 template <typename TX>
 inline std::string toString(const TX& X)
 {
@@ -199,12 +201,13 @@ inline int main(TFunc f)
 #define TEST_ASSERT_FALSE(X) if ((X)) { test_diePrintf0("%s (%s,%s,%d): FAILED: Value should evaluate to false\n"); }
 #define TEST_ASSERT_TRUE(X) if (!(X)) { test_diePrintf0("%s (%s,%s,%d): FAILED: Value should evaluate to true\n"); }
 #define TEST_ASSERT(X) TEST_ASSERT_TRUE(X)
-#define TEST_ASSERT_SUCCESS TEST_ASSERT_TRUE(true) // for "We better get here, always."
-#define TEST_ASSERT_FAILURE TEST_ASSERT_TRUE(false) // for "This should NEVER happen."
+
+#define TEST_SUCCESS TEST_ASSERT_TRUE(true) // for "We better get here, always."
+#define TEST_FAIL_MSG(msg) test_diePrintf1("%s (%s,%s,%d): FAILED: %s\n", test::toString(msg).c_str())
+#define TEST_FAIL TEST_FAIL_MSG("This should NEVER happen.")
 
 #define TEST_ASSERT_ALMOST_EQ_EPS(X1, X2, EPS) test::assert_almost_eq_eps(X1, X2, EPS, testName, __FILE__, SYS_FUNC, __LINE__)
 #define TEST_ASSERT_ALMOST_EQ(X1, X2) TEST_ASSERT_ALMOST_EQ_EPS(X1, X2,  std::numeric_limits<float>::epsilon())
-#define TEST_FAIL(msg) test_diePrintf1("%s (%s,%s,%d): FAILED: %s\n", test::toString(msg).c_str())
 #define TEST_EXCEPTION(X) try{ (X); test_diePrintf0("%s (%s,%s,%d): FAILED: Should have thrown exception\n"); } \
   catch (const except::Throwable&){} catch (const except::Throwable11&){}
 #define TEST_THROWS(X) try{ (X); test_diePrintf0("%s (%s,%s,%d): FAILED: Should have thrown exception\n"); } catch (...){}
