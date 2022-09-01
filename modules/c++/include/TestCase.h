@@ -30,6 +30,7 @@
 #  include <limits>
 # include <exception>
 # include <iostream>
+#include <utility>
 #  include <import/sys.h>
 #  include <import/str.h>
 #  include <import/except.h>
@@ -64,11 +65,42 @@ inline void diePrintf(const char* format, const std::string& testName, const cha
 // older C++ compilers don't like __VA_ARGS__ :-(
 #define test_diePrintf0(format) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__)
 
+// https://stackoverflow.com/questions/1005476/how-to-detect-whether-there-is-a-specific-member-variable-in-class/1007175#1007175
+namespace details
+{
+    // https://stackoverflow.com/a/9154394/8877
+    template<typename T>
+    inline auto toString_imp(const T& obj, int) -> decltype(toString(obj), std::string())
+    {
+        return toString(obj);
+    }
+
+    template<typename T>
+    inline auto toString_imp(const T& obj, long) -> decltype(str::toString(obj), std::string())
+    {
+        return str::toString(obj);
+    }
+
+    template<typename T>
+    inline auto toString(const T& obj) -> decltype(toString_imp(obj, 0), std::string())
+    {
+        return toString_imp(obj, 0);
+    }
+}
+
+// Route all toString() for unittests through here ... so that we can have more control
+// over the routine used.
+template <typename TX>
+inline std::string toString(const TX& X)
+{
+    return str::toString(X);
+}
+
 template<typename TX>
 inline void diePrintf_(const char* format, const std::string& testName, const char* file, const char* func, int line,
     const TX& X)
 {
-    diePrintf(format, testName, file, func, line, str::toString(X));
+    diePrintf(format, testName, file, func, line, test::toString(X));
 }
 #define test_diePrintf1(format, X1) test::diePrintf_(format, testName, __FILE__, SYS_FUNC, __LINE__, (X1)) // might not want str::toString()
 
@@ -76,7 +108,7 @@ template<typename TX1, typename TX2>
 inline void diePrintf_(const char* format, const std::string& testName, const char* file, const char* func, int line,
     const TX1& X1, const TX2& X2)
 {
-    diePrintf(format, testName, file, func, line, str::toString(X1), str::toString(X2));
+    diePrintf(format, testName, file, func, line, test::toString(X1), test::toString(X2));
 }
 #define test_diePrintf2(format, X1, X2) test::diePrintf_(format, testName, __FILE__, SYS_FUNC, __LINE__, (X1), (X2)) // might not want str::toString()
 
@@ -84,7 +116,7 @@ template<typename TX1, typename TX2>
 inline void diePrintf_(const char* format, const std::string& testName, const char* file, int line, const std::string& msg,
     const TX1& X1, const TX2& X2)
 {
-    diePrintf(format, testName, file, line, msg, str::toString(X1), str::toString(X2));
+    diePrintf(format, testName, file, line, msg, test::toString(X1), test::toString(X2));
 }
 #define test_diePrintf2_msg(format, msg, X1, X2) test::diePrintf_(format, testName, __FILE__, __LINE__, msg, (X1), (X2)) // might not want str::toString()
 
@@ -171,7 +203,7 @@ inline int main(TFunc f)
 #define TEST_ASSERT(X) TEST_ASSERT_TRUE(X)
 
 #define TEST_SUCCESS TEST_ASSERT_TRUE(true) // for "We better get here, always."
-#define TEST_FAIL_MSG(msg) test_diePrintf1("%s (%s,%s,%d): FAILED: %s\n", str::toString(msg).c_str())
+#define TEST_FAIL_MSG(msg) test_diePrintf1("%s (%s,%s,%d): FAILED: %s\n", test::toString(msg).c_str())
 #define TEST_FAIL TEST_FAIL_MSG("This should NEVER happen.")
 
 #define TEST_ASSERT_ALMOST_EQ_EPS(X1, X2, EPS) test::assert_almost_eq_eps(X1, X2, EPS, testName, __FILE__, SYS_FUNC, __LINE__)
