@@ -49,6 +49,11 @@ int getPrecision(const T& type);
 template <typename T>
 int getPrecision(const std::complex<T>& type);
 
+namespace details
+{
+// Templating (and the n specializing) toString() creates all kinds of weird name-look
+// problems; avoid trying to work-around all that by just not doing it.
+// 
 // Note that std::to_string() doesn't necessarily generate the same output as writing
 // to std::cout; see https://en.cppreference.com/w/cpp/string/basic_string/to_string
 template <typename T>
@@ -58,6 +63,12 @@ std::string toString(const T& value)
     buf.precision(getPrecision(value));
     buf << std::boolalpha << value;
     return buf.str();
+}
+}
+template <typename T>
+std::string toString(const T& value)
+{
+    return details::toString(value);
 }
 
 template <>
