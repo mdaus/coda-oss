@@ -38,22 +38,28 @@ namespace enums
 {
 namespace details
 {
+template <typename T>
+inline coda_oss::optional<T> make_optional(const std::vector<T>& values)
+{
+    return values.size() != 1 ? coda_oss::optional<T>() : coda_oss::optional<T>(values[0]);
+}
+
 /**
  * Lookup the specified key in the map, returning the corresponding value as an optional<>.
  */
 template <typename TKey, typename TValue>
-inline coda_oss::optional<TValue> find(const std::map<TKey, TValue>& map, const TKey& key)
+inline coda_oss::optional<TValue> contains(const std::map<TKey, TValue>& map, const TKey& key)
 {
+    // https://en.cppreference.com/w/cpp/container/map/contains
     const auto it = map.find(key);
-    return it == map.end() ?
-        coda_oss::optional<TValue>() : coda_oss::optional<TValue>(it->second);
+    return it == map.end() ? coda_oss::optional<TValue>() : coda_oss::optional<TValue>(it->second);
 }
 
 /**
  * Lookup the specified key in the map, returning all the corresponding values.
  */
 template <typename TKey, typename TValue>
-inline std::vector<TValue> find(const std::multimap<TKey, TValue>& map, const TKey& key)
+inline std::vector<TValue> equal_range(const std::multimap<TKey, TValue>& map, const TKey& key)
 {
     std::vector<TValue> retval;
 
@@ -114,12 +120,6 @@ inline const T& value(const coda_oss::optional<T>& v)
      return value(values, std::invalid_argument("key not found."), std::invalid_argument("multiple keys found."));
  }
 
-  template <typename T>
- inline coda_oss::optional<T> make_optional(const std::vector<T>& values)
- {
-     return values.size() != 1 ? coda_oss::optional<T>() : coda_oss::optional<T>(values[0]);
- }
-
  // See example at https://en.cppreference.com/w/cpp/types/enable_if
  template <typename T, typename TEnable = void>
  struct underlying_type { };  // primary template
@@ -128,10 +128,10 @@ inline const T& value(const coda_oss::optional<T>& v)
 // is_scoped_enum<> is C++23 https://en.cppreference.com/w/cpp/types/is_scoped_enum
 // so do !is_class<> instead. 
 template <typename TScopedEnum>
-struct underlying_type<TScopedEnum, typename std::enable_if<!std::is_class<TScopedEnum>::value>::type> // TODO: is_scoped_enum
+struct underlying_type<TScopedEnum, typename std::enable_if_t<!std::is_class<TScopedEnum>::value>> // TODO: is_scoped_enum
 {
     // https://en.cppreference.com/w/cpp/types/underlying_type
-    using type = typename std::underlying_type<TScopedEnum>::type;
+    using type = typename std::underlying_type_t<TScopedEnum>;
 }; // specialization for is_scoped_enum<>
 
 }  // namespace details
@@ -151,9 +151,9 @@ enums::underlying_type_t<T> to_underlying(T e) noexcept
  * Lookup the specified value in the map, returning the corresponding string if found.
  */
 template <typename T>
-inline coda_oss::optional<std::string> find_value(const T& v, const std::map<T, std::string>& value_to_string)
+inline coda_oss::optional<std::string> contains(const std::map<T, std::string>& value_to_string, const T& v)
 {
-    return details::find(value_to_string, v);
+    return details::contains(value_to_string, v);
 }
 
 /**
@@ -163,18 +163,18 @@ inline coda_oss::optional<std::string> find_value(const T& v, const std::map<T, 
  * has multiple strings to the same value, e.g., "A" -> a and "a" -> a.
  */
 template <typename T>
-inline std::vector<std::string> find_value(const T& v, const std::multimap<T, std::string>& value_to_strings)
+inline std::vector<std::string> find_value(const std::multimap<T, std::string>& value_to_strings, const T& v)
 {
-    return details::find(value_to_strings, v);
+    return details::equal_range(value_to_strings, v);
 }
 
 /**
  * Lookup the specified string in the map, returning the corresponding value if found.
  */
 template <typename T>
-inline coda_oss::optional<T> find_string(const std::string& s, const std::map<std::string, T>& string_to_value)
+inline coda_oss::optional<T> contains(const std::map<std::string, T>& string_to_value, const std::string& s)
 {
-    return details::find(string_to_value, s);
+    return details::contains(string_to_value, s);
 }
 
 /**
@@ -184,7 +184,7 @@ template <typename T>
 inline std::vector<std::string> toStrings(const T& v)
 {
     static const auto value_to_strings = details::value_to_keys(coda_oss_enums_string_to_value_(v));
-    return find_value(v, value_to_strings);
+    return find_value(value_to_strings, v);
 }
 
 /**
@@ -247,7 +247,7 @@ inline T fromString(const std::string& s, const TException& ex)
 template <typename T>
 inline coda_oss::optional<T> fromString(const T& t, const std::string& s, std::nothrow_t)
 {
-    return find_string(s, coda_oss_enums_string_to_value_(t));
+    return contains(coda_oss_enums_string_to_value_(t), s);
 }
 template <typename T>
 inline coda_oss::optional<T>& fromString(coda_oss::optional<T>& result, const std::string& s, std::nothrow_t)

@@ -30,27 +30,27 @@
 TEST_CASE(test_enums_find_value)
 {
     static const auto value_to_strings = enums::details::value_to_keys(coda_oss_enums_string_to_value_(enums::test::letters()));
-    auto results = enums::find_value(enums::test::letters::a, value_to_strings);
+    auto results = enums::find_value(value_to_strings, enums::test::letters::a);
     TEST_ASSERT_EQ(results.size(), 2);
     for (auto&& r: results)
     {
         TEST_ASSERT((r == "a") || (r == "A"));    
     }
 
-    results = enums::find_value(enums::test::letters::q, value_to_strings);
+    results = enums::find_value(value_to_strings, enums::test::letters::q);
     TEST_ASSERT_TRUE(results.empty()); // no "q" for q in map
 
-    results = enums::find_value(enums::test::letters::x, value_to_strings);
+    results = enums::find_value(value_to_strings, enums::test::letters::x);
     TEST_ASSERT_EQ(results.size(), 1);
     TEST_ASSERT_EQ(results[0], "x");
     TEST_ASSERT_NOT_EQ(results[0], "X");
 
-    results = enums::find_value(enums::test::letters::y, value_to_strings);
+    results = enums::find_value(value_to_strings, enums::test::letters::y);
     TEST_ASSERT_EQ(results.size(), 1);
     TEST_ASSERT_NOT_EQ(results[0], "y");
     TEST_ASSERT_EQ(results[0], "Y");
 
-    results = enums::find_value(enums::test::letters::z, value_to_strings);
+    results = enums::find_value(value_to_strings, enums::test::letters::z);
     TEST_ASSERT_EQ(results.size(), 1);
     TEST_ASSERT_NOT_EQ(results[0], "z");
     TEST_ASSERT_NOT_EQ(results[0], "Z");
@@ -155,23 +155,23 @@ TEST_CASE(test_enums_find_string)
 {
     static const auto& string_to_value = coda_oss_enums_string_to_value_(enums::test::letters());
     {
-        const auto result = enums::find_string("a", string_to_value);
+        const auto result = enums::contains(string_to_value, "a");
         TEST_ASSERT_TRUE(result.has_value());
         TEST_ASSERT(result == enums::test::letters::a);
         TEST_ASSERT(*result == enums::test::letters::a);
     }
     {
-        const auto result = enums::find_string("A", string_to_value);
+        const auto result = enums::contains(string_to_value, "A");
         TEST_ASSERT_TRUE(result.has_value());
         TEST_ASSERT(result == enums::test::letters::a);
         TEST_ASSERT(*result == enums::test::letters::a);
     }
     {
-        const auto result = enums::find_string("q", string_to_value);
+        const auto result = enums::contains(string_to_value, "q");
         TEST_ASSERT_FALSE(result.has_value());
     }
     {
-        const auto result = enums::find_string("Q", string_to_value);
+        const auto result = enums::contains(string_to_value, "Q");
         TEST_ASSERT_FALSE(result.has_value());
     }
 }
