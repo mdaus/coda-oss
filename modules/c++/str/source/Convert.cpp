@@ -42,39 +42,44 @@ template<> std::string str::toType<std::string>(const std::string& s)
 
 std::string str::toString(int value)
 {
-    return details::toString(value);
+    return details::default_toString(value);
 }
 std::string str::toString(long value)
 {
-    return details::toString(value);
+    return details::default_toString(value);
 }
 std::string str::toString(long long value)
 {
-    return details::toString(value);
+    return details::default_toString(value);
 }
 std::string str::toString(unsigned value)
 {
-    return details::toString(value);
+    return details::default_toString(value);
 }
 std::string str::toString(unsigned long value)
 {
-    return details::toString(value);
+    return details::default_toString(value);
 }
 std::string str::toString(unsigned long long value)
 {
-    return details::toString(value);
+    return details::default_toString(value);
 }
 std::string str::toString(float value)
 {
-    return details::toString(value);
+    return details::default_toString(value);
 }
 std::string str::toString(double value)
 {
-    return details::toString(value);
+    return details::default_toString(value);
 }
 std::string str::toString(long double value)
 {
-    return details::toString(value);
+    return details::default_toString(value);
+}
+
+std::string str::toString(bool value)
+{
+    return details::default_toString(value);
 }
 
 std::string str::toString(uint8_t value)

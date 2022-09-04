@@ -51,24 +51,56 @@ int getPrecision(const std::complex<T>& type);
 
 namespace details
 {
-// Templating (and the n specializing) toString() creates all kinds of weird name-look
-// problems; avoid trying to work-around all that by just not doing it.
-// 
-// Note that std::to_string() doesn't necessarily generate the same output as writing
-// to std::cout; see https://en.cppreference.com/w/cpp/string/basic_string/to_string
+    // Templating (and then specializing) toString() creates all kinds of weird name-look
+    // problems; avoid trying to work-around all that by just not doing it.
+    // 
+    // The preferred approach is to make a a toString() free function.
+    // 
+    // Note that std::to_string() doesn't necessarily generate the same output as writing
+    // to std::cout; see https://en.cppreference.com/w/cpp/string/basic_string/to_string
+    template <typename T>
+    std::string default_toString(const T& value)
+    {
+        std::ostringstream buf;
+        buf.precision(getPrecision(value));
+        buf << std::boolalpha << value;
+        return buf.str();
+    }
+
+    // https://stackoverflow.com/a/73594999/19912380
+    template<int N> struct priority : priority<N - 1> {};
+    template<> struct priority<0> {};
+
+    template<typename T>
+    inline auto toString_imp(const T& obj, priority<2>) -> decltype(obj.toString(), std::string())
+    {
+        return obj.toString();
+    }
+
+    template<typename T>
+    inline auto toString_imp(const T& obj, priority<1>) -> decltype(toString(obj), std::string())
+    {
+        return toString(obj);
+    }
+
+    template<typename T>
+    inline auto toString_imp(const T& obj, priority<0>) -> decltype(default_toString(obj), std::string())
+    {
+        return details::default_toString(obj);
+    }
+
+    template<typename T>
+    inline auto toString_(const T& obj) -> decltype(toString_imp(obj, priority<2>{}), std::string())
+    {
+        // In order, try to call 1) obj.toString() (highest priority), 2) toString(obj), and
+        // finally 3) toString_(obj) (lowest priority).
+        return details::toString_imp(obj, priority<2>{});
+    }
+}
 template <typename T>
 std::string toString(const T& value)
 {
-    std::ostringstream buf;
-    buf.precision(getPrecision(value));
-    buf << std::boolalpha << value;
-    return buf.str();
-}
-}
-template <typename T>
-std::string toString(const T& value)
-{
-    return details::toString(value);
+    return details::toString_(value);
 }
 
 // C++11 has a bunch of overloads, do the same
@@ -82,6 +114,7 @@ CODA_OSS_API std::string toString(float value);
 CODA_OSS_API std::string toString(double value);
 CODA_OSS_API std::string toString(long double value);
 
+CODA_OSS_API std::string toString(bool value);
 CODA_OSS_API std::string toString(uint8_t value);
 CODA_OSS_API std::string toString(int8_t value);
 CODA_OSS_API std::string toString(coda_oss::byte value);
@@ -103,19 +136,19 @@ inline std::string toString(char value)
 template <typename T>
 std::string toString(const coda_oss::optional<T>& value)
 {
-    return details::toString(value.value());
+    return details::default_toString(value.value());
 }
 
 template <typename T>
 std::string toString(const T& real, const T& imag)
 {
-    return details::toString(std::complex<T>(real, imag));
+    return details::default_toString(std::complex<T>(real, imag));
 }
 
 template <typename T>
 std::string toString(const T* ptr)
 {
-    return details::toString(ptr);
+    return details::default_toString(ptr);
 }
 
 template <typename T>
