@@ -79,7 +79,7 @@ inline void diePrintf_(const char* format, const std::string& testName, const ch
 {
     diePrintf(format, testName, file, func, line, test::toString(X));
 }
-#define test_diePrintf1(format, X1) test::diePrintf_(format, testName, __FILE__, SYS_FUNC, __LINE__, (X1)) // might not want str::toString()
+#define test_diePrintf1(format, X1) test::diePrintf_(format, testName, __FILE__, SYS_FUNC, __LINE__, X1)
 
 template<typename TX1, typename TX2>
 inline void diePrintf_(const char* format, const std::string& testName, const char* file, const char* func, int line,
@@ -87,7 +87,7 @@ inline void diePrintf_(const char* format, const std::string& testName, const ch
 {
     diePrintf(format, testName, file, func, line, test::toString(X1), test::toString(X2));
 }
-#define test_diePrintf2(format, X1, X2) test::diePrintf_(format, testName, __FILE__, SYS_FUNC, __LINE__, (X1), (X2)) // might not want str::toString()
+#define test_diePrintf2(format, X1, X2) test::diePrintf_(format, testName, __FILE__, SYS_FUNC, __LINE__, X1, X2)
 
 template<typename TX1, typename TX2>
 inline void diePrintf_(const char* format, const std::string& testName, const char* file, int line, const std::string& msg,
@@ -95,12 +95,12 @@ inline void diePrintf_(const char* format, const std::string& testName, const ch
 {
     diePrintf(format, testName, file, line, msg, test::toString(X1), test::toString(X2));
 }
-#define test_diePrintf2_msg(format, msg, X1, X2) test::diePrintf_(format, testName, __FILE__, __LINE__, msg, (X1), (X2)) // might not want str::toString()
+#define test_diePrintf2_msg(format, msg, X1, X2) test::diePrintf_(format, testName, __FILE__, __LINE__, msg, X1, X2)
 
-#define CODA_OSS_test_diePrintf_eq_(X1, X2) test_diePrintf2("%s (%s,%s,%d): FAILED: Recv'd %s, Expected %s\n", (X1), (X2))
-#define CODA_OSS_test_diePrintf_eq_msg_(msg, X1, X2) test_diePrintf2_msg("%s (%s,%d): FAILED (%s): Recv'd %s, Expected %s\n", msg, (X1), (X2))
+#define CODA_OSS_test_diePrintf_eq_(X1, X2) test_diePrintf2("%s (%s,%s,%d): FAILED: Recv'd %s, Expected %s\n", X1, X2)
+#define CODA_OSS_test_diePrintf_eq_msg_(msg, X1, X2) test_diePrintf2_msg("%s (%s,%d): FAILED (%s): Recv'd %s, Expected %s\n", msg, X1, X2)
 #define CODA_OSS_test_diePrintf_not_eq_(X1, X2) test_diePrintf2("%s (%s,%s,%d): FAILED: Recv'd %s should not equal %s\n", X1, X2)
-#define CODA_OSS_test_diePrintf_not_eq_msg_(msg, X1, X2) test_diePrintf2_msg("%s (%s,%d): FAILED (%s): Recv'd %s should not equal %s\n", msg, (X1), (X2))
+#define CODA_OSS_test_diePrintf_not_eq_msg_(msg, X1, X2) test_diePrintf2_msg("%s (%s,%d): FAILED (%s): Recv'd %s should not equal %s\n", msg, X1, X2)
 #define CODA_OSS_test_diePrintf_greater_eq_(X1, X2) test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be greater than or equal\n")
 #define CODA_OSS_test_diePrintf_greater_(X1, X2) test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be greater than\n")
 #define CODA_OSS_test_diePrintf_lesser_eq_(X1, X2) test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be less than or equal\n")
@@ -170,7 +170,7 @@ inline int main(TFunc f)
 }
 
 #define TEST_CHECK(X) try{ X(std::string(#X)); std::cerr << #X << ": PASSED\n"; } \
-  catch(const except::Throwable& ex) { test::diePrintf("%s: FAILED: Exception thrown: %s\n", #X, ex.toString().c_str()); } \
+  catch(const except::Throwable& ex) { test::diePrintf("%s: FAILED: Exception thrown: %s\n", #X, test::toString(ex).c_str()); } \
   catch(const except::Throwable11& ex) { test::diePrintf("%s: FAILED: Exception thrown: %s\n", #X, ex.what()); }
 
 #define TEST_ASSERT_NULL(X) if ((X) != nullptr) { test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be NULL\n"); }
