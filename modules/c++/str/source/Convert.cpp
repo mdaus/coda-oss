@@ -40,61 +40,6 @@ template<> std::string str::toType<std::string>(const std::string& s)
     return s;
 }
 
-std::string str::toString(int value)
-{
-    return details::default_toString(value);
-}
-std::string str::toString(long value)
-{
-    return details::default_toString(value);
-}
-std::string str::toString(long long value)
-{
-    return details::default_toString(value);
-}
-std::string str::toString(unsigned value)
-{
-    return details::default_toString(value);
-}
-std::string str::toString(unsigned long value)
-{
-    return details::default_toString(value);
-}
-std::string str::toString(unsigned long long value)
-{
-    return details::default_toString(value);
-}
-std::string str::toString(float value)
-{
-    return details::default_toString(value);
-}
-std::string str::toString(double value)
-{
-    return details::default_toString(value);
-}
-std::string str::toString(long double value)
-{
-    return details::default_toString(value);
-}
-
-std::string str::toString(bool value)
-{
-    return details::default_toString(value);
-}
-
-std::string str::toString(uint8_t value)
-{
-    return toString(static_cast<unsigned int>(value));
-}
-std::string str::toString(int8_t value)
-{
-    return toString(static_cast<int>(value));
-}
-std::string str::toString(coda_oss::byte value)
-{
-    return toString(static_cast<uint8_t>(value));
-}
-
 template<> bool str::toType<bool>(const std::string& s)
 {
     std::string ss = s;
