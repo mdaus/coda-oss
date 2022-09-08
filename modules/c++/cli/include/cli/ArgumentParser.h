@@ -125,11 +125,19 @@ public:
         return parse(argc, const_cast<const char**>(argv));
     }
 
+   /**
+    * Copies argc into a std::vector<std::string> that can be passed directly
+    * to parse().  setProgram(argv[0]) is called if setProgram() hasn't already been called.
+    */
+    static std::vector<std::string> make_args(int argc, const char** argv, std::string& program);
+    std::vector<std::string> make_args(int argc, const char** argv);
+
     /**
      * Parses the arguments. args[0] is NOT used as the program name, so you
      * will need to specify it explicitly using setProgramName().
      */
     Results* parse(const std::vector<std::string>& args);
+    std::unique_ptr<Results> parse(const std::vector<std::string>& args, const std::string& program);
 
 protected:
     friend class Argument;
