@@ -42,19 +42,20 @@ endfunction()
 
 # set the appropriate CRT link flags for MSVC builds
 macro(coda_setup_msvc_crt)
-    set(STATIC_CRT OFF CACHE BOOL "use static CRT library /MT, or /MTd for Debug (/MD or /MDd if off)")
-    if (CONAN_LINK_RUNTIME MATCHES "MT") # will also match MTd
-        set(STATIC_CRT ON CACHE BOOL "" FORCE)
-    endif()
-    if (STATIC_CRT)
-        set(CODA_MSVC_RUNTIME "/MT")
+    if (CONAN_PACKAGE_NAME)
+        # conan handles this
     else()
-        set(CODA_MSVC_RUNTIME "/MD")
+        set(STATIC_CRT OFF CACHE BOOL "use static CRT library /MT, or /MTd for Debug (/MD or /MDd if off)")
+        if (STATIC_CRT)
+            set(CODA_MSVC_RUNTIME "/MT")
+        else()
+            set(CODA_MSVC_RUNTIME "/MD")
+        endif()
+        foreach(build_config DEBUG RELEASE RELWITHDEBINFO MINSIZEREL)
+            string(REGEX REPLACE "/M[DT]" "${CODA_MSVC_RUNTIME}" CMAKE_CXX_FLAGS_${build_config} "${CMAKE_CXX_FLAGS_${build_config}}")
+            string(REGEX REPLACE "/M[DT]" "${CODA_MSVC_RUNTIME}" CMAKE_C_FLAGS_${build_config} "${CMAKE_C_FLAGS_${build_config}}")
+        endforeach()
     endif()
-    foreach(build_config DEBUG RELEASE RELWITHDEBINFO MINSIZEREL)
-        string(REGEX REPLACE "/M[DT]" "${CODA_MSVC_RUNTIME}" CMAKE_CXX_FLAGS_${build_config} "${CMAKE_CXX_FLAGS_${build_config}}")
-        string(REGEX REPLACE "/M[DT]" "${CODA_MSVC_RUNTIME}" CMAKE_C_FLAGS_${build_config} "${CMAKE_C_FLAGS_${build_config}}")
-    endforeach()
 endmacro()
 
 # Set up the global build configuration
@@ -177,8 +178,10 @@ macro(coda_initialize_build)
     # all targets should be installed using this export set
     set(CODA_EXPORT_SET_NAME "${CMAKE_PROJECT_NAME}Targets")
 
-    include(CodaFindSystemDependencies)
-    coda_find_system_dependencies()
+    if (NOT CODA_SKIP_SYSTEM_DEPENDENCIES)
+        include(CodaFindSystemDependencies)
+        coda_find_system_dependencies()
+    endif()
     coda_show_compile_options()
 endmacro()
 
@@ -502,12 +505,14 @@ function(coda_add_module MODULE_NAME)
             RUNTIME DESTINATION "${CODA_STD_PROJECT_BIN_DIR}")
 
     # Set up install destination for headers
-    install(DIRECTORY "${CODA_STD_PROJECT_INCLUDE_DIR}/"
-            DESTINATION "${CODA_STD_PROJECT_INCLUDE_DIR}/"
-            ${CODA_INSTALL_OPTION}
-            FILES_MATCHING
-                PATTERN "*.h"
-                PATTERN "*.hpp")
+    if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${CODA_STD_PROJECT_INCLUDE_DIR}")
+        install(DIRECTORY "${CODA_STD_PROJECT_INCLUDE_DIR}/"
+                DESTINATION "${CODA_STD_PROJECT_INCLUDE_DIR}/"
+                ${CODA_INSTALL_OPTION}
+                FILES_MATCHING
+                    PATTERN "*.in" EXCLUDE
+                    PATTERN "*")
+    endif()
 
     # install conf directory, if present
     if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/conf")
@@ -560,6 +565,17 @@ function(coda_add_swig_python_module)
         list(APPEND swig_include_dirs ${dep_swig_include_dirs})
     endforeach()
 
+    if (WIN32)
+        set(swig_compile_defs WIN32=1 _WIN32=1)
+        if (CMAKE_GENERATOR_PLATFORM STREQUAL x64)
+            list(APPEND swig_compile_defs _WIN64=1)
+        endif()
+    elseif (UNIX)
+        set(swig_compile_defs _POSIX_C_SOURCE=200809L)
+    endif()
+
+    set_property(SOURCE ${ARG_INPUT}
+                 PROPERTY GENERATED_COMPILE_DEFINITIONS ${swig_compile_defs})
     set_property(SOURCE ${ARG_INPUT} PROPERTY USE_TARGET_INCLUDE_DIRECTORIES ON)
     set_property(SOURCE ${ARG_INPUT} PROPERTY CPLUSPLUS ON)
     set_property(SOURCE ${ARG_INPUT} PROPERTY SWIG_MODULE_NAME ${ARG_MODULE_NAME})
@@ -574,6 +590,8 @@ function(coda_add_swig_python_module)
             SWIG_INCLUDE_DIRECTORIES ${swig_include_dirs})
         set_property(TARGET ${ARG_TARGET} PROPERTY
             SWIG_GENERATED_INCLUDE_DIRECTORIES ${Python_INCLUDE_DIRS})
+        set_property(TARGET ${ARG_TARGET} PROPERTY
+            SWIG_COMPILE_DEFINITIONS ${swig_compile_defs})
     else()
         # use saved SWIG outputs in repo
 

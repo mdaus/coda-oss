@@ -24,6 +24,9 @@
 
 #include <cmath>
 #include <limits>
+#include <complex>
+#include <iomanip> // std::setw()
+
 #include <import/sys.h>
 
 namespace math
@@ -341,7 +344,7 @@ public:
      *  \param i The row index
      *  \param j The column index
      */
-    inline _T operator()(size_t i, size_t j) const noexcept
+    inline const _T& operator()(size_t i, size_t j) const noexcept
     {
 #if defined(MATH_LINEAR_BOUNDS)
         assert( i < _MD && j < _ND );

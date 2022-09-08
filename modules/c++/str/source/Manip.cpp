@@ -66,27 +66,50 @@ char toupperCheck(char c)
 
 namespace str
 {
-void trim(std::string & s)
+
+// TODO: https://stackoverflow.com/questions/31959532/best-way-to-remove-white-spaces-from-stdstring
+template<typename TChar>
+inline void trim_(std::basic_string<TChar> & s)
 {
     size_t i;
     for (i = 0; i < s.length(); i++)
     {
-        if (!iswspace(s[i]))
+        if (!iswspace(static_cast<wint_t>(s[i])))
             break;
     }
     s.erase(0, i);
 
     for (i = s.length() - 1; (int) i >= 0; i--)
     {
-        if (!iswspace(s[i]))
+        if (!iswspace(static_cast<wint_t>(s[i])))
             break;
 
     }
     if (i + 1 < s.length())
         s.erase(i + 1);
 }
+void trim(std::string& s)
+{
+    trim_(s);
+}
+std::string trim(const std::string& str)
+{
+    auto retval = str;
+    trim(retval);
+    return retval;
+}
+void trim(coda_oss::u8string& s)
+{
+    trim_(s);
+}
+coda_oss::u8string trim(const coda_oss::u8string& str)
+{
+    auto retval = str;
+    trim(retval);
+    return retval;
+}
 
-bool endsWith(const std::string & s, const std::string & match)
+bool ends_with(const std::string& s, const std::string& match) noexcept
 {
     const size_t mLen = match.length();
     const size_t sLen = s.length();
@@ -95,8 +118,12 @@ bool endsWith(const std::string & s, const std::string & match)
             return false;
     return sLen >= mLen;
 }
+bool endsWith(const std::string& s, const std::string& match)
+{
+    return ends_with(s, match);
+}
 
-bool startsWith(const std::string & s, const std::string & match)
+bool starts_with(const std::string& s, const std::string& match) noexcept
 {
     const size_t mLen = match.length();
     const size_t sLen = s.length();
@@ -105,11 +132,15 @@ bool startsWith(const std::string & s, const std::string & match)
             return false;
     return sLen >= mLen;
 }
+bool startsWith(const std::string& s, const std::string& match)
+{
+    return starts_with(s, match);
+}
 
 size_t replace(std::string& str,
-               const std::string& search,
-               const std::string& replace,
-               size_t start)
+        const std::string& search,
+        const std::string& replace,
+        size_t start)
 {
     size_t index = str.find(search, start);
 
@@ -145,7 +176,7 @@ bool contains(const std::string& str, const std::string& match)
     return str.find(match) != std::string::npos;
 }
 
-inline bool isTest(const std::string& s, int (*is)(int))
+static inline bool isTest(const std::string& s, int (*is)(int))
 {
     for (const auto& ch : s)
     {
@@ -161,7 +192,7 @@ bool isAlpha(const std::string& s)
 }
 
 template<typename Pred>
-inline bool isTest(const std::string& s, int (*is1)(int), Pred is2)
+static inline bool isTest(const std::string& s, int (*is1)(int), Pred is2)
 {
     for (const auto& ch : s)
     {

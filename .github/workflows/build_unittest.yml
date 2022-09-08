@@ -6,7 +6,7 @@ jobs:
   build-cmake-windows:
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [windows-2019]
         python-version: ['3.7']
     name: ${{ matrix.os }}-${{ matrix.python-version }}-CMake
     runs-on: ${{ matrix.os }}
@@ -24,7 +24,7 @@ jobs:
         ls env:
         mkdir target-Release
         cd target-Release
-        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DPYTHON_VERSION=${{ matrix.python-version }}
+        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DPYTHON_VERSION=${{ matrix.python-version }} -DENABLE_SWIG=ON
         cd ..
         mkdir target-Debug
         cd target-Debug
@@ -73,7 +73,7 @@ jobs:
         which python
         mkdir target
         cd target
-        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DPYTHON_VERSION=${{ matrix.python-version }}
+        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DPYTHON_VERSION=${{ matrix.python-version }} -DENABLE_SWIG=ON
     - name: build
       run: |
         cd target
@@ -85,12 +85,12 @@ jobs:
     - name: test
       run: |
         cd target
-        ctest
+        ctest   
 
   build-waf:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-2019]
         python-version: ['3.7']
         debugging: ['--enable-debugging', '']
     name: ${{ matrix.os }}-${{ matrix.python-version }}-waf
@@ -101,7 +101,14 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: configure
+    - name: configure_with_swig
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      run: |
+        pip install numpy
+        mkdir install${{ matrix.os }}Waf-Github
+        python waf configure --prefix="$PWD/install${{ matrix.os }}Waf-Github" --enable-swig ${{ matrix.debugging }}
+    - name: configure_without_swig
+      if: ${{ matrix.os == 'windows-2019' }}
       run: |
         pip install numpy
         mkdir install${{ matrix.os }}Waf-Github

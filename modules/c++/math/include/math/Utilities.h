@@ -25,9 +25,10 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include <math/math_config.h>
-#include <sys/Conf.h>
 #include <cmath>
+
+#include <sys/Conf.h>
+#include "config/Exports.h"
 
 namespace math
 {
@@ -63,6 +64,11 @@ template <typename T> inline bool isNaN(T value) noexcept
     return std::isnan(value);
 }
 
+// https://man7.org/linux/man-pages/man3/sincos.3.html
+CODA_OSS_API void SinCos(float angle, float& sin, float& cos) noexcept;
+CODA_OSS_API void SinCos(double angle, double& sin, double& cos) noexcept;
+CODA_OSS_API void SinCos(long double angle, long double& sin, long double& cos) noexcept;
+
 /*
  * Calculate the binomial coefficient
  * Be wary of the possibility of overflow from integer arithmetic.
@@ -71,7 +77,7 @@ template <typename T> inline bool isNaN(T value) noexcept
  * \param k number of outcomes
  * \return n choose k
  */
-sys::Uint64_T nChooseK(size_t n, size_t k);
+CODA_OSS_API sys::Uint64_T nChooseK(size_t n, size_t k);
 }
 
 #endif

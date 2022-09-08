@@ -26,7 +26,7 @@
 #include <cstddef>
 #include <memory>
 
-#include "mem/SharedPtr.h" // mem::make::unique
+#include "mem/SharedPtr.h" // std::make_unique
 
 namespace mem
 {
