@@ -7,7 +7,7 @@ if(ENABLE_XML)
         set(USE_XercesC 1)
     endif()
 
-    set(MODULE_DEPS io-c++ mem-c++ mt-c++ logging-c++ str-c++)
+    set(MODULE_DEPS io-c++ mem-c++ mt-c++ logging-c++ str-c++ coda_oss-c++)
     if (USE_XercesC)
         list(APPEND MODULE_DEPS xerces-c)
     endif()
@@ -17,8 +17,7 @@ if(ENABLE_XML)
     coda_add_module(
         ${MODULE_NAME}
         VERSION 1.2
-        DEPS ${MODULE_DEPS}
-        SOURCE_FILTER "XMLReaderExpat.cpp" "XMLReaderLibXML.cpp")
+        DEPS ${MODULE_DEPS})
 
     coda_add_tests(
         MODULE_NAME ${MODULE_NAME}
