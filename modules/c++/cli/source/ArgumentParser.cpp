@@ -272,14 +272,14 @@ cli::Results* cli::ArgumentParser::parse(const std::vector<std::string>& args)
 {
     if (!mProgram.empty())
     {
-        return parse(args, "" /*don't change any value already set*/).release();
+        return parse("" /*don't change any value already set*/, args).release();
     }
     else
     {
-        return parse(args, "cli::ArgumentParser::parse" /*program*/).release(); // provide a "meaningful" default program name
+        return parse("cli::ArgumentParser::parse" /*program*/, args).release(); // provide a "meaningful" default program name
     }
 }
-std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::vector<std::string>& args, const std::string& program)
+std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& program, const std::vector<std::string>& args)
 {
     if (!program.empty())
         setProgram(program);

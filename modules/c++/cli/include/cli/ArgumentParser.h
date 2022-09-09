@@ -137,7 +137,7 @@ public:
      * will need to specify it explicitly using setProgramName().
      */
     Results* parse(const std::vector<std::string>& args);
-    std::unique_ptr<Results> parse(const std::vector<std::string>& args, const std::string& program);
+    std::unique_ptr<Results> parse(const std::string& program, const std::vector<std::string>& args);
 
 protected:
     friend class Argument;
