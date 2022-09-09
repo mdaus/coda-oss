@@ -20,17 +20,18 @@
  *
  */
 
-#ifndef __CLI_ARGUMENT_PARSER_H__
-#define __CLI_ARGUMENT_PARSER_H__
+#ifndef CODA_OSS_cli_ArgumentParser_h_INCLUDED_
+#define CODA_OSS_cli_ArgumentParser_h_INCLUDED_
+#pragma once
 
 #include <memory>
+#include <iostream>
+#include <vector>
+#include <string>
 
+#include "config/Exports.h"
 #include "cli/Argument.h"
 #include "cli/Results.h"
-#include <import/str.h>
-#include <import/mem.h>
-#include <iostream>
-#include "config/Exports.h"
 
 namespace cli
 {
@@ -177,4 +178,4 @@ protected:
 };
 
 }
-#endif
+#endif  // CODA_OSS_cli_ArgumentParser_h_INCLUDED_

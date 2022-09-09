@@ -21,8 +21,12 @@
  */
 
 #include "cli/ArgumentParser.h"
+
 #include <algorithm>
 #include <iterator>
+
+#include <import/str.h>
+#include <import/mem.h>
 
 namespace
 {
