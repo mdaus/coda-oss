@@ -1,8 +1,10 @@
 set(TARGET_NAME hdf5)
 
 
+# We're mostly about static libs and C++
 option(BUILD_SHARED_LIBS OFF)
-option(HDF5_BUILD_CPP_LIB ON)
+option(HDF5_BUILD_CPP_LIB ON) # TODO: might not need for our wrappers?
+option(HDF5_BUILD_HL_LIB ON) # TODO: might not need for our wrappers?
 
 # We're just going to expose an wrapper API
 option(HDF5_BUILD_EXAMPLES OFF)
