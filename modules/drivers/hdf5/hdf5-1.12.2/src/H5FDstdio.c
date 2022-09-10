@@ -41,7 +41,9 @@
 
 #ifdef H5_HAVE_WIN32_API
 /* The following two defines must be before any windows headers are included */
+#if !defined(WIN32_LEAN_AND_MEAN)
 #define WIN32_LEAN_AND_MEAN /* Exclude rarely-used stuff from Windows headers */
+#endif
 #define NOGDI               /* Exclude Graphic Display Interface macros */
 
 #include <windows.h>

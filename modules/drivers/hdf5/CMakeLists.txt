@@ -1,3 +1,7 @@
 set(TARGET_NAME hdf5)
 
+
+set(HDF5_BUILD_EXAMPLES OFF)
+set(HDF5_BUILD_TOOLS OFF)
+set(BUILD_TESTING OFF)
 add_subdirectory (hdf5-1.12.2)
