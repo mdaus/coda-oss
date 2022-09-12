@@ -1,10 +1,10 @@
 /* =========================================================================
- * This file is part of xml.lite-c++ 
+ * This file is part of hd5.lite-c++ 
  * =========================================================================
  * 
- * (C) Copyright 2004 - 2014, MDA Information Systems LLC
+ * (C) Copyright 2022, Maxar Technologies, Inc.
  *
- * xml.lite-c++ is free software; you can redistribute it and/or modify
+ * hd5.lite-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -20,10 +20,14 @@
  *
  */
 
-#ifndef CODA_OSS_hd5_lite_import_lite_h_INCLUDED_
-#define CODA_OSS_hd5_lite_import_lite_h_INCLUDED_
-#pragma once
-
 #include "hdf5/lite/Read.h"
 
-#endif  // CODA_OSS_hd5_lite_import_lite_h_INCLUDED_
+#include <stdexcept>
+
+
+// see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
+//#include <H5Cpp.h>
+
+void hdf5::lite::fileRead(const coda_oss::filesystem::path&, const std::string& /*datasetName*/)
+{
+}

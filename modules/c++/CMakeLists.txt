@@ -48,5 +48,7 @@ add_subdirectory("polygon")
 add_subdirectory("math.linear")
 add_subdirectory("math.poly")
 add_subdirectory("numpyutils")
+add_subdirectory("hdf5.lite")
 add_subdirectory("gsl")
 add_subdirectory("std")
+
