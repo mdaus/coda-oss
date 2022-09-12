@@ -2,7 +2,7 @@ set(MODULE_NAME hdf5.lite)
 
 if(CODA_ENABLE_HDF5)
     set(MODULE_DEPS io-c++ logging-c++ str-c++ coda_oss-c++)
-    list(APPEND MODULE_DEPS hdf5)
+    list(APPEND MODULE_DEPS libhdf5_D)
 
     coda_add_module(
         ${MODULE_NAME}

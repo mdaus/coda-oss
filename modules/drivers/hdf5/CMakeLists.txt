@@ -1,4 +1,4 @@
-set(MODULE_NAME hdf5)
+set(TARGET_NAME hdf5)
 
 if(CODA_ENABLE_HDF5)
 
