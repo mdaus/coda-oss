@@ -23,10 +23,58 @@
 #include "hdf5/lite/Read.h"
 
 #include <stdexcept>
+#include <tuple> // std::ignore
+
+#include "except/Exception.h"
+#include "hdf5/lite/HDF5Exception.h"
 
 // see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
 #include <H5Cpp.h>
 
-void hdf5::lite::fileRead(const coda_oss::filesystem::path&, const std::string& /*datasetName*/)
+void hdf5::lite::fileRead(const coda_oss::filesystem::path& fileName, const std::string& datasetName)
 {
+    try
+    {
+        /*
+         * Turn off the auto-printing when failure occurs so that we can
+         * handle the errors appropriately
+         */
+        H5::Exception::dontPrint();
+
+        /*
+         * Open the specified file and the specified dataset in the file.
+         */
+        H5::H5File file(fileName.string(), H5F_ACC_RDONLY);
+        const auto dataset = file.openDataSet(datasetName);
+
+        /*
+         * Get the class of the datatype that is used by the dataset.
+         */
+        const auto type_class = dataset.getTypeClass();
+        std::ignore = type_class;
+    }
+    // catch failure caused by the H5File operations
+    catch (const H5::FileIException& error)
+    {
+        const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
+        throw except::IOException(ctx);
+    }
+    // catch failure caused by the DataSet operations
+    catch (const H5::DataSetIException& error)
+    {
+        const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
+        throw DataSetException11(ctx);
+    }
+    // catch failure caused by the DataSpace operations
+    catch (const H5::DataSpaceIException& error)
+    {
+        const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
+        throw DataSpaceException11(ctx);
+    }
+    // catch failure caused by the DataType operations
+    catch (const H5::DataTypeIException& error)
+    {
+        const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
+        throw DataTypeException11(ctx);
+    }
 }
