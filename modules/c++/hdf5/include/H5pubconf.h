@@ -17,7 +17,7 @@
 
 #if defined(_WIN32)
 #include "H5pubconf_WIN32.h"
-#elif defined(_POSIX_SOURCE)
+#elif defined(_POSIX_C_SOURCE)
 #include "H5pubconf_POSIX.h"
 #else
 #error "Unknown platform."
