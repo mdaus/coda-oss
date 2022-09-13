@@ -462,10 +462,10 @@
 #define H5_HAVE_UNISTD_H 1
 
 /* Define to 1 if you have the `vasprintf' function. */
-#define H5_HAVE_VASPRINTF 1
+/* #undef H5_HAVE_VASPRINTF */
 
 /* Define to 1 if you have the `vsnprintf' function. */
-#define H5_HAVE_VSNPRINTF 1
+/* #undef H5_HAVE_VSNPRINTF */
 
 /* Define to 1 if you have the `waitpid' function. */
 #define H5_HAVE_WAITPID 1
