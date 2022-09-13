@@ -1,5 +1,5 @@
-#ifndef H5pubconf_H
-#define H5pubconf_H
+#ifndef H5pubconf_WIN32_h_
+#define H5pubconf_WIN32_h_
 #pragma once
 
 #pragma warning(disable: 4996) // '...': This function or variable may be unsafe. Consider using ...instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
@@ -841,4 +841,4 @@
 #endif
 
 
-#endif /* H5pubconf_H */
+#endif // H5pubconf_WIN32_h_
