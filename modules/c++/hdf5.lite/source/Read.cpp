@@ -24,9 +24,8 @@
 
 #include <stdexcept>
 
-
 // see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
-//#include <H5Cpp.h>
+#include <H5Cpp.h>
 
 void hdf5::lite::fileRead(const coda_oss::filesystem::path&, const std::string& /*datasetName*/)
 {
