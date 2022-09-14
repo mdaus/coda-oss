@@ -52,7 +52,7 @@
  * link storage
  */
 typedef struct {
-    H5F_t *      f;       /* Pointer to file for insertion */
+    H5F_t       *f;       /* Pointer to file for insertion */
     haddr_t      oh_addr; /* Address of the object header */
     H5O_linfo_t *linfo;   /* Pointer to link info */
 } H5G_obj_oh_it_ud1_t;
@@ -242,21 +242,20 @@ H5G__obj_create_real(H5F_t *f, const H5O_ginfo_t *ginfo, const H5O_linfo_t *linf
 
     /* Check for format of group to create */
     if (use_at_least_v18) {
+        H5_GCC_CLANG_DIAG_OFF("cast-qual")
         /* Insert link info message */
-        /* (Casting away const OK - QAK) */
         if (H5O_msg_create(oloc, H5O_LINFO_ID, 0, H5O_UPDATE_TIME, (void *)linfo) < 0)
             HGOTO_ERROR(H5E_SYM, H5E_CANTINIT, FAIL, "can't create message")
 
         /* Insert group info message */
-        /* (Casting away const OK - QAK) */
         if (H5O_msg_create(oloc, H5O_GINFO_ID, H5O_MSG_FLAG_CONSTANT, 0, (void *)ginfo) < 0)
             HGOTO_ERROR(H5E_SYM, H5E_CANTINIT, FAIL, "can't create message")
 
         /* Insert pipeline message */
         if (pline && pline->nused)
-            /* (Casting away const OK - QAK) */
             if (H5O_msg_create(oloc, H5O_PLINE_ID, H5O_MSG_FLAG_CONSTANT, 0, (void *)pline) < 0)
                 HGOTO_ERROR(H5E_SYM, H5E_CANTINIT, FAIL, "can't create message")
+        H5_GCC_CLANG_DIAG_ON("cast-qual")
     } /* end if */
     else {
         H5O_stab_t stab; /* Symbol table message	*/
@@ -354,11 +353,11 @@ done:
 static herr_t
 H5G__obj_compact_to_dense_cb(const void *_mesg, unsigned H5_ATTR_UNUSED idx, void *_udata)
 {
-    const H5O_link_t *   lnk       = (const H5O_link_t *)_mesg;     /* Pointer to link */
+    const H5O_link_t    *lnk       = (const H5O_link_t *)_mesg;     /* Pointer to link */
     H5G_obj_oh_it_ud1_t *udata     = (H5G_obj_oh_it_ud1_t *)_udata; /* 'User data' passed in */
     herr_t               ret_value = H5_ITER_CONT;                  /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check arguments */
     HDassert(lnk);
@@ -391,16 +390,17 @@ H5G__obj_stab_to_new_cb(const H5O_link_t *lnk, void *_udata)
     H5G_obj_stab_it_ud1_t *udata     = (H5G_obj_stab_it_ud1_t *)_udata; /* 'User data' passed in */
     herr_t                 ret_value = H5_ITER_CONT;                    /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check arguments */
     HDassert(lnk);
     HDassert(udata);
 
     /* Insert link into group */
-    /* (Casting away const OK - QAK) */
+    H5_GCC_CLANG_DIAG_OFF("cast-qual")
     if (H5G_obj_insert(udata->grp_oloc, lnk->name, (H5O_link_t *)lnk, FALSE, H5O_TYPE_UNKNOWN, NULL) < 0)
         HGOTO_ERROR(H5E_SYM, H5E_CANTINSERT, H5_ITER_ERROR, "can't insert link into group")
+    H5_GCC_CLANG_DIAG_ON("cast-qual")
 
 done:
     FUNC_LEAVE_NOAPI(ret_value)
@@ -692,7 +692,7 @@ done:
 herr_t
 H5G__obj_info(const H5O_loc_t *oloc, H5G_info_t *grp_info)
 {
-    H5G_t *     grp = NULL;          /* Group to query */
+    H5G_t      *grp = NULL;          /* Group to query */
     H5G_loc_t   grp_loc;             /* Entry of group to be queried */
     H5G_name_t  grp_path;            /* Group hier. path */
     H5O_loc_t   grp_oloc;            /* Group object location */
@@ -767,13 +767,13 @@ done:
  *
  *-------------------------------------------------------------------------
  */
-ssize_t
+herr_t
 H5G_obj_get_name_by_idx(const H5O_loc_t *oloc, H5_index_t idx_type, H5_iter_order_t order, hsize_t n,
-                        char *name, size_t size)
+                        char *name, size_t name_size, size_t *name_len)
 {
-    H5O_linfo_t linfo;          /* Link info message */
-    htri_t      linfo_exists;   /* Whether the link info message exists */
-    ssize_t     ret_value = -1; /* Return value */
+    H5O_linfo_t linfo;               /* Link info message */
+    htri_t      linfo_exists;        /* Whether the link info message exists */
+    herr_t      ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI_TAG(oloc->addr, FAIL)
 
@@ -785,22 +785,21 @@ H5G_obj_get_name_by_idx(const H5O_loc_t *oloc, H5_index_t idx_type, H5_iter_orde
         HGOTO_ERROR(H5E_SYM, H5E_CANTGET, FAIL, "can't check for link info message")
     if (linfo_exists) {
         /* Check for creation order tracking, if creation order index lookup requested */
-        if (idx_type == H5_INDEX_CRT_ORDER) {
+        if (idx_type == H5_INDEX_CRT_ORDER)
             /* Check if creation order is tracked */
             if (!linfo.track_corder)
                 HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "creation order not tracked for links in group")
-        } /* end if */
 
         /* Check for dense link storage */
         if (H5F_addr_defined(linfo.fheap_addr)) {
             /* Get the object's name from the dense link storage */
-            if ((ret_value = H5G__dense_get_name_by_idx(oloc->file, &linfo, idx_type, order, n, name, size)) <
-                0)
+            if (H5G__dense_get_name_by_idx(oloc->file, &linfo, idx_type, order, n, name, name_size,
+                                           name_len) < 0)
                 HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "can't locate name")
         } /* end if */
         else {
             /* Get the object's name from the link messages */
-            if ((ret_value = H5G__compact_get_name_by_idx(oloc, &linfo, idx_type, order, n, name, size)) < 0)
+            if (H5G__compact_get_name_by_idx(oloc, &linfo, idx_type, order, n, name, name_size, name_len) < 0)
                 HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "can't locate name")
         } /* end else */
     }     /* end if */
@@ -810,7 +809,7 @@ H5G_obj_get_name_by_idx(const H5O_loc_t *oloc, H5_index_t idx_type, H5_iter_orde
             HGOTO_ERROR(H5E_SYM, H5E_BADVALUE, FAIL, "no creation order index to query")
 
         /* Get the object's name from the symbol table */
-        if ((ret_value = H5G__stab_get_name_by_idx(oloc, order, n, name, size)) < 0)
+        if (H5G__stab_get_name_by_idx(oloc, order, n, name, name_size, name_len) < 0)
             HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "can't locate name")
     } /* end else */
 
@@ -836,7 +835,7 @@ H5G__obj_remove_update_linfo(const H5O_loc_t *oloc, H5O_linfo_t *linfo)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(oloc);
@@ -867,7 +866,7 @@ H5G__obj_remove_update_linfo(const H5O_loc_t *oloc, H5O_linfo_t *linfo)
 
             /* Check if we should switch from dense storage back to link messages */
             if (linfo->nlinks < ginfo.min_dense) {
-                struct H5O_t *   oh = NULL;          /* Pointer to group's object header */
+                struct H5O_t    *oh = NULL;          /* Pointer to group's object header */
                 H5G_link_table_t ltable;             /* Table of links */
                 hbool_t          can_convert = TRUE; /* Whether converting to link messages is possible */
                 size_t           u;                  /* Local index */
@@ -972,7 +971,7 @@ H5G_obj_remove(const H5O_loc_t *oloc, H5RS_str_t *grp_full_path_r, const char *n
         else
             /* Remove object from the link messages */
             if (H5G__compact_remove(oloc, grp_full_path_r, name) < 0)
-            HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "can't remove object")
+                HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "can't remove object")
     } /* end if */
     else {
         /* Using the old format for groups */
@@ -1079,12 +1078,12 @@ done:
  *
  *-------------------------------------------------------------------------
  */
-htri_t
-H5G__obj_lookup(const H5O_loc_t *grp_oloc, const char *name, H5O_link_t *lnk)
+herr_t
+H5G__obj_lookup(const H5O_loc_t *grp_oloc, const char *name, hbool_t *found, H5O_link_t *lnk)
 {
-    H5O_linfo_t linfo;             /* Link info message */
-    htri_t      linfo_exists;      /* Whether the link info message exists */
-    htri_t      ret_value = FALSE; /* Return value */
+    H5O_linfo_t linfo;               /* Link info message */
+    htri_t      linfo_exists;        /* Whether the link info message exists */
+    herr_t      ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_PACKAGE_TAG(grp_oloc->addr)
 
@@ -1099,19 +1098,19 @@ H5G__obj_lookup(const H5O_loc_t *grp_oloc, const char *name, H5O_link_t *lnk)
         /* Check for dense link storage */
         if (H5F_addr_defined(linfo.fheap_addr)) {
             /* Get the object's info from the dense link storage */
-            if ((ret_value = H5G__dense_lookup(grp_oloc->file, &linfo, name, lnk)) < 0)
+            if (H5G__dense_lookup(grp_oloc->file, &linfo, name, found, lnk) < 0)
                 HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "can't locate object")
         } /* end if */
         else {
             /* Get the object's info from the link messages */
-            if ((ret_value = H5G__compact_lookup(grp_oloc, name, lnk)) < 0)
+            if (H5G__compact_lookup(grp_oloc, name, found, lnk) < 0)
                 HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "can't locate object")
         } /* end else */
     }     /* end if */
     else
         /* Get the object's info from the symbol table */
-        if ((ret_value = H5G__stab_lookup(grp_oloc, name, lnk)) < 0)
-        HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "can't locate object")
+        if (H5G__stab_lookup(grp_oloc, name, found, lnk) < 0)
+            HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "can't locate object")
 
 done:
     FUNC_LEAVE_NOAPI_TAG(ret_value)

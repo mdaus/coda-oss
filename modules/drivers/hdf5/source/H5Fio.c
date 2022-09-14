@@ -233,10 +233,178 @@ H5F_block_write(H5F_t *f, H5FD_mem_t type, haddr_t addr, size_t size, const void
     /* Pass through page buffer layer */
     if (H5PB_write(f->shared, map_type, addr, size, buf) < 0)
         HGOTO_ERROR(H5E_IO, H5E_WRITEERROR, FAIL, "write through page buffer failed")
-
 done:
     FUNC_LEAVE_NOAPI(ret_value)
 } /* end H5F_block_write() */
+
+/*-------------------------------------------------------------------------
+ * Function:    H5F_shared_select_read
+ *
+ * Purpose:     Reads some data from a file/server/etc into a buffer.
+ *              The location of the data is defined by the mem_spaces and
+ *              file_spaces dataspace arrays, along with the offsets
+ *              array.  The addresses is relative to the base address for
+ *              the file.
+ *
+ * Return:      Non-negative on success/Negative on failure
+ *
+ * Programmer:  Neil Fortner
+ *              May 3 2021
+ *
+ *-------------------------------------------------------------------------
+ */
+herr_t
+H5F_shared_select_read(H5F_shared_t *f_sh, H5FD_mem_t type, uint32_t count, H5S_t **mem_spaces,
+                       H5S_t **file_spaces, haddr_t offsets[], size_t element_sizes[], void *bufs[] /* out */)
+{
+    H5FD_mem_t map_type;            /* Mapped memory type */
+    herr_t     ret_value = SUCCEED; /* Return value */
+
+    FUNC_ENTER_NOAPI(FAIL)
+
+    /* Sanity checks */
+    HDassert(f_sh);
+    HDassert((mem_spaces) || (count == 0));
+    HDassert((file_spaces) || (count == 0));
+    HDassert((offsets) || (count == 0));
+    HDassert((element_sizes) || (count == 0));
+    HDassert((bufs) || (count == 0));
+
+    /* Treat global heap as raw data */
+    map_type = (type == H5FD_MEM_GHEAP) ? H5FD_MEM_DRAW : type;
+
+    /* Pass down to file driver layer (bypass page buffer for now) */
+    if (H5FD_read_selection(f_sh->lf, map_type, count, mem_spaces, file_spaces, offsets, element_sizes,
+                            bufs) < 0)
+        HGOTO_ERROR(H5E_IO, H5E_READERROR, FAIL, "selection read through file driver failed")
+
+done:
+    FUNC_LEAVE_NOAPI(ret_value)
+} /* end H5F_shared_select_read() */
+
+/*-------------------------------------------------------------------------
+ * Function:    H5F_shared_select_write
+ *
+ * Purpose:     Writes some data from a buffer to a file/server/etc.
+ *              The location of the data is defined by the mem_spaces and
+ *              file_spaces dataspace arrays, along with the offsets
+ *              array.  The addresses is relative to the base address for
+ *              the file.
+ *
+ * Return:      Non-negative on success/Negative on failure
+ *
+ * Programmer:  Neil Fortner
+ *              May 4 2021
+ *
+ *-------------------------------------------------------------------------
+ */
+herr_t
+H5F_shared_select_write(H5F_shared_t *f_sh, H5FD_mem_t type, uint32_t count, H5S_t **mem_spaces,
+                        H5S_t **file_spaces, haddr_t offsets[], size_t element_sizes[], const void *bufs[])
+{
+    H5FD_mem_t map_type;            /* Mapped memory type */
+    herr_t     ret_value = SUCCEED; /* Return value */
+
+    FUNC_ENTER_NOAPI(FAIL)
+
+    /* Sanity checks */
+    HDassert(f_sh);
+    HDassert((mem_spaces) || (count == 0));
+    HDassert((file_spaces) || (count == 0));
+    HDassert((offsets) || (count == 0));
+    HDassert((element_sizes) || (count == 0));
+    HDassert((bufs) || (count == 0));
+
+    /* Treat global heap as raw data */
+    map_type = (type == H5FD_MEM_GHEAP) ? H5FD_MEM_DRAW : type;
+
+    /* Pass down to file driver layer (bypass page buffer for now) */
+    if (H5FD_write_selection(f_sh->lf, map_type, count, mem_spaces, file_spaces, offsets, element_sizes,
+                             bufs) < 0)
+        HGOTO_ERROR(H5E_IO, H5E_WRITEERROR, FAIL, "selection write through file driver failed")
+
+done:
+    FUNC_LEAVE_NOAPI(ret_value)
+} /* end H5F_shared_select_write() */
+
+herr_t
+H5F_shared_vector_read(H5F_shared_t *f_sh, uint32_t count, H5FD_mem_t types[], haddr_t addrs[],
+                       size_t sizes[], void *bufs[])
+{
+    herr_t ret_value = SUCCEED;
+
+    FUNC_ENTER_NOAPI(FAIL)
+
+    /* Sanity checks */
+    HDassert(f_sh);
+    HDassert((types) || (count == 0));
+    HDassert((addrs) || (count == 0));
+    HDassert((sizes) || (count == 0));
+    HDassert((bufs) || (count == 0));
+
+    /*
+     * Note that we don't try to map global heap data to raw
+     * data here, as it may become expensive to check for when
+     * I/O vectors are large. This may change in the future, but,
+     * for now, assume the caller has done this already.
+     */
+#ifndef NDEBUG
+    for (uint32_t i = 0; i < count; i++)
+        HDassert(types[i] != H5FD_MEM_GHEAP);
+#endif
+
+    /* Pass down to file driver layer (bypass page buffer for now) */
+    if (H5FD_read_vector(f_sh->lf, count, types, addrs, sizes, bufs) < 0)
+        HGOTO_ERROR(H5E_IO, H5E_READERROR, FAIL, "vector read through file driver failed")
+
+done:
+    FUNC_LEAVE_NOAPI(ret_value)
+}
+
+/*-------------------------------------------------------------------------
+ * Function:    H5F_shared_vector_write
+ *
+ * Purpose:     Writes data from `count` buffers (from the `bufs` array) to
+ *              a file/server/etc. at the offsets provided in the `addrs`
+ *              array, with the data sizes specified in the `sizes` array
+ *              and data memory types specified in the `types` array. The
+ *              addresses are relative to the base address for the file.
+ *
+ *-------------------------------------------------------------------------
+ */
+herr_t
+H5F_shared_vector_write(H5F_shared_t *f_sh, uint32_t count, H5FD_mem_t types[], haddr_t addrs[],
+                        size_t sizes[], const void *bufs[])
+{
+    herr_t ret_value = SUCCEED;
+
+    FUNC_ENTER_NOAPI(FAIL)
+
+    /* Sanity checks */
+    HDassert(f_sh);
+    HDassert((types) || (count == 0));
+    HDassert((addrs) || (count == 0));
+    HDassert((sizes) || (count == 0));
+    HDassert((bufs) || (count == 0));
+
+    /*
+     * Note that we don't try to map global heap data to raw
+     * data here, as it may become expensive to check for when
+     * I/O vectors are large. This may change in the future, but,
+     * for now, assume the caller has done this already.
+     */
+#ifndef NDEBUG
+    for (uint32_t i = 0; i < count; i++)
+        HDassert(types[i] != H5FD_MEM_GHEAP);
+#endif
+
+    /* Pass down to file driver layer (bypass page buffer for now) */
+    if (H5FD_write_vector(f_sh->lf, count, types, addrs, sizes, bufs) < 0)
+        HGOTO_ERROR(H5E_IO, H5E_WRITEERROR, FAIL, "vector write through file driver failed")
+
+done:
+    FUNC_LEAVE_NOAPI(ret_value)
+}
 
 /*-------------------------------------------------------------------------
  * Function:    H5F_flush_tagged_metadata

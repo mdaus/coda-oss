@@ -76,9 +76,9 @@ DataType::DataType(const hid_t existing_id) : H5Object(), id(existing_id), encod
 ///\exception   H5::DataTypeIException
 // Programmer   Binh-Minh Ribler - 2000
 //--------------------------------------------------------------------------
-DataType::DataType(const H5T_class_t type_class, size_t size) : H5Object(), encoded_buf(NULL), buf_size(0)
+DataType::DataType(const H5T_class_t type_class, size_t size)
+    : H5Object(), id{H5Tcreate(type_class, size)}, encoded_buf(NULL), buf_size(0)
 {
-    id = H5Tcreate(type_class, size);
     if (id < 0) {
         throw DataTypeIException("DataType constructor", "H5Tcreate failed");
     }
@@ -96,9 +96,10 @@ DataType::DataType(const H5T_class_t type_class, size_t size) : H5Object(), enco
 // Programmer   Binh-Minh Ribler - Oct, 2006
 //--------------------------------------------------------------------------
 DataType::DataType(const H5Location &loc, const void *ref, H5R_type_t ref_type, const PropList &plist)
-    : H5Object(), encoded_buf(NULL), buf_size(0)
+    : H5Object(), id{H5Location::p_dereference(loc.getId(), ref, ref_type, plist,
+                                               "constructor - by dereference")},
+      encoded_buf(NULL), buf_size(0)
 {
-    id = H5Location::p_dereference(loc.getId(), ref, ref_type, plist, "constructor - by dereference");
 }
 
 //--------------------------------------------------------------------------
@@ -145,9 +146,9 @@ DataType::DataType(const DataType &original) : H5Object(), id(original.id), enco
 //              unnecessarily and will produce undefined behavior.
 //              -BMR, Apr 2015
 //--------------------------------------------------------------------------
-DataType::DataType(const PredType &pred_type) : H5Object(), encoded_buf(NULL), buf_size(0)
+DataType::DataType(const PredType &pred_type)
+    : H5Object(), id{H5Tcopy(pred_type.getId())}, encoded_buf(NULL), buf_size(0)
 {
-    id = H5Tcopy(pred_type.getId());
     if (id < 0)
         throw DataTypeIException("DataType constructor", "H5Tcopy failed");
 }
@@ -166,9 +167,9 @@ DataType::DataType(const PredType &pred_type) : H5Object(), encoded_buf(NULL), b
 //              improve usability.
 //              -BMR, Dec 2016
 //--------------------------------------------------------------------------
-DataType::DataType(const H5Location &loc, const char *dtype_name) : H5Object(), encoded_buf(NULL), buf_size(0)
+DataType::DataType(const H5Location &loc, const char *dtype_name)
+    : H5Object(), id{p_opentype(loc, dtype_name)}, encoded_buf(NULL), buf_size(0)
 {
-    id = p_opentype(loc, dtype_name);
 }
 
 //--------------------------------------------------------------------------
@@ -186,9 +187,8 @@ DataType::DataType(const H5Location &loc, const char *dtype_name) : H5Object(), 
 //              -BMR, Dec 2016
 //--------------------------------------------------------------------------
 DataType::DataType(const H5Location &loc, const H5std_string &dtype_name)
-    : H5Object(), encoded_buf(NULL), buf_size(0)
+    : H5Object(), id{p_opentype(loc, dtype_name.c_str())}, encoded_buf(NULL), buf_size(0)
 {
-    id = p_opentype(loc, dtype_name.c_str());
 }
 
 //--------------------------------------------------------------------------
@@ -316,7 +316,7 @@ DataType::encode()
 
     // Allocate buffer and call C function again to encode
     if (buf_size > 0) {
-        encoded_buf = (unsigned char *)calloc((size_t)1, buf_size);
+        encoded_buf = new unsigned char[buf_size]();
 
         ret_value = H5Tencode(id, encoded_buf, &buf_size);
         if (ret_value < 0) {
@@ -968,7 +968,7 @@ DataType::close()
 
         // Free and reset buffer of encoded object description if it's been used
         if (encoded_buf != NULL) {
-            free(encoded_buf);
+            delete[] encoded_buf;
             buf_size = 0;
         }
     }

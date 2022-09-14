@@ -36,11 +36,11 @@
 static void *H5O__stab_decode(H5F_t *f, H5O_t *open_oh, unsigned mesg_flags, unsigned *ioflags, size_t p_size,
                               const uint8_t *p);
 static herr_t H5O__stab_encode(H5F_t *f, hbool_t disable_shared, uint8_t *p, const void *_mesg);
-static void * H5O__stab_copy(const void *_mesg, void *_dest);
+static void  *H5O__stab_copy(const void *_mesg, void *_dest);
 static size_t H5O__stab_size(const H5F_t *f, hbool_t disable_shared, const void *_mesg);
 static herr_t H5O__stab_free(void *_mesg);
 static herr_t H5O__stab_delete(H5F_t *f, H5O_t *open_oh, void *_mesg);
-static void * H5O__stab_copy_file(H5F_t *file_src, void *native_src, H5F_t *file_dst, hbool_t *recompute_size,
+static void  *H5O__stab_copy_file(H5F_t *file_src, void *native_src, H5F_t *file_dst, hbool_t *recompute_size,
                                   unsigned *mesg_flags, H5O_copy_t *cpy_info, void *_udata);
 static herr_t H5O__stab_post_copy_file(const H5O_loc_t *src_oloc, const void *mesg_src, H5O_loc_t *dst_oloc,
                                        void *mesg_dst, unsigned *mesg_flags, H5O_copy_t *cpy_info);
@@ -93,9 +93,9 @@ H5O__stab_decode(H5F_t *f, H5O_t H5_ATTR_UNUSED *open_oh, unsigned H5_ATTR_UNUSE
                  unsigned H5_ATTR_UNUSED *ioflags, size_t H5_ATTR_UNUSED p_size, const uint8_t *p)
 {
     H5O_stab_t *stab      = NULL;
-    void *      ret_value = NULL; /* Return value */
+    void       *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(f);
@@ -135,7 +135,7 @@ H5O__stab_encode(H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, uint8_t *p, co
 {
     const H5O_stab_t *stab = (const H5O_stab_t *)_mesg;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* check args */
     HDassert(f);
@@ -168,10 +168,10 @@ static void *
 H5O__stab_copy(const void *_mesg, void *_dest)
 {
     const H5O_stab_t *stab      = (const H5O_stab_t *)_mesg;
-    H5O_stab_t *      dest      = (H5O_stab_t *)_dest;
-    void *            ret_value = NULL; /* Return value */
+    H5O_stab_t       *dest      = (H5O_stab_t *)_dest;
+    void             *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(stab);
@@ -209,7 +209,7 @@ H5O__stab_size(const H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, const void
 {
     size_t ret_value = 0; /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Set return value */
     ret_value = (size_t)(2 * H5F_SIZEOF_ADDR(f));
@@ -232,7 +232,7 @@ H5O__stab_size(const H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, const void
 static herr_t
 H5O__stab_free(void *mesg)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(mesg);
 
@@ -258,7 +258,7 @@ H5O__stab_delete(H5F_t *f, H5O_t H5_ATTR_UNUSED *open_oh, void *mesg)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(f);
@@ -291,13 +291,13 @@ H5O__stab_copy_file(H5F_t *file_src, void *native_src, H5F_t *file_dst,
                     hbool_t H5_ATTR_UNUSED *recompute_size, unsigned H5_ATTR_UNUSED *mesg_flags,
                     H5O_copy_t H5_ATTR_UNUSED *cpy_info, void *_udata)
 {
-    H5O_stab_t *        stab_src = (H5O_stab_t *)native_src;
-    H5O_stab_t *        stab_dst = NULL;
+    H5O_stab_t         *stab_src = (H5O_stab_t *)native_src;
+    H5O_stab_t         *stab_dst = NULL;
     H5G_copy_file_ud_t *udata    = (H5G_copy_file_ud_t *)_udata;
     size_t              size_hint;        /* Local heap initial size */
-    void *              ret_value = NULL; /* Return value */
+    void               *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(stab_src);
@@ -354,11 +354,11 @@ H5O__stab_post_copy_file(const H5O_loc_t *src_oloc, const void *mesg_src, H5O_lo
                          unsigned H5_ATTR_UNUSED *mesg_flags, H5O_copy_t *cpy_info)
 {
     const H5O_stab_t *stab_src = (const H5O_stab_t *)mesg_src;
-    H5O_stab_t *      stab_dst = (H5O_stab_t *)mesg_dst;
+    H5O_stab_t       *stab_dst = (H5O_stab_t *)mesg_dst;
     H5G_bt_it_cpy_t   udata;               /* B-tree user data */
     herr_t            ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(stab_src);
@@ -403,7 +403,7 @@ H5O__stab_debug(H5F_t H5_ATTR_UNUSED *f, const void *_mesg, FILE *stream, int in
 {
     const H5O_stab_t *stab = (const H5O_stab_t *)_mesg;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* check args */
     HDassert(f);

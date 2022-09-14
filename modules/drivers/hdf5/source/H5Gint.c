@@ -38,6 +38,7 @@
 #include "H5Iprivate.h"  /* IDs                                      */
 #include "H5Lprivate.h"  /* Links                                    */
 #include "H5MMprivate.h" /* Memory management                        */
+#include "H5SLprivate.h" /* Skip lists                               */
 
 /****************/
 /* Local Macros */
@@ -55,23 +56,23 @@ typedef struct {
 /* User data for application-style iteration over links in a group */
 typedef struct {
     hid_t              gid;      /* The group ID for the application callback */
-    H5O_loc_t *        link_loc; /* The object location for the link */
+    H5O_loc_t         *link_loc; /* The object location for the link */
     H5G_link_iterate_t lnk_op;   /* Application callback */
-    void *             op_data;  /* Application's op data */
+    void              *op_data;  /* Application's op data */
 } H5G_iter_appcall_ud_t;
 
 /* User data for recursive traversal over links from a group */
 typedef struct {
     hid_t           gid;           /* The group ID for the starting group */
-    H5G_loc_t *     curr_loc;      /* Location of starting group */
+    H5G_loc_t      *curr_loc;      /* Location of starting group */
     H5_index_t      idx_type;      /* Index to use */
     H5_iter_order_t order;         /* Iteration order within index */
-    H5SL_t *        visited;       /* Skip list for tracking visited nodes */
-    char *          path;          /* Path name of the link */
+    H5SL_t         *visited;       /* Skip list for tracking visited nodes */
+    char           *path;          /* Path name of the link */
     size_t          curr_path_len; /* Current length of the path in the buffer */
     size_t          path_buf_size; /* Size of path buffer */
     H5L_iterate2_t  op;            /* Application callback */
-    void *          op_data;       /* Application's op data */
+    void           *op_data;       /* Application's op data */
 } H5G_iter_visit_ud_t;
 
 /********************/
@@ -84,6 +85,7 @@ typedef struct {
 
 static herr_t H5G__open_oid(H5G_t *grp);
 static herr_t H5G__visit_cb(const H5O_link_t *lnk, void *_udata);
+static herr_t H5G__close_cb(H5VL_object_t *grp_vol_obj, void **request);
 
 /*********************/
 /* Package Variables */
@@ -104,6 +106,131 @@ H5FL_DEFINE(H5_obj_t);
 /* Local Variables */
 /*******************/
 
+/* Group ID class */
+static const H5I_class_t H5I_GROUP_CLS[1] = {{
+    H5I_GROUP,                /* ID class value */
+    0,                        /* Class flags */
+    0,                        /* # of reserved IDs for class */
+    (H5I_free_t)H5G__close_cb /* Callback routine for closing objects of this class */
+}};
+
+/*-------------------------------------------------------------------------
+ * Function: H5G_init
+ *
+ * Purpose:  Initialize the interface from some other layer.
+ *
+ * Return:   Success:    non-negative
+ *
+ *           Failure:    negative
+ *-------------------------------------------------------------------------
+ */
+herr_t
+H5G_init(void)
+{
+    herr_t ret_value = SUCCEED; /* Return value */
+
+    FUNC_ENTER_NOAPI(FAIL)
+    /* Initialize the ID group for the group IDs */
+    if (H5I_register_type(H5I_GROUP_CLS) < 0)
+        HGOTO_ERROR(H5E_SYM, H5E_CANTINIT, FAIL, "unable to initialize interface")
+
+done:
+    FUNC_LEAVE_NOAPI(ret_value)
+} /* end H5G_init() */
+
+/*-------------------------------------------------------------------------
+ * Function:	H5G_top_term_package
+ *
+ * Purpose:	Close the "top" of the interface, releasing IDs, etc.
+ *
+ * Return:	Success:	Positive if anything is done that might
+ *				affect other interfaces; zero otherwise.
+ * 		Failure:	Negative.
+ *
+ * Programmer:	Quincey Koziol
+ *		Sunday, September	13, 2015
+ *
+ *-------------------------------------------------------------------------
+ */
+int
+H5G_top_term_package(void)
+{
+    int n = 0;
+
+    FUNC_ENTER_NOAPI_NOINIT_NOERR
+
+    if (H5I_nmembers(H5I_GROUP) > 0) {
+        (void)H5I_clear_type(H5I_GROUP, FALSE, FALSE);
+        n++;
+    }
+
+    FUNC_LEAVE_NOAPI(n)
+} /* end H5G_top_term_package() */
+
+/*-------------------------------------------------------------------------
+ * Function:	H5G_term_package
+ *
+ * Purpose:	Terminates the H5G interface
+ *
+ * Note:	Finishes shutting down the interface, after
+ *		H5G_top_term_package() is called
+ *
+ * Return:	Success:	Positive if anything is done that might
+ *				affect other interfaces; zero otherwise.
+ * 		Failure:	Negative.
+ *
+ * Programmer:	Robb Matzke
+ *		Monday, January	 5, 1998
+ *
+ *-------------------------------------------------------------------------
+ */
+int
+H5G_term_package(void)
+{
+    int n = 0;
+
+    FUNC_ENTER_NOAPI_NOINIT_NOERR
+
+    /* Sanity checks */
+    HDassert(0 == H5I_nmembers(H5I_GROUP));
+
+    /* Destroy the group object id group */
+    n += (H5I_dec_type_ref(H5I_GROUP) > 0);
+
+    FUNC_LEAVE_NOAPI(n)
+} /* end H5G_term_package() */
+
+/*-------------------------------------------------------------------------
+ * Function:    H5G__close_cb
+ *
+ * Purpose:     Called when the ref count reaches zero on the group's ID
+ *
+ * Return:      SUCCEED/FAIL
+ *
+ *-------------------------------------------------------------------------
+ */
+static herr_t
+H5G__close_cb(H5VL_object_t *grp_vol_obj, void **request)
+{
+    herr_t ret_value = SUCCEED; /* Return value */
+
+    FUNC_ENTER_PACKAGE
+
+    /* Sanity check */
+    HDassert(grp_vol_obj);
+
+    /* Close the group */
+    if (H5VL_group_close(grp_vol_obj, H5P_DATASET_XFER_DEFAULT, request) < 0)
+        HGOTO_ERROR(H5E_SYM, H5E_CLOSEERROR, FAIL, "unable to close group")
+
+    /* Free the VOL object */
+    if (H5VL_free_object(grp_vol_obj) < 0)
+        HGOTO_ERROR(H5E_SYM, H5E_CANTDEC, FAIL, "unable to free VOL object")
+
+done:
+    FUNC_LEAVE_NOAPI(ret_value)
+} /* end H5G__close_cb() */
+
 /*-------------------------------------------------------------------------
  * Function:	H5G__create_named
  *
@@ -123,7 +250,7 @@ H5G__create_named(const H5G_loc_t *loc, const char *name, hid_t lcpl_id, hid_t g
 {
     H5O_obj_create_t ocrt_info;        /* Information for object creation */
     H5G_obj_create_t gcrt_info;        /* Information for group creation */
-    H5G_t *          ret_value = NULL; /* Return value */
+    H5G_t           *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_PACKAGE
 
@@ -175,9 +302,9 @@ done:
 H5G_t *
 H5G__create(H5F_t *file, H5G_obj_create_t *gcrt_info)
 {
-    H5G_t *  grp       = NULL; /*new group			*/
+    H5G_t   *grp       = NULL; /*new group			*/
     unsigned oloc_init = 0;    /* Flag to indicate that the group object location was created successfully */
-    H5G_t *  ret_value = NULL; /* Return value */
+    H5G_t   *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_PACKAGE
 
@@ -246,13 +373,13 @@ done:
 H5G_t *
 H5G__open_name(const H5G_loc_t *loc, const char *name)
 {
-    H5G_t *    grp = NULL;        /* Group to open */
+    H5G_t     *grp = NULL;        /* Group to open */
     H5G_loc_t  grp_loc;           /* Location used to open group */
     H5G_name_t grp_path;          /* Opened object group hier. path */
     H5O_loc_t  grp_oloc;          /* Opened object object location */
     hbool_t    loc_found = FALSE; /* Location at 'name' found */
     H5O_type_t obj_type;          /* Type of object at location */
-    H5G_t *    ret_value = NULL;  /* Return value */
+    H5G_t     *ret_value = NULL;  /* Return value */
 
     FUNC_ENTER_PACKAGE
 
@@ -309,9 +436,9 @@ done:
 H5G_t *
 H5G_open(const H5G_loc_t *loc)
 {
-    H5G_t *       grp = NULL;       /* Group opened */
+    H5G_t        *grp = NULL;       /* Group opened */
     H5G_shared_t *shared_fo;        /* Shared group object */
-    H5G_t *       ret_value = NULL; /* Return value */
+    H5G_t        *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_NOAPI(NULL)
 
@@ -404,7 +531,7 @@ H5G__open_oid(H5G_t *grp)
     hbool_t obj_opened = FALSE;
     herr_t  ret_value  = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check args */
     HDassert(grp);
@@ -502,7 +629,7 @@ H5G_close(H5G_t *grp)
         else
             /* Free object location (i.e. "unhold" the file if appropriate) */
             if (H5O_loc_free(&(grp->oloc)) < 0)
-            HGOTO_ERROR(H5E_SYM, H5E_CANTRELEASE, FAIL, "problem attempting to free location")
+                HGOTO_ERROR(H5E_SYM, H5E_CANTRELEASE, FAIL, "problem attempting to free location")
 
         /* If this group is a mount point and the mount point is the last open
          * reference to the group (i.e. fo_count == 1 now), then attempt to
@@ -562,7 +689,7 @@ H5G_oloc(H5G_t *grp)
  *-------------------------------------------------------------------------
  */
 H5G_name_t *
-H5G_nameof(const H5G_t *grp)
+H5G_nameof(H5G_t *grp)
 {
     /* Use FUNC_ENTER_NOAPI_NOINIT_NOERR here to avoid performance issues */
     FUNC_ENTER_NOAPI_NOINIT_NOERR
@@ -714,7 +841,7 @@ H5G__iterate_cb(const H5O_link_t *lnk, void *_udata)
     H5G_iter_appcall_ud_t *udata     = (H5G_iter_appcall_ud_t *)_udata; /* User data for callback */
     herr_t                 ret_value = H5_ITER_ERROR;                   /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(lnk);
@@ -764,7 +891,7 @@ H5G_iterate(H5G_loc_t *loc, const char *group_name, H5_index_t idx_type, H5_iter
             hsize_t *last_lnk, const H5G_link_iterate_t *lnk_op, void *op_data)
 {
     hid_t                 gid = H5I_INVALID_HID; /* ID of group to iterate over */
-    H5G_t *               grp = NULL;            /* Pointer to group data structure to iterate over */
+    H5G_t                *grp = NULL;            /* Pointer to group data structure to iterate over */
     H5G_iter_appcall_ud_t udata;                 /* User data for callback */
     herr_t                ret_value = FAIL;      /* Return value */
 
@@ -782,7 +909,7 @@ H5G_iterate(H5G_loc_t *loc, const char *group_name, H5_index_t idx_type, H5_iter
     if (NULL == (grp = H5G__open_name(loc, group_name)))
         HGOTO_ERROR(H5E_SYM, H5E_CANTOPENOBJ, FAIL, "unable to open group")
     if ((gid = H5VL_wrap_register(H5I_GROUP, grp, TRUE)) < 0)
-        HGOTO_ERROR(H5E_ATOM, H5E_CANTREGISTER, FAIL, "unable to register group")
+        HGOTO_ERROR(H5E_ID, H5E_CANTREGISTER, FAIL, "unable to register group")
 
     /* Set up user data for callback */
     udata.gid      = gid;
@@ -822,7 +949,7 @@ done:
 static herr_t
 H5G__free_visit_visited(void *item, void H5_ATTR_UNUSED *key, void H5_ATTR_UNUSED *operator_data /*in,out*/)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     item = H5FL_FREE(H5_obj_t, item);
 
@@ -856,7 +983,7 @@ H5G__visit_cb(const H5O_link_t *lnk, void *_udata)
     size_t len_needed;                          /* Length of path string needed */
     herr_t ret_value = H5_ITER_CONT;            /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(lnk);
@@ -936,7 +1063,7 @@ H5G__visit_cb(const H5O_link_t *lnk, void *_udata)
 
             /* If it's a group, we recurse into it */
             if (otype == H5O_TYPE_GROUP) {
-                H5G_loc_t * old_loc  = udata->curr_loc; /* Pointer to previous group location info */
+                H5G_loc_t  *old_loc  = udata->curr_loc; /* Pointer to previous group location info */
                 H5_index_t  idx_type = udata->idx_type; /* Type of index to use */
                 H5O_linfo_t linfo;                      /* Link info message */
                 htri_t      linfo_exists;               /* Whether the link info message exists */
@@ -1025,7 +1152,7 @@ H5G_visit(H5G_loc_t *loc, const char *group_name, H5_index_t idx_type, H5_iter_o
     H5O_linfo_t         linfo;                 /* Link info message */
     htri_t              linfo_exists;          /* Whether the link info message exists */
     hid_t               gid = H5I_INVALID_HID; /* Group ID */
-    H5G_t *             grp = NULL;            /* Group opened */
+    H5G_t              *grp = NULL;            /* Group opened */
     H5G_loc_t           start_loc;             /* Location of starting group */
     unsigned            rc;                    /* Reference count of object    */
     herr_t              ret_value = FAIL;      /* Return value */
@@ -1045,7 +1172,7 @@ H5G_visit(H5G_loc_t *loc, const char *group_name, H5_index_t idx_type, H5_iter_o
 
     /* Register an ID for the starting group */
     if ((gid = H5VL_wrap_register(H5I_GROUP, grp, TRUE)) < 0)
-        HGOTO_ERROR(H5E_ATOM, H5E_CANTREGISTER, FAIL, "unable to register group")
+        HGOTO_ERROR(H5E_ID, H5E_CANTREGISTER, FAIL, "unable to register group")
 
     /* Get the location of the starting group */
     if (H5G_loc(gid, &start_loc) < 0)

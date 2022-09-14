@@ -131,7 +131,7 @@ static herr_t               H5HF__sect_indirect_reduce_row(H5HF_hdr_t *hdr, H5HF
 static herr_t  H5HF__sect_indirect_reduce(H5HF_hdr_t *hdr, H5HF_free_section_t *sect, unsigned child_entry);
 static herr_t  H5HF__sect_indirect_first(H5HF_hdr_t *hdr, H5HF_free_section_t *sect);
 static hbool_t H5HF__sect_indirect_is_first(H5HF_free_section_t *sect);
-static H5HF_indirect_t *    H5HF__sect_indirect_get_iblock(H5HF_free_section_t *sect);
+static H5HF_indirect_t     *H5HF__sect_indirect_get_iblock(H5HF_free_section_t *sect);
 static hsize_t              H5HF__sect_indirect_iblock_off(const H5HF_free_section_t *sect);
 static H5HF_free_section_t *H5HF__sect_indirect_top(H5HF_free_section_t *sect);
 static herr_t               H5HF__sect_indirect_merge_row(H5HF_hdr_t *hdr, H5HF_free_section_t *sect1,
@@ -295,7 +295,7 @@ H5FS__sect_init_cls(H5FS_section_class_t *cls, H5HF_hdr_t *hdr)
     H5HF_sect_private_t *cls_prvt;            /* Pointer to class private info */
     herr_t               ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(cls);
@@ -336,7 +336,7 @@ H5FS__sect_term_cls(H5FS_section_class_t *cls)
     H5HF_sect_private_t *cls_prvt;            /* Pointer to class private info */
     herr_t               ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(cls);
@@ -375,7 +375,7 @@ H5FS__sect_node_new(unsigned sect_type, haddr_t sect_addr, hsize_t sect_size, H5
     H5HF_free_section_t *new_sect;         /* New section */
     H5HF_free_section_t *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(H5F_addr_defined(sect_addr));
@@ -419,7 +419,7 @@ H5HF__sect_node_free(H5HF_free_section_t *sect, H5HF_indirect_t *iblock)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(sect);
 
@@ -507,7 +507,7 @@ H5HF__sect_single_locate_parent(H5HF_hdr_t *hdr, hbool_t refresh, H5HF_free_sect
     hbool_t          did_protect;         /* Whether we protected the indirect block or not */
     herr_t           ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -713,7 +713,7 @@ H5HF__sect_single_full_dblock(H5HF_hdr_t *hdr, H5HF_free_section_t *sect)
     size_t  dblock_overhead;     /* Direct block's overhead */
     herr_t  ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(sect);
@@ -776,15 +776,15 @@ H5HF__sect_single_add(H5FS_section_info_t **_sect, unsigned *flags, void *_udata
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Don't need to check section if we are deserializing, because it should
      *  have already been checked when it was first added
      */
     if (!(*flags & H5FS_ADD_DESERIALIZING)) {
         H5HF_free_section_t **sect  = (H5HF_free_section_t **)_sect; /* Fractal heap free section */
-        H5HF_sect_add_ud_t *  udata = (H5HF_sect_add_ud_t *)_udata;  /* User callback data */
-        H5HF_hdr_t *          hdr   = udata->hdr;                    /* Fractal heap header */
+        H5HF_sect_add_ud_t   *udata = (H5HF_sect_add_ud_t *)_udata;  /* User callback data */
+        H5HF_hdr_t           *hdr   = udata->hdr;                    /* Fractal heap header */
 
         /* Sanity check */
         HDassert(sect);
@@ -828,7 +828,7 @@ H5HF__sect_single_deserialize(const H5FS_section_class_t H5_ATTR_UNUSED *cls,
     H5HF_free_section_t *new_sect;         /* New section */
     H5FS_section_info_t *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(H5F_addr_defined(sect_addr));
@@ -870,7 +870,7 @@ H5HF__sect_single_can_merge(const H5FS_section_info_t *_sect1, const H5FS_sectio
     const H5HF_free_section_t *sect2 = (const H5HF_free_section_t *)_sect2; /* Fractal heap free section */
     htri_t                     ret_value = FALSE;                           /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments. */
     HDassert(sect1);
@@ -910,12 +910,12 @@ static herr_t
 H5HF__sect_single_merge(H5FS_section_info_t **_sect1, H5FS_section_info_t *_sect2, void *_udata)
 {
     H5HF_free_section_t **sect1     = (H5HF_free_section_t **)_sect1; /* Fractal heap free section */
-    H5HF_free_section_t * sect2     = (H5HF_free_section_t *)_sect2;  /* Fractal heap free section */
-    H5HF_sect_add_ud_t *  udata     = (H5HF_sect_add_ud_t *)_udata;   /* User callback data */
-    H5HF_hdr_t *          hdr       = udata->hdr;                     /* Fractal heap header */
+    H5HF_free_section_t  *sect2     = (H5HF_free_section_t *)_sect2;  /* Fractal heap free section */
+    H5HF_sect_add_ud_t   *udata     = (H5HF_sect_add_ud_t *)_udata;   /* User callback data */
+    H5HF_hdr_t           *hdr       = udata->hdr;                     /* Fractal heap header */
     herr_t                ret_value = SUCCEED;                        /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(sect1);
@@ -967,11 +967,11 @@ static htri_t
 H5HF__sect_single_can_shrink(const H5FS_section_info_t *_sect, void *_udata)
 {
     const H5HF_free_section_t *sect      = (const H5HF_free_section_t *)_sect; /* Fractal heap free section */
-    H5HF_sect_add_ud_t *       udata     = (H5HF_sect_add_ud_t *)_udata;       /* User callback data */
-    H5HF_hdr_t *               hdr       = udata->hdr;                         /* Fractal heap header */
+    H5HF_sect_add_ud_t        *udata     = (H5HF_sect_add_ud_t *)_udata;       /* User callback data */
+    H5HF_hdr_t                *hdr       = udata->hdr;                         /* Fractal heap header */
     htri_t                     ret_value = FALSE;                              /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments. */
     HDassert(sect);
@@ -1021,14 +1021,14 @@ static herr_t
 H5HF__sect_single_shrink(H5FS_section_info_t **_sect, void *_udata)
 {
     H5HF_free_section_t **sect  = (H5HF_free_section_t **)_sect; /* Fractal heap free section */
-    H5HF_sect_add_ud_t *  udata = (H5HF_sect_add_ud_t *)_udata;  /* User callback data */
-    H5HF_hdr_t *          hdr   = udata->hdr;                    /* Fractal heap header */
-    H5HF_direct_t *       dblock;                                /* Pointer to direct block for section */
+    H5HF_sect_add_ud_t   *udata = (H5HF_sect_add_ud_t *)_udata;  /* User callback data */
+    H5HF_hdr_t           *hdr   = udata->hdr;                    /* Fractal heap header */
+    H5HF_direct_t        *dblock;                                /* Pointer to direct block for section */
     haddr_t               dblock_addr;                           /* Section's direct block's address */
     size_t                dblock_size;                           /* Section's direct block's size */
     herr_t                ret_value = SUCCEED;                   /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(sect);
@@ -1086,7 +1086,7 @@ herr_t
 H5HF__sect_single_free(H5FS_section_info_t *_sect)
 {
     H5HF_free_section_t *sect      = (H5HF_free_section_t *)_sect; /* Pointer to section to free */
-    H5HF_indirect_t *    parent    = NULL;                         /* Parent indirect block for section */
+    H5HF_indirect_t     *parent    = NULL;                         /* Parent indirect block for section */
     herr_t               ret_value = SUCCEED;                      /* Return value */
 
     FUNC_ENTER_PACKAGE
@@ -1126,7 +1126,7 @@ H5HF__sect_single_valid(const H5FS_section_class_t H5_ATTR_UNUSED *cls, const H5
 {
     const H5HF_free_section_t *sect = (const H5HF_free_section_t *)_sect; /* Pointer to section to check */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments. */
     HDassert(sect);
@@ -1135,7 +1135,7 @@ H5HF__sect_single_valid(const H5FS_section_class_t H5_ATTR_UNUSED *cls, const H5
         /* Check if this section is not in a direct block that is the root direct block */
         /* (not enough information to check on a single section in a root direct block) */
         if (sect->u.single.parent != NULL) {
-            H5HF_indirect_t *            iblock; /* Indirect block that section's direct block resides in */
+            H5HF_indirect_t             *iblock; /* Indirect block that section's direct block resides in */
             haddr_t                      dblock_addr;       /* Direct block address */
             size_t                       dblock_size;       /* Direct block size */
             unsigned                     dblock_status = 0; /* Direct block's status in the metadata cache */
@@ -1215,7 +1215,7 @@ H5HF__sect_row_create(haddr_t sect_off, hsize_t sect_size, hbool_t is_first, uns
     H5HF_free_section_t *sect      = NULL; /* 'Row' section created */
     H5HF_free_section_t *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(sect_size);
@@ -1260,7 +1260,7 @@ H5HF__sect_row_from_single(H5HF_hdr_t *hdr, H5HF_free_section_t *sect, H5HF_dire
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -1425,7 +1425,7 @@ H5HF__sect_row_first(H5HF_hdr_t *hdr, H5HF_free_section_t *sect)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(hdr);
@@ -1441,7 +1441,7 @@ H5HF__sect_row_first(H5HF_hdr_t *hdr, H5HF_free_section_t *sect)
     else
         /* Change row section to be the "first row" */
         if (H5HF__space_sect_change_class(hdr, sect, H5HF_FSPACE_SECT_FIRST_ROW) < 0)
-        HGOTO_ERROR(H5E_HEAP, H5E_CANTSET, FAIL, "can't set row section to be first row")
+            HGOTO_ERROR(H5E_HEAP, H5E_CANTSET, FAIL, "can't set row section to be first row")
 
 done:
     FUNC_LEAVE_NOAPI(ret_value)
@@ -1499,7 +1499,7 @@ H5HF__sect_row_parent_removed(H5HF_free_section_t *sect)
     unsigned u;                   /* Local index value */
     herr_t   ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments */
     HDassert(sect);
@@ -1553,7 +1553,7 @@ H5HF__sect_row_init_cls(H5FS_section_class_t *cls, void *_udata)
     H5HF_hdr_t *hdr       = (H5HF_hdr_t *)_udata; /* Fractal heap header */
     herr_t      ret_value = SUCCEED;              /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(cls);
@@ -1595,7 +1595,7 @@ H5HF__sect_row_term_cls(H5FS_section_class_t *cls)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(cls);
@@ -1625,11 +1625,11 @@ done:
 static herr_t
 H5HF__sect_row_serialize(const H5FS_section_class_t *cls, const H5FS_section_info_t *_sect, uint8_t *buf)
 {
-    H5HF_hdr_t *               hdr; /* Fractal heap header */
+    H5HF_hdr_t                *hdr; /* Fractal heap header */
     const H5HF_free_section_t *sect      = (const H5HF_free_section_t *)_sect;
     herr_t                     ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(cls);
@@ -1669,10 +1669,10 @@ static H5FS_section_info_t *
 H5HF__sect_row_deserialize(const H5FS_section_class_t *cls, const uint8_t *buf, haddr_t sect_addr,
                            hsize_t sect_size, unsigned *des_flags)
 {
-    H5HF_hdr_t *         hdr;              /* Fractal heap header */
+    H5HF_hdr_t          *hdr;              /* Fractal heap header */
     H5FS_section_info_t *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(cls);
@@ -1712,10 +1712,10 @@ H5HF__sect_row_can_merge(const H5FS_section_info_t *_sect1, const H5FS_section_i
 {
     const H5HF_free_section_t *sect1 = (const H5HF_free_section_t *)_sect1; /* Fractal heap free section */
     const H5HF_free_section_t *sect2 = (const H5HF_free_section_t *)_sect2; /* Fractal heap free section */
-    H5HF_free_section_t *      top_indir_sect1, *top_indir_sect2; /* Top indirect section for each row */
+    H5HF_free_section_t       *top_indir_sect1, *top_indir_sect2; /* Top indirect section for each row */
     htri_t                     ret_value = FALSE;                 /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments. */
     HDassert(sect1);
@@ -1766,12 +1766,12 @@ static herr_t
 H5HF__sect_row_merge(H5FS_section_info_t **_sect1, H5FS_section_info_t *_sect2, void *_udata)
 {
     H5HF_free_section_t **sect1     = (H5HF_free_section_t **)_sect1; /* Fractal heap free section */
-    H5HF_free_section_t * sect2     = (H5HF_free_section_t *)_sect2;  /* Fractal heap free section */
-    H5HF_sect_add_ud_t *  udata     = (H5HF_sect_add_ud_t *)_udata;   /* User callback data */
-    H5HF_hdr_t *          hdr       = udata->hdr;                     /* Fractal heap header */
+    H5HF_free_section_t  *sect2     = (H5HF_free_section_t *)_sect2;  /* Fractal heap free section */
+    H5HF_sect_add_ud_t   *udata     = (H5HF_sect_add_ud_t *)_udata;   /* User callback data */
+    H5HF_hdr_t           *hdr       = udata->hdr;                     /* Fractal heap header */
     herr_t                ret_value = SUCCEED;                        /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(sect1);
@@ -1793,7 +1793,7 @@ H5HF__sect_row_merge(H5FS_section_info_t **_sect1, H5FS_section_info_t *_sect2, 
     else
         /* Merge rows' underlying indirect sections together */
         if (H5HF__sect_indirect_merge_row(hdr, (*sect1), sect2) < 0)
-        HGOTO_ERROR(H5E_HEAP, H5E_CANTMERGE, FAIL, "can't merge underlying indirect sections")
+            HGOTO_ERROR(H5E_HEAP, H5E_CANTMERGE, FAIL, "can't merge underlying indirect sections")
 
 done:
     FUNC_LEAVE_NOAPI(ret_value)
@@ -1821,11 +1821,11 @@ static htri_t
 H5HF__sect_row_can_shrink(const H5FS_section_info_t *_sect, void H5_ATTR_UNUSED *_udata)
 {
     const H5HF_free_section_t *sect      = (const H5HF_free_section_t *)_sect; /* Fractal heap free section */
-    H5HF_sect_add_ud_t *       udata     = (H5HF_sect_add_ud_t *)_udata;       /* User callback data */
-    H5HF_hdr_t *               hdr       = udata->hdr;                         /* Fractal heap header */
+    H5HF_sect_add_ud_t        *udata     = (H5HF_sect_add_ud_t *)_udata;       /* User callback data */
+    H5HF_hdr_t                *hdr       = udata->hdr;                         /* Fractal heap header */
     htri_t                     ret_value = FALSE;                              /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments. */
     HDassert(sect);
@@ -1857,12 +1857,12 @@ static herr_t
 H5HF__sect_row_shrink(H5FS_section_info_t **_sect, void *_udata)
 {
     H5HF_free_section_t **sect = (H5HF_free_section_t **)_sect;     /* Fractal heap free section */
-    H5HF_free_section_t * top_indir_sect;                           /* Top indirect section for row */
-    H5HF_sect_add_ud_t *  udata     = (H5HF_sect_add_ud_t *)_udata; /* User callback data */
-    H5HF_hdr_t *          hdr       = udata->hdr;                   /* Fractal heap header */
+    H5HF_free_section_t  *top_indir_sect;                           /* Top indirect section for row */
+    H5HF_sect_add_ud_t   *udata     = (H5HF_sect_add_ud_t *)_udata; /* User callback data */
+    H5HF_hdr_t           *hdr       = udata->hdr;                   /* Fractal heap header */
     herr_t                ret_value = SUCCEED;                      /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(sect);
@@ -1902,7 +1902,7 @@ H5HF__sect_row_free_real(H5HF_free_section_t *sect)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(sect);
 
@@ -1934,7 +1934,7 @@ H5HF__sect_row_free(H5FS_section_info_t *_sect)
     H5HF_free_section_t *sect      = (H5HF_free_section_t *)_sect; /* Pointer to section to free */
     herr_t               ret_value = SUCCEED;                      /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(sect);
     HDassert(sect->u.row.under);
@@ -1967,13 +1967,13 @@ done:
 static herr_t
 H5HF__sect_row_valid(const H5FS_section_class_t *cls, const H5FS_section_info_t *_sect)
 {
-    H5HF_sect_private_t *      cls_prvt;                                  /* Pointer to class private info */
-    const H5HF_hdr_t *         hdr;                                       /* Fractal heap header */
+    H5HF_sect_private_t       *cls_prvt;                                  /* Pointer to class private info */
+    const H5HF_hdr_t          *hdr;                                       /* Fractal heap header */
     const H5HF_free_section_t *sect = (const H5HF_free_section_t *)_sect; /* Pointer to section to check */
     const H5HF_free_section_t *indir_sect;    /* Pointer to underlying indirect section */
     unsigned H5_ATTR_NDEBUG_UNUSED indir_idx; /* Index of row in underlying indirect section's row array */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Basic sanity check */
     HDassert(cls);
@@ -2029,7 +2029,7 @@ H5HF__sect_row_debug(const H5FS_section_info_t *_sect, FILE *stream, int indent,
 {
     const H5HF_free_section_t *sect = (const H5HF_free_section_t *)_sect; /* Section to dump info */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments. */
     HDassert(sect);
@@ -2067,7 +2067,7 @@ H5HF__sect_indirect_iblock_off(const H5HF_free_section_t *sect)
 {
     hsize_t ret_value = 0; /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /*
      * Check arguments.
@@ -2097,7 +2097,7 @@ H5HF__sect_indirect_top(H5HF_free_section_t *sect)
 {
     H5HF_free_section_t *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /*
      * Check arguments.
@@ -2132,7 +2132,7 @@ H5HF__sect_indirect_init_cls(H5FS_section_class_t *cls, void *_udata)
     H5HF_hdr_t *hdr       = (H5HF_hdr_t *)_udata; /* Fractal heap header */
     herr_t      ret_value = SUCCEED;              /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(cls);
@@ -2168,7 +2168,7 @@ H5HF__sect_indirect_term_cls(H5FS_section_class_t *cls)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(cls);
@@ -2201,7 +2201,7 @@ H5HF__sect_indirect_new(H5HF_hdr_t *hdr, haddr_t sect_off, hsize_t sect_size, H5
     H5HF_free_section_t *sect      = NULL; /* 'Indirect' free space section to add */
     H5HF_free_section_t *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -2268,7 +2268,7 @@ H5HF__sect_indirect_for_row(H5HF_hdr_t *hdr, H5HF_indirect_t *iblock, H5HF_free_
     H5HF_free_section_t *sect      = NULL; /* 'Indirect' free space section to add */
     H5HF_free_section_t *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -2340,7 +2340,7 @@ H5HF__sect_indirect_init_rows(H5HF_hdr_t *hdr, H5HF_free_section_t *sect, hbool_
     unsigned u;                   /* Local index variable */
     herr_t   ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -2447,7 +2447,7 @@ H5HF__sect_indirect_init_rows(H5HF_hdr_t *hdr, H5HF_free_section_t *sect, hbool_
             else
                 /* Add new row section to free space manager for the heap */
                 if (H5HF__space_add(hdr, row_sect, space_flags) < 0)
-                HGOTO_ERROR(H5E_HEAP, H5E_CANTINIT, FAIL, "can't add row section to free space")
+                    HGOTO_ERROR(H5E_HEAP, H5E_CANTINIT, FAIL, "can't add row section to free space")
 
             /* Increment reference count for underlying indirect section */
             sect->u.indirect.rc++;
@@ -2463,7 +2463,7 @@ H5HF__sect_indirect_init_rows(H5HF_hdr_t *hdr, H5HF_free_section_t *sect, hbool_
             first_row_sect = NULL;
         } /* end if */
         else {
-            H5HF_indirect_t *    child_iblock;   /* Child indirect block */
+            H5HF_indirect_t     *child_iblock;   /* Child indirect block */
             H5HF_free_section_t *child_sect;     /* Child 'indirect' section to add */
             unsigned             child_nrows;    /* Number of child rows in indirect blocks for this row */
             unsigned             child_nentries; /* Number of child entries in indirect blocks for this row */
@@ -2658,7 +2658,7 @@ H5HF__sect_indirect_decr(H5HF_free_section_t *sect)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -2710,7 +2710,7 @@ H5HF__sect_indirect_revive_row(H5HF_hdr_t *hdr, H5HF_free_section_t *sect)
     hbool_t          did_protect;         /* Whether we protected the indirect block or not */
     herr_t           ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -2754,7 +2754,7 @@ H5HF__sect_indirect_revive(H5HF_hdr_t *hdr, H5HF_free_section_t *sect, H5HF_indi
     unsigned u;                   /* Local index variable */
     herr_t   ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -2819,7 +2819,7 @@ H5HF__sect_indirect_reduce_row(H5HF_hdr_t *hdr, H5HF_free_section_t *row_sect, h
     H5HF_free_section_t *peer_sect = NULL;    /* Peer indirect section */
     herr_t               ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -3085,7 +3085,7 @@ H5HF__sect_indirect_reduce(H5HF_hdr_t *hdr, H5HF_free_section_t *sect, unsigned 
     H5HF_free_section_t *peer_sect = NULL;    /* Peer indirect section */
     herr_t               ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -3206,7 +3206,7 @@ H5HF__sect_indirect_reduce(H5HF_hdr_t *hdr, H5HF_free_section_t *sect, unsigned 
             /* (Will use this to compute the section address for the peer section */
             sect->u.indirect.num_entries = new_nentries;
             sect->u.indirect.span_size   = H5HF__dtable_span_size(&hdr->man_dtable, sect->u.indirect.row,
-                                                                sect->u.indirect.col, new_nentries);
+                                                                  sect->u.indirect.col, new_nentries);
             HDassert(sect->u.indirect.span_size > 0);
 
             /* Compute address of peer indirect section */
@@ -3315,7 +3315,7 @@ H5HF__sect_indirect_is_first(H5HF_free_section_t *sect)
 {
     hbool_t ret_value = FALSE; /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(sect);
@@ -3348,7 +3348,7 @@ H5HF__sect_indirect_first(H5HF_hdr_t *hdr, H5HF_free_section_t *sect)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(hdr);
@@ -3396,7 +3396,7 @@ done:
 static H5HF_indirect_t *
 H5HF__sect_indirect_get_iblock(H5HF_free_section_t *sect)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /*
      * Check arguments.
@@ -3437,7 +3437,7 @@ H5HF__sect_indirect_merge_row(H5HF_hdr_t *hdr, H5HF_free_section_t *row_sect1, H
     unsigned             u;                      /* Local index variable */
     herr_t               ret_value = SUCCEED;    /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check parameters */
     HDassert(hdr);
@@ -3672,14 +3672,14 @@ done:
 static herr_t
 H5HF__sect_indirect_build_parent(H5HF_hdr_t *hdr, H5HF_free_section_t *sect)
 {
-    H5HF_indirect_t *    par_iblock;          /* Indirect block for parent section */
+    H5HF_indirect_t     *par_iblock;          /* Indirect block for parent section */
     H5HF_free_section_t *par_sect = NULL;     /* Parent indirect section */
     hsize_t              par_block_off;       /* Offset of parent's block */
     unsigned             par_row, par_col;    /* Row & column in parent indirect section */
     unsigned             par_entry;           /* Entry within parent indirect section */
     herr_t               ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check parameters */
     HDassert(hdr);
@@ -3757,7 +3757,7 @@ H5HF__sect_indirect_shrink(H5HF_hdr_t *hdr, H5HF_free_section_t *sect)
     unsigned u;                   /* Local index variable */
     herr_t   ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check parameters */
     HDassert(hdr);
@@ -3812,7 +3812,7 @@ H5HF__sect_indirect_serialize(H5HF_hdr_t *hdr, const H5HF_free_section_t *sect, 
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(hdr);
@@ -3877,7 +3877,7 @@ H5HF__sect_indirect_deserialize(H5HF_hdr_t *hdr, const uint8_t *buf, haddr_t sec
     unsigned             end_col;          /* End column in indirect block */
     H5FS_section_info_t *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments. */
     HDassert(hdr);
@@ -3946,7 +3946,7 @@ H5HF__sect_indirect_free(H5HF_free_section_t *sect)
     H5HF_indirect_t *iblock    = NULL;    /* Indirect block for section */
     herr_t           ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(sect);
 
@@ -3993,7 +3993,7 @@ H5HF__sect_indirect_valid(const H5HF_hdr_t *hdr, const H5HF_free_section_t *sect
     unsigned end_entry;   /* Entry for last block covered */
     unsigned u;           /* Local index variable */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check arguments */
     HDassert(hdr);
@@ -4059,7 +4059,7 @@ H5HF__sect_indirect_valid(const H5HF_hdr_t *hdr, const H5HF_free_section_t *sect
             HDassert(tmp_child_sect->u.indirect.parent == sect);
             if (u > 0) {
                 const H5HF_free_section_t H5_ATTR_NDEBUG_UNUSED
-                    *                     tmp_child_sect2; /* Pointer to child indirect section */
+                    *tmp_child_sect2; /* Pointer to child indirect section */
 
                 tmp_child_sect2 = sect->u.indirect.indir_ents[u - 1];
                 HDassert(H5F_addr_lt(tmp_child_sect2->sect_info.addr, tmp_child_sect->sect_info.addr));
@@ -4090,7 +4090,7 @@ H5HF__sect_indirect_valid(const H5HF_hdr_t *hdr, const H5HF_free_section_t *sect
 static herr_t
 H5HF__sect_indirect_debug(const H5HF_free_section_t *sect, FILE *stream, int indent, int fwidth)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments. */
     HDassert(sect);

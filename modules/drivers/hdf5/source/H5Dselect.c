@@ -44,8 +44,8 @@
 /* Local Prototypes */
 /********************/
 
-static herr_t H5D__select_io(const H5D_io_info_t *io_info, size_t elmt_size, size_t nelmts,
-                             const H5S_t *file_space, const H5S_t *mem_space);
+static herr_t H5D__select_io(const H5D_io_info_t *io_info, size_t elmt_size, size_t nelmts, H5S_t *file_space,
+                             H5S_t *mem_space);
 
 /*********************/
 /* Package Variables */
@@ -77,17 +77,17 @@ H5FL_EXTERN(H5S_sel_iter_t);
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5D__select_io(const H5D_io_info_t *io_info, size_t elmt_size, size_t nelmts, const H5S_t *file_space,
-               const H5S_t *mem_space)
+H5D__select_io(const H5D_io_info_t *io_info, size_t elmt_size, size_t nelmts, H5S_t *file_space,
+               H5S_t *mem_space)
 {
     H5S_sel_iter_t *mem_iter       = NULL;  /* Memory selection iteration info */
     hbool_t         mem_iter_init  = FALSE; /* Memory selection iteration info has been initialized */
     H5S_sel_iter_t *file_iter      = NULL;  /* File selection iteration info */
     hbool_t         file_iter_init = FALSE; /* File selection iteration info has been initialized */
-    hsize_t *       mem_off        = NULL;  /* Pointer to sequence offsets in memory */
-    hsize_t *       file_off       = NULL;  /* Pointer to sequence offsets in the file */
-    size_t *        mem_len        = NULL;  /* Pointer to sequence lengths in memory */
-    size_t *        file_len       = NULL;  /* Pointer to sequence lengths in the file */
+    hsize_t        *mem_off        = NULL;  /* Pointer to sequence offsets in memory */
+    hsize_t        *file_off       = NULL;  /* Pointer to sequence offsets in the file */
+    size_t         *mem_len        = NULL;  /* Pointer to sequence lengths in memory */
+    size_t         *file_len       = NULL;  /* Pointer to sequence lengths in the file */
     size_t          curr_mem_seq;           /* Current memory sequence to operate on */
     size_t          curr_file_seq;          /* Current file sequence to operate on */
     size_t          mem_nseq;               /* Number of sequences generated in the file */
@@ -97,7 +97,7 @@ H5D__select_io(const H5D_io_info_t *io_info, size_t elmt_size, size_t nelmts, co
     ssize_t         tmp_file_len;           /* Temporary number of bytes in file sequence */
     herr_t          ret_value = SUCCEED;    /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check args */
     HDassert(io_info);
@@ -274,17 +274,17 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5D_select_io_mem(void *dst_buf, const H5S_t *dst_space, const void *src_buf, const H5S_t *src_space,
-                  size_t elmt_size, size_t nelmts)
+H5D_select_io_mem(void *dst_buf, H5S_t *dst_space, const void *src_buf, H5S_t *src_space, size_t elmt_size,
+                  size_t nelmts)
 {
     H5S_sel_iter_t *dst_sel_iter      = NULL;  /* Destination dataspace iteration info */
     H5S_sel_iter_t *src_sel_iter      = NULL;  /* Source dataspace iteration info */
     hbool_t         dst_sel_iter_init = FALSE; /* Destination dataspace selection iterator initialized? */
     hbool_t         src_sel_iter_init = FALSE; /* Source dataspace selection iterator initialized? */
-    hsize_t *       dst_off           = NULL;  /* Pointer to sequence offsets in destination buffer */
-    hsize_t *       src_off           = NULL;  /* Pointer to sequence offsets in source buffer */
-    size_t *        dst_len           = NULL;  /* Pointer to sequence lengths in destination buffer */
-    size_t *        src_len           = NULL;  /* Pointer to sequence lengths in source buffer */
+    hsize_t        *dst_off           = NULL;  /* Pointer to sequence offsets in destination buffer */
+    hsize_t        *src_off           = NULL;  /* Pointer to sequence offsets in source buffer */
+    size_t         *dst_len           = NULL;  /* Pointer to sequence lengths in destination buffer */
+    size_t         *src_len           = NULL;  /* Pointer to sequence lengths in source buffer */
     size_t          curr_dst_seq;              /* Current destination buffer sequence to operate on */
     size_t          curr_src_seq;              /* Current source buffer sequence to operate on */
     size_t          dst_nseq;                  /* Number of sequences generated for destination buffer */
@@ -453,7 +453,7 @@ done:
  */
 herr_t
 H5D__select_read(const H5D_io_info_t *io_info, const H5D_type_info_t *type_info, hsize_t nelmts,
-                 const H5S_t *file_space, const H5S_t *mem_space)
+                 H5S_t *file_space, H5S_t *mem_space)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
@@ -482,7 +482,7 @@ done:
  */
 herr_t
 H5D__select_write(const H5D_io_info_t *io_info, const H5D_type_info_t *type_info, hsize_t nelmts,
-                  const H5S_t *file_space, const H5S_t *mem_space)
+                  H5S_t *file_space, H5S_t *mem_space)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 

@@ -17,7 +17,7 @@
  *			Dec 01 2016
  *			Quincey Koziol
  *
- * Purpose:		Routines for managing v2 B-tree internal ndoes.
+ * Purpose:		Routines for managing v2 B-tree internal nodes.
  *
  *-------------------------------------------------------------------------
  */
@@ -185,8 +185,8 @@ H5B2__protect_internal(H5B2_hdr_t *hdr, void *parent, H5B2_node_ptr_t *node_ptr,
                        hbool_t shadow, unsigned flags)
 {
     H5B2_internal_cache_ud_t udata;            /* User data to pass through to cache 'deserialize' callback */
-    H5B2_internal_t *        internal  = NULL; /* v2 B-tree internal node */
-    H5B2_internal_t *        ret_value = NULL; /* Return value */
+    H5B2_internal_t         *internal  = NULL; /* v2 B-tree internal node */
+    H5B2_internal_t         *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_PACKAGE
 
@@ -637,26 +637,26 @@ H5B2__update_internal(H5B2_hdr_t *hdr, uint16_t depth, unsigned *parent_cache_in
                     if (idx == 0) { /* Left-most child */
                         /* Check for left-most child and its neighbor being close to full */
                         if ((internal->node_ptrs[idx].node_nrec + internal->node_ptrs[idx + 1].node_nrec) >=
-                            ((hdr->node_info[depth - 1].split_nrec * 2) - 1))
+                            (unsigned)((hdr->node_info[depth - 1].split_nrec * 2) - 1))
                             could_split = TRUE;
-                    }                                 /* end if */
+                    }
                     else if (idx == internal->nrec) { /* Right-most child */
                         /* Check for right-most child and its neighbor being close to full */
                         if ((internal->node_ptrs[idx - 1].node_nrec + internal->node_ptrs[idx].node_nrec) >=
-                            ((hdr->node_info[depth - 1].split_nrec * 2) - 1))
+                            (unsigned)((hdr->node_info[depth - 1].split_nrec * 2) - 1))
                             could_split = TRUE;
-                    }      /* end else-if */
+                    }
                     else { /* Middle child */
                         /* Check for middle child and its left neighbor being close to full */
                         if ((internal->node_ptrs[idx - 1].node_nrec + internal->node_ptrs[idx].node_nrec) >=
-                            ((hdr->node_info[depth - 1].split_nrec * 2) - 1))
+                            (unsigned)((hdr->node_info[depth - 1].split_nrec * 2) - 1))
                             could_split = TRUE;
                         /* Check for middle child and its right neighbor being close to full */
                         else if ((internal->node_ptrs[idx].node_nrec +
                                   internal->node_ptrs[idx + 1].node_nrec) >=
-                                 ((hdr->node_info[depth - 1].split_nrec * 2) - 1))
+                                 (unsigned)((hdr->node_info[depth - 1].split_nrec * 2) - 1))
                             could_split = TRUE;
-                    } /* end if */
+                    }
 
                     /* If this node is full and the child node insertion could
                      *  cause a split, punt back up to caller, leaving the
@@ -672,8 +672,8 @@ H5B2__update_internal(H5B2_hdr_t *hdr, uint16_t depth, unsigned *parent_cache_in
 
                         /* Punt back to caller */
                         HGOTO_DONE(SUCCEED);
-                    } /* end if */
-                }     /* end if */
+                    }
+                }
 
                 /* Release the internal B-tree node */
                 if (H5AC_unprotect(hdr->f, H5AC_BT2_INT, curr_node_ptr->addr, internal, internal_flags) < 0)
@@ -742,7 +742,7 @@ H5B2__shadow_internal(H5B2_internal_t *internal, H5B2_node_ptr_t *curr_node_ptr)
     H5B2_hdr_t *hdr;                 /* B-tree header */
     herr_t      ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -806,8 +806,8 @@ H5B2__remove_internal(H5B2_hdr_t *hdr, hbool_t *depth_decreased, void *swap_loc,
                       H5B2_nodepos_t curr_pos, H5B2_node_ptr_t *curr_node_ptr, void *udata, H5B2_remove_t op,
                       void *op_data)
 {
-    H5AC_info_t *    new_cache_info; /* Pointer to new cache info */
-    unsigned *       new_cache_info_flags_ptr = NULL;
+    H5AC_info_t     *new_cache_info; /* Pointer to new cache info */
+    unsigned        *new_cache_info_flags_ptr = NULL;
     H5B2_node_ptr_t *new_node_ptr;                     /* Pointer to new node pointer */
     H5B2_internal_t *internal;                         /* Pointer to internal node */
     H5B2_nodepos_t   next_pos       = H5B2_POS_MIDDLE; /* Position of next node */
@@ -1050,8 +1050,8 @@ H5B2__remove_internal_by_idx(H5B2_hdr_t *hdr, hbool_t *depth_decreased, void *sw
                              unsigned *parent_cache_info_flags_ptr, H5B2_node_ptr_t *curr_node_ptr,
                              H5B2_nodepos_t curr_pos, hsize_t n, H5B2_remove_t op, void *op_data)
 {
-    H5AC_info_t *    new_cache_info; /* Pointer to new cache info */
-    unsigned *       new_cache_info_flags_ptr = NULL;
+    H5AC_info_t     *new_cache_info; /* Pointer to new cache info */
+    unsigned        *new_cache_info_flags_ptr = NULL;
     H5B2_node_ptr_t *new_node_ptr;                     /* Pointer to new node pointer */
     H5B2_internal_t *internal;                         /* Pointer to internal node */
     H5B2_nodepos_t   next_pos       = H5B2_POS_MIDDLE; /* Position of next node */

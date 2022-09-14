@@ -36,17 +36,17 @@ class H5_DLLCPP IntType : public AtomType {
 
     // Returns an IntType object via DataType* by decoding the
     // binary object description of this type.
-    virtual DataType *decode() const H5_OVERRIDE;
+    virtual DataType *decode() const override;
 
     // Retrieves the sign type for an integer type
     H5T_sign_t getSign() const;
 
-    // Sets the sign proprety for an integer type.
+    // Sets the sign property for an integer type.
     void setSign(H5T_sign_t sign) const;
 
     ///\brief Returns this class name.
     virtual H5std_string
-    fromClass() const H5_OVERRIDE
+    fromClass() const override
     {
         return ("IntType");
     }
@@ -61,7 +61,7 @@ class H5_DLLCPP IntType : public AtomType {
     IntType(const IntType &original);
 
     // Noop destructor.
-    virtual ~IntType() H5_OVERRIDE;
+    virtual ~IntType() override;
 
 }; // end of IntType
 } // namespace H5

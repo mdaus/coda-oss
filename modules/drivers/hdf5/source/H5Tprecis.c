@@ -59,7 +59,7 @@ H5Tget_precision(hid_t type_id)
 
     /* Get precision */
     if ((ret_value = H5T_get_precision(dt)) == 0)
-        HGOTO_ERROR(H5E_DATATYPE, H5E_UNSUPPORTED, 0, "cant't get precision for specified datatype")
+        HGOTO_ERROR(H5E_DATATYPE, H5E_UNSUPPORTED, 0, "can't get precision for specified datatype")
 
 done:
     FUNC_LEAVE_API(ret_value)
@@ -191,7 +191,7 @@ H5T__set_precision(const H5T_t *dt, size_t prec)
     size_t offset, size;
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check args */
     HDassert(dt);

@@ -482,13 +482,13 @@
 
 /* Skip list node data structure */
 struct H5SL_node_t {
-    const void *         key;        /* Pointer to node's key */
-    void *               item;       /* Pointer to node's item */
+    const void          *key;        /* Pointer to node's key */
+    void                *item;       /* Pointer to node's item */
     size_t               level;      /* The level of this node */
     size_t               log_nalloc; /* log2(Number of slots allocated in forward) */
     uint32_t             hashval;    /* Hash value for key (only for strings, currently) */
     struct H5SL_node_t **forward;    /* Array of forward pointers from this node */
-    struct H5SL_node_t * backward;   /* Backward pointer from this node */
+    struct H5SL_node_t  *backward;   /* Backward pointer from this node */
 };
 
 /* Main skip list data structure */
@@ -510,9 +510,6 @@ static H5SL_node_t *H5SL__insert_common(H5SL_t *slist, void *item, const void *k
 static herr_t       H5SL__release_common(H5SL_t *slist, H5SL_operator_t op, void *op_data);
 static herr_t       H5SL__close_common(H5SL_t *slist, H5SL_operator_t op, void *op_data);
 
-/* Package initialization variable */
-hbool_t H5_PKG_INIT_VAR = FALSE;
-
 /* Declare a free list to manage the H5SL_t struct */
 H5FL_DEFINE_STATIC(H5SL_t);
 
@@ -524,26 +521,21 @@ static H5FL_fac_head_t **H5SL_fac_g;
 static size_t            H5SL_fac_nused_g;
 static size_t            H5SL_fac_nalloc_g;
 
-/*--------------------------------------------------------------------------
- NAME
-    H5SL__init_package
- PURPOSE
-    Initialize interface-specific information
- USAGE
-    herr_t H5SL__init_package()
- RETURNS
-    Non-negative on success/Negative on failure
- DESCRIPTION
-    Initializes any interface-specific data or routines.
- GLOBAL VARIABLES
- COMMENTS, BUGS, ASSUMPTIONS
- EXAMPLES
- REVISION LOG
---------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------
+ * Function:    H5SL_init
+ *
+ * Purpose:     Initialize the interface from some other layer.
+ *
+ * Return:      Success:        non-negative
+ *              Failure:        negative
+ *-------------------------------------------------------------------------
+ */
 herr_t
-H5SL__init_package(void)
+H5SL_init(void)
 {
-    FUNC_ENTER_PACKAGE_NOERR
+    herr_t ret_value = SUCCEED;
+
+    FUNC_ENTER_NOAPI_NOERR
 
     /* Allocate space for array of factories */
     H5SL_fac_g = (H5FL_fac_head_t **)H5MM_malloc(sizeof(H5FL_fac_head_t *));
@@ -555,8 +547,8 @@ H5SL__init_package(void)
     HDassert(H5SL_fac_g[0]);
     H5SL_fac_nused_g = 1;
 
-    FUNC_LEAVE_NOAPI(SUCCEED)
-} /* end H5SL__init_package() */
+    FUNC_LEAVE_NOAPI(ret_value)
+}
 
 /*--------------------------------------------------------------------------
  NAME
@@ -584,32 +576,26 @@ H5SL_term_package(void)
 
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
-    if (H5_PKG_INIT_VAR) {
-        /* Terminate all the factories */
-        if (H5SL_fac_nused_g > 0) {
-            size_t                       i;
-            herr_t H5_ATTR_NDEBUG_UNUSED ret;
+    /* Terminate all the factories */
+    if (H5SL_fac_nused_g > 0) {
+        size_t                       i;
+        herr_t H5_ATTR_NDEBUG_UNUSED ret;
 
-            for (i = 0; i < H5SL_fac_nused_g; i++) {
-                ret = H5FL_fac_term(H5SL_fac_g[i]);
-                HDassert(ret >= 0);
-            }
-            H5SL_fac_nused_g = 0;
-
-            n++;
+        for (i = 0; i < H5SL_fac_nused_g; i++) {
+            ret = H5FL_fac_term(H5SL_fac_g[i]);
+            HDassert(ret >= 0);
         }
+        H5SL_fac_nused_g = 0;
 
-        /* Free the list of factories */
-        if (H5SL_fac_g) {
-            H5SL_fac_g        = (H5FL_fac_head_t **)H5MM_xfree((void *)H5SL_fac_g);
-            H5SL_fac_nalloc_g = 0;
+        n++;
+    }
 
-            n++;
-        }
+    /* Free the list of factories */
+    if (H5SL_fac_g) {
+        H5SL_fac_g        = (H5FL_fac_head_t **)H5MM_xfree((void *)H5SL_fac_g);
+        H5SL_fac_nalloc_g = 0;
 
-        /* Mark the interface as uninitialized */
-        if (0 == n)
-            H5_PKG_INIT_VAR = FALSE;
+        n++;
     }
 
     FUNC_LEAVE_NOAPI(n)
@@ -642,7 +628,7 @@ H5SL__new_node(void *item, const void *key, uint32_t hashval)
 {
     H5SL_node_t *ret_value = NULL; /* New skip list node */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Allocate the node */
     if (NULL == (ret_value = (H5SL_node_t *)H5FL_MALLOC(H5SL_node_t)))
@@ -692,7 +678,7 @@ H5SL__insert_common(H5SL_t *slist, void *item, const void *key)
     uint32_t     hashval   = 0;    /* Hash value for key */
     H5SL_node_t *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check args */
     HDassert(slist);
@@ -808,7 +794,7 @@ H5SL__release_common(H5SL_t *slist, H5SL_operator_t op, void *op_data)
     H5SL_node_t *node, *next_node; /* Pointers to skip list nodes */
     herr_t       ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check args */
     HDassert(slist);
@@ -828,10 +814,10 @@ H5SL__release_common(H5SL_t *slist, H5SL_operator_t op, void *op_data)
          * elements. The library code that is making use of the skip list
          * container can do what it likes with the elements.
          */
-        H5_GCC_DIAG_OFF("cast-qual")
+        H5_GCC_CLANG_DIAG_OFF("cast-qual")
         if (op)
             (void)(op)(node->item, (void *)node->key, op_data);
-        H5_GCC_DIAG_ON("cast-qual")
+        H5_GCC_CLANG_DIAG_ON("cast-qual")
 
         node->forward = (H5SL_node_t **)H5FL_FAC_FREE(H5SL_fac_g[node->log_nalloc], node->forward);
         node          = H5FL_FREE(H5SL_node_t, node);
@@ -886,7 +872,7 @@ H5SL__close_common(H5SL_t *slist, H5SL_operator_t op, void *op_data)
 {
     herr_t ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check args */
     HDassert(slist);
@@ -930,9 +916,9 @@ done:
 H5SL_t *
 H5SL_create(H5SL_type_t type, H5SL_cmp_t cmp)
 {
-    H5SL_t *     new_slist = NULL; /* Pointer to new skip list object created */
+    H5SL_t      *new_slist = NULL; /* Pointer to new skip list object created */
     H5SL_node_t *header;           /* Pointer to skip list header node */
-    H5SL_t *     ret_value = NULL; /* Return value */
+    H5SL_t      *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_NOAPI(NULL)
 
@@ -1124,7 +1110,7 @@ H5SL_remove(H5SL_t *slist, const void *key)
 {
     H5SL_node_t *x;                /* Current node to examine */
     uint32_t     hashval   = 0;    /* Hash value for key */
-    void *       ret_value = NULL; /* Return value */
+    void        *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT
 
@@ -1207,7 +1193,7 @@ done:
 void *
 H5SL_remove_first(H5SL_t *slist)
 {
-    void *       ret_value = NULL;                      /* Return value             */
+    void        *ret_value = NULL;                      /* Return value             */
     H5SL_node_t *head      = slist->header;             /* Skip list header         */
     H5SL_node_t *tmp       = slist->header->forward[0]; /* Temporary node pointer   */
     H5SL_node_t *next;                                  /* Next node to search for  */
@@ -1315,7 +1301,7 @@ H5SL_search(H5SL_t *slist, const void *key)
 {
     H5SL_node_t *x;                /* Current node to examine */
     uint32_t     hashval   = 0;    /* Hash value for key */
-    void *       ret_value = NULL; /* Return value */
+    void        *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -1407,7 +1393,7 @@ H5SL_less(H5SL_t *slist, const void *key)
 {
     H5SL_node_t *x;                /* Current node to examine */
     uint32_t     hashval   = 0;    /* Hash value for key */
-    void *       ret_value = NULL; /* Return value */
+    void        *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -1512,7 +1498,7 @@ H5SL_greater(H5SL_t *slist, const void *key)
 {
     H5SL_node_t *x;                /* Current node to examine */
     uint32_t     hashval   = 0;    /* Hash value for key */
-    void *       ret_value = NULL; /* Return value */
+    void        *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
@@ -2100,10 +2086,10 @@ H5SL_iterate(H5SL_t *slist, H5SL_operator_t op, void *op_data)
          * elements. The library code that is making use of the skip list
          * container can do what it likes with the elements.
          */
-        H5_GCC_DIAG_OFF("cast-qual")
+        H5_GCC_CLANG_DIAG_OFF("cast-qual")
         if ((ret_value = (op)(node->item, (void *)node->key, op_data)) != 0)
             break;
-        H5_GCC_DIAG_ON("cast-qual")
+        H5_GCC_CLANG_DIAG_ON("cast-qual")
 
         /* Advance to next node */
         node = next;

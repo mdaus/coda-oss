@@ -197,7 +197,7 @@ H5P__dacc_reg_prop(H5P_genclass_t *pclass)
     hsize_t        printf_gap   = H5D_ACS_VDS_PRINTF_GAP_DEF; /* Default VDS printf gap */
     herr_t         ret_value    = SUCCEED;                    /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Register the size of raw data chunk cache (elements) */
     if (H5P__register_real(pclass, H5D_ACS_DATA_CACHE_NUM_SLOTS_NAME, H5D_ACS_DATA_CACHE_NUM_SLOTS_SIZE,
@@ -266,7 +266,7 @@ static herr_t
 H5P__dapl_vds_file_pref_set(hid_t H5_ATTR_UNUSED prop_id, const char H5_ATTR_UNUSED *name,
                             size_t H5_ATTR_UNUSED size, void *value)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(value);
@@ -290,7 +290,7 @@ static herr_t
 H5P__dapl_vds_file_pref_get(hid_t H5_ATTR_UNUSED prop_id, const char H5_ATTR_UNUSED *name,
                             size_t H5_ATTR_UNUSED size, void *value)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(value);
@@ -315,12 +315,12 @@ static herr_t
 H5P__dapl_vds_file_pref_enc(const void *value, void **_pp, size_t *size)
 {
     const char *vds_file_pref = *(const char *const *)value;
-    uint8_t **  pp            = (uint8_t **)_pp;
+    uint8_t   **pp            = (uint8_t **)_pp;
     size_t      len           = 0;
     uint64_t    enc_value;
     unsigned    enc_size;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDcompile_assert(sizeof(size_t) <= sizeof(uint64_t));
 
@@ -364,14 +364,14 @@ H5P__dapl_vds_file_pref_enc(const void *value, void **_pp, size_t *size)
 static herr_t
 H5P__dapl_vds_file_pref_dec(const void **_pp, void *_value)
 {
-    char **         vds_file_pref = (char **)_value;
+    char          **vds_file_pref = (char **)_value;
     const uint8_t **pp            = (const uint8_t **)_pp;
     size_t          len;
     uint64_t        enc_value; /* Decoded property value */
     unsigned        enc_size;  /* Size of encoded property */
     herr_t          ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(pp);
     HDassert(*pp);
@@ -414,7 +414,7 @@ static herr_t
 H5P__dapl_vds_file_pref_del(hid_t H5_ATTR_UNUSED prop_id, const char H5_ATTR_UNUSED *name,
                             size_t H5_ATTR_UNUSED size, void *value)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(value);
 
@@ -434,7 +434,7 @@ H5P__dapl_vds_file_pref_del(hid_t H5_ATTR_UNUSED prop_id, const char H5_ATTR_UNU
 static herr_t
 H5P__dapl_vds_file_pref_copy(const char H5_ATTR_UNUSED *name, size_t H5_ATTR_UNUSED size, void *value)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(value);
 
@@ -460,7 +460,7 @@ H5P__dapl_vds_file_pref_cmp(const void *value1, const void *value2, size_t H5_AT
     const char *pref2     = *(const char *const *)value2;
     int         ret_value = 0;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     if (NULL == pref1 && NULL != pref2)
         HGOTO_DONE(1);
@@ -484,7 +484,7 @@ done:
 static herr_t
 H5P__dapl_vds_file_pref_close(const char H5_ATTR_UNUSED *name, size_t H5_ATTR_UNUSED size, void *value)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(value);
 
@@ -506,7 +506,7 @@ static herr_t
 H5P__dapl_efile_pref_set(hid_t H5_ATTR_UNUSED prop_id, const char H5_ATTR_UNUSED *name,
                          size_t H5_ATTR_UNUSED size, void *value)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(value);
@@ -530,7 +530,7 @@ static herr_t
 H5P__dapl_efile_pref_get(hid_t H5_ATTR_UNUSED prop_id, const char H5_ATTR_UNUSED *name,
                          size_t H5_ATTR_UNUSED size, void *value)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(value);
@@ -555,12 +555,12 @@ static herr_t
 H5P__dapl_efile_pref_enc(const void *value, void **_pp, size_t *size)
 {
     const char *efile_pref = *(const char *const *)value;
-    uint8_t **  pp         = (uint8_t **)_pp;
+    uint8_t   **pp         = (uint8_t **)_pp;
     size_t      len        = 0;
     uint64_t    enc_value;
     unsigned    enc_size;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDcompile_assert(sizeof(size_t) <= sizeof(uint64_t));
 
@@ -604,14 +604,14 @@ H5P__dapl_efile_pref_enc(const void *value, void **_pp, size_t *size)
 static herr_t
 H5P__dapl_efile_pref_dec(const void **_pp, void *_value)
 {
-    char **         efile_pref = (char **)_value;
+    char          **efile_pref = (char **)_value;
     const uint8_t **pp         = (const uint8_t **)_pp;
     size_t          len;
     uint64_t        enc_value; /* Decoded property value */
     unsigned        enc_size;  /* Size of encoded property */
     herr_t          ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(pp);
     HDassert(*pp);
@@ -654,7 +654,7 @@ static herr_t
 H5P__dapl_efile_pref_del(hid_t H5_ATTR_UNUSED prop_id, const char H5_ATTR_UNUSED *name,
                          size_t H5_ATTR_UNUSED size, void *value)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(value);
 
@@ -674,7 +674,7 @@ H5P__dapl_efile_pref_del(hid_t H5_ATTR_UNUSED prop_id, const char H5_ATTR_UNUSED
 static herr_t
 H5P__dapl_efile_pref_copy(const char H5_ATTR_UNUSED *name, size_t H5_ATTR_UNUSED size, void *value)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(value);
 
@@ -700,7 +700,7 @@ H5P__dapl_efile_pref_cmp(const void *value1, const void *value2, size_t H5_ATTR_
     const char *pref2     = *(const char *const *)value2;
     int         ret_value = 0;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     if (NULL == pref1 && NULL != pref2)
         HGOTO_DONE(1);
@@ -724,7 +724,7 @@ done:
 static herr_t
 H5P__dapl_efile_pref_close(const char H5_ATTR_UNUSED *name, size_t H5_ATTR_UNUSED size, void *value)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(value);
 
@@ -739,7 +739,7 @@ H5P__dapl_efile_pref_close(const char H5_ATTR_UNUSED *name, size_t H5_ATTR_UNUSE
  * Purpose:    Set the number of objects in the meta data cache and the
  *        maximum number of chunks and bytes in the raw data chunk cache.
  *        Once set, these values will override the values in the file access
- *        property list.  Each of thhese values can be individually unset
+ *        property list.  Each of these values can be individually unset
  *        (or not set at all) by passing the macros:
  *        H5D_CHUNK_CACHE_NCHUNKS_DEFAULT,
  *        H5D_CHUNK_CACHE_NSLOTS_DEFAULT, and/or
@@ -775,7 +775,7 @@ H5Pset_chunk_cache(hid_t dapl_id, size_t rdcc_nslots, size_t rdcc_nbytes, double
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(dapl_id, H5P_DATASET_ACCESS)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID");
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID");
 
     /* Set sizes */
     if (H5P_set(plist, H5D_ACS_DATA_CACHE_NUM_SLOTS_NAME, &rdcc_nslots) < 0)
@@ -804,22 +804,23 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5Pget_chunk_cache(hid_t dapl_id, size_t *rdcc_nslots, size_t *rdcc_nbytes, double *rdcc_w0)
+H5Pget_chunk_cache(hid_t dapl_id, size_t *rdcc_nslots /*out*/, size_t *rdcc_nbytes /*out*/,
+                   double *rdcc_w0 /*out*/)
 {
     H5P_genplist_t *plist;               /* Property list pointer */
     H5P_genplist_t *def_plist;           /* Default file access property list */
     herr_t          ret_value = SUCCEED; /* return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE4("e", "i*z*z*d", dapl_id, rdcc_nslots, rdcc_nbytes, rdcc_w0);
+    H5TRACE4("e", "ixxx", dapl_id, rdcc_nslots, rdcc_nbytes, rdcc_w0);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(dapl_id, H5P_DATASET_ACCESS)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID");
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID");
 
     /* Get default file access plist */
     if (NULL == (def_plist = (H5P_genplist_t *)H5I_object(H5P_FILE_ACCESS_DEFAULT)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for default fapl ID");
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for default fapl ID");
 
     /* Get the properties.  If a property is set to the default value, the value
      * from the default fapl is used. */
@@ -869,7 +870,7 @@ H5P__encode_chunk_cache_nslots(const void *value, void **_pp, size_t *size)
     uint8_t **pp        = (uint8_t **)_pp;
     unsigned  enc_size; /* Size of encoded property */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity checks */
     HDcompile_assert(sizeof(size_t) <= sizeof(uint64_t));
@@ -919,12 +920,12 @@ H5P__encode_chunk_cache_nslots(const void *value, void **_pp, size_t *size)
 static herr_t
 H5P__decode_chunk_cache_nslots(const void **_pp, void *_value)
 {
-    size_t *        value = (size_t *)_value; /* Property value to return */
+    size_t         *value = (size_t *)_value; /* Property value to return */
     const uint8_t **pp    = (const uint8_t **)_pp;
     uint64_t        enc_value; /* Decoded property value */
     unsigned        enc_size;  /* Size of encoded property */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDcompile_assert(sizeof(size_t) <= sizeof(uint64_t));
@@ -969,7 +970,7 @@ H5P__encode_chunk_cache_nbytes(const void *value, void **_pp, size_t *size)
     uint8_t **pp        = (uint8_t **)_pp;
     unsigned  enc_size; /* Size of encoded property */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity checks */
     HDcompile_assert(sizeof(size_t) <= sizeof(uint64_t));
@@ -1019,12 +1020,12 @@ H5P__encode_chunk_cache_nbytes(const void *value, void **_pp, size_t *size)
 static herr_t
 H5P__decode_chunk_cache_nbytes(const void **_pp, void *_value)
 {
-    size_t *        value = (size_t *)_value; /* Property value to return */
+    size_t         *value = (size_t *)_value; /* Property value to return */
     const uint8_t **pp    = (const uint8_t **)_pp;
     uint64_t        enc_value; /* Decoded property value */
     unsigned        enc_size;  /* Size of encoded property */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDcompile_assert(sizeof(size_t) <= sizeof(uint64_t));
@@ -1081,7 +1082,7 @@ H5Pset_virtual_view(hid_t plist_id, H5D_vds_view_t view)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_DATASET_ACCESS)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Update property list */
     if (H5P_set(plist, H5D_ACS_VDS_VIEW_NAME, &view) < 0)
@@ -1103,17 +1104,17 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5Pget_virtual_view(hid_t plist_id, H5D_vds_view_t *view)
+H5Pget_virtual_view(hid_t plist_id, H5D_vds_view_t *view /*out*/)
 {
     H5P_genplist_t *plist;               /* Property list pointer */
     herr_t          ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE2("e", "i*Dv", plist_id, view);
+    H5TRACE2("e", "ix", plist_id, view);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_DATASET_ACCESS)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get value from property list */
     if (view)
@@ -1138,9 +1139,9 @@ static herr_t
 H5P__dacc_vds_view_enc(const void *value, void **_pp, size_t *size)
 {
     const H5D_vds_view_t *view = (const H5D_vds_view_t *)value; /* Create local alias for values */
-    uint8_t **            pp   = (uint8_t **)_pp;
+    uint8_t             **pp   = (uint8_t **)_pp;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(view);
@@ -1172,7 +1173,7 @@ H5P__dacc_vds_view_dec(const void **_pp, void *_value)
     H5D_vds_view_t *view = (H5D_vds_view_t *)_value;
     const uint8_t **pp   = (const uint8_t **)_pp;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity checks */
     HDassert(pp);
@@ -1223,7 +1224,7 @@ H5Pset_virtual_printf_gap(hid_t plist_id, hsize_t gap_size)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_DATASET_ACCESS)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Update property list */
     if (H5P_set(plist, H5D_ACS_VDS_PRINTF_GAP_NAME, &gap_size) < 0)
@@ -1246,17 +1247,17 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5Pget_virtual_printf_gap(hid_t plist_id, hsize_t *gap_size)
+H5Pget_virtual_printf_gap(hid_t plist_id, hsize_t *gap_size /*out*/)
 {
     H5P_genplist_t *plist;               /* Property list pointer */
     herr_t          ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE2("e", "i*h", plist_id, gap_size);
+    H5TRACE2("e", "ix", plist_id, gap_size);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_DATASET_ACCESS)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get value from property list */
     if (gap_size)
@@ -1286,13 +1287,13 @@ herr_t
 H5Pset_append_flush(hid_t plist_id, unsigned ndims, const hsize_t *boundary, H5D_append_cb_t func,
                     void *udata)
 {
-    H5P_genplist_t *   plist;               /* Property list pointer */
+    H5P_genplist_t    *plist;               /* Property list pointer */
     H5D_append_flush_t info;                /* Property for append flush parameters */
     unsigned           u;                   /* Local index variable */
     herr_t             ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE5("e", "iIu*hx*x", plist_id, ndims, boundary, func, udata);
+    H5TRACE5("e", "iIu*hDA*x", plist_id, ndims, boundary, func, udata);
 
     /* Check arguments */
     if (0 == ndims)
@@ -1309,7 +1310,7 @@ H5Pset_append_flush(hid_t plist_id, unsigned ndims, const hsize_t *boundary, H5D
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_DATASET_ACCESS)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Set up values */
     info.ndims = ndims;
@@ -1345,19 +1346,20 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5Pget_append_flush(hid_t plist_id, unsigned ndims, hsize_t boundary[], H5D_append_cb_t *func, void **udata)
+H5Pget_append_flush(hid_t plist_id, unsigned ndims, hsize_t boundary[], H5D_append_cb_t *func /*out*/,
+                    void **udata /*out*/)
 {
-    H5P_genplist_t *   plist; /* property list pointer */
+    H5P_genplist_t    *plist; /* property list pointer */
     H5D_append_flush_t info;
     unsigned           u;                   /* local index variable */
     herr_t             ret_value = SUCCEED; /* return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE5("e", "iIu*h*x**x", plist_id, ndims, boundary, func, udata);
+    H5TRACE5("e", "iIu*hxx", plist_id, ndims, boundary, func, udata);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_DATASET_ACCESS)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Retrieve info for append flush */
     if (H5P_get(plist, H5D_ACS_APPEND_FLUSH_NAME, &info) < 0)
@@ -1407,7 +1409,7 @@ H5Pset_efile_prefix(hid_t plist_id, const char *prefix)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_DATASET_ACCESS)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Set prefix */
     if (H5P_set(plist, H5D_ACS_EFILE_PREFIX_NAME, &prefix) < 0)
@@ -1428,19 +1430,19 @@ done:
  *-------------------------------------------------------------------------
  */
 ssize_t
-H5Pget_efile_prefix(hid_t plist_id, char *prefix, size_t size)
+H5Pget_efile_prefix(hid_t plist_id, char *prefix /*out*/, size_t size)
 {
     H5P_genplist_t *plist;     /* Property list pointer */
-    char *          my_prefix; /* Library's copy of the prefix */
+    char           *my_prefix; /* Library's copy of the prefix */
     size_t          len;       /* Length of prefix string */
     ssize_t         ret_value; /* Return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE3("Zs", "i*sz", plist_id, prefix, size);
+    H5TRACE3("Zs", "ixz", plist_id, prefix, size);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_DATASET_ACCESS)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get the current prefix */
     if (H5P_peek(plist, H5D_ACS_EFILE_PREFIX_NAME, &my_prefix) < 0)
@@ -1495,7 +1497,7 @@ H5Pset_virtual_prefix(hid_t plist_id, const char *prefix)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_DATASET_ACCESS)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Set prefix */
     if (H5P_set(plist, H5D_ACS_VDS_PREFIX_NAME, &prefix) < 0)
@@ -1518,19 +1520,19 @@ done:
  *-------------------------------------------------------------------------
  */
 ssize_t
-H5Pget_virtual_prefix(hid_t plist_id, char *prefix, size_t size)
+H5Pget_virtual_prefix(hid_t plist_id, char *prefix /*out*/, size_t size)
 {
     H5P_genplist_t *plist;     /* Property list pointer */
-    char *          my_prefix; /* Library's copy of the prefix */
+    char           *my_prefix; /* Library's copy of the prefix */
     size_t          len;       /* Length of prefix string */
     ssize_t         ret_value; /* Return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE3("Zs", "i*sz", plist_id, prefix, size);
+    H5TRACE3("Zs", "ixz", plist_id, prefix, size);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_DATASET_ACCESS)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get the current prefix */
     if (H5P_peek(plist, H5D_ACS_VDS_PREFIX_NAME, &my_prefix) < 0)

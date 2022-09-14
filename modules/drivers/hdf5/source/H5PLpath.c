@@ -102,10 +102,10 @@ static unsigned H5PL_path_capacity_g = H5PL_INITIAL_PATH_CAPACITY;
 static herr_t
 H5PL__insert_at(const char *path, unsigned int idx)
 {
-    char * path_copy = NULL;    /* copy of path string (for storing) */
+    char  *path_copy = NULL;    /* copy of path string (for storing) */
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check args - Just assert on package functions */
     HDassert(path);
@@ -155,7 +155,7 @@ H5PL__make_space_at(unsigned int idx)
     unsigned u;                   /* iterator */
     herr_t   ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check args - Just assert on package functions */
     HDassert(idx < H5PL_path_capacity_g);
@@ -183,10 +183,10 @@ H5PL__make_space_at(unsigned int idx)
 static herr_t
 H5PL__replace_at(const char *path, unsigned int idx)
 {
-    char * path_copy = NULL;    /* copy of path string (for storing) */
+    char  *path_copy = NULL;    /* copy of path string (for storing) */
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check args - Just assert on package functions */
     HDassert(path);
@@ -233,8 +233,8 @@ H5PL__create_path_table(void)
     char *paths   = NULL;       /* Delimited paths string. Either from the
                                  * environment variable or the default.
                                  */
-    char * next_path = NULL;    /* A path tokenized from the paths string */
-    char * lasts     = NULL;    /* Context pointer for strtok_r() call */
+    char  *next_path = NULL;    /* A path tokenized from the paths string */
+    char  *lasts     = NULL;    /* Context pointer for strtok_r() call */
     herr_t ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_PACKAGE
@@ -248,7 +248,7 @@ H5PL__create_path_table(void)
     /* Retrieve paths from HDF5_PLUGIN_PATH if the user sets it
      * or from the default paths if it isn't set.
      */
-    env_var = HDgetenv("HDF5_PLUGIN_PATH");
+    env_var = HDgetenv(HDF5_PLUGIN_PATH);
     if (NULL == env_var)
         paths = H5MM_strdup(H5PL_DEFAULT_PATH);
     else
@@ -348,7 +348,7 @@ H5PL__expand_path_table(void)
 {
     herr_t ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Update the capacity */
     H5PL_path_capacity_g += H5PL_PATH_CAPACITY_ADD;
@@ -571,12 +571,12 @@ H5PL__path_table_iterate(H5PL_iterate_type_t iter_type, H5PL_iterate_t iter_op, 
 
     FUNC_ENTER_PACKAGE
 
-    for (u = 0; (u < H5PL_num_paths_g) && (ret_value == H5_ITER_CONT); u++)
-        ret_value = H5PL__path_table_iterate_process_path(H5PL_paths_g[u], iter_type, iter_op, op_data);
-
-    if (ret_value < 0)
-        HGOTO_ERROR(H5E_PLUGIN, H5E_BADITER, H5_ITER_ERROR, "can't iterate over plugins in plugin path '%s'",
-                    H5PL_paths_g[u]);
+    for (u = 0; (u < H5PL_num_paths_g) && (ret_value == H5_ITER_CONT); u++) {
+        if ((ret_value =
+                 H5PL__path_table_iterate_process_path(H5PL_paths_g[u], iter_type, iter_op, op_data)) < 0)
+            HGOTO_ERROR(H5E_PLUGIN, H5E_BADITER, H5_ITER_ERROR,
+                        "can't iterate over plugins in plugin path '%s'", H5PL_paths_g[u]);
+    }
 
 done:
     FUNC_LEAVE_NOAPI(ret_value);
@@ -603,21 +603,21 @@ H5PL__path_table_iterate_process_path(const char *plugin_path, H5PL_iterate_type
                                       H5PL_iterate_t iter_op, void *op_data)
 {
     H5PL_type_t    plugin_type;
-    const void *   plugin_info = NULL;
+    const void    *plugin_info = NULL;
     hbool_t        plugin_loaded;
-    char *         path      = NULL;
-    DIR *          dirp      = NULL; /* Directory stream */
+    char          *path      = NULL;
+    DIR           *dirp      = NULL; /* Directory stream */
     struct dirent *dp        = NULL; /* Directory entry */
     herr_t         ret_value = H5_ITER_CONT;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(plugin_path);
     HDassert(iter_op);
 
-    /* Open the directory */
+    /* Open the directory - skip the path if the directory can't be opened */
     if (!(dirp = HDopendir(plugin_path)))
-        HGOTO_ERROR(H5E_PLUGIN, H5E_OPENERROR, H5_ITER_ERROR, "can't open directory: %s", plugin_path)
+        HGOTO_DONE(H5_ITER_CONT)
 
     /* Iterate through all entries in the directory */
     while (NULL != (dp = HDreaddir(dirp))) {
@@ -663,7 +663,8 @@ H5PL__path_table_iterate_process_path(const char *plugin_path, H5PL_iterate_type
             /* Determine if we should process this plugin */
             plugin_matches = (iter_type == H5PL_ITER_TYPE_ALL) ||
                              ((iter_type == H5PL_ITER_TYPE_FILTER) && (plugin_type == H5PL_TYPE_FILTER)) ||
-                             ((iter_type == H5PL_ITER_TYPE_VOL) && (plugin_type == H5PL_TYPE_VOL));
+                             ((iter_type == H5PL_ITER_TYPE_VOL) && (plugin_type == H5PL_TYPE_VOL)) ||
+                             ((iter_type == H5PL_ITER_TYPE_VFD) && (plugin_type == H5PL_TYPE_VFD));
 
             /* If the plugin was successfully loaded, call supplied callback function on plugin */
             if (plugin_loaded && plugin_matches && (ret_value = iter_op(plugin_type, plugin_info, op_data)))
@@ -694,13 +695,13 @@ H5PL__path_table_iterate_process_path(const char *plugin_path, H5PL_iterate_type
     WIN32_FIND_DATAA fdFile;
     HANDLE           hFind = INVALID_HANDLE_VALUE;
     H5PL_type_t      plugin_type;
-    const void *     plugin_info = NULL;
+    const void      *plugin_info = NULL;
     hbool_t          plugin_loaded;
-    char *           path = NULL;
+    char            *path = NULL;
     char             service[2048];
     herr_t           ret_value = H5_ITER_CONT;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check args - Just assert on package functions */
     HDassert(plugin_path);
@@ -710,7 +711,7 @@ H5PL__path_table_iterate_process_path(const char *plugin_path, H5PL_iterate_type
      * skip the path if the directory can't be opened */
     HDsnprintf(service, sizeof(service), "%s\\*.dll", plugin_path);
     if ((hFind = FindFirstFileA(service, &fdFile)) == INVALID_HANDLE_VALUE)
-        HGOTO_ERROR(H5E_PLUGIN, H5E_OPENERROR, H5_ITER_ERROR, "can't open directory")
+        HGOTO_DONE(H5_ITER_CONT)
 
     /* Loop over all the files */
     do {
@@ -741,7 +742,8 @@ H5PL__path_table_iterate_process_path(const char *plugin_path, H5PL_iterate_type
             /* Determine if we should process this plugin */
             plugin_matches = (iter_type == H5PL_ITER_TYPE_ALL) ||
                              ((iter_type == H5PL_ITER_TYPE_FILTER) && (plugin_type == H5PL_TYPE_FILTER)) ||
-                             ((iter_type == H5PL_ITER_TYPE_VOL) && (plugin_type == H5PL_TYPE_VOL));
+                             ((iter_type == H5PL_ITER_TYPE_VOL) && (plugin_type == H5PL_TYPE_VOL)) ||
+                             ((iter_type == H5PL_ITER_TYPE_VFD) && (plugin_type == H5PL_TYPE_VFD));
 
             /* If the plugin was successfully loaded, call supplied callback function on plugin */
             if (plugin_loaded && plugin_matches && (ret_value = iter_op(plugin_type, plugin_info, op_data)))
@@ -834,12 +836,12 @@ static herr_t
 H5PL__find_plugin_in_path(const H5PL_search_params_t *search_params, hbool_t *found, const char *dir,
                           const void **plugin_info)
 {
-    char *         path      = NULL;
-    DIR *          dirp      = NULL; /* Directory stream */
+    char          *path      = NULL;
+    DIR           *dirp      = NULL; /* Directory stream */
     struct dirent *dp        = NULL; /* Directory entry */
     herr_t         ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check args - Just assert on package functions */
     HDassert(search_params);
@@ -916,11 +918,11 @@ H5PL__find_plugin_in_path(const H5PL_search_params_t *search_params, hbool_t *fo
 {
     WIN32_FIND_DATAA fdFile;
     HANDLE           hFind = INVALID_HANDLE_VALUE;
-    char *           path  = NULL;
+    char            *path  = NULL;
     char             service[2048];
     herr_t           ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check args - Just assert on package functions */
     HDassert(search_params);

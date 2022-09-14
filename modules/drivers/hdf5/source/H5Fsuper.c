@@ -70,6 +70,7 @@ static const unsigned HDF5_superblock_ver_bounds[] = {
     HDF5_SUPERBLOCK_VERSION_DEF,   /* H5F_LIBVER_EARLIEST */
     HDF5_SUPERBLOCK_VERSION_2,     /* H5F_LIBVER_V18 */
     HDF5_SUPERBLOCK_VERSION_3,     /* H5F_LIBVER_V110 */
+    HDF5_SUPERBLOCK_VERSION_3,     /* H5F_LIBVER_V112 */
     HDF5_SUPERBLOCK_VERSION_LATEST /* H5F_LIBVER_LATEST */
 };
 
@@ -90,7 +91,7 @@ H5F__super_ext_create(H5F_t *f, H5O_loc_t *ext_ptr)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(f);
@@ -240,7 +241,7 @@ H5F__update_super_ext_driver_msg(H5F_t *f)
     H5F_super_t *sblock;              /* Pointer to the super block */
     herr_t       ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(f);
@@ -317,10 +318,10 @@ herr_t
 H5F__super_read(H5F_t *f, H5P_genplist_t *fa_plist, hbool_t initial_read)
 {
     H5AC_ring_t               orig_ring = H5AC_RING_INV;
-    H5F_super_t *             sblock    = NULL; /* Superblock structure */
+    H5F_super_t              *sblock    = NULL; /* Superblock structure */
     H5F_superblock_cache_ud_t udata;            /* User data for cache callbacks */
-    H5P_genplist_t *          c_plist;          /* File creation property list  */
-    H5FD_t *                  file;             /* File driver pointer */
+    H5P_genplist_t           *c_plist;          /* File creation property list  */
+    H5FD_t                   *file;             /* File driver pointer */
     unsigned sblock_flags = H5AC__NO_FLAGS_SET; /* flags used in superblock unprotect call      */
     haddr_t  super_addr;                        /* Absolute address of superblock */
     haddr_t  eof;                               /* End of file address */
@@ -627,7 +628,7 @@ H5F__super_read(H5F_t *f, H5P_genplist_t *fa_plist, hbool_t initial_read)
 
     /* Decode the optional driver information block */
     if (H5F_addr_defined(sblock->driver_addr)) {
-        H5O_drvinfo_t *         drvinfo;             /* Driver info */
+        H5O_drvinfo_t          *drvinfo;             /* Driver info */
         H5F_drvrinfo_cache_ud_t drvrinfo_udata;      /* User data for metadata callbacks */
         unsigned drvinfo_flags = H5AC__NO_FLAGS_SET; /* Flags used in driver info block unprotect call */
 
@@ -686,7 +687,9 @@ H5F__super_read(H5F_t *f, H5P_genplist_t *fa_plist, hbool_t initial_read)
         /* Sanity check - superblock extension should only be defined for
          *      superblock version >= 2.
          */
-        HDassert(sblock->super_vers >= HDF5_SUPERBLOCK_VERSION_2);
+        if (sblock->super_vers < HDF5_SUPERBLOCK_VERSION_2)
+            HGOTO_ERROR(H5E_FILE, H5E_BADVALUE, FAIL,
+                        "invalid superblock - extension message should not be defined for version < 2")
 
         /* Check for superblock extension being located "outside" the stored
          *      'eoa' value, which can occur with the split/multi VFD.
@@ -1491,7 +1494,7 @@ done:
             else
                 /* Free superblock */
                 if (H5F__super_free(sblock) < 0)
-                HDONE_ERROR(H5E_FILE, H5E_CANTFREE, FAIL, "unable to destroy superblock")
+                    HDONE_ERROR(H5E_FILE, H5E_CANTFREE, FAIL, "unable to destroy superblock")
 
             /* Reset variables in file structure */
             f->shared->sblock = NULL;

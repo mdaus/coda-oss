@@ -112,7 +112,7 @@ H5P__lcrt_reg_prop(H5P_genclass_t *pclass)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Register create intermediate groups property */
     if (H5P__register_real(pclass, H5L_CRT_INTERMEDIATE_GROUP_NAME, H5L_CRT_INTERMEDIATE_GROUP_SIZE,
@@ -149,7 +149,7 @@ H5Pset_create_intermediate_group(hid_t plist_id, unsigned crt_intmd_group)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_LINK_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Set value */
     crt_intmd_group = (unsigned)(crt_intmd_group > 0 ? 1 : 0);
@@ -183,7 +183,7 @@ H5Pget_create_intermediate_group(hid_t plist_id, unsigned *crt_intmd_group /*out
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_LINK_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get values */
     if (crt_intmd_group)

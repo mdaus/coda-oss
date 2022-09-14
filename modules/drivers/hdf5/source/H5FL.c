@@ -54,7 +54,7 @@ static size_t H5FL_fac_lst_mem_lim =
 
 /* A garbage collection node for regular free lists */
 typedef struct H5FL_reg_gc_node_t {
-    H5FL_reg_head_t *          list; /* Pointer to the head of the list to garbage collect */
+    H5FL_reg_head_t           *list; /* Pointer to the head of the list to garbage collect */
     struct H5FL_reg_gc_node_t *next; /* Pointer to the next node in the list of things to garbage collect */
 } H5FL_reg_gc_node_t;
 
@@ -69,7 +69,7 @@ static H5FL_reg_gc_list_t H5FL_reg_gc_head = {0, NULL};
 
 /* A garbage collection node for array free lists */
 typedef struct H5FL_gc_arr_node_t {
-    H5FL_arr_head_t *          list; /* Pointer to the head of the list to garbage collect */
+    H5FL_arr_head_t           *list; /* Pointer to the head of the list to garbage collect */
     struct H5FL_gc_arr_node_t *next; /* Pointer to the next node in the list of things to garbage collect */
 } H5FL_gc_arr_node_t;
 
@@ -84,7 +84,7 @@ static H5FL_gc_arr_list_t H5FL_arr_gc_head = {0, NULL};
 
 /* A garbage collection node for blocks */
 typedef struct H5FL_blk_gc_node_t {
-    H5FL_blk_head_t *          pq;   /* Pointer to the head of the PQ to garbage collect */
+    H5FL_blk_head_t           *pq;   /* Pointer to the head of the PQ to garbage collect */
     struct H5FL_blk_gc_node_t *next; /* Pointer to the next node in the list of things to garbage collect */
 } H5FL_blk_gc_node_t;
 
@@ -99,7 +99,7 @@ static H5FL_blk_gc_list_t H5FL_blk_gc_head = {0, NULL};
 
 /* A garbage collection node for factory free lists */
 struct H5FL_fac_gc_node_t {
-    H5FL_fac_head_t *          list; /* Pointer to the head of the list to garbage collect */
+    H5FL_fac_head_t           *list; /* Pointer to the head of the list to garbage collect */
     struct H5FL_fac_gc_node_t *next; /* Pointer to the next node in the list of things to garbage collect */
 };
 
@@ -114,9 +114,6 @@ struct H5FL_fac_node_t {
     struct H5FL_fac_node_t *next; /* Pointer to next block in free list */
 };
 
-/* Package initialization variable */
-hbool_t H5_PKG_INIT_VAR = FALSE;
-
 /* The head of the list of factory things to garbage collect */
 static H5FL_fac_gc_list_t H5FL_fac_gc_head = {0, NULL};
 
@@ -130,7 +127,7 @@ static H5FL_track_t *H5FL_out_head_g = NULL;
 #endif /* H5FL_TRACK */
 
 /* Forward declarations of local static functions */
-static void *           H5FL__malloc(size_t mem_size);
+static void            *H5FL__malloc(size_t mem_size);
 static herr_t           H5FL__reg_init(H5FL_reg_head_t *head);
 static herr_t           H5FL__reg_gc(void);
 static herr_t           H5FL__reg_gc_list(H5FL_reg_head_t *head);
@@ -184,20 +181,15 @@ H5FL_term_package(void)
 
     FUNC_ENTER_NOAPI_NOINIT_NOERR
 
-    if (H5_PKG_INIT_VAR) {
         /* Garbage collect any nodes on the free lists */
-        (void)H5FL_garbage_coll();
+        (void)
+    H5FL_garbage_coll();
 
-        /* Shut down the various kinds of free lists */
-        n += H5FL__reg_term();
-        n += H5FL__fac_term_all();
-        n += H5FL__arr_term();
-        n += H5FL__blk_term();
-
-        /* Mark interface closed */
-        if (0 == n)
-            H5_PKG_INIT_VAR = FALSE;
-    } /* end if */
+    /* Shut down the various kinds of free lists */
+    n += H5FL__reg_term();
+    n += H5FL__fac_term_all();
+    n += H5FL__arr_term();
+    n += H5FL__blk_term();
 
 #ifdef H5FL_TRACK
     /* If we haven't freed all the allocated memory, dump out the list now */
@@ -207,7 +199,7 @@ H5FL_term_package(void)
         /* Dump information about all the outstanding allocations */
         while (trk != NULL) {
             /* Print information about the outstanding block */
-            HDfprintf(stderr, "%s: Outstanding allocation:\n", FUNC);
+            HDfprintf(stderr, "%s: Outstanding allocation:\n", __func__);
             HDfprintf(stderr, "\tPtr: %p, File: %s, Function: %s, Line: %d\n",
                       (((unsigned char *)trk) + sizeof(H5FL_track_t)), trk->file, trk->func, trk->line);
             H5CS_print_stack(trk->stack, stderr);
@@ -240,7 +232,7 @@ H5FL__malloc(size_t mem_size)
 {
     void *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Attempt to allocate the memory requested */
     if (NULL == (ret_value = H5MM_malloc(mem_size))) {
@@ -277,7 +269,7 @@ H5FL__reg_init(H5FL_reg_head_t *head)
     H5FL_reg_gc_node_t *new_node;            /* Pointer to the node for the new list to garbage collect */
     herr_t              ret_value = SUCCEED; /* return value*/
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Allocate a new garbage collection node */
     if (NULL == (new_node = (H5FL_reg_gc_node_t *)H5MM_malloc(sizeof(H5FL_reg_gc_node_t))))
@@ -521,7 +513,7 @@ H5FL__reg_gc_list(H5FL_reg_head_t *head)
 {
     H5FL_reg_node_t *free_list; /* Pointer to nodes in free list being garbage collected */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* For each free list being garbage collected, walk through the nodes and free them */
     free_list = head->list;
@@ -570,7 +562,7 @@ H5FL__reg_gc(void)
     H5FL_reg_gc_node_t *gc_node;             /* Pointer into the list of things to garbage collect */
     herr_t              ret_value = SUCCEED; /* return value*/
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Walk through all the free lists, free()'ing the nodes */
     gc_node = H5FL_reg_gc_head.first;
@@ -620,7 +612,7 @@ H5FL__reg_term(void)
 {
     H5FL_reg_gc_node_t *left; /* pointer to garbage collection lists with work left */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Free the nodes on the garbage collection list, keeping nodes with allocations outstanding */
     left = NULL;
@@ -631,7 +623,7 @@ H5FL__reg_term(void)
         tmp = H5FL_reg_gc_head.first->next;
 
 #ifdef H5FL_DEBUG
-        HDprintf("%s: head->name = %s, head->allocated = %d\n", FUNC, H5FL_reg_gc_head.first->list->name,
+        HDprintf("%s: head->name = %s, head->allocated = %d\n", __func__, H5FL_reg_gc_head.first->list->name,
                  (int)H5FL_reg_gc_head.first->list->allocated);
 #endif /* H5FL_DEBUG */
         /* Check if the list has allocations outstanding */
@@ -680,7 +672,7 @@ H5FL__blk_find_list(H5FL_blk_node_t **head, size_t size)
 {
     H5FL_blk_node_t *temp = NULL; /* Temp. pointer to node in the native list */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Find the correct free list */
     temp = *head;
@@ -738,7 +730,7 @@ H5FL__blk_create_list(H5FL_blk_node_t **head, size_t size)
 {
     H5FL_blk_node_t *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Allocate room for the new free list node */
     if (NULL == (ret_value = H5FL_CALLOC(H5FL_blk_node_t)))
@@ -780,7 +772,7 @@ H5FL__blk_init(H5FL_blk_head_t *head)
     H5FL_blk_gc_node_t *new_node;            /* Pointer to the node for the new list to garbage collect */
     herr_t              ret_value = SUCCEED; /* return value*/
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Allocate a new garbage collection node */
     if (NULL == (new_node = (H5FL_blk_gc_node_t *)H5MM_malloc(sizeof(H5FL_blk_gc_node_t))))
@@ -856,7 +848,7 @@ H5FL_blk_malloc(H5FL_blk_head_t *head, size_t size H5FL_TRACK_PARAMS)
 {
     H5FL_blk_node_t *free_list;        /* The free list of nodes of correct size */
     H5FL_blk_list_t *temp;             /* Temp. ptr to the new native list allocated */
-    void *           ret_value = NULL; /* Pointer to the block to return to the user */
+    void            *ret_value = NULL; /* Pointer to the block to return to the user */
 
     FUNC_ENTER_NOAPI(NULL)
 
@@ -997,7 +989,7 @@ H5FL_blk_free(H5FL_blk_head_t *head, void *block)
     H5FL_blk_node_t *free_list;        /* The free list of nodes of correct size */
     H5FL_blk_list_t *temp;             /* Temp. ptr to the new free list node allocated */
     size_t           free_size;        /* Size of the block freed */
-    void *           ret_value = NULL; /* Return value */
+    void            *ret_value = NULL; /* Return value */
 
     /* NOINIT OK here because this must be called after H5FL_blk_malloc/calloc
      * -NAF */
@@ -1055,7 +1047,8 @@ H5FL_blk_free(H5FL_blk_head_t *head, void *block)
     if (NULL == (free_list = H5FL__blk_find_list(&(head->head), free_size)))
         /* No free list available, create a new list node and insert it to the queue */
         free_list = H5FL__blk_create_list(&(head->head), free_size);
-    HDassert(free_list);
+    if (NULL == free_list)
+        HGOTO_ERROR(H5E_RESOURCE, H5E_CANTALLOC, NULL, "couldn't create new list node")
 
     /* Prepend the free'd native block to the front of the free list */
     temp->next      = free_list->list; /* Note: Overwrites the size field in union */
@@ -1188,7 +1181,7 @@ H5FL__blk_gc_list(H5FL_blk_head_t *head)
 {
     H5FL_blk_node_t *blk_head; /* Temp. ptr to the free list page node */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Loop through all the nodes in the block free list queue */
     blk_head = head->head;
@@ -1277,7 +1270,7 @@ H5FL__blk_gc(void)
     H5FL_blk_gc_node_t *gc_node;             /* Pointer into the list of things to garbage collect */
     herr_t              ret_value = SUCCEED; /* return value*/
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Walk through all the free lists, free()'ing the nodes */
     gc_node = H5FL_blk_gc_head.first;
@@ -1321,7 +1314,7 @@ H5FL__blk_term(void)
 {
     H5FL_blk_gc_node_t *left; /* pointer to garbage collection lists with work left */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Free the nodes on the garbage collection list, keeping nodes with allocations outstanding */
     left = NULL;
@@ -1331,7 +1324,7 @@ H5FL__blk_term(void)
         tmp = H5FL_blk_gc_head.first->next;
 
 #ifdef H5FL_DEBUG
-        HDprintf("%s: head->name = %s, head->allocated = %d\n", FUNC, H5FL_blk_gc_head.first->pq->name,
+        HDprintf("%s: head->name = %s, head->allocated = %d\n", __func__, H5FL_blk_gc_head.first->pq->name,
                  (int)H5FL_blk_gc_head.first->pq->allocated);
 #endif /* H5FL_DEBUG */
 
@@ -1380,7 +1373,7 @@ H5FL__arr_init(H5FL_arr_head_t *head)
     size_t              u;                   /* Local index variable */
     herr_t              ret_value = SUCCEED; /* return value*/
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Allocate a new garbage collection node */
     if (NULL == (new_node = (H5FL_gc_arr_node_t *)H5MM_malloc(sizeof(H5FL_gc_arr_node_t))))
@@ -1428,7 +1421,7 @@ H5FL_arr_free(H5FL_arr_head_t *head, void *obj)
     H5FL_arr_list_t *temp;             /* Temp. ptr to the new free list node allocated */
     size_t           mem_size;         /* Size of memory being freed */
     size_t           free_nelem;       /* Number of elements in node being free'd */
-    void *           ret_value = NULL; /* Return value */
+    void            *ret_value = NULL; /* Return value */
 
     /* NOINIT OK here because this must be called after H5FL_arr_malloc/calloc
      * -NAF */
@@ -1536,7 +1529,7 @@ H5FL_arr_malloc(H5FL_arr_head_t *head, size_t elem H5FL_TRACK_PARAMS)
 {
     H5FL_arr_list_t *new_obj;          /* Pointer to the new free list node allocated */
     size_t           mem_size;         /* Size of memory block being recycled */
-    void *           ret_value = NULL; /* Pointer to the block to return */
+    void            *ret_value = NULL; /* Pointer to the block to return */
 
     FUNC_ENTER_NOAPI(NULL)
 
@@ -1756,7 +1749,7 @@ H5FL__arr_gc_list(H5FL_arr_head_t *head)
 {
     unsigned u; /* Counter for array of free lists */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Walk through the array of free lists */
     for (u = 0; u < (unsigned)head->maxelem; u++) {
@@ -1819,7 +1812,7 @@ H5FL__arr_gc(void)
     H5FL_gc_arr_node_t *gc_arr_node;         /* Pointer into the list of things to garbage collect */
     herr_t              ret_value = SUCCEED; /* return value*/
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Walk through all the free lists, free()'ing the nodes */
     gc_arr_node = H5FL_arr_gc_head.first;
@@ -1863,7 +1856,7 @@ H5FL__arr_term(void)
 {
     H5FL_gc_arr_node_t *left; /* pointer to garbage collection lists with work left */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Free the nodes on the garbage collection list, keeping nodes with allocations outstanding */
     left = NULL;
@@ -1874,7 +1867,7 @@ H5FL__arr_term(void)
 
         /* Check if the list has allocations outstanding */
 #ifdef H5FL_DEBUG
-        HDprintf("%s: head->name = %s, head->allocated = %d\n", FUNC, H5FL_arr_gc_head.first->list->name,
+        HDprintf("%s: head->name = %s, head->allocated = %d\n", __func__, H5FL_arr_gc_head.first->list->name,
                  (int)H5FL_arr_gc_head.first->list->allocated);
 #endif /* H5FL_DEBUG */
         if (H5FL_arr_gc_head.first->list->allocated > 0) {
@@ -2043,8 +2036,8 @@ H5FL_fac_head_t *
 H5FL_fac_init(size_t size)
 {
     H5FL_fac_gc_node_t *new_node  = NULL; /* Pointer to the node for the new list to garbage collect */
-    H5FL_fac_head_t *   factory   = NULL; /* Pointer to new block factory */
-    H5FL_fac_head_t *   ret_value = NULL; /* Return value */
+    H5FL_fac_head_t    *factory   = NULL; /* Pointer to new block factory */
+    H5FL_fac_head_t    *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_NOAPI(NULL)
 
@@ -2310,7 +2303,7 @@ H5FL__fac_gc_list(H5FL_fac_head_t *head)
 {
     H5FL_fac_node_t *free_list; /* Pointer to nodes in free list being garbage collected */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* For each free list being garbage collected, walk through the nodes and free them */
     free_list = head->list;
@@ -2456,7 +2449,7 @@ done:
 static int
 H5FL__fac_term_all(void)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Free the nodes on the garbage collection list */
     while (H5FL_fac_gc_head.first != NULL) {
@@ -2465,8 +2458,8 @@ H5FL__fac_term_all(void)
         tmp = H5FL_fac_gc_head.first->next;
 
 #ifdef H5FL_DEBUG
-        HDprintf("%s: head->size = %d, head->allocated = %d\n", FUNC, (int)H5FL_fac_gc_head.first->list->size,
-                 (int)H5FL_fac_gc_head.first->list->allocated);
+        HDprintf("%s: head->size = %d, head->allocated = %d\n", __func__,
+                 (int)H5FL_fac_gc_head.first->list->size, (int)H5FL_fac_gc_head.first->list->allocated);
 #endif /* H5FL_DEBUG */
 
         /* The list cannot have any allocations outstanding */

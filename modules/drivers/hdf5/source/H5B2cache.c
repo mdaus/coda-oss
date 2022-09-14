@@ -60,7 +60,7 @@
 /* Metadata cache callbacks */
 static herr_t H5B2__cache_hdr_get_initial_load_size(void *udata, size_t *image_len);
 static htri_t H5B2__cache_hdr_verify_chksum(const void *image_ptr, size_t len, void *udata);
-static void * H5B2__cache_hdr_deserialize(const void *image, size_t len, void *udata, hbool_t *dirty);
+static void  *H5B2__cache_hdr_deserialize(const void *image, size_t len, void *udata, hbool_t *dirty);
 static herr_t H5B2__cache_hdr_image_len(const void *thing, size_t *image_len);
 static herr_t H5B2__cache_hdr_serialize(const H5F_t *f, void *image, size_t len, void *thing);
 static herr_t H5B2__cache_hdr_notify(H5AC_notify_action_t action, void *thing);
@@ -68,7 +68,7 @@ static herr_t H5B2__cache_hdr_free_icr(void *thing);
 
 static herr_t H5B2__cache_int_get_initial_load_size(void *udata, size_t *image_len);
 static htri_t H5B2__cache_int_verify_chksum(const void *image_ptr, size_t len, void *udata);
-static void * H5B2__cache_int_deserialize(const void *image, size_t len, void *udata, hbool_t *dirty);
+static void  *H5B2__cache_int_deserialize(const void *image, size_t len, void *udata, hbool_t *dirty);
 static herr_t H5B2__cache_int_image_len(const void *thing, size_t *image_len);
 static herr_t H5B2__cache_int_serialize(const H5F_t *f, void *image, size_t len, void *thing);
 static herr_t H5B2__cache_int_notify(H5AC_notify_action_t action, void *thing);
@@ -76,7 +76,7 @@ static herr_t H5B2__cache_int_free_icr(void *thing);
 
 static herr_t H5B2__cache_leaf_get_initial_load_size(void *udata, size_t *image_len);
 static htri_t H5B2__cache_leaf_verify_chksum(const void *image_ptr, size_t len, void *udata);
-static void * H5B2__cache_leaf_deserialize(const void *image, size_t len, void *udata, hbool_t *dirty);
+static void  *H5B2__cache_leaf_deserialize(const void *image, size_t len, void *udata, hbool_t *dirty);
 static herr_t H5B2__cache_leaf_image_len(const void *thing, size_t *image_len);
 static herr_t H5B2__cache_leaf_serialize(const H5F_t *f, void *image, size_t len, void *thing);
 static herr_t H5B2__cache_leaf_notify(H5AC_notify_action_t action, void *thing);
@@ -165,7 +165,7 @@ H5B2__cache_hdr_get_initial_load_size(void *_udata, size_t *image_len)
 {
     H5B2_hdr_cache_ud_t *udata = (H5B2_hdr_cache_ud_t *)_udata; /* User data for callback */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments */
     HDassert(udata);
@@ -199,7 +199,7 @@ H5B2__cache_hdr_verify_chksum(const void *_image, size_t len, void H5_ATTR_UNUSE
     uint32_t       computed_chksum;                 /* Computed metadata checksum value */
     htri_t         ret_value = TRUE;                /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments */
     HDassert(image);
@@ -230,16 +230,16 @@ static void *
 H5B2__cache_hdr_deserialize(const void *_image, size_t H5_ATTR_UNUSED len, void *_udata,
                             hbool_t H5_ATTR_UNUSED *dirty)
 {
-    H5B2_hdr_t *         hdr   = NULL; /* B-tree header */
+    H5B2_hdr_t          *hdr   = NULL; /* B-tree header */
     H5B2_hdr_cache_ud_t *udata = (H5B2_hdr_cache_ud_t *)_udata;
     H5B2_create_t        cparam;                              /* B-tree creation parameters */
     H5B2_subid_t         id;                                  /* ID of B-tree class, as found in file */
     uint16_t             depth;                               /* Depth of B-tree */
     uint32_t             stored_chksum;                       /* Stored metadata checksum value */
-    const uint8_t *      image     = (const uint8_t *)_image; /* Pointer into raw data buffer */
-    H5B2_hdr_t *         ret_value = NULL;                    /* Return value */
+    const uint8_t       *image     = (const uint8_t *)_image; /* Pointer into raw data buffer */
+    H5B2_hdr_t          *ret_value = NULL;                    /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments */
     HDassert(image);
@@ -328,7 +328,7 @@ H5B2__cache_hdr_image_len(const void *_thing, size_t *image_len)
 {
     const H5B2_hdr_t *hdr = (const H5B2_hdr_t *)_thing; /* Pointer to the B-tree header */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments */
     HDassert(hdr);
@@ -356,10 +356,10 @@ static herr_t
 H5B2__cache_hdr_serialize(const H5F_t *f, void *_image, size_t H5_ATTR_UNUSED len, void *_thing)
 {
     H5B2_hdr_t *hdr   = (H5B2_hdr_t *)_thing; /* Pointer to the B-tree header */
-    uint8_t *   image = (uint8_t *)_image;    /* Pointer into raw data buffer */
+    uint8_t    *image = (uint8_t *)_image;    /* Pointer into raw data buffer */
     uint32_t    metadata_chksum;              /* Computed metadata checksum value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* check arguments */
     HDassert(f);
@@ -427,7 +427,7 @@ H5B2__cache_hdr_notify(H5AC_notify_action_t action, void *_thing)
     H5B2_hdr_t *hdr       = (H5B2_hdr_t *)_thing;
     herr_t      ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -516,7 +516,7 @@ H5B2__cache_hdr_free_icr(void *thing)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments */
     HDassert(thing);
@@ -546,7 +546,7 @@ H5B2__cache_int_get_initial_load_size(void *_udata, size_t *image_len)
 {
     H5B2_internal_cache_ud_t *udata = (H5B2_internal_cache_ud_t *)_udata; /* User data for callback */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments */
     HDassert(udata);
@@ -575,14 +575,14 @@ H5B2__cache_int_get_initial_load_size(void *_udata, size_t *image_len)
 static htri_t
 H5B2__cache_int_verify_chksum(const void *_image, size_t H5_ATTR_UNUSED len, void *_udata)
 {
-    const uint8_t *           image = (const uint8_t *)_image;            /* Pointer into raw data buffer */
+    const uint8_t            *image = (const uint8_t *)_image;            /* Pointer into raw data buffer */
     H5B2_internal_cache_ud_t *udata = (H5B2_internal_cache_ud_t *)_udata; /* Pointer to user data */
     size_t                    chk_size;         /* Exact size of the node with checksum at the end */
     uint32_t                  stored_chksum;    /* Stored metadata checksum value */
     uint32_t                  computed_chksum;  /* Computed metadata checksum value */
     htri_t                    ret_value = TRUE; /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments */
     HDassert(image);
@@ -619,16 +619,16 @@ H5B2__cache_int_deserialize(const void *_image, size_t H5_ATTR_UNUSED len, void 
                             hbool_t H5_ATTR_UNUSED *dirty)
 {
     H5B2_internal_cache_ud_t *udata    = (H5B2_internal_cache_ud_t *)_udata; /* Pointer to user data */
-    H5B2_internal_t *         internal = NULL;                               /* Internal node read */
-    const uint8_t *           image    = (const uint8_t *)_image; /* Pointer into raw data buffer */
-    uint8_t *                 native;                             /* Pointer to native record info */
-    H5B2_node_ptr_t *         int_node_ptr;                       /* Pointer to node pointer info */
+    H5B2_internal_t          *internal = NULL;                               /* Internal node read */
+    const uint8_t            *image    = (const uint8_t *)_image; /* Pointer into raw data buffer */
+    uint8_t                  *native;                             /* Pointer to native record info */
+    H5B2_node_ptr_t          *int_node_ptr;                       /* Pointer to node pointer info */
     uint32_t                  stored_chksum;                      /* Stored metadata checksum value */
     unsigned                  u;                                  /* Local index variable */
-    H5B2_internal_t *         ret_value = NULL;                   /* Return value */
+    H5B2_internal_t          *ret_value = NULL;                   /* Return value */
     int                       node_nrec = 0;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments */
     HDassert(image);
@@ -742,7 +742,7 @@ H5B2__cache_int_image_len(const void *_thing, size_t *image_len)
     const H5B2_internal_t *internal =
         (const H5B2_internal_t *)_thing; /* Pointer to the B-tree internal node */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments */
     HDassert(internal);
@@ -771,14 +771,14 @@ static herr_t
 H5B2__cache_int_serialize(const H5F_t *f, void *_image, size_t H5_ATTR_UNUSED len, void *_thing)
 {
     H5B2_internal_t *internal = (H5B2_internal_t *)_thing; /* Pointer to the B-tree internal node */
-    uint8_t *        image    = (uint8_t *)_image;         /* Pointer into raw data buffer */
-    uint8_t *        native;                               /* Pointer to native record info */
+    uint8_t         *image    = (uint8_t *)_image;         /* Pointer into raw data buffer */
+    uint8_t         *native;                               /* Pointer to native record info */
     H5B2_node_ptr_t *int_node_ptr;                         /* Pointer to node pointer info */
     uint32_t         metadata_chksum;                      /* Computed metadata checksum value */
     unsigned         u;                                    /* Local index variable */
     herr_t           ret_value = SUCCEED;                  /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check arguments */
     HDassert(f);
@@ -858,7 +858,7 @@ H5B2__cache_int_notify(H5AC_notify_action_t action, void *_thing)
     H5B2_internal_t *internal  = (H5B2_internal_t *)_thing;
     herr_t           ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -935,7 +935,7 @@ H5B2__cache_int_free_icr(void *_thing)
     H5B2_internal_t *internal  = (H5B2_internal_t *)_thing;
     herr_t           ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments */
     HDassert(internal);
@@ -965,7 +965,7 @@ H5B2__cache_leaf_get_initial_load_size(void *_udata, size_t *image_len)
 {
     H5B2_leaf_cache_ud_t *udata = (H5B2_leaf_cache_ud_t *)_udata; /* User data for callback */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments */
     HDassert(udata);
@@ -994,14 +994,14 @@ H5B2__cache_leaf_get_initial_load_size(void *_udata, size_t *image_len)
 static htri_t
 H5B2__cache_leaf_verify_chksum(const void *_image, size_t H5_ATTR_UNUSED len, void *_udata)
 {
-    const uint8_t *           image = (const uint8_t *)_image;            /* Pointer into raw data buffer */
+    const uint8_t            *image = (const uint8_t *)_image;            /* Pointer into raw data buffer */
     H5B2_internal_cache_ud_t *udata = (H5B2_internal_cache_ud_t *)_udata; /* Pointer to user data */
     size_t                    chk_size;         /* Exact size of the node with checksum at the end */
     uint32_t                  stored_chksum;    /* Stored metadata checksum value */
     uint32_t                  computed_chksum;  /* Computed metadata checksum value */
     htri_t                    ret_value = TRUE; /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments */
     HDassert(image);
@@ -1037,14 +1037,14 @@ H5B2__cache_leaf_deserialize(const void *_image, size_t H5_ATTR_UNUSED len, void
                              hbool_t H5_ATTR_UNUSED *dirty)
 {
     H5B2_leaf_cache_ud_t *udata = (H5B2_leaf_cache_ud_t *)_udata;
-    H5B2_leaf_t *         leaf  = NULL;                    /* Pointer to lead node loaded */
-    const uint8_t *       image = (const uint8_t *)_image; /* Pointer into raw data buffer */
-    uint8_t *             native;                          /* Pointer to native keys */
+    H5B2_leaf_t          *leaf  = NULL;                    /* Pointer to lead node loaded */
+    const uint8_t        *image = (const uint8_t *)_image; /* Pointer into raw data buffer */
+    uint8_t              *native;                          /* Pointer to native keys */
     uint32_t              stored_chksum;                   /* Stored metadata checksum value */
     unsigned              u;                               /* Local index variable */
-    H5B2_leaf_t *         ret_value = NULL;                /* Return value */
+    H5B2_leaf_t          *ret_value = NULL;                /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments */
     HDassert(image);
@@ -1134,7 +1134,7 @@ H5B2__cache_leaf_image_len(const void *_thing, size_t *image_len)
 {
     const H5B2_leaf_t *leaf = (const H5B2_leaf_t *)_thing; /* Pointer to the B-tree leaf node  */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check arguments */
     HDassert(leaf);
@@ -1164,13 +1164,13 @@ H5B2__cache_leaf_serialize(const H5F_t H5_ATTR_UNUSED *f, void *_image, size_t H
                            void *_thing)
 {
     H5B2_leaf_t *leaf  = (H5B2_leaf_t *)_thing; /* Pointer to the B-tree leaf node  */
-    uint8_t *    image = (uint8_t *)_image;     /* Pointer into raw data buffer */
-    uint8_t *    native;                        /* Pointer to native keys */
+    uint8_t     *image = (uint8_t *)_image;     /* Pointer into raw data buffer */
+    uint8_t     *native;                        /* Pointer to native keys */
     uint32_t     metadata_chksum;               /* Computed metadata checksum value */
     unsigned     u;                             /* Local index variable */
     herr_t       ret_value = SUCCEED;           /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check arguments */
     HDassert(f);
@@ -1237,7 +1237,7 @@ H5B2__cache_leaf_notify(H5AC_notify_action_t action, void *_thing)
     H5B2_leaf_t *leaf      = (H5B2_leaf_t *)_thing;
     herr_t       ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -1314,7 +1314,7 @@ H5B2__cache_leaf_free_icr(void *_thing)
     H5B2_leaf_t *leaf      = (H5B2_leaf_t *)_thing;
     herr_t       ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments */
     HDassert(leaf);

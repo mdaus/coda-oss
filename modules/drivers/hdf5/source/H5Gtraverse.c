@@ -111,7 +111,7 @@ H5G__traverse_slink_cb(H5G_loc_t H5_ATTR_UNUSED *grp_loc, const char H5_ATTR_UNU
     H5G_trav_slink_t *udata     = (H5G_trav_slink_t *)_udata; /* User data passed in */
     herr_t            ret_value = SUCCEED;                    /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check for dangling soft link */
     if (obj_loc == NULL) {
@@ -159,11 +159,11 @@ H5G__traverse_ud(const H5G_loc_t *grp_loc /*in,out*/, const H5O_link_t *lnk, H5G
     H5G_name_t         grp_path_copy;
     H5O_loc_t          grp_oloc_copy;
     H5G_loc_t          new_loc; /* Group location for newly opened external object */
-    H5G_t *            grp;
+    H5G_t             *grp;
     hid_t              cur_grp   = (-1);
     herr_t             ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(grp_loc);
@@ -191,7 +191,7 @@ H5G__traverse_ud(const H5G_loc_t *grp_loc /*in,out*/, const H5O_link_t *lnk, H5G
 
         /* User-defined callback function */
 #ifndef H5_NO_DEPRECATED_SYMBOLS
-    /* (Backwardly compatible with v0 H5L_class_t traverssal callback) */
+    /* (Backwardly compatible with v0 H5L_class_t traversal callback) */
     if (link_class->version == H5L_LINK_CLASS_T_VERS_0)
         cb_return = (((const H5L_class_0_t *)link_class)->trav_func)(lnk->name, cur_grp, lnk->u.ud.udata,
                                                                      lnk->u.ud.size, H5CX_get_lapl());
@@ -218,7 +218,7 @@ H5G__traverse_ud(const H5G_loc_t *grp_loc /*in,out*/, const H5O_link_t *lnk, H5G
         } /* end if */
         /* else, we really needed to open the object */
         else
-            HGOTO_ERROR(H5E_SYM, H5E_BADATOM, FAIL, "traversal callback returned invalid ID")
+            HGOTO_ERROR(H5E_SYM, H5E_BADID, FAIL, "traversal callback returned invalid ID")
     } /* end if */
 
     /* Get the object location information from the ID the user callback returned */
@@ -241,16 +241,16 @@ H5G__traverse_ud(const H5G_loc_t *grp_loc /*in,out*/, const H5O_link_t *lnk, H5G
      * Close the open ID the user passed back.
      */
     if (H5I_dec_ref(cb_return) < 0)
-        HGOTO_ERROR(H5E_SYM, H5E_CANTRELEASE, FAIL, "unable to close atom from UD callback")
+        HGOTO_ERROR(H5E_SYM, H5E_CANTRELEASE, FAIL, "unable to close ID from UD callback")
     cb_return = (hid_t)(-1);
 
 done:
     /* Close location given to callback. */
     if (cur_grp > 0 && H5I_dec_ref(cur_grp) < 0)
-        HDONE_ERROR(H5E_SYM, H5E_CANTRELEASE, FAIL, "unable to close atom for current location")
+        HDONE_ERROR(H5E_SYM, H5E_CANTRELEASE, FAIL, "unable to close ID for current location")
 
     if (ret_value < 0 && cb_return > 0 && H5I_dec_ref(cb_return) < 0)
-        HDONE_ERROR(H5E_SYM, H5E_CANTRELEASE, FAIL, "unable to close atom from UD callback")
+        HDONE_ERROR(H5E_SYM, H5E_CANTRELEASE, FAIL, "unable to close ID from UD callback")
 
     FUNC_LEAVE_NOAPI(ret_value)
 } /* end H5G__traverse_ud() */
@@ -284,7 +284,7 @@ H5G__traverse_slink(const H5G_loc_t *grp_loc, const H5O_link_t *lnk, H5G_loc_t *
     hbool_t          tmp_grp_loc_set = FALSE;   /* Flag to indicate that tmp group location is initialized */
     herr_t           ret_value       = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(grp_loc);
@@ -470,12 +470,12 @@ H5G__traverse_real(const H5G_loc_t *_loc, const char *name, unsigned target, H5G
     H5G_own_loc_t own_loc = H5G_OWN_NONE; /* Enum to indicate whether callback took ownership of locations*/
     hbool_t       group_copy = FALSE;     /* Flag to indicate that the group entry is copied */
     char          comp_buf[1024];         /* Temporary buffer for path components */
-    char *        comp;                   /* Pointer to buffer for path components */
-    H5WB_t *      wb        = NULL;       /* Wrapped buffer for temporary buffer */
+    char         *comp;                   /* Pointer to buffer for path components */
+    H5WB_t       *wb        = NULL;       /* Wrapped buffer for temporary buffer */
     hbool_t       last_comp = FALSE; /* Flag to indicate that a component is the last component in the name */
     herr_t        ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check parameters */
     HDassert(_loc);
@@ -535,7 +535,7 @@ H5G__traverse_real(const H5G_loc_t *_loc, const char *name, unsigned target, H5G
     /* Traverse the path */
     while ((name = H5G__component(name, &nchars)) && *name) {
         const char *s;             /* Temporary string pointer */
-        htri_t      lookup_status; /* Status from object lookup */
+        hbool_t     lookup_status; /* Status from object lookup */
         hbool_t     obj_exists;    /* Whether the object exists */
 
         /*
@@ -564,7 +564,8 @@ H5G__traverse_real(const H5G_loc_t *_loc, const char *name, unsigned target, H5G
         } /* end if */
 
         /* Get information for object in current group */
-        if ((lookup_status = H5G__obj_lookup(grp_loc.oloc, comp, &lnk /*out*/)) < 0)
+        lookup_status = FALSE;
+        if (H5G__obj_lookup(grp_loc.oloc, comp, &lookup_status, &lnk /*out*/) < 0)
             HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "can't look up component")
         obj_exists = FALSE;
 
@@ -592,7 +593,7 @@ H5G__traverse_real(const H5G_loc_t *_loc, const char *name, unsigned target, H5G
         /* Check for last component in name provided */
         if (last_comp) {
             H5O_link_t *cb_lnk; /* Pointer to link info for callback */
-            H5G_loc_t * cb_loc; /* Pointer to object location for callback */
+            H5G_loc_t  *cb_loc; /* Pointer to object location for callback */
 
             /* Set callback parameters appropriately, based on link being found */
             if (lookup_status) {
@@ -712,18 +713,17 @@ H5G__traverse_real(const H5G_loc_t *_loc, const char *name, unsigned target, H5G
                         HGOTO_ERROR(H5E_SYM, H5E_CANTOPENOBJ, FAIL, "unable to hold file open")
 
                 /* Reset any non-default object header messages */
+                H5_GCC_CLANG_DIAG_OFF("cast-qual")
                 if (ginfo != &def_ginfo)
-                    /* (Casting away const OK - QAK) */
                     if (H5O_msg_reset(H5O_GINFO_ID, (void *)ginfo) < 0)
                         HGOTO_ERROR(H5E_SYM, H5E_CANTRELEASE, FAIL, "unable to reset group info message")
                 if (linfo != &def_linfo)
-                    /* (Casting away const OK - QAK) */
                     if (H5O_msg_reset(H5O_LINFO_ID, (void *)linfo) < 0)
                         HGOTO_ERROR(H5E_SYM, H5E_CANTRELEASE, FAIL, "unable to reset link info message")
                 if (pline != &def_pline)
-                    /* (Casting away const OK - QAK) */
                     if (H5O_msg_reset(H5O_PLINE_ID, (void *)pline) < 0)
                         HGOTO_ERROR(H5E_SYM, H5E_CANTRELEASE, FAIL, "unable to reset I/O pipeline message")
+                H5_GCC_CLANG_DIAG_ON("cast-qual")
             } /* end if */
             else
                 HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "component not found")

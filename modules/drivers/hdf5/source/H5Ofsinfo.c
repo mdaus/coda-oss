@@ -31,10 +31,10 @@
 #include "H5Opkg.h"      /* Object headers       */
 
 /* PRIVATE PROTOTYPES */
-static void * H5O__fsinfo_decode(H5F_t *f, H5O_t *open_oh, unsigned mesg_flags, unsigned *ioflags,
+static void  *H5O__fsinfo_decode(H5F_t *f, H5O_t *open_oh, unsigned mesg_flags, unsigned *ioflags,
                                  size_t p_size, const uint8_t *p);
 static herr_t H5O__fsinfo_encode(H5F_t *f, hbool_t disable_shared, uint8_t *p, const void *_mesg);
-static void * H5O__fsinfo_copy(const void *_mesg, void *_dest);
+static void  *H5O__fsinfo_copy(const void *_mesg, void *_dest);
 static size_t H5O__fsinfo_size(const H5F_t *f, hbool_t disable_shared, const void *_mesg);
 static herr_t H5O__fsinfo_free(void *mesg);
 static herr_t H5O__fsinfo_debug(H5F_t *f, const void *_mesg, FILE *stream, int indent, int fwidth);
@@ -69,6 +69,7 @@ static const unsigned H5O_fsinfo_ver_bounds[] = {
     H5O_INVALID_VERSION,      /* H5F_LIBVER_EARLIEST */
     H5O_INVALID_VERSION,      /* H5F_LIBVER_V18 */
     H5O_FSINFO_VERSION_1,     /* H5F_LIBVER_V110 */
+    H5O_FSINFO_VERSION_1,     /* H5F_LIBVER_V112 */
     H5O_FSINFO_VERSION_LATEST /* H5F_LIBVER_LATEST */
 };
 #define N_FSINFO_VERSION_BOUNDS H5F_LIBVER_NBOUNDS
@@ -92,13 +93,13 @@ static void *
 H5O__fsinfo_decode(H5F_t *f, H5O_t H5_ATTR_UNUSED *open_oh, unsigned H5_ATTR_UNUSED mesg_flags,
                    unsigned H5_ATTR_UNUSED *ioflags, size_t p_size, const uint8_t *p)
 {
-    H5O_fsinfo_t * fsinfo = NULL; /* File space info message */
+    H5O_fsinfo_t  *fsinfo = NULL; /* File space info message */
     H5F_mem_page_t ptype;         /* Memory type for iteration */
     unsigned       vers;          /* message version */
     const uint8_t *p_end     = p + p_size;
-    void *         ret_value = NULL; /* Return value */
+    void          *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(f);
@@ -214,7 +215,7 @@ H5O__fsinfo_encode(H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, uint8_t *p, 
     const H5O_fsinfo_t *fsinfo = (const H5O_fsinfo_t *)_mesg;
     H5F_mem_page_t      ptype; /* Memory type for iteration */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* check args */
     HDassert(f);
@@ -256,10 +257,10 @@ static void *
 H5O__fsinfo_copy(const void *_mesg, void *_dest)
 {
     const H5O_fsinfo_t *fsinfo    = (const H5O_fsinfo_t *)_mesg;
-    H5O_fsinfo_t *      dest      = (H5O_fsinfo_t *)_dest;
-    void *              ret_value = NULL; /* Return value */
+    H5O_fsinfo_t       *dest      = (H5O_fsinfo_t *)_dest;
+    void               *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(fsinfo);
@@ -296,7 +297,7 @@ H5O__fsinfo_size(const H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, const vo
     const H5O_fsinfo_t *fsinfo    = (const H5O_fsinfo_t *)_mesg;
     size_t              ret_value = 0; /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     ret_value = 3                            /* Version, strategy & persist */
                 + (size_t)H5F_SIZEOF_SIZE(f) /* Free-space section threshold */
@@ -325,7 +326,7 @@ H5O__fsinfo_size(const H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, const vo
 static herr_t
 H5O__fsinfo_free(void *mesg)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(mesg);
 
@@ -351,7 +352,7 @@ H5O__fsinfo_debug(H5F_t H5_ATTR_UNUSED *f, const void *_mesg, FILE *stream, int 
     const H5O_fsinfo_t *fsinfo = (const H5O_fsinfo_t *)_mesg;
     H5F_mem_page_t      ptype; /* Free-space types for iteration */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* check args */
     HDassert(f);

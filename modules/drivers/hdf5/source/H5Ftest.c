@@ -88,7 +88,7 @@
 herr_t
 H5F__get_sohm_mesg_count_test(hid_t file_id, unsigned type_id, size_t *mesg_count)
 {
-    H5F_t * file;                     /* File info */
+    H5F_t  *file;                     /* File info */
     hbool_t api_ctx_pushed = FALSE;   /* Whether API context pushed */
     herr_t  ret_value      = SUCCEED; /* Return value */
 
@@ -108,7 +108,7 @@ H5F__get_sohm_mesg_count_test(hid_t file_id, unsigned type_id, size_t *mesg_coun
         HGOTO_ERROR(H5E_FILE, H5E_CANTGET, FAIL, "can't retrieve shared message count")
 
 done:
-    if (api_ctx_pushed && H5CX_pop() < 0)
+    if (api_ctx_pushed && H5CX_pop(FALSE) < 0)
         HDONE_ERROR(H5E_FILE, H5E_CANTRESET, FAIL, "can't reset API context")
 
     FUNC_LEAVE_NOAPI(ret_value)
@@ -132,7 +132,7 @@ done:
 herr_t
 H5F__check_cached_stab_test(hid_t file_id)
 {
-    H5F_t * file;                     /* File info */
+    H5F_t  *file;                     /* File info */
     hbool_t api_ctx_pushed = FALSE;   /* Whether API context pushed */
     herr_t  ret_value      = SUCCEED; /* Return value */
 
@@ -152,7 +152,7 @@ H5F__check_cached_stab_test(hid_t file_id)
         HGOTO_ERROR(H5E_FILE, H5E_CANTGET, FAIL, "unable to verify cached symbol table info")
 
 done:
-    if (api_ctx_pushed && H5CX_pop() < 0)
+    if (api_ctx_pushed && H5CX_pop(FALSE) < 0)
         HDONE_ERROR(H5E_FILE, H5E_CANTRESET, FAIL, "can't reset API context")
 
     FUNC_LEAVE_NOAPI(ret_value)

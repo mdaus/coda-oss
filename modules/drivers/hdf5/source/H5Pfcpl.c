@@ -212,7 +212,7 @@ H5P__fcrt_reg_prop(H5P_genclass_t *pclass)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Register the user block size */
     if (H5P__register_real(pclass, H5F_CRT_USER_BLOCK_NAME, H5F_CRT_USER_BLOCK_SIZE,
@@ -340,7 +340,7 @@ H5Pset_userblock(hid_t plist_id, hsize_t size)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Set value */
     if (H5P_set(plist, H5F_CRT_USER_BLOCK_NAME, &size) < 0)
@@ -366,17 +366,17 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5Pget_userblock(hid_t plist_id, hsize_t *size)
+H5Pget_userblock(hid_t plist_id, hsize_t *size /*out*/)
 {
     H5P_genplist_t *plist;               /* Property list pointer */
     herr_t          ret_value = SUCCEED; /* return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE2("e", "i*h", plist_id, size);
+    H5TRACE2("e", "ix", plist_id, size);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID");
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID");
 
     /* Get value */
     if (size)
@@ -422,7 +422,7 @@ H5Pset_sizes(hid_t plist_id, size_t sizeof_addr, size_t sizeof_size)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Set value */
     if (sizeof_addr) {
@@ -458,17 +458,17 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5Pget_sizes(hid_t plist_id, size_t *sizeof_addr, size_t *sizeof_size)
+H5Pget_sizes(hid_t plist_id, size_t *sizeof_addr /*out*/, size_t *sizeof_size /*out*/)
 {
     H5P_genplist_t *plist;               /* Property list pointer */
     herr_t          ret_value = SUCCEED; /* return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE3("e", "i*z*z", plist_id, sizeof_addr, sizeof_size);
+    H5TRACE3("e", "ixx", plist_id, sizeof_addr, sizeof_size);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get values */
     if (sizeof_addr) {
@@ -527,7 +527,7 @@ H5Pset_sym_k(hid_t plist_id, unsigned ik, unsigned lk)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID");
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID");
 
     /* Set values */
     if (ik > 0) {
@@ -575,7 +575,7 @@ H5Pget_sym_k(hid_t plist_id, unsigned *ik /*out*/, unsigned *lk /*out*/)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID");
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID");
 
     /* Get values */
     if (ik) {
@@ -624,7 +624,7 @@ H5Pset_istore_k(hid_t plist_id, unsigned ik)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID");
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID");
 
     /* Set value */
     if (H5P_get(plist, H5F_CRT_BTREE_RANK_NAME, btree_k) < 0)
@@ -665,7 +665,7 @@ H5Pget_istore_k(hid_t plist_id, unsigned *ik /*out*/)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID");
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID");
 
     /* Get value */
     if (ik) {
@@ -696,9 +696,9 @@ static herr_t
 H5P__fcrt_btree_rank_enc(const void *value, void **_pp, size_t *size)
 {
     const unsigned *btree_k = (const unsigned *)value; /* Create local alias for values */
-    uint8_t **      pp      = (uint8_t **)_pp;
+    uint8_t       **pp      = (uint8_t **)_pp;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(btree_k);
@@ -741,13 +741,13 @@ H5P__fcrt_btree_rank_enc(const void *value, void **_pp, size_t *size)
 static herr_t
 H5P__fcrt_btree_rank_dec(const void **_pp, void *_value)
 {
-    unsigned *      btree_k = (unsigned *)_value;
+    unsigned       *btree_k = (unsigned *)_value;
     const uint8_t **pp      = (const uint8_t **)_pp;
     unsigned        enc_size;            /* Size of encoded property */
     unsigned        u;                   /* Local index variable */
     herr_t          ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(pp);
@@ -802,7 +802,7 @@ H5Pset_shared_mesg_nindexes(hid_t plist_id, unsigned nindexes)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID");
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID");
 
     if (H5P_set(plist, H5F_CRT_SHMSG_NINDEXES_NAME, &nindexes) < 0)
         HGOTO_ERROR(H5E_PLIST, H5E_CANTGET, FAIL, "can't set number of indexes");
@@ -825,17 +825,17 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5Pget_shared_mesg_nindexes(hid_t plist_id, unsigned *nindexes)
+H5Pget_shared_mesg_nindexes(hid_t plist_id, unsigned *nindexes /*out*/)
 {
     H5P_genplist_t *plist;               /* Property list pointer */
     herr_t          ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE2("e", "i*Iu", plist_id, nindexes);
+    H5TRACE2("e", "ix", plist_id, nindexes);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID");
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID");
 
     if (H5P_get(plist, H5F_CRT_SHMSG_NINDEXES_NAME, nindexes) < 0)
         HGOTO_ERROR(H5E_PLIST, H5E_CANTGET, FAIL, "can't get number of indexes");
@@ -879,7 +879,7 @@ H5Pset_shared_mesg_index(hid_t plist_id, unsigned index_num, unsigned mesg_type_
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Read the current number of indexes */
     if (H5P_get(plist, H5F_CRT_SHMSG_NINDEXES_NAME, &nindexes) < 0)
@@ -924,8 +924,8 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5Pget_shared_mesg_index(hid_t plist_id, unsigned index_num, unsigned *mesg_type_flags,
-                         unsigned *min_mesg_size)
+H5Pget_shared_mesg_index(hid_t plist_id, unsigned index_num, unsigned *mesg_type_flags /*out*/,
+                         unsigned *min_mesg_size /*out*/)
 {
     H5P_genplist_t *plist;                               /* Property list pointer */
     unsigned        nindexes;                            /* Number of SOHM indexes */
@@ -934,11 +934,11 @@ H5Pget_shared_mesg_index(hid_t plist_id, unsigned index_num, unsigned *mesg_type
     herr_t          ret_value = SUCCEED;                 /* Return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE4("e", "iIu*Iu*Iu", plist_id, index_num, mesg_type_flags, min_mesg_size);
+    H5TRACE4("e", "iIuxx", plist_id, index_num, mesg_type_flags, min_mesg_size);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Read the current number of indexes */
     if (H5P_get(plist, H5F_CRT_SHMSG_NINDEXES_NAME, &nindexes) < 0)
@@ -983,9 +983,9 @@ static herr_t
 H5P__fcrt_shmsg_index_types_enc(const void *value, void **_pp, size_t *size)
 {
     const unsigned *type_flags = (const unsigned *)value; /* Create local alias for values */
-    uint8_t **      pp         = (uint8_t **)_pp;
+    uint8_t       **pp         = (uint8_t **)_pp;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(type_flags);
@@ -1029,13 +1029,13 @@ H5P__fcrt_shmsg_index_types_enc(const void *value, void **_pp, size_t *size)
 static herr_t
 H5P__fcrt_shmsg_index_types_dec(const void **_pp, void *_value)
 {
-    unsigned *      type_flags = (unsigned *)_value;
+    unsigned       *type_flags = (unsigned *)_value;
     const uint8_t **pp         = (const uint8_t **)_pp;
     unsigned        enc_size;            /* Size of encoded property */
     unsigned        u;                   /* Local index variable */
     herr_t          ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(pp);
@@ -1074,9 +1074,9 @@ static herr_t
 H5P__fcrt_shmsg_index_minsize_enc(const void *value, void **_pp, size_t *size)
 {
     const unsigned *minsizes = (const unsigned *)value; /* Create local alias for values */
-    uint8_t **      pp       = (uint8_t **)_pp;
+    uint8_t       **pp       = (uint8_t **)_pp;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(minsizes);
@@ -1120,13 +1120,13 @@ H5P__fcrt_shmsg_index_minsize_enc(const void *value, void **_pp, size_t *size)
 static herr_t
 H5P__fcrt_shmsg_index_minsize_dec(const void **_pp, void *_value)
 {
-    unsigned *      minsizes = (unsigned *)_value;
+    unsigned       *minsizes = (unsigned *)_value;
     const uint8_t **pp       = (const uint8_t **)_pp;
     unsigned        enc_size;            /* Size of encoded property */
     unsigned        u;                   /* Local index variable */
     herr_t          ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(pp);
@@ -1194,7 +1194,7 @@ H5Pset_shared_mesg_phase_change(hid_t plist_id, unsigned max_list, unsigned min_
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID");
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID");
 
     if (H5P_set(plist, H5F_CRT_SHMSG_LIST_MAX_NAME, &max_list) < 0)
         HGOTO_ERROR(H5E_PLIST, H5E_CANTGET, FAIL, "can't set list maximum in property list");
@@ -1219,17 +1219,17 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5Pget_shared_mesg_phase_change(hid_t plist_id, unsigned *max_list, unsigned *min_btree)
+H5Pget_shared_mesg_phase_change(hid_t plist_id, unsigned *max_list /*out*/, unsigned *min_btree /*out*/)
 {
     H5P_genplist_t *plist;               /* Property list pointer */
     herr_t          ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE3("e", "i*Iu*Iu", plist_id, max_list, min_btree);
+    H5TRACE3("e", "ixx", plist_id, max_list, min_btree);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID");
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID");
 
     /* Get value(s) */
     if (max_list)
@@ -1272,7 +1272,7 @@ H5Pset_file_space_strategy(hid_t plist_id, H5F_fspace_strategy_t strategy, hbool
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Set value(s), if non-zero */
     if (H5P_set(plist, H5F_CRT_FILE_SPACE_STRATEGY_NAME, &strategy) < 0)
@@ -1304,18 +1304,18 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5Pget_file_space_strategy(hid_t plist_id, H5F_fspace_strategy_t *strategy, hbool_t *persist,
-                           hsize_t *threshold)
+H5Pget_file_space_strategy(hid_t plist_id, H5F_fspace_strategy_t *strategy /*out*/, hbool_t *persist /*out*/,
+                           hsize_t *threshold /*out*/)
 {
     H5P_genplist_t *plist;               /* Property list pointer */
     herr_t          ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE4("e", "i*Ff*b*h", plist_id, strategy, persist, threshold);
+    H5TRACE4("e", "ixxx", plist_id, strategy, persist, threshold);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get value(s) */
     if (strategy)
@@ -1354,7 +1354,7 @@ H5P__fcrt_fspace_strategy_enc(const void *value, void **_pp, size_t *size)
         (const H5F_fspace_strategy_t *)value; /* Create local alias for values */
     uint8_t **pp = (uint8_t **)_pp;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(strategy);
@@ -1389,9 +1389,9 @@ static herr_t
 H5P__fcrt_fspace_strategy_dec(const void **_pp, void *_value)
 {
     H5F_fspace_strategy_t *strategy = (H5F_fspace_strategy_t *)_value; /* Free-space strategy */
-    const uint8_t **       pp       = (const uint8_t **)_pp;
+    const uint8_t        **pp       = (const uint8_t **)_pp;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity checks */
     HDassert(pp);
@@ -1426,13 +1426,13 @@ H5Pset_file_space_page_size(hid_t plist_id, hsize_t fsp_size)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     if (fsp_size < H5F_FILE_SPACE_PAGE_SIZE_MIN)
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "cannot set file space page size to less than 512")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "cannot set file space page size to less than 512")
 
     if (fsp_size > H5F_FILE_SPACE_PAGE_SIZE_MAX)
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "cannot set file space page size to more than 1GB")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "cannot set file space page size to more than 1GB")
 
     /* Set the value*/
     if (H5P_set(plist, H5F_CRT_FILE_SPACE_PAGE_SIZE_NAME, &fsp_size) < 0)
@@ -1455,17 +1455,17 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5Pget_file_space_page_size(hid_t plist_id, hsize_t *fsp_size)
+H5Pget_file_space_page_size(hid_t plist_id, hsize_t *fsp_size /*out*/)
 {
     H5P_genplist_t *plist;               /* Property list pointer */
     herr_t          ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE2("e", "i*h", plist_id, fsp_size);
+    H5TRACE2("e", "ix", plist_id, fsp_size);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get value */
     if (fsp_size)

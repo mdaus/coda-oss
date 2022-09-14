@@ -57,7 +57,7 @@ char *
 H5P__get_class_path_test(hid_t pclass_id)
 {
     H5P_genclass_t *pclass;           /* Property class to query */
-    char *          ret_value = NULL; /* Return value */
+    char           *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_PACKAGE
 
@@ -109,9 +109,9 @@ H5P__open_class_path_test(const char *path)
     if (NULL == (pclass = H5P__open_class_path(path)))
         HGOTO_ERROR(H5E_PLIST, H5E_NOTFOUND, H5I_INVALID_HID, "unable to find class with full path");
 
-    /* Get an atom for the class */
+    /* Get an ID for the class */
     if ((ret_value = H5I_register(H5I_GENPROP_CLS, pclass, TRUE)) < 0)
-        HGOTO_ERROR(H5E_PLIST, H5E_CANTREGISTER, H5I_INVALID_HID, "unable to atomize property list class");
+        HGOTO_ERROR(H5E_PLIST, H5E_CANTREGISTER, H5I_INVALID_HID, "unable to register property list class");
 
 done:
     if (H5I_INVALID_HID == ret_value && pclass)

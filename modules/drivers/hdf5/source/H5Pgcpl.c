@@ -120,7 +120,7 @@ H5P__gcrt_reg_prop(H5P_genclass_t *pclass)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Register group info property */
     if (H5P__register_real(pclass, H5G_CRT_GROUP_INFO_NAME, H5G_CRT_GROUP_INFO_SIZE, &H5G_def_ginfo_g, NULL,
@@ -161,7 +161,7 @@ H5Pset_local_heap_size_hint(hid_t plist_id, size_t size_hint)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_GROUP_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get value */
     if (H5P_get(plist, H5G_CRT_GROUP_INFO_NAME, &ginfo) < 0)
@@ -204,7 +204,7 @@ H5Pget_local_heap_size_hint(hid_t plist_id, size_t *size_hint /*out*/)
 
         /* Get the plist structure */
         if (NULL == (plist = H5P_object_verify(plist_id, H5P_GROUP_CREATE)))
-            HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+            HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
         /* Get value */
         if (H5P_get(plist, H5G_CRT_GROUP_INFO_NAME, &ginfo) < 0)
@@ -255,7 +255,7 @@ H5Pset_link_phase_change(hid_t plist_id, unsigned max_compact, unsigned min_dens
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_GROUP_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get group info */
     if (H5P_get(plist, H5G_CRT_GROUP_INFO_NAME, &ginfo) < 0)
@@ -304,7 +304,7 @@ H5Pget_link_phase_change(hid_t plist_id, unsigned *max_compact /*out*/, unsigned
 
         /* Get the plist structure */
         if (NULL == (plist = H5P_object_verify(plist_id, H5P_GROUP_CREATE)))
-            HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+            HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
         /* Get group info */
         if (H5P_get(plist, H5G_CRT_GROUP_INFO_NAME, &ginfo) < 0)
@@ -357,7 +357,7 @@ H5Pset_est_link_info(hid_t plist_id, unsigned est_num_entries, unsigned est_name
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_GROUP_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get group info */
     if (H5P_get(plist, H5G_CRT_GROUP_INFO_NAME, &ginfo) < 0)
@@ -406,7 +406,7 @@ H5Pget_est_link_info(hid_t plist_id, unsigned *est_num_entries /*out*/, unsigned
 
         /* Get the plist structure */
         if (NULL == (plist = H5P_object_verify(plist_id, H5P_GROUP_CREATE)))
-            HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+            HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
         /* Get group info */
         if (H5P_get(plist, H5G_CRT_GROUP_INFO_NAME, &ginfo) < 0)
@@ -449,7 +449,7 @@ H5Pset_link_creation_order(hid_t plist_id, unsigned crt_order_flags)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_GROUP_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get link info */
     if (H5P_get(plist, H5G_CRT_LINK_INFO_NAME, &linfo) < 0)
@@ -497,7 +497,7 @@ H5Pget_link_creation_order(hid_t plist_id, unsigned *crt_order_flags /*out*/)
 
         /* Get the plist structure */
         if (NULL == (plist = H5P_object_verify(plist_id, H5P_GROUP_CREATE)))
-            HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+            HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
         /* Get link info */
         if (H5P_get(plist, H5G_CRT_LINK_INFO_NAME, &linfo) < 0)
@@ -530,9 +530,9 @@ static herr_t
 H5P__gcrt_group_info_enc(const void *value, void **_pp, size_t *size)
 {
     const H5O_ginfo_t *ginfo = (const H5O_ginfo_t *)value; /* Create local aliases for values */
-    uint8_t **         pp    = (uint8_t **)_pp;
+    uint8_t          **pp    = (uint8_t **)_pp;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     if (NULL != *pp) {
         UINT32ENCODE(*pp, ginfo->lheap_size_hint)
@@ -565,11 +565,11 @@ H5P__gcrt_group_info_enc(const void *value, void **_pp, size_t *size)
 static herr_t
 H5P__gcrt_group_info_dec(const void **_pp, void *_value)
 {
-    H5O_ginfo_t *   ginfo     = (H5O_ginfo_t *)_value; /* Group info settings */
+    H5O_ginfo_t    *ginfo     = (H5O_ginfo_t *)_value; /* Group info settings */
     const uint8_t **pp        = (const uint8_t **)_pp;
     herr_t          ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Set property to default value */
     HDmemset(ginfo, 0, sizeof(H5O_ginfo_t));
@@ -615,9 +615,9 @@ static herr_t
 H5P__gcrt_link_info_enc(const void *value, void **_pp, size_t *size)
 {
     const H5O_linfo_t *linfo = (const H5O_linfo_t *)value; /* Create local aliases for values */
-    uint8_t **         pp    = (uint8_t **)_pp;
+    uint8_t          **pp    = (uint8_t **)_pp;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     if (NULL != *pp) {
         unsigned crt_order_flags = 0;
@@ -655,13 +655,13 @@ H5P__gcrt_link_info_enc(const void *value, void **_pp, size_t *size)
 static herr_t
 H5P__gcrt_link_info_dec(const void **_pp, void *_value)
 {
-    H5O_linfo_t *   linfo = (H5O_linfo_t *)_value; /* Link info settings */
+    H5O_linfo_t    *linfo = (H5O_linfo_t *)_value; /* Link info settings */
     const uint8_t **pp    = (const uint8_t **)_pp;
     unsigned        crt_order_flags;
     unsigned        enc_size;
     herr_t          ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     enc_size = *(*pp)++;
     if (enc_size != sizeof(unsigned))

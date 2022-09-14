@@ -164,7 +164,7 @@ H5C_apply_candidate_list(H5F_t *f, H5C_t *cache_ptr, unsigned num_candidates, ha
     unsigned           last_entry_to_flush;
     unsigned           total_entries_to_clear     = 0;
     unsigned           total_entries_to_flush     = 0;
-    unsigned *         candidate_assignment_table = NULL;
+    unsigned          *candidate_assignment_table = NULL;
     unsigned           entries_to_flush[H5C_RING_NTYPES];
     unsigned           entries_to_clear[H5C_RING_NTYPES];
     haddr_t            addr;
@@ -195,11 +195,11 @@ H5C_apply_candidate_list(H5F_t *f, H5C_t *cache_ptr, unsigned num_candidates, ha
     HDmemset(entries_to_clear, 0, sizeof(entries_to_clear));
 
 #if H5C_APPLY_CANDIDATE_LIST__DEBUG
-    HDfprintf(stdout, "%s:%d: setting up candidate assignment table.\n", FUNC, mpi_rank);
+    HDfprintf(stdout, "%s:%d: setting up candidate assignment table.\n", __func__, mpi_rank);
 
     HDmemset(tbl_buf, 0, sizeof(tbl_buf));
 
-    HDsprintf(&(tbl_buf[0]), "candidate list = ");
+    HDsnprintf(tbl_buf, sizeof(tbl_buf), "candidate list = ");
     for (u = 0; u < num_candidates; u++)
         HDsprintf(&(tbl_buf[HDstrlen(tbl_buf)]), " 0x%llx", (long long)(*(candidates_list_ptr + u)));
     HDsprintf(&(tbl_buf[HDstrlen(tbl_buf)]), "\n");
@@ -266,16 +266,16 @@ H5C_apply_candidate_list(H5F_t *f, H5C_t *cache_ptr, unsigned num_candidates, ha
 #if H5C_APPLY_CANDIDATE_LIST__DEBUG
     for (u = 0; u < 1024; u++)
         tbl_buf[u] = '\0';
-    HDsprintf(&(tbl_buf[0]), "candidate assignment table = ");
+    HDsnprintf(tbl_buf, sizeof(tbl_buf), "candidate assignment table = ");
     for (u = 0; u <= (unsigned)mpi_size; u++)
         HDsprintf(&(tbl_buf[HDstrlen(tbl_buf)]), " %u", candidate_assignment_table[u]);
     HDsprintf(&(tbl_buf[HDstrlen(tbl_buf)]), "\n");
     HDfprintf(stdout, "%s", tbl_buf);
 
-    HDfprintf(stdout, "%s:%d: flush entries [%u, %u].\n", FUNC, mpi_rank, first_entry_to_flush,
+    HDfprintf(stdout, "%s:%d: flush entries [%u, %u].\n", __func__, mpi_rank, first_entry_to_flush,
               last_entry_to_flush);
 
-    HDfprintf(stdout, "%s:%d: marking entries.\n", FUNC, mpi_rank);
+    HDfprintf(stdout, "%s:%d: marking entries.\n", __func__, mpi_rank);
 #endif /* H5C_APPLY_CANDIDATE_LIST__DEBUG */
 
     for (u = 0; u < num_candidates; u++) {
@@ -353,8 +353,8 @@ H5C_apply_candidate_list(H5F_t *f, H5C_t *cache_ptr, unsigned num_candidates, ha
 #endif /* H5C_DO_SANITY_CHECKS */
 
 #if H5C_APPLY_CANDIDATE_LIST__DEBUG
-    HDfprintf(stdout, "%s:%d: num candidates/to clear/to flush = %u/%u/%u.\n", FUNC, mpi_rank, num_candidates,
-              total_entries_to_clear, total_entries_to_flush);
+    HDfprintf(stdout, "%s:%d: num candidates/to clear/to flush = %u/%u/%u.\n", __func__, mpi_rank,
+              num_candidates, total_entries_to_clear, total_entries_to_flush);
 #endif /* H5C_APPLY_CANDIDATE_LIST__DEBUG */
 
     /* We have now marked all the entries on the candidate list for
@@ -673,7 +673,7 @@ done:
 herr_t
 H5C_mark_entries_as_clean(H5F_t *f, unsigned ce_array_len, haddr_t *ce_array_ptr)
 {
-    H5C_t *  cache_ptr;
+    H5C_t   *cache_ptr;
     unsigned entries_cleared;
     unsigned pinned_entries_cleared;
     hbool_t  progress;
@@ -898,7 +898,11 @@ H5C_clear_coll_entries(H5C_t *cache_ptr, hbool_t partial)
     H5C_cache_entry_t *entry_ptr = NULL;
     herr_t             ret_value = SUCCEED;
 
+#if H5C_DO_SANITY_CHECKS
     FUNC_ENTER_NOAPI_NOINIT
+#else
+    FUNC_ENTER_NOAPI_NOINIT_NOERR
+#endif
 
     entry_ptr = cache_ptr->coll_tail_ptr;
     clear_cnt = (partial ? cache_ptr->coll_list_len / 2 : cache_ptr->coll_list_len);
@@ -919,7 +923,9 @@ H5C_clear_coll_entries(H5C_t *cache_ptr, hbool_t partial)
         entry_ptr = prev_ptr;
     } /* end while */
 
+#if H5C_DO_SANITY_CHECKS
 done:
+#endif /* H5C_DO_SANITY_CHECKS */
     FUNC_LEAVE_NOAPI(ret_value)
 } /* H5C_clear_coll_entries */
 
@@ -939,21 +945,17 @@ done:
 static herr_t
 H5C__collective_write(H5F_t *f)
 {
-    H5AC_t *         cache_ptr;
+    H5AC_t          *cache_ptr;
     H5FD_mpio_xfer_t orig_xfer_mode = H5FD_MPIO_COLLECTIVE;
-    void *           base_buf;
-    int              count;
-    int *            length_array = NULL;
-    MPI_Aint *       buf_array    = NULL;
-    MPI_Aint *       offset_array = NULL;
-    MPI_Datatype     btype        = MPI_BYTE;
-    MPI_Datatype     ftype        = MPI_BYTE;
-    int              mpi_code;
-    char             unused = 0; /* Unused, except for non-NULL pointer value */
-    size_t           buf_count;
+    const void     **bufs           = NULL;
+    H5FD_mem_t      *types          = NULL;
+    haddr_t         *addrs          = NULL;
+    size_t          *sizes          = NULL;
+    uint32_t         count32;
+    size_t           count;
     herr_t           ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(f != NULL);
@@ -970,22 +972,23 @@ H5C__collective_write(H5F_t *f)
         HGOTO_ERROR(H5E_CACHE, H5E_CANTSET, FAIL, "can't set MPI-I/O transfer mode")
 
     /* Get number of entries in collective write list */
-    count = (int)H5SL_count(cache_ptr->coll_write_list);
+    count = H5SL_count(cache_ptr->coll_write_list);
+    H5_CHECKED_ASSIGN(count32, uint32_t, count, size_t);
+
     if (count > 0) {
-        H5SL_node_t *      node;
+        H5SL_node_t       *node;
         H5C_cache_entry_t *entry_ptr;
+        void              *base_buf;
         int                i;
 
-        /* Allocate arrays */
-        if (NULL == (length_array = (int *)H5MM_malloc((size_t)count * sizeof(int))))
-            HGOTO_ERROR(H5E_CACHE, H5E_CANTALLOC, FAIL,
-                        "memory allocation failed for collective write table length array")
-        if (NULL == (buf_array = (MPI_Aint *)H5MM_malloc((size_t)count * sizeof(MPI_Aint))))
-            HGOTO_ERROR(H5E_CACHE, H5E_CANTALLOC, FAIL,
-                        "memory allocation failed for collective buf table length array")
-        if (NULL == (offset_array = (MPI_Aint *)H5MM_malloc((size_t)count * sizeof(MPI_Aint))))
-            HGOTO_ERROR(H5E_CACHE, H5E_CANTALLOC, FAIL,
-                        "memory allocation failed for collective offset table length array")
+        if (NULL == (addrs = H5MM_malloc(count * sizeof(*addrs))))
+            HGOTO_ERROR(H5E_CACHE, H5E_CANTALLOC, FAIL, "couldn't allocate address array")
+        if (NULL == (sizes = H5MM_malloc(count * sizeof(*sizes))))
+            HGOTO_ERROR(H5E_CACHE, H5E_CANTALLOC, FAIL, "couldn't allocate sizes array")
+        if (NULL == (bufs = H5MM_malloc(count * sizeof(*bufs))))
+            HGOTO_ERROR(H5E_CACHE, H5E_CANTALLOC, FAIL, "couldn't allocate buffers array")
+        if (NULL == (types = H5MM_malloc(count * sizeof(*types))))
+            HGOTO_ERROR(H5E_CACHE, H5E_CANTALLOC, FAIL, "couldn't allocate types array")
 
         /* Fill arrays */
         node = H5SL_first(cache_ptr->coll_write_list);
@@ -994,10 +997,12 @@ H5C__collective_write(H5F_t *f)
             HGOTO_ERROR(H5E_CACHE, H5E_NOTFOUND, FAIL, "can't retrieve skip list item")
 
         /* Set up initial array position & buffer base address */
-        length_array[0] = (int)entry_ptr->size;
-        base_buf        = entry_ptr->image_ptr;
-        buf_array[0]    = (MPI_Aint)0;
-        offset_array[0] = (MPI_Aint)entry_ptr->addr;
+        HDassert(entry_ptr->type);
+        base_buf = entry_ptr->image_ptr;
+        addrs[0] = entry_ptr->addr;
+        sizes[0] = entry_ptr->size;
+        bufs[0]  = base_buf;
+        types[0] = entry_ptr->type->mem_type;
 
         node = H5SL_next(node);
         i    = 1;
@@ -1006,59 +1011,31 @@ H5C__collective_write(H5F_t *f)
                 HGOTO_ERROR(H5E_CACHE, H5E_NOTFOUND, FAIL, "can't retrieve skip list item")
 
             /* Set up array position */
-            length_array[i] = (int)entry_ptr->size;
-            buf_array[i]    = (MPI_Aint)entry_ptr->image_ptr - (MPI_Aint)base_buf;
-            offset_array[i] = (MPI_Aint)entry_ptr->addr;
+            HDassert(entry_ptr->type);
+            addrs[i] = entry_ptr->addr;
+            sizes[i] = entry_ptr->size;
+            bufs[i]  = entry_ptr->image_ptr;
+            types[i] = entry_ptr->type->mem_type;
 
             /* Advance to next node & array location */
             node = H5SL_next(node);
             i++;
         } /* end while */
-
-        /* Create memory MPI type */
-        if (MPI_SUCCESS !=
-            (mpi_code = MPI_Type_create_hindexed(count, length_array, buf_array, MPI_BYTE, &btype)))
-            HMPI_GOTO_ERROR(FAIL, "MPI_Type_create_hindexed failed", mpi_code)
-        if (MPI_SUCCESS != (mpi_code = MPI_Type_commit(&btype)))
-            HMPI_GOTO_ERROR(FAIL, "MPI_Type_commit failed", mpi_code)
-
-        /* Create file MPI type */
-        if (MPI_SUCCESS !=
-            (mpi_code = MPI_Type_create_hindexed(count, length_array, offset_array, MPI_BYTE, &ftype)))
-            HMPI_GOTO_ERROR(FAIL, "MPI_Type_create_hindexed failed", mpi_code)
-        if (MPI_SUCCESS != (mpi_code = MPI_Type_commit(&ftype)))
-            HMPI_GOTO_ERROR(FAIL, "MPI_Type_commit failed", mpi_code)
-
-        /* MPI count to write */
-        buf_count = 1;
-    } /* end if */
-    else {
-        /* Set non-NULL pointer for I/O operation */
-        base_buf = &unused;
-
-        /* MPI count to write */
-        buf_count = 0;
-    } /* end else */
+    }     /* end if */
 
     /* Pass buf type, file type to the file driver */
-    if (H5CX_set_mpi_coll_datatypes(btype, ftype) < 0)
+    if (H5CX_set_mpi_coll_datatypes(MPI_BYTE, MPI_BYTE) < 0)
         HGOTO_ERROR(H5E_CACHE, H5E_CANTSET, FAIL, "can't set MPI-I/O properties")
 
-    /* Write data */
-    if (H5F_block_write(f, H5FD_MEM_DEFAULT, (haddr_t)0, buf_count, base_buf) < 0)
-        HGOTO_ERROR(H5E_CACHE, H5E_WRITEERROR, FAIL, "unable to write entries collectively")
+    /* Make vector write call */
+    if (H5F_shared_vector_write(H5F_SHARED(f), count32, types, addrs, sizes, bufs) < 0)
+        HGOTO_ERROR(H5E_CACHE, H5E_WRITEERROR, FAIL, "unable to write entries")
 
 done:
-    /* Free arrays */
-    length_array = (int *)H5MM_xfree(length_array);
-    buf_array    = (MPI_Aint *)H5MM_xfree(buf_array);
-    offset_array = (MPI_Aint *)H5MM_xfree(offset_array);
-
-    /* Free MPI Types */
-    if (MPI_BYTE != btype && MPI_SUCCESS != (mpi_code = MPI_Type_free(&btype)))
-        HMPI_DONE_ERROR(FAIL, "MPI_Type_free failed", mpi_code)
-    if (MPI_BYTE != ftype && MPI_SUCCESS != (mpi_code = MPI_Type_free(&ftype)))
-        HMPI_DONE_ERROR(FAIL, "MPI_Type_free failed", mpi_code)
+    H5MM_xfree(types);
+    H5MM_xfree(bufs);
+    H5MM_xfree(sizes);
+    H5MM_xfree(addrs);
 
     /* Reset transfer mode in API context, if changed */
     if (orig_xfer_mode != H5FD_MPIO_COLLECTIVE)
@@ -1120,10 +1097,10 @@ H5C__flush_candidate_entries(H5F_t *f, unsigned entries_to_flush[H5C_RING_NTYPES
     uint32_t slist_len        = 0;
 #endif /* H5C_DO_SANITY_CHECKS */
     H5C_ring_t ring;
-    H5C_t *    cache_ptr;
+    H5C_t     *cache_ptr;
     herr_t     ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(f);
     HDassert(f->shared);
@@ -1227,7 +1204,7 @@ done:
 static herr_t
 H5C__flush_candidates_in_ring(H5F_t *f, H5C_ring_t ring, unsigned entries_to_flush, unsigned entries_to_clear)
 {
-    H5C_t *  cache_ptr;
+    H5C_t   *cache_ptr;
     hbool_t  progress;
     hbool_t  restart_scan    = FALSE;
     unsigned entries_flushed = 0;
@@ -1243,7 +1220,7 @@ H5C__flush_candidates_in_ring(H5F_t *f, H5C_ring_t ring, unsigned entries_to_flu
     H5C_cache_entry_t *entry_ptr;
     herr_t             ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(f);

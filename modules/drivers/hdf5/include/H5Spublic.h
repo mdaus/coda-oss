@@ -22,7 +22,10 @@
 #include "H5Ipublic.h"
 
 /* Define special dataspaces for dataset I/O operations */
-#define H5S_ALL       (hid_t)0
+#define H5S_ALL   0 /* (hid_t) */
+#define H5S_BLOCK 1 /* (hid_t) */
+#define H5S_PLIST 2 /* (hid_t) */
+
 #define H5S_UNLIMITED HSIZE_UNDEF /**< Value for 'unlimited' dimensions */
 
 /**

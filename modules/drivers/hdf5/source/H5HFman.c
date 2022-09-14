@@ -97,10 +97,10 @@ herr_t
 H5HF__man_insert(H5HF_hdr_t *hdr, size_t obj_size, const void *obj, void *_id)
 {
     H5HF_free_section_t *sec_node    = NULL;        /* Pointer to free space section */
-    H5HF_direct_t *      dblock      = NULL;        /* Pointer to direct block to modify */
+    H5HF_direct_t       *dblock      = NULL;        /* Pointer to direct block to modify */
     haddr_t              dblock_addr = HADDR_UNDEF; /* Direct block address */
     size_t               dblock_size;               /* Direct block size */
-    uint8_t *            id = (uint8_t *)_id;       /* Pointer to ID buffer */
+    uint8_t             *id = (uint8_t *)_id;       /* Pointer to ID buffer */
     size_t               blk_off;                   /* Offset of object within block */
     htri_t               node_found;                /* Whether an existing free list node was found */
     herr_t               ret_value = SUCCEED;       /* Return value */
@@ -306,7 +306,7 @@ H5HF__man_op_real(H5HF_hdr_t *hdr, const uint8_t *id, H5HF_operator_t op, void *
     uint8_t *p;                         /* Temporary pointer to obj info in block */
     herr_t   ret_value = SUCCEED;       /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -487,10 +487,16 @@ H5HF__man_write(H5HF_hdr_t *hdr, const uint8_t *id, const void *obj)
     HDassert(id);
     HDassert(obj);
 
-    /* Call the internal 'op' routine routine */
-    /* (Casting away const OK - QAK) */
+    /* Call the internal 'op' routine routine
+     *
+     * In this case, the callback operation needs to modify the obj buffer that
+     * was passed in as const. We quiet the warning here because an obj pointer
+     * that was originally const should *never* arrive here.
+     */
+    H5_GCC_CLANG_DIAG_OFF("cast-qual")
     if (H5HF__man_op_real(hdr, id, H5HF__op_write, (void *)obj, H5HF_OP_MODIFY) < 0)
         HGOTO_ERROR(H5E_HEAP, H5E_CANTOPERATE, FAIL, "unable to operate on heap object")
+    H5_GCC_CLANG_DIAG_ON("cast-qual")
 
 done:
     FUNC_LEAVE_NOAPI(ret_value)
@@ -546,7 +552,7 @@ herr_t
 H5HF__man_remove(H5HF_hdr_t *hdr, const uint8_t *id)
 {
     H5HF_free_section_t *sec_node    = NULL;  /* Pointer to free space section for block */
-    H5HF_indirect_t *    iblock      = NULL;  /* Pointer to indirect block */
+    H5HF_indirect_t     *iblock      = NULL;  /* Pointer to indirect block */
     hbool_t              did_protect = FALSE; /* Whether we protected the indirect block or not */
     hsize_t              obj_off;             /* Object's offset in heap */
     size_t               obj_len;             /* Object's length in heap */

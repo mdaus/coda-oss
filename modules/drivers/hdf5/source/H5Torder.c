@@ -81,7 +81,7 @@ static herr_t H5T__set_order(H5T_t *dtype, H5T_order_t order);
 H5T_order_t
 H5Tget_order(hid_t type_id)
 {
-    H5T_t *     dt;        /* Datatype to query */
+    H5T_t      *dt;        /* Datatype to query */
     H5T_order_t ret_value; /* Return value */
 
     FUNC_ENTER_API(H5T_ORDER_ERROR)
@@ -228,7 +228,7 @@ H5T__set_order(H5T_t *dtype, H5T_order_t order)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     if (H5T_ENUM == dtype->shared->type && dtype->shared->u.enumer.nmembs > 0)
         HGOTO_ERROR(H5E_DATATYPE, H5E_CANTSET, FAIL, "operation not allowed after enum members are defined")

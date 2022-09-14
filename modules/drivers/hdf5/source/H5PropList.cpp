@@ -11,7 +11,6 @@
  * help@hdfgroup.org.                                                        *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <cstring>
 #include <iostream>
 #include <string>
 
@@ -112,11 +111,8 @@ PropList::PropList(const PropList &original) : IdComponent(), id(original.id)
 //              property's id to H5P_DEFAULT.
 // Programmer   Binh-Minh Ribler - 2000
 //--------------------------------------------------------------------------
-PropList::PropList(const hid_t plist_id) : IdComponent()
+PropList::PropList(const hid_t plist_id) : IdComponent(), id{H5P_DEFAULT}
 {
-    if (plist_id <= 0)
-        id = H5P_DEFAULT;
-
     H5I_type_t id_type = H5Iget_type(plist_id);
     switch (id_type) {
         case H5I_GENPROP_CLS:
@@ -153,6 +149,7 @@ PropList::PropList(const hid_t plist_id) : IdComponent()
         case H5I_UNINIT:
         case H5I_MAP:
         case H5I_SPACE_SEL_ITER:
+        case H5I_EVENTSET:
         default:
             id = H5P_DEFAULT;
             break;
@@ -459,8 +456,7 @@ PropList::getProperty(const char *name) const
     size_t size = getPropSize(name);
 
     // Allocate buffer then get the property
-    char *prop_strg_C = new char[size + 1];
-    memset(prop_strg_C, 0, size + 1);
+    char *prop_strg_C = new char[size + 1]();
 
     herr_t ret_value = H5Pget(id, name, prop_strg_C); // call C API
 

@@ -127,7 +127,7 @@ H5Z__can_apply_nbit(hid_t H5_ATTR_UNUSED dcpl_id, hid_t type_id, hid_t H5_ATTR_U
     const H5T_t *type;             /* Datatype */
     htri_t       ret_value = TRUE; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Get datatype */
     if (NULL == (type = (H5T_t *)H5I_object_verify(type_id, H5I_DATATYPE)))
@@ -216,11 +216,11 @@ H5Z__calc_parms_atomic(size_t *cd_values_actual_nparms)
 static herr_t
 H5Z__calc_parms_array(const H5T_t *type, size_t *cd_values_actual_nparms)
 {
-    H5T_t *     dtype_base = NULL;   /* Array datatype's base datatype */
+    H5T_t      *dtype_base = NULL;   /* Array datatype's base datatype */
     H5T_class_t dtype_base_class;    /* Array datatype's base datatype's class */
     herr_t      ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Store datatype class code */
     *cd_values_actual_nparms += 1;
@@ -299,11 +299,11 @@ static herr_t
 H5Z__calc_parms_compound(const H5T_t *type, size_t *cd_values_actual_nparms)
 {
     int      nmembers;            /* Compound datatype's number of members */
-    H5T_t *  dtype_member = NULL; /* Compound datatype's member datatype */
+    H5T_t   *dtype_member = NULL; /* Compound datatype's member datatype */
     unsigned u;                   /* Local index variable */
     herr_t   ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Store compound datatype class code */
     *cd_values_actual_nparms += 1;
@@ -405,7 +405,7 @@ H5Z__set_parms_nooptype(const H5T_t *type, unsigned *cd_values_index, unsigned c
     size_t dtype_size;          /* No-op datatype's size (in bytes) */
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Set datatype class code */
     cd_values[(*cd_values_index)++] = H5Z_NBIT_NOOPTYPE;
@@ -447,7 +447,7 @@ H5Z__set_parms_atomic(const H5T_t *type, unsigned *cd_values_index, unsigned cd_
     unsigned    dtype_offset;        /* Atomic datatype's offset (in bits) */
     herr_t      ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Set datatype class code */
     cd_values[(*cd_values_index)++] = H5Z_NBIT_ATOMIC;
@@ -531,13 +531,13 @@ static herr_t
 H5Z__set_parms_array(const H5T_t *type, unsigned *cd_values_index, unsigned cd_values[],
                      hbool_t *need_not_compress)
 {
-    H5T_t *     dtype_base = NULL;   /* Array datatype's base datatype */
+    H5T_t      *dtype_base = NULL;   /* Array datatype's base datatype */
     H5T_class_t dtype_base_class;    /* Array datatype's base datatype's class */
     size_t      dtype_size;          /* Array datatype's size (in bytes) */
     htri_t      is_vlstring;         /* flag indicating if datatype is variable-length string */
     herr_t      ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Set datatype class code */
     cd_values[(*cd_values_index)++] = H5Z_NBIT_ARRAY;
@@ -636,7 +636,7 @@ H5Z__set_parms_compound(const H5T_t *type, unsigned *cd_values_index, unsigned c
 {
     int         snmembers;           /* Compound datatype's number of members */
     unsigned    nmembers;            /* Compound datatype's number of members */
-    H5T_t *     dtype_member = NULL; /* Compound datatype's member datatype */
+    H5T_t      *dtype_member = NULL; /* Compound datatype's member datatype */
     H5T_class_t dtype_member_class;  /* Compound datatype's member datatype's class */
     size_t      dtype_member_offset; /* Compound datatype's current member datatype's offset (in bytes) */
     size_t      dtype_next_member_offset; /* Compound datatype's next member datatype's offset (in bytes) */
@@ -645,7 +645,7 @@ H5Z__set_parms_compound(const H5T_t *type, unsigned *cd_values_index, unsigned c
     unsigned    u;                        /* Local index variable */
     herr_t      ret_value = SUCCEED;      /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Set "local" parameter for compound datatype class code */
     cd_values[(*cd_values_index)++] = H5Z_NBIT_COMPOUND;
@@ -780,19 +780,19 @@ static herr_t
 H5Z__set_local_nbit(hid_t dcpl_id, hid_t type_id, hid_t space_id)
 {
     H5P_genplist_t *dcpl_plist;                       /* Property list pointer */
-    const H5T_t *   type;                             /* Datatype */
-    const H5S_t *   ds;                               /* Dataspace */
+    const H5T_t    *type;                             /* Datatype */
+    const H5S_t    *ds;                               /* Dataspace */
     unsigned        flags;                            /* Filter flags */
     unsigned        cd_values_index;                  /* Index of array cd_values */
     size_t          cd_values_actual_nparms;          /* Number of parameters in array cd_values[] */
     size_t          cd_nelmts = H5Z_NBIT_USER_NPARMS; /* Number of filter parameters */
-    unsigned *      cd_values = NULL;                 /* Filter parameters */
+    unsigned       *cd_values = NULL;                 /* Filter parameters */
     hssize_t        npoints;                          /* Number of points in the dataspace */
     H5T_class_t     dtype_class;                      /* Datatype's class */
     hbool_t         need_not_compress;   /* Flag if TRUE indicating no need to do nbit compression */
     herr_t          ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Get datatype */
     if (NULL == (type = (H5T_t *)H5I_object_verify(type_id, H5I_DATATYPE)))
@@ -853,7 +853,7 @@ H5Z__set_local_nbit(hid_t dcpl_id, hid_t type_id, hid_t space_id)
 
     /* Get the plist structure */
     if (NULL == (dcpl_plist = H5P_object_verify(dcpl_id, H5P_DATASET_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get the filter's current parameters */
     if (H5P_get_filter_by_id(dcpl_plist, H5Z_FILTER_NBIT, &flags, &cd_nelmts, cd_values, (size_t)0, NULL,
@@ -956,7 +956,7 @@ H5Z__filter_nbit(unsigned flags, size_t cd_nelmts, const unsigned cd_values[], s
     unsigned       d_nelmts  = 0; /* number of elements in the chunk */
     size_t         ret_value = 0; /* return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check arguments
      * cd_values[0] stores actual number of parameters in cd_values[]
@@ -1152,7 +1152,7 @@ H5Z__nbit_decompress_one_array(unsigned char *data, size_t data_offset, unsigned
     parms_atomic p;
     herr_t       ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     total_size = parms[(*parms_index)++];
     base_class = parms[(*parms_index)++];
@@ -1219,7 +1219,7 @@ H5Z__nbit_decompress_one_compound(unsigned char *data, size_t data_offset, unsig
     parms_atomic p;
     herr_t       ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     size     = parms[(*parms_index)++];
     nmembers = parms[(*parms_index)++];
@@ -1289,7 +1289,7 @@ H5Z__nbit_decompress(unsigned char *data, unsigned d_nelmts, unsigned char *buff
     unsigned     parms_index;         /* index in array parms used by compression/decompression functions */
     herr_t       ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* may not have to initialize to zeros */
     HDmemset(data, 0, d_nelmts * (size_t)parms[4]);

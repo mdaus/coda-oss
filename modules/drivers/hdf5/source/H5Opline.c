@@ -31,9 +31,9 @@
 
 /* PRIVATE PROTOTYPES */
 static herr_t H5O__pline_encode(H5F_t *f, uint8_t *p, const void *mesg);
-static void * H5O__pline_decode(H5F_t *f, H5O_t *open_oh, unsigned mesg_flags, unsigned *ioflags,
+static void  *H5O__pline_decode(H5F_t *f, H5O_t *open_oh, unsigned mesg_flags, unsigned *ioflags,
                                 size_t p_size, const uint8_t *p);
-static void * H5O__pline_copy(const void *_mesg, void *_dest);
+static void  *H5O__pline_copy(const void *_mesg, void *_dest);
 static size_t H5O__pline_size(const H5F_t *f, const void *_mesg);
 static herr_t H5O__pline_reset(void *_mesg);
 static herr_t H5O__pline_free(void *_mesg);
@@ -91,6 +91,7 @@ const unsigned H5O_pline_ver_bounds[] = {
     H5O_PLINE_VERSION_1,     /* H5F_LIBVER_EARLIEST */
     H5O_PLINE_VERSION_2,     /* H5F_LIBVER_V18 */
     H5O_PLINE_VERSION_2,     /* H5F_LIBVER_V110 */
+    H5O_PLINE_VERSION_2,     /* H5F_LIBVER_V112 */
     H5O_PLINE_VERSION_LATEST /* H5F_LIBVER_LATEST */
 };
 
@@ -114,14 +115,14 @@ static void *
 H5O__pline_decode(H5F_t H5_ATTR_UNUSED *f, H5O_t H5_ATTR_UNUSED *open_oh, unsigned H5_ATTR_UNUSED mesg_flags,
                   unsigned H5_ATTR_UNUSED *ioflags, size_t p_size, const uint8_t *p)
 {
-    H5O_pline_t *      pline = NULL;               /* Pipeline message */
+    H5O_pline_t       *pline = NULL;               /* Pipeline message */
     H5Z_filter_info_t *filter;                     /* Filter to decode */
     size_t             name_length;                /* Length of filter name */
     size_t             i;                          /* Local index variable */
-    const uint8_t *    p_end     = p + p_size - 1; /* End of the p buffer */
-    void *             ret_value = NULL;           /* Return value */
+    const uint8_t     *p_end     = p + p_size - 1; /* End of the p buffer */
+    void              *ret_value = NULL;           /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(p);
@@ -255,11 +256,11 @@ done:
 static herr_t
 H5O__pline_encode(H5F_t H5_ATTR_UNUSED *f, uint8_t *p /*out*/, const void *mesg)
 {
-    const H5O_pline_t *      pline = (const H5O_pline_t *)mesg; /* Pipeline message to encode */
+    const H5O_pline_t       *pline = (const H5O_pline_t *)mesg; /* Pipeline message to encode */
     const H5Z_filter_info_t *filter;                            /* Filter to encode */
     size_t                   i, j;                              /* Local index variables */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check args */
     HDassert(p);
@@ -357,11 +358,11 @@ static void *
 H5O__pline_copy(const void *_src, void *_dst /*out*/)
 {
     const H5O_pline_t *src = (const H5O_pline_t *)_src; /* Source pipeline message */
-    H5O_pline_t *      dst = (H5O_pline_t *)_dst;       /* Destination pipeline message */
+    H5O_pline_t       *dst = (H5O_pline_t *)_dst;       /* Destination pipeline message */
     size_t             i;                               /* Local index variable */
-    H5O_pline_t *      ret_value = NULL;                /* Return value */
+    H5O_pline_t       *ret_value = NULL;                /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Allocate pipeline message, if not provided */
     if (!dst && NULL == (dst = H5FL_MALLOC(H5O_pline_t)))
@@ -452,7 +453,7 @@ H5O__pline_size(const H5F_t H5_ATTR_UNUSED *f, const void *mesg)
     size_t             i;                                 /* Local index variable */
     size_t             ret_value = 0;                     /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Message header */
     ret_value = (size_t)(1 +                                               /*version            */
@@ -514,7 +515,7 @@ H5O__pline_reset(void *mesg)
     H5O_pline_t *pline = (H5O_pline_t *)mesg; /* Pipeline message */
     size_t       i;                           /* Local index variable */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* NOTE: This function can be called during error processing from
      *       other API calls so DO NOT ASSUME THAT ANY VALUES ARE SANE.
@@ -564,7 +565,7 @@ H5O__pline_reset(void *mesg)
 static herr_t
 H5O__pline_free(void *mesg)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(mesg);
 
@@ -592,11 +593,11 @@ static herr_t
 H5O__pline_pre_copy_file(H5F_t H5_ATTR_UNUSED *file_src, const void *mesg_src,
                          hbool_t H5_ATTR_UNUSED *deleted, const H5O_copy_t *cpy_info, void *_udata)
 {
-    const H5O_pline_t *        pline_src = (const H5O_pline_t *)mesg_src;       /* Source pline */
+    const H5O_pline_t         *pline_src = (const H5O_pline_t *)mesg_src;       /* Source pline */
     H5O_copy_file_ud_common_t *udata     = (H5O_copy_file_ud_common_t *)_udata; /* Object copying user data */
     herr_t                     ret_value = SUCCEED;                             /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(pline_src);
@@ -638,9 +639,8 @@ static herr_t
 H5O__pline_debug(H5F_t H5_ATTR_UNUSED *f, const void *mesg, FILE *stream, int indent, int fwidth)
 {
     const H5O_pline_t *pline = (const H5O_pline_t *)mesg;
-    size_t             i, j;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* check args */
     HDassert(f);
@@ -653,10 +653,15 @@ H5O__pline_debug(H5F_t H5_ATTR_UNUSED *f, const void *mesg, FILE *stream, int in
               pline->nalloc);
 
     /* Loop over all the filters */
-    for (i = 0; i < pline->nused; i++) {
-        char name[32];
+    for (size_t i = 0; i < pline->nused; i++) {
+        /* 19 characters for text + 20 characters for largest 64-bit size_t +
+         * terminal NUL = 40 characters.
+         */
+        char name[64];
 
+        HDmemset(name, 0, 64);
         HDsnprintf(name, sizeof(name), "Filter at position %zu", i);
+
         HDfprintf(stream, "%*s%-*s\n", indent, "", fwidth, name);
         HDfprintf(stream, "%*s%-*s 0x%04x\n", indent + 3, "", MAX(0, fwidth - 3),
                   "Filter identification:", (unsigned)(pline->filter[i].id));
@@ -671,14 +676,14 @@ H5O__pline_debug(H5F_t H5_ATTR_UNUSED *f, const void *mesg, FILE *stream, int in
                   "Num CD values:", pline->filter[i].cd_nelmts);
 
         /* Filter parameters */
-        for (j = 0; j < pline->filter[i].cd_nelmts; j++) {
+        for (size_t j = 0; j < pline->filter[i].cd_nelmts; j++) {
             char field_name[32];
 
             HDsnprintf(field_name, sizeof(field_name), "CD value %lu", (unsigned long)j);
             HDfprintf(stream, "%*s%-*s %u\n", indent + 6, "", MAX(0, fwidth - 6), field_name,
                       pline->filter[i].cd_values[j]);
-        } /* end for */
-    }     /* end for */
+        }
+    }
 
     FUNC_LEAVE_NOAPI(SUCCEED)
 } /* end H5O__pline_debug() */

@@ -46,6 +46,7 @@ const unsigned H5O_layout_ver_bounds[] = {
     H5O_LAYOUT_VERSION_1,                      /* H5F_LIBVER_EARLIEST */
     H5O_LAYOUT_VERSION_3, /* H5F_LIBVER_V18 */ /* H5O_LAYOUT_VERSION_DEFAULT */
     H5O_LAYOUT_VERSION_4,                      /* H5F_LIBVER_V110 */
+    H5O_LAYOUT_VERSION_4,                      /* H5F_LIBVER_V112 */
     H5O_LAYOUT_VERSION_LATEST                  /* H5F_LIBVER_LATEST */
 };
 
@@ -450,7 +451,7 @@ done:
 herr_t
 H5D__layout_oh_create(H5F_t *file, H5O_t *oh, H5D_t *dset, hid_t dapl_id)
 {
-    H5O_layout_t *    layout;                /* Dataset's layout information */
+    H5O_layout_t     *layout;                /* Dataset's layout information */
     const H5O_fill_t *fill_prop;             /* Pointer to dataset's fill value information */
     unsigned          layout_mesg_flags;     /* Flags for inserting layout message */
     hbool_t           layout_init = FALSE;   /* Flag to indicate that chunk information was initialized */
@@ -500,7 +501,7 @@ H5D__layout_oh_create(H5F_t *file, H5O_t *oh, H5D_t *dset, hid_t dapl_id)
     /* Update external storage message, if it's used */
     if (dset->shared->dcpl_cache.efl.nused > 0) {
         H5O_efl_t *efl = &dset->shared->dcpl_cache.efl; /* Dataset's external file list */
-        H5HL_t *   heap;                                /* Pointer to local heap for EFL file names */
+        H5HL_t    *heap;                                /* Pointer to local heap for EFL file names */
         size_t     heap_size = H5HL_ALIGN(1);
         size_t     u;
         size_t     name_offset;

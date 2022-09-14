@@ -51,7 +51,7 @@ typedef struct H5FD_core_region_t {
  */
 typedef struct H5FD_core_t {
     H5FD_t         pub;              /* public stuff, must be first          */
-    char *         name;             /* for equivalence testing              */
+    char          *name;             /* for equivalence testing              */
     unsigned char *mem;              /* the underlying memory                */
     haddr_t        eoa;              /* end of allocated region              */
     haddr_t        eof;              /* current allocated size               */
@@ -91,7 +91,7 @@ typedef struct H5FD_core_t {
 #endif                                        /* H5_HAVE_WIN32_API */
     hbool_t                     dirty;        /* changes not saved?       */
     H5FD_file_image_callbacks_t fi_callbacks; /* file image callbacks     */
-    H5SL_t *                    dirty_list;   /* dirty parts of the file  */
+    H5SL_t                     *dirty_list;   /* dirty parts of the file  */
 } H5FD_core_t;
 
 /* Driver-specific file access properties */
@@ -131,7 +131,7 @@ static herr_t  H5FD__core_add_dirty_region(H5FD_core_t *file, haddr_t start, had
 static herr_t  H5FD__core_destroy_dirty_list(H5FD_core_t *file);
 static herr_t  H5FD__core_write_to_bstore(H5FD_core_t *file, haddr_t addr, size_t size);
 static herr_t  H5FD__core_term(void);
-static void *  H5FD__core_fapl_get(H5FD_t *_file);
+static void   *H5FD__core_fapl_get(H5FD_t *_file);
 static H5FD_t *H5FD__core_open(const char *name, unsigned flags, hid_t fapl_id, haddr_t maxaddr);
 static herr_t  H5FD__core_close(H5FD_t *_file);
 static int     H5FD__core_cmp(const H5FD_t *_f1, const H5FD_t *_f2);
@@ -148,8 +148,12 @@ static herr_t  H5FD__core_flush(H5FD_t *_file, hid_t dxpl_id, hbool_t closing);
 static herr_t  H5FD__core_truncate(H5FD_t *_file, hid_t dxpl_id, hbool_t closing);
 static herr_t  H5FD__core_lock(H5FD_t *_file, hbool_t rw);
 static herr_t  H5FD__core_unlock(H5FD_t *_file);
+static herr_t  H5FD__core_delete(const char *filename, hid_t fapl_id);
+static inline const H5FD_core_fapl_t *H5FD__core_get_default_config(void);
 
 static const H5FD_class_t H5FD_core_g = {
+    H5FD_CLASS_VERSION,       /* struct version       */
+    H5FD_CORE_VALUE,          /* value                */
     "core",                   /* name                 */
     MAXADDR,                  /* maxaddr              */
     H5F_CLOSE_WEAK,           /* fc_degree            */
@@ -177,12 +181,23 @@ static const H5FD_class_t H5FD_core_g = {
     H5FD__core_get_handle,    /* get_handle           */
     H5FD__core_read,          /* read                 */
     H5FD__core_write,         /* write                */
+    NULL,                     /* read_vector          */
+    NULL,                     /* write_vector         */
+    NULL,                     /* read_selection       */
+    NULL,                     /* write_selection      */
     H5FD__core_flush,         /* flush                */
     H5FD__core_truncate,      /* truncate             */
     H5FD__core_lock,          /* lock                 */
     H5FD__core_unlock,        /* unlock               */
+    H5FD__core_delete,        /* del                  */
+    NULL,                     /* ctl                  */
     H5FD_FLMAP_DICHOTOMY      /* fl_map               */
 };
+
+/* Default configurations, if none provided */
+static const H5FD_core_fapl_t H5FD_core_default_config_g = {
+    (size_t)H5_MB, TRUE, H5FD_CORE_WRITE_TRACKING_FLAG, H5FD_CORE_WRITE_TRACKING_PAGE_SIZE};
+static const H5FD_core_fapl_t H5FD_core_default_paged_config_g = {(size_t)H5_MB, TRUE, TRUE, (size_t)4096};
 
 /* Define a free list to manage the region type */
 H5FL_DEFINE(H5FD_core_region_t);
@@ -208,7 +223,7 @@ H5FD__core_add_dirty_region(H5FD_core_t *file, haddr_t start, haddr_t end)
     hbool_t             create_new_node = TRUE;
     herr_t              ret_value       = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(file);
     HDassert(file->dirty_list);
@@ -307,7 +322,7 @@ H5FD__core_destroy_dirty_list(H5FD_core_t *file)
 {
     herr_t ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(file);
 
@@ -345,7 +360,7 @@ H5FD__core_write_to_bstore(H5FD_core_t *file, haddr_t addr, size_t size)
     HDoff_t offset    = (HDoff_t)addr;     /* Offset to write at */
     herr_t  ret_value = SUCCEED;           /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(file);
 
@@ -406,37 +421,30 @@ done:
 } /* end H5FD__core_write_to_bstore() */
 
 /*-------------------------------------------------------------------------
- * Function:    H5FD__init_package
+ * Function:    H5FD__core_get_default_config
  *
- * Purpose:     Initializes any interface-specific data or routines.
+ * Purpose:     Retrieves a default configuration for this VFD when no
+ *              configuration information has been provided.
  *
- * Return:      Non-negative on success/Negative on failure
+ * Return:      Valid Core VFD configuration information pointer (can't
+ *                  fail)
  *
  *-------------------------------------------------------------------------
  */
-static herr_t
-H5FD__init_package(void)
+static inline const H5FD_core_fapl_t *
+H5FD__core_get_default_config(void)
 {
-    char * lock_env_var = NULL; /* Environment variable pointer */
-    herr_t ret_value    = SUCCEED;
+    char *driver = HDgetenv(HDF5_DRIVER);
 
-    FUNC_ENTER_STATIC
+    if (driver) {
+        if (!HDstrcmp(driver, "core"))
+            return &H5FD_core_default_config_g;
+        else if (!HDstrcmp(driver, "core_paged"))
+            return &H5FD_core_default_paged_config_g;
+    }
 
-    /* Check the use disabled file locks environment variable */
-    lock_env_var = HDgetenv("HDF5_USE_FILE_LOCKING");
-    if (lock_env_var && !HDstrcmp(lock_env_var, "BEST_EFFORT"))
-        ignore_disabled_file_locks_s = TRUE; /* Override: Ignore disabled locks */
-    else if (lock_env_var && (!HDstrcmp(lock_env_var, "TRUE") || !HDstrcmp(lock_env_var, "1")))
-        ignore_disabled_file_locks_s = FALSE; /* Override: Don't ignore disabled locks */
-    else
-        ignore_disabled_file_locks_s = FAIL; /* Environment variable not set, or not set correctly */
-
-    if (H5FD_core_init() < 0)
-        HGOTO_ERROR(H5E_VFL, H5E_CANTINIT, FAIL, "unable to initialize core VFD")
-
-done:
-    FUNC_LEAVE_NOAPI(ret_value)
-} /* H5FD__init_package() */
+    return &H5FD_core_default_config_g;
+} /* end H5FD__core_get_default_config() */
 
 /*-------------------------------------------------------------------------
  * Function:    H5FD_core_init
@@ -455,9 +463,19 @@ done:
 hid_t
 H5FD_core_init(void)
 {
-    hid_t ret_value = H5I_INVALID_HID; /* Return value */
+    char *lock_env_var = NULL;            /* Environment variable pointer */
+    hid_t ret_value    = H5I_INVALID_HID; /* Return value */
 
-    FUNC_ENTER_NOAPI(H5I_INVALID_HID)
+    FUNC_ENTER_NOAPI_NOERR
+
+    /* Check the use disabled file locks environment variable */
+    lock_env_var = HDgetenv(HDF5_USE_FILE_LOCKING);
+    if (lock_env_var && !HDstrcmp(lock_env_var, "BEST_EFFORT"))
+        ignore_disabled_file_locks_s = TRUE; /* Override: Ignore disabled locks */
+    else if (lock_env_var && (!HDstrcmp(lock_env_var, "TRUE") || !HDstrcmp(lock_env_var, "1")))
+        ignore_disabled_file_locks_s = FALSE; /* Override: Don't ignore disabled locks */
+    else
+        ignore_disabled_file_locks_s = FAIL; /* Environment variable not set, or not set correctly */
 
     if (H5I_VFL != H5I_get_type(H5FD_CORE_g))
         H5FD_CORE_g = H5FD_register(&H5FD_core_g, sizeof(H5FD_class_t), FALSE);
@@ -465,7 +483,6 @@ H5FD_core_init(void)
     /* Set return value */
     ret_value = H5FD_CORE_g;
 
-done:
     FUNC_LEAVE_NOAPI(ret_value)
 } /* end H5FD_core_init() */
 
@@ -484,7 +501,7 @@ done:
 static herr_t
 H5FD__core_term(void)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Reset VFL ID */
     H5FD_CORE_g = 0;
@@ -508,7 +525,7 @@ H5FD__core_term(void)
 herr_t
 H5Pset_core_write_tracking(hid_t plist_id, hbool_t is_enabled, size_t page_size)
 {
-    H5P_genplist_t *        plist;               /* Property list pointer */
+    H5P_genplist_t         *plist;               /* Property list pointer */
     H5FD_core_fapl_t        fa;                  /* Core VFD info */
     const H5FD_core_fapl_t *old_fa;              /* Old core VFD info */
     herr_t                  ret_value = SUCCEED; /* Return value */
@@ -522,11 +539,11 @@ H5Pset_core_write_tracking(hid_t plist_id, hbool_t is_enabled, size_t page_size)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_ACCESS)))
-        HGOTO_ERROR(H5E_PLIST, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_PLIST, H5E_BADID, FAIL, "can't find object for ID")
     if (H5FD_CORE != H5P_peek_driver(plist))
         HGOTO_ERROR(H5E_PLIST, H5E_BADVALUE, FAIL, "incorrect VFL driver")
     if (NULL == (old_fa = (const H5FD_core_fapl_t *)H5P_peek_driver_info(plist)))
-        HGOTO_ERROR(H5E_PLIST, H5E_BADVALUE, FAIL, "bad VFL driver info")
+        old_fa = H5FD__core_get_default_config();
 
     /* Set VFD info values */
     HDmemset(&fa, 0, sizeof(H5FD_core_fapl_t));
@@ -536,7 +553,7 @@ H5Pset_core_write_tracking(hid_t plist_id, hbool_t is_enabled, size_t page_size)
     fa.page_size      = page_size;
 
     /* Set the property values & the driver for the FAPL */
-    if (H5P_set_driver(plist, H5FD_CORE, &fa) < 0)
+    if (H5P_set_driver(plist, H5FD_CORE, &fa, NULL) < 0)
         HGOTO_ERROR(H5E_PLIST, H5E_CANTSET, FAIL, "can't set core VFD as driver")
 
 done:
@@ -557,18 +574,18 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5Pget_core_write_tracking(hid_t plist_id, hbool_t *is_enabled, size_t *page_size)
+H5Pget_core_write_tracking(hid_t plist_id, hbool_t *is_enabled /*out*/, size_t *page_size /*out*/)
 {
-    H5P_genplist_t *        plist;               /* Property list pointer */
+    H5P_genplist_t         *plist;               /* Property list pointer */
     const H5FD_core_fapl_t *fa;                  /* Core VFD info */
     herr_t                  ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE3("e", "i*b*z", plist_id, is_enabled, page_size);
+    H5TRACE3("e", "ixx", plist_id, is_enabled, page_size);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_FILE_ACCESS)))
-        HGOTO_ERROR(H5E_PLIST, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_PLIST, H5E_BADID, FAIL, "can't find object for ID")
     if (H5FD_CORE != H5P_peek_driver(plist))
         HGOTO_ERROR(H5E_PLIST, H5E_BADVALUE, FAIL, "incorrect VFL driver")
     if (NULL == (fa = (const H5FD_core_fapl_t *)H5P_peek_driver_info(plist)))
@@ -601,7 +618,7 @@ done:
 herr_t
 H5Pset_fapl_core(hid_t fapl_id, size_t increment, hbool_t backing_store)
 {
-    H5P_genplist_t * plist;               /* Property list pointer */
+    H5P_genplist_t  *plist;               /* Property list pointer */
     H5FD_core_fapl_t fa;                  /* Core VFD info */
     herr_t           ret_value = SUCCEED; /* Return value */
 
@@ -620,7 +637,7 @@ H5Pset_fapl_core(hid_t fapl_id, size_t increment, hbool_t backing_store)
     fa.page_size      = H5FD_CORE_WRITE_TRACKING_PAGE_SIZE;
 
     /* Set the property values & the driver for the FAPL */
-    if (H5P_set_driver(plist, H5FD_CORE, &fa) < 0)
+    if (H5P_set_driver(plist, H5FD_CORE, &fa, NULL) < 0)
         HGOTO_ERROR(H5E_PLIST, H5E_CANTSET, FAIL, "can't set core VFD as driver")
 
 done:
@@ -642,7 +659,7 @@ done:
 herr_t
 H5Pget_fapl_core(hid_t fapl_id, size_t *increment /*out*/, hbool_t *backing_store /*out*/)
 {
-    H5P_genplist_t *        plist;               /* Property list pointer */
+    H5P_genplist_t         *plist;               /* Property list pointer */
     const H5FD_core_fapl_t *fa;                  /* Core VFD info */
     herr_t                  ret_value = SUCCEED; /* Return value */
 
@@ -681,11 +698,11 @@ done:
 static void *
 H5FD__core_fapl_get(H5FD_t *_file)
 {
-    H5FD_core_t *     file = (H5FD_core_t *)_file;
+    H5FD_core_t      *file = (H5FD_core_t *)_file;
     H5FD_core_fapl_t *fa;               /* Core VFD info */
-    void *            ret_value = NULL; /* Return value */
+    void             *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     if (NULL == (fa = (H5FD_core_fapl_t *)H5MM_calloc(sizeof(H5FD_core_fapl_t))))
         HGOTO_ERROR(H5E_RESOURCE, H5E_NOSPACE, NULL, "memory allocation failed")
@@ -721,18 +738,18 @@ static H5FD_t *
 H5FD__core_open(const char *name, unsigned flags, hid_t fapl_id, haddr_t maxaddr)
 {
     int                     o_flags;
-    H5FD_core_t *           file = NULL;
+    H5FD_core_t            *file = NULL;
     const H5FD_core_fapl_t *fa   = NULL;
-    H5P_genplist_t *        plist; /* Property list pointer */
+    H5P_genplist_t         *plist; /* Property list pointer */
 #ifdef H5_HAVE_WIN32_API
     struct _BY_HANDLE_FILE_INFORMATION fileinfo;
 #endif
     h5_stat_t              sb;
     int                    fd = -1;
     H5FD_file_image_info_t file_image_info;
-    H5FD_t *               ret_value = NULL; /* Return value */
+    H5FD_t                *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments */
     if (!name || !*name)
@@ -745,7 +762,7 @@ H5FD__core_open(const char *name, unsigned flags, hid_t fapl_id, haddr_t maxaddr
     if (NULL == (plist = (H5P_genplist_t *)H5I_object(fapl_id)))
         HGOTO_ERROR(H5E_ARGS, H5E_BADTYPE, NULL, "not a file access property list")
     if (NULL == (fa = (const H5FD_core_fapl_t *)H5P_peek_driver_info(plist)))
-        HGOTO_ERROR(H5E_PLIST, H5E_BADVALUE, NULL, "bad VFL driver info")
+        fa = H5FD__core_get_default_config();
 
     /* Build the open flags */
     o_flags = (H5F_ACC_RDWR & flags) ? O_RDWR : O_RDONLY;
@@ -988,7 +1005,7 @@ H5FD__core_close(H5FD_t *_file)
     H5FD_core_t *file      = (H5FD_core_t *)_file;
     herr_t       ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Flush any changed buffers */
     if (H5FD__core_flush(_file, (hid_t)-1, TRUE) < 0)
@@ -1045,7 +1062,7 @@ H5FD__core_cmp(const H5FD_t *_f1, const H5FD_t *_f2)
     const H5FD_core_t *f2        = (const H5FD_core_t *)_f2;
     int                ret_value = 0;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     if (f1->fd >= 0 && f2->fd >= 0) {
         /* Compare low level file information for backing store */
@@ -1128,7 +1145,7 @@ H5FD__core_query(const H5FD_t *_file, unsigned long *flags /* out */)
 {
     const H5FD_core_t *file = (const H5FD_core_t *)_file;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* clang-format off */
     /* Set the VFL feature flags that this driver supports */
@@ -1171,7 +1188,7 @@ H5FD__core_get_eoa(const H5FD_t *_file, H5FD_mem_t H5_ATTR_UNUSED type)
 {
     const H5FD_core_t *file = (const H5FD_core_t *)_file;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     FUNC_LEAVE_NOAPI(file->eoa)
 } /* end H5FD__core_get_eoa() */
@@ -1196,7 +1213,7 @@ H5FD__core_set_eoa(H5FD_t *_file, H5FD_mem_t H5_ATTR_UNUSED type, haddr_t addr)
     H5FD_core_t *file      = (H5FD_core_t *)_file;
     herr_t       ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     if (ADDR_OVERFLOW(addr))
         HGOTO_ERROR(H5E_ARGS, H5E_OVERFLOW, FAIL, "address overflow")
@@ -1228,7 +1245,7 @@ H5FD__core_get_eof(const H5FD_t *_file, H5FD_mem_t H5_ATTR_UNUSED type)
 {
     const H5FD_core_t *file = (const H5FD_core_t *)_file;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     FUNC_LEAVE_NOAPI(file->eof)
 } /* end H5FD__core_get_eof() */
@@ -1251,7 +1268,7 @@ H5FD__core_get_handle(H5FD_t *_file, hid_t fapl, void **file_handle)
     H5FD_core_t *file      = (H5FD_core_t *)_file; /* core VFD info */
     herr_t       ret_value = SUCCEED;              /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check args */
     if (!file_handle)
@@ -1315,7 +1332,7 @@ H5FD__core_read(H5FD_t *_file, H5FD_mem_t H5_ATTR_UNUSED type, hid_t H5_ATTR_UNU
     H5FD_core_t *file      = (H5FD_core_t *)_file;
     herr_t       ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(file && file->pub.cls);
     HDassert(buf);
@@ -1374,7 +1391,7 @@ H5FD__core_write(H5FD_t *_file, H5FD_mem_t H5_ATTR_UNUSED type, hid_t H5_ATTR_UN
     H5FD_core_t *file      = (H5FD_core_t *)_file;
     herr_t       ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(file && file->pub.cls);
     HDassert(buf);
@@ -1459,7 +1476,7 @@ H5FD__core_flush(H5FD_t *_file, hid_t H5_ATTR_UNUSED dxpl_id, hbool_t H5_ATTR_UN
     H5FD_core_t *file      = (H5FD_core_t *)_file;
     herr_t       ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Write to backing store */
     if (file->dirty && file->fd >= 0 && file->backing_store) {
@@ -1543,7 +1560,7 @@ H5FD__core_truncate(H5FD_t *_file, hid_t H5_ATTR_UNUSED dxpl_id, hbool_t closing
     size_t       new_eof;             /* New size of memory buffer */
     herr_t       ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(file);
 
@@ -1590,7 +1607,7 @@ H5FD__core_truncate(H5FD_t *_file, hid_t H5_ATTR_UNUSED dxpl_id, hbool_t closing
                 BOOL  bError;           /* Boolean error flag */
 
                 /* Windows uses this odd QuadPart union for 32/64-bit portability */
-                li.QuadPart = (__int64)file->eoa;
+                li.QuadPart = (LONGLONG)file->eoa;
 
                 /* Extend the file to make sure it's large enough.
                  *
@@ -1644,7 +1661,7 @@ H5FD__core_lock(H5FD_t *_file, hbool_t rw)
     int          lock_flags;                  /* file locking flags       */
     herr_t       ret_value = SUCCEED;         /* Return value             */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(file);
 
@@ -1689,7 +1706,7 @@ H5FD__core_unlock(H5FD_t *_file)
     H5FD_core_t *file      = (H5FD_core_t *)_file; /* VFD file struct */
     herr_t       ret_value = SUCCEED;              /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(file);
 
@@ -1708,3 +1725,36 @@ H5FD__core_unlock(H5FD_t *_file)
 done:
     FUNC_LEAVE_NOAPI(ret_value)
 } /* end H5FD__core_unlock() */
+
+/*-------------------------------------------------------------------------
+ * Function:    H5FD__core_delete
+ *
+ * Purpose:     Delete a file
+ *
+ * Return:      SUCCEED/FAIL
+ *
+ *-------------------------------------------------------------------------
+ */
+static herr_t
+H5FD__core_delete(const char *filename, hid_t fapl_id)
+{
+    const H5FD_core_fapl_t *fa = NULL;
+    H5P_genplist_t         *plist;               /* Property list pointer */
+    herr_t                  ret_value = SUCCEED; /* Return value */
+
+    FUNC_ENTER_PACKAGE
+
+    HDassert(filename);
+
+    if (NULL == (plist = (H5P_genplist_t *)H5I_object(fapl_id)))
+        HGOTO_ERROR(H5E_ARGS, H5E_BADTYPE, FAIL, "not a file access property list")
+    if (NULL == (fa = (const H5FD_core_fapl_t *)H5P_peek_driver_info(plist)))
+        fa = H5FD__core_get_default_config();
+
+    if (fa->backing_store)
+        if (HDremove(filename) < 0)
+            HSYS_GOTO_ERROR(H5E_VFL, H5E_CANTDELETEFILE, FAIL, "unable to delete file")
+
+done:
+    FUNC_LEAVE_NOAPI(ret_value)
+} /* end H5FD__core_delete() */

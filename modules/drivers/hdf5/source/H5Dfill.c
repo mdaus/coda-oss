@@ -85,58 +85,6 @@ H5FL_EXTERN(H5S_sel_iter_t);
 
 /*--------------------------------------------------------------------------
  NAME
-    H5Dfill
- PURPOSE
-    Fill a selection in memory with a value
- USAGE
-    herr_t H5Dfill(fill, fill_type, space, buf, buf_type)
-        const void *fill;       IN: Pointer to fill value to use
-        hid_t fill_type_id;     IN: Datatype of the fill value
-        void *buf;              IN/OUT: Memory buffer to fill selection within
-        hid_t buf_type_id;      IN: Datatype of the elements in buffer
-        hid_t space_id;         IN: Dataspace describing memory buffer &
-                                    containing selection to use.
- RETURNS
-    Non-negative on success/Negative on failure.
- DESCRIPTION
-    Use the selection in the dataspace to fill elements in a memory buffer.
- GLOBAL VARIABLES
- COMMENTS, BUGS, ASSUMPTIONS
-    If "fill" parameter is NULL, use all zeros as fill value
- EXAMPLES
- REVISION LOG
---------------------------------------------------------------------------*/
-herr_t
-H5Dfill(const void *fill, hid_t fill_type_id, void *buf, hid_t buf_type_id, hid_t space_id)
-{
-    H5S_t *space;               /* Dataspace */
-    H5T_t *fill_type;           /* Fill-value datatype */
-    H5T_t *buf_type;            /* Buffer datatype */
-    herr_t ret_value = SUCCEED; /* Return value */
-
-    FUNC_ENTER_API(FAIL)
-    H5TRACE5("e", "*xi*xii", fill, fill_type_id, buf, buf_type_id, space_id);
-
-    /* Check args */
-    if (buf == NULL)
-        HGOTO_ERROR(H5E_ARGS, H5E_BADVALUE, FAIL, "invalid buffer")
-    if (NULL == (space = (H5S_t *)H5I_object_verify(space_id, H5I_DATASPACE)))
-        HGOTO_ERROR(H5E_ARGS, H5E_BADTYPE, 0, "not a dataspace")
-    if (NULL == (fill_type = (H5T_t *)H5I_object_verify(fill_type_id, H5I_DATATYPE)))
-        HGOTO_ERROR(H5E_ARGS, H5E_BADTYPE, 0, "not a datatype")
-    if (NULL == (buf_type = (H5T_t *)H5I_object_verify(buf_type_id, H5I_DATATYPE)))
-        HGOTO_ERROR(H5E_ARGS, H5E_BADTYPE, 0, "not a datatype")
-
-    /* Fill the selection in the memory buffer */
-    if (H5D__fill(fill, fill_type, buf, buf_type, space) < 0)
-        HGOTO_ERROR(H5E_DATASET, H5E_CANTENCODE, FAIL, "filling selection failed")
-
-done:
-    FUNC_LEAVE_API(ret_value)
-} /* H5Dfill() */
-
-/*--------------------------------------------------------------------------
- NAME
     H5D__fill
  PURPOSE
     Fill a selection in memory with a value (internal version)
@@ -164,16 +112,16 @@ done:
     on each element so that each of them has a copy of the VL data.
 --------------------------------------------------------------------------*/
 herr_t
-H5D__fill(const void *fill, const H5T_t *fill_type, void *buf, const H5T_t *buf_type, const H5S_t *space)
+H5D__fill(const void *fill, const H5T_t *fill_type, void *buf, const H5T_t *buf_type, H5S_t *space)
 {
     H5S_sel_iter_t *mem_iter      = NULL;  /* Memory selection iteration info */
     hbool_t         mem_iter_init = FALSE; /* Whether the memory selection iterator has been initialized */
-    H5WB_t *        elem_wb       = NULL;  /* Wrapped buffer for element data */
+    H5WB_t         *elem_wb       = NULL;  /* Wrapped buffer for element data */
     uint8_t         elem_buf[H5T_ELEM_BUF_SIZE];     /* Buffer for element data */
-    H5WB_t *        bkg_elem_wb = NULL;              /* Wrapped buffer for background data */
+    H5WB_t         *bkg_elem_wb = NULL;              /* Wrapped buffer for background data */
     uint8_t         bkg_elem_buf[H5T_ELEM_BUF_SIZE]; /* Buffer for background data */
-    uint8_t *       bkg_buf = NULL;                  /* Background conversion buffer */
-    uint8_t *       tmp_buf = NULL;                  /* Temp conversion buffer */
+    uint8_t        *bkg_buf = NULL;                  /* Background conversion buffer */
+    uint8_t        *tmp_buf = NULL;                  /* Temp conversion buffer */
     hid_t           src_id = -1, dst_id = -1;        /* Temporary type IDs */
     size_t          dst_type_size;                   /* Size of destination type*/
     herr_t          ret_value = SUCCEED;             /* Return value */
@@ -560,7 +508,7 @@ herr_t
 H5D__fill_refill_vl(H5D_fill_buf_info_t *fb_info, size_t nelmts)
 {
     herr_t ret_value = SUCCEED; /* Return value */
-    void * buf       = NULL;    /* Temporary fill buffer */
+    void  *buf       = NULL;    /* Temporary fill buffer */
 
     FUNC_ENTER_PACKAGE
 
@@ -642,7 +590,7 @@ done:
 static herr_t
 H5D__fill_release(H5D_fill_buf_info_t *fb_info)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check args */
     HDassert(fb_info);

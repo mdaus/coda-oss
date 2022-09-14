@@ -12,7 +12,6 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #include <cstdlib>
-#include <cstring>
 #include <iostream>
 #include <string>
 
@@ -269,8 +268,10 @@ DataSet::getInMemDataSize() const
     }
 
     // Calculate and return the size of the data
-    size_t data_size = type_size * num_elements;
-    return (data_size);
+    // Note that large datasets can overflow a size_t
+    size_t data_size = type_size * static_cast<size_t>(num_elements);
+
+    return data_size;
 }
 
 //--------------------------------------------------------------------------
@@ -719,8 +720,7 @@ DataSet::p_read_fixed_len(const hid_t mem_type_id, const hid_t mem_space_id, con
     // If there is data, allocate buffer and read it.
     if (data_size > 0) {
         // Create buffer for C string
-        char *strg_C = new char[data_size + 1];
-        memset(strg_C, 0, data_size + 1);
+        char *strg_C = new char[data_size + 1]();
 
         herr_t ret_value = H5Dread(id, mem_type_id, mem_space_id, file_space_id, xfer_plist_id, strg_C);
 

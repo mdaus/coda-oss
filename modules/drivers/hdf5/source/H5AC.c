@@ -43,7 +43,6 @@
 #include "H5CXprivate.h" /* API Contexts                             */
 #include "H5Eprivate.h"  /* Error handling                           */
 #include "H5Fpkg.h"      /* Files                                    */
-#include "H5FDprivate.h" /* File drivers                             */
 #include "H5Iprivate.h"  /* IDs                                      */
 #include "H5Pprivate.h"  /* Property lists                           */
 #include "H5SLprivate.h" /* Skip Lists                               */
@@ -61,8 +60,8 @@
 /********************/
 
 static herr_t H5AC__check_if_write_permitted(const H5F_t *f, hbool_t *write_permitted_ptr);
-static herr_t H5AC__ext_config_2_int_config(H5AC_cache_config_t *ext_conf_ptr,
-                                            H5C_auto_size_ctl_t *int_conf_ptr);
+static herr_t H5AC__ext_config_2_int_config(const H5AC_cache_config_t *ext_conf_ptr,
+                                            H5C_auto_size_ctl_t       *int_conf_ptr);
 #if H5AC_DO_TAGGING_SANITY_CHECKS
 static herr_t H5AC__verify_tag(const H5AC_class_t *type);
 #endif /* H5AC_DO_TAGGING_SANITY_CHECKS */
@@ -70,9 +69,6 @@ static herr_t H5AC__verify_tag(const H5AC_class_t *type);
 /*********************/
 /* Package Variables */
 /*********************/
-
-/* Package initialization variable */
-hbool_t H5_PKG_INIT_VAR = FALSE;
 
 /*****************************/
 /* Library Private Variables */
@@ -144,29 +140,7 @@ H5AC_init(void)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_NOAPI(FAIL)
-    /* FUNC_ENTER() does all the work */
-
-done:
-    FUNC_LEAVE_NOAPI(ret_value)
-} /* end H5AC_init() */
-
-/*-------------------------------------------------------------------------
- * Function:    H5AC__init_package
- *
- * Purpose:     Initialize interface-specific information
- *
- * Return:      Non-negative on success/Negative on failure
- *
- * Programmer:  Quincey Koziol
- *              Thursday, July 18, 2002
- *
- *-------------------------------------------------------------------------
- */
-herr_t
-H5AC__init_package(void)
-{
-    FUNC_ENTER_PACKAGE_NOERR
+    FUNC_ENTER_NOAPI_NOERR
 
 #ifdef H5_HAVE_PARALLEL
     /* check whether to enable strict collective function calling
@@ -183,8 +157,8 @@ H5AC__init_package(void)
     }
 #endif /* H5_HAVE_PARALLEL */
 
-    FUNC_LEAVE_NOAPI(SUCCEED)
-} /* end H5AC__init_package() */
+    FUNC_LEAVE_NOAPI(ret_value)
+} /* end H5AC_init() */
 
 /*-------------------------------------------------------------------------
  * Function:    H5AC_term_package
@@ -204,10 +178,6 @@ int
 H5AC_term_package(void)
 {
     FUNC_ENTER_NOAPI_NOINIT_NOERR
-
-    if (H5_PKG_INIT_VAR)
-        /* Reset interface initialization flag */
-        H5_PKG_INIT_VAR = FALSE;
 
     FUNC_LEAVE_NOAPI(0)
 } /* end H5AC_term_package() */
@@ -232,7 +202,7 @@ H5AC_term_package(void)
 hbool_t
 H5AC_cache_image_pending(const H5F_t *f)
 {
-    H5C_t * cache_ptr;
+    H5C_t  *cache_ptr;
     hbool_t ret_value = FALSE; /* Return value */
 
     FUNC_ENTER_NOAPI_NOINIT_NOERR
@@ -908,7 +878,7 @@ herr_t
 H5AC_mark_entry_dirty(void *thing)
 {
     H5AC_info_t *entry_ptr = NULL;    /* Pointer to the cache entry */
-    H5C_t *      cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
+    H5C_t       *cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
     herr_t       ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
@@ -962,7 +932,7 @@ herr_t
 H5AC_mark_entry_clean(void *thing)
 {
     H5AC_info_t *entry_ptr = NULL;    /* Pointer to the cache entry */
-    H5C_t *      cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
+    H5C_t       *cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
     herr_t       ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
@@ -1015,7 +985,7 @@ herr_t
 H5AC_mark_entry_unserialized(void *thing)
 {
     H5AC_info_t *entry_ptr = NULL;    /* Pointer to the cache entry */
-    H5C_t *      cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
+    H5C_t       *cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
     herr_t       ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
@@ -1057,7 +1027,7 @@ herr_t
 H5AC_mark_entry_serialized(void *thing)
 {
     H5AC_info_t *entry_ptr = NULL;    /* Pointer to the cache entry */
-    H5C_t *      cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
+    H5C_t       *cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
     herr_t       ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
@@ -1155,7 +1125,7 @@ herr_t
 H5AC_pin_protected_entry(void *thing)
 {
     H5AC_info_t *entry_ptr = NULL;    /* Pointer to the cache entry */
-    H5C_t *      cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
+    H5C_t       *cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
     herr_t       ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
@@ -1336,7 +1306,7 @@ herr_t
 H5AC_create_flush_dependency(void *parent_thing, void *child_thing)
 {
     H5AC_info_t *entry_ptr = NULL;    /* Pointer to the cache entry */
-    H5C_t *      cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
+    H5C_t       *cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
     herr_t       ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
@@ -1458,7 +1428,7 @@ herr_t
 H5AC_resize_entry(void *thing, size_t new_size)
 {
     H5AC_info_t *entry_ptr = NULL;    /* Pointer to the cache entry */
-    H5C_t *      cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
+    H5C_t       *cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
     herr_t       ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
@@ -1573,7 +1543,7 @@ herr_t
 H5AC_unpin_entry(void *thing)
 {
     H5AC_info_t *entry_ptr = NULL;    /* Pointer to the cache entry */
-    H5C_t *      cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
+    H5C_t       *cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
     herr_t       ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
@@ -1615,7 +1585,7 @@ herr_t
 H5AC_destroy_flush_dependency(void *parent_thing, void *child_thing)
 {
     H5AC_info_t *entry_ptr = NULL;    /* Pointer to the cache entry */
-    H5C_t *      cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
+    H5C_t       *cache_ptr = NULL;    /* Pointer to the entry's associated metadata cache */
     herr_t       ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
@@ -1863,14 +1833,14 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5AC_get_cache_size(H5AC_t *cache_ptr, size_t *max_size_ptr, size_t *min_clean_size_ptr, size_t *cur_size_ptr,
-                    uint32_t *cur_num_entries_ptr)
+H5AC_get_cache_size(const H5AC_t *cache_ptr, size_t *max_size_ptr, size_t *min_clean_size_ptr,
+                    size_t *cur_size_ptr, uint32_t *cur_num_entries_ptr)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
 
-    if (H5C_get_cache_size((H5C_t *)cache_ptr, max_size_ptr, min_clean_size_ptr, cur_size_ptr,
+    if (H5C_get_cache_size((const H5C_t *)cache_ptr, max_size_ptr, min_clean_size_ptr, cur_size_ptr,
                            cur_num_entries_ptr) < 0)
         HGOTO_ERROR(H5E_CACHE, H5E_SYSTEM, FAIL, "H5C_get_cache_size() failed")
 
@@ -1917,13 +1887,13 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5AC_get_cache_hit_rate(H5AC_t *cache_ptr, double *hit_rate_ptr)
+H5AC_get_cache_hit_rate(const H5AC_t *cache_ptr, double *hit_rate_ptr)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
 
-    if (H5C_get_cache_hit_rate((H5C_t *)cache_ptr, hit_rate_ptr) < 0)
+    if (H5C_get_cache_hit_rate((const H5C_t *)cache_ptr, hit_rate_ptr) < 0)
         HGOTO_ERROR(H5E_CACHE, H5E_SYSTEM, FAIL, "H5C_get_cache_hit_rate() failed")
 
 done:
@@ -1969,7 +1939,7 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5AC_set_cache_auto_resize_config(H5AC_t *cache_ptr, H5AC_cache_config_t *config_ptr)
+H5AC_set_cache_auto_resize_config(H5AC_t *cache_ptr, const H5AC_cache_config_t *config_ptr)
 {
     H5C_auto_size_ctl_t internal_config;
     herr_t              ret_value = SUCCEED; /* Return value */
@@ -2070,7 +2040,7 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5AC_validate_config(H5AC_cache_config_t *config_ptr)
+H5AC_validate_config(const H5AC_cache_config_t *config_ptr)
 {
     H5C_auto_size_ctl_t internal_config;
     herr_t              ret_value = SUCCEED; /* Return value */
@@ -2208,7 +2178,7 @@ H5AC__check_if_write_permitted(const H5F_t
 #endif /* H5_HAVE_PARALLEL */
     hbool_t write_permitted = TRUE;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
 #ifdef H5_HAVE_PARALLEL
     /* Sanity checks */
@@ -2251,11 +2221,11 @@ H5AC__check_if_write_permitted(const H5F_t
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5AC__ext_config_2_int_config(H5AC_cache_config_t *ext_conf_ptr, H5C_auto_size_ctl_t *int_conf_ptr)
+H5AC__ext_config_2_int_config(const H5AC_cache_config_t *ext_conf_ptr, H5C_auto_size_ctl_t *int_conf_ptr)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     if ((ext_conf_ptr == NULL) || (ext_conf_ptr->version != H5AC__CURR_CACHE_CONFIG_VERSION) ||
         (int_conf_ptr == NULL))
@@ -2462,7 +2432,7 @@ done:
 /*------------------------------------------------------------------------------
  * Function:    H5AC_expunge_tag_type_metadata()
  *
- * Purpose:     Wrapper for cache level function which expunge entries with
+ * Purpose:     Wrapper for cache level function which expunges entries with
  *              a specific tag and type id.
  *
  * Return:      SUCCEED on success, FAIL otherwise.
@@ -2592,7 +2562,7 @@ H5AC__verify_tag(const H5AC_class_t *type)
     haddr_t tag;                 /* Entry tag to validate */
     herr_t  ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Get the current tag */
     tag = H5CX_get_tag();
@@ -2776,7 +2746,7 @@ herr_t
 H5AC_remove_entry(void *_entry)
 {
     H5AC_info_t *entry     = (H5AC_info_t *)_entry; /* Entry to remove */
-    H5C_t *      cache     = NULL;                  /* Pointer to the entry's associated metadata cache */
+    H5C_t       *cache     = NULL;                  /* Pointer to the entry's associated metadata cache */
     herr_t       ret_value = SUCCEED;               /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
@@ -2812,13 +2782,13 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5AC_get_mdc_image_info(H5AC_t *cache_ptr, haddr_t *image_addr, hsize_t *image_len)
+H5AC_get_mdc_image_info(const H5AC_t *cache_ptr, haddr_t *image_addr, hsize_t *image_len)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
 
-    if (H5C_get_mdc_image_info((H5C_t *)cache_ptr, image_addr, image_len) < 0)
+    if (H5C_get_mdc_image_info((const H5C_t *)cache_ptr, image_addr, image_len) < 0)
         HGOTO_ERROR(H5E_CACHE, H5E_CANTGET, FAIL, "can't retrieve cache image info")
 
 done:

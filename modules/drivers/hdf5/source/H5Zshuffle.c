@@ -59,17 +59,17 @@ static herr_t
 H5Z__set_local_shuffle(hid_t dcpl_id, hid_t type_id, hid_t H5_ATTR_UNUSED space_id)
 {
     H5P_genplist_t *dcpl_plist;                          /* Property list pointer */
-    const H5T_t *   type;                                /* Datatype */
+    const H5T_t    *type;                                /* Datatype */
     unsigned        flags;                               /* Filter flags */
     size_t          cd_nelmts = H5Z_SHUFFLE_USER_NPARMS; /* Number of filter parameters */
     unsigned        cd_values[H5Z_SHUFFLE_TOTAL_NPARMS]; /* Filter parameters */
     herr_t          ret_value = SUCCEED;                 /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Get the plist structure */
     if (NULL == (dcpl_plist = H5P_object_verify(dcpl_id, H5P_DATASET_CREATE)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get datatype */
     if (NULL == (type = (const H5T_t *)H5I_object_verify(type_id, H5I_DATATYPE)))
@@ -115,7 +115,7 @@ static size_t
 H5Z__filter_shuffle(unsigned flags, size_t cd_nelmts, const unsigned cd_values[], size_t nbytes,
                     size_t *buf_size, void **buf)
 {
-    void *         dest  = NULL;  /* Buffer to deposit [un]shuffled bytes into */
+    void          *dest  = NULL;  /* Buffer to deposit [un]shuffled bytes into */
     unsigned char *_src  = NULL;  /* Alias for source buffer */
     unsigned char *_dest = NULL;  /* Alias for destination buffer */
     unsigned       bytesoftype;   /* Number of bytes per element */
@@ -127,7 +127,7 @@ H5Z__filter_shuffle(unsigned flags, size_t cd_nelmts, const unsigned cd_values[]
     size_t leftover;      /* Extra bytes at end of buffer */
     size_t ret_value = 0; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments */
     if (cd_nelmts != H5Z_SHUFFLE_TOTAL_NPARMS || cd_values[H5Z_SHUFFLE_PARM_SIZE] == 0)

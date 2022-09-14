@@ -55,10 +55,10 @@
 /* User data for recursive traversal over objects from a group */
 typedef struct {
     hid_t          obj_id;    /* The ID for the starting group */
-    H5G_loc_t *    start_loc; /* Location of starting group */
-    H5SL_t *       visited;   /* Skip list for tracking visited nodes */
+    H5G_loc_t     *start_loc; /* Location of starting group */
+    H5SL_t        *visited;   /* Skip list for tracking visited nodes */
     H5O_iterate2_t op;        /* Application callback */
-    void *         op_data;   /* Application's op data */
+    void          *op_data;   /* Application's op data */
     unsigned       fields;    /* Selection of object info */
 } H5O_iter_visit_ud_t;
 
@@ -81,9 +81,6 @@ static herr_t                 H5O__reset_info2(H5O_info2_t *oinfo);
 /*********************/
 /* Package Variables */
 /*********************/
-
-/* Package initialization variable */
-hbool_t H5_PKG_INIT_VAR = FALSE;
 
 /* Header message ID to class mapping
  *
@@ -128,6 +125,7 @@ const unsigned H5O_obj_ver_bounds[] = {
     H5O_VERSION_1,     /* H5F_LIBVER_EARLIEST */
     H5O_VERSION_2,     /* H5F_LIBVER_V18 */
     H5O_VERSION_2,     /* H5F_LIBVER_V110 */
+    H5O_VERSION_2,     /* H5F_LIBVER_V112 */
     H5O_VERSION_LATEST /* H5F_LIBVER_LATEST */
 };
 
@@ -177,21 +175,20 @@ static const H5O_obj_class_t *const H5O_obj_class_g[] = {
 };
 
 /*-------------------------------------------------------------------------
- * Function:    H5O__init_package
+ * Function:    H5O_init
  *
- * Purpose:    Initialize information specific to H5O interface.
+ * Purpose:     Initialize the interface from some other layer.
  *
- * Return:    Non-negative on success/Negative on failure
- *
- * Programmer:    Quincey Koziol
- *              Thursday, January 18, 2007
- *
+ * Return:      Success:        non-negative
+ *              Failure:        negative
  *-------------------------------------------------------------------------
  */
 herr_t
-H5O__init_package(void)
+H5O_init(void)
 {
-    FUNC_ENTER_PACKAGE_NOERR
+    herr_t ret_value = SUCCEED; /* Return value */
+
+    FUNC_ENTER_NOAPI_NOERR
 
     /* H5O interface sanity checks */
     HDcompile_assert(H5O_MSG_TYPES == NELMTS(H5O_msg_class_g));
@@ -199,8 +196,8 @@ H5O__init_package(void)
 
     HDcompile_assert(H5O_UNKNOWN_ID < H5O_MSG_TYPES);
 
-    FUNC_LEAVE_NOAPI(SUCCEED)
-} /* end H5O__init_package() */
+    FUNC_LEAVE_NOAPI(ret_value)
+}
 
 /*-------------------------------------------------------------------------
  * Function:    H5O__set_version
@@ -222,7 +219,7 @@ H5O__set_version(H5F_t *f, H5O_t *oh, uint8_t oh_flags, hbool_t store_msg_crt_id
     uint8_t version;             /* Message version */
     herr_t  ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check arguments */
     HDassert(f);
@@ -292,7 +289,7 @@ H5O_create(H5F_t *f, size_t size_hint, size_t initial_rc, hid_t ocpl_id, H5O_loc
         HGOTO_ERROR(H5E_OHDR, H5E_BADVALUE, FAIL, "Can't apply object header to file")
 
 done:
-    if ((FAIL == ret_value) && (NULL != oh) && (H5O__free(oh) < 0))
+    if ((FAIL == ret_value) && (NULL != oh) && (H5O__free(oh, TRUE) < 0))
         HDONE_ERROR(H5E_OHDR, H5E_CANTFREE, FAIL, "can't delete object header")
 
     FUNC_LEAVE_NOAPI(ret_value)
@@ -315,9 +312,9 @@ H5O_t *
 H5O_create_ohdr(H5F_t *f, hid_t ocpl_id)
 {
     H5P_genplist_t *oc_plist;
-    H5O_t *         oh = NULL; /* Object header in Freelist */
+    H5O_t          *oh = NULL; /* Object header in Freelist */
     uint8_t         oh_flags;  /* Initial status flags */
-    H5O_t *         ret_value = NULL;
+    H5O_t          *ret_value = NULL;
 
     FUNC_ENTER_NOAPI(NULL)
 
@@ -356,7 +353,7 @@ H5O_create_ohdr(H5F_t *f, hid_t ocpl_id)
     ret_value = oh;
 
 done:
-    if ((NULL == ret_value) && (NULL != oh) && (H5O__free(oh) < 0))
+    if ((NULL == ret_value) && (NULL != oh) && (H5O__free(oh, TRUE) < 0))
         HDONE_ERROR(H5E_OHDR, H5E_CANTFREE, NULL, "can't delete object header")
 
     FUNC_LEAVE_NOAPI(ret_value)
@@ -566,7 +563,7 @@ H5O_open(H5O_loc_t *loc)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_NOAPI(FAIL)
+    FUNC_ENTER_NOAPI_NOERR
 
     /* Check args */
     HDassert(loc);
@@ -583,7 +580,6 @@ H5O_open(H5O_loc_t *loc)
     else
         H5F_INCR_NOPEN_OBJS(loc->file);
 
-done:
     FUNC_LEAVE_NOAPI(ret_value)
 } /* end H5O_open() */
 
@@ -607,7 +603,7 @@ H5O_open_name(const H5G_loc_t *loc, const char *name, H5I_type_t *opened_type)
     H5G_name_t obj_path;          /* Opened object group hier. path */
     H5O_loc_t  obj_oloc;          /* Opened object object location */
     hbool_t    loc_found = FALSE; /* Entry at 'name' found */
-    void *     ret_value = NULL;  /* Return value */
+    void      *ret_value = NULL;  /* Return value */
 
     FUNC_ENTER_NOAPI(NULL)
 
@@ -658,7 +654,7 @@ H5O__open_by_idx(const H5G_loc_t *loc, const char *name, H5_index_t idx_type, H5
     H5G_name_t obj_path;          /* Opened object group hier. path */
     H5O_loc_t  obj_oloc;          /* Opened object object location */
     hbool_t    loc_found = FALSE; /* Entry at 'name' found */
-    void *     ret_value = NULL;  /* Return value */
+    void      *ret_value = NULL;  /* Return value */
 
     FUNC_ENTER_PACKAGE
 
@@ -707,7 +703,7 @@ H5O__open_by_addr(const H5G_loc_t *loc, haddr_t addr, H5I_type_t *opened_type)
     H5G_loc_t  obj_loc;          /* Location used to open group */
     H5G_name_t obj_path;         /* Opened object group hier. path */
     H5O_loc_t  obj_oloc;         /* Opened object object location */
-    void *     ret_value = NULL; /* Return value */
+    void      *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_PACKAGE
 
@@ -747,7 +743,7 @@ void *
 H5O_open_by_loc(const H5G_loc_t *obj_loc, H5I_type_t *opened_type)
 {
     const H5O_obj_class_t *obj_class;        /* Class of object for location */
-    void *                 ret_value = NULL; /* Return value */
+    void                  *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_NOAPI(NULL)
 
@@ -962,7 +958,7 @@ done:
 int
 H5O_link(const H5O_loc_t *loc, int adjust)
 {
-    H5O_t * oh        = NULL;
+    H5O_t  *oh        = NULL;
     hbool_t deleted   = FALSE; /* Whether the object was deleted */
     int     ret_value = -1;    /* Return value */
 
@@ -1009,11 +1005,11 @@ done:
 H5O_t *
 H5O_protect(const H5O_loc_t *loc, unsigned prot_flags, hbool_t pin_all_chunks)
 {
-    H5O_t *         oh = NULL;        /* Object header protected */
+    H5O_t          *oh = NULL;        /* Object header protected */
     H5O_cache_ud_t  udata;            /* User data for protecting object header */
     H5O_cont_msgs_t cont_msg_info;    /* Continuation message info */
     unsigned        file_intent;      /* R/W intent on file */
-    H5O_t *         ret_value = NULL; /* Return value */
+    H5O_t          *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_NOAPI_TAG(loc->addr, NULL)
 
@@ -1426,7 +1422,7 @@ done:
 herr_t
 H5O_touch(const H5O_loc_t *loc, hbool_t force)
 {
-    H5O_t *  oh        = NULL;               /* Object header to modify */
+    H5O_t   *oh        = NULL;               /* Object header to modify */
     unsigned oh_flags  = H5AC__NO_FLAGS_SET; /* Flags for unprotecting object header */
     herr_t   ret_value = SUCCEED;            /* Return value */
 
@@ -1441,7 +1437,7 @@ H5O_touch(const H5O_loc_t *loc, hbool_t force)
 
     /* Create/Update the modification time message */
     if (H5O_touch_oh(loc->file, oh, force) < 0)
-        HGOTO_ERROR(H5E_OHDR, H5E_CANTSET, FAIL, "unable to update object modificaton time")
+        HGOTO_ERROR(H5E_OHDR, H5E_CANTSET, FAIL, "unable to update object modification time")
 
     /* Mark object header as changed */
     oh_flags |= H5AC__DIRTIED_FLAG;
@@ -1500,7 +1496,7 @@ H5O_bogus_oh(H5F_t *f, H5O_t *oh, unsigned bogus_id, unsigned mesg_flags)
         else if (bogus_id == H5O_BOGUS_INVALID_ID)
             type = H5O_MSG_BOGUS_INVALID;
         else
-            HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "invalid ID for 'bogus' message")
+            HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "invalid ID for 'bogus' message")
 
         /* Allocate space in the object header for bogus message */
         if (H5O__msg_alloc(f, oh, type, &mesg_flags, bogus, &idx) < 0)
@@ -1540,7 +1536,7 @@ done:
 herr_t
 H5O_delete(H5F_t *f, haddr_t addr)
 {
-    H5O_t *   oh = NULL;                     /* Object header information */
+    H5O_t    *oh = NULL;                     /* Object header information */
     H5O_loc_t loc;                           /* Object location for object to delete */
     unsigned  oh_flags = H5AC__NO_FLAGS_SET; /* Flags for unprotecting object header */
     hbool_t   corked;
@@ -1605,7 +1601,7 @@ H5O__delete_oh(H5F_t *f, H5O_t *oh)
     unsigned    u;
     herr_t      ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check args */
     HDassert(f);
@@ -1679,7 +1675,7 @@ H5O__obj_type_real(const H5O_t *oh, H5O_type_t *obj_type)
 {
     const H5O_obj_class_t *obj_class; /* Class of object for header */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(oh);
@@ -1716,7 +1712,7 @@ H5O__obj_type_real(const H5O_t *oh, H5O_type_t *obj_type)
 const H5O_obj_class_t *
 H5O__obj_class(const H5O_loc_t *loc)
 {
-    H5O_t *                oh        = NULL; /* Object header for location */
+    H5O_t                 *oh        = NULL; /* Object header for location */
     const H5O_obj_class_t *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_PACKAGE_TAG(loc->addr)
@@ -1755,7 +1751,7 @@ H5O__obj_class_real(const H5O_t *oh)
     size_t                 i;                /* Local index variable */
     const H5O_obj_class_t *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(oh);
@@ -1830,6 +1826,7 @@ H5O_get_loc(hid_t object_id)
         case H5I_ERROR_MSG:
         case H5I_ERROR_STACK:
         case H5I_SPACE_SEL_ITER:
+        case H5I_EVENTSET:
         case H5I_NTYPES:
         default:
             HGOTO_ERROR(H5E_OHDR, H5E_BADTYPE, NULL, "invalid object type")
@@ -2099,11 +2096,11 @@ done:
 static herr_t
 H5O__get_hdr_info_real(const H5O_t *oh, H5O_hdr_info_t *hdr)
 {
-    const H5O_mesg_t * curr_msg;   /* Pointer to current message being operated on */
+    const H5O_mesg_t  *curr_msg;   /* Pointer to current message being operated on */
     const H5O_chunk_t *curr_chunk; /* Pointer to current message being operated on */
     unsigned           u;          /* Local index variable */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check args */
     HDassert(oh);
@@ -2180,7 +2177,7 @@ herr_t
 H5O_get_info(const H5O_loc_t *loc, H5O_info2_t *oinfo, unsigned fields)
 {
     const H5O_obj_class_t *obj_class;           /* Class of object for header */
-    H5O_t *                oh        = NULL;    /* Object header */
+    H5O_t                 *oh        = NULL;    /* Object header */
     herr_t                 ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI_TAG(loc->addr, FAIL)
@@ -2289,7 +2286,7 @@ herr_t
 H5O_get_native_info(const H5O_loc_t *loc, H5O_native_info_t *oinfo, unsigned fields)
 {
     const H5O_obj_class_t *obj_class;           /* Class of object for header */
-    H5O_t *                oh        = NULL;    /* Object header */
+    H5O_t                 *oh        = NULL;    /* Object header */
     herr_t                 ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI_TAG(loc->addr, FAIL)
@@ -2448,7 +2445,7 @@ void *
 H5O_obj_create(H5F_t *f, H5O_type_t obj_type, void *crt_info, H5G_loc_t *obj_loc)
 {
     size_t u;                /* Local index variable */
-    void * ret_value = NULL; /* Return value */
+    void  *ret_value = NULL; /* Return value */
 
     FUNC_ENTER_NOAPI(NULL)
 
@@ -2619,7 +2616,7 @@ done:
 static herr_t
 H5O__free_visit_visited(void *item, void H5_ATTR_UNUSED *key, void H5_ATTR_UNUSED *operator_data /*in,out*/)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     item = H5FL_FREE(H5_obj_t, item);
 
@@ -2649,7 +2646,7 @@ H5O__visit_cb(hid_t H5_ATTR_UNUSED group, const char *name, const H5L_info2_t *l
     hbool_t              obj_found = FALSE;                     /* Object at 'name' found */
     herr_t               ret_value = H5_ITER_CONT;              /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(name);
@@ -2761,7 +2758,7 @@ H5O__visit(H5G_loc_t *loc, const char *obj_name, H5_index_t idx_type, H5_iter_or
     H5O_loc_t           obj_oloc;                    /* Opened object object location */
     hbool_t             loc_found = FALSE;           /* Entry at 'name' found */
     H5O_info2_t         oinfo;                       /* Object info struct */
-    void *              obj = NULL;                  /* Object */
+    void               *obj = NULL;                  /* Object */
     H5I_type_t          opened_type;                 /* ID type of object */
     hid_t               obj_id    = H5I_INVALID_HID; /* ID of object */
     herr_t              ret_value = FAIL;            /* Return value */
@@ -2795,7 +2792,7 @@ H5O__visit(H5G_loc_t *loc, const char *obj_name, H5_index_t idx_type, H5_iter_or
 
     /* Get an ID for the visited object */
     if ((obj_id = H5VL_wrap_register(opened_type, obj, TRUE)) < 0)
-        HGOTO_ERROR(H5E_ATOM, H5E_CANTREGISTER, FAIL, "unable to register visited object")
+        HGOTO_ERROR(H5E_ID, H5E_CANTREGISTER, FAIL, "unable to register visited object")
 
     /* Make callback for starting object */
     if ((ret_value = op(obj_id, ".", &oinfo, op_data)) < 0)
@@ -3017,7 +3014,7 @@ H5O_get_proxy(const H5O_t *oh)
  *-------------------------------------------------------------------------
  */
 herr_t
-H5O__free(H5O_t *oh)
+H5O__free(H5O_t *oh, hbool_t H5_ATTR_NDEBUG_UNUSED force)
 {
     unsigned u;                   /* Local index variable */
     herr_t   ret_value = SUCCEED; /* Return value */
@@ -3041,10 +3038,12 @@ H5O__free(H5O_t *oh)
         for (u = 0; u < oh->nmesgs; u++) {
 #ifndef NDEBUG
             /* Verify that message is clean, unless it could have been marked
-             * dirty by decoding */
+             * dirty by decoding, or if this is a forced free (in case of
+             * failure during creation of the object some messages may be dirty)
+             */
             if (oh->ndecode_dirtied && oh->mesg[u].dirty)
                 oh->ndecode_dirtied--;
-            else
+            else if (!force)
                 HDassert(oh->mesg[u].dirty == 0);
 #endif /* NDEBUG */
 
@@ -3081,7 +3080,7 @@ done:
 static herr_t
 H5O__reset_info2(H5O_info2_t *oinfo)
 {
-    FUNC_ENTER_STATIC_NOERR;
+    FUNC_ENTER_PACKAGE_NOERR;
 
     /* Reset the passed-in info struct */
     HDmemset(oinfo, 0, sizeof(H5O_info2_t));

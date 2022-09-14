@@ -32,16 +32,16 @@
 #include "H5Opkg.h"      /* Object headers			*/
 
 /* PRIVATE PROTOTYPES */
-static void * H5O__ainfo_decode(H5F_t *f, H5O_t *open_oh, unsigned mesg_flags, unsigned *ioflags,
+static void  *H5O__ainfo_decode(H5F_t *f, H5O_t *open_oh, unsigned mesg_flags, unsigned *ioflags,
                                 size_t p_size, const uint8_t *p);
 static herr_t H5O__ainfo_encode(H5F_t *f, hbool_t disable_shared, uint8_t *p, const void *_mesg);
-static void * H5O__ainfo_copy(const void *_mesg, void *_dest);
+static void  *H5O__ainfo_copy(const void *_mesg, void *_dest);
 static size_t H5O__ainfo_size(const H5F_t *f, hbool_t disable_shared, const void *_mesg);
 static herr_t H5O__ainfo_free(void *_mesg);
 static herr_t H5O__ainfo_delete(H5F_t *f, H5O_t *open_oh, void *_mesg);
 static herr_t H5O__ainfo_pre_copy_file(H5F_t *file_src, const void *mesg_src, hbool_t *deleted,
                                        const H5O_copy_t *cpy_info, void *udata);
-static void * H5O__ainfo_copy_file(H5F_t *file_src, void *mesg_src, H5F_t *file_dst, hbool_t *recompute_size,
+static void  *H5O__ainfo_copy_file(H5F_t *file_src, void *mesg_src, H5F_t *file_dst, hbool_t *recompute_size,
                                    unsigned *mesg_flags, H5O_copy_t *cpy_info, void *udata);
 static herr_t H5O__ainfo_post_copy_file(const H5O_loc_t *src_oloc, const void *mesg_src, H5O_loc_t *dst_oloc,
                                         void *mesg_dst, unsigned *mesg_flags, H5O_copy_t *cpy_info);
@@ -99,11 +99,11 @@ static void *
 H5O__ainfo_decode(H5F_t *f, H5O_t H5_ATTR_UNUSED *open_oh, unsigned H5_ATTR_UNUSED mesg_flags,
                   unsigned H5_ATTR_UNUSED *ioflags, size_t H5_ATTR_UNUSED p_size, const uint8_t *p)
 {
-    H5O_ainfo_t * ainfo = NULL;     /* Attribute info */
+    H5O_ainfo_t  *ainfo = NULL;     /* Attribute info */
     unsigned char flags;            /* Flags for encoding attribute info */
-    void *        ret_value = NULL; /* Return value */
+    void         *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(f);
@@ -173,7 +173,7 @@ H5O__ainfo_encode(H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, uint8_t *p, c
     const H5O_ainfo_t *ainfo = (const H5O_ainfo_t *)_mesg;
     unsigned char      flags; /* Flags for encoding attribute info */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* check args */
     HDassert(f);
@@ -225,10 +225,10 @@ static void *
 H5O__ainfo_copy(const void *_mesg, void *_dest)
 {
     const H5O_ainfo_t *ainfo     = (const H5O_ainfo_t *)_mesg;
-    H5O_ainfo_t *      dest      = (H5O_ainfo_t *)_dest;
-    void *             ret_value = NULL; /* Return value */
+    H5O_ainfo_t       *dest      = (H5O_ainfo_t *)_dest;
+    void              *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(ainfo);
@@ -266,7 +266,7 @@ H5O__ainfo_size(const H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, const voi
     const H5O_ainfo_t *ainfo     = (const H5O_ainfo_t *)_mesg;
     size_t             ret_value = 0; /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Set return value */
     ret_value =
@@ -297,7 +297,7 @@ H5O__ainfo_size(const H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, const voi
 static herr_t
 H5O__ainfo_free(void *mesg)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(mesg);
 
@@ -326,7 +326,7 @@ H5O__ainfo_delete(H5F_t *f, H5O_t H5_ATTR_NDEBUG_UNUSED *open_oh, void *_mesg)
     H5O_ainfo_t *ainfo     = (H5O_ainfo_t *)_mesg;
     herr_t       ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(f);
@@ -361,7 +361,7 @@ static herr_t
 H5O__ainfo_pre_copy_file(H5F_t H5_ATTR_UNUSED *file_src, const void H5_ATTR_UNUSED *native_src,
                          hbool_t *deleted, const H5O_copy_t *cpy_info, void H5_ATTR_UNUSED *udata)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* check args */
     HDassert(deleted);
@@ -396,9 +396,9 @@ H5O__ainfo_copy_file(H5F_t H5_ATTR_NDEBUG_UNUSED *file_src, void *mesg_src, H5F_
 {
     H5O_ainfo_t *ainfo_src = (H5O_ainfo_t *)mesg_src;
     H5O_ainfo_t *ainfo_dst = NULL;
-    void *       ret_value = NULL; /* Return value */
+    void        *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(file_src);
@@ -461,7 +461,7 @@ H5O__ainfo_post_copy_file(const H5O_loc_t *src_oloc, const void *mesg_src, H5O_l
     const H5O_ainfo_t *ainfo_src = (const H5O_ainfo_t *)mesg_src;
     herr_t             ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(ainfo_src);
 
@@ -491,7 +491,7 @@ H5O__ainfo_debug(H5F_t H5_ATTR_UNUSED *f, const void *_mesg, FILE *stream, int i
 {
     const H5O_ainfo_t *ainfo = (const H5O_ainfo_t *)_mesg;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* check args */
     HDassert(f);

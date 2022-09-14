@@ -11,7 +11,6 @@
  * help@hdfgroup.org.                                                        *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <cstring>
 #include <iostream>
 #include <string>
 using namespace std;
@@ -364,11 +363,10 @@ H5Location::getComment(const char *name, size_t buf_size) const
 
         // If buffer size is not provided, use comment length
         if (tmp_len == 0)
-            tmp_len = comment_len;
+            tmp_len = static_cast<size_t>(comment_len);
 
         // Temporary buffer for char* comment
-        char *comment_C = new char[tmp_len + 1];
-        memset(comment_C, 0, tmp_len + 1);
+        char *comment_C = new char[tmp_len + 1]();
 
         // Used overloaded function
         ssize_t temp_len = getComment(name, tmp_len + 1, comment_C);
@@ -1819,7 +1817,7 @@ H5std_string
 H5Location::getLinkval(const char *name, size_t size) const
 {
     H5L_info2_t  linkinfo;
-    char *       value_C; // value in C string
+    char        *value_C; // value in C string
     size_t       val_size = size;
     H5std_string value;
     herr_t       ret_value;
@@ -1836,8 +1834,7 @@ H5Location::getLinkval(const char *name, size_t size) const
     // if link has value, retrieve the value, otherwise, return null string
     if (val_size > 0) {
         // Create buffer for C string
-        value_C = new char[val_size + 1];
-        memset(value_C, 0, val_size + 1);
+        value_C = new char[val_size + 1]();
 
         ret_value = H5Lget_val(getId(), name, value_C, val_size, H5P_DEFAULT);
         if (ret_value < 0) {
@@ -2047,12 +2044,15 @@ H5Location::getObjnameByIdx(hsize_t idx) const
     if (name_len < 0)
         throwException("getObjnameByIdx", "H5Lget_name_by_idx failed");
 
-    // Create buffer for C string
-    char *name_C = new char[name_len + 1];
-    memset(name_C, 0, name_len + 1);
+    // The actual size is the cast value + 1 for the terminal ASCII NUL
+    // (unfortunate in/out type sign mismatch)
+    size_t actual_name_len = static_cast<size_t>(name_len) + 1;
 
-    name_len =
-        H5Lget_name_by_idx(getId(), ".", H5_INDEX_NAME, H5_ITER_INC, idx, name_C, name_len + 1, H5P_DEFAULT);
+    // Create buffer for C string
+    char *name_C = new char[actual_name_len]();
+
+    name_len = H5Lget_name_by_idx(getId(), ".", H5_INDEX_NAME, H5_ITER_INC, idx, name_C, actual_name_len,
+                                  H5P_DEFAULT);
 
     if (name_len < 0) {
         delete[] name_C;
@@ -2104,8 +2104,7 @@ ssize_t
 H5Location::getObjnameByIdx(hsize_t idx, H5std_string &name, size_t size) const
 {
     // Create buffer for C string
-    char *name_C = new char[size + 1];
-    memset(name_C, 0, size + 1);
+    char *name_C = new char[size + 1]();
 
     // call overloaded function to get the name
     ssize_t name_len = getObjnameByIdx(idx, name_C, size + 1);

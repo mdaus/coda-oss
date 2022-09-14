@@ -131,9 +131,6 @@ static herr_t H5PB__write_entry(H5F_shared_t *f_sh, H5PB_entry_t *page_entry);
 /* Package Variables */
 /*********************/
 
-/* Package initialization variable */
-hbool_t H5_PKG_INIT_VAR = FALSE;
-
 /*****************************/
 /* Library Private Variables */
 /*****************************/
@@ -365,7 +362,7 @@ H5PB__flush_cb(void *item, void H5_ATTR_UNUSED *key, void *_op_data)
     H5F_shared_t *f_sh       = (H5F_shared_t *)_op_data;
     herr_t        ret_value  = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(page_entry);
@@ -429,9 +426,9 @@ static herr_t
 H5PB__dest_cb(void *item, void H5_ATTR_UNUSED *key, void *_op_data)
 {
     H5PB_entry_t *page_entry = (H5PB_entry_t *)item; /* Pointer to page entry node */
-    H5PB_ud1_t *  op_data    = (H5PB_ud1_t *)_op_data;
+    H5PB_ud1_t   *op_data    = (H5PB_ud1_t *)_op_data;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity checking */
     HDassert(page_entry);
@@ -473,7 +470,7 @@ H5PB_dest(H5F_shared_t *f_sh)
 
     /* flush and destroy the page buffer, if it exists */
     if (f_sh->page_buf) {
-        H5PB_t *   page_buf = f_sh->page_buf;
+        H5PB_t    *page_buf = f_sh->page_buf;
         H5PB_ud1_t op_data; /* Iteration context */
 
         if (H5PB_flush(f_sh) < 0)
@@ -520,7 +517,7 @@ done:
 herr_t
 H5PB_add_new_page(H5F_shared_t *f_sh, H5FD_mem_t type, haddr_t page_addr)
 {
-    H5PB_t *      page_buf;             /* Page buffer to operate on */
+    H5PB_t       *page_buf;             /* Page buffer to operate on */
     H5PB_entry_t *page_entry = NULL;    /* Pointer to the corresponding page entry */
     herr_t        ret_value  = SUCCEED; /* Return value */
 
@@ -626,7 +623,7 @@ H5PB_update_entry(H5PB_t *page_buf, haddr_t addr, size_t size, const void *buf)
 herr_t
 H5PB_remove_entry(const H5F_shared_t *f_sh, haddr_t addr)
 {
-    H5PB_t *      page_buf;             /* Page buffer to operate on */
+    H5PB_t       *page_buf;             /* Page buffer to operate on */
     H5PB_entry_t *page_entry = NULL;    /* Pointer to the page entry being searched */
     herr_t        ret_value  = SUCCEED; /* Return value */
 
@@ -675,9 +672,9 @@ done:
 herr_t
 H5PB_read(H5F_shared_t *f_sh, H5FD_mem_t type, haddr_t addr, size_t size, void *buf /*out*/)
 {
-    H5PB_t *      page_buf;                        /* Page buffering info for this file */
+    H5PB_t       *page_buf;                        /* Page buffering info for this file */
     H5PB_entry_t *page_entry;                      /* Pointer to the corresponding page entry */
-    H5FD_t *      file;                            /* File driver pointer */
+    H5FD_t       *file;                            /* File driver pointer */
     haddr_t       first_page_addr, last_page_addr; /* Addresses of the first and last pages covered by I/O */
     haddr_t       offset;
     haddr_t       search_addr;       /* Address of current page */
@@ -877,7 +874,7 @@ H5PB_read(H5F_shared_t *f_sh, H5FD_mem_t type, haddr_t addr, size_t size, void *
             } /* end if */
             /* if not found */
             else {
-                void *  new_page_buf = NULL;
+                void   *new_page_buf = NULL;
                 size_t  page_size    = page_buf->page_size;
                 haddr_t eoa;
 
@@ -976,9 +973,9 @@ done:
 herr_t
 H5PB_write(H5F_shared_t *f_sh, H5FD_mem_t type, haddr_t addr, size_t size, const void *buf)
 {
-    H5PB_t *      page_buf;                        /* Page buffering info for this file */
+    H5PB_t       *page_buf;                        /* Page buffering info for this file */
     H5PB_entry_t *page_entry;                      /* Pointer to the corresponding page entry */
-    H5FD_t *      file;                            /* File driver pointer */
+    H5FD_t       *file;                            /* File driver pointer */
     haddr_t       first_page_addr, last_page_addr; /* Addresses of the first and last pages covered by I/O */
     haddr_t       offset;
     haddr_t       search_addr;       /* Address of current page */
@@ -1183,7 +1180,7 @@ H5PB_write(H5F_shared_t *f_sh, H5FD_mem_t type, haddr_t addr, size_t size, const
             } /* end if */
             /* If not found */
             else {
-                void * new_page_buf;
+                void  *new_page_buf;
                 size_t page_size = page_buf->page_size;
 
                 /* Make space for new entry */
@@ -1306,6 +1303,75 @@ done:
 } /* end H5PB_write() */
 
 /*-------------------------------------------------------------------------
+ * Function:    H5PB_enabled
+ *
+ * Purpose:     Check if the page buffer may be enabled for the specified
+ *              file and data access type.
+ *
+ * Return:      Non-negative on success/Negative on failure
+ *
+ * Programmer:  Neil Fortner
+ *
+ *-------------------------------------------------------------------------
+ */
+herr_t
+H5PB_enabled(H5F_shared_t *f_sh, H5FD_mem_t type, hbool_t *enabled)
+{
+    H5PB_t *page_buf;            /* Page buffering info for this file */
+    hbool_t bypass_pb = FALSE;   /* Whether to bypass page buffering */
+    herr_t  ret_value = SUCCEED; /* Return value */
+
+    FUNC_ENTER_NOAPI_NOERR
+
+    /* Sanity checks */
+    HDassert(f_sh);
+
+    /* Get pointer to page buffer info for this file */
+    page_buf = f_sh->page_buf;
+
+#ifdef H5_HAVE_PARALLEL
+    if (H5F_SHARED_HAS_FEATURE(f_sh, H5FD_FEAT_HAS_MPI)) {
+#if 1
+        bypass_pb = TRUE;
+#else
+        /* MSC - why this stopped working ? */
+        int mpi_size;
+
+        if ((mpi_size = H5F_shared_mpi_get_size(f_sh)) < 0)
+            HGOTO_ERROR(H5E_PAGEBUF, H5E_CANTGET, FAIL, "can't retrieve MPI communicator size")
+        if (1 != mpi_size)
+            bypass_pb = TRUE;
+#endif
+    } /* end if */
+#endif
+
+    /* If page buffering is disabled, or if this is a parallel raw data access,
+     * bypass page buffering. Note that page buffering may still be disabled for
+     * large metadata access or large non-parallel raw data access, but this
+     * function doesn't take I/O size into account so if it returns TRUE the
+     * page buffer may still be disabled for some I/O. If it returns FALSE it is
+     * always disabled for this access type.
+     */
+    if (NULL == page_buf || (bypass_pb && H5FD_MEM_DRAW == type)) {
+        /* Update statistics, since wherever this function is called, if it
+         * returns FALSE, the calling function performs I/O avoiding the page
+         * buffer layer */
+        if (page_buf) {
+            HDassert(type == H5FD_MEM_DRAW);
+            page_buf->bypasses[1]++;
+        } /* end if */
+
+        /* Page buffer is disabled, at least for this data access type */
+        *enabled = FALSE;
+    } /* end if */
+    else
+        /* Page buffer may be enabled */
+        *enabled = TRUE;
+
+    FUNC_LEAVE_NOAPI(ret_value)
+} /* end H5PB_enabled() */
+
+/*-------------------------------------------------------------------------
  * Function:    H5PB__insert_entry()
  *
  * Purpose:     This function was created without documentation.
@@ -1332,7 +1398,7 @@ H5PB__insert_entry(H5PB_t *page_buf, H5PB_entry_t *page_entry)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Insert entry in skip list */
     if (H5SL_insert(page_buf->slist_ptr, page_entry, &(page_entry->addr)) < 0)
@@ -1377,7 +1443,7 @@ H5PB__make_space(H5F_shared_t *f_sh, H5PB_t *page_buf, H5FD_mem_t inserted_type)
     H5PB_entry_t *page_entry;       /* Pointer to page eviction candidate */
     htri_t        ret_value = TRUE; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(f_sh);
@@ -1475,7 +1541,7 @@ H5PB__write_entry(H5F_shared_t *f_sh, H5PB_entry_t *page_entry)
     haddr_t eoa;                 /* Current EOA for the file */
     herr_t  ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(f_sh);

@@ -54,13 +54,13 @@
 
 /* Key object for skiplist of committed datatypes */
 typedef struct H5O_copy_search_comm_dt_key_t {
-    H5T_t *       dt;     /* Datatype */
+    H5T_t        *dt;     /* Datatype */
     unsigned long fileno; /* File number */
 } H5O_copy_search_comm_dt_key_t;
 
 /* Callback struct for building a list of committed datatypes */
 typedef struct H5O_copy_search_comm_dt_ud_t {
-    H5SL_t *   dst_dt_list;  /* Skip list of committed datatypes */
+    H5SL_t    *dst_dt_list;  /* Skip list of committed datatypes */
     H5G_loc_t *dst_root_loc; /* Starting location for iteration */
     H5O_loc_t  obj_oloc;     /* Object location (for attribute iteration callback) */
 } H5O_copy_search_comm_dt_ud_t;
@@ -111,139 +111,6 @@ H5FL_DEFINE(haddr_t);
 /*******************/
 
 /*-------------------------------------------------------------------------
- * Function:    H5Ocopy
- *
- * Purpose:     Copy an object (group or dataset) to destination location
- *              within a file or cross files. PLIST_ID is a property list
- *              which is used to pass user options and properties to the
- *              copy. The name, dst_name, must not already be taken by some
- *              other object in the destination group.
- *
- *              H5Ocopy() will fail if the name of the destination object
- *                  exists in the destination group.  For example,
- *                  H5Ocopy(fid_src, "/dset", fid_dst, "/dset", ...)
- *                  will fail if "/dset" exists in the destination file
- *
- *              OPTIONS THAT HAVE BEEN IMPLEMENTED.
- *                  H5O_COPY_SHALLOW_HIERARCHY_FLAG
- *                      If this flag is specified, only immediate members of
- *                      the group are copied. Otherwise (default), it will
- *                      recursively copy all objects below the group
- *                  H5O_COPY_EXPAND_SOFT_LINK_FLAG
- *                      If this flag is specified, it will copy the objects
- *                      pointed by the soft links. Otherwise (default), it
- *                      will copy the soft link as they are
- *                  H5O_COPY_WITHOUT_ATTR_FLAG
- *                      If this flag is specified, it will copy object without
- *                      copying attributes. Otherwise (default), it will
- *                      copy object along with all its attributes
- *                  H5O_COPY_EXPAND_REFERENCE_FLAG
- *                      1) Copy object between two different files:
- *                          When this flag is specified, it will copy objects that
- *                          are pointed by the references and update the values of
- *                          references in the destination file.  Otherwise (default)
- *                          the values of references in the destination will set to
- *                          zero
- *                          The current implementation does not handle references
- *                          inside of other datatype structure. For example, if
- *                          a member of compound datatype is reference, H5Ocopy()
- *                          will copy that field as it is. It will not set the
- *                          value to zero as default is used nor copy the object
- *                          pointed by that field the flag is set
- *                      2) Copy object within the same file:
- *                          This flag does not have any effect to the H5Ocopy().
- *                          Datasets or attributes of references are copied as they
- *                          are, i.e. values of references of the destination object
- *                          are the same as the values of the source object
- *
- *              OPTIONS THAT MAY APPLY TO COPY IN THE FUTURE.
- *                  H5O_COPY_EXPAND_EXT_LINK_FLAG
- *                      If this flag is specified, it will expand the external links
- *                      into new objects, Otherwise (default), it will keep external
- *                      links as they are (default)
- *
- *              PROPERTIES THAT MAY APPLY TO COPY IN FUTURE
- *                  Change data layout such as chunk size
- *                  Add filter such as data compression.
- *                  Add an attribute to the copied object(s) that say the  date/time
- *                      for the copy or other information about the source file.
- *
- *              The intermediate group creation property should be passed in
- *              using the lcpl instead of the ocpypl.
- *
- * Usage:      H5Ocopy(src_loc_id, src_name, dst_loc_id, dst_name, ocpypl_id, lcpl_id)
- *             hid_t src_loc_id         IN: Source file or group identifier.
- *             const char *src_name     IN: Name of the source object to be copied
- *             hid_t dst_loc_id         IN: Destination file or group identifier
- *             const char *dst_name     IN: Name of the destination object
- *             hid_t ocpypl_id          IN: Properties which apply to the copy
- *             hid_t lcpl_id            IN: Properties which apply to the new hard link
- *
- *
- * Return:      SUCCEED/FAIL
- *
- *-------------------------------------------------------------------------
- */
-herr_t
-H5Ocopy(hid_t src_loc_id, const char *src_name, hid_t dst_loc_id, const char *dst_name, hid_t ocpypl_id,
-        hid_t lcpl_id)
-{
-    H5VL_object_t *   vol_obj1 = NULL; /* object of src_id */
-    H5VL_loc_params_t loc_params1;
-    H5VL_object_t *   vol_obj2 = NULL; /* object of dst_id */
-    H5VL_loc_params_t loc_params2;
-    herr_t            ret_value = SUCCEED; /* Return value */
-
-    FUNC_ENTER_API(FAIL)
-    H5TRACE6("e", "i*si*sii", src_loc_id, src_name, dst_loc_id, dst_name, ocpypl_id, lcpl_id);
-
-    /* Check arguments */
-    if (!src_name || !*src_name)
-        HGOTO_ERROR(H5E_ARGS, H5E_BADVALUE, FAIL, "no source name specified")
-    if (!dst_name || !*dst_name)
-        HGOTO_ERROR(H5E_ARGS, H5E_BADVALUE, FAIL, "no destination name specified")
-
-    /* Get correct property lists */
-    if (H5P_DEFAULT == lcpl_id)
-        lcpl_id = H5P_LINK_CREATE_DEFAULT;
-    else if (TRUE != H5P_isa_class(lcpl_id, H5P_LINK_CREATE))
-        HGOTO_ERROR(H5E_ARGS, H5E_BADTYPE, FAIL, "not link creation property list")
-
-    /* Get object copy property list */
-    if (H5P_DEFAULT == ocpypl_id)
-        ocpypl_id = H5P_OBJECT_COPY_DEFAULT;
-    else if (TRUE != H5P_isa_class(ocpypl_id, H5P_OBJECT_COPY))
-        HGOTO_ERROR(H5E_ARGS, H5E_BADTYPE, FAIL, "not object copy property list")
-
-    /* Set the LCPL for the API context */
-    H5CX_set_lcpl(lcpl_id);
-
-    /* Set up collective metadata if appropriate */
-    if (H5CX_set_loc(src_loc_id) < 0)
-        HGOTO_ERROR(H5E_OHDR, H5E_CANTSET, FAIL, "can't set collective metadata read info")
-
-    /* get the object */
-    if (NULL == (vol_obj1 = (H5VL_object_t *)H5I_object(src_loc_id)))
-        HGOTO_ERROR(H5E_ARGS, H5E_BADTYPE, FAIL, "invalid location identifier")
-    loc_params1.type     = H5VL_OBJECT_BY_SELF;
-    loc_params1.obj_type = H5I_get_type(src_loc_id);
-
-    /* get the object */
-    if (NULL == (vol_obj2 = (H5VL_object_t *)H5I_object(dst_loc_id)))
-        HGOTO_ERROR(H5E_ARGS, H5E_BADTYPE, FAIL, "invalid location identifier")
-    loc_params2.type     = H5VL_OBJECT_BY_SELF;
-    loc_params2.obj_type = H5I_get_type(dst_loc_id);
-
-    /* Copy the object */
-    if (H5VL_object_copy(vol_obj1, &loc_params1, src_name, vol_obj2, &loc_params2, dst_name, ocpypl_id,
-                         lcpl_id, H5P_DATASET_XFER_DEFAULT, H5_REQUEST_NULL) < 0)
-        HGOTO_ERROR(H5E_OHDR, H5E_CANTCOPY, FAIL, "unable to copy object")
-
-done:
-    FUNC_LEAVE_API(ret_value)
-} /* end H5Ocopy() */
-
-/*-------------------------------------------------------------------------
  * Function:    H5O__copy
  *
  * Purpose:     Private version of H5Ocopy
@@ -262,7 +129,7 @@ H5O__copy(const H5G_loc_t *loc, const char *src_name, H5G_loc_t *dst_loc, const 
     H5G_loc_t  src_loc;             /* Source object group location */
     H5G_name_t src_path;            /* Opened source object hier. path */
     H5O_loc_t  src_oloc;            /* Opened source object object location */
-    htri_t     dst_exists;          /* Does destination name exist already? */
+    hbool_t    dst_exists;          /* Does destination name exist already? */
     hbool_t    loc_found = FALSE;   /* Location at 'name' found */
     hbool_t    obj_open  = FALSE;   /* Entry at 'name' found */
     herr_t     ret_value = SUCCEED; /* Return value */
@@ -276,9 +143,10 @@ H5O__copy(const H5G_loc_t *loc, const char *src_name, H5G_loc_t *dst_loc, const 
     HDassert(dst_name && *dst_name);
 
     /* Check if destination name already exists */
-    if ((dst_exists = H5L_exists_tolerant(dst_loc, dst_name)) < 0)
+    dst_exists = FALSE;
+    if (H5L_exists_tolerant(dst_loc, dst_name, &dst_exists) < 0)
         HGOTO_ERROR(H5E_OHDR, H5E_CANTGET, FAIL, "unable to check if destination name exists")
-    if (TRUE == dst_exists)
+    if (dst_exists)
         HGOTO_ERROR(H5E_OHDR, H5E_EXISTS, FAIL, "destination object already exists")
 
     /* Set up opened group location to fill in */
@@ -334,11 +202,11 @@ H5O__copy_header_real(const H5O_loc_t *oloc_src, H5O_loc_t *oloc_dst /*out*/, H5
                       H5O_type_t *obj_type, void **udata /*out*/)
 {
     H5O_addr_map_t *addr_map = NULL; /* Address mapping of object copied */
-    H5O_t *         oh_src   = NULL; /* Object header for source object */
-    H5O_t *         oh_dst   = NULL; /* Object header for destination object */
+    H5O_t          *oh_src   = NULL; /* Object header for source object */
+    H5O_t          *oh_dst   = NULL; /* Object header for destination object */
     unsigned        mesgno   = 0;
     haddr_t         addr_new = HADDR_UNDEF;
-    hbool_t *       deleted  = NULL; /* Array of flags indicating whether messages should be copied */
+    hbool_t        *deleted  = NULL; /* Array of flags indicating whether messages should be copied */
     hbool_t     inserted = FALSE; /* Whether the destination object header has been inserted into the cache */
     size_t      null_msgs;        /* Number of NULL messages found in each loop */
     size_t      orig_dst_msgs;    /* Original # of messages in dest. object */
@@ -346,15 +214,15 @@ H5O__copy_header_real(const H5O_loc_t *oloc_src, H5O_loc_t *oloc_dst /*out*/, H5
     H5O_mesg_t *mesg_dst;         /* Message in destination object header */
     const H5O_msg_class_t *copy_type;        /* Type of message to use for copying */
     const H5O_obj_class_t *obj_class = NULL; /* Type of object we are copying */
-    void *                 cpy_udata = NULL; /* User data for passing to message callbacks */
+    void                  *cpy_udata = NULL; /* User data for passing to message callbacks */
     uint64_t               dst_oh_size;      /* Total size of the destination OH */
     size_t                 dst_oh_null;      /* Size of the null message to add to destination OH */
     size_t                 dst_oh_gap;       /* Size of the gap in chunk #0 of destination OH */
-    uint8_t *              current_pos;      /* Current position in destination image */
+    uint8_t               *current_pos;      /* Current position in destination image */
     size_t                 msghdr_size;
     herr_t                 ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC_TAG(oloc_src->addr)
+    FUNC_ENTER_PACKAGE_TAG(oloc_src->addr)
 
     HDassert(oloc_src);
     HDassert(oloc_src->file);
@@ -396,7 +264,7 @@ H5O__copy_header_real(const H5O_loc_t *oloc_src, H5O_loc_t *oloc_dst /*out*/, H5
             /* Search for a matching committed datatype, building the list if
              * necessary */
             if ((merge = H5O__copy_search_comm_dt(oloc_src->file, oh_src, oloc_dst, cpy_info)) < 0)
-            HGOTO_ERROR(H5E_OHDR, H5E_CANTGET, FAIL, "can't search for matching committed datatype")
+                HGOTO_ERROR(H5E_OHDR, H5E_CANTGET, FAIL, "can't search for matching committed datatype")
 
         if (merge) {
             /* Found a match, add to skip list and exit */
@@ -881,7 +749,7 @@ H5O__copy_header_real(const H5O_loc_t *oloc_src, H5O_loc_t *oloc_dst /*out*/, H5
     oh_dst   = NULL;
     inserted = TRUE;
 
-    /* Reset metadat tag */
+    /* Reset metadata tag */
     H5_END_TAG
 
     /* Set obj_type and udata, if requested */
@@ -903,7 +771,7 @@ done:
     /* Free destination object header on failure */
     if (ret_value < 0) {
         if (oh_dst && !inserted) {
-            if (H5O__free(oh_dst) < 0)
+            if (H5O__free(oh_dst, TRUE) < 0)
                 HDONE_ERROR(H5E_OHDR, H5E_CANTFREE, FAIL, "unable to destroy object header data")
             if (H5O_loc_reset(oloc_dst) < 0)
                 HDONE_ERROR(H5E_OHDR, H5E_CANTFREE, FAIL, "unable to destroy object header data")
@@ -1036,7 +904,7 @@ H5O__copy_free_addrmap_cb(void *_item, void H5_ATTR_UNUSED *key, void H5_ATTR_UN
 {
     H5O_addr_map_t *item = (H5O_addr_map_t *)_item;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(item);
 
@@ -1069,13 +937,13 @@ static herr_t
 H5O__copy_header(const H5O_loc_t *oloc_src, H5O_loc_t *oloc_dst /*out */, hid_t ocpypl_id, hid_t lcpl_id)
 {
     H5O_copy_t                   cpy_info;       /* Information for copying object */
-    H5P_genplist_t *             ocpy_plist;     /* Object copy property list created */
+    H5P_genplist_t              *ocpy_plist;     /* Object copy property list created */
     H5O_copy_dtype_merge_list_t *dt_list = NULL; /* List of datatype merge suggestions */
     H5O_mcdt_cb_info_t           cb_info;        /* Callback info struct */
     unsigned                     cpy_option = 0; /* Copy options */
     herr_t                       ret_value  = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(oloc_src);
@@ -1168,11 +1036,11 @@ H5O__copy_obj(H5G_loc_t *src_loc, H5G_loc_t *dst_loc, const char *dst_name, hid_
     H5G_name_t new_path;                 /* Copied object group hier. path */
     H5O_loc_t  new_oloc;                 /* Copied object object location */
     H5G_loc_t  new_loc;                  /* Group location of object copied */
-    H5F_t *    cached_dst_file;          /* Cached destination file */
+    H5F_t     *cached_dst_file;          /* Cached destination file */
     hbool_t    entry_inserted = FALSE;   /* Flag to indicate that the new entry was inserted into a group */
     herr_t     ret_value      = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(src_loc);
     HDassert(src_loc->oloc->file);
@@ -1227,10 +1095,10 @@ done:
 static herr_t
 H5O__copy_free_comm_dt_cb(void *item, void *_key, void H5_ATTR_UNUSED *_op_data)
 {
-    haddr_t *                      addr = (haddr_t *)item;
+    haddr_t                       *addr = (haddr_t *)item;
     H5O_copy_search_comm_dt_key_t *key  = (H5O_copy_search_comm_dt_key_t *)_key;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(addr);
     HDassert(key);
@@ -1265,7 +1133,7 @@ H5O__copy_comm_dt_cmp(const void *_key1, const void *_key2)
     const H5O_copy_search_comm_dt_key_t *key2      = (const H5O_copy_search_comm_dt_key_t *)_key2;
     int                                  ret_value = 0;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Check fileno.  It is unlikely to be different so check if they are equal
      * first so only one comparison needs to be made. */
@@ -1301,14 +1169,14 @@ done:
 static herr_t
 H5O__copy_search_comm_dt_attr_cb(const H5A_t *attr, void *_udata)
 {
-    H5O_copy_search_comm_dt_ud_t * udata        = (H5O_copy_search_comm_dt_ud_t *)_udata;
-    H5T_t *                        dt           = NULL;    /* Datatype */
+    H5O_copy_search_comm_dt_ud_t  *udata        = (H5O_copy_search_comm_dt_ud_t *)_udata;
+    H5T_t                         *dt           = NULL;    /* Datatype */
     H5O_copy_search_comm_dt_key_t *key          = NULL;    /* Skiplist key */
-    haddr_t *                      addr         = NULL;    /* Destination address */
+    haddr_t                       *addr         = NULL;    /* Destination address */
     hbool_t                        obj_inserted = FALSE;   /* Object inserted into skip list */
     herr_t                         ret_value    = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(attr);
@@ -1382,13 +1250,13 @@ static herr_t
 H5O__copy_search_comm_dt_check(H5O_loc_t *obj_oloc, H5O_copy_search_comm_dt_ud_t *udata)
 {
     H5O_copy_search_comm_dt_key_t *key          = NULL;  /* Skiplist key */
-    haddr_t *                      addr         = NULL;  /* Destination address */
+    haddr_t                       *addr         = NULL;  /* Destination address */
     hbool_t                        obj_inserted = FALSE; /* Object inserted into skip list */
     H5A_attr_iter_op_t             attr_op;              /* Attribute iteration operator */
-    const H5O_obj_class_t *        obj_class = NULL;     /* Type of object */
+    const H5O_obj_class_t         *obj_class = NULL;     /* Type of object */
     herr_t                         ret_value = SUCCEED;  /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(obj_oloc);
@@ -1507,7 +1375,7 @@ H5O__copy_search_comm_dt_cb(hid_t H5_ATTR_UNUSED group, const char *name, const 
     hbool_t    obj_found = FALSE;               /* Object at 'name' found */
     herr_t     ret_value = H5_ITER_CONT;        /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(name);
@@ -1563,12 +1431,12 @@ H5O__copy_search_comm_dt(H5F_t *file_src, H5O_t *oh_src, H5O_loc_t *oloc_dst /*i
                          H5O_copy_t *cpy_info)
 {
     H5O_copy_search_comm_dt_key_t *key = NULL;                  /* Skiplist key */
-    haddr_t *                      dst_addr;                    /* Destination datatype address */
+    haddr_t                       *dst_addr;                    /* Destination datatype address */
     H5G_loc_t                      dst_root_loc = {NULL, NULL}; /* Destination root group location */
     H5O_copy_search_comm_dt_ud_t   udata;                       /* Group iteration user data */
     herr_t                         ret_value = FALSE;           /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(oh_src);
@@ -1628,10 +1496,10 @@ H5O__copy_search_comm_dt(H5F_t *file_src, H5O_t *oh_src, H5O_loc_t *oloc_dst /*i
                 else
                     /* Check object and add to skip list if appropriate */
                     if (H5O__copy_search_comm_dt_check(&obj_oloc, &udata) < 0) {
-                    if (H5G_loc_free(&obj_loc) < 0)
-                        HERROR(H5E_OHDR, H5E_CANTRELEASE, "can't free location");
-                    HGOTO_ERROR(H5E_OHDR, H5E_CANTGET, FAIL, "can't check object")
-                } /* end if */
+                        if (H5G_loc_free(&obj_loc) < 0)
+                            HERROR(H5E_OHDR, H5E_CANTRELEASE, "can't free location");
+                        HGOTO_ERROR(H5E_OHDR, H5E_CANTGET, FAIL, "can't check object")
+                    } /* end if */
 
                 /* Free location */
                 if (H5G_loc_free(&obj_loc) < 0)
@@ -1730,10 +1598,10 @@ static herr_t
 H5O__copy_insert_comm_dt(H5F_t *file_src, H5O_t *oh_src, H5O_loc_t *oloc_dst, H5O_copy_t *cpy_info)
 {
     H5O_copy_search_comm_dt_key_t *key       = NULL;    /* Skiplist key */
-    haddr_t *                      addr      = NULL;    /* Destination object address */
+    haddr_t                       *addr      = NULL;    /* Destination object address */
     herr_t                         ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(oh_src);

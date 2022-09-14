@@ -36,7 +36,7 @@
 #include "H5private.h"   /* Generic Functions			*/
 #include "H5Eprivate.h"  /* Error handling		  	*/
 #include "H5Fpkg.h"      /* File access				*/
-#include "H5FDprivate.h" /* File drivers				*/
+#include "H5FDprivate.h" /* File drivers			*/
 #include "H5MMprivate.h" /* Memory management			*/
 #include "H5VMprivate.h" /* Vectors and arrays 			*/
 
@@ -273,7 +273,7 @@ H5F__accum_adjust(H5F_meta_accum_t *accum, H5FD_t *file, H5F_accum_adjust_t adju
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(accum);
     HDassert(file);
@@ -852,7 +852,7 @@ herr_t
 H5F__accum_free(H5F_shared_t *f_sh, H5FD_mem_t H5_ATTR_UNUSED type, haddr_t addr, hsize_t size)
 {
     H5F_meta_accum_t *accum;               /* Alias for file's metadata accumulator */
-    H5FD_t *          file;                /* File driver pointer */
+    H5FD_t           *file;                /* File driver pointer */
     herr_t            ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_PACKAGE

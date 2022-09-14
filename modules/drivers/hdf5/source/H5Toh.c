@@ -40,8 +40,8 @@
 /********************/
 
 static htri_t     H5O__dtype_isa(const H5O_t *loc);
-static void *     H5O__dtype_open(const H5G_loc_t *obj_loc, H5I_type_t *opened_type);
-static void *     H5O__dtype_create(H5F_t *f, void *_crt_info, H5G_loc_t *obj_loc);
+static void      *H5O__dtype_open(const H5G_loc_t *obj_loc, H5I_type_t *opened_type);
+static void      *H5O__dtype_create(H5F_t *f, void *_crt_info, H5G_loc_t *obj_loc);
 static H5O_loc_t *H5O__dtype_get_oloc(hid_t obj_id);
 
 /*********************/
@@ -92,7 +92,7 @@ H5O__dtype_isa(const H5O_t *oh)
 {
     htri_t ret_value = FAIL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(oh);
 
@@ -120,9 +120,9 @@ static void *
 H5O__dtype_open(const H5G_loc_t *obj_loc, H5I_type_t *opened_type)
 {
     H5T_t *type      = NULL; /* Datatype opened */
-    void * ret_value = NULL; /* Return value */
+    void  *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(obj_loc);
 
@@ -159,9 +159,9 @@ static void *
 H5O__dtype_create(H5F_t *f, void *_crt_info, H5G_loc_t *obj_loc)
 {
     H5T_obj_create_t *crt_info  = (H5T_obj_create_t *)_crt_info; /* Named datatype creation parameters */
-    void *            ret_value = NULL;                          /* Return value */
+    void             *ret_value = NULL;                          /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(f);
@@ -201,15 +201,15 @@ done:
 static H5O_loc_t *
 H5O__dtype_get_oloc(hid_t obj_id)
 {
-    H5T_t *    type      = NULL; /* Datatype opened */
-    H5T_t *    dt        = NULL;
+    H5T_t     *type      = NULL; /* Datatype opened */
+    H5T_t     *dt        = NULL;
     H5O_loc_t *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Get the datatype */
     if (NULL == (dt = (H5T_t *)H5I_object(obj_id)))
-        HGOTO_ERROR(H5E_OHDR, H5E_BADATOM, NULL, "couldn't get object from ID")
+        HGOTO_ERROR(H5E_OHDR, H5E_BADID, NULL, "couldn't get object from ID")
 
     /* If this is a named datatype, get the VOL driver pointer to the datatype */
     type = (H5T_t *)H5T_get_actual_type(dt);

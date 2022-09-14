@@ -91,7 +91,7 @@ H5C__verify_cork_tag_test_cb(H5C_cache_entry_t *entry, void *_ctx)
     int                     ret_value = H5_ITER_CONT;             /* Return value */
 
     /* Function enter macro */
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Santify checks */
     HDassert(entry);
@@ -124,8 +124,8 @@ done:
 herr_t
 H5C__verify_cork_tag_test(hid_t fid, H5O_token_t tag_token, hbool_t status)
 {
-    H5F_t *                f;                   /* File Pointer */
-    H5C_t *                cache;               /* Cache Pointer */
+    H5F_t                 *f;                   /* File Pointer */
+    H5C_t                 *cache;               /* Cache Pointer */
     H5C_tag_iter_vct_ctx_t ctx;                 /* Context for iterator callback */
     haddr_t                tag;                 /* Tagged address */
     herr_t                 ret_value = SUCCEED; /* Return value */

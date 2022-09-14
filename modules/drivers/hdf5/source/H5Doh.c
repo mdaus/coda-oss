@@ -41,11 +41,11 @@
 /********************/
 /* Local Prototypes */
 /********************/
-static void *     H5O__dset_get_copy_file_udata(void);
+static void      *H5O__dset_get_copy_file_udata(void);
 static void       H5O__dset_free_copy_file_udata(void *);
 static htri_t     H5O__dset_isa(const H5O_t *loc);
-static void *     H5O__dset_open(const H5G_loc_t *obj_loc, H5I_type_t *opened_type);
-static void *     H5O__dset_create(H5F_t *f, void *_crt_info, H5G_loc_t *obj_loc);
+static void      *H5O__dset_open(const H5G_loc_t *obj_loc, H5I_type_t *opened_type);
+static void      *H5O__dset_create(H5F_t *f, void *_crt_info, H5G_loc_t *obj_loc);
 static H5O_loc_t *H5O__dset_get_oloc(hid_t obj_id);
 static herr_t     H5O__dset_bh_info(const H5O_loc_t *loc, H5O_t *oh, H5_ih_info_t *bh_info);
 static herr_t     H5O__dset_flush(void *_obj_ptr);
@@ -99,7 +99,7 @@ H5O__dset_get_copy_file_udata(void)
 {
     void *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Allocate space for the 'copy file' user data for copying datasets */
     if (NULL == (ret_value = H5FL_CALLOC(H5D_copy_file_ud_t)))
@@ -127,7 +127,7 @@ H5O__dset_free_copy_file_udata(void *_udata)
 {
     H5D_copy_file_ud_t *udata = (H5D_copy_file_ud_t *)_udata;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(udata);
@@ -173,7 +173,7 @@ H5O__dset_isa(const H5O_t *oh)
     htri_t exists;           /* Flag if header message of interest exists */
     htri_t ret_value = TRUE; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(oh);
 
@@ -211,9 +211,9 @@ H5O__dset_open(const H5G_loc_t *obj_loc, H5I_type_t *opened_type)
 {
     H5D_t *dset = NULL;      /* Dataset opened */
     hid_t  dapl_id;          /* dapl to use to open this dataset */
-    void * ret_value = NULL; /* Return value */
+    void  *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(obj_loc);
 
@@ -273,10 +273,10 @@ static void *
 H5O__dset_create(H5F_t *f, void *_crt_info, H5G_loc_t *obj_loc)
 {
     H5D_obj_create_t *crt_info  = (H5D_obj_create_t *)_crt_info; /* Dataset creation parameters */
-    H5D_t *           dset      = NULL;                          /* New dataset created */
-    void *            ret_value = NULL;                          /* Return value */
+    H5D_t            *dset      = NULL;                          /* New dataset created */
+    void             *ret_value = NULL;                          /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(f);
@@ -321,14 +321,14 @@ done:
 static H5O_loc_t *
 H5O__dset_get_oloc(hid_t obj_id)
 {
-    H5D_t *    dset;             /* Dataset opened */
+    H5D_t     *dset;             /* Dataset opened */
     H5O_loc_t *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Get the dataset */
     if (NULL == (dset = (H5D_t *)H5VL_object(obj_id)))
-        HGOTO_ERROR(H5E_OHDR, H5E_BADATOM, NULL, "couldn't get object from ID")
+        HGOTO_ERROR(H5E_OHDR, H5E_BADID, NULL, "couldn't get object from ID")
 
     /* Get the dataset's object header location */
     if (NULL == (ret_value = H5D_oloc(dset)))
@@ -362,7 +362,7 @@ H5O__dset_bh_info(const H5O_loc_t *loc, H5O_t *oh, H5_ih_info_t *bh_info)
     htri_t       exists;              /* Flag if header message of interest exists */
     herr_t       ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(loc);
@@ -438,11 +438,11 @@ done:
 static herr_t
 H5O__dset_flush(void *_obj_ptr)
 {
-    H5D_t *    dset = (H5D_t *)_obj_ptr; /* Pointer to dataset object */
+    H5D_t     *dset = (H5D_t *)_obj_ptr; /* Pointer to dataset object */
     H5O_type_t obj_type;                 /* Type of object at location */
     herr_t     ret_value = SUCCEED;      /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(dset);
     HDassert(&dset->oloc);

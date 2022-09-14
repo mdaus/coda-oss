@@ -59,7 +59,7 @@ static size_t
 H5Z__filter_fletcher32(unsigned flags, size_t H5_ATTR_UNUSED cd_nelmts,
                        const unsigned H5_ATTR_UNUSED cd_values[], size_t nbytes, size_t *buf_size, void **buf)
 {
-    void *         outbuf = NULL; /* Pointer to new buffer */
+    void          *outbuf = NULL; /* Pointer to new buffer */
     unsigned char *src    = (unsigned char *)(*buf);
     uint32_t       fletcher;          /* Checksum value */
     uint32_t       reversed_fletcher; /* Possible wrong checksum value */
@@ -67,7 +67,7 @@ H5Z__filter_fletcher32(unsigned flags, size_t H5_ATTR_UNUSED cd_nelmts,
     uint8_t        tmp;
     size_t         ret_value = 0; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(sizeof(uint32_t) >= 4);
 

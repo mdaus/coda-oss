@@ -11,7 +11,6 @@
  * help@hdfgroup.org.                                                        *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <cstring>
 #include <string>
 
 #include "H5Include.h"
@@ -498,12 +497,16 @@ H5Object::getObjName() const
     }
     // Object's name exists, retrieve it
     else if (name_size > 0) {
+
+        // The actual size is the cast value + 1 for the terminal ASCII NUL
+        // (unfortunate in/out type sign mismatch)
+        size_t actual_name_size = static_cast<size_t>(name_size) + 1;
+
         // Create buffer for C string
-        char *name_C = new char[name_size + 1];
-        memset(name_C, 0, name_size + 1);
+        char *name_C = new char[actual_name_size]();
 
         // Use overloaded function
-        name_size = getObjName(name_C, name_size + 1);
+        name_size = getObjName(name_C, actual_name_size);
 
         // Convert the C object name to return
         obj_name = name_C;
@@ -511,8 +514,9 @@ H5Object::getObjName() const
         // Clean up resource
         delete[] name_C;
     }
+
     // Return object's name
-    return (obj_name);
+    return obj_name;
 }
 
 //--------------------------------------------------------------------------
@@ -536,13 +540,12 @@ H5Object::getObjName(H5std_string &obj_name, size_t len) const
     // If no length is provided, get the entire object name
     if (len == 0) {
         obj_name  = getObjName();
-        name_size = obj_name.length();
+        name_size = static_cast<ssize_t>(obj_name.length());
     }
     // If length is provided, get that number of characters in name
     else {
         // Create buffer for C string
-        char *name_C = new char[len + 1];
-        memset(name_C, 0, len + 1);
+        char *name_C = new char[len + 1]();
 
         // Use overloaded function
         name_size = getObjName(name_C, len + 1);
@@ -556,7 +559,7 @@ H5Object::getObjName(H5std_string &obj_name, size_t len) const
     // Otherwise, keep obj_name intact
 
     // Return name size
-    return (name_size);
+    return name_size;
 }
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS

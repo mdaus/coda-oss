@@ -51,6 +51,7 @@ typedef enum H5I_type_t {
     H5I_ERROR_MSG,      /**< type ID for error messages                */
     H5I_ERROR_STACK,    /**< type ID for error stacks                  */
     H5I_SPACE_SEL_ITER, /**< type ID for dataspace selection iterator  */
+    H5I_EVENTSET,       /**< type ID for event sets                    */
     H5I_NTYPES          /**< number of library types, MUST BE LAST!    */
 } H5I_type_t;
 //! <!-- [H5I_type_t_snip] -->
@@ -82,7 +83,7 @@ typedef int64_t hid_t;
  * can be removed from the ID type. If the function returns negative
  * (failure) then the object will remain in the ID type.
  */
-typedef herr_t (*H5I_free_t)(void *);
+typedef herr_t (*H5I_free_t)(void *, void **);
 
 /**
  * The type of a function to compare objects & keys

@@ -155,7 +155,7 @@ H5P__ocpy_reg_prop(H5P_genclass_t *pclass)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Register copy options property */
     if (H5P__register_real(pclass, H5O_CPY_OPTION_NAME, H5O_CPY_OPTION_SIZE, &H5O_def_ocpy_option_g, NULL,
@@ -197,7 +197,7 @@ done:
 static H5O_copy_dtype_merge_list_t *
 H5P__free_merge_comm_dtype_list(H5O_copy_dtype_merge_list_t *dt_list)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Free the list */
     while (dt_list) {
@@ -231,12 +231,12 @@ static herr_t
 H5P__copy_merge_comm_dt_list(H5O_copy_dtype_merge_list_t **value)
 {
     const H5O_copy_dtype_merge_list_t *src_dt_list;             /* Source merge named datatype lists */
-    H5O_copy_dtype_merge_list_t *      dst_dt_list      = NULL; /* Destination merge named datatype lists */
-    H5O_copy_dtype_merge_list_t *      dst_dt_list_tail = NULL,
+    H5O_copy_dtype_merge_list_t       *dst_dt_list      = NULL; /* Destination merge named datatype lists */
+    H5O_copy_dtype_merge_list_t       *dst_dt_list_tail = NULL,
                                 *tmp_dt_list            = NULL; /* temporary merge named datatype lists */
     herr_t ret_value                                    = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(value);
@@ -299,7 +299,7 @@ H5P__ocpy_merge_comm_dt_list_set(hid_t H5_ATTR_UNUSED prop_id, const char H5_ATT
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(value);
@@ -331,7 +331,7 @@ H5P__ocpy_merge_comm_dt_list_get(hid_t H5_ATTR_UNUSED prop_id, const char H5_ATT
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(value);
@@ -363,11 +363,11 @@ static herr_t
 H5P__ocpy_merge_comm_dt_list_enc(const void *value, void **_pp, size_t *size)
 {
     const H5O_copy_dtype_merge_list_t *const *dt_list_ptr = (const H5O_copy_dtype_merge_list_t *const *)value;
-    uint8_t **                                pp          = (uint8_t **)_pp;
-    const H5O_copy_dtype_merge_list_t *       dt_list; /* Pointer to merge named datatype list */
+    uint8_t                                 **pp          = (uint8_t **)_pp;
+    const H5O_copy_dtype_merge_list_t        *dt_list; /* Pointer to merge named datatype list */
     size_t                                    len;     /* Length of path component */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(dt_list_ptr);
     HDassert(size);
@@ -421,13 +421,13 @@ H5P__ocpy_merge_comm_dt_list_dec(const void **_pp, void *_value)
 {
     H5O_copy_dtype_merge_list_t **dt_list =
         (H5O_copy_dtype_merge_list_t **)_value; /* Pointer to merge named datatype list */
-    const uint8_t **             pp           = (const uint8_t **)_pp;
+    const uint8_t              **pp           = (const uint8_t **)_pp;
     H5O_copy_dtype_merge_list_t *dt_list_tail = NULL,
                                 *tmp_dt_list  = NULL; /* temporary merge named datatype lists */
     size_t len;                                       /* Length of path component */
     herr_t ret_value = SUCCEED;                       /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(pp);
@@ -495,7 +495,7 @@ static herr_t
 H5P__ocpy_merge_comm_dt_list_del(hid_t H5_ATTR_UNUSED prop_id, const char H5_ATTR_UNUSED *name,
                                  size_t H5_ATTR_UNUSED size, void *value)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(value);
@@ -524,7 +524,7 @@ H5P__ocpy_merge_comm_dt_list_copy(const char H5_ATTR_UNUSED *name, size_t H5_ATT
 {
     herr_t ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(value);
@@ -561,7 +561,7 @@ H5P__ocpy_merge_comm_dt_list_cmp(const void *_dt_list1, const void *_dt_list2, s
         *dt_list2    = *(H5O_copy_dtype_merge_list_t *const *)_dt_list2;
     herr_t ret_value = 0; /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(_dt_list1);
@@ -610,7 +610,7 @@ done:
 static herr_t
 H5P__ocpy_merge_comm_dt_list_close(const char H5_ATTR_UNUSED *name, size_t H5_ATTR_UNUSED size, void *value)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(value);
 
@@ -656,7 +656,7 @@ H5Pset_copy_object(hid_t plist_id, unsigned cpy_option)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_OBJECT_COPY)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Set value */
     if (H5P_set(plist, H5O_CPY_OPTION_NAME, &cpy_option) < 0)
@@ -689,7 +689,7 @@ H5Pget_copy_object(hid_t plist_id, unsigned *cpy_option /*out*/)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_OBJECT_COPY)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get values */
     if (cpy_option)
@@ -723,7 +723,7 @@ done:
 herr_t
 H5Padd_merge_committed_dtype_path(hid_t plist_id, const char *path)
 {
-    H5P_genplist_t *             plist;               /* Property list pointer */
+    H5P_genplist_t              *plist;               /* Property list pointer */
     H5O_copy_dtype_merge_list_t *old_list;            /* Merge committed dtype list currently present */
     H5O_copy_dtype_merge_list_t *new_obj   = NULL;    /* New object to add to list */
     herr_t                       ret_value = SUCCEED; /* Return value */
@@ -739,7 +739,7 @@ H5Padd_merge_committed_dtype_path(hid_t plist_id, const char *path)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_OBJECT_COPY)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get dtype list */
     if (H5P_peek(plist, H5O_CPY_MERGE_COMM_DT_LIST_NAME, &old_list) < 0)
@@ -785,7 +785,7 @@ done:
 herr_t
 H5Pfree_merge_committed_dtype_paths(hid_t plist_id)
 {
-    H5P_genplist_t *             plist;               /* Property list pointer */
+    H5P_genplist_t              *plist;               /* Property list pointer */
     H5O_copy_dtype_merge_list_t *dt_list;             /* Merge committed dtype list currently present */
     herr_t                       ret_value = SUCCEED; /* Return value */
 
@@ -794,7 +794,7 @@ H5Pfree_merge_committed_dtype_paths(hid_t plist_id)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_OBJECT_COPY)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get dtype list */
     if (H5P_peek(plist, H5O_CPY_MERGE_COMM_DT_LIST_NAME, &dt_list) < 0)
@@ -832,12 +832,12 @@ done:
 herr_t
 H5Pset_mcdt_search_cb(hid_t plist_id, H5O_mcdt_search_cb_t func, void *op_data)
 {
-    H5P_genplist_t *   plist;               /* Property list pointer */
+    H5P_genplist_t    *plist;               /* Property list pointer */
     H5O_mcdt_cb_info_t cb_info;             /* Callback info struct */
     herr_t             ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE3("e", "ix*x", plist_id, func, op_data);
+    H5TRACE3("e", "iOs*x", plist_id, func, op_data);
 
     /* Check if the callback function is NULL and the user data is non-NULL.
      * This is almost certainly an error as the user data will not be used. */
@@ -846,7 +846,7 @@ H5Pset_mcdt_search_cb(hid_t plist_id, H5O_mcdt_search_cb_t func, void *op_data)
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_OBJECT_COPY)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Populate the callback info struct */
     cb_info.func      = func;
@@ -878,18 +878,18 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5Pget_mcdt_search_cb(hid_t plist_id, H5O_mcdt_search_cb_t *func, void **op_data)
+H5Pget_mcdt_search_cb(hid_t plist_id, H5O_mcdt_search_cb_t *func /*out*/, void **op_data /*out*/)
 {
-    H5P_genplist_t *   plist;               /* Property list pointer */
+    H5P_genplist_t    *plist;               /* Property list pointer */
     H5O_mcdt_cb_info_t cb_info;             /* Callback info struct */
     herr_t             ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_API(FAIL)
-    H5TRACE3("e", "i*x**x", plist_id, func, op_data);
+    H5TRACE3("e", "ixx", plist_id, func, op_data);
 
     /* Get the plist structure */
     if (NULL == (plist = H5P_object_verify(plist_id, H5P_OBJECT_COPY)))
-        HGOTO_ERROR(H5E_ATOM, H5E_BADATOM, FAIL, "can't find object for ID")
+        HGOTO_ERROR(H5E_ID, H5E_BADID, FAIL, "can't find object for ID")
 
     /* Get callback info */
     if (H5P_get(plist, H5O_CPY_MCDT_SEARCH_CB_NAME, &cb_info) < 0)

@@ -34,10 +34,10 @@
 #include "H5Opkg.h"      /* Object headers			*/
 
 /* PRIVATE PROTOTYPES */
-static void * H5O__linfo_decode(H5F_t *f, H5O_t *open_oh, unsigned mesg_flags, unsigned *ioflags,
+static void  *H5O__linfo_decode(H5F_t *f, H5O_t *open_oh, unsigned mesg_flags, unsigned *ioflags,
                                 size_t p_size, const uint8_t *p);
 static herr_t H5O__linfo_encode(H5F_t *f, hbool_t disable_shared, uint8_t *p, const void *_mesg);
-static void * H5O__linfo_copy(const void *_mesg, void *_dest);
+static void  *H5O__linfo_copy(const void *_mesg, void *_dest);
 static size_t H5O__linfo_size(const H5F_t *f, hbool_t disable_shared, const void *_mesg);
 static herr_t H5O__linfo_free(void *_mesg);
 static herr_t H5O__linfo_delete(H5F_t *f, H5O_t *open_oh, void *_mesg);
@@ -83,9 +83,9 @@ const H5O_msg_class_t H5O_MSG_LINFO[1] = {{
 /* Data exchange structure to use when copying links from src to dst */
 typedef struct {
     const H5O_loc_t *src_oloc;  /* Source object location */
-    H5O_loc_t *      dst_oloc;  /* Destination object location */
-    H5O_linfo_t *    dst_linfo; /* Destination object's link info message */
-    H5O_copy_t *     cpy_info;  /* Information for copy operation */
+    H5O_loc_t       *dst_oloc;  /* Destination object location */
+    H5O_linfo_t     *dst_linfo; /* Destination object's link info message */
+    H5O_copy_t      *cpy_info;  /* Information for copy operation */
 } H5O_linfo_postcopy_ud_t;
 
 /* Declare a free list to manage the H5O_linfo_t struct */
@@ -108,11 +108,11 @@ static void *
 H5O__linfo_decode(H5F_t *f, H5O_t H5_ATTR_UNUSED *open_oh, unsigned H5_ATTR_UNUSED mesg_flags,
                   unsigned H5_ATTR_UNUSED *ioflags, size_t H5_ATTR_UNUSED p_size, const uint8_t *p)
 {
-    H5O_linfo_t * linfo = NULL;     /* Link info */
+    H5O_linfo_t  *linfo = NULL;     /* Link info */
     unsigned char index_flags;      /* Flags for encoding link index info */
-    void *        ret_value = NULL; /* Return value */
+    void         *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(f);
@@ -183,7 +183,7 @@ H5O__linfo_encode(H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, uint8_t *p, c
     const H5O_linfo_t *linfo = (const H5O_linfo_t *)_mesg;
     unsigned char      index_flags; /* Flags for encoding link index info */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* check args */
     HDassert(f);
@@ -235,10 +235,10 @@ static void *
 H5O__linfo_copy(const void *_mesg, void *_dest)
 {
     const H5O_linfo_t *linfo     = (const H5O_linfo_t *)_mesg;
-    H5O_linfo_t *      dest      = (H5O_linfo_t *)_dest;
-    void *             ret_value = NULL; /* Return value */
+    H5O_linfo_t       *dest      = (H5O_linfo_t *)_dest;
+    void              *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(linfo);
@@ -276,7 +276,7 @@ H5O__linfo_size(const H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, const voi
     const H5O_linfo_t *linfo     = (const H5O_linfo_t *)_mesg;
     size_t             ret_value = 0; /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Set return value */
     ret_value =
@@ -306,7 +306,7 @@ H5O__linfo_size(const H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, const voi
 static herr_t
 H5O__linfo_free(void *mesg)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(mesg);
 
@@ -333,7 +333,7 @@ H5O__linfo_delete(H5F_t *f, H5O_t H5_ATTR_UNUSED *open_oh, void *_mesg)
     H5O_linfo_t *linfo     = (H5O_linfo_t *)_mesg;
     herr_t       ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(f);
@@ -367,12 +367,12 @@ H5O__linfo_copy_file(H5F_t H5_ATTR_UNUSED *file_src, void *native_src, H5F_t *fi
                      hbool_t H5_ATTR_UNUSED *recompute_size, unsigned H5_ATTR_UNUSED *mesg_flags,
                      H5O_copy_t *cpy_info, void *_udata)
 {
-    H5O_linfo_t *       linfo_src = (H5O_linfo_t *)native_src;
-    H5O_linfo_t *       linfo_dst = NULL;
+    H5O_linfo_t        *linfo_src = (H5O_linfo_t *)native_src;
+    H5O_linfo_t        *linfo_dst = NULL;
     H5G_copy_file_ud_t *udata     = (H5G_copy_file_ud_t *)_udata;
-    void *              ret_value = NULL; /* Return value */
+    void               *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC_TAG(H5AC__COPIED_TAG)
+    FUNC_ENTER_PACKAGE_TAG(H5AC__COPIED_TAG)
 
     /* check args */
     HDassert(linfo_src);
@@ -438,7 +438,7 @@ H5O__linfo_post_copy_file_cb(const H5O_link_t *src_lnk, void *_udata)
     hbool_t                  dst_lnk_init = FALSE;        /* Whether the destination link is initialized */
     herr_t                   ret_value    = H5_ITER_CONT; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments */
     HDassert(src_lnk);
@@ -485,10 +485,10 @@ H5O__linfo_post_copy_file(const H5O_loc_t *src_oloc, const void *mesg_src, H5O_l
                           void *mesg_dst, unsigned H5_ATTR_UNUSED *mesg_flags, H5O_copy_t *cpy_info)
 {
     const H5O_linfo_t *linfo_src = (const H5O_linfo_t *)mesg_src;
-    H5O_linfo_t *      linfo_dst = (H5O_linfo_t *)mesg_dst;
+    H5O_linfo_t       *linfo_dst = (H5O_linfo_t *)mesg_dst;
     herr_t             ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check args */
     HDassert(src_oloc && src_oloc->file);
@@ -539,7 +539,7 @@ H5O__linfo_debug(H5F_t H5_ATTR_UNUSED *f, const void *_mesg, FILE *stream, int i
 {
     const H5O_linfo_t *linfo = (const H5O_linfo_t *)_mesg;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* check args */
     HDassert(f);

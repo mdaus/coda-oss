@@ -47,12 +47,13 @@ static herr_t H5VL__native_term(void);
 
 /* Native VOL connector class struct */
 static const H5VL_class_t H5VL_native_cls_g = {
-    H5VL_VERSION,      /* VOL class struct version */
-    H5VL_NATIVE_VALUE, /* value        */
-    H5VL_NATIVE_NAME,  /* name         */
-    0,                 /* capability flags */
-    NULL,              /* initialize   */
-    H5VL__native_term, /* terminate    */
+    H5VL_VERSION,               /* VOL class struct version */
+    H5VL_NATIVE_VALUE,          /* value        */
+    H5VL_NATIVE_NAME,           /* name         */
+    H5VL_NATIVE_VERSION,        /* connector version */
+    H5VL_CAP_FLAG_NATIVE_FILES, /* capability flags */
+    NULL,                       /* initialize   */
+    H5VL__native_term,          /* terminate    */
     {
         /* info_cls */
         (size_t)0, /* info size    */
@@ -138,8 +139,9 @@ static const H5VL_class_t H5VL_native_cls_g = {
     },
     {
         /* introspect_cls */
-        H5VL__native_introspect_get_conn_cls, /* get_conn_cls */
-        H5VL__native_introspect_opt_query,    /* opt_query    */
+        H5VL__native_introspect_get_conn_cls,  /* get_conn_cls */
+        H5VL__native_introspect_get_cap_flags, /* get_cap_flags */
+        H5VL__native_introspect_opt_query,     /* opt_query    */
     },
     {
         /* request_cls */
@@ -208,7 +210,7 @@ done:
 static herr_t
 H5VL__native_term(void)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Reset VOL ID */
     H5VL_NATIVE_ID_g = H5I_INVALID_HID;
@@ -243,6 +245,32 @@ H5VL__native_introspect_get_conn_cls(void H5_ATTR_UNUSED *obj, H5VL_get_conn_lvl
     FUNC_LEAVE_NOAPI(SUCCEED)
 } /* end H5VL__native_introspect_get_conn_cls() */
 
+/*---------------------------------------------------------------------------
+ * Function:    H5VL__native_introspect_get_cap_flags
+ *
+ * Purpose:     Query the capability flags for this connector.
+ *
+ * Note:        This routine is in this file so that it can return the field
+ *              from the statically declared class struct.
+ *
+ * Returns:     SUCCEED (Can't fail)
+ *
+ *---------------------------------------------------------------------------
+ */
+herr_t
+H5VL__native_introspect_get_cap_flags(const void H5_ATTR_UNUSED *info, unsigned *cap_flags)
+{
+    FUNC_ENTER_PACKAGE_NOERR
+
+    /* Sanity check */
+    HDassert(cap_flags);
+
+    /* Set the flags from the connector's field */
+    *cap_flags = H5VL_native_cls_g.cap_flags;
+
+    FUNC_LEAVE_NOAPI(SUCCEED)
+} /* end H5VL__native_introspect_get_cap_flags() */
+
 /*-------------------------------------------------------------------------
  * Function:    H5VL_native_get_file_addr_len
  *
@@ -258,7 +286,7 @@ herr_t
 H5VL_native_get_file_addr_len(hid_t loc_id, size_t *addr_len)
 {
     H5I_type_t vol_obj_type = H5I_BADID; /* Object type of loc_id */
-    void *     vol_obj      = NULL;      /* VOL Object of loc_id */
+    void      *vol_obj      = NULL;      /* VOL Object of loc_id */
     herr_t     ret_value    = SUCCEED;   /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
@@ -329,7 +357,7 @@ herr_t
 H5VLnative_addr_to_token(hid_t loc_id, haddr_t addr, H5O_token_t *token)
 {
     H5I_type_t vol_obj_type = H5I_BADID; /* Object type of loc_id */
-    void *     vol_obj      = NULL;      /* VOL Object of loc_id */
+    void      *vol_obj      = NULL;      /* VOL Object of loc_id */
     herr_t     ret_value    = SUCCEED;   /* Return value         */
 
     FUNC_ENTER_API(FAIL)
@@ -423,7 +451,7 @@ herr_t
 H5VLnative_token_to_addr(hid_t loc_id, H5O_token_t token, haddr_t *addr)
 {
     H5I_type_t vol_obj_type = H5I_BADID; /* Object type of loc_id */
-    void *     vol_obj      = NULL;      /* VOL Object of loc_id */
+    void      *vol_obj      = NULL;      /* VOL Object of loc_id */
     herr_t     ret_value    = SUCCEED;   /* Return value         */
 
     FUNC_ENTER_API(FAIL)
@@ -555,6 +583,7 @@ H5VL_native_get_file_struct(void *obj, H5I_type_t type, H5F_t **file)
         case H5I_ERROR_MSG:
         case H5I_ERROR_STACK:
         case H5I_SPACE_SEL_ITER:
+        case H5I_EVENTSET:
         case H5I_NTYPES:
         default:
             HGOTO_ERROR(H5E_ARGS, H5E_BADTYPE, FAIL, "not a file or file object")

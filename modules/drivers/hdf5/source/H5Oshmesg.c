@@ -25,10 +25,10 @@
 #include "H5Opkg.h"      /* Object headers			*/
 #include "H5MMprivate.h" /* Memory management			*/
 
-static void * H5O__shmesg_decode(H5F_t *f, H5O_t *open_oh, unsigned mesg_flags, unsigned *ioflags,
+static void  *H5O__shmesg_decode(H5F_t *f, H5O_t *open_oh, unsigned mesg_flags, unsigned *ioflags,
                                  size_t p_size, const uint8_t *p);
 static herr_t H5O__shmesg_encode(H5F_t *f, hbool_t disable_shared, uint8_t *p, const void *_mesg);
-static void * H5O__shmesg_copy(const void *_mesg, void *_dest);
+static void  *H5O__shmesg_copy(const void *_mesg, void *_dest);
 static size_t H5O__shmesg_size(const H5F_t *f, hbool_t disable_shared, const void *_mesg);
 static herr_t H5O__shmesg_debug(H5F_t *f, const void *_mesg, FILE *stream, int indent, int fwidth);
 
@@ -75,9 +75,9 @@ H5O__shmesg_decode(H5F_t *f, H5O_t H5_ATTR_UNUSED *open_oh, unsigned H5_ATTR_UNU
                    unsigned H5_ATTR_UNUSED *ioflags, size_t H5_ATTR_UNUSED p_size, const uint8_t *p)
 {
     H5O_shmesg_table_t *mesg;             /* Native message */
-    void *              ret_value = NULL; /* Return value */
+    void               *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(f);
@@ -116,7 +116,7 @@ H5O__shmesg_encode(H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, uint8_t *p, 
 {
     const H5O_shmesg_table_t *mesg = (const H5O_shmesg_table_t *)_mesg;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(f);
@@ -149,10 +149,10 @@ static void *
 H5O__shmesg_copy(const void *_mesg, void *_dest)
 {
     const H5O_shmesg_table_t *mesg      = (const H5O_shmesg_table_t *)_mesg;
-    H5O_shmesg_table_t *      dest      = (H5O_shmesg_table_t *)_dest;
-    void *                    ret_value = NULL; /* Return value */
+    H5O_shmesg_table_t       *dest      = (H5O_shmesg_table_t *)_dest;
+    void                     *ret_value = NULL; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(mesg);
@@ -190,7 +190,7 @@ H5O__shmesg_size(const H5F_t *f, hbool_t H5_ATTR_UNUSED disable_shared, const vo
 {
     size_t ret_value = 0; /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(f);
@@ -219,7 +219,7 @@ H5O__shmesg_debug(H5F_t H5_ATTR_UNUSED *f, const void *_mesg, FILE *stream, int 
 {
     const H5O_shmesg_table_t *mesg = (const H5O_shmesg_table_t *)_mesg;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(f);

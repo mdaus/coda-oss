@@ -75,7 +75,7 @@ typedef struct H5AC_slist_entry_t {
 /* User data for address list building callbacks */
 typedef struct H5AC_addr_list_ud_t {
     H5AC_aux_t *aux_ptr;      /* 'Auxiliary' parallel cache info */
-    haddr_t *   addr_buf_ptr; /* Array to store addresses */
+    haddr_t    *addr_buf_ptr; /* Array to store addresses */
     unsigned    u;            /* Counter for position in array */
 } H5AC_addr_list_ud_t;
 
@@ -137,8 +137,7 @@ H5FL_DEFINE_STATIC(H5AC_slist_entry_t);
  *-------------------------------------------------------------------------
  */
 herr_t
-H5AC__set_sync_point_done_callback(H5C_t *cache_ptr,
-                                   void (*sync_point_done)(unsigned num_writes, haddr_t *written_entries_tbl))
+H5AC__set_sync_point_done_callback(H5C_t *cache_ptr, H5AC_sync_point_done_cb_t sync_point_done)
 {
     H5AC_aux_t *aux_ptr;
 
@@ -170,7 +169,7 @@ H5AC__set_sync_point_done_callback(H5C_t *cache_ptr,
  *-------------------------------------------------------------------------
  */
 herr_t
-H5AC__set_write_done_callback(H5C_t *cache_ptr, void (*write_done)(void))
+H5AC__set_write_done_callback(H5C_t *cache_ptr, H5AC_write_done_cb_t write_done)
 {
     H5AC_aux_t *aux_ptr;
 
@@ -208,7 +207,7 @@ H5AC__set_write_done_callback(H5C_t *cache_ptr, void (*write_done)(void))
 herr_t
 H5AC_add_candidate(H5AC_t *cache_ptr, haddr_t addr)
 {
-    H5AC_aux_t *        aux_ptr;
+    H5AC_aux_t         *aux_ptr;
     H5AC_slist_entry_t *slist_entry_ptr = NULL;
     herr_t              ret_value       = SUCCEED; /* Return value */
 
@@ -269,12 +268,12 @@ static herr_t
 H5AC__broadcast_candidate_list(H5AC_t *cache_ptr, unsigned *num_entries_ptr, haddr_t **haddr_buf_ptr_ptr)
 {
     H5AC_aux_t *aux_ptr       = NULL;
-    haddr_t *   haddr_buf_ptr = NULL;
+    haddr_t    *haddr_buf_ptr = NULL;
     int         mpi_result;
     unsigned    num_entries;
     herr_t      ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(cache_ptr != NULL);
@@ -350,11 +349,11 @@ done:
 static herr_t
 H5AC__broadcast_clean_list_cb(void *_item, void H5_ATTR_UNUSED *_key, void *_udata)
 {
-    H5AC_slist_entry_t * slist_entry_ptr = (H5AC_slist_entry_t *)_item;   /* Address of item */
+    H5AC_slist_entry_t  *slist_entry_ptr = (H5AC_slist_entry_t *)_item;   /* Address of item */
     H5AC_addr_list_ud_t *udata           = (H5AC_addr_list_ud_t *)_udata; /* Context for callback */
     haddr_t              addr;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity checks */
     HDassert(slist_entry_ptr);
@@ -401,13 +400,13 @@ H5AC__broadcast_clean_list_cb(void *_item, void H5_ATTR_UNUSED *_key, void *_uda
 static herr_t
 H5AC__broadcast_clean_list(H5AC_t *cache_ptr)
 {
-    haddr_t *   addr_buf_ptr = NULL;
+    haddr_t    *addr_buf_ptr = NULL;
     H5AC_aux_t *aux_ptr;
     int         mpi_result;
     unsigned    num_entries = 0;
     herr_t      ret_value   = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(cache_ptr != NULL);
@@ -494,7 +493,7 @@ H5AC__construct_candidate_list(H5AC_t *cache_ptr, H5AC_aux_t H5_ATTR_NDEBUG_UNUS
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(cache_ptr != NULL);
@@ -547,10 +546,10 @@ done:
 static herr_t
 H5AC__copy_candidate_list_to_buffer_cb(void *_item, void H5_ATTR_UNUSED *_key, void *_udata)
 {
-    H5AC_slist_entry_t * slist_entry_ptr = (H5AC_slist_entry_t *)_item;   /* Address of item */
+    H5AC_slist_entry_t  *slist_entry_ptr = (H5AC_slist_entry_t *)_item;   /* Address of item */
     H5AC_addr_list_ud_t *udata           = (H5AC_addr_list_ud_t *)_udata; /* Context for callback */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity checks */
     HDassert(slist_entry_ptr);
@@ -601,14 +600,14 @@ static herr_t
 H5AC__copy_candidate_list_to_buffer(const H5AC_t *cache_ptr, unsigned *num_entries_ptr,
                                     haddr_t **haddr_buf_ptr_ptr)
 {
-    H5AC_aux_t *        aux_ptr = NULL;
+    H5AC_aux_t         *aux_ptr = NULL;
     H5AC_addr_list_ud_t udata;
-    haddr_t *           haddr_buf_ptr = NULL;
+    haddr_t            *haddr_buf_ptr = NULL;
     size_t              buf_size;
     unsigned            num_entries = 0;
     herr_t              ret_value   = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(cache_ptr != NULL);
@@ -675,8 +674,8 @@ done:
 herr_t
 H5AC__log_deleted_entry(const H5AC_info_t *entry_ptr)
 {
-    H5AC_t *            cache_ptr;
-    H5AC_aux_t *        aux_ptr;
+    H5AC_t             *cache_ptr;
+    H5AC_aux_t         *aux_ptr;
     H5AC_slist_entry_t *slist_entry_ptr = NULL;
     haddr_t             addr;
 
@@ -729,7 +728,7 @@ H5AC__log_deleted_entry(const H5AC_info_t *entry_ptr)
 herr_t
 H5AC__log_dirtied_entry(const H5AC_info_t *entry_ptr)
 {
-    H5AC_t *    cache_ptr;
+    H5AC_t     *cache_ptr;
     H5AC_aux_t *aux_ptr;
     herr_t      ret_value = SUCCEED; /* Return value */
 
@@ -807,7 +806,7 @@ done:
 herr_t
 H5AC__log_cleaned_entry(const H5AC_info_t *entry_ptr)
 {
-    H5AC_t *    cache_ptr;
+    H5AC_t     *cache_ptr;
     H5AC_aux_t *aux_ptr;
 
     FUNC_ENTER_PACKAGE_NOERR
@@ -870,7 +869,7 @@ herr_t
 H5AC__log_flushed_entry(H5C_t *cache_ptr, haddr_t addr, hbool_t was_dirty, unsigned flags)
 {
     hbool_t             cleared;
-    H5AC_aux_t *        aux_ptr;
+    H5AC_aux_t         *aux_ptr;
     H5AC_slist_entry_t *slist_entry_ptr = NULL;
     herr_t              ret_value       = SUCCEED; /* Return value */
 
@@ -937,7 +936,7 @@ done:
 herr_t
 H5AC__log_inserted_entry(const H5AC_info_t *entry_ptr)
 {
-    H5AC_t *    cache_ptr;
+    H5AC_t     *cache_ptr;
     H5AC_aux_t *aux_ptr;
     herr_t      ret_value = SUCCEED; /* Return value */
 
@@ -1035,7 +1034,7 @@ done:
 herr_t
 H5AC__log_moved_entry(const H5F_t *f, haddr_t old_addr, haddr_t new_addr)
 {
-    H5AC_t *    cache_ptr;
+    H5AC_t     *cache_ptr;
     H5AC_aux_t *aux_ptr;
     hbool_t     entry_in_cache;
     hbool_t     entry_dirty;
@@ -1215,14 +1214,14 @@ done:
 static herr_t
 H5AC__propagate_and_apply_candidate_list(H5F_t *f)
 {
-    H5AC_t *    cache_ptr;
+    H5AC_t     *cache_ptr;
     H5AC_aux_t *aux_ptr;
-    haddr_t *   candidates_list_ptr = NULL;
+    haddr_t    *candidates_list_ptr = NULL;
     int         mpi_result;
     unsigned    num_candidates = 0;
     herr_t      ret_value      = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(f != NULL);
@@ -1381,11 +1380,11 @@ done:
 static herr_t
 H5AC__propagate_flushed_and_still_clean_entries_list(H5F_t *f)
 {
-    H5AC_t *    cache_ptr;
+    H5AC_t     *cache_ptr;
     H5AC_aux_t *aux_ptr;
     herr_t      ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(f != NULL);
@@ -1436,7 +1435,7 @@ H5AC__receive_haddr_list(MPI_Comm mpi_comm, unsigned *num_entries_ptr, haddr_t *
     unsigned num_entries;
     herr_t   ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(num_entries_ptr != NULL);
@@ -1502,13 +1501,13 @@ done:
 static herr_t
 H5AC__receive_and_apply_clean_list(H5F_t *f)
 {
-    H5AC_t *    cache_ptr;
+    H5AC_t     *cache_ptr;
     H5AC_aux_t *aux_ptr;
-    haddr_t *   haddr_buf_ptr = NULL;
+    haddr_t    *haddr_buf_ptr = NULL;
     unsigned    num_entries   = 0;
     herr_t      ret_value     = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(f != NULL);
@@ -1568,7 +1567,7 @@ H5AC__receive_candidate_list(const H5AC_t *cache_ptr, unsigned *num_entries_ptr,
     H5AC_aux_t *aux_ptr;
     herr_t      ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(cache_ptr != NULL);
@@ -1642,14 +1641,14 @@ done:
 static herr_t
 H5AC__rsp__dist_md_write__flush(H5F_t *f)
 {
-    H5AC_t *    cache_ptr;
+    H5AC_t     *cache_ptr;
     H5AC_aux_t *aux_ptr;
-    haddr_t *   haddr_buf_ptr = NULL;
+    haddr_t    *haddr_buf_ptr = NULL;
     int         mpi_result;
     unsigned    num_entries = 0;
     herr_t      ret_value   = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(f != NULL);
@@ -1788,12 +1787,12 @@ done:
 static herr_t
 H5AC__rsp__dist_md_write__flush_to_min_clean(H5F_t *f)
 {
-    H5AC_t *    cache_ptr;
+    H5AC_t     *cache_ptr;
     H5AC_aux_t *aux_ptr;
     hbool_t     evictions_enabled;
     herr_t      ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(f != NULL);
@@ -1869,12 +1868,12 @@ done:
 static herr_t
 H5AC__rsp__p0_only__flush(H5F_t *f)
 {
-    H5AC_t *    cache_ptr;
+    H5AC_t     *cache_ptr;
     H5AC_aux_t *aux_ptr;
     int         mpi_result;
     herr_t      ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(f != NULL);
@@ -1983,12 +1982,12 @@ done:
 static herr_t
 H5AC__rsp__p0_only__flush_to_min_clean(H5F_t *f)
 {
-    H5AC_t *    cache_ptr;
+    H5AC_t     *cache_ptr;
     H5AC_aux_t *aux_ptr;
     hbool_t     evictions_enabled;
     herr_t      ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(f != NULL);
@@ -2098,7 +2097,7 @@ done:
 herr_t
 H5AC__run_sync_point(H5F_t *f, int sync_point_op)
 {
-    H5AC_t *    cache_ptr;
+    H5AC_t     *cache_ptr;
     H5AC_aux_t *aux_ptr;
     herr_t      ret_value = SUCCEED; /* Return value */
 
@@ -2237,7 +2236,7 @@ H5AC__tidy_cache_0_lists(H5AC_t *cache_ptr, unsigned num_candidates, haddr_t *ca
     H5AC_aux_t *aux_ptr;
     unsigned    u;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity checks */
     HDassert(cache_ptr != NULL);

@@ -64,9 +64,6 @@ static herr_t       H5HL__dirty(H5HL_t *heap);
 /* Package Variables */
 /*********************/
 
-/* Package initialization variable */
-hbool_t H5_PKG_INIT_VAR = FALSE;
-
 /* Declare a free list to manage the H5HL_free_t struct */
 H5FL_DEFINE(H5HL_free_t);
 
@@ -101,7 +98,7 @@ H5FL_BLK_DEFINE(lheap_chunk);
 herr_t
 H5HL_create(H5F_t *f, size_t size_hint, haddr_t *addr_p /*out*/)
 {
-    H5HL_t *     heap       = NULL; /* Heap created                 */
+    H5HL_t      *heap       = NULL; /* Heap created                 */
     H5HL_prfx_t *prfx       = NULL; /* Heap prefix                  */
     hsize_t      total_size = 0;    /* Total heap size on disk      */
     herr_t       ret_value  = SUCCEED;
@@ -198,7 +195,7 @@ H5HL__minimize_heap_space(H5F_t *f, H5HL_t *heap)
     size_t new_heap_size = heap->dblk_size; /* New size of heap */
     herr_t ret_value     = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check args */
     HDassert(f);
@@ -308,12 +305,12 @@ H5HL_t *
 H5HL_protect(H5F_t *f, haddr_t addr, unsigned flags)
 {
     H5HL_cache_prfx_ud_t prfx_udata;                /* User data for protecting local heap prefix       */
-    H5HL_prfx_t *        prfx = NULL;               /* Local heap prefix                                */
-    H5HL_dblk_t *        dblk = NULL;               /* Local heap data block                            */
-    H5HL_t *             heap = NULL;               /* Heap data structure                              */
+    H5HL_prfx_t         *prfx = NULL;               /* Local heap prefix                                */
+    H5HL_dblk_t         *dblk = NULL;               /* Local heap data block                            */
+    H5HL_t              *heap = NULL;               /* Heap data structure                              */
     unsigned prfx_cache_flags = H5AC__NO_FLAGS_SET; /* Cache flags for unprotecting prefix entry        */
     unsigned dblk_cache_flags = H5AC__NO_FLAGS_SET; /* Cache flags for unprotecting data block entry    */
-    H5HL_t * ret_value        = NULL;
+    H5HL_t  *ret_value        = NULL;
 
     FUNC_ENTER_NOAPI(NULL)
 
@@ -471,7 +468,7 @@ H5HL__remove_free(H5HL_t *heap, H5HL_free_t *fl)
 {
     H5HL_free_t *ret_value = NULL;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     if (fl->prev)
         fl->prev->next = fl->next;
@@ -504,7 +501,7 @@ H5HL__dirty(H5HL_t *heap)
 {
     herr_t ret_value = SUCCEED;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments */
     HDassert(heap);
@@ -897,10 +894,10 @@ done:
 herr_t
 H5HL_delete(H5F_t *f, haddr_t addr)
 {
-    H5HL_t *             heap = NULL;                      /* Local heap to delete */
+    H5HL_t              *heap = NULL;                      /* Local heap to delete */
     H5HL_cache_prfx_ud_t prfx_udata;                       /* User data for protecting local heap prefix */
-    H5HL_prfx_t *        prfx        = NULL;               /* Local heap prefix */
-    H5HL_dblk_t *        dblk        = NULL;               /* Local heap data block */
+    H5HL_prfx_t         *prfx        = NULL;               /* Local heap prefix */
+    H5HL_dblk_t         *dblk        = NULL;               /* Local heap data block */
     unsigned             cache_flags = H5AC__NO_FLAGS_SET; /* Flags for unprotecting heap */
     herr_t               ret_value   = SUCCEED;
 
@@ -962,8 +959,8 @@ herr_t
 H5HL_get_size(H5F_t *f, haddr_t addr, size_t *size)
 {
     H5HL_cache_prfx_ud_t prfx_udata;       /* User data for protecting local heap prefix */
-    H5HL_prfx_t *        prfx      = NULL; /* Local heap prefix */
-    H5HL_t *             heap      = NULL; /* Heap data structure */
+    H5HL_prfx_t         *prfx      = NULL; /* Local heap prefix */
+    H5HL_t              *heap      = NULL; /* Heap data structure */
     herr_t               ret_value = SUCCEED;
 
     FUNC_ENTER_NOAPI(FAIL)
@@ -1014,8 +1011,8 @@ herr_t
 H5HL_heapsize(H5F_t *f, haddr_t addr, hsize_t *heap_size)
 {
     H5HL_cache_prfx_ud_t prfx_udata;       /* User data for protecting local heap prefix */
-    H5HL_prfx_t *        prfx      = NULL; /* Local heap prefix */
-    H5HL_t *             heap      = NULL; /* Heap data structure */
+    H5HL_prfx_t         *prfx      = NULL; /* Local heap prefix */
+    H5HL_t              *heap      = NULL; /* Heap data structure */
     herr_t               ret_value = SUCCEED;
 
     FUNC_ENTER_NOAPI(FAIL)

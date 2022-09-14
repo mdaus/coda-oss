@@ -111,7 +111,7 @@ H5_checksum_fletcher32(const void *_data, size_t _len)
     HDassert(_len > 0);
 
     /* Compute checksum for pairs of bytes */
-    /* (the magic "360" value is is the largest number of sums that can be
+    /* (the magic "360" value is the largest number of sums that can be
      *  performed without numeric overflow)
      */
     while (len) {
@@ -159,7 +159,7 @@ H5__checksum_crc_make_table(void)
     uint32_t c;    /* Checksum for each byte value */
     unsigned n, k; /* Local index variables */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Compute the checksum for each possible byte value */
     for (n = 0; n < 256; n++) {
@@ -196,7 +196,7 @@ H5__checksum_crc_update(uint32_t crc, const uint8_t *buf, size_t len)
 {
     size_t n; /* Local index variable */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Initialize the CRC table if necessary */
     if (!H5_crc_table_computed)

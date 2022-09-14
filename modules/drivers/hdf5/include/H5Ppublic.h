@@ -3442,6 +3442,34 @@ H5_DLL const void *H5Pget_driver_info(hid_t plist_id);
 /**
  * \ingroup FAPL
  *
+ * \brief Retrieves a string representation of the configuration for
+ *        the driver set on the given FAPL. The returned string can
+ *        be used to configure the same driver in an identical way.
+ *
+ * \fapl_id
+ * \param[out] config_buf Driver configuration string output buffer
+ * \param[in]  buf_size Size of driver configuration string output buffer
+ *
+ * \return Returns the length of the driver configuration string on
+ *         success (not including the NUL terminator). Returns negative
+ *         on failure.
+ *
+ * \details H5Pget_driver_config_str() retrieves a string representation
+ *          of the configuration for the driver set on the given FAPL. The
+ *          returned string can be used to configure the same driver in
+ *          an identical way.
+ *
+ *          If \p config_buf is NULL, the length of the driver configuration
+ *          string is simply returned. The caller can then allocate a buffer
+ *          of the appropriate size and call this routine again.
+ *
+ * \version 1.12.1 Function publicized in this release.
+ *
+ */
+H5_DLL ssize_t H5Pget_driver_config_str(hid_t fapl_id, char *config_buf, size_t buf_size);
+/**
+ * \ingroup FAPL
+ *
  * \brief Retrieves the size of the external link open file cache
  *
  * \fapl_id{plist_id}
@@ -3723,7 +3751,7 @@ H5_DLL herr_t H5Pget_libver_bounds(hid_t plist_id, H5F_libver_t *low, H5F_libver
  * \since 1.8.0
  *
  */
-H5_DLL herr_t H5Pget_mdc_config(hid_t plist_id, H5AC_cache_config_t *config_ptr);
+H5_DLL herr_t H5Pget_mdc_config(hid_t plist_id, H5AC_cache_config_t *config_ptr); /* out */
 /**
  * \ingroup FAPL
  *
@@ -4275,6 +4303,57 @@ H5_DLL herr_t H5Pset_core_write_tracking(hid_t fapl_id, hbool_t is_enabled, size
  *
  */
 H5_DLL herr_t H5Pset_driver(hid_t plist_id, hid_t driver_id, const void *driver_info);
+/**
+ * \ingroup FAPL
+ *
+ * \brief Sets a file driver according to a given driver name
+ *
+ * \plist_id
+ * \param[in] driver_name   The new driver name
+ * \param[in] driver_config Optional string containing driver properties
+ *
+ * \return \herr_t
+ *
+ * \details H5Pset_driver_by_name() sets the file driver, by the name
+ *          driver_name, for a file access or data transfer property list,
+ *          \p plist_id, and supplies an optional string containing the
+ *          driver-specific properties, \p driver_config. The driver
+ *          properties string will be copied into the property list.
+ *
+ *          If the driver specified by \p driver_name is not currently
+ *          registered, an attempt will be made to load the driver as a
+ *          plugin.
+ *
+ * \version 1.12.1 Function publicized in this release.
+ *
+ */
+H5_DLL herr_t H5Pset_driver_by_name(hid_t plist_id, const char *driver_name, const char *driver_config);
+/**
+ * \ingroup FAPL
+ *
+ * \brief Sets a file driver according to a given driver value (ID).
+ *
+ * \plist_id
+ * \param[in] driver_value  The new driver value (ID)
+ * \param[in] driver_config Optional string containing driver properties
+ *
+ * \return \herr_t
+ *
+ * \details H5Pset_driver_by_value() sets the file driver, by the value
+ *          driver_value, for a file access or data transfer property list,
+ *          \p plist_id, and supplies an optional string containing the
+ *          driver-specific properties, \p driver_config. The driver
+ *          properties string will be copied into the property list.
+ *
+ *          If the driver specified by \p driver_value is not currently
+ *          registered, an attempt will be made to load the driver as a
+ *          plugin.
+ *
+ * \version 1.12.1 Function publicized in this release.
+ *
+ */
+H5_DLL herr_t H5Pset_driver_by_value(hid_t plist_id, H5FD_class_value_t driver_value,
+                                     const char *driver_config);
 /**
  * \ingroup FAPL
  *
@@ -5227,6 +5306,34 @@ H5_DLL herr_t H5Pset_small_data_block_size(hid_t fapl_id, hsize_t size);
  */
 H5_DLL herr_t H5Pset_vol(hid_t plist_id, hid_t new_vol_id, const void *new_vol_info);
 
+/**
+ * \ingroup FAPL
+ *
+ * \brief Query the capability flags for the VOL connector that will be used
+ *              with this file access property list (FAPL).
+ *
+ * \fapl_id{plist_id}
+ * \param[out]  cap_flags  Flags that indicate the VOL connector capabilities
+ *
+ * \return \herr_t
+ *
+ * \details H5Pget_vol_cap_flags() queries the current VOL connector information
+ *              for a FAPL to retrieve the capability flags for the VOL
+ *              connector stack, as will be used by a file open or create
+ *              operation that uses this FAPL.
+ *
+ * \note This routine supports the use of the HDF5_VOL_CONNECTOR environment
+ *       variable to override the VOL connector set programmatically for the
+ *       FAPL (with H5Pset_vol).
+ *
+ * \note The H5VL_CAP_FLAG_ASYNC flag can be checked to see if asynchronous
+ *              operations are supported by the VOL connector stack.
+ *
+ * \since 1.13.0
+ *
+ */
+H5_DLL herr_t H5Pget_vol_cap_flags(hid_t plist_id, unsigned *cap_flags);
+
 #ifdef H5_HAVE_PARALLEL
 /**
  * \ingroup GAPL
@@ -5673,6 +5780,9 @@ H5_DLL herr_t H5Pget_dset_no_attrs_hint(hid_t dcpl_id, hbool_t *minimize);
  *          external file name is not returned. If \p offset or \p size
  *          are null pointers then the corresponding information is not
  *          returned.
+ *
+ * \note On Windows, off_t is typically a 32-bit signed long value, which
+ *       limits the valid offset that can be returned to 2 GiB.
  *
  * \version 1.6.4 \p idx parameter type changed to unsigned.
  * \since 1.0.0
@@ -8052,6 +8162,44 @@ H5_DLL herr_t H5Pget_mpio_actual_io_mode(hid_t plist_id, H5D_mpio_actual_io_mode
 H5_DLL herr_t H5Pget_mpio_no_collective_cause(hid_t plist_id, uint32_t *local_no_collective_cause,
                                               uint32_t *global_no_collective_cause);
 #endif /* H5_HAVE_PARALLEL */
+/**
+ *
+ * \ingroup DXPL
+ *
+ * \brief Sets a hyperslab file selection for a dataset I/O operation
+ *
+ * \param[in] plist_id Property list identifier
+ * \param[in] rank     Number of dimensions of selection
+ * \param[in] op       Operation to perform on current selection
+ * \param[in] start    Offset of start of hyperslab
+ * \param[in] stride   Hyperslab stride
+ * \param[in] count    Number of blocks included in hyperslab
+ * \param[in] block    Size of block in hyperslab
+ *
+ * \return \herr_t
+ *
+ * \details H5Pset_dataset_io_hyperslab_selection() is designed to be used
+ *          in conjunction with using #H5S_PLIST for the file dataspace
+ *          ID when making a call to H5Dread() or H5Dwrite().  When used
+ *          with #H5S_PLIST, the selection created by one or more calls to
+ *          this routine is used for determining which dataset elements to
+ *          access.
+ *
+ *          \p rank is the dimensionality of the selection and determines
+ *          the size of the \p start, \p stride, \p count, and \p block arrays.
+ *          \p rank must be between 1 and #H5S_MAX_RANK, inclusive.
+ *
+ *          The \p op, \p start, \p stride, \p count, and \p block parameters
+ *          behave identically to their behavior for H5Sselect_hyperslab(),
+ *          please see the documentation for that routine for details about
+ *          their use.
+ *
+ * \since 1.13.0
+ *
+ */
+H5_DLL herr_t H5Pset_dataset_io_hyperslab_selection(hid_t plist_id, unsigned rank, H5S_seloper_t op,
+                                                    const hsize_t start[], const hsize_t stride[],
+                                                    const hsize_t count[], const hsize_t block[]);
 
 /* Link creation property list (LCPL) routines */
 /**

@@ -47,6 +47,15 @@
 /* Local Typedefs */
 /******************/
 
+/* Callback info for I/O operation when file driver
+ * wishes to do its own memory management
+ */
+typedef struct H5D_compact_iovv_memmanage_ud_t {
+    H5F_shared_t *f_sh;   /* Shared file for dataset */
+    void         *dstbuf; /* Pointer to buffer to be read into/written into */
+    const void   *srcbuf; /* Pointer to buffer to be read from/written from */
+} H5D_compact_iovv_memmanage_ud_t;
+
 /********************/
 /* Local Prototypes */
 /********************/
@@ -54,9 +63,9 @@
 /* Layout operation callbacks */
 static herr_t  H5D__compact_construct(H5F_t *f, H5D_t *dset);
 static hbool_t H5D__compact_is_space_alloc(const H5O_storage_t *storage);
-static herr_t  H5D__compact_io_init(const H5D_io_info_t *io_info, const H5D_type_info_t *type_info,
-                                    hsize_t nelmts, const H5S_t *file_space, const H5S_t *mem_space,
-                                    H5D_chunk_map_t *cm);
+static herr_t  H5D__compact_io_init(H5D_io_info_t *io_info, const H5D_type_info_t *type_info, hsize_t nelmts,
+                                    H5S_t *file_space, H5S_t *mem_space, H5D_chunk_map_t *cm);
+static herr_t  H5D__compact_iovv_memmanage_cb(hsize_t dst_off, hsize_t src_off, size_t len, void *_udata);
 static ssize_t H5D__compact_readvv(const H5D_io_info_t *io_info, size_t dset_max_nseq, size_t *dset_curr_seq,
                                    size_t dset_size_arr[], hsize_t dset_offset_arr[], size_t mem_max_nseq,
                                    size_t *mem_curr_seq, size_t mem_size_arr[], hsize_t mem_offset_arr[]);
@@ -167,7 +176,7 @@ H5D__compact_construct(H5F_t *f, H5D_t *dset)
     unsigned u;                   /* Local index variable */
     herr_t   ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(f);
@@ -216,7 +225,7 @@ done:
 static hbool_t
 H5D__compact_is_space_alloc(const H5O_storage_t H5_ATTR_UNUSED *storage)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity checks */
     HDassert(storage);
@@ -238,17 +247,59 @@ H5D__compact_is_space_alloc(const H5O_storage_t H5_ATTR_UNUSED *storage)
  *-------------------------------------------------------------------------
  */
 static herr_t
-H5D__compact_io_init(const H5D_io_info_t *io_info, const H5D_type_info_t H5_ATTR_UNUSED *type_info,
-                     hsize_t H5_ATTR_UNUSED nelmts, const H5S_t H5_ATTR_UNUSED *file_space,
-                     const H5S_t H5_ATTR_UNUSED *mem_space, H5D_chunk_map_t H5_ATTR_UNUSED *cm)
+H5D__compact_io_init(H5D_io_info_t *io_info, const H5D_type_info_t H5_ATTR_UNUSED *type_info,
+                     hsize_t H5_ATTR_UNUSED nelmts, H5S_t H5_ATTR_UNUSED *file_space,
+                     H5S_t H5_ATTR_UNUSED *mem_space, H5D_chunk_map_t H5_ATTR_UNUSED *cm)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     io_info->store->compact.buf   = io_info->dset->shared->layout.storage.u.compact.buf;
     io_info->store->compact.dirty = &io_info->dset->shared->layout.storage.u.compact.dirty;
 
     FUNC_LEAVE_NOAPI(SUCCEED)
 } /* end H5D__compact_io_init() */
+
+/*-------------------------------------------------------------------------
+ * Function:    H5D__compact_iovv_memmanage_cb
+ *
+ * Purpose:     Callback operator for H5D__compact_readvv()/_writevv() to
+ *              send a memory copy request to the underlying file driver.
+ *
+ * Return:      Non-negative on success/Negative on failure
+ *
+ *-------------------------------------------------------------------------
+ */
+static herr_t
+H5D__compact_iovv_memmanage_cb(hsize_t dst_off, hsize_t src_off, size_t len, void *_udata)
+{
+    H5D_compact_iovv_memmanage_ud_t *udata = (H5D_compact_iovv_memmanage_ud_t *)_udata;
+    H5FD_ctl_memcpy_args_t           op_args;
+    uint64_t                         op_flags;
+    H5FD_t                          *file_handle = NULL;
+    herr_t                           ret_value   = SUCCEED;
+
+    FUNC_ENTER_PACKAGE
+
+    /* Retrieve pointer to file driver structure for ctl call */
+    if (H5F_shared_get_file_driver(udata->f_sh, &file_handle) < 0)
+        HGOTO_ERROR(H5E_IO, H5E_CANTGET, FAIL, "can't get file handle")
+
+    /* Setup operation flags and arguments */
+    op_flags = H5FD_CTL_ROUTE_TO_TERMINAL_VFD_FLAG | H5FD_CTL_FAIL_IF_UNKNOWN_FLAG;
+
+    op_args.dstbuf  = udata->dstbuf;
+    op_args.dst_off = dst_off;
+    op_args.srcbuf  = udata->srcbuf;
+    op_args.src_off = src_off;
+    op_args.len     = len;
+
+    /* Make request to file driver */
+    if (H5FD_ctl(file_handle, H5FD_CTL_MEM_COPY, op_flags, &op_args, NULL) < 0)
+        HGOTO_ERROR(H5E_IO, H5E_FCNTL, FAIL, "VFD memcpy request failed")
+
+done:
+    FUNC_LEAVE_NOAPI(ret_value)
+} /* end H5D__compact_iovv_memmanage_cb() */
 
 /*-------------------------------------------------------------------------
  * Function:    H5D__compact_readvv
@@ -275,15 +326,32 @@ H5D__compact_readvv(const H5D_io_info_t *io_info, size_t dset_max_nseq, size_t *
 {
     ssize_t ret_value = -1; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(io_info);
 
-    /* Use the vectorized memory copy routine to do actual work */
-    if ((ret_value = H5VM_memcpyvv(io_info->u.rbuf, mem_max_nseq, mem_curr_seq, mem_size_arr, mem_offset_arr,
-                                   io_info->store->compact.buf, dset_max_nseq, dset_curr_seq, dset_size_arr,
-                                   dset_offset_arr)) < 0)
-        HGOTO_ERROR(H5E_IO, H5E_WRITEERROR, FAIL, "vectorized memcpy failed")
+    /* Check if file driver wishes to do its own memory management */
+    if (H5F_SHARED_HAS_FEATURE(io_info->f_sh, H5FD_FEAT_MEMMANAGE)) {
+        H5D_compact_iovv_memmanage_ud_t udata;
+
+        /* Set up udata for memory copy operation */
+        udata.f_sh   = io_info->f_sh;
+        udata.dstbuf = io_info->u.rbuf;
+        udata.srcbuf = io_info->store->compact.buf;
+
+        /* Request that file driver does the memory copy */
+        if ((ret_value = H5VM_opvv(mem_max_nseq, mem_curr_seq, mem_size_arr, mem_offset_arr, dset_max_nseq,
+                                   dset_curr_seq, dset_size_arr, dset_offset_arr,
+                                   H5D__compact_iovv_memmanage_cb, &udata)) < 0)
+            HGOTO_ERROR(H5E_IO, H5E_WRITEERROR, FAIL, "vectorized memcpy failed")
+    }
+    else {
+        /* Use the vectorized memory copy routine to do actual work */
+        if ((ret_value = H5VM_memcpyvv(io_info->u.rbuf, mem_max_nseq, mem_curr_seq, mem_size_arr,
+                                       mem_offset_arr, io_info->store->compact.buf, dset_max_nseq,
+                                       dset_curr_seq, dset_size_arr, dset_offset_arr)) < 0)
+            HGOTO_ERROR(H5E_IO, H5E_WRITEERROR, FAIL, "vectorized memcpy failed")
+    }
 
 done:
     FUNC_LEAVE_NOAPI(ret_value)
@@ -317,15 +385,32 @@ H5D__compact_writevv(const H5D_io_info_t *io_info, size_t dset_max_nseq, size_t 
 {
     ssize_t ret_value = -1; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     HDassert(io_info);
 
-    /* Use the vectorized memory copy routine to do actual work */
-    if ((ret_value = H5VM_memcpyvv(io_info->store->compact.buf, dset_max_nseq, dset_curr_seq, dset_size_arr,
-                                   dset_offset_arr, io_info->u.wbuf, mem_max_nseq, mem_curr_seq, mem_size_arr,
-                                   mem_offset_arr)) < 0)
-        HGOTO_ERROR(H5E_IO, H5E_WRITEERROR, FAIL, "vectorized memcpy failed")
+    /* Check if file driver wishes to do its own memory management */
+    if (H5F_SHARED_HAS_FEATURE(io_info->f_sh, H5FD_FEAT_MEMMANAGE)) {
+        H5D_compact_iovv_memmanage_ud_t udata;
+
+        /* Set up udata for memory copy operation */
+        udata.f_sh   = io_info->f_sh;
+        udata.dstbuf = io_info->store->compact.buf;
+        udata.srcbuf = io_info->u.wbuf;
+
+        /* Request that file driver does the memory copy */
+        if ((ret_value = H5VM_opvv(dset_max_nseq, dset_curr_seq, dset_size_arr, dset_offset_arr, mem_max_nseq,
+                                   mem_curr_seq, mem_size_arr, mem_offset_arr, H5D__compact_iovv_memmanage_cb,
+                                   &udata)) < 0)
+            HGOTO_ERROR(H5E_IO, H5E_WRITEERROR, FAIL, "vectorized memcpy failed")
+    }
+    else {
+        /* Use the vectorized memory copy routine to do actual work */
+        if ((ret_value = H5VM_memcpyvv(io_info->store->compact.buf, dset_max_nseq, dset_curr_seq,
+                                       dset_size_arr, dset_offset_arr, io_info->u.wbuf, mem_max_nseq,
+                                       mem_curr_seq, mem_size_arr, mem_offset_arr)) < 0)
+            HGOTO_ERROR(H5E_IO, H5E_WRITEERROR, FAIL, "vectorized memcpy failed")
+    }
 
     /* Mark the compact dataset's buffer as dirty */
     *io_info->store->compact.dirty = TRUE;
@@ -351,7 +436,7 @@ H5D__compact_flush(H5D_t *dset)
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(dset);
@@ -384,7 +469,7 @@ done:
 static herr_t
 H5D__compact_dest(H5D_t *dset)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     /* Sanity check */
     HDassert(dset);
@@ -414,9 +499,9 @@ H5D__compact_copy(H5F_t *f_src, H5O_storage_compact_t *_storage_src, H5F_t *f_ds
     hid_t         tid_src     = -1;   /* Datatype ID for source datatype */
     hid_t         tid_dst     = -1;   /* Datatype ID for destination datatype */
     hid_t         tid_mem     = -1;   /* Datatype ID for memory datatype */
-    void *        buf         = NULL; /* Buffer for copying data */
-    void *        bkg         = NULL; /* Temporary buffer for copying data */
-    void *        reclaim_buf = NULL; /* Buffer for reclaiming data */
+    void         *buf         = NULL; /* Buffer for copying data */
+    void         *bkg         = NULL; /* Temporary buffer for copying data */
+    void         *reclaim_buf = NULL; /* Buffer for reclaiming data */
     hid_t         buf_sid     = -1;   /* ID for buffer dataspace */
     H5D_shared_t *shared_fo =
         (H5D_shared_t *)cpy_info->shared_fo;           /* Pointer to the shared struct for dataset object */
@@ -444,9 +529,9 @@ H5D__compact_copy(H5F_t *f_src, H5O_storage_compact_t *_storage_src, H5F_t *f_ds
     /* If there's a VLEN source datatype, do type conversion information */
     if (H5T_detect_class(dt_src, H5T_VLEN, FALSE) > 0) {
         H5T_path_t *tpath_src_mem, *tpath_mem_dst; /* Datatype conversion paths */
-        H5T_t *     dt_dst;                        /* Destination datatype */
-        H5T_t *     dt_mem;                        /* Memory datatype */
-        H5S_t *     buf_space;                     /* Dataspace describing buffer */
+        H5T_t      *dt_dst;                        /* Destination datatype */
+        H5T_t      *dt_mem;                        /* Memory datatype */
+        H5S_t      *buf_space;                     /* Dataspace describing buffer */
         size_t      buf_size;                      /* Size of copy buffer */
         size_t      nelmts;                        /* Number of elements in buffer */
         size_t      src_dt_size;                   /* Source datatype size */
@@ -462,7 +547,7 @@ H5D__compact_copy(H5F_t *f_src, H5O_storage_compact_t *_storage_src, H5F_t *f_ds
             HGOTO_ERROR(H5E_DATATYPE, H5E_CANTREGISTER, FAIL, "unable to register memory datatype")
         } /* end if */
 
-        /* create variable-length datatype at the destinaton file */
+        /* create variable-length datatype at the destination file */
         if (NULL == (dt_dst = H5T_copy(dt_src, H5T_COPY_TRANSIENT)))
             HGOTO_ERROR(H5E_DATATYPE, H5E_CANTINIT, FAIL, "unable to copy")
         if (H5T_set_loc(dt_dst, H5F_VOL_OBJ(f_dst), H5T_LOC_DISK) < 0) {
@@ -507,7 +592,7 @@ H5D__compact_copy(H5F_t *f_src, H5O_storage_compact_t *_storage_src, H5F_t *f_ds
         /* Register */
         if ((buf_sid = H5I_register(H5I_DATASPACE, buf_space, FALSE)) < 0) {
             H5S_close(buf_space);
-            HGOTO_ERROR(H5E_ATOM, H5E_CANTREGISTER, FAIL, "unable to register dataspace ID")
+            HGOTO_ERROR(H5E_ID, H5E_CANTREGISTER, FAIL, "unable to register dataspace ID")
         } /* end if */
 
         /* Allocate memory for recclaim buf */

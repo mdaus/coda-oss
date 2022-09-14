@@ -40,7 +40,7 @@ typedef struct {
 /* User data for deleting a link in the link messages */
 typedef struct {
     /* downward */
-    H5F_t *     file;            /* File that object header is located within */
+    H5F_t      *file;            /* File that object header is located within */
     H5RS_str_t *grp_full_path_r; /* Full path for group of link */
     const char *name;            /* Link name to search for */
 } H5G_iter_rm_t;
@@ -52,7 +52,7 @@ typedef struct {
 
     /* upward */
     H5O_link_t *lnk;   /* Link struct to fill in */
-    hbool_t     found; /* Flag to indicate that the object was found */
+    hbool_t    *found; /* Pointer to flag to indicate that the object was found */
 } H5G_iter_lkp_t;
 
 /* Private macros */
@@ -80,10 +80,10 @@ static herr_t
 H5G__compact_build_table_cb(const void *_mesg, unsigned H5_ATTR_UNUSED idx, void *_udata)
 {
     const H5O_link_t *lnk       = (const H5O_link_t *)_mesg; /* Pointer to link */
-    H5G_iter_bt_t *   udata     = (H5G_iter_bt_t *)_udata;   /* 'User data' passed in */
+    H5G_iter_bt_t    *udata     = (H5G_iter_bt_t *)_udata;   /* 'User data' passed in */
     herr_t            ret_value = H5_ITER_CONT;              /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check arguments */
     HDassert(lnk);
@@ -121,7 +121,7 @@ H5G__compact_build_table(const H5O_loc_t *oloc, const H5O_linfo_t *linfo, H5_ind
 {
     herr_t ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity check */
     HDassert(oloc);
@@ -138,7 +138,7 @@ H5G__compact_build_table(const H5O_loc_t *oloc, const H5O_linfo_t *linfo, H5_ind
         H5O_mesg_operator_t op;    /* Message operator */
 
         /* Allocate the link table */
-        if ((ltable->lnks = (H5O_link_t *)H5MM_malloc(sizeof(H5O_link_t) * ltable->nlinks)) == NULL)
+        if ((ltable->lnks = (H5O_link_t *)H5MM_calloc(sizeof(H5O_link_t) * ltable->nlinks)) == NULL)
             HGOTO_ERROR(H5E_RESOURCE, H5E_NOSPACE, FAIL, "memory allocation failed")
 
         /* Set up user data for iteration */
@@ -200,20 +200,20 @@ done:
  *
  * Purpose:     Returns the name of objects in the group by giving index.
  *
- * Return:	Success:        Non-negative, length of name
- *		Failure:	Negative
+ * Return:	Non-negative on success/Negative on failure
  *
  * Programmer:	Quincey Koziol
  *	        Sep  6, 2005
  *
  *-------------------------------------------------------------------------
  */
-ssize_t
+herr_t
 H5G__compact_get_name_by_idx(const H5O_loc_t *oloc, const H5O_linfo_t *linfo, H5_index_t idx_type,
-                             H5_iter_order_t order, hsize_t idx, char *name, size_t size)
+                             H5_iter_order_t order, hsize_t idx, char *name, size_t name_size,
+                             size_t *name_len)
 {
     H5G_link_table_t ltable    = {0, NULL}; /* Link table */
-    ssize_t          ret_value = -1;        /* Return value */
+    herr_t           ret_value = SUCCEED;   /* Return value */
 
     FUNC_ENTER_PACKAGE
 
@@ -229,13 +229,13 @@ H5G__compact_get_name_by_idx(const H5O_loc_t *oloc, const H5O_linfo_t *linfo, H5
         HGOTO_ERROR(H5E_ARGS, H5E_BADVALUE, FAIL, "index out of bound")
 
     /* Get the length of the name */
-    ret_value = (ssize_t)HDstrlen(ltable.lnks[idx].name);
+    *name_len = HDstrlen(ltable.lnks[idx].name);
 
     /* Copy the name into the user's buffer, if given */
     if (name) {
-        HDstrncpy(name, ltable.lnks[idx].name, MIN((size_t)(ret_value + 1), size));
-        if ((size_t)ret_value >= size)
-            name[size - 1] = '\0';
+        HDstrncpy(name, ltable.lnks[idx].name, MIN((*name_len + 1), name_size));
+        if (*name_len >= name_size)
+            name[name_size - 1] = '\0';
     } /* end if */
 
 done:
@@ -263,10 +263,10 @@ static herr_t
 H5G__compact_remove_common_cb(const void *_mesg, unsigned H5_ATTR_UNUSED idx, void *_udata)
 {
     const H5O_link_t *lnk       = (const H5O_link_t *)_mesg; /* Pointer to link */
-    H5G_iter_rm_t *   udata     = (H5G_iter_rm_t *)_udata;   /* 'User data' passed in */
+    H5G_iter_rm_t    *udata     = (H5G_iter_rm_t *)_udata;   /* 'User data' passed in */
     herr_t            ret_value = H5_ITER_CONT;              /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check arguments */
     HDassert(lnk);
@@ -432,10 +432,10 @@ static herr_t
 H5G__compact_lookup_cb(const void *_mesg, unsigned H5_ATTR_UNUSED idx, void *_udata)
 {
     const H5O_link_t *lnk       = (const H5O_link_t *)_mesg; /* Pointer to link */
-    H5G_iter_lkp_t *  udata     = (H5G_iter_lkp_t *)_udata;  /* 'User data' passed in */
+    H5G_iter_lkp_t   *udata     = (H5G_iter_lkp_t *)_udata;  /* 'User data' passed in */
     herr_t            ret_value = H5_ITER_CONT;              /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* check arguments */
     HDassert(lnk);
@@ -450,7 +450,7 @@ H5G__compact_lookup_cb(const void *_mesg, unsigned H5_ATTR_UNUSED idx, void *_ud
         } /* end if */
 
         /* Indicate that the correct link was found */
-        udata->found = TRUE;
+        *udata->found = TRUE;
 
         /* Stop iteration now */
         HGOTO_DONE(H5_ITER_STOP)
@@ -472,32 +472,30 @@ done:
  *
  *-------------------------------------------------------------------------
  */
-htri_t
-H5G__compact_lookup(const H5O_loc_t *oloc, const char *name, H5O_link_t *lnk)
+herr_t
+H5G__compact_lookup(const H5O_loc_t *oloc, const char *name, hbool_t *found, H5O_link_t *lnk)
 {
-    H5G_iter_lkp_t      udata;            /* User data for iteration callback */
-    H5O_mesg_operator_t op;               /* Message operator */
-    htri_t              ret_value = FAIL; /* Return value */
+    H5G_iter_lkp_t      udata;               /* User data for iteration callback */
+    H5O_mesg_operator_t op;                  /* Message operator */
+    herr_t              ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_PACKAGE
 
     /* check arguments */
-    HDassert(lnk && oloc->file);
     HDassert(name && *name);
+    HDassert(found);
+    HDassert(lnk && oloc->file);
 
     /* Set up user data for iteration */
     udata.name  = name;
     udata.lnk   = lnk;
-    udata.found = FALSE;
+    udata.found = found;
 
     /* Iterate through the link messages, adding them to the table */
     op.op_type  = H5O_MESG_OP_APP;
     op.u.app_op = H5G__compact_lookup_cb;
     if (H5O_msg_iterate(oloc, H5O_LINK_ID, &op, &udata) < 0)
         HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "error iterating over link messages")
-
-    /* Determine if we found the link we were looking for */
-    ret_value = (htri_t)udata.found;
 
 done:
     FUNC_LEAVE_NOAPI(ret_value)

@@ -53,12 +53,6 @@ typedef struct {
     H5G_loc_t *loc; /* Group location to set */
 } H5G_loc_fnd_t;
 
-/* User data for checking if an object exists */
-typedef struct {
-    /* upward */
-    htri_t exists; /* Whether the object exists */
-} H5G_loc_exists_t;
-
 /* User data for looking up an object in a group by index */
 typedef struct {
     /* downward */
@@ -99,11 +93,11 @@ typedef struct {
 /* User data for getting an object's comment in a group */
 typedef struct {
     /* downward */
-    char * comment; /* Object comment buffer */
+    char  *comment; /* Object comment buffer */
     size_t bufsize; /* Size of object comment buffer */
 
     /* upward */
-    ssize_t comment_size; /* Actual size of object comment */
+    size_t comment_size; /* Actual size of object comment */
 } H5G_loc_gc_t;
 
 /********************/
@@ -235,6 +229,9 @@ H5G_loc_real(void *obj, H5I_type_t type, H5G_loc_t *loc)
             HGOTO_ERROR(H5E_ARGS, H5E_BADVALUE, FAIL,
                         "unable to get group location of a dataspace selection iterator")
 
+        case H5I_EVENTSET:
+            HGOTO_ERROR(H5E_ARGS, H5E_BADVALUE, FAIL, "unable to get group location of a event set")
+
         case H5I_UNINIT:
         case H5I_BADID:
         case H5I_NTYPES:
@@ -258,7 +255,7 @@ done:
 herr_t
 H5G_loc(hid_t loc_id, H5G_loc_t *loc)
 {
-    void * obj       = NULL;    /* VOL object   */
+    void  *obj       = NULL;    /* VOL object   */
     herr_t ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
@@ -392,7 +389,7 @@ H5G__loc_find_cb(H5G_loc_t H5_ATTR_UNUSED *grp_loc /*in*/, const char *name,
     H5G_loc_fnd_t *udata     = (H5G_loc_fnd_t *)_udata; /* User data passed in */
     herr_t         ret_value = SUCCEED;                 /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check if the name in this group resolved to a valid object */
     if (obj_loc == NULL)
@@ -470,7 +467,7 @@ H5G__loc_find_by_idx_cb(H5G_loc_t H5_ATTR_UNUSED *grp_loc /*in*/, const char H5_
     hbool_t        obj_exists    = FALSE;           /* Whether the object exists (unused) */
     herr_t         ret_value     = SUCCEED;         /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check if the name in this group resolved to a valid link */
     if (obj_loc == NULL)
@@ -562,8 +559,7 @@ done:
  *-------------------------------------------------------------------------
  */
 herr_t
-H5G__loc_insert(H5G_loc_t *grp_loc, const char *name, H5G_loc_t *obj_loc, H5O_type_t obj_type,
-                const void *crt_info)
+H5G__loc_insert(H5G_loc_t *grp_loc, char *name, H5G_loc_t *obj_loc, H5O_type_t obj_type, const void *crt_info)
 {
     H5O_link_t lnk;                 /* Link for object to insert */
     herr_t     ret_value = SUCCEED; /* Return value */
@@ -580,9 +576,8 @@ H5G__loc_insert(H5G_loc_t *grp_loc, const char *name, H5G_loc_t *obj_loc, H5O_ty
     lnk.cset         = H5F_DEFAULT_CSET;
     lnk.corder       = 0;     /* Will be reset if the group is tracking creation order */
     lnk.corder_valid = FALSE; /* Indicate that the creation order isn't valid (yet) */
-    /* Casting away const OK -QAK */
-    lnk.name        = (char *)name;
-    lnk.u.hard.addr = obj_loc->oloc->addr;
+    lnk.name         = name;
+    lnk.u.hard.addr  = obj_loc->oloc->addr;
 
     /* Insert new group into current group's symbol table */
     if (H5G_obj_insert(grp_loc->oloc, name, &lnk, TRUE, obj_type, crt_info) < 0)
@@ -613,24 +608,26 @@ H5G__loc_exists_cb(H5G_loc_t H5_ATTR_UNUSED *grp_loc /*in*/, const char H5_ATTR_
                    const H5O_link_t H5_ATTR_UNUSED *lnk, H5G_loc_t *obj_loc, void *_udata /*in,out*/,
                    H5G_own_loc_t *own_loc /*out*/)
 {
-    H5G_loc_exists_t *udata = (H5G_loc_exists_t *)_udata; /* User data passed in */
+    hbool_t *exists    = (hbool_t *)_udata; /* User data passed in */
+    herr_t   ret_value = SUCCEED;           /* Return value */
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE
 
     /* Check if the name in this group resolved to a valid object */
     if (obj_loc == NULL)
         if (lnk)
-            udata->exists = FALSE;
+            *exists = FALSE;
         else
-            udata->exists = FAIL;
+            HGOTO_ERROR(H5E_SYM, H5E_INTERNAL, FAIL, "no object or link info?")
     else
-        udata->exists = TRUE;
+        *exists = TRUE;
 
     /* Indicate that this callback didn't take ownership of the group *
      * location for the object */
     *own_loc = H5G_OWN_NONE;
 
-    FUNC_LEAVE_NOAPI(SUCCEED)
+done:
+    FUNC_LEAVE_NOAPI(ret_value)
 } /* end H5G__loc_exists_cb() */
 
 /*-------------------------------------------------------------------------
@@ -646,27 +643,21 @@ H5G__loc_exists_cb(H5G_loc_t H5_ATTR_UNUSED *grp_loc /*in*/, const char H5_ATTR_
  *
  *-------------------------------------------------------------------------
  */
-htri_t
-H5G_loc_exists(const H5G_loc_t *loc, const char *name)
+herr_t
+H5G_loc_exists(const H5G_loc_t *loc, const char *name, hbool_t *exists)
 {
-    H5G_loc_exists_t udata;            /* User data for traversal callback */
-    htri_t           ret_value = FAIL; /* Return value */
+    herr_t ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
 
     /* Check args. */
     HDassert(loc);
     HDassert(name && *name);
-
-    /* Set up user data for locating object */
-    udata.exists = FALSE;
+    HDassert(exists);
 
     /* Traverse group hierarchy to locate object */
-    if (H5G_traverse(loc, name, H5G_TARGET_EXISTS, H5G__loc_exists_cb, &udata) < 0)
+    if (H5G_traverse(loc, name, H5G_TARGET_EXISTS, H5G__loc_exists_cb, exists) < 0)
         HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "can't check if object exists")
-
-    /* Set return value */
-    ret_value = udata.exists;
 
 done:
     FUNC_LEAVE_NOAPI(ret_value)
@@ -692,7 +683,7 @@ H5G__loc_addr_cb(H5G_loc_t H5_ATTR_UNUSED *grp_loc /*in*/, const char H5_ATTR_UN
     haddr_t *udata     = (haddr_t *)_udata; /* User data passed in */
     herr_t   ret_value = SUCCEED;           /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check if the name in this group resolved to a valid link */
     if (obj_loc == NULL)
@@ -762,7 +753,7 @@ H5G__loc_info_cb(H5G_loc_t H5_ATTR_UNUSED *grp_loc /*in*/, const char H5_ATTR_UN
     H5G_loc_info_t *udata     = (H5G_loc_info_t *)_udata; /* User data passed in */
     herr_t          ret_value = SUCCEED;                  /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check if the name in this group resolved to a valid link */
     if (obj_loc == NULL)
@@ -838,7 +829,7 @@ H5G__loc_native_info_cb(H5G_loc_t H5_ATTR_UNUSED *grp_loc /*in*/, const char H5_
     H5G_loc_native_info_t *udata     = (H5G_loc_native_info_t *)_udata; /* User data passed in */
     herr_t                 ret_value = SUCCEED;                         /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check if the name in this group resolved to a valid link */
     if (obj_loc == NULL)
@@ -911,12 +902,12 @@ H5G__loc_set_comment_cb(H5G_loc_t H5_ATTR_UNUSED *grp_loc /*in*/, const char H5_
                         const H5O_link_t H5_ATTR_UNUSED *lnk, H5G_loc_t *obj_loc, void *_udata /*in,out*/,
                         H5G_own_loc_t *own_loc /*out*/)
 {
-    H5G_loc_sc_t *udata = (H5G_loc_sc_t *)_udata; /* User data passed in */
-    H5O_name_t    comment;                        /* Object header "comment" message */
-    htri_t        exists;                         /* Whether a "comment" message already exists */
-    herr_t        ret_value = SUCCEED;            /* Return value */
+    H5G_loc_sc_t *udata   = (H5G_loc_sc_t *)_udata; /* User data passed in */
+    H5O_name_t    comment = {0};                    /* Object header "comment" message */
+    htri_t        exists;                           /* Whether a "comment" message already exists */
+    herr_t        ret_value = SUCCEED;              /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check if the name in this group resolved to a valid link */
     if (obj_loc == NULL)
@@ -934,13 +925,15 @@ H5G__loc_set_comment_cb(H5G_loc_t H5_ATTR_UNUSED *grp_loc /*in*/, const char H5_
 
     /* Add the new message */
     if (udata->comment && *udata->comment) {
-        /* Casting away const OK -QAK */
-        comment.s = (char *)udata->comment;
+        if (NULL == (comment.s = HDstrdup(udata->comment)))
+            HGOTO_ERROR(H5E_RESOURCE, H5E_CANTALLOC, FAIL, "can't copy group comment")
         if (H5O_msg_create(obj_loc->oloc, H5O_NAME_ID, 0, H5O_UPDATE_TIME, &comment) < 0)
             HGOTO_ERROR(H5E_OHDR, H5E_CANTINIT, FAIL, "unable to set comment object header message")
     } /* end if */
 
 done:
+    HDfree(comment.s);
+
     /* Indicate that this callback didn't take ownership of the group *
      * location for the object */
     *own_loc = H5G_OWN_NONE;
@@ -1005,7 +998,7 @@ H5G__loc_get_comment_cb(H5G_loc_t H5_ATTR_UNUSED *grp_loc /*in*/, const char H5_
     H5O_name_t    comment;                        /* Object header "comment" message */
     herr_t        ret_value = SUCCEED;            /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check if the name in this group resolved to a valid link */
     if (obj_loc == NULL)
@@ -1021,7 +1014,7 @@ H5G__loc_get_comment_cb(H5G_loc_t H5_ATTR_UNUSED *grp_loc /*in*/, const char H5_
     else {
         if (udata->comment && udata->bufsize)
             HDstrncpy(udata->comment, comment.s, udata->bufsize);
-        udata->comment_size = (ssize_t)HDstrlen(comment.s);
+        udata->comment_size = HDstrlen(comment.s);
         H5O_msg_reset(H5O_NAME_ID, &comment);
     }
 
@@ -1040,22 +1033,19 @@ done:
  * Purpose:	Retrieve the information for an object from a group location
  *              and path to that object
  *
- * Return:	Success:	Number of bytes in the comment excluding the
- *				null terminator.  Zero if the object has no
- *				comment.
- *
- *		Failure:	Negative
+ * Return:	Non-negative on success/Negative on failure
  *
  * Programmer:	Quincey Koziol
  *		Thursday, August 30, 2007
  *
  *-------------------------------------------------------------------------
  */
-ssize_t
-H5G_loc_get_comment(const H5G_loc_t *loc, const char *name, char *comment /*out*/, size_t bufsize)
+herr_t
+H5G_loc_get_comment(const H5G_loc_t *loc, const char *name, char *comment /*out*/, size_t bufsize,
+                    size_t *comment_len)
 {
-    H5G_loc_gc_t udata;          /* User data for traversal callback */
-    ssize_t      ret_value = -1; /* Return value */
+    H5G_loc_gc_t udata;               /* User data for traversal callback */
+    herr_t       ret_value = SUCCEED; /* Return value */
 
     FUNC_ENTER_NOAPI(FAIL)
 
@@ -1066,14 +1056,15 @@ H5G_loc_get_comment(const H5G_loc_t *loc, const char *name, char *comment /*out*
     /* Set up user data for locating object */
     udata.comment      = comment;
     udata.bufsize      = bufsize;
-    udata.comment_size = (-1);
+    udata.comment_size = 0;
 
     /* Traverse group hierarchy to locate object */
     if (H5G_traverse(loc, name, H5G_TARGET_NORMAL, H5G__loc_get_comment_cb, &udata) < 0)
         HGOTO_ERROR(H5E_SYM, H5E_NOTFOUND, FAIL, "can't find object")
 
-    /* Set the return value */
-    ret_value = udata.comment_size;
+    /* Set value to return */
+    if (comment_len)
+        *comment_len = udata.comment_size;
 
 done:
     FUNC_LEAVE_NOAPI(ret_value)

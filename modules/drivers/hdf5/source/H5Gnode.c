@@ -70,12 +70,12 @@ typedef struct H5G_node_key_t {
 /********************/
 
 /* B-tree callbacks */
-static H5UC_t *  H5G__node_get_shared(const H5F_t *f, const void *_udata);
+static H5UC_t   *H5G__node_get_shared(const H5F_t *f, const void *_udata);
 static herr_t    H5G__node_create(H5F_t *f, H5B_ins_t op, void *_lt_key, void *_udata, void *_rt_key,
                                   haddr_t *addr_p /*out*/);
 static int       H5G__node_cmp2(void *_lt_key, void *_udata, void *_rt_key);
 static int       H5G__node_cmp3(void *_lt_key, void *_udata, void *_rt_key);
-static htri_t    H5G__node_found(H5F_t *f, haddr_t addr, const void *_lt_key, void *_udata);
+static herr_t    H5G__node_found(H5F_t *f, haddr_t addr, const void *_lt_key, hbool_t *found, void *_udata);
 static H5B_ins_t H5G__node_insert(H5F_t *f, haddr_t addr, void *_lt_key, hbool_t *lt_key_changed,
                                   void *_md_key, void *_udata, void *_rt_key, hbool_t *rt_key_changed,
                                   haddr_t *new_node_p /*out*/);
@@ -139,7 +139,7 @@ H5FL_SEQ_DEFINE(H5G_entry_t);
 static H5UC_t *
 H5G__node_get_shared(const H5F_t *f, const void H5_ATTR_UNUSED *_udata)
 {
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(f);
 
@@ -164,7 +164,7 @@ H5G__node_decode_key(const H5B_shared_t *shared, const uint8_t *raw, void *_key)
 {
     H5G_node_key_t *key = (H5G_node_key_t *)_key;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(shared);
     HDassert(raw);
@@ -192,7 +192,7 @@ H5G__node_encode_key(const H5B_shared_t *shared, uint8_t *raw, const void *_key)
 {
     const H5G_node_key_t *key = (const H5G_node_key_t *)_key;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(shared);
     HDassert(raw);
@@ -218,10 +218,10 @@ H5G__node_encode_key(const H5B_shared_t *shared, uint8_t *raw, const void *_key)
 static herr_t
 H5G__node_debug_key(FILE *stream, int indent, int fwidth, const void *_key, const void *_udata)
 {
-    const H5G_node_key_t * key   = (const H5G_node_key_t *)_key;
+    const H5G_node_key_t  *key   = (const H5G_node_key_t *)_key;
     const H5G_bt_common_t *udata = (const H5G_bt_common_t *)_udata;
 
-    FUNC_ENTER_STATIC_NOERR
+    FUNC_ENTER_PACKAGE_NOERR
 
     HDassert(key);
 
@@ -297,10 +297,10 @@ H5G__node_create(H5F_t *f, H5B_ins_t H5_ATTR_UNUSED op, void *_lt_key, void H5_A
 {
     H5G_node_key_t *lt_key    = (H5G_node_key_t *)_lt_key;
     H5G_node_key_t *rt_key    = (H5G_node_key_t *)_rt_key;
-    H5G_node_t *    sym       = NULL;
+    H5G_node_t     *sym       = NULL;
     herr_t          ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -365,12 +365,12 @@ static herr_t
 H5G__node_cmp2(void *_lt_key, void *_udata, void *_rt_key)
 {
     H5G_bt_common_t *udata  = (H5G_bt_common_t *)_udata;
-    H5G_node_key_t * lt_key = (H5G_node_key_t *)_lt_key;
-    H5G_node_key_t * rt_key = (H5G_node_key_t *)_rt_key;
-    const char *     s1, *s2;
+    H5G_node_key_t  *lt_key = (H5G_node_key_t *)_lt_key;
+    H5G_node_key_t  *rt_key = (H5G_node_key_t *)_rt_key;
+    const char      *s1, *s2;
     int              ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(udata && udata->heap);
@@ -418,12 +418,12 @@ static herr_t
 H5G__node_cmp3(void *_lt_key, void *_udata, void *_rt_key)
 {
     H5G_bt_common_t *udata  = (H5G_bt_common_t *)_udata;
-    H5G_node_key_t * lt_key = (H5G_node_key_t *)_lt_key;
-    H5G_node_key_t * rt_key = (H5G_node_key_t *)_rt_key;
-    const char *     s;
+    H5G_node_key_t  *lt_key = (H5G_node_key_t *)_lt_key;
+    H5G_node_key_t  *rt_key = (H5G_node_key_t *)_rt_key;
+    const char      *s;
     herr_t           ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Sanity checks */
     HDassert(udata && udata->heap);
@@ -463,8 +463,7 @@ done:
  *              UDATA entry field to the symbol table.
  *
  * Return:      Success:    Non-negative (TRUE/FALSE) if found and data
- *                          returned through the UDATA pointer.
- *
+ *                          returned through the UDATA pointer, if *FOUND is true.
  *              Failure:    Negative if not found.
  *
  * Programmer:  Robb Matzke
@@ -472,23 +471,24 @@ done:
  *
  *-------------------------------------------------------------------------
  */
-static htri_t
-H5G__node_found(H5F_t *f, haddr_t addr, const void H5_ATTR_UNUSED *_lt_key, void *_udata)
+static herr_t
+H5G__node_found(H5F_t *f, haddr_t addr, const void H5_ATTR_UNUSED *_lt_key, hbool_t *found, void *_udata)
 {
     H5G_bt_lkp_t *udata = (H5G_bt_lkp_t *)_udata;
-    H5G_node_t *  sn    = NULL;
+    H5G_node_t   *sn    = NULL;
     unsigned      lt = 0, idx = 0, rt;
     int           cmp = 1;
-    const char *  s;
-    htri_t        ret_value = TRUE; /* Return value */
+    const char   *s;
+    herr_t        ret_value = SUCCEED; /* Return value */
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
      */
     HDassert(f);
     HDassert(H5F_addr_defined(addr));
+    HDassert(found);
     HDassert(udata && udata->common.heap);
 
     /*
@@ -515,11 +515,15 @@ H5G__node_found(H5F_t *f, haddr_t addr, const void H5_ATTR_UNUSED *_lt_key, void
     } /* end while */
 
     if (cmp)
-        HGOTO_DONE(FALSE)
+        *found = FALSE;
+    else {
+        /* Set the 'found it' flag */
+        *found = TRUE;
 
-    /* Call user's callback operator */
-    if ((udata->op)(&sn->entry[idx], udata->op_data) < 0)
-        HGOTO_ERROR(H5E_SYM, H5E_BADITER, FAIL, "iterator callback failed")
+        /* Call user's callback operator */
+        if ((udata->op)(&sn->entry[idx], udata->op_data) < 0)
+            HGOTO_ERROR(H5E_SYM, H5E_BADITER, FAIL, "iterator callback failed")
+    } /* end else */
 
 done:
     if (sn && H5AC_unprotect(f, H5AC_SNODE, addr, sn, H5AC__NO_FLAGS_SET) < 0)
@@ -565,17 +569,17 @@ H5G__node_insert(H5F_t *f, haddr_t addr, void H5_ATTR_UNUSED *_lt_key, hbool_t H
 {
     H5G_node_key_t *md_key = (H5G_node_key_t *)_md_key;
     H5G_node_key_t *rt_key = (H5G_node_key_t *)_rt_key;
-    H5G_bt_ins_t *  udata  = (H5G_bt_ins_t *)_udata;
-    H5G_node_t *    sn = NULL, *snrt = NULL;
+    H5G_bt_ins_t   *udata  = (H5G_bt_ins_t *)_udata;
+    H5G_node_t     *sn = NULL, *snrt = NULL;
     unsigned        sn_flags = H5AC__NO_FLAGS_SET, snrt_flags = H5AC__NO_FLAGS_SET;
-    const char *    s;
+    const char     *s;
     unsigned        lt  = 0, rt; /* Binary search cntrs	*/
     int             cmp = 1, idx = -1;
-    H5G_node_t *    insert_into = NULL; /*node that gets new entry*/
+    H5G_node_t     *insert_into = NULL; /*node that gets new entry*/
     H5G_entry_t     ent;                /* Entry to insert in node */
     H5B_ins_t       ret_value = H5B_INS_ERROR;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /*
      * Check arguments.
@@ -726,14 +730,14 @@ H5G__node_remove(H5F_t *f, haddr_t addr, void H5_ATTR_NDEBUG_UNUSED *_lt_key /*i
                  void *_rt_key /*in,out*/, hbool_t *rt_key_changed /*out*/)
 {
     H5G_node_key_t *rt_key   = (H5G_node_key_t *)_rt_key;
-    H5G_bt_rm_t *   udata    = (H5G_bt_rm_t *)_udata;
-    H5G_node_t *    sn       = NULL;
+    H5G_bt_rm_t    *udata    = (H5G_bt_rm_t *)_udata;
+    H5G_node_t     *sn       = NULL;
     unsigned        sn_flags = H5AC__NO_FLAGS_SET;
     unsigned        lt = 0, rt, idx = 0;
     int             cmp       = 1;
     H5B_ins_t       ret_value = H5B_INS_ERROR;
 
-    FUNC_ENTER_STATIC
+    FUNC_ENTER_PACKAGE
 
     /* Check arguments */
     HDassert(f);
@@ -922,8 +926,8 @@ H5G__node_iterate(H5F_t *f, const void H5_ATTR_UNUSED *_lt_key, haddr_t addr,
                   const void H5_ATTR_UNUSED *_rt_key, void *_udata)
 {
     H5G_bt_it_it_t *udata = (H5G_bt_it_it_t *)_udata;
-    H5G_node_t *    sn    = NULL;
-    H5G_entry_t *   ents; /* Pointer to entries in this node */
+    H5G_node_t     *sn    = NULL;
+    H5G_entry_t    *ents; /* Pointer to entries in this node */
     unsigned        u;    /* Local index variable */
     int             ret_value = H5_ITER_CONT;
 
@@ -1000,7 +1004,7 @@ int
 H5G__node_sumup(H5F_t *f, const void H5_ATTR_UNUSED *_lt_key, haddr_t addr,
                 const void H5_ATTR_UNUSED *_rt_key, void *_udata)
 {
-    hsize_t *   num_objs  = (hsize_t *)_udata;
+    hsize_t    *num_objs  = (hsize_t *)_udata;
     H5G_node_t *sn        = NULL;
     int         ret_value = H5_ITER_CONT;
 
@@ -1045,7 +1049,7 @@ H5G__node_by_idx(H5F_t *f, const void H5_ATTR_UNUSED *_lt_key, haddr_t addr,
                  const void H5_ATTR_UNUSED *_rt_key, void *_udata)
 {
     H5G_bt_it_idx_common_t *udata     = (H5G_bt_it_idx_common_t *)_udata;
-    H5G_node_t *            sn        = NULL;
+    H5G_node_t             *sn        = NULL;
     int                     ret_value = H5_ITER_CONT;
 
     FUNC_ENTER_PACKAGE
@@ -1179,9 +1183,9 @@ H5G__node_copy(H5F_t *f, const void H5_ATTR_UNUSED *_lt_key, haddr_t addr, const
 {
     H5G_bt_it_cpy_t *udata    = (H5G_bt_it_cpy_t *)_udata;
     const H5O_loc_t *src_oloc = udata->src_oloc;
-    H5O_copy_t *     cpy_info = udata->cpy_info;
-    H5HL_t *         heap     = NULL;
-    H5G_node_t *     sn       = NULL;
+    H5O_copy_t      *cpy_info = udata->cpy_info;
+    H5HL_t          *heap     = NULL;
+    H5G_node_t      *sn       = NULL;
     unsigned int     i; /* Local index variable */
     int              ret_value = H5_ITER_CONT;
 
@@ -1205,7 +1209,7 @@ H5G__node_copy(H5F_t *f, const void H5_ATTR_UNUSED *_lt_key, haddr_t addr, const
         H5G_entry_t *src_ent =
             &(sn->entry[i]);             /* Convenience variable to refer to current source group entry */
         H5O_link_t          lnk;         /* Link to insert */
-        const char *        name;        /* Name of source object */
+        const char         *name;        /* Name of source object */
         H5G_entry_t         tmp_src_ent; /* Temporary copy. Change will not affect the cache */
         H5O_type_t          obj_type = H5O_TYPE_UNKNOWN; /* Target object type */
         H5G_copy_file_ud_t *cpy_udata;                   /* Copy file udata */
@@ -1216,7 +1220,7 @@ H5G__node_copy(H5F_t *f, const void H5_ATTR_UNUSED *_lt_key, haddr_t addr, const
             haddr_t    obj_addr;  /* Address of object pointed to by soft link */
             H5G_loc_t  grp_loc;   /* Group location holding soft link */
             H5G_name_t grp_path;  /* Path for group holding soft link */
-            char *     link_name; /* Pointer to value of soft link */
+            char      *link_name; /* Pointer to value of soft link */
 
             /* Make a temporary copy, so that it will not change the info in the cache */
             H5MM_memcpy(&tmp_src_ent, src_ent, sizeof(H5G_entry_t));
@@ -1224,7 +1228,9 @@ H5G__node_copy(H5F_t *f, const void H5_ATTR_UNUSED *_lt_key, haddr_t addr, const
             /* Set up group location for soft link to start in */
             H5G_name_reset(&grp_path);
             grp_loc.path = &grp_path;
+            H5_GCC_CLANG_DIAG_OFF("cast-qual")
             grp_loc.oloc = (H5O_loc_t *)src_oloc;
+            H5_GCC_CLANG_DIAG_ON("cast-qual")
 
             /* Get pointer to link value in local heap */
             if ((link_name = (char *)H5HL_offset_into(heap, tmp_src_ent.cache.slink.lval_offset)) == NULL)
@@ -1335,7 +1341,7 @@ H5G__node_build_table(H5F_t *f, const void H5_ATTR_UNUSED *_lt_key, haddr_t addr
                       const void H5_ATTR_UNUSED *_rt_key, void *_udata)
 {
     H5G_bt_it_bt_t *udata = (H5G_bt_it_bt_t *)_udata;
-    H5G_node_t *    sn    = NULL; /* Symbol table node */
+    H5G_node_t     *sn    = NULL; /* Symbol table node */
     unsigned        u;            /* Local index variable */
     int             ret_value = H5_ITER_CONT;
 
@@ -1358,7 +1364,7 @@ H5G__node_build_table(H5F_t *f, const void H5_ATTR_UNUSED *_lt_key, haddr_t addr
     /* Check if the link table needs to be extended */
     if ((udata->ltable->nlinks + sn->nsyms) >= udata->alloc_nlinks) {
         size_t      na = MAX((udata->ltable->nlinks + sn->nsyms),
-                        (udata->alloc_nlinks * 2)); /* Double # of links allocated */
+                             (udata->alloc_nlinks * 2)); /* Double # of links allocated */
         H5O_link_t *x;                                   /* Pointer to larger array of links */
 
         /* Re-allocate the link table */
@@ -1440,7 +1446,7 @@ herr_t
 H5G_node_debug(H5F_t *f, haddr_t addr, FILE *stream, int indent, int fwidth, haddr_t heap_addr)
 {
     H5G_node_t *sn   = NULL;
-    H5HL_t *    heap = NULL;
+    H5HL_t     *heap = NULL;
     unsigned    u;                   /* Local index variable */
     herr_t      ret_value = SUCCEED; /* Return value */
 

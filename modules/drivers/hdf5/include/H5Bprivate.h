@@ -90,9 +90,9 @@ typedef struct H5B_shared_t {
     size_t                    sizeof_keys;  /* Size of native (memory) key node  */
     size_t                    sizeof_addr;  /* Size of file address (in bytes)   */
     size_t                    sizeof_len;   /* Size of file lengths (in bytes)   */
-    uint8_t *                 page;         /* Disk page */
-    size_t *                  nkey;         /* Offsets of each native key in native key buffer */
-    void *                    udata;        /* 'Local' info for a B-tree         */
+    uint8_t                  *page;         /* Disk page */
+    size_t                   *nkey;         /* Offsets of each native key in native key buffer */
+    void                     *udata;        /* 'Local' info for a B-tree         */
 } H5B_shared_t;
 
 /*
@@ -110,7 +110,7 @@ typedef struct H5B_class_t {
     herr_t (*new_node)(H5F_t *, H5B_ins_t, void *, void *, void *, haddr_t *);
     int (*cmp2)(void *, void *, void *); /*compare 2 keys */
     int (*cmp3)(void *, void *, void *); /*compare 3 keys */
-    htri_t (*found)(H5F_t *, haddr_t, const void *, void *);
+    htri_t (*found)(H5F_t *, haddr_t, const void *, hbool_t *, void *);
 
     /* insert new data */
     H5B_ins_t (*insert)(H5F_t *, haddr_t, void *, hbool_t *, void *, void *, void *, hbool_t *, haddr_t *);
@@ -145,7 +145,7 @@ typedef struct H5B_info_t {
 /* Library-private Function Prototypes */
 /***************************************/
 H5_DLL herr_t H5B_create(H5F_t *f, const H5B_class_t *type, void *udata, haddr_t *addr_p /*out*/);
-H5_DLL herr_t H5B_find(H5F_t *f, const H5B_class_t *type, haddr_t addr, void *udata);
+H5_DLL herr_t H5B_find(H5F_t *f, const H5B_class_t *type, haddr_t addr, hbool_t *found, void *udata);
 H5_DLL herr_t H5B_insert(H5F_t *f, const H5B_class_t *type, haddr_t addr, void *udata);
 H5_DLL herr_t H5B_iterate(H5F_t *f, const H5B_class_t *type, haddr_t addr, H5B_operator_t op, void *udata);
 H5_DLL herr_t H5B_get_info(H5F_t *f, const H5B_class_t *type, haddr_t addr, H5B_info_t *bt_info,
