@@ -28,19 +28,24 @@
  *-------------------------------------------------------------------------
  */
 
+#include "H5private.h"
+H5_GCC_DIAG_OFF("larger-than=")
+
+H5_CLANG_DIAG_OFF("overlength-strings")
+
 char H5libhdf5_settings[]=
 	"        SUMMARY OF THE HDF5 CONFIGURATION\n"
 	"        =================================\n"
 	"\n"
 	"General Information:\n"
 	"-------------------\n"
-	"                   HDF5 Version: 1.12.2\n"
+	"                   HDF5 Version: 1.13.2\n"
 	"                  Configured on: 2022-09-14\n"
 	"                  Configured by: Unix Makefiles\n"
 	"                    Host system: Linux-3.10.0-1160.49.1.el7.x86_64\n"
 	"              Uname information: Linux\n"
 	"                       Byte sex: little-endian\n"
-	"             Installation point: /usr/local/HDF_Group/HDF5/1.12.2\n"
+	"             Installation point: /usr/local/HDF_Group/HDF5/1.13.2\n"
 	"\n"
 	"Compiling Options:\n"
 	"------------------\n"
@@ -69,7 +74,7 @@ char H5libhdf5_settings[]=
 	"                    H5_CPPFLAGS: \n"
 	"                    AM_CPPFLAGS: \n"
 	"                         CFLAGS:   -std=c99  -fstdarg-opt -fmessage-length=0\n"
-	"                      H5_CFLAGS: -Wall;-Wcast-qual;-Wconversion;-Wextra;-Wfloat-equal;-Wformat=2;-Winit-self;-Winvalid-pch;-Wmissing-include-dirs;-Wshadow;-Wundef;-Wwrite-strings;-pedantic;-Wno-c++-compat;-Wbad-function-cast;-Wimplicit-function-declaration;-Wmissing-declarations;-Wmissing-prototypes;-Wnested-externs;-Wold-style-definition;-Wpacked;-Wpointer-sign;-Wpointer-to-int-cast;-Wint-to-pointer-cast;-Wredundant-decls;-Wstrict-prototypes;-Wswitch;-Wunused-function;-Wunused-variable;-Wunused-parameter;-Wcast-align;-Wunused-but-set-variable;-Wformat;-finline-functions;-Wno-aggregate-return;-Wno-inline;-Wno-missing-format-attribute;-Wno-missing-noreturn;-Wno-overlength-strings;-Wlarger-than=2560;-Wlogical-op;-Wframe-larger-than=16384;-Wpacked-bitfield-compat;-Wsync-nand;-Wstrict-overflow=5;-Wno-unsuffixed-float-constants;-Wdouble-promotion;-Wtrampolines;-Wstack-usage=8192;-Wmaybe-uninitialized;-Wno-jump-misses-init;-Wno-suggest-attribute=const;-Wno-suggest-attribute=noreturn;-Wno-suggest-attribute=pure;-Wno-suggest-attribute=format;-Wdate-time;-Warray-bounds=2;-Wc99-c11-compat;-Wincompatible-pointer-types;-Wint-conversion;-Wshadow;-Wduplicated-cond;-Whsa;-Wnormalized;-Wnull-dereference;-Wunused-const-variable;-Walloca;-Walloc-zero;-Wduplicated-branches;-Wformat-overflow=2;-Wformat-truncation=1;-Wrestrict;-Wattribute-alias;-Wcast-align=strict;-Wshift-overflow=2;-Wcast-function-type;-Wmaybe-uninitialized;-Wno-suggest-attribute=cold;-Wno-suggest-attribute=malloc;-Wattribute-alias=2;-Wmissing-profile\n"
+	"                      H5_CFLAGS: -Wall;-Wcast-qual;-Wconversion;-Wextra;-Wfloat-equal;-Wformat=2;-Winit-self;-Winvalid-pch;-Wmissing-include-dirs;-Wshadow;-Wundef;-Wwrite-strings;-pedantic;-Wno-c++-compat;-Wbad-function-cast;-Wcast-align;-Wformat;-Wimplicit-function-declaration;-Wint-to-pointer-cast;-Wmissing-declarations;-Wmissing-prototypes;-Wnested-externs;-Wold-style-definition;-Wpacked;-Wpointer-sign;-Wpointer-to-int-cast;-Wredundant-decls;-Wstrict-prototypes;-Wswitch;-Wunused-but-set-variable;-Wunused-variable;-Wunused-function;-Wunused-parameter;-finline-functions;-Wno-aggregate-return;-Wno-inline;-Wno-missing-format-attribute;-Wno-missing-noreturn;-Wno-overlength-strings;-Wlarger-than=2560;-Wlogical-op;-Wframe-larger-than=16384;-Wpacked-bitfield-compat;-Wsync-nand;-Wno-unsuffixed-float-constants;-Wdouble-promotion;-Wtrampolines;-Wstack-usage=8192;-Wmaybe-uninitialized;-Wno-jump-misses-init;-Wstrict-overflow=2;-Wno-suggest-attribute=const;-Wno-suggest-attribute=noreturn;-Wno-suggest-attribute=pure;-Wno-suggest-attribute=format;-Wdate-time;-Warray-bounds=2;-Wc99-c11-compat;-Wincompatible-pointer-types;-Wint-conversion;-Wshadow;-Wduplicated-cond;-Whsa;-Wnormalized;-Wnull-dereference;-Wunused-const-variable;-Walloca;-Walloc-zero;-Wduplicated-branches;-Wformat-overflow=2;-Wformat-truncation=1;-Wrestrict;-Wattribute-alias;-Wcast-align=strict;-Wshift-overflow=2;-Wcast-function-type;-Wmaybe-uninitialized;-Wno-suggest-attribute=cold;-Wno-suggest-attribute=malloc;-Wattribute-alias=2;-Wmissing-profile\n"
 	"                      AM_CFLAGS: \n"
 	"               Shared C Library: NO\n"
 	"               Static C Library: YES\n"
@@ -104,12 +109,13 @@ char H5libhdf5_settings[]=
 	"                  Build HDF5 Tools: ON\n"
 	"       Build High-level HDF5 Tools: ON\n"
 	"                      Threadsafety: OFF\n"
-	"               Default API mapping: v112\n"
+	"               Default API mapping: v114\n"
 	"    With deprecated public symbols: ON\n"
 	"            I/O filters (external): \n"
 	"                               MPE: \n"
 	"                        Direct VFD: \n"
 	"                        Mirror VFD: \n"
+	"                     Subfiling VFD: \n"
 	"                (Read-Only) S3 VFD: \n"
 	"              (Read-Only) HDFS VFD: \n"
 	"                           dmalloc: \n"
@@ -123,3 +129,5 @@ char H5libhdf5_settings[]=
 	"      Optimization Instrumentation: \n"
 ;
 
+H5_GCC_DIAG_ON("larger-than=")
+H5_CLANG_DIAG_OFF("overlength-strings")
