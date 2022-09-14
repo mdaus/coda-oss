@@ -1,6 +1,6 @@
 NAME            = 'hdf5.lite'
 VERSION         = '0.1'
-MODULE_DEPS     = 'str except io logging sys coda_oss config gsl'
+MODULE_DEPS     = 'str except io logging sys coda_oss config gsl hdf5'
 USELIB          = 'HDF5'
 
 options = configure = distclean = lambda p: None
