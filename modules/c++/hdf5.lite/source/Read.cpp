@@ -51,7 +51,77 @@ void hdf5::lite::fileRead(const coda_oss::filesystem::path& fileName, const std:
          * Get the class of the datatype that is used by the dataset.
          */
         const auto type_class = dataset.getTypeClass();
-        std::ignore = type_class;
+        if (type_class == H5T_FLOAT)
+        {
+            const auto floattype = dataset.getFloatType();
+            const size_t size = floattype.getSize();
+            std::ignore = size;
+        }
+
+        /*
+         * Get dataspace of the dataset.
+         */
+        const auto dataspace = dataset.getSpace();
+
+        /*
+         * Get the number of dimensions in the dataspace.
+         */
+        const auto rank = dataspace.getSimpleExtentNdims();
+        std::ignore = rank;
+
+      /*
+         * Get the dimension size of each dimension in the dataspace.
+         */
+        hsize_t dims_out[2];
+        const auto ndims = dataspace.getSimpleExtentDims(dims_out, NULL);
+        std::ignore = ndims;
+
+        const int NX_SUB = 3;  // hyperslab dimensions
+        const int NY_SUB = 4;
+        const int NX = 7;  // output buffer dimensions
+        const int NY = 7;
+        const int NZ = 3;
+        const int RANK_OUT = 3;
+
+        /*
+         * Define hyperslab in the dataset; implicitly giving strike and block NULL.
+         */
+        hsize_t offset[2];  // hyperslab offset in the file
+        hsize_t count[2];  // size of the hyperslab in the file
+        offset[0] = 1;
+        offset[1] = 2;
+        count[0] = NX_SUB;
+        count[1] = NY_SUB;
+        dataspace.selectHyperslab(H5S_SELECT_SET, count, offset);
+
+        /*
+         * Define the memory dataspace.
+         */
+        hsize_t dimsm[3]; /* memory space dimensions */
+        dimsm[0] = NX;
+        dimsm[1] = NY;
+        dimsm[2] = NZ;
+        H5::DataSpace memspace(RANK_OUT, dimsm);
+
+        /*
+         * Define memory hyperslab.
+         */
+        hsize_t offset_out[3];  // hyperslab offset in memory
+        hsize_t count_out[3];  // size of the hyperslab in memory
+        offset_out[0] = 3;
+        offset_out[1] = 0;
+        offset_out[2] = 0;
+        count_out[0] = NX_SUB;
+        count_out[1] = NY_SUB;
+        count_out[2] = 1;
+        memspace.selectHyperslab(H5S_SELECT_SET, count_out, offset_out);
+
+        /*
+         * Read data from hyperslab in the file into the hyperslab in
+         * memory and display the data.
+         */
+        int data_out[NX][NY][NZ]; /* output buffer */
+        dataset.read(data_out, H5::PredType::NATIVE_FLOAT, memspace, dataspace);
     }
     // catch failure caused by the H5File operations
     catch (const H5::FileIException& error)
