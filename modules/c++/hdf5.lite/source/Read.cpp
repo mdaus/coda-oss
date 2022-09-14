@@ -34,8 +34,7 @@
 // see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
 #include <H5Cpp.h>
 
-static std::vector<hsize_t> readBytes(const H5::DataSet& dataset, const H5::DataType& mem_type, size_t typeSize,
-    std::vector<coda_oss::byte>& result)
+static hsize_t getSimpleExtentSize(const H5::DataSet& dataset, std::vector<hsize_t>& dims_out)
 {
     /*
      * Get dataspace of the dataset.
@@ -50,44 +49,31 @@ static std::vector<hsize_t> readBytes(const H5::DataSet& dataset, const H5::Data
     /*
      * Get the dimension size of each dimension in the dataspace.
      */
-    std::vector<hsize_t> dims_out(rank);
+    dims_out.resize(rank);
     const auto ndims = dataspace.getSimpleExtentDims(dims_out.data(), nullptr);
     dims_out.resize(ndims);
 
-    size_t size_in_bytes = 1;
+    hsize_t retval = 1;
     for (const auto& dim : dims_out)
     {
-        size_in_bytes *= dim;
+        retval *= dim;
     }
-    size_in_bytes *= typeSize;
-
-    result.resize(size_in_bytes);
-    dataset.read(result.data(), mem_type);
-
-    return dims_out;
+    return retval;
 }
 
-static size_t getFloatTypeSize(const H5::DataSet& dataset)
+static std::vector<hsize_t> fileRead_(const H5::DataSet& dataset, std::vector<double>& result)
 {
     const auto type_class = dataset.getTypeClass();
     if (type_class != H5T_FLOAT)
     {
         throw std::invalid_argument("getTypeClass() should return H5T_FLOAT");
     }
-    const auto floattype = dataset.getFloatType();
-    return floattype.getSize();
-}
 
-static std::vector<hsize_t> fileRead_(const H5::DataSet& dataset, std::vector<double>& result)
-{
-    const auto size = getFloatTypeSize(dataset);
+    std::vector<hsize_t> dims_out;
+    const auto count = getSimpleExtentSize(dataset, dims_out);
 
-    std::vector<coda_oss::byte> data_out;
-    auto dims_out = readBytes(dataset, H5::PredType::IEEE_F64LE, size, data_out);
-
-    const void* pData = data_out.data();
-    auto pRetval = static_cast<const double*>(pData);
-    result = std::vector<double>(pRetval, pRetval + (data_out.size() / size));
+    result.resize(count);
+    dataset.read(result.data(), H5::PredType::IEEE_F64LE);
 
     return dims_out;
 }
