@@ -76,6 +76,8 @@ void hdf5::lite::fileRead(const coda_oss::filesystem::path& fileName, const std:
         const auto ndims = dataspace.getSimpleExtentDims(dims_out, NULL);
         std::ignore = ndims;
 
+       #if 0 // TODO
+
         const int NX_SUB = 3;  // hyperslab dimensions
         const int NY_SUB = 4;
         const int NX = 7;  // output buffer dimensions
@@ -122,6 +124,7 @@ void hdf5::lite::fileRead(const coda_oss::filesystem::path& fileName, const std:
          */
         int data_out[NX][NY][NZ]; /* output buffer */
         dataset.read(data_out, H5::PredType::NATIVE_FLOAT, memspace, dataspace);
+        #endif
     }
     // catch failure caused by the H5File operations
     catch (const H5::FileIException& error)
