@@ -14,8 +14,8 @@
  * If you do not have access to either file, you may request a copy from     *
  * help@hdfgroup.org.                                                        *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Created:		Sep 13, 2022
- *			dan@Dan-HP850
+ * Created:		Sep 14, 2022
+ *			J.Daniel Smith <jdsmith@miinfcompute03>
  *
  * Purpose:		This machine-generated source code contains
  *			information about the library build configuration
@@ -35,9 +35,9 @@ char H5libhdf5_settings[]=
 	"General Information:\n"
 	"-------------------\n"
 	"                   HDF5 Version: 1.12.2\n"
-	"                  Configured on: 2022-09-13\n"
+	"                  Configured on: 2022-09-14\n"
 	"                  Configured by: Unix Makefiles\n"
-	"                    Host system: Linux-4.4.0-19041-Microsoft\n"
+	"                    Host system: Linux-3.10.0-1160.49.1.el7.x86_64\n"
 	"              Uname information: Linux\n"
 	"                       Byte sex: little-endian\n"
 	"             Installation point: /usr/local/HDF_Group/HDF5/1.12.2\n"
@@ -58,20 +58,20 @@ char H5libhdf5_settings[]=
 	"                     H5_LDFLAGS: \n"
 	"                     AM_LDFLAGS: \n"
 	"                Extra libraries: m;dl\n"
-	"                       Archiver: /usr/bin/ar\n"
-	"                         Ranlib: /usr/bin/ranlib\n"
+	"                       Archiver: /bin/ar\n"
+	"                         Ranlib: /bin/ranlib\n"
 	"\n"
 	"Languages:\n"
 	"----------\n"
 	"                              C: YES\n"
-	"                     C Compiler: /usr/bin/cc 9.4.0\n"
+	"                     C Compiler: /opt/gcc/9.2.0/bin/gcc 9.2.0\n"
 	"                       CPPFLAGS: \n"
 	"                    H5_CPPFLAGS: \n"
 	"                    AM_CPPFLAGS: \n"
 	"                         CFLAGS:   -std=c99  -fstdarg-opt -fmessage-length=0\n"
-	"                      H5_CFLAGS: -Wall;-Wcast-qual;-Wconversion;-Wextra;-Wfloat-equal;-Wformat=2;-Winit-self;-Winvalid-pch;-Wmissing-include-dirs;-Wshadow;-Wundef;-Wwrite-strings;-pedantic;-Wno-c++-compat;-Wbad-function-cast;-Wimplicit-function-declaration;-Wmissing-declarations;-Wmissing-prototypes;-Wnested-externs;-Wold-style-definition;-Wpacked;-Wpointer-sign;-Wpointer-to-int-cast;-Wint-to-pointer-cast;-Wredundant-decls;-Wstrict-prototypes;-Wswitch;-Wunused-function;-Wunused-variable;-Wunused-parameter;-Wcast-align;-Wunused-but-set-variable;-Wformat;-finline-functions;-Wno-aggregate-return;-Wno-inline;-Wno-missing-format-attribute;-Wno-missing-noreturn;-Wno-overlength-strings;-Wlarger-than=2560;-Wlogical-op;-Wframe-larger-than=16384;-Wpacked-bitfield-compat;-Wsync-nand;-Wstrict-overflow=5;-Wno-unsuffixed-float-constants;-Wdouble-promotion;-Wtrampolines;-Wstack-usage=8192;-Wmaybe-uninitialized;-Wno-jump-misses-init;-Wno-suggest-attribute=const;-Wno-suggest-attribute=noreturn;-Wno-suggest-attribute=pure;-Wno-suggest-attribute=format;-Wdate-time;-Warray-bounds=2;-Wc99-c11-compat;-Wincompatible-pointer-types;-Wint-conversion;-Wshadow;-Wduplicated-cond;-Whsa;-Wnormalized;-Wnull-dereference;-Wunused-const-variable;-Walloca;-Walloc-zero;-Wduplicated-branches;-Wformat-overflow=2;-Wformat-truncation=1;-Wrestrict;-Wattribute-alias;-Wcast-align=strict;-Wshift-overflow=2;-Wcast-function-type;-Wmaybe-uninitialized;-Wno-suggest-attribute=cold;-Wno-suggest-attribute=malloc;-Wattribute-alias=2;-Wmissing-profile;-Wc11-c2x-compat\n"
+	"                      H5_CFLAGS: -Wall;-Wcast-qual;-Wconversion;-Wextra;-Wfloat-equal;-Wformat=2;-Winit-self;-Winvalid-pch;-Wmissing-include-dirs;-Wshadow;-Wundef;-Wwrite-strings;-pedantic;-Wno-c++-compat;-Wbad-function-cast;-Wimplicit-function-declaration;-Wmissing-declarations;-Wmissing-prototypes;-Wnested-externs;-Wold-style-definition;-Wpacked;-Wpointer-sign;-Wpointer-to-int-cast;-Wint-to-pointer-cast;-Wredundant-decls;-Wstrict-prototypes;-Wswitch;-Wunused-function;-Wunused-variable;-Wunused-parameter;-Wcast-align;-Wunused-but-set-variable;-Wformat;-finline-functions;-Wno-aggregate-return;-Wno-inline;-Wno-missing-format-attribute;-Wno-missing-noreturn;-Wno-overlength-strings;-Wlarger-than=2560;-Wlogical-op;-Wframe-larger-than=16384;-Wpacked-bitfield-compat;-Wsync-nand;-Wstrict-overflow=5;-Wno-unsuffixed-float-constants;-Wdouble-promotion;-Wtrampolines;-Wstack-usage=8192;-Wmaybe-uninitialized;-Wno-jump-misses-init;-Wno-suggest-attribute=const;-Wno-suggest-attribute=noreturn;-Wno-suggest-attribute=pure;-Wno-suggest-attribute=format;-Wdate-time;-Warray-bounds=2;-Wc99-c11-compat;-Wincompatible-pointer-types;-Wint-conversion;-Wshadow;-Wduplicated-cond;-Whsa;-Wnormalized;-Wnull-dereference;-Wunused-const-variable;-Walloca;-Walloc-zero;-Wduplicated-branches;-Wformat-overflow=2;-Wformat-truncation=1;-Wrestrict;-Wattribute-alias;-Wcast-align=strict;-Wshift-overflow=2;-Wcast-function-type;-Wmaybe-uninitialized;-Wno-suggest-attribute=cold;-Wno-suggest-attribute=malloc;-Wattribute-alias=2;-Wmissing-profile\n"
 	"                      AM_CFLAGS: \n"
-	"               Shared C Library: YES\n"
+	"               Shared C Library: NO\n"
 	"               Static C Library: YES\n"
 	"\n"
 	"                        Fortran: OFF\n"
@@ -79,7 +79,7 @@ char H5libhdf5_settings[]=
 	"                  Fortran Flags: \n"
 	"               H5 Fortran Flags: \n"
 	"               AM Fortran Flags: \n"
-	"         Shared Fortran Library: YES\n"
+	"         Shared Fortran Library: NO\n"
 	"         Static Fortran Library: YES\n"
 	"\n"
 	"                            C++: OFF\n"
@@ -87,7 +87,7 @@ char H5libhdf5_settings[]=
 	"                      C++ Flags: \n"
 	"                   H5 C++ Flags: \n"
 	"                   AM C++ Flags: \n"
-	"             Shared C++ Library: YES\n"
+	"             Shared C++ Library: NO\n"
 	"             Static C++ Library: YES\n"
 	"\n"
 	"                            JAVA: OFF\n"
