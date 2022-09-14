@@ -5,7 +5,7 @@
 // These have a ".c_" extention so the normal build process won't find them.
 #if defined(_MSC_VER)
 #include "H5Tinit_MSVC.c_"
-#elif defined(__GCC__)
+#elif defined(__GNUC__)
 #include "H5Tinit_GCC.c_"
 #else
 #error "Unknown compiler."
