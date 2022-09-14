@@ -28,19 +28,24 @@
  *-------------------------------------------------------------------------
  */
 
+#include "H5private.h"
+H5_GCC_DIAG_OFF("larger-than=")
+
+H5_CLANG_DIAG_OFF("overlength-strings")
+
 char H5libhdf5_settings[]=
 	"        SUMMARY OF THE HDF5 CONFIGURATION\n"
 	"        =================================\n"
 	"\n"
 	"General Information:\n"
 	"-------------------\n"
-	"                   HDF5 Version: 1.12.2\n"
+	"                   HDF5 Version: 1.13.2\n"
 	"                  Configured on: 2022-09-14\n"
 	"                  Configured by: Visual Studio 17 2022\n"
 	"                    Host system: Windows-10.0.19044\n"
 	"              Uname information: Windows\n"
 	"                       Byte sex: little-endian\n"
-	"             Installation point: C:/Program Files/HDF_Group/HDF5/1.12.2\n"
+	"             Installation point: C:/Program Files/HDF_Group/HDF5/1.13.2\n"
 	"\n"
 	"Compiling Options:\n"
 	"------------------\n"
@@ -71,7 +76,7 @@ char H5libhdf5_settings[]=
 	"                         CFLAGS:   /DWIN32 /D_WINDOWS -wd5105\n"
 	"                      H5_CFLAGS: /W3;/wd4100;/wd4706;/wd4127\n"
 	"                      AM_CFLAGS: \n"
-	"               Shared C Library: YES\n"
+	"               Shared C Library: NO\n"
 	"               Static C Library: YES\n"
 	"\n"
 	"                        Fortran: OFF\n"
@@ -79,7 +84,7 @@ char H5libhdf5_settings[]=
 	"                  Fortran Flags: \n"
 	"               H5 Fortran Flags: \n"
 	"               AM Fortran Flags: \n"
-	"         Shared Fortran Library: YES\n"
+	"         Shared Fortran Library: NO\n"
 	"         Static Fortran Library: YES\n"
 	"\n"
 	"                            C++: OFF\n"
@@ -87,7 +92,7 @@ char H5libhdf5_settings[]=
 	"                      C++ Flags: \n"
 	"                   H5 C++ Flags: \n"
 	"                   AM C++ Flags: \n"
-	"             Shared C++ Library: YES\n"
+	"             Shared C++ Library: NO\n"
 	"             Static C++ Library: YES\n"
 	"\n"
 	"                            JAVA: OFF\n"
@@ -104,12 +109,13 @@ char H5libhdf5_settings[]=
 	"                  Build HDF5 Tools: ON\n"
 	"       Build High-level HDF5 Tools: ON\n"
 	"                      Threadsafety: OFF\n"
-	"               Default API mapping: v112\n"
+	"               Default API mapping: v114\n"
 	"    With deprecated public symbols: ON\n"
 	"            I/O filters (external): \n"
 	"                               MPE: \n"
 	"                        Direct VFD: \n"
 	"                        Mirror VFD: \n"
+	"                     Subfiling VFD: \n"
 	"                (Read-Only) S3 VFD: \n"
 	"              (Read-Only) HDFS VFD: \n"
 	"                           dmalloc: \n"
@@ -123,3 +129,5 @@ char H5libhdf5_settings[]=
 	"      Optimization Instrumentation: \n"
 ;
 
+H5_GCC_DIAG_ON("larger-than=")
+H5_CLANG_DIAG_OFF("overlength-strings")
