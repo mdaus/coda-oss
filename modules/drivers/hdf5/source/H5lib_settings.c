@@ -5,7 +5,7 @@
 // These have a ".c_" extention so the normal build process won't find them.
 #if defined(_MSC_VER)
 #include "H5lib_settings_MSVC.c_"
-#elif defined(__GCC__)
+#elif defined(__GNUC__)
 #include "H5lib_settings_GCC.c_"
 #else
 #error "Unknown compiler."
