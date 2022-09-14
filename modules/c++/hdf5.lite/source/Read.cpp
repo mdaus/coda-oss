@@ -34,6 +34,64 @@
 // see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
 #include <H5Cpp.h>
 
+static std::vector<hsize_t> readBytes(const H5::DataSet& dataset, const H5::DataType& mem_type, size_t typeSize,
+    std::vector<coda_oss::byte>& result)
+{
+    /*
+     * Get dataspace of the dataset.
+     */
+    const auto dataspace = dataset.getSpace();
+
+    /*
+     * Get the number of dimensions in the dataspace.
+     */
+    const auto rank = dataspace.getSimpleExtentNdims();
+
+    /*
+     * Get the dimension size of each dimension in the dataspace.
+     */
+    std::vector<hsize_t> dims_out(rank);
+    const auto ndims = dataspace.getSimpleExtentDims(dims_out.data(), nullptr);
+    dims_out.resize(ndims);
+
+    size_t size_in_bytes = 1;
+    for (const auto& dim : dims_out)
+    {
+        size_in_bytes *= dim;
+    }
+    size_in_bytes *= typeSize;
+
+    result.resize(size_in_bytes);
+    dataset.read(result.data(), mem_type);
+
+    return dims_out;
+}
+
+static size_t getFloatTypeSize(const H5::DataSet& dataset)
+{
+    const auto type_class = dataset.getTypeClass();
+    if (type_class != H5T_FLOAT)
+    {
+        throw std::invalid_argument("getTypeClass() should return H5T_FLOAT");
+    }
+    const auto floattype = dataset.getFloatType();
+    return floattype.getSize();
+}
+
+static std::vector<hsize_t> fileRead_(const H5::DataSet& dataset, std::vector<double>& result)
+{
+    const auto size = getFloatTypeSize(dataset);
+
+    std::vector<coda_oss::byte> data_out;
+    auto dims_out = readBytes(dataset, H5::PredType::IEEE_F64LE, size, data_out);
+
+    const void* pData = data_out.data();
+    auto pRetval = static_cast<const double*>(pData);
+    result = std::vector<double>(pRetval, pRetval + (data_out.size() / size));
+
+    return dims_out;
+}
+
 std::vector<double> hdf5::lite::fileRead(const coda_oss::filesystem::path& fileName, const std::string& datasetName)
 {
     try
@@ -50,52 +108,9 @@ std::vector<double> hdf5::lite::fileRead(const coda_oss::filesystem::path& fileN
         H5::H5File file(fileName.string(), H5F_ACC_RDONLY);
         const auto dataset = file.openDataSet(datasetName);
 
-        /*
-         * Get the class of the datatype that is used by the dataset.
-         */
-        const auto type_class = dataset.getTypeClass();
-        size_t size = 0;
-        if (type_class == H5T_FLOAT)
-        {
-            const auto floattype = dataset.getFloatType();
-            size = floattype.getSize();
-        }
-
-        /*
-         * Get dataspace of the dataset.
-         */
-        const auto dataspace = dataset.getSpace();
-
-        /*
-         * Get the number of dimensions in the dataspace.
-         */
-        const auto rank = dataspace.getSimpleExtentNdims();
-
-      /*
-         * Get the dimension size of each dimension in the dataspace.
-         */
-        std::vector<hsize_t> dims_out(rank);
-        const auto ndims = dataspace.getSimpleExtentDims(dims_out.data(), nullptr);
-        dims_out.resize(ndims);
-
-        /*
-         * Read data from hyperslab in the file into the hyperslab in
-         * memory and display the data.
-         */
-        size_t size_in_bytes = 1;
-        for (const auto& dim : dims_out)
-        {
-            size_in_bytes *= dim;
-        }
-        size_in_bytes *= size;
-
-        //std::vector<double> data_out(dims_out[0]); /* output buffer */
-        std::vector<coda_oss::byte> data_out(size_in_bytes); /* output buffer */
-        dataset.read(data_out.data(), H5::PredType::IEEE_F64LE);
-
-        const void* pData = data_out.data();
-        auto pRetval = static_cast<const double*>(pData);
-        return std::vector<double>(pRetval, pRetval + (data_out.size() / size));
+        std::vector<double> retval;
+        const auto dims_out = fileRead_(dataset, retval);
+        return retval;
     }
     // catch failure caused by the H5File operations
     catch (const H5::FileIException& error)
