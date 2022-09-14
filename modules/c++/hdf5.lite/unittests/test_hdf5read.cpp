@@ -48,7 +48,10 @@ TEST_CASE(test_hdf5Read)
     const auto path = unittests / file;
 
     // https://www.mathworks.com/help/matlab/ref/h5read.html
-    hdf5::lite::fileRead(path, "/g4/lat");
+    const auto data = hdf5::lite::fileRead(path, "/g4/lat");
+    TEST_ASSERT_EQ(data.size(), 19);
+    TEST_ASSERT_ALMOST_EQ(data[0], -90.0);
+    TEST_ASSERT_ALMOST_EQ(data[0], -data[18]);
 }
 
 TEST_CASE(test_hdf5Read_IOException)

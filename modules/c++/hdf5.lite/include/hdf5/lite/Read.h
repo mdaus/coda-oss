@@ -33,6 +33,7 @@
  */
 
 #include <string>
+#include <vector>
 
 #include "config/Exports.h"
 #include "sys/filesystem.h"
@@ -42,7 +43,7 @@ namespace hdf5
 namespace lite
 {
 
-CODA_OSS_API void fileRead(const coda_oss::filesystem::path&, const std::string& datasetName);
+CODA_OSS_API std::vector<double> fileRead(const coda_oss::filesystem::path&, const std::string& datasetName);
 //CODA_OSS_API void locationRead(const std::string& loc, const std::string& datasetName); // e.g, s3://
 
 }
