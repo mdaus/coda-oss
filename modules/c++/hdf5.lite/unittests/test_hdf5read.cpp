@@ -51,6 +51,21 @@ TEST_CASE(test_hdf5Read)
     hdf5::lite::fileRead(path, "/g4/lat");
 }
 
+TEST_CASE(test_hdf5Read_IOException)
+{
+    static const std::filesystem::path path = "does not exist . h5";
+    try
+    {
+        hdf5::lite::fileRead(path, "/g4/lat");
+        TEST_FAIL;
+    }
+    catch (const except::IOException&)
+    {
+        TEST_SUCCESS;
+    }
+}
+
 TEST_MAIN(
     TEST_CHECK(test_hdf5Read);
+    TEST_CHECK(test_hdf5Read_IOException);
 )
