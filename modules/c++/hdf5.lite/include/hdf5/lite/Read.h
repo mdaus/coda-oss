@@ -37,13 +37,14 @@
 
 #include "config/Exports.h"
 #include "sys/filesystem.h"
+#include "types/RowCol.h"
 
 namespace hdf5
 {
 namespace lite
 {
 
-CODA_OSS_API std::vector<double> readFile(const coda_oss::filesystem::path&, const std::string& datasetName);
+CODA_OSS_API types::RowCol<size_t> readFile(const coda_oss::filesystem::path&, const std::string& datasetName, std::vector<double>&);
 //CODA_OSS_API void read(const std::string& loc, const std::string& datasetName); // e.g, s3://
 
 }

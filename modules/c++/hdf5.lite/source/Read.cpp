@@ -34,7 +34,7 @@
 // see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
 #include <H5Cpp.h>
 
-static hsize_t getSimpleExtentSize(const H5::DataSet& dataset, std::vector<hsize_t>& dims_out)
+static types::RowCol<size_t> getSimpleExtentSize(const H5::DataSet& dataset)
 {
     /*
      * Get dataspace of the dataset.
@@ -45,24 +45,33 @@ static hsize_t getSimpleExtentSize(const H5::DataSet& dataset, std::vector<hsize
      * Get the number of dimensions in the dataspace.
      */
     const auto rank = dataspace.getSimpleExtentNdims();
+    // we only support 1- and 2-D data
+    if ((rank != 1) && (rank != 2))
+    {
+        throw std::invalid_argument("'rank' must be 1 or 2.");
+    }
 
     /*
      * Get the dimension size of each dimension in the dataspace.
      */
+    std::vector<hsize_t> dims_out(rank);
     dims_out.resize(rank);
     const auto ndims = dataspace.getSimpleExtentDims(dims_out.data(), nullptr);
     dims_out.resize(ndims);
-
-    hsize_t retval = 1;
-    for (const auto& dim : dims_out)
+    if (dims_out.empty() || (dims_out.size() > 2))
     {
-        retval *= dim;
+        throw std::invalid_argument("dims_out.size() must be 1 or 2.");
     }
+
+    // Does it matter whether it's 1-row and n-cols or n-cols and 1-row?
+    types::RowCol<size_t> retval;
+    retval.row = dims_out[0];
+    retval.col = dims_out.size() == 2 ? dims_out[1] : 1;
     return retval;
 }
 
 template<typename T>
-static std::vector<hsize_t> readFileT(const H5::DataSet& dataset, H5T_class_t type_class, const H5::DataType& mem_type,
+static types::RowCol<size_t> readFileT(const H5::DataSet& dataset, H5T_class_t type_class, const H5::DataType& mem_type,
     std::vector<T>& result)
 {
     if (type_class != dataset.getTypeClass())
@@ -70,28 +79,27 @@ static std::vector<hsize_t> readFileT(const H5::DataSet& dataset, H5T_class_t ty
         throw std::invalid_argument("getTypeClass() returned wrong value.");
     }
 
-    std::vector<hsize_t> dims_out;
-    const auto count = getSimpleExtentSize(dataset, dims_out);
-
-    result.resize(count);
+    const auto retval = getSimpleExtentSize(dataset);
+    result.resize(retval.area());
     dataset.read(result.data(), mem_type);
 
-    return dims_out;
+    return retval;
 }
 
-inline std::vector<hsize_t> readFile_(const H5::DataSet& dataset, std::vector<float>& result)
+inline types::RowCol<size_t> readFile_(const H5::DataSet& dataset, std::vector<float>& result)
 {
     static_assert(sizeof(float) * 8 == 32, "'float' should be 32-bits"); // IEEE_F32LE
     return readFileT(dataset, H5T_FLOAT, H5::PredType::IEEE_F32LE, result);
 }
 
-inline std::vector<hsize_t> readFile_(const H5::DataSet& dataset, std::vector<double>& result)
+inline types::RowCol<size_t> readFile_(const H5::DataSet& dataset, std::vector<double>& result)
 {
     static_assert(sizeof(double) * 8 == 64, "'double' should be 64-bits"); // IEEE_F64LE
     return readFileT(dataset, H5T_FLOAT, H5::PredType::IEEE_F64LE, result);
 }
 
-std::vector<double> hdf5::lite::readFile(const coda_oss::filesystem::path& fileName, const std::string& datasetName)
+types::RowCol<size_t> hdf5::lite::readFile(const coda_oss::filesystem::path& fileName, const std::string& datasetName,
+    std::vector<double>& result)
 {
     try
     {
@@ -106,11 +114,7 @@ std::vector<double> hdf5::lite::readFile(const coda_oss::filesystem::path& fileN
          */
         H5::H5File file(fileName.string(), H5F_ACC_RDONLY);
         const auto dataset = file.openDataSet(datasetName);
-
-        std::vector<double> retval;
-        auto dims_out = readFile_(dataset, retval);
-        std::ignore = dims_out; // TODO
-        return retval;
+        return readFile_(dataset, result);
     }
     // catch failure caused by the H5File operations
     catch (const H5::FileIException& error)

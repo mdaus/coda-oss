@@ -48,8 +48,9 @@ TEST_CASE(test_hdf5Read)
     const auto path = unittests / file;
 
     // https://www.mathworks.com/help/matlab/ref/h5read.html
-    const auto data = hdf5::lite::readFile(path, "/g4/lat");
-    TEST_ASSERT_EQ(data.size(), 19);
+    std::vector<double> data;
+    const auto rc = hdf5::lite::readFile(path, "/g4/lat", data);
+    TEST_ASSERT_EQ(rc.area(), 19);
     TEST_ASSERT_ALMOST_EQ(data[0], -90.0);
     TEST_ASSERT_ALMOST_EQ(data[0], -data[18]);
 }
@@ -59,7 +60,8 @@ TEST_CASE(test_hdf5Read_IOException)
     static const std::filesystem::path path = "does not exist . h5";
     try
     {
-        hdf5::lite::readFile(path, "/g4/lat");
+        std::vector<double> data;
+        hdf5::lite::readFile(path, "/g4/lat", data);
         TEST_FAIL;
     }
     catch (const except::IOException&)
