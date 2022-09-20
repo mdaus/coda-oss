@@ -28,7 +28,7 @@
  * \file  Read.h
  * \brief HDF File-reading API
  *
- * These are simple routines to read HDF5 files; they're modeled after the MATLab API
+ * These are simple routines to read HDF5 files; they're loosly modeled after the MATLab API
  * https://www.mathworks.com/help/matlab/import_export/import-hdf5-files.html
  */
 
@@ -43,8 +43,8 @@ namespace hdf5
 namespace lite
 {
 
-CODA_OSS_API std::vector<double> fileRead(const coda_oss::filesystem::path&, const std::string& datasetName);
-//CODA_OSS_API void locationRead(const std::string& loc, const std::string& datasetName); // e.g, s3://
+CODA_OSS_API std::vector<double> readFile(const coda_oss::filesystem::path&, const std::string& datasetName);
+//CODA_OSS_API void read(const std::string& loc, const std::string& datasetName); // e.g, s3://
 
 }
 }

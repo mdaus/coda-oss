@@ -62,7 +62,7 @@ static hsize_t getSimpleExtentSize(const H5::DataSet& dataset, std::vector<hsize
 }
 
 template<typename T>
-static std::vector<hsize_t> fileReadT(const H5::DataSet& dataset, H5T_class_t type_class, const H5::DataType& mem_type,
+static std::vector<hsize_t> readFileT(const H5::DataSet& dataset, H5T_class_t type_class, const H5::DataType& mem_type,
     std::vector<T>& result)
 {
     if (type_class != dataset.getTypeClass())
@@ -79,19 +79,19 @@ static std::vector<hsize_t> fileReadT(const H5::DataSet& dataset, H5T_class_t ty
     return dims_out;
 }
 
-inline std::vector<hsize_t> fileRead_(const H5::DataSet& dataset, std::vector<float>& result)
+inline std::vector<hsize_t> readFile_(const H5::DataSet& dataset, std::vector<float>& result)
 {
     static_assert(sizeof(float) * 8 == 32, "'float' should be 32-bits"); // IEEE_F32LE
-    return fileReadT(dataset, H5T_FLOAT, H5::PredType::IEEE_F32LE, result);
+    return readFileT(dataset, H5T_FLOAT, H5::PredType::IEEE_F32LE, result);
 }
 
-inline std::vector<hsize_t> fileRead_(const H5::DataSet& dataset, std::vector<double>& result)
+inline std::vector<hsize_t> readFile_(const H5::DataSet& dataset, std::vector<double>& result)
 {
     static_assert(sizeof(double) * 8 == 64, "'double' should be 64-bits"); // IEEE_F64LE
-    return fileReadT(dataset, H5T_FLOAT, H5::PredType::IEEE_F64LE, result);
+    return readFileT(dataset, H5T_FLOAT, H5::PredType::IEEE_F64LE, result);
 }
 
-std::vector<double> hdf5::lite::fileRead(const coda_oss::filesystem::path& fileName, const std::string& datasetName)
+std::vector<double> hdf5::lite::readFile(const coda_oss::filesystem::path& fileName, const std::string& datasetName)
 {
     try
     {
@@ -108,7 +108,7 @@ std::vector<double> hdf5::lite::fileRead(const coda_oss::filesystem::path& fileN
         const auto dataset = file.openDataSet(datasetName);
 
         std::vector<double> retval;
-        auto dims_out = fileRead_(dataset, retval);
+        auto dims_out = readFile_(dataset, retval);
         std::ignore = dims_out; // TODO
         return retval;
     }
