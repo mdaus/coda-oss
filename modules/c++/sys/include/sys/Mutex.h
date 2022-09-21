@@ -21,54 +21,54 @@
  */
 
 
-#ifndef CODA_OSS_sys_Mutex_h_INCLUDED_
-#define CODA_OSS_sys_Mutex_h_INCLUDED_
-#pragma once
-
-#include "sys/Conf.h"
-
-#include "sys/MutexCpp11.h"
-
+#ifndef __SYS_MUTEX_H__
+#define __SYS_MUTEX_H__ 
 /**
- *  \file
+ *  \file 
  *  \brief Include the right mutex.
  *
  *  This file will auto-select the mutex of choice,
- *  if one is to be defined.
+ *  if one is to be defined.  
  *  \note We need to change the windows part to check _MT
  *  because that is how it determines reentrance!
  *
  */
 
-#if defined(_WIN32)
-#include "sys/MutexWin32.h"
+#    if defined(USE_NSPR_THREADS)
+#        include "sys/MutexNSPR.h"
 namespace sys
 {
-using MutexOS = MutexWin32;
+typedef MutexNSPR Mutex;
 }
-
-#elif defined(CODA_OSS_POSIX_SOURCE)
-#include "sys/MutexPosix.h"
+#    elif (defined(WIN32) || defined(_WIN32))
+#        include "sys/MutexWin32.h"
 namespace sys
 {
-using MutexOS = MutexPosix;
+typedef MutexWin32 Mutex;
 }
 
-#else
-#error "Which thread package?"
-#endif
-
-#define CODA_OSS_sys_use_MutexOS 1 // other code depends on the OS mutex ... for now
-#if !CODA_OSS_sys_use_MutexOS
+/* #    elif defined(USE_BOOST) */
+/* #        include "MutexBoost.h" */
+/*          typedef MutexBoost Mutex; */
+#    elif defined(__sun)
+#        include "sys/MutexSolaris.h"
 namespace sys
 {
-using Mutex = MutexCpp11;
+typedef MutexSolaris Mutex;
 }
-#else
+#    elif defined(__sgi)
+#        include "sys/MutexIrix.h"
 namespace sys
 {
-using Mutex = MutexOS;
+typedef MutexIrix Mutex;
 }
-#endif
+// Give 'em POSIX
+#    else
+#        include "sys/MutexPosix.h"
+namespace sys
+{
+typedef MutexPosix Mutex;
+}
+#    endif // Which thread package?
 
-#endif  // CODA_OSS_sys_Mutex_h_INCLUDED_
+#endif // End of header

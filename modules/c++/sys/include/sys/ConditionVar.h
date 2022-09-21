@@ -21,28 +21,41 @@
  */
 
 
-#ifndef CODA_OSS_sys_ConditionVar_h_INCLUDED_
-#define CODA_OSS_sys_ConditionVar_h_INCLUDED_
-#pragma once
+#ifndef __SYS_CONDITION_VAR_H__
+#define __SYS_CONDITION_VAR_H__
 
-#include "sys/Conf.h"
-
-#if defined(_WIN32)
-#include "sys/ConditionVarWin32.h"
+#    if defined(USE_NSPR_THREADS)
+#        include "sys/ConditionVarNSPR.h"
 namespace sys
 {
-using ConditionVar = ConditionVarWin32;
+typedef ConditionVarNSPR ConditionVar;
 }
-
-#elif defined(CODA_OSS_POSIX_SOURCE)
-#include "sys/ConditionVarPosix.h"
+#    elif (defined(WIN32) || defined(_WIN32))
+#        include "sys/ConditionVarWin32.h"
 namespace sys
 {
-using ConditionVar = ConditionVarPosix;
+typedef ConditionVarWin32 ConditionVar;
 }
+#    elif defined(__sun)
+#        include "sys/ConditionVarSolaris.h"
+namespace sys
+{
+typedef ConditionVarSolaris ConditionVar;
+}
+#    elif defined(__sgi)
+#        include "sys/ConditionVarIrix.h"
+namespace sys
+{
+typedef ConditionVarIrix ConditionVar;
+}
+//default to POSIX
+#    else
+#        include "sys/ConditionVarPosix.h"
+namespace sys
+{
+typedef ConditionVarPosix ConditionVar;
+}
+#    endif // Which thread package?
 
-#else
-#error "Which thread package?"
-#endif
+#endif // End of header
 
-#endif  // CODA_OSS_sys_ConditionVar_h_INCLUDED_

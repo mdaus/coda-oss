@@ -53,10 +53,7 @@ struct CODA_OSS_API Handler : public Filterer
      */
     Handler(LogLevel level = LogLevel::LOG_NOTSET);
     virtual ~Handler() = default;
-    Handler(const Handler&) = delete;
     Handler& operator=(const Handler&) = delete;
-    Handler(Handler&&) = delete;
-    Handler& operator=(Handler&&) = delete;    
 
     /*! 
      * Sets the Formatter to use when formatting LogRecords

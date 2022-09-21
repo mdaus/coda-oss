@@ -166,14 +166,14 @@ int ExecPipe::closePipe()
             throw except::IOException(
                 Ctxt("The child process was terminated by " \
                         "an uncaught signal: " +
-                        str::toString(WTERMSIG(encodedStatus))));
+                        str::toString<int>(WTERMSIG(encodedStatus))));
         }
         // due to unplanned stoppage
         if (WIFSTOPPED(encodedStatus))
         {
             throw except::IOException(
                 Ctxt("The child process was unexpectedly stopped: " +
-                        str::toString(WSTOPSIG(encodedStatus))));
+                        str::toString<int>(WSTOPSIG(encodedStatus))));
         }
 
         // all other errors

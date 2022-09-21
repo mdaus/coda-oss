@@ -21,12 +21,8 @@
  */
 
 #include "cli/ArgumentParser.h"
-
 #include <algorithm>
 #include <iterator>
-
-#include <import/str.h>
-#include <import/mem.h>
 
 namespace
 {
@@ -250,43 +246,19 @@ void cli::ArgumentParser::printHelp(std::ostream& out, bool andExit) const
         exit(cli::EXIT_USAGE);
 }
 
-std::vector<std::string> cli::ArgumentParser::make_args(int argc, const char** argv, std::string& program)
-{
-    if (argc > 0)
-        program = std::string(argv[0]);
-    std::vector<std::string> args;
-    for (int i = 1; i < argc; ++i)
-        args.emplace_back(argv[i]);
-    return args;
-}
-std::vector<std::string> cli::ArgumentParser::make_args(int argc, const char** argv)
-{
-    std::string program;
-    auto args = make_args(argc, argv, program);
-    if (mProgram.empty() && !program.empty())
-        setProgram(program);
-    return args;
-}
-
 cli::Results* cli::ArgumentParser::parse(int argc, const char** argv)
 {
-    return parse(make_args(argc, argv));
+    if (mProgram.empty() && argc > 0)
+        setProgram(std::string(argv[0]));
+    std::vector < std::string > args;
+    for (int i = 1; i < argc; ++i)
+        args.push_back(std::string(argv[i]));
+    return parse(args);
 }
 cli::Results* cli::ArgumentParser::parse(const std::vector<std::string>& args)
 {
-    if (!mProgram.empty())
-    {
-        return parse("" /*don't change any value already set*/, args).release();
-    }
-    else
-    {
-        return parse("cli::ArgumentParser::parse" /*program*/, args).release(); // provide a "meaningful" default program name
-    }
-}
-std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& program, const std::vector<std::string>& args)
-{
-    if (!program.empty())
-        setProgram(program);
+    if (mProgram.empty())
+        setProgram("program");
 
     std::map<std::string, Argument*> shortFlags;
     std::map<std::string, Argument*> longFlags;
@@ -412,7 +384,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
         }
     }
 
-    auto results = std::make_unique<cli::Results>();
+    auto results = coda_oss::make_unique<cli::Results>();
     cli::Results *currentResults = NULL;
     for (size_t i = 0, s = explodedArgs.size(); i < s; ++i)
     {
@@ -707,7 +679,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
         }
     }
 
-    return results;
+    return results.release();
 }
 
 void cli::ArgumentParser::printUsage(std::ostream& out, bool andExit,
