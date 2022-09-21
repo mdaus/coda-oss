@@ -30,8 +30,8 @@ namespace test
         static void FailOnCondition(bool condition, const unsigned short* message, const Microsoft::VisualStudio::CppUnitTestFramework::__LineInfo* pLineInfo);    
         static std::wstring GetAssertMessage(bool equality, const std::string& expected, const std::string& actual, const wchar_t *message);
     };
-#define CODA_OSS_equals_message_(expected, actual, message) reinterpret_cast<const unsigned short*>(test::Assert::GetAssertMessage(true, str::toString(expected),  str::toString(actual), message).c_str())
-#define CODA_OSS_not_equals_message_(notExpected, actual, message) reinterpret_cast<const unsigned short*>(test::Assert::GetAssertMessage(false,  str::toString(notExpected),  str::toString(actual), message).c_str())
+#define CODA_OSS_equals_message_(expected, actual, message) reinterpret_cast<const unsigned short*>(test::Assert::GetAssertMessage(true, test::toString(expected),  test::toString(actual), message).c_str())
+#define CODA_OSS_not_equals_message_(notExpected, actual, message) reinterpret_cast<const unsigned short*>(test::Assert::GetAssertMessage(false,  test::toString(notExpected),  test::toString(actual), message).c_str())
 #define CODA_OSS_message_(message) reinterpret_cast<const unsigned short*>(test::Assert::GetAssertMessage(false,  "", "", message).c_str())
 
 // see Assert::AreEqual<>
