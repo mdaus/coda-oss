@@ -895,8 +895,11 @@ def configureCompilerOptions(self):
         #       If you want the plugins to not depend on Intel libraries,
         #       configure with:
         #       --with-cflags=-static-intel --with-cxxflags=-static-intel --with-linkflags=-static-intel
-        if cxxCompiler == 'g++' or cxxCompiler == 'icpc':
+        if cxxCompiler == 'gcc':
+            config['cxx']['debug']          = '-ggdb3'
+        elif cxxCompiler == 'icpc':
             config['cxx']['debug']          = '-g'
+        if cxxCompiler == 'g++' or cxxCompiler == 'icpc':
             config['cxx']['warn']           = warningFlags.split()
             config['cxx']['verbose']        = '-v'
             config['cxx']['64']             = '-m64'
@@ -923,8 +926,11 @@ def configureCompilerOptions(self):
 
             self.env.append_value('LINKFLAGS', linkFlags.split())
 
-        if ccCompiler == 'gcc' or ccCompiler == 'icc':
+        if ccCompiler == 'gcc':
+            config['cc']['debug']          = '-ggdb3'
+        elif ccCompiler == 'icc':
             config['cc']['debug']          = '-g'
+        if ccCompiler == 'gcc' or ccCompiler == 'icc':
             config['cc']['warn']           = warningFlags.split()
             config['cc']['verbose']        = '-v'
             config['cc']['64']             = '-m64'
