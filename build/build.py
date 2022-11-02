@@ -29,8 +29,8 @@ COMMON_EXCLUDES_EXT ='~ .rej .orig .pyc .pyo .bak .tar.bz2 tar.gz .zip .swp'.spl
 for ext in COMMON_EXCLUDES_EXT:
     TaskGen.extension(ext)(Utils.nada)
 
-if sys.version_info < (2,6,0):
-    raise Errors.WafError('Build system requires at least Python 2.6')
+if sys.version_info < (3,7,0):
+    raise Errors.WafError('Build system requires at least Python 3.7')
 
 # provide a partial function if we don't have one
 try:
@@ -796,7 +796,7 @@ def options(opt):
                     'results. NOOP if junit_xml cannot be imported')
 
 
-def ensureCpp14Support(self):
+def ensureCpp17Support(self):
     # DEPRECATED.
     # Keeping for now in case downstream code is still looking for it
     self.env['cpp11support'] = True
@@ -892,10 +892,7 @@ def configureCompilerOptions(self):
             config['cxx']['optz_fast']      = '-O2'
             config['cxx']['optz_fastest']   = '-O3'
 
-            if not Options.options.enablecpp17:
-                gxxCompileFlags='-fPIC -std=c++14'
-            else:
-                gxxCompileFlags='-fPIC -std=c++17'
+            gxxCompileFlags='-fPIC -std=c++17'
             self.env.append_value('CXXFLAGS', gxxCompileFlags.split())
 
             # DEFINES and LINKFLAGS will apply to both gcc and g++
@@ -986,10 +983,7 @@ def configureCompilerOptions(self):
         flags = '/UUNICODE /U_UNICODE /EHs /GR'.split()
 
         #If building with cpp17 add flags/defines to enable auto_ptr
-        if Options.options.enablecpp17:
-            flags.append('/std:c++17')
-        else:
-            flags.append('/std:c++14')
+        flags.append('/std:c++17')
 
         self.env.append_value('DEFINES', defines)
         self.env.append_value('CXXFLAGS', flags)
@@ -1210,7 +1204,7 @@ def configure(self):
     if Options.options._defs:
         env.append_unique('DEFINES', Options.options._defs.split(','))
     configureCompilerOptions(self)
-    ensureCpp14Support(self)
+    ensureCpp17Support(self)
 
     env['PLATFORM'] = sys_platform
 
