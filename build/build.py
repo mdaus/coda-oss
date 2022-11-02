@@ -21,6 +21,7 @@ from dumpconfig import dumpconfig
 from makewheel import makewheel
 from package import package
 
+
 COMMON_EXCLUDES = '.bzr .bzrignore .git .gitignore .svn CVS .cvsignore .arch-ids {arch} SCCS BitKeeper .hg _MTN _darcs Makefile Makefile.in config.log'.split()
 COMMON_EXCLUDES_EXT ='~ .rej .orig .pyc .pyo .bak .tar.bz2 tar.gz .zip .swp'.split()
 
@@ -790,9 +791,12 @@ def options(opt):
                    help='Specify a prebuilt modules config file (created from dumpconfig)')
     opt.add_option('--disable-swig-silent-leak', action='store_false', dest='swig_silent_leak',
                    default=True, help='Allow swig to print memory leaks it detects')
+    opt.add_option('--junit-report', action='store', default=None,
+                    help='Generates a junit formmated report file for unit test'
+                    'results. NOOP if junit_xml cannot be imported')
 
 
-def ensureCpp17Support(self):
+def ensureCpp14Support(self):
     # DEPRECATED.
     # Keeping for now in case downstream code is still looking for it
     self.env['cpp11support'] = True
@@ -827,6 +831,7 @@ def configureCompilerOptions(self):
         config['cxx']['warn']           = '-Wall'
         config['cxx']['verbose']        = '-v'
         config['cxx']['64']             = '-m64'
+        config['cxx']['optz_debug']     = ''
         config['cxx']['optz_med']       = '-O1'
         config['cxx']['optz_fast']      = '-O2'
         config['cxx']['optz_fastest']   = '-O3'
@@ -839,6 +844,7 @@ def configureCompilerOptions(self):
         config['cc']['warn']           = config['cxx']['warn']
         config['cc']['verbose']        = config['cxx']['verbose']
         config['cc']['64']             = config['cxx']['64']
+        config['cc']['optz_debug']     = config['cxx']['optz_debug']
         config['cc']['optz_med']       = config['cxx']['optz_med']
         config['cc']['optz_fast']      = config['cxx']['optz_fast']
         config['cc']['optz_fastest']   = config['cxx']['optz_fastest']
@@ -871,8 +877,13 @@ def configureCompilerOptions(self):
         #       If you want the plugins to not depend on Intel libraries,
         #       configure with:
         #       --with-cflags=-static-intel --with-cxxflags=-static-intel --with-linkflags=-static-intel
-        if cxxCompiler == 'g++' or cxxCompiler == 'icpc':
+        if cxxCompiler == 'gcc':
+            config['cxx']['debug']          = '-ggdb3'
+            config['cxx']['optz_debug']     = '-Og'
+        elif cxxCompiler == 'icpc':
             config['cxx']['debug']          = '-g'
+            config['cxx']['optz_debug']     = ''
+        if cxxCompiler == 'g++' or cxxCompiler == 'icpc':
             config['cxx']['warn']           = warningFlags.split()
             config['cxx']['verbose']        = '-v'
             config['cxx']['64']             = '-m64'
@@ -881,7 +892,10 @@ def configureCompilerOptions(self):
             config['cxx']['optz_fast']      = '-O2'
             config['cxx']['optz_fastest']   = '-O3'
 
-            gxxCompileFlags='-fPIC -std=c++17'
+            if not Options.options.enablecpp17:
+                gxxCompileFlags='-fPIC -std=c++14'
+            else:
+                gxxCompileFlags='-fPIC -std=c++17'
             self.env.append_value('CXXFLAGS', gxxCompileFlags.split())
 
             # DEFINES and LINKFLAGS will apply to both gcc and g++
@@ -896,8 +910,13 @@ def configureCompilerOptions(self):
 
             self.env.append_value('LINKFLAGS', linkFlags.split())
 
-        if ccCompiler == 'gcc' or ccCompiler == 'icc':
+        if ccCompiler == 'gcc':
+            config['cc']['debug']          = '-ggdb3'
+            config['cc']['optz_debug']     = '-Og'
+        elif ccCompiler == 'icc':
             config['cc']['debug']          = '-g'
+            config['cc']['optz_debug']     = ''
+        if ccCompiler == 'gcc' or ccCompiler == 'icc':
             config['cc']['warn']           = warningFlags.split()
             config['cc']['verbose']        = '-v'
             config['cc']['64']             = '-m64'
@@ -934,6 +953,7 @@ def configureCompilerOptions(self):
         vars['warn']           = warningFlags.split()
         vars['nowarn']         = '/w'
         vars['verbose']        = ''
+        vars['optz_debug']     = ['', crtFlag]
         vars['optz_med']       = ['-O2', crtFlag]
         vars['optz_fast']      = ['-O2', crtFlag]
         vars['optz_fastest']   = ['-Ox', crtFlag]
@@ -964,7 +984,12 @@ def configureCompilerOptions(self):
         defines = '_FILE_OFFSET_BITS=64 ' \
                   '_LARGEFILE_SOURCE WIN32 _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN'.split()
         flags = '/UUNICODE /U_UNICODE /EHs /GR'.split()
-        flags.append('/std:c++17')
+
+        #If building with cpp17 add flags/defines to enable auto_ptr
+        if Options.options.enablecpp17:
+            flags.append('/std:c++17')
+        else:
+            flags.append('/std:c++14')
 
         self.env.append_value('DEFINES', defines)
         self.env.append_value('CXXFLAGS', flags)
@@ -995,6 +1020,9 @@ def configureCompilerOptions(self):
         variantName = '%s-debug' % sys_platform
         variant.append_value('CXXFLAGS', config['cxx'].get('debug', ''))
         variant.append_value('CFLAGS', config['cc'].get('debug', ''))
+        optz = 'debug'
+        variant.append_value('CXXFLAGS', config['cxx'].get('optz_%s' % optz, ''))
+        variant.append_value('CFLAGS', config['cc'].get('optz_%s' % optz, ''))
     else:
         variantName = '%s-release' % sys_platform
         optz = Options.options.with_optz
@@ -1182,7 +1210,7 @@ def configure(self):
     if Options.options._defs:
         env.append_unique('DEFINES', Options.options._defs.split(','))
     configureCompilerOptions(self)
-    ensureCpp17Support(self)
+    ensureCpp14Support(self)
 
     env['PLATFORM'] = sys_platform
 
@@ -1667,6 +1695,41 @@ def addSourceTargets(bld, env, path, target):
 
         target.targets_to_add += wscriptTargets
 
+def junitUnitTestResults(bld):
+    '''
+    Summary calback function to generate JUnit formatted XML
+    '''
+    import junit_xml
+
+    # we also want a logged summary still
+    waf_unit_test.summary(bld)
+
+    # now generate a report
+    lst = getattr(bld,'utest_results',[])
+    test_cases = []
+    for name, retcode, stdout, stderr in lst:
+        so = stdout.decode()
+        se = stderr.decode()
+        tc = junit_xml.TestCase(name=name,
+                                status=retcode,
+                                stdout=so,
+                                stderr=se)
+        if retcode:
+            messages = []
+            lines = se.split('\n')
+            for line in lines:
+                if 'FAILED' in line:
+                    messages.append(line)
+            if len(messages) == 0:
+                messages = ['Unknown error occured that caused non-zero return code']
+
+            tc.add_failure_info('\n'.join(messages))
+        test_cases.append(tc)
+    ts = junit_xml.TestSuite('unit tests', test_cases)
+    with open(bld.options.junit_report, 'w') as fh:
+        fh.write(junit_xml.TestSuite.to_xml_string([ts]))
+
+
 def enableWafUnitTests(bld, set_exit_code=True):
     """
     If called, run all C++ unit tests after building
@@ -1675,7 +1738,16 @@ def enableWafUnitTests(bld, set_exit_code=True):
     # TODO: This does not work for Python files.
     # The "nice" way to handle this is possibly not
     # supported in this version of Waf.
-    bld.add_post_fun(waf_unit_test.summary)
+    if bld.options.junit_report is not None:
+        try:
+            import junit_xml
+            bld.add_post_fun(junitUnitTestResults)
+        except ImportError:
+            Logs.pprint('RED', 'Cannot generate requested junit report because we can\'t import junit-xml')
+            bld.add_post_fun(waf_unit_test.summary)
+    else:
+        bld.add_post_fun(waf_unit_test.summary)
+
     if set_exit_code:
         bld.add_post_fun(waf_unit_test.set_exit_code)
 
