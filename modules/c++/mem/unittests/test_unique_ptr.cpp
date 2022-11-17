@@ -88,6 +88,12 @@ TEST_CASE(test_make_unique)
     }
 }
 
+static void f(const std::string& testName, mem::AutoPtr<Foo> p)
+{
+    TEST_ASSERT_NOT_NULL(p.get());
+    TEST_ASSERT_EQ(123, p->mVal);
+}
+
 TEST_CASE(memAutoPtr)
 {
     {
@@ -95,19 +101,24 @@ TEST_CASE(memAutoPtr)
         TEST_ASSERT_NULL(fooCtor.get());
 
         fooCtor.reset(new Foo(123));
-        TEST_ASSERT_NOT_EQ(nullptr, fooCtor.get());
+        TEST_ASSERT_NOT_NULL(fooCtor.get());
         TEST_ASSERT_EQ(123, fooCtor->mVal);
     }
     {
         mem::AutoPtr<Foo> fooCtor(new Foo(123));
-        TEST_ASSERT_NOT_EQ(nullptr, fooCtor.get());
+        TEST_ASSERT_NOT_NULL(fooCtor.get());
         TEST_ASSERT_EQ(123, fooCtor->mVal);
     }
     {
         mem::AutoPtr<Foo> fooCtor(new Foo(123));
         mem::AutoPtr<Foo> other(fooCtor);
-        TEST_ASSERT_NOT_EQ(nullptr, other.get());
+        TEST_ASSERT_NOT_NULL(other.get());
         TEST_ASSERT_EQ(123, other->mVal);
+    }
+    {
+        mem::AutoPtr<Foo> fooCtor(new Foo(123));
+        f(testName, fooCtor);
+        TEST_ASSERT_NULL(fooCtor.get());
     }
 }
 
