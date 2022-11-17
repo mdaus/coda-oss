@@ -23,6 +23,7 @@
 #include <std/memory>
 
 #include <mem/SharedPtr.h>
+#include <mem/AutoPtr.h>
 
 #include "TestCase.h"
 
@@ -87,7 +88,32 @@ TEST_CASE(test_make_unique)
     }
 }
 
+TEST_CASE(memAutoPtr)
+{
+    {
+        mem::AutoPtr<Foo> fooCtor;
+        TEST_ASSERT_NULL(fooCtor.get());
+
+        fooCtor.reset(new Foo(123));
+        TEST_ASSERT_NOT_EQ(nullptr, fooCtor.get());
+        TEST_ASSERT_EQ(123, fooCtor->mVal);
+    }
+    {
+        mem::AutoPtr<Foo> fooCtor(new Foo(123));
+        TEST_ASSERT_NOT_EQ(nullptr, fooCtor.get());
+        TEST_ASSERT_EQ(123, fooCtor->mVal);
+    }
+    {
+        mem::AutoPtr<Foo> fooCtor(new Foo(123));
+        mem::AutoPtr<Foo> other(fooCtor);
+        TEST_ASSERT_NOT_EQ(nullptr, other.get());
+        TEST_ASSERT_EQ(123, other->mVal);
+    }
+}
+
+
 TEST_MAIN(
    TEST_CHECK(testStdUniquePtr);
    TEST_CHECK(test_make_unique);
+   TEST_CHECK(memAutoPtr);
    )
