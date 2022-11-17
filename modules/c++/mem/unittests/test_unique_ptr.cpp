@@ -93,7 +93,6 @@ static void f(const std::string& testName, mem::AutoPtr<Foo> p)
     TEST_ASSERT_NOT_NULL(p.get());
     TEST_ASSERT_EQ(123, p->mVal);
 }
-
 TEST_CASE(memAutoPtr)
 {
     {
@@ -118,6 +117,11 @@ TEST_CASE(memAutoPtr)
     {
         mem::AutoPtr<Foo> fooCtor(new Foo(123));
         f(testName, fooCtor);
+        TEST_ASSERT_NULL(fooCtor.get());
+    }
+    {
+        std::unique_ptr<Foo> fooCtor(new Foo(123));
+        f(testName, std::move(fooCtor));
         TEST_ASSERT_NULL(fooCtor.get());
     }
 }

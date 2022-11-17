@@ -73,6 +73,7 @@ public:
     AutoPtr& operator=(std::unique_ptr<U>&& p) noexcept
     {
         ptr_ = std::move(p);
+        return *this;
     }
     template <typename U>
     AutoPtr(std::unique_ptr<U>&& p) noexcept
