@@ -74,7 +74,7 @@ TEST_CASE(testXmlCreateNested)
      // a.setQName("count");
      // a.setValue("1");
      // pDocuments->getAttributes().add(a);
-     auto html = documents.setChild("html");
+     auto html = setChild(documents , "html");
      html += E(xml::lite::QName("title"), "Title");
      auto body = html.addChild("body");
      auto p = body.addChild("p");
