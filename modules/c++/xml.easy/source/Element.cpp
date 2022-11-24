@@ -21,16 +21,21 @@
  */
 #include "xml/easy/Element.h"
 
+#include <assert.h>
+
 xml::easy::Element::Element(std::unique_ptr<xml::lite::Element>&& element) :
     element_(std::move(element))
 {
 }
-xml::easy::Element::Element(xml::lite::Element& element) : pElement(&element)
+xml::easy::Element::Element(xml::lite::Element& element) : pElement_(&element)
 {
 }
 
 xml::easy::Element::Element(std::string qname) :
     element_(xml::lite::Element::create(qname))
+{
+}
+xml::easy::Element::Element(const char* qname) : Element(std::string(qname))
 {
 }
 
@@ -40,13 +45,20 @@ xml::easy::Element::Element(const xml::lite::QName& qname,
 {
 }
 
-xml::lite::Element& xml::easy::Element::element()
-{
-    return *element_;
-}
 const xml::lite::Element& xml::easy::Element::element() const
 {
+    if (pElement_ != nullptr)
+    {
+        assert(element_.get() == nullptr);
+        return *pElement_;
+    }
+
     return *element_;
+}
+xml::lite::Element& xml::easy::Element::element()
+{
+    const xml::easy::Element* pThis = this; 
+    return const_cast<xml::lite::Element&>(pThis->element()); // C++23 might fix this
 }
 const xml::lite::Element& xml::easy::Element::celement()
 {
@@ -64,9 +76,18 @@ xml::easy::Element& xml::easy::Element::operator=(std::string characterData)
     element().setCharacterData(std::move(characterData));
     return *this;
 }
+xml::easy::Element& xml::easy::Element::operator=(const char* characterData)
+{
+    *this = std::string(characterData);
+    return *this;
+}
 void xml::easy::operator+=(Element& e, std::string characterData)
 {
     e = e.celement().getCharacterData() + characterData;
+}
+void xml::easy::operator+=(Element& e, const char* characterData)
+{
+    e += std::string(characterData);
 }
 
 xml::easy::Element& xml::easy::Element::operator=(const xml::lite::QName& qname)

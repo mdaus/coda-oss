@@ -55,17 +55,14 @@ TEST_CASE(testXmlCreateRoot)
 
 TEST_CASE(testXmlCreateNested)
 {
+    using E = xml::easy::Element;
+
     xml::lite::MinidomParser xmlParser;
     auto& document = getDocument(xmlParser);
 
     xml::easy::Element documents(document.createElement(xml::lite::QName(xml::lite::Uri(), "documents"), ""));
-    //xml::lite::AttributeNode a;
-    //a.setQName("count");
-    //a.setValue("1");
-    //pDocuments->getAttributes().add(a);
-
-    documents = xml::easy::Element("html");
-    documents = xml::easy::Element("html");
+    documents = E("html");
+    documents = E("html");
 
      io::StringStream output;
      documents.celement().print(output);
@@ -73,33 +70,34 @@ TEST_CASE(testXmlCreateNested)
      const auto expected0 = "<documents><html/></documents>";
      TEST_ASSERT_EQ(expected0, actual);
      
-     auto html = documents.addChild(xml::easy::Element("html"));
+      // xml::lite::AttributeNode a;
+     // a.setQName("count");
+     // a.setValue("1");
+     // pDocuments->getAttributes().add(a);
+     auto html = documents.setChild("html");
+     html += E(xml::lite::QName("title"), "Title");
+     auto body = html.addChild("body");
+     auto p = body.addChild("p");
+     p = "paragraph";
+     // a.setQName("a");
+     // a.setValue("abc");
+     // p.getAttributes().add(a);
+     body += E("br");
 
-    //auto& html = pDocuments->addChild(xml::lite::Element::create(xml::lite::QName("html")));
-    //html.addChild(xml::lite::Element::create(xml::lite::QName("title"), "Title"));
-    //auto& body = html.addChild(xml::lite::Element::create(xml::lite::QName("body")));
-
-    //auto& p = body.addChild(xml::lite::Element::create(xml::lite::QName("p"), "paragraph"));
-    //a.setQName("a");
-    //a.setValue("abc");
-    //p.getAttributes().add(a);
-
-    //body.addChild(xml::lite::Element::create(xml::lite::QName("br")));
-
-    //io::StringStream output;
-    //documents.celement().print(output);
-    //const auto actual = output.stream().str();
-    //const auto expected =
-    //    "<documents count=\"1\">"
-    //        "<html>"
-    //            "<title>Title</title>"
-    //            "<body>"
-    //                "<p a=\"abc\">paragraph</p>"
-    //                "<br/>"
-    //            "</body>"
-    //         "</html>"
-    //    "</documents>";
-    //TEST_ASSERT_EQ(expected, actual);
+    output.reset();
+    documents.celement().print(output);
+    actual = output.stream().str();
+    const auto expected1 =
+        "<documents>"
+            "<html>"
+                "<title>Title</title>"
+                "<body>"
+                    "<p>paragraph</p>"
+                    "<br/>"
+                "</body>"
+             "</html>"
+        "</documents>";
+    TEST_ASSERT_EQ(expected1, actual);
 }
 
 int main(int, char**)
