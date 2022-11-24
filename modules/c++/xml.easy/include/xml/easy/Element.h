@@ -26,23 +26,13 @@
 
 #include <memory>
 #include <string>
-#include <new> // std::nothrow_t
 #include <coda_oss/string.h>
 
-#include "xml/lite/Attributes.h"
 #include "xml/lite/QName.h"
 #include "xml/lite/Element.h"
 
-/*!
- * \file  Element.h
- * \brief This contains the xml::lite data type for elements.
- *
- * This class is analogous to its DOM namesake.  It contains all of
- * the information that would be expected of it, including comment data.
- * The API, however, is much simpler and less developed than DOM.
- */
+#include "xml/easy/Attribute.h"
 
-// xml::lite::Element
 namespace xml
 {
 namespace easy
@@ -75,8 +65,9 @@ struct Element final
     const xml::lite::Element& celement();
     const xml::lite::Element& element() const;
 
-    Element& operator=(std::string);
-    Element& operator=(const xml::lite::QName&);
+    Element& operator=(std::string); // setCharacterData()
+    Element& operator=(const xml::lite::QName&); // setQName()
+    Element& operator=(const xml::lite::Uri&); // setUri()
 
      Element& operator+=(Element&&);
 
@@ -86,6 +77,8 @@ private:
     std::unique_ptr<xml::lite::Element> element_;
 };
   
+void operator+=(Element&, std::string);
+
 }
 }
 
