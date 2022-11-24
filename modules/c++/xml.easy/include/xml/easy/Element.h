@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of xml.easy-c++ 
+ * This file is part of xml.easy-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * xml.easy-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,14 +24,14 @@
 #define CODA_OSS_xml_easy_Element_h_INCLUDED_
 #pragma once
 
-#include <memory>
-#include <string>
 #include <coda_oss/string.h>
 
-#include "xml/lite/QName.h"
-#include "xml/lite/Element.h"
+#include <memory>
+#include <string>
 
 #include "xml/easy/Attribute.h"
+#include "xml/lite/Element.h"
+#include "xml/lite/QName.h"
 
 namespace xml
 {
@@ -47,9 +47,8 @@ namespace easy
  */
 struct Element final
 {
-    Element() = delete;
-
     Element(std::unique_ptr<xml::lite::Element>&& element);
+    Element(xml::lite::Element&);
 
     Element(std::string qname);
     Element(const xml::lite::QName&, std::string characterData);
@@ -57,7 +56,7 @@ struct Element final
     Element(const Element&) = delete;
     Element& operator=(const Element&) = delete;
     Element(Element&&) = default;
-    Element& operator=(Element&&) = default;
+    Element& operator=(Element&&) noexcept(false);  // setChild()
 
     ~Element() = default;
 
@@ -65,21 +64,25 @@ struct Element final
     const xml::lite::Element& celement();
     const xml::lite::Element& element() const;
 
-    Element& operator=(std::string); // setCharacterData()
-    Element& operator=(const xml::lite::QName&); // setQName()
-    Element& operator=(const xml::lite::Uri&); // setUri()
+    Element& operator=(std::string);  // setCharacterData()
+    Element& operator=(const xml::lite::QName&);  // setQName()
+    Element& operator=(const xml::lite::Uri&);  // setUri()
 
-     Element& operator+=(Element&&);
+    void operator+=(Element&&); // addChild()
 
-     Element operator[](std::string) const;
+    Element operator[](std::string) const;
+
+    Element addChild(Element&&);
+    Element setChild(Element&&);  // destroyChildren() + addChild()
 
 private:
     std::unique_ptr<xml::lite::Element> element_;
+    xml::lite::Element* pElement = nullptr;
 };
-  
+
 void operator+=(Element&, std::string);
 
 }
 }
 
-#endif // CODA_OSS_xml_easy_Element_h_INCLUDED_
+#endif  // CODA_OSS_xml_easy_Element_h_INCLUDED_
