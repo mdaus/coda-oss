@@ -46,10 +46,10 @@ namespace easy
  * document.
  */
 struct Element;
-struct ElementReference final
+struct ElementReference
 {
-    ElementReference(xml::lite::Element&);
-    ElementReference(Element&);
+    ElementReference(const xml::lite::Element&);
+    ElementReference(const Element&);
 
     ElementReference(const ElementReference&) = delete;
     ElementReference& operator=(const ElementReference&) = delete;
@@ -58,33 +58,51 @@ struct ElementReference final
 
     ~ElementReference() = default;
 
-    xml::lite::Element& ref();
     const xml::lite::Element& ref() const;
     const xml::lite::Element& cref();
     const xml::lite::Element& cref() const;
 
-    ElementReference& operator=(const std::string&);  // setCharacterData()
-    ElementReference& operator=(const char*);  // setCharacterData()
-    ElementReference& operator=(const xml::lite::QName&);  // setQName()
-    ElementReference& operator=(const xml::lite::Uri&);  // setUri()
-    ElementReference& operator=(std::unique_ptr<xml::lite::Element>&&);  // setChild()
-    ElementReference& operator=(Element&&);  // setChild()
+private:
+    const xml::lite::Element& element_;
+};
+
+std::string getCharacterData(const ElementReference&);
+
+struct ElementMutableReference final : public ElementReference
+{
+    ElementMutableReference(xml::lite::Element&);
+    ElementMutableReference(Element&);
+
+    ElementMutableReference(const ElementMutableReference&) = delete;
+    ElementMutableReference& operator=(const ElementMutableReference&) = delete;
+    ElementMutableReference(ElementMutableReference&&) = default;
+    ElementMutableReference& operator=(ElementMutableReference&&) = default;
+
+    ~ElementMutableReference() = default;
+
+    xml::lite::Element& ref();
+
+    ElementMutableReference& operator=(const std::string&);  // setCharacterData()
+    ElementMutableReference& operator=(const char*);  // setCharacterData()
+    ElementMutableReference& operator=(const xml::lite::QName&);  // setQName()
+    ElementMutableReference& operator=(const xml::lite::Uri&);  // setUri()
+    ElementMutableReference& operator=(std::unique_ptr<xml::lite::Element>&&);  // setChild()
+    ElementMutableReference& operator=(Element&&);  // setChild()
 
 private:
     xml::lite::Element& element_;
 };
 
-ElementReference addChild(ElementReference&, std::unique_ptr<xml::lite::Element>&&);
-void operator+=(ElementReference&, std::unique_ptr<xml::lite::Element>&&);  // addChild()
-ElementReference addChild(ElementReference&, Element&&);
-void operator+=(ElementReference&, Element&&);  // addChild()
+ElementMutableReference addChild(ElementMutableReference&, std::unique_ptr<xml::lite::Element>&&);
+void operator+=(ElementMutableReference&, std::unique_ptr<xml::lite::Element>&&);  // addChild()
+ElementMutableReference addChild(ElementMutableReference&, Element&&);
+void operator+=(ElementMutableReference&, Element&&);  // addChild()
 
-ElementReference setChild(ElementReference&, std::unique_ptr<xml::lite::Element>&&);  // destroyChildren() + addChild()
-ElementReference setChild(ElementReference&, Element&&);  // destroyChildren() + addChild()
+ElementMutableReference setChild(ElementMutableReference&, std::unique_ptr<xml::lite::Element>&&);  // destroyChildren() + addChild()
+ElementMutableReference setChild(ElementMutableReference&, Element&&);  // destroyChildren() + addChild()
 
-void setCharacterData(ElementReference&, const std::string&);
-void setCharacterData(ElementReference&, const char*);
-std::string getCharacterData(const ElementReference&);
+void setCharacterData(ElementMutableReference&, const std::string&);
+void setCharacterData(ElementMutableReference&, const char*);
 
 }
 }

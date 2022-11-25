@@ -76,9 +76,10 @@ struct Element final
 
     Element operator[](std::string) const;
 
-    ElementReference addChild(Element&&);
+    ElementMutableReference addChild(Element&&);
 
-    operator ElementReference();
+    operator ElementReference() const;
+    operator ElementMutableReference();
 
     std::unique_ptr<xml::lite::Element>&& release()
     {
@@ -92,7 +93,7 @@ private:
 void operator+=(Element&, const std::string&);
 void operator+=(Element&, const char*);
 
-ElementReference setChild(Element&, Element&&);  // destroyChildren() + addChild()
+ElementMutableReference setChild(Element&, Element&&);  // destroyChildren() + addChild()
 
 void setCharacterData(Element&, const std::string&);
 void setCharacterData(Element&, const char*);
