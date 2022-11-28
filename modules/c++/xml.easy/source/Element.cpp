@@ -31,7 +31,7 @@ xml::easy::Element::Element(xml::lite::Element& element) : pElement_(&element)
 {
 }
 
-xml::easy::Element::Element(const std::string& qname) :
+xml::easy::Element::Element(std::string qname) :
     element_(xml::lite::Element::create(qname))
 {
 }
@@ -39,8 +39,9 @@ xml::easy::Element::Element(const char* qname) : Element(std::string(qname))
 {
 }
 
-xml::easy::Element::Element(const xml::lite::QName& qname, const std::string& characterData) :
-    element_(xml::lite::Element::create(qname, characterData))
+xml::easy::Element::Element(const xml::lite::QName& qname,
+                            std::string characterData) :
+    element_(xml::lite::Element::create(qname, std::move(characterData)))
 {
 }
 
@@ -66,13 +67,13 @@ const xml::lite::Element& xml::easy::Element::celement()
 
 xml::easy::Element& xml::easy::Element::operator=(Element&& child) noexcept(false)
 {
-    setChild(*this, std::move(child));
+    setChild(std::move(child));
     return *this;
 }
 
-xml::easy::Element& xml::easy::Element::operator=(const std::string& characterData)
+xml::easy::Element& xml::easy::Element::operator=(std::string characterData)
 {
-    setCharacterData(*this, characterData);
+    element().setCharacterData(std::move(characterData));
     return *this;
 }
 xml::easy::Element& xml::easy::Element::operator=(const char* characterData)
@@ -80,9 +81,9 @@ xml::easy::Element& xml::easy::Element::operator=(const char* characterData)
     *this = std::string(characterData);
     return *this;
 }
-void xml::easy::operator+=(Element& e, const std::string& characterData)
+void xml::easy::operator+=(Element& e, std::string characterData)
 {
-    e = getCharacterData(e) + characterData;
+    e = e.celement().getCharacterData() + characterData;
 }
 void xml::easy::operator+=(Element& e, const char* characterData)
 {
@@ -117,21 +118,8 @@ xml::easy::Element xml::easy::Element::addChild(Element&& child)
     element().addChild(std::move(child.element_));
     return Element(*pChild);
 }
-xml::easy::Element xml::easy::setChild(Element& e, Element&& child)
+xml::easy::Element xml::easy::Element::setChild(Element&& child)
 {
-    e.element().destroyChildren();
-    return e.addChild(std::move(child));
-}
-
-void xml::easy::setCharacterData(Element& e, const std::string& s)
-{
-    e.element().setCharacterData(s);
-}
-void xml::easy::setCharacterData(Element& e, const char* s)
-{
-    setCharacterData(e, std::string(s));
-}
-std::string xml::easy::getCharacterData(const Element& e)
-{
-    return e.element().getCharacterData();
+    element().destroyChildren();
+    return addChild(std::move(child));
 }

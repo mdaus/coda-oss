@@ -50,9 +50,9 @@ struct Element final
     Element(std::unique_ptr<xml::lite::Element>&& element);
     Element(xml::lite::Element&);
 
-    Element(const std::string& qname);
+    Element(std::string qname);
     Element(const char* qname);
-    Element(const xml::lite::QName&, const std::string& characterData);
+    Element(const xml::lite::QName&, std::string characterData);
 
     Element(const Element&) = delete;
     Element& operator=(const Element&) = delete;
@@ -65,7 +65,7 @@ struct Element final
     const xml::lite::Element& celement();
     const xml::lite::Element& element() const;
 
-    Element& operator=(const std::string&);  // setCharacterData()
+    Element& operator=(std::string);  // setCharacterData()
     Element& operator=(const char*);  // setCharacterData()
     Element& operator=(const xml::lite::QName&);  // setQName()
     Element& operator=(const xml::lite::Uri&);  // setUri()
@@ -75,20 +75,15 @@ struct Element final
     Element operator[](std::string) const;
 
     Element addChild(Element&&);
+    Element setChild(Element&&);  // destroyChildren() + addChild()
 
 private:
     std::unique_ptr<xml::lite::Element> element_;
     xml::lite::Element* pElement_ = nullptr;
 };
 
-void operator+=(Element&, const std::string&);
+void operator+=(Element&, std::string);
 void operator+=(Element&, const char*);
-
-Element setChild(Element&, Element&&);  // destroyChildren() + addChild()
-
-void setCharacterData(Element&, const std::string&);
-void setCharacterData(Element&, const char*);
-std::string getCharacterData(const Element&);
 
 }
 }
