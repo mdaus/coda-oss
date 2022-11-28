@@ -55,19 +55,10 @@ xml::easy::Element& xml::easy::Element::operator=(std::string characterData)
     element().setCharacterData(std::move(characterData));
     return *this;
 }
-void xml::easy::operator+=(Element& e, std::string characterData)
-{
-    e = e.celement().getCharacterData() + characterData;
-}
 
 xml::easy::Element& xml::easy::Element::operator=(const xml::lite::QName& qname)
 {
     element().setQName(qname);
-    return *this;
-}
-xml::easy::Element& xml::easy::Element::operator=(const xml::lite::Uri& uri)
-{
-    element().setUri(uri);
     return *this;
 }
 
@@ -77,7 +68,7 @@ xml::easy::Element& xml::easy::Element::operator+=(xml::easy::Element&& child)
     return *this;
 }
 
-//xml::easy::Element xml::easy::Element::operator[](std::string localName) const
-//{
-//    auto& e = element().getElementByTagName(localName);
-//}
+xml::easy::Element xml::easy::Element::operator[](std::string localName) const
+{
+    auto& e = element().getElementByTagName(localName);
+}
