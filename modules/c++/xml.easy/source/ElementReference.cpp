@@ -25,13 +25,18 @@
 
 #include "xml/easy/Element.h"
 
-xml::easy::ElementReference::ElementReference(const xml::lite::Element& e) : element_(e)
+xml::easy::ElementReference::ElementReference(xml::lite::Element& e) :
+    element_(e)
 {
 }
-xml::easy::ElementReference::ElementReference(const Element& e) : ElementReference(e.element())
+xml::easy::ElementReference::ElementReference(Element& e) : ElementReference(e.element())
 {
 }
 
+xml::lite::Element& xml::easy::ElementReference::ref()
+{
+    return element_;
+}
 const xml::lite::Element& xml::easy::ElementReference::ref() const
 {
     return element_;
@@ -46,81 +51,69 @@ const xml::lite::Element& xml::easy::ElementReference::cref() const
     return ref();
 }
 
-xml::easy::ElementMutableReference::ElementMutableReference(xml::lite::Element& e) : ElementReference(e), element_(e)
-{
-}
-xml::easy::ElementMutableReference::ElementMutableReference(Element& e) : ElementMutableReference(e.element())
-{
-}
-
-xml::lite::Element& xml::easy::ElementMutableReference::ref()
-{
-    return element_;
-}
-
-xml::easy::ElementMutableReference xml::easy::addChild(ElementMutableReference& e, std::unique_ptr<xml::lite::Element>&& child)
+xml::easy::ElementReference xml::easy::addChild(ElementReference& e, std::unique_ptr<xml::lite::Element>&& child)
 {
     return e.ref().addChild(std::move(child));
 }
-void xml::easy::operator+=(ElementMutableReference& e, std::unique_ptr<xml::lite::Element>&& child)
+void xml::easy::operator+=(ElementReference& e, std::unique_ptr<xml::lite::Element>&& child)
 {
     std::ignore = addChild(e, std::move(child));
 }
-xml::easy::ElementMutableReference xml::easy::addChild(ElementMutableReference& e, Element&& child)
+xml::easy::ElementReference xml::easy::addChild(ElementReference& e, Element&& child)
 {
     return addChild(e, child.release());
 }
-void xml::easy::operator+=(ElementMutableReference& e, Element&& child)
+void xml::easy::operator+=(ElementReference& e, Element&& child)
 {
     std::ignore = addChild(e, std::move(child));
 }
 
-xml::easy::ElementMutableReference xml::easy::setChild(ElementMutableReference& e, std::unique_ptr<xml::lite::Element>&& child)
+xml::easy::ElementReference xml::easy::setChild(ElementReference& e, std::unique_ptr<xml::lite::Element>&& child)
 {
     e.ref().destroyChildren();
     return addChild(e, std::move(child));
 }
-xml::easy::ElementMutableReference& xml::easy::ElementMutableReference::operator=(std::unique_ptr<xml::lite::Element>&& child)
+xml::easy::ElementReference& xml::easy::ElementReference::operator=(std::unique_ptr<xml::lite::Element>&& child)
 {
     setChild(*this, std::move(child));
     return *this;
 }
-xml::easy::ElementMutableReference xml::easy::setChild(ElementMutableReference& e, Element&& child)
+xml::easy::ElementReference xml::easy::setChild(ElementReference& e, Element&& child)
 {
     return setChild(e, child.release());
 }
-xml::easy::ElementMutableReference& xml::easy::ElementMutableReference::operator=(Element&& child)
+xml::easy::ElementReference& xml::easy::ElementReference::operator=(Element&& child)
 {
     setChild(*this, std::move(child));
     return *this;
 }
 
-xml::easy::ElementMutableReference& xml::easy::ElementMutableReference::operator=(const std::string& characterData)
+xml::easy::ElementReference& xml::easy::ElementReference::operator=(const std::string& characterData)
 {
     setCharacterData(*this, characterData);
     return *this;
 }
-xml::easy::ElementMutableReference& xml::easy::ElementMutableReference::operator=(const char* characterData)
+xml::easy::ElementReference& xml::easy::ElementReference::operator=(const char* characterData)
 {
     *this = std::string(characterData);
     return *this;
 }
-xml::easy::ElementMutableReference& xml::easy::ElementMutableReference::operator=(const xml::lite::QName& qname)
+xml::easy::ElementReference& xml::easy::ElementReference::operator=(const xml::lite::QName& qname)
 {
     ref().setQName(qname);
     return *this;
 }
-xml::easy::ElementMutableReference& xml::easy::ElementMutableReference::operator=(const xml::lite::Uri& uri)
+xml::easy::ElementReference& xml::easy::ElementReference::operator=(const xml::lite::Uri& uri)
 {
     ref().setUri(uri);
     return *this;
 }
 
-void xml::easy::setCharacterData(ElementMutableReference& e, const std::string& s)
+void xml::easy::setCharacterData(ElementReference& e, const std::string& s)
 {
     e.ref().setCharacterData(s);
 }
-void xml::easy::setCharacterData(ElementMutableReference& e, const char* s)
+void xml::easy::setCharacterData(ElementReference& e, const char* s)
 {
     setCharacterData(e, std::string(s));
 }

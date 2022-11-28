@@ -41,13 +41,9 @@ xml::easy::Element::Element(const xml::lite::QName& qname, const std::string& ch
 {
 }
 
-xml::easy::Element::operator xml::easy::ElementReference() const
+xml::easy::Element::operator xml::easy::ElementReference()
 {
     return ElementReference(*this);
-}
-xml::easy::Element::operator xml::easy::ElementMutableReference()
-{
-    return ElementMutableReference(*this);
 }
 
 const xml::lite::Element& xml::easy::Element::element() const
@@ -111,14 +107,14 @@ void xml::easy::Element::operator+=(xml::easy::Element&& child)
 //     auto& e = element().getElementByTagName(localName);
 // }
 
-xml::easy::ElementMutableReference xml::easy::Element::addChild(Element&& child)
+xml::easy::ElementReference xml::easy::Element::addChild(Element&& child)
 {
-    ElementMutableReference ref(*this);
+    ElementReference ref(*this);
     return xml::easy::addChild(ref, std::move(child));
 }
-xml::easy::ElementMutableReference xml::easy::setChild(Element& e, Element&& child)
+xml::easy::ElementReference xml::easy::setChild(Element& e, Element&& child)
 {
-    ElementMutableReference ref(e);
+    ElementReference ref(e);
     return setChild(ref, std::move(child));
 }
 
