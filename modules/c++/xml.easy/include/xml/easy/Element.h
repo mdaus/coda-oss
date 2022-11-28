@@ -33,8 +33,6 @@
 #include "xml/lite/Element.h"
 #include "xml/lite/QName.h"
 
-#include "xml/easy/ElementReference.h"
-
 namespace xml
 {
 namespace easy
@@ -47,10 +45,10 @@ namespace easy
  * This class stores all of the element information about an XML
  * document.
  */
-
 struct Element final
 {
     Element(std::unique_ptr<xml::lite::Element>&& element);
+    Element(xml::lite::Element&);
 
     Element(const std::string& qname);
     Element(const char* qname);
@@ -76,23 +74,17 @@ struct Element final
 
     Element operator[](std::string) const;
 
-    ElementReference addChild(Element&&);
-
-    operator ElementReference();
-
-    std::unique_ptr<xml::lite::Element>&& release()
-    {
-        return std::move(element_);
-    }
+    Element addChild(Element&&);
 
 private:
     std::unique_ptr<xml::lite::Element> element_;
+    xml::lite::Element* pElement_ = nullptr;
 };
 
 void operator+=(Element&, const std::string&);
 void operator+=(Element&, const char*);
 
-ElementReference setChild(Element&, Element&&);  // destroyChildren() + addChild()
+Element setChild(Element&, Element&&);  // destroyChildren() + addChild()
 
 void setCharacterData(Element&, const std::string&);
 void setCharacterData(Element&, const char*);

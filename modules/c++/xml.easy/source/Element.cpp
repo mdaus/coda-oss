@@ -21,10 +21,13 @@
  */
 #include "xml/easy/Element.h"
 
-#include "xml/easy/ElementReference.h"
+#include <assert.h>
 
 xml::easy::Element::Element(std::unique_ptr<xml::lite::Element>&& element) :
     element_(std::move(element))
+{
+}
+xml::easy::Element::Element(xml::lite::Element& element) : pElement_(&element)
 {
 }
 
@@ -41,13 +44,14 @@ xml::easy::Element::Element(const xml::lite::QName& qname, const std::string& ch
 {
 }
 
-xml::easy::Element::operator xml::easy::ElementReference()
-{
-    return ElementReference(*this);
-}
-
 const xml::lite::Element& xml::easy::Element::element() const
 {
+    if (pElement_ != nullptr)
+    {
+        assert(element_.get() == nullptr);
+        return *pElement_;
+    }
+
     return *element_;
 }
 xml::lite::Element& xml::easy::Element::element()
@@ -107,15 +111,16 @@ void xml::easy::Element::operator+=(xml::easy::Element&& child)
 //     auto& e = element().getElementByTagName(localName);
 // }
 
-xml::easy::ElementReference xml::easy::Element::addChild(Element&& child)
+xml::easy::Element xml::easy::Element::addChild(Element&& child)
 {
-    ElementReference ref(*this);
-    return xml::easy::addChild(ref, std::move(child));
+    auto pChild = child.element_.get();
+    element().addChild(std::move(child.element_));
+    return Element(*pChild);
 }
-xml::easy::ElementReference xml::easy::setChild(Element& e, Element&& child)
+xml::easy::Element xml::easy::setChild(Element& e, Element&& child)
 {
-    ElementReference ref(e);
-    return setChild(ref, std::move(child));
+    e.element().destroyChildren();
+    return e.addChild(std::move(child));
 }
 
 void xml::easy::setCharacterData(Element& e, const std::string& s)
