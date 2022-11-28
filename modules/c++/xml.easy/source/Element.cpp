@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of xml.easy-c++
+ * This file is part of xml.easy-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * xml.easy-c++ is free software; you can redistribute it and/or modify
@@ -14,18 +14,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
 #include "xml/easy/Element.h"
 
+
 xml::easy::Element::Element(std::unique_ptr<xml::lite::Element>&& element) :
     element_(std::move(element))
-{
-}
-xml::easy::Element::Element(xml::lite::Element& element) : pElement(&element)
 {
 }
 
@@ -34,8 +32,7 @@ xml::easy::Element::Element(std::string qname) :
 {
 }
 
-xml::easy::Element::Element(const xml::lite::QName& qname,
-                            std::string characterData) :
+xml::easy::Element::Element(const xml::lite::QName& qname, std::string characterData) :
     element_(xml::lite::Element::create(qname, std::move(characterData)))
 {
 }
@@ -51,12 +48,6 @@ const xml::lite::Element& xml::easy::Element::element() const
 const xml::lite::Element& xml::easy::Element::celement()
 {
     return element();
-}
-
-xml::easy::Element& xml::easy::Element::operator=(Element&& child) noexcept(false)
-{
-    setChild(std::move(child));
-    return *this;
 }
 
 xml::easy::Element& xml::easy::Element::operator=(std::string characterData)
@@ -80,25 +71,13 @@ xml::easy::Element& xml::easy::Element::operator=(const xml::lite::Uri& uri)
     return *this;
 }
 
-void xml::easy::Element::operator+=(xml::easy::Element&& child)
+xml::easy::Element& xml::easy::Element::operator+=(xml::easy::Element&& child)
 {
-    addChild(std::move(child));
-}
-
-// xml::easy::Element xml::easy::Element::operator[](std::string localName)
-// const
-//{
-//     auto& e = element().getElementByTagName(localName);
-// }
-
-xml::easy::Element xml::easy::Element::addChild(Element&& child)
-{
-    auto pChild = child.element_.get();
     element().addChild(std::move(child.element_));
-    return Element(*pChild);
+    return *this;
 }
-xml::easy::Element xml::easy::Element::setChild(Element&& child)
-{
-    element().destroyChildren();
-    return addChild(std::move(child));
-}
+
+//xml::easy::Element xml::easy::Element::operator[](std::string localName) const
+//{
+//    auto& e = element().getElementByTagName(localName);
+//}
