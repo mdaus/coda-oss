@@ -82,6 +82,10 @@ xml::lite::ElementMutableReference xml::lite::addChild(ElementMutableReference& 
 {
     return addChild(e, Element::create(qname));
 }
+void xml::lite::operator+=(ElementMutableReference& e, const std::string& qname)
+{
+    std::ignore = addChild(e, qname);
+}
 
 xml::lite::ElementMutableReference xml::lite::addChild(ElementMutableReference& e, const std::string& qname, const coda_oss::u8string& characterData, const Uri& uri)
 {

@@ -97,6 +97,8 @@ ElementMutableReference addChild(ElementMutableReference&, const std::string& qn
 ElementMutableReference addChild(ElementMutableReference&, const std::string& qname, const Uri&, const coda_oss::u8string& characterData);
 ElementMutableReference addChild(ElementMutableReference&, const std::string& qname, const coda_oss::u8string& characterData, const Uri&);
 
+void operator+=(ElementMutableReference&, const std::string& qname);  // addChild()
+
 void setCharacterData(ElementMutableReference&, const coda_oss::u8string&);
 void setCharacterData(ElementMutableReference&, coda_oss::u8string::const_pointer);
 void setCharacterData(ElementMutableReference&, const std::string&);

@@ -79,7 +79,7 @@ TEST_CASE(testXmlCreateNested)
     // // a.setQName("a");
     // // a.setValue("abc");
     // // p.getAttributes().add(a);
-    body += xml::lite::Element::create("br");
+    body += "br"; // addChild()
 
     output.reset();
     documents.cref().print(output);
