@@ -23,6 +23,8 @@
 
 #include <tuple>
 
+#include "str/EncodedStringView.h"
+
 xml::lite::ElementReference::ElementReference(const Element& e) : element_(e)
 {
 }
@@ -122,15 +124,30 @@ xml::lite::ElementMutableReference& xml::lite::ElementMutableReference::operator
     return *this;
 }
 
-void xml::lite::setCharacterData(ElementMutableReference& e, const std::string& s)
+void xml::lite::setCharacterData(ElementMutableReference& e, const coda_oss::u8string& s)
 {
     e.ref().setCharacterData(s);
 }
-void xml::lite::setCharacterData(ElementMutableReference& e, const char* s)
+void xml::lite::setCharacterData(ElementMutableReference& e, coda_oss::u8string::const_pointer s)
 {
-    setCharacterData(e, std::string(s));
+    setCharacterData(e, coda_oss::u8string(s));
 }
-std::string xml::lite::getCharacterData(const ElementReference& e)
+void xml::lite::setCharacterData(ElementMutableReference& e, const std::string& s)
 {
-    return e.ref().getCharacterData();
+    setCharacterData(e, str::EncodedStringView(s).u8string());
+}
+void xml::lite::setCharacterData(ElementMutableReference& e, std::string::const_pointer s)
+{
+    setCharacterData(e, str::EncodedStringView(s).u8string());
+}
+
+coda_oss::u8string xml::lite::getCharacterData(const ElementReference& e)
+{
+    coda_oss::u8string retval;
+    return e.ref().getCharacterData(retval);
+}
+std::string& xml::lite::getCharacterData(const ElementReference& e, std::string& result)
+{
+    result = str::EncodedStringView(getCharacterData(e)).native();
+    return result;
 }

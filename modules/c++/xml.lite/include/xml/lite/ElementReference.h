@@ -58,7 +58,8 @@ private:
     const Element& element_;
 };
 
-std::string getCharacterData(const ElementReference&);
+coda_oss::u8string getCharacterData(const ElementReference&);
+std::string& getCharacterData(const ElementReference&, std::string& result);
 
 struct ElementMutableReference final : public ElementReference
 {
@@ -94,8 +95,10 @@ ElementMutableReference addChild(ElementMutableReference&, const std::string& qn
 ElementMutableReference addChild(ElementMutableReference&, const std::string& qname, const Uri&, const coda_oss::u8string& characterData);
 ElementMutableReference addChild(ElementMutableReference&, const std::string& qname, const coda_oss::u8string& characterData, const Uri&);
 
+void setCharacterData(ElementMutableReference&, const coda_oss::u8string&);
+void setCharacterData(ElementMutableReference&, coda_oss::u8string::const_pointer);
 void setCharacterData(ElementMutableReference&, const std::string&);
-void setCharacterData(ElementMutableReference&, const char*);
+void setCharacterData(ElementMutableReference&, std::string::const_pointer);
 
 }
 }
