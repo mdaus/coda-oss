@@ -74,6 +74,10 @@ xml::lite::ElementMutableReference xml::lite::addChild(ElementMutableReference& 
 {
     return addChild(e, Element::create(qname, characterData));
 }
+xml::lite::ElementMutableReference xml::lite::addChild(ElementMutableReference& e, const QName& qname, const std::string& characterData)
+{
+    return addChild(e, qname, str::EncodedStringView(characterData).u8string());
+}
 xml::lite::ElementMutableReference xml::lite::addChild(ElementMutableReference& e, const QName& qname)
 {
     return addChild(e, Element::create(qname));

@@ -20,6 +20,7 @@
  *
  */
 
+#include <tuple>
 #include <std/string>
 #include <std/filesystem>
 #include <std/optional>
@@ -59,7 +60,7 @@ TEST_CASE(testXmlCreateNested)
 
     auto documents_ = document.createElement(xml::lite::QName(xml::lite::Uri(), "documents"), "");
     xml::lite::ElementMutableReference documents(*documents_);
-    addChild(documents, xml::lite::Element::create("html"));
+    std::ignore = addChild(documents, xml::lite::Element::create("html"));
     io::StringStream output;
     documents.cref().print(output);
     auto actual = output.stream().str();
@@ -72,8 +73,8 @@ TEST_CASE(testXmlCreateNested)
     // // pDocuments->getAttributes().add(a);
     auto html = setChild(documents, xml::lite::Element::create("html"));
     html += xml::lite::Element::create(xml::lite::QName("title"), "Title");
-    auto body = addChild(html, xml::lite::Element::create("body"));
-    auto p = addChild(body, xml::lite::Element::create("p"));
+    auto body = addChild(html, "body");
+    auto p = addChild(body, "p");
     p = "paragraph";
     // // a.setQName("a");
     // // a.setValue("abc");

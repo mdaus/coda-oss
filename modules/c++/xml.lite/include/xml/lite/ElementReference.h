@@ -90,7 +90,9 @@ void operator+=(ElementMutableReference&, std::unique_ptr<Element>&&);  // addCh
 ElementMutableReference addChild(ElementMutableReference&, const std::string& qname);
 ElementMutableReference addChild(ElementMutableReference&, const QName&);
 ElementMutableReference addChild(ElementMutableReference&, const std::string& qname, const coda_oss::u8string& characterData);
+ElementMutableReference addChild(ElementMutableReference&, const std::string&, const std::string&) = delete; // NO, order matters!
 ElementMutableReference addChild(ElementMutableReference&, const QName&, const coda_oss::u8string& characterData);
+ElementMutableReference addChild(ElementMutableReference&, const QName&, const std::string& characterData);
 ElementMutableReference addChild(ElementMutableReference&, const std::string& qname, const Uri&);
 ElementMutableReference addChild(ElementMutableReference&, const std::string& qname, const Uri&, const coda_oss::u8string& characterData);
 ElementMutableReference addChild(ElementMutableReference&, const std::string& qname, const coda_oss::u8string& characterData, const Uri&);
