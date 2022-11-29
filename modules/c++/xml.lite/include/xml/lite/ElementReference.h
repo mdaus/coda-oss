@@ -38,11 +38,8 @@ namespace lite
 {
 
 /*!
- * \class Element
- * \brief The class defining one element of an XML document
- *
- * This class stores all of the element information about an XML
- * document.
+ * \class ElementReference and ElementMutableReference
+ * \brief Non-ownning wrappers around an Element inststance.
  */
 struct ElementReference
 {
@@ -84,11 +81,18 @@ private:
     Element& element_;
 };
 
+ElementMutableReference setChild(ElementMutableReference&, std::unique_ptr<Element>&&);  // destroyChildren() + addChild()
+
 ElementMutableReference addChild(ElementMutableReference&, std::unique_ptr<Element>&&);
 void operator+=(ElementMutableReference&, std::unique_ptr<Element>&&);  // addChild()
-ElementMutableReference addChild(ElementMutableReference&, Element&&);
 
-ElementMutableReference setChild(ElementMutableReference&, std::unique_ptr<Element>&&);  // destroyChildren() + addChild()
+ElementMutableReference addChild(ElementMutableReference&, const std::string& qname);
+ElementMutableReference addChild(ElementMutableReference&, const QName&);
+ElementMutableReference addChild(ElementMutableReference&, const std::string& qname, const coda_oss::u8string& characterData);
+ElementMutableReference addChild(ElementMutableReference&, const QName&, const coda_oss::u8string& characterData);
+ElementMutableReference addChild(ElementMutableReference&, const std::string& qname, const Uri&);
+ElementMutableReference addChild(ElementMutableReference&, const std::string& qname, const Uri&, const coda_oss::u8string& characterData);
+ElementMutableReference addChild(ElementMutableReference&, const std::string& qname, const coda_oss::u8string& characterData, const Uri&);
 
 void setCharacterData(ElementMutableReference&, const std::string&);
 void setCharacterData(ElementMutableReference&, const char*);

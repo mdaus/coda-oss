@@ -59,6 +59,37 @@ void xml::lite::operator+=(ElementMutableReference& e, std::unique_ptr<xml::lite
     std::ignore = addChild(e, std::move(child));
 }
 
+xml::lite::ElementMutableReference xml::lite::addChild(ElementMutableReference& e, const std::string& qname, const Uri& uri, const coda_oss::u8string& characterData)
+{
+    return addChild(e, Element::create(QName(qname, uri), characterData));
+}
+xml::lite::ElementMutableReference xml::lite::addChild(ElementMutableReference& e, const std::string& qname, const Uri& uri)
+{
+    return addChild(e, Element::create(QName(qname, uri)));
+}
+
+xml::lite::ElementMutableReference xml::lite::addChild(ElementMutableReference& e, const QName& qname, const coda_oss::u8string& characterData)
+{
+    return addChild(e, Element::create(qname, characterData));
+}
+xml::lite::ElementMutableReference xml::lite::addChild(ElementMutableReference& e, const QName& qname)
+{
+    return addChild(e, Element::create(qname));
+}
+
+xml::lite::ElementMutableReference xml::lite::addChild(ElementMutableReference& e, const std::string& qname, const coda_oss::u8string& characterData, const Uri& uri)
+{
+    return addChild(e, qname, uri, characterData);
+}
+xml::lite::ElementMutableReference xml::lite::addChild(ElementMutableReference& e, const std::string& qname, const coda_oss::u8string& characterData)
+{
+    return addChild(e, QName(qname), characterData);
+}
+xml::lite::ElementMutableReference xml::lite::addChild(ElementMutableReference& e, const std::string& qname)
+{
+    return addChild(e, QName(qname));
+}
+
 xml::lite::ElementMutableReference xml::lite::setChild(ElementMutableReference& e, std::unique_ptr<Element>&& child)
 {
     e.ref().destroyChildren();
