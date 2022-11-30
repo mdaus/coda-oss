@@ -53,6 +53,8 @@ namespace xml
 {
 namespace lite
 {
+struct AttributeNode;
+
 /*!
  * \class Element
  * \brief The class defining one element of an XML document
@@ -598,12 +600,12 @@ Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& 
 
 coda_oss::u8string getCharacterData(const Element&);
 
-AttributeNode& addAttribute(Element&, const xml::lite::AttributeNode&);
+xml::lite::AttributeNode& addAttribute(Element&, const xml::lite::AttributeNode&);
 void operator+=(Element&, const xml::lite::AttributeNode&);  // addAttribute()
-AttributeNode& addAttribute(Element&, const std::string& qname);
-AttributeNode& addAttribute(Element&, const xml::lite::QName&);
-AttributeNode& addAttribute(Element&, const xml::lite::QName&, const std::string& value);
-AttributeNode& addAttribute(Element&, const std::string&, const std::string&) = delete; // NO, order matters!
+xml::lite::AttributeNode& addAttribute(Element&, const std::string& qname);
+xml::lite::AttributeNode& addAttribute(Element&, const xml::lite::QName&);
+xml::lite::AttributeNode& addAttribute(Element&, const xml::lite::QName&, const std::string& value);
+xml::lite::AttributeNode& addAttribute(Element&, const std::string&, const std::string&) = delete; // NO, order matters!
 
 }
 }
