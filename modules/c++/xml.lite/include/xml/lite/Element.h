@@ -388,11 +388,6 @@ struct Element // SOAPElement derives :-(
     {
         setUri(Uri(uri));
     }
-    Element& operator=(const Uri& uri)
-    {
-        setUri(uri);
-        return *this;
-    }
 
     /*!
      *  Returns the URI of this element.
@@ -591,6 +586,7 @@ Element& setChild(Element&, std::unique_ptr<Element>&&);  // destroyChildren() +
 void operator+=(Element&, std::unique_ptr<Element>&&);  // addChild()
 
 Element& addChild(Element&, const std::string& qname);
+void operator+=(Element&, const std::string& qname);  // addChild()
 Element& addChild(Element&, const QName&);
 Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& characterData);
 Element& addChild(Element&, const std::string&, const std::string&) = delete; // NO, order matters!

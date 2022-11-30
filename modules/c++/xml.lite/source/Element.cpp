@@ -513,6 +513,10 @@ xml::lite::Element& xml::lite::addChild(Element& e, const std::string& qname)
 {
     return addChild(e, QName(qname));
 }
+void xml::lite::operator+=(Element& e, const std::string& qname)
+{
+    std::ignore = addChild(e, qname);
+}
 
 xml::lite::Element& xml::lite::setChild(Element& e, std::unique_ptr<Element>&& child)
 {
