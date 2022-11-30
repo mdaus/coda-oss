@@ -29,7 +29,7 @@
 #include <TestCase.h>
 
 #include "xml/lite/MinidomParser.h"
-#include "xml/lite/ElementReference.h"
+#include "xml/lite/Element.h"
 
 
 TEST_CASE(testXmlCreateRoot)
@@ -38,9 +38,9 @@ TEST_CASE(testXmlCreateRoot)
     auto& document = getDocument(xmlParser);
 
     auto documents_ = document.createElement(xml::lite::QName(xml::lite::Uri(), "abc"), "abc");
-    xml::lite::ElementMutableReference documents(*documents_);
+    auto& documents = *documents_;
     io::StringStream output;
-    documents.cref().print(output);
+    documents.print(output);
     auto actual = output.stream().str();
     TEST_ASSERT_EQ("<abc>abc</abc>", actual);
 
@@ -48,7 +48,7 @@ TEST_CASE(testXmlCreateRoot)
     documents = xml::lite::QName(xml::lite::Uri(), "documents");
 
     output.reset();
-    documents.cref().print(output);
+    documents.print(output);
     actual = output.stream().str();
     TEST_ASSERT_EQ("<documents>test</documents>", actual);
 }
@@ -59,10 +59,10 @@ TEST_CASE(testXmlCreateNested)
     auto& document = getDocument(xmlParser);
 
     auto documents_ = document.createElement(xml::lite::QName(xml::lite::Uri(), "documents"), "");
-    xml::lite::ElementMutableReference documents(*documents_);
-    std::ignore = addChild(documents, xml::lite::Element::create("html"));
+    auto& documents = *documents_;
+    std::ignore = documents.addChild(xml::lite::Element::create("html"));
     io::StringStream output;
-    documents.cref().print(output);
+    documents.print(output);
     auto actual = output.stream().str();
     const auto expected0 = "<documents><html/></documents>";
     TEST_ASSERT_EQ(expected0, actual);
@@ -71,10 +71,10 @@ TEST_CASE(testXmlCreateNested)
     // // a.setQName("count");
     // // a.setValue("1");
     // // pDocuments->getAttributes().add(a);
-    auto html = setChild(documents, xml::lite::Element::create("html"));
+    auto& html = setChild(documents, xml::lite::Element::create("html"));
     html += xml::lite::Element::create(xml::lite::QName("title"), "Title");
-    auto body = addChild(html, "body");
-    auto p = addChild(body, "p");
+    auto& body = addChild(html, "body");
+    auto& p = addChild(body, "p");
     p = "paragraph";
     // // a.setQName("a");
     // // a.setValue("abc");
@@ -82,7 +82,7 @@ TEST_CASE(testXmlCreateNested)
     body += xml::lite::Element::create("br");
 
     output.reset();
-    documents.cref().print(output);
+    documents.print(output);
     actual = output.stream().str();
     const auto expected1 = 
         "<documents>"

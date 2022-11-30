@@ -109,6 +109,9 @@ struct Element // SOAPElement derives :-(
     Element(Element&&) = default;
     Element& operator=(Element&&) = default;
 
+    Element& operator=(std::unique_ptr<Element>&&);  // setChild()
+
+
     /*!
      *  Clone function performs deep copy
      *  of element
@@ -312,6 +315,8 @@ struct Element // SOAPElement derives :-(
      *  \param characters The data to add to this element
      */
     void setCharacterData(const std::string&);
+    Element& operator=(const std::string&);  // setCharacterData()
+    Element& operator=(const char*);  // setCharacterData()
     void setCharacterData(coda_oss::u8string s)
     {
         // See Item #41 in "Effective Modern C++" by Scott Meyers.
@@ -350,6 +355,11 @@ struct Element // SOAPElement derives :-(
     {
         mName = qname;
     }
+    Element& operator=(const QName& qname)
+    {
+        setQName(qname);
+        return *this;
+    }
 
     /*!
      *  Returns the QName of this element.
@@ -377,6 +387,11 @@ struct Element // SOAPElement derives :-(
     void setUri(const std::string& uri)
     {
         setUri(Uri(uri));
+    }
+    Element& operator=(const Uri& uri)
+    {
+        setUri(uri);
+        return *this;
     }
 
     /*!
@@ -569,6 +584,23 @@ inline Element* addNewOptionalElement(const xml::lite::QName& name, const coda_o
 }
 
 #endif // SWIG
+
+
+Element& setChild(Element&, std::unique_ptr<Element>&&);  // destroyChildren() + addChild()
+
+void operator+=(Element&, std::unique_ptr<Element>&&);  // addChild()
+
+Element& addChild(Element&, const std::string& qname);
+Element& addChild(Element&, const QName&);
+Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& characterData);
+Element& addChild(Element&, const std::string&, const std::string&) = delete; // NO, order matters!
+Element& addChild(Element&, const QName&, const coda_oss::u8string& characterData);
+Element& addChild(Element&, const QName&, const std::string& characterData);
+Element& addChild(Element&, const std::string& qname, const Uri&);
+Element& addChild(Element&, const std::string& qname, const Uri&, const coda_oss::u8string& characterData);
+Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& characterData, const Uri&);
+
+coda_oss::u8string getCharacterData(const Element&);
 
 }
 }
