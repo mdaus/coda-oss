@@ -67,31 +67,29 @@ TEST_CASE(testXmlCreateNested)
     const auto expected0 = "<documents><html/></documents>";
     TEST_ASSERT_EQ(expected0, actual);
 
-    //  // xml::lite::AttributeNode a;
-    // // a.setQName("count");
-    // // a.setValue("1");
-    // // pDocuments->getAttributes().add(a);
+    xml::lite::AttributeNode a;
+    a.setQName("count");
+    a.setValue("1");
+    documents += a; // addAttribute()
     auto& html = setChild(documents, xml::lite::Element::create("html"));
     std::ignore =  addChild(html, xml::lite::QName("title"), "Title");
     html += xml::lite::Element::create(xml::lite::QName("title"), "Title");
     auto& body = addChild(html, "body");
     auto& p = addChild(body, "p");
     p = "paragraph";
-    // // a.setQName("a");
-    // // a.setValue("abc");
-    // // p.getAttributes().add(a);
+    std::ignore = addAttribute(p, xml::lite::QName("a"), "abc");
     body += "br"; // addChild()
 
     output.reset();
     documents.print(output);
     actual = output.stream().str();
     const auto expected1 = 
-        "<documents>"
+        "<documents count=\"1\">"
             "<html>"
                 "<title>Title</title>"
                 "<title>Title</title>"
                 "<body>"
-                    "<p>paragraph</p>"
+                    "<p a=\"abc\">paragraph</p>"
                     "<br/>"
                 "</body>"
             "</html>"

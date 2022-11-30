@@ -500,15 +500,9 @@ xml::lite::Element& xml::lite::addChild(Element& e, const QName& qname)
 {
     return e.addChild(Element::create(qname));
 }
-namespace xml
-{
-namespace lite
-{
-void operator+=(Element& e, const QName& qname)
+void xml::lite::operator+=(Element& e, const QName& qname)
 {
     std::ignore = addChild(e, qname);
-}
-}
 }
 
 xml::lite::Element& xml::lite::addChild(Element& e, const std::string& qname, const coda_oss::u8string& characterData, const Uri& uri)
@@ -537,4 +531,25 @@ xml::lite::Element& xml::lite::Element::operator=(std::unique_ptr<Element>&& chi
 {
     std::ignore = setChild(*this, std::move(child));
     return *this;
+}
+
+xml::lite::AttributeNode& xml::lite::addAttribute(Element& e, const AttributeNode& a)
+{
+    return e.getAttributes().add(a);
+}
+void xml::lite::operator+=(Element& e, const AttributeNode& a)
+{
+    std::ignore = addAttribute(e, a);
+}
+xml::lite::AttributeNode& xml::lite::addAttribute(Element& e, const QName& name, const std::string& value)
+{
+    return addAttribute(e, AttributeNode(name, value));
+}
+xml::lite::AttributeNode& xml::lite::addAttribute(Element& e, const QName& name)
+{
+    return addAttribute(e, AttributeNode(name));
+}
+xml::lite::AttributeNode& xml::lite::addAttribute(Element& e, const std::string& name)
+{
+    return addAttribute(e, QName(name));
 }
