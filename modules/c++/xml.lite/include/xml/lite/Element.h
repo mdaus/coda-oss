@@ -592,9 +592,9 @@ Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& 
 Element& addChild(Element&, const std::string&, const std::string&) = delete; // NO, order matters!
 Element& addChild(Element&, const xml::lite::QName&, const coda_oss::u8string& characterData);
 Element& addChild(Element&, const xml::lite::QName&, const std::string& characterData);
-Element& addChild(Element&, const std::string& qname, const Uri&);
-Element& addChild(Element&, const std::string& qname, const Uri&, const coda_oss::u8string& characterData);
-Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& characterData, const Uri&);
+Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&);
+Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&, const coda_oss::u8string& characterData);
+Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& characterData, const xml::lite::Uri&);
 
 coda_oss::u8string getCharacterData(const Element&);
 
