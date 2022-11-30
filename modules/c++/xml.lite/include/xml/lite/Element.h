@@ -587,11 +587,12 @@ void operator+=(Element&, std::unique_ptr<Element>&&);  // addChild()
 
 Element& addChild(Element&, const std::string& qname);
 void operator+=(Element&, const std::string& qname);  // addChild()
-Element& addChild(Element&, const QName&);
+Element& addChild(Element&, const xml::lite::QName&); // there is also a QName in the xerces namespace
+void operator+=(Element&, const xml::lite::QName);  // addChild()
 Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& characterData);
 Element& addChild(Element&, const std::string&, const std::string&) = delete; // NO, order matters!
-Element& addChild(Element&, const QName&, const coda_oss::u8string& characterData);
-Element& addChild(Element&, const QName&, const std::string& characterData);
+Element& addChild(Element&, const xml::lite::QName&, const coda_oss::u8string& characterData);
+Element& addChild(Element&, const xml::lite::QName&, const std::string& characterData);
 Element& addChild(Element&, const std::string& qname, const Uri&);
 Element& addChild(Element&, const std::string& qname, const Uri&, const coda_oss::u8string& characterData);
 Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& characterData, const Uri&);

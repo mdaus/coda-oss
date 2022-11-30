@@ -500,6 +500,16 @@ xml::lite::Element& xml::lite::addChild(Element& e, const QName& qname)
 {
     return e.addChild(Element::create(qname));
 }
+namespace xml
+{
+namespace lite
+{
+void operator+=(Element& e, const QName& qname)
+{
+    std::ignore = addChild(e, qname);
+}
+}
+}
 
 xml::lite::Element& xml::lite::addChild(Element& e, const std::string& qname, const coda_oss::u8string& characterData, const Uri& uri)
 {
