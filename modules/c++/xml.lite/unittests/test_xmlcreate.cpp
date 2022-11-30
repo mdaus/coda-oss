@@ -60,7 +60,7 @@ TEST_CASE(testXmlCreateNested)
 
     auto documents_ = document.createElement(xml::lite::QName(xml::lite::Uri(), "documents"), "");
     auto& documents = *documents_;
-    std::ignore = documents.addChild(xml::lite::Element::create("html"));
+    std::ignore = addChild(documents, "html");
     io::StringStream output;
     documents.print(output);
     auto actual = output.stream().str();
@@ -72,6 +72,7 @@ TEST_CASE(testXmlCreateNested)
     // // a.setValue("1");
     // // pDocuments->getAttributes().add(a);
     auto& html = setChild(documents, xml::lite::Element::create("html"));
+    std::ignore =  addChild(html, xml::lite::QName("title"), "Title");
     html += xml::lite::Element::create(xml::lite::QName("title"), "Title");
     auto& body = addChild(html, "body");
     auto& p = addChild(body, "p");
@@ -87,6 +88,7 @@ TEST_CASE(testXmlCreateNested)
     const auto expected1 = 
         "<documents>"
             "<html>"
+                "<title>Title</title>"
                 "<title>Title</title>"
                 "<body>"
                     "<p>paragraph</p>"

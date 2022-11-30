@@ -75,8 +75,7 @@ struct Element // SOAPElement derives :-(
     {
         setCharacterData(characterData);
     }
-    Element(const xml::lite::QName& qname, const coda_oss::u8string& characterData) :
-        mName(qname.getName(), qname.getUri().value)
+    Element(const xml::lite::QName& qname, const coda_oss::u8string& characterData) : mName(qname)
     {
         setCharacterData(characterData);
     }
