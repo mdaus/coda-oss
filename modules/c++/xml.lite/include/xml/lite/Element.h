@@ -587,7 +587,7 @@ void operator+=(Element&, std::unique_ptr<Element>&&);  // addChild()
 Element& addChild(Element&, const std::string& qname);
 void operator+=(Element&, const std::string& qname);  // addChild()
 Element& addChild(Element&, const xml::lite::QName&); // there is also a QName in the xerces namespace
-void operator+=(Element&, const xml::lite::QName);  // addChild()
+void operator+=(Element&, const xml::lite::QName&);  // addChild()
 Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& characterData);
 Element& addChild(Element&, const std::string&, const std::string&) = delete; // NO, order matters!
 Element& addChild(Element&, const xml::lite::QName&, const coda_oss::u8string& characterData);
@@ -597,6 +597,13 @@ Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&, con
 Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& characterData, const xml::lite::Uri&);
 
 coda_oss::u8string getCharacterData(const Element&);
+
+AttributeNode& addAttribute(Element&, const xml::lite::AttributeNode&);
+void operator+=(Element&, const xml::lite::AttributeNode&);  // addAttribute()
+AttributeNode& addAttribute(Element&, const std::string& qname);
+AttributeNode& addAttribute(Element&, const xml::lite::QName&);
+AttributeNode& addAttribute(Element&, const xml::lite::QName&, const std::string& value);
+AttributeNode& addAttribute(Element&, const std::string&, const std::string&) = delete; // NO, order matters!
 
 }
 }
