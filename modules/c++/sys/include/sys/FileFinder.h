@@ -183,13 +183,18 @@ namespace test // i.e., sys::test
     coda_oss::filesystem::path findCMakeInstallRoot(const coda_oss::filesystem::path& p);
     bool isCMakeInstall(const coda_oss::filesystem::path& p);
 
+    // Walk up the directory tree until a .git/ directory is found
+    coda_oss::filesystem::path find_dotGITDirectory(const coda_oss::filesystem::path& p);
+
     // Starting at "root", find the file: root / modulePath / file
     // If that's not found, insert other "known locations" between "root" and "modulePath"
-    // e.g., root / "externals" / modulePath / file
+    // e.g., root / "externals" / [name] / path / file
     //
     // Once modulePath is found, the result is cached to avoid searching again.
     coda_oss::filesystem::path findModuleFile(const coda_oss::filesystem::path& root,
-            const coda_oss::filesystem::path& modulePath, const coda_oss::filesystem::path& file);
-    }
+            const coda_oss::filesystem::path& moduleName, const coda_oss::filesystem::path& modulePath, const coda_oss::filesystem::path& moduleFile);
+    coda_oss::filesystem::path findGITModuleFile( // use current_directory() to find_dotGITDirectory()
+            const coda_oss::filesystem::path& moduleName, const coda_oss::filesystem::path& modulePath, const coda_oss::filesystem::path& moduleFile);
+}
 }
 #endif

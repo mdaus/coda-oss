@@ -394,11 +394,44 @@ bool sys::test::isCMakeBuild(const coda_oss::filesystem::path& path)
     }
 }
 
-coda_oss::filesystem::path sys::test::findModuleFile(const coda_oss::filesystem::path& root,
-        const coda_oss::filesystem::path& modulePath, const coda_oss::filesystem::path& file)
+static coda_oss::filesystem::path find_dotGITDirectory_(const coda_oss::filesystem::path& p, const coda_oss::filesystem::path& initial)
 {
-    auto retval = root / modulePath / file;
-    if (exists(retval))
+    // Walk up the directory tree starting at "p" until we find a .git directory
+    if (is_directory(p / ".git"))
+    {
+        return p;
+    }
+
+    auto parent = p.parent_path();
+    if (parent.empty())
+    {
+        throw std::invalid_argument("Can't find .git/ anywhere in: " + initial.string());    
+    }
+    return find_dotGITDirectory_(parent, initial);
+}
+coda_oss::filesystem::path sys::test::find_dotGITDirectory(const coda_oss::filesystem::path& p)
+{
+    return find_dotGITDirectory_(p, p);
+}
+
+static bool exists(coda_oss::filesystem::path& result,
+        const coda_oss::filesystem::path& root,
+        const coda_oss::filesystem::path& moduleName, const coda_oss::filesystem::path& modulePath, const coda_oss::filesystem::path& moduleFile)
+{
+    result = root / modulePath / moduleFile;
+    if (exists(result))
+    {
+        return true;
+    }
+    result = root / moduleName / modulePath / moduleFile;
+    return exists(result);
+}
+
+coda_oss::filesystem::path sys::test::findModuleFile(const coda_oss::filesystem::path& root,
+        const coda_oss::filesystem::path& moduleName, const coda_oss::filesystem::path& modulePath, const coda_oss::filesystem::path& moduleFile)
+{
+    coda_oss::filesystem::path retval;
+    if (exists(retval, root, moduleName, modulePath, moduleFile))
     {
         return retval;
     }
@@ -407,12 +440,11 @@ coda_oss::filesystem::path sys::test::findModuleFile(const coda_oss::filesystem:
     {
         "externals",
         coda_oss::filesystem::path("externals") / "coda" / "externals", // di
-        coda_oss::filesystem::path("src") / "OSS" / "di" / "externals"
+        coda_oss::filesystem::path("src") / "OSS" / "di"
     };
     for (const auto& subDir : subDirectories)
     {
-        retval = root / subDir / modulePath / file;
-        if (exists(retval))
+        if (exists(retval, root / subDir, moduleName, modulePath, moduleFile))
         {
             return retval;
         }
@@ -421,13 +453,21 @@ coda_oss::filesystem::path sys::test::findModuleFile(const coda_oss::filesystem:
     // Welp, we've got to try searching ... this might take a while :-(
     for (const auto& subDir : subDirectories)
     {
-        const auto filename = modulePath / file;
-        retval = sys::findFirstFile(root / subDir, filename);
+        const auto filename = modulePath / moduleFile;
+        const auto dir = sys::findFirstFile(root / subDir, filename);
+        retval = dir / subDir / filename;
         if (exists(retval))
         {
             return retval;  // TODO: cache directory
         }
     }
 
-    throw std::logic_error("Failed to find:" + file.string());
+    throw std::logic_error("Failed to find:" + moduleFile.string());
+}
+
+coda_oss::filesystem::path sys::test::findGITModuleFile(
+        const coda_oss::filesystem::path& moduleName, const coda_oss::filesystem::path& modulePath, const coda_oss::filesystem::path& moduleFile)
+{
+    const auto dotGIT = find_dotGITDirectory(coda_oss::filesystem::current_path());
+    return findModuleFile(dotGIT, moduleName, modulePath, moduleFile);
 }
