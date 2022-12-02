@@ -393,3 +393,41 @@ bool sys::test::isCMakeBuild(const coda_oss::filesystem::path& path)
         return false;
     }
 }
+
+coda_oss::filesystem::path sys::test::findModuleFile(const coda_oss::filesystem::path& root,
+        const coda_oss::filesystem::path& modulePath, const coda_oss::filesystem::path& file)
+{
+    auto retval = root / modulePath / file;
+    if (exists(retval))
+    {
+        return retval;
+    }
+
+    static const std::vector<coda_oss::filesystem::path> subDirectories
+    {
+        "externals",
+        coda_oss::filesystem::path("externals") / "coda" / "externals", // di
+        coda_oss::filesystem::path("src") / "OSS" / "di" / "externals"
+    };
+    for (const auto& subDir : subDirectories)
+    {
+        retval = root / subDir / modulePath / file;
+        if (exists(retval))
+        {
+            return retval;
+        }
+    }
+
+    // Welp, we've got to try searching ... this might take a while :-(
+    for (const auto& subDir : subDirectories)
+    {
+        const auto filename = modulePath / file;
+        retval = sys::findFirstFile(root / subDir, filename);
+        if (exists(retval))
+        {
+            return retval;  // TODO: cache directory
+        }
+    }
+
+    throw std::logic_error("Failed to find:" + file.string());
+}
