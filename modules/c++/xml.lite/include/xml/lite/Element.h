@@ -131,7 +131,7 @@ struct Element // SOAPElement derives :-(
 
     std::string& attribute(const std::string& s)
     {
-        return mAttributes[s];
+        return getAttributes()[s];
     }
 
     /*!
@@ -596,7 +596,6 @@ Element& addChild(Element&, const xml::lite::QName&, const coda_oss::u8string& c
 Element& addChild(Element&, const xml::lite::QName&, const std::string& characterData);
 Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&);
 Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&, const coda_oss::u8string& characterData);
-Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& characterData, const xml::lite::Uri&);
 
 coda_oss::u8string getCharacterData(const Element&);
 

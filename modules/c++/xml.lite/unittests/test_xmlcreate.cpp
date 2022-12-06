@@ -30,7 +30,7 @@
 
 #include "xml/lite/MinidomParser.h"
 #include "xml/lite/Element.h"
-
+#include "xml/lite/Qname.h"
 
 TEST_CASE(testXmlCreateRoot)
 {
@@ -55,6 +55,8 @@ TEST_CASE(testXmlCreateRoot)
 
 TEST_CASE(testXmlCreateNested)
 {  
+    using namespace xml::lite::literals; // _q and _u for QName and Uri
+
     xml::lite::MinidomParser xmlParser;
     auto& document = getDocument(xmlParser);
 
@@ -67,17 +69,16 @@ TEST_CASE(testXmlCreateNested)
     const auto expected0 = "<documents><html/></documents>";
     TEST_ASSERT_EQ(expected0, actual);
 
-    xml::lite::AttributeNode a;
-    a.setQName("count");
-    a.setValue("1");
+    const xml::lite::AttributeNode a("count"_q, "1");
     documents += a; // addAttribute()
+
     auto& html = setChild(documents, xml::lite::Element::create("html"));
-    std::ignore =  addChild(html, xml::lite::QName("title"), "Title");
-    html += xml::lite::Element::create(xml::lite::QName("title"), "Title");
+    std::ignore =  addChild(html, "title"_q, "Title");
+    html += xml::lite::Element::create("title"_q, "Title");
     auto& body = addChild(html, "body");
     auto& p = addChild(body, "p");
     p = "paragraph";
-    std::ignore = addAttribute(p, xml::lite::QName("a"), "abc");
+    std::ignore = addAttribute(p, "a"_q, "abc");
     body += "br"; // addChild()
 
     output.reset();
