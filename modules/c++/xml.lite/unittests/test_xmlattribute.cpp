@@ -26,7 +26,7 @@
 #include <TestCase.h>
 
 #include "xml/lite/MinidomParser.h"
-#include "xml/lite/Qname.h"
+#include "xml/lite/QName.h"
 
 static const std::string strUri = "urn:example.com";
 static const xml::lite::Uri uri(strUri);

@@ -30,7 +30,7 @@
 
 #include "xml/lite/MinidomParser.h"
 #include "xml/lite/Element.h"
-#include "xml/lite/Qname.h"
+#include "xml/lite/QName.h"
 
 TEST_CASE(testXmlCreateRoot)
 {
