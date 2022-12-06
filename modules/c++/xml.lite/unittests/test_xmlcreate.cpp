@@ -34,18 +34,20 @@
 
 TEST_CASE(testXmlCreateRoot)
 {
+    using namespace xml::lite::literals;  // _q and _u for QName and Uri
+
     xml::lite::MinidomParser xmlParser;
     auto& document = getDocument(xmlParser);
 
-    auto documents_ = document.createElement(xml::lite::QName(xml::lite::Uri(), "abc"), "abc");
+    auto documents_ = document.createElement(xml::lite::QName(""_u, "abc"), "abc");
     auto& documents = *documents_;
     io::StringStream output;
     documents.print(output);
     auto actual = output.stream().str();
     TEST_ASSERT_EQ("<abc>abc</abc>", actual);
 
-    documents = "test";
-    documents = xml::lite::QName(xml::lite::Uri(), "documents");
+    documents = "test"; // setCharacterData()
+    documents = xml::lite::QName(""_u, "documents"); // setChild()
 
     output.reset();
     documents.print(output);
@@ -60,7 +62,7 @@ TEST_CASE(testXmlCreateNested)
     xml::lite::MinidomParser xmlParser;
     auto& document = getDocument(xmlParser);
 
-    auto documents_ = document.createElement(xml::lite::QName(xml::lite::Uri(), "documents"), "");
+    auto documents_ = document.createElement(xml::lite::QName(""_u, "documents"), "");
     auto& documents = *documents_;
     std::ignore = addChild(documents, "html");
     io::StringStream output;
@@ -69,9 +71,7 @@ TEST_CASE(testXmlCreateNested)
     const auto expected0 = "<documents><html/></documents>";
     TEST_ASSERT_EQ(expected0, actual);
 
-    const xml::lite::AttributeNode a("count"_q, "1");
-    documents += a; // addAttribute()
-
+    documents += xml::lite::AttributeNode("count"_q, "1");  // addAttribute()
     auto& html = setChild(documents, xml::lite::Element::create("html"));
     std::ignore =  addChild(html, "title"_q, "Title");
     html += xml::lite::Element::create("title"_q, "Title");
@@ -84,7 +84,7 @@ TEST_CASE(testXmlCreateNested)
     output.reset();
     documents.print(output);
     actual = output.stream().str();
-    const auto expected1 = 
+    const auto expected1 = // can't use a "raw" string because a string comparision is done, not a "XML comparision"
         "<documents count=\"1\">"
             "<html>"
                 "<title>Title</title>"
