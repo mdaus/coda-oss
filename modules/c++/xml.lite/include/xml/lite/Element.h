@@ -28,6 +28,7 @@
 #include <string>
 #include <new> // std::nothrow_t
 #include <coda_oss/string.h>
+#include <tuple>
 
 #include <io/InputStream.h>
 #include <io/OutputStream.h>
@@ -225,11 +226,19 @@ struct Element // SOAPElement derives :-(
      * returns NULL if none
      */
     Element* getElementByTagName(std::nothrow_t, const xml::lite::QName&, bool recurse = false) const;
+    Element* operator()(std::nothrow_t, const xml::lite::QName& name, bool recurse = false) const
+    {
+        return getElementByTagName(std::nothrow, name, recurse);
+    }
     Element* getElementByTagName(std::nothrow_t t, const std::string& uri, const std::string& localName, bool recurse = false) const 
     {
         return getElementByTagName(t, QName(uri, localName), recurse);
     }
     Element& getElementByTagName(const xml::lite::QName&, bool recurse = false) const;
+    Element& operator()(const xml::lite::QName& name, bool recurse = false) const
+    {
+        return getElementByTagName(name, recurse);
+    }
     Element& getElementByTagName(const std::string& uri, const std::string& localName, bool recurse = false) const 
     {
         return getElementByTagName(QName(uri, localName), recurse);
@@ -310,6 +319,12 @@ struct Element // SOAPElement derives :-(
      */
     std::string getCharacterData() const;
     coda_oss::u8string& getCharacterData(coda_oss::u8string& result) const;
+    //explicit operator coda_oss::u8string() const
+    //{
+    //    coda_oss::u8string result;
+    //    std::ignore = getCharacterData(result); // result will be copy-elided
+    //    return result;
+    //}
 
     /*!
      *  Sets the character data for this element.
