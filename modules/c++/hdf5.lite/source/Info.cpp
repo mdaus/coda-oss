@@ -29,7 +29,7 @@
 #include "hdf5/lite/HDF5Exception.h"
 
 // see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
-#include "H5Cpp.h"
+#include <H5Cpp.h>
 
 hdf5::lite::FileInfo hdf5::lite::fileInfo(const coda_oss::filesystem::path& fileName)
 {
