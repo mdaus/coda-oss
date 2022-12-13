@@ -762,8 +762,8 @@ def options(opt):
     opt.add_option('--with-defs', action='store', nargs=1, dest='_defs',
                    help='Use DEFS as macro definitions', metavar='DEFS')
     opt.add_option('--with-optz', action='store',
-                   choices=['med', 'fast', 'fastest'],
-                   default='fastest', metavar='OPTZ',
+                   choices=['med', 'fast', 'faster', 'fastest'],
+                   default='faster', metavar='OPTZ',
                    help='Specify the optimization level for optimized/release builds')
     opt.add_option('--libs-only', action='store_true', dest='libs_only',
                    help='Only build the libs (skip building the tests, etc.)')
@@ -834,7 +834,8 @@ def configureCompilerOptions(self):
         config['cxx']['optz_debug']     = ''
         config['cxx']['optz_med']       = '-O1'
         config['cxx']['optz_fast']      = '-O2'
-        config['cxx']['optz_fastest']   = '-O3'
+        config['cxx']['optz_faster']   = '-O3'
+        config['cxx']['optz_fastest']   = config['cxx']['optz_faster'] # TODO: -march=native ?
 
         #self.env.append_value('LINKFLAGS', '-fPIC -dynamiclib'.split())
         self.env.append_value('LINKFLAGS', '-fPIC'.split())
@@ -847,6 +848,7 @@ def configureCompilerOptions(self):
         config['cc']['optz_debug']     = config['cxx']['optz_debug']
         config['cc']['optz_med']       = config['cxx']['optz_med']
         config['cc']['optz_fast']      = config['cxx']['optz_fast']
+        config['cc']['optz_faster']   = config['cxx']['optz_faster'] 
         config['cc']['optz_fastest']   = config['cxx']['optz_fastest']
 
         self.env.append_value('DEFINES', '_FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE'.split())
@@ -892,7 +894,8 @@ def configureCompilerOptions(self):
             config['cxx']['optz_fast']      = '-O2'
             # https://gcc.gnu.org/onlinedocs/gcc-12.2.0/gcc/x86-Options.html#x86-Options
             # "Using -march=native enables all instruction subsets supported by the local machine ..."
-            config['cxx']['optz_fastest']   = '-O3 -march=native'.split()
+            config['cxx']['optz_faster']      = '-O3' # no -march=native
+            config['cxx']['optz_fastest']   =  [ config['cxx']['optz_faster'], '-march=native' ]
 
             if not Options.options.enablecpp17:
                 gxxCompileFlags='-fPIC -std=c++14'
@@ -927,7 +930,8 @@ def configureCompilerOptions(self):
             config['cc']['optz_fast']      = '-O2'
             # https://gcc.gnu.org/onlinedocs/gcc-12.2.0/gcc/x86-Options.html#x86-Options
             # "Using -march=native enables all instruction subsets supported by the local machine ..."
-            config['cc']['optz_fastest']   = '-O3 -march=native'.split()
+            config['cc']['optz_faster']      = '-O3' # no -march=native
+            config['cc']['optz_fastest']   =  [ config['cc']['optz_faster'], '-march=native' ]
 
             self.env.append_value('CFLAGS', '-fPIC'.split())
 
@@ -960,6 +964,7 @@ def configureCompilerOptions(self):
         vars['optz_debug']     = ['', crtFlag]
         vars['optz_med']       = ['-O2', crtFlag]
         vars['optz_fast']      = ['-O2', crtFlag]
+        vars['optz_faster']      = vars['optz_fast']
         vars['optz_fastest']   = ['-Ox', crtFlag]
         # The MACHINE flag is is probably not actually necessary
         # The linker should be able to infer it from the object files

@@ -11,6 +11,12 @@
  ```
 # coda-oss Release Notes
 
+## [Release 202?-??-??](https://github.com/mdaus/coda-oss/releases/tag/202?-??-??)
+* `--optz=fastest` now adds
+  [`-march=native`](https://gcc.gnu.org/onlinedocs/gcc-12.2.0/gcc/x86-Options.html#x86-Options)
+  for **waf** builds; there is a new *faster* option (the default) which is *fastest*
+  without `-march=native`.
+
 ## [Release 2022-11-04](https://github.com/mdaus/coda-oss/releases/tag/2022-11-04)
 * "Cut" from [main](https://github.com/mdaus/coda-oss/tree/main), not *master*.
 * The [HDFGroup](https://hdfgroup.org/)s [HDF5 library](https://github.com/HDFGroup/hdf5) is built
