@@ -12,10 +12,10 @@
 # coda-oss Release Notes
 
 ## [Release 202?-??-??](https://github.com/mdaus/coda-oss/releases/tag/202?-??-??)
-* `--optz=fastest` now adds
+* New `--optz=fastest-possible` which adds
   [`-march=native`](https://gcc.gnu.org/onlinedocs/gcc-12.2.0/gcc/x86-Options.html#x86-Options)
-  for **waf** builds; there is a new *faster* option (the default) which is *fastest*
-  without `-march=native`.
+  to *fastest* for **waf** builds.  There is a new *faster* option (the default) which is currently
+  the same as *fastest* (i.e., no `-march=native`).
 
 ## [Release 2022-11-04](https://github.com/mdaus/coda-oss/releases/tag/2022-11-04)
 * "Cut" from [main](https://github.com/mdaus/coda-oss/tree/main), not *master*.
