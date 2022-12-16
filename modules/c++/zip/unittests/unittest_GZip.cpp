@@ -54,8 +54,8 @@ TEST_CASE(gzip)
     const std::filesystem::path argv0 = sys::OS().getSpecialEnv("0");
     auto outputPath = argv0.parent_path() / txt_to_gz(inputPath);
     {
-        io::FileInputStream input(inputPath);
-        zip::GZipOutputStream output(outputPath);
+        io::FileInputStream input(inputPath.string());
+        zip::GZipOutputStream output(outputPath.string());
 
         input.streamTo(output);
         input.close();
@@ -66,15 +66,15 @@ TEST_CASE(gzip)
     io::readFileContents(outputPath, buffer);
     TEST_ASSERT_EQ(32, buffer.size());
     {
-        zip::GZipInputStream input(outputPath);
+        zip::GZipInputStream input(outputPath.string());
         outputPath = argv0.parent_path() / gz_to_txt(outputPath);
-        io::FileOutputStream output(outputPath);
+        io::FileOutputStream output(outputPath.string());
         while (input.streamTo(output, 8192)) ;
 
         input.close();
         output.close();
 
-        const auto str = io::readFileContents(outputPath);
+        const auto str = io::readFileContents(outputPath.string());
         TEST_ASSERT_EQ("Hello World!", str);
     }
 }
@@ -86,14 +86,14 @@ TEST_CASE(gunzip)
     const std::filesystem::path argv0 = sys::OS().getSpecialEnv("0");
     const auto outputPath = argv0.parent_path() / gz_to_txt(inputPath);
         
-    zip::GZipInputStream input(inputPath);
-    io::FileOutputStream output(outputPath);
+    zip::GZipInputStream input(inputPath.string());
+    io::FileOutputStream output(outputPath.string());
     while ( input.streamTo(output, 8192) );
 
     input.close();
     output.close();
 
-    const auto str = io::readFileContents(outputPath);
+    const auto str = io::readFileContents(outputPath.string());
     TEST_ASSERT_EQ("Hello World!", str);
 }
 
