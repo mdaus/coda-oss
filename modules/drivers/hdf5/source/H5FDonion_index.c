@@ -193,8 +193,9 @@ H5FD__onion_archival_index_is_valid(const H5FD_onion_archival_index_t *aix)
         HGOTO_DONE(FALSE)
 
     /* Ensure list is sorted on logical_page field */
+    uint64_t i = 1;
     if (aix->n_entries > 1)
-        for (uint64_t i = 1; i < aix->n_entries - 1; i++)
+        for (i = 1; i < aix->n_entries - 1; i++)
             if (aix->list[i + 1].logical_page <= aix->list[i].logical_page)
                 HGOTO_DONE(FALSE)
 
@@ -296,7 +297,8 @@ H5FD__onion_revision_index_destroy(H5FD_onion_revision_index_t *rix)
     HDassert(rix);
     HDassert(H5FD_ONION_REVISION_INDEX_VERSION_CURR == rix->version);
 
-    for (size_t i = 0; 0 < rix->_hash_table_n_keys_populated && i < rix->_hash_table_size; i++) {
+    size_t i = 0;
+    for (i = 0; 0 < rix->_hash_table_n_keys_populated && i < rix->_hash_table_size; i++) {
         H5FD_onion_revision_index_hash_chain_node_t *next = NULL;
         H5FD_onion_revision_index_hash_chain_node_t *node = rix->_hash_table[i];
 
@@ -395,10 +397,11 @@ H5FD__onion_revision_index_resize(H5FD_onion_revision_index_t *rix)
     HDassert(H5FD_ONION_REVISION_INDEX_VERSION_CURR == rix->version);
     HDassert(rix->_hash_table);
 
+    uint64_t i = 0;
     if (NULL == (new_table = H5MM_calloc(new_size * sizeof(H5FD_onion_revision_index_hash_chain_node_t *))))
         HGOTO_ERROR(H5E_RESOURCE, H5E_CANTALLOC, FAIL, "cannot allocate new hash table")
 
-    for (uint64_t i = 0; i < rix->_hash_table_size; i++) {
+    for (i = 0; i < rix->_hash_table_size; i++) {
         while (rix->_hash_table[i] != NULL) {
             H5FD_onion_revision_index_hash_chain_node_t *node = NULL;
             uint64_t                                     key  = 0;
@@ -664,10 +667,11 @@ H5FD__onion_revision_record_decode(unsigned char *buf, H5FD_onion_revision_recor
     else {
         H5FD_onion_index_entry_t *entry = NULL;
 
+	size_t i = 0;
         if (record->archival_index.list == NULL)
             HGOTO_ERROR(H5E_ARGS, H5E_BADVALUE, 0, "no archival index entry list")
 
-        for (size_t i = 0; i < n_entries; i++) {
+        for (i = 0; i < n_entries; i++) {
             entry = &record->archival_index.list[i];
 
             HDmemcpy(&ui64, ptr, 8);
@@ -780,7 +784,8 @@ H5FD__onion_revision_record_encode(H5FD_onion_revision_record_t *record, unsigne
         uint64_t page_size_log2 = record->archival_index.page_size_log2;
 
         HDassert(record->archival_index.list != NULL);
-        for (uint64_t i = 0; i < record->archival_index.n_entries; i++) {
+	uint64_t i = 0;
+        for (i = 0; i < record->archival_index.n_entries; i++) {
             uint32_t                  sum       = 0;
             H5FD_onion_index_entry_t *entry     = NULL;
             uint64_t                  logi_addr = 0;
@@ -868,10 +873,11 @@ H5FD__onion_merge_revision_index_into_archival_index(const H5FD_onion_revision_i
     /* Add all revision index entries to new archival list */
     new_aix.page_size_log2 = aix->page_size_log2;
 
+    uint64_t i = 0;
     if (NULL == (new_aix.list = H5MM_calloc(rix->n_entries * sizeof(H5FD_onion_index_entry_t))))
         HGOTO_ERROR(H5E_RESOURCE, H5E_CANTALLOC, FAIL, "unable to allocate new archival index list")
 
-    for (uint64_t i = 0; i < rix->_hash_table_size; i++) {
+    for (i = 0; i < rix->_hash_table_size; i++) {
         const H5FD_onion_revision_index_hash_chain_node_t *node = NULL;
 
         for (node = rix->_hash_table[i]; node != NULL; node = node->next) {
@@ -895,7 +901,7 @@ H5FD__onion_merge_revision_index_into_archival_index(const H5FD_onion_revision_i
         if (NULL == (kept_list = H5MM_calloc(aix->n_entries * sizeof(H5FD_onion_index_entry_t))))
             HGOTO_ERROR(H5E_RESOURCE, H5E_CANTALLOC, FAIL, "unable to allocate larger archival index list")
 
-    for (uint64_t i = 0; i < aix->n_entries; i++) {
+    for (i = 0; i < aix->n_entries; i++) {
         const H5FD_onion_index_entry_t *entry = NULL;
 
         /* Add only if page not already added from revision index */

@@ -653,7 +653,8 @@ H5O__pline_debug(H5F_t H5_ATTR_UNUSED *f, const void *mesg, FILE *stream, int in
               pline->nalloc);
 
     /* Loop over all the filters */
-    for (size_t i = 0; i < pline->nused; i++) {
+    size_t i = 0;
+    for (i = 0; i < pline->nused; i++) {
         /* 19 characters for text + 20 characters for largest 64-bit size_t +
          * terminal NUL = 40 characters.
          */
@@ -676,7 +677,8 @@ H5O__pline_debug(H5F_t H5_ATTR_UNUSED *f, const void *mesg, FILE *stream, int in
                   "Num CD values:", pline->filter[i].cd_nelmts);
 
         /* Filter parameters */
-        for (size_t j = 0; j < pline->filter[i].cd_nelmts; j++) {
+	size_t j = 0;
+        for (j = 0; j < pline->filter[i].cd_nelmts; j++) {
             char field_name[32];
 
             HDsnprintf(field_name, sizeof(field_name), "CD value %lu", (unsigned long)j);

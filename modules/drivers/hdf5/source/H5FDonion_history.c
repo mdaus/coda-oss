@@ -195,7 +195,8 @@ H5FD__onion_history_decode(unsigned char *buf, H5FD_onion_history_t *history)
         if (NULL == history->record_locs)
             HGOTO_ERROR(H5E_ARGS, H5E_BADVALUE, 0, "list is NULL -- cannot populate")
 
-        for (uint64_t i = 0; i < n_revisions; i++) {
+	uint64_t i = 0;
+        for (i = 0; i < n_revisions; i++) {
             H5FD_onion_record_loc_t *rloc = &history->record_locs[i];
 
             /* Decode into appropriately sized types, then do a checked
@@ -280,7 +281,8 @@ H5FD__onion_history_encode(H5FD_onion_history_t *history, unsigned char *buf, ui
     UINT64ENCODE(ptr, history->n_revisions);
     if (history->n_revisions > 0) {
         HDassert(history->record_locs != NULL);
-        for (uint64_t i = 0; i < history->n_revisions; i++) {
+        uint64_t i = 0;
+        for (i = 0; i < history->n_revisions; i++) {
             H5FD_onion_record_loc_t *rloc = &history->record_locs[i];
 
             /* Do a checked assignment from the struct value into appropriately

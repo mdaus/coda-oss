@@ -2860,10 +2860,11 @@ H5C__prep_for_file_close__scan_entries(const H5F_t *f, H5C_t *cache_ptr)
                         HGOTO_ERROR(H5E_CACHE, H5E_CANTALLOC, FAIL,
                                     "memory allocation failed for fd parent addrs buffer")
 
-                for (int i = 0; i < (int)(entry_ptr->fd_parent_count); i++) {
+		{ int i = 0;
+                for (i = 0; i < (int)(entry_ptr->fd_parent_count); i++) {
                     entry_ptr->fd_parent_addrs[i] = entry_ptr->flush_dep_parent[i]->addr;
                     HDassert(H5F_addr_defined(entry_ptr->fd_parent_addrs[i]));
-                } /* end for */
+                } /* end for */ }
             }     /* end if */
             else if (entry_ptr->fd_parent_count > 0) {
                 HDassert(entry_ptr->fd_parent_addrs);
@@ -2945,8 +2946,9 @@ H5C__prep_for_file_close__scan_entries(const H5F_t *f, H5C_t *cache_ptr)
     HDassert(num_entries_in_image <= num_entries_tentatively_in_image);
 
 #ifndef NDEBUG
+    int i = H5C_MAX_RING_IN_IMAGE + 1;
     unsigned j = 0;
-    for (int i = H5C_MAX_RING_IN_IMAGE + 1; i <= H5C_RING_SB; i++)
+    for (i = H5C_MAX_RING_IN_IMAGE + 1; i <= H5C_RING_SB; i++)
         j += cache_ptr->index_ring_len[i];
 
     /* This will change */

@@ -349,7 +349,8 @@ H5F_shared_vector_read(H5F_shared_t *f_sh, uint32_t count, H5FD_mem_t types[], h
      * for now, assume the caller has done this already.
      */
 #ifndef NDEBUG
-    for (uint32_t i = 0; i < count; i++)
+    uint32_t i = 0;
+    for (i = 0; i < count; i++)
         HDassert(types[i] != H5FD_MEM_GHEAP);
 #endif
 
@@ -394,7 +395,8 @@ H5F_shared_vector_write(H5F_shared_t *f_sh, uint32_t count, H5FD_mem_t types[], 
      * for now, assume the caller has done this already.
      */
 #ifndef NDEBUG
-    for (uint32_t i = 0; i < count; i++)
+    uint32_t i = 0;
+    for (i = 0; i < count; i++)
         HDassert(types[i] != H5FD_MEM_GHEAP);
 #endif
 
