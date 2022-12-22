@@ -1370,8 +1370,7 @@ H5FD__onion_read(H5FD_t *_file, H5FD_mem_t type, hid_t H5_ATTR_UNUSED dxpl_id, h
     n_pages        = (len + page_size - 1) >> page_size_log2;
 
     /* Read, page-by-page */
-    size_t i = 0;
-    for (i = 0; i < n_pages; i++) {
+    for (size_t i = 0; i < n_pages; i++) {
         const H5FD_onion_index_entry_t *entry_out     = NULL;
         haddr_t                         page_gap_head = 0; /* start of page to start of buffer */
         haddr_t                         page_gap_tail = 0; /* end of buffer to end of page */
@@ -1422,8 +1421,7 @@ H5FD__onion_read(H5FD_t *_file, H5FD_mem_t type, hid_t H5_ATTR_UNUSED dxpl_id, h
             /* Fill with 0s any gaps after end of original bytes
              * and before end of page.
              */
-	    size_t j = read_size;
-            for (j = read_size; j < page_readsize; j++)
+            for (size_t j = read_size; j < page_readsize; j++)
                 buf_out[j] = 0;
         }
 
@@ -1497,13 +1495,11 @@ H5FD__onion_write(H5FD_t *_file, H5FD_mem_t type, hid_t H5_ATTR_UNUSED dxpl_id, 
     page_0         = offset >> page_size_log2;
     n_pages        = (len + page_size - 1) >> page_size_log2;
 
-
-    size_t i = 0;
     if (NULL == (page_buf = H5MM_calloc(page_size * sizeof(unsigned char))))
         HGOTO_ERROR(H5E_RESOURCE, H5E_CANTALLOC, FAIL, "cannot allocate temporary buffer")
 
     /* Write, page-by-page */
-    for (i = 0; i < n_pages; i++) {
+    for (size_t i = 0; i < n_pages; i++) {
         const unsigned char            *write_buf = buf;
         H5FD_onion_index_entry_t        new_entry;
         const H5FD_onion_index_entry_t *entry_out     = NULL;
@@ -1570,14 +1566,13 @@ H5FD__onion_write(H5FD_t *_file, H5FD_mem_t type, hid_t H5_ATTR_UNUSED dxpl_id, 
                 /* Fill with 0s any gaps after end of original bytes
                  * or start of page and before start of new data.
                  */
-		size_t j;
-                for (j = read_size; j < page_gap_head; j++)
+                for (size_t j = read_size; j < page_gap_head; j++)
                     page_buf[j] = 0;
 
                 /* Fill with 0s any gaps after end of original bytes
                  * or end of new data and before end of page.
                  */
-                for (j = MAX(read_size, page_size - page_gap_tail); j < page_size; j++)
+                for (size_t j = MAX(read_size, page_size - page_gap_tail); j < page_size; j++)
                     page_buf[j] = 0;
             } /* end if page exists in neither index */
 

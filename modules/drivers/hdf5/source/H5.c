@@ -1026,8 +1026,7 @@ H5check_version(unsigned majnum, unsigned minnum, unsigned relnum)
     /* H5_VERS_RELEASE should be compatible, we will only add checks for exceptions */
     /* Library develop release versions are incompatible by design */
     if (H5_VERS_RELEASE != relnum) {
-        unsigned i = 0;
-        for (i = 0; i < VERS_RELEASE_EXCEPTIONS_SIZE; i++) {
+        for (unsigned i = 0; i < VERS_RELEASE_EXCEPTIONS_SIZE; i++) {
             /* Check for incompatible headers or incompatible library */
             if (VERS_RELEASE_EXCEPTIONS[i] == relnum || VERS_RELEASE_EXCEPTIONS[i] == H5_VERS_RELEASE) {
                 switch (disable_version_check) {
