@@ -27,20 +27,39 @@
 #include "H5.h"
 #include "hdf5.lite.h"
 
-static hdf5::lite::FileInfo fileInfo_(const coda_oss::filesystem::path& fileName)
+// https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
+static hdf5::lite::FileInfo fileInfo_(coda_oss::filesystem::path filename, std::string loc)
 {
     hdf5::lite::FileInfo retval;
-    retval.name = fileName.string();
+    retval.filename = filename.string();
 
     /*
      * Open the specified file and the specified dataset in the file.
      */
-    H5::H5File file(retval.name, H5F_ACC_RDONLY);
+    H5::H5File file(retval.filename, H5F_ACC_RDONLY);
+    if (!loc.empty())
+    {
+        retval.name = loc;
+
+        // I'm sure this needs to be (much?) more sophisticated ... but get
+        // a simple unit-test working.
+        const auto name = retval.name.substr(1); // removing leading '/'
+
+        const auto dataset = file.openDataSet(name);
+    }
+    else
+    {
+        retval.name = "/";
+    }
 
     return retval;
 }
-
-hdf5::lite::FileInfo hdf5::lite::fileInfo(coda_oss::filesystem::path fileName)
+hdf5::lite::FileInfo hdf5::lite::fileInfo(coda_oss::filesystem::path filename, std::string loc)
 {
-    return details::try_catch_H5Exceptions(fileInfo_, fileName);
+    return details::try_catch_H5Exceptions(fileInfo_, filename, loc);
 }
+hdf5::lite::FileInfo hdf5::lite::fileInfo(coda_oss::filesystem::path filename)
+{
+    return fileInfo(filename, "" /*loc*/);
+}
+

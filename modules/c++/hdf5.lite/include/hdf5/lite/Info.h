@@ -93,6 +93,7 @@ struct FileInfo final
 
 
 CODA_OSS_API FileInfo fileInfo(coda_oss::filesystem::path);
+CODA_OSS_API FileInfo fileInfo(coda_oss::filesystem::path, std::string loc);
 
 }
 }
