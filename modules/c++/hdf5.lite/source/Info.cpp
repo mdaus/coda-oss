@@ -27,7 +27,7 @@
 #include "H5.h"
 #include "hdf5.lite.h"
 
-hdf5::lite::FileInfo fileInfo_(coda_oss::filesystem::path fileName)
+static hdf5::lite::FileInfo fileInfo_(const coda_oss::filesystem::path& fileName)
 {
     /*
      * Open the specified file and the specified dataset in the file.
@@ -37,10 +37,7 @@ hdf5::lite::FileInfo fileInfo_(coda_oss::filesystem::path fileName)
     return hdf5::lite::FileInfo{};
 }
 
-hdf5::lite::FileInfo hdf5::lite::fileInfo(coda_oss::filesystem::path fileName)
+hdf5::lite::FileInfo hdf5::lite::fileInfo(const coda_oss::filesystem::path& fileName)
 {
-    hdf5::lite::FileInfo retval;
-    auto call_fileInfo_ = [&](void*) { retval = fileInfo_(fileName); };
-    details::try_catch_H5Exceptions(call_fileInfo_);
-    return retval;
+    return details::try_catch_H5Exceptions(fileInfo_, fileName);
 }

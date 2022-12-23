@@ -22,7 +22,7 @@
 
 #include "hdf5.lite.h"
 
-void hdf5::lite::details::try_catch_H5Exceptions(std::function<void(void*)> f, void* context)
+void hdf5::lite::details::try_catch_H5Exceptions_(std::function<void(void*)> f, void* context)
 {
     try
     {
