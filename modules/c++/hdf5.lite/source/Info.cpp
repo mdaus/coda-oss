@@ -39,5 +39,5 @@ static hdf5::lite::FileInfo fileInfo_(const coda_oss::filesystem::path& fileName
 
 hdf5::lite::FileInfo hdf5::lite::fileInfo(coda_oss::filesystem::path fileName)
 {
-    return details::try_catch_H5Exceptions<hdf5::lite::FileInfo>(fileInfo_, fileName);
+    return details::try_catch_H5Exceptions(fileInfo_, fileName);
 }

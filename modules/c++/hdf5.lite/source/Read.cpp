@@ -71,5 +71,5 @@ static types::RowCol<size_t> readFile_(const coda_oss::filesystem::path& fileNam
 types::RowCol<size_t> hdf5::lite::readFile(coda_oss::filesystem::path fileName, std::string datasetName,
     std::vector<double>& result)
 {
-    return details::try_catch_H5Exceptions<types::RowCol<size_t>>(readFile_, fileName, datasetName, result); 
+    return details::try_catch_H5Exceptions(readFile_, fileName, datasetName, result); 
 }
