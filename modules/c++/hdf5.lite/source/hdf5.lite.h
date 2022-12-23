@@ -20,12 +20,14 @@
  *
  */
 
-#include <vector>
+#include <functional>
+#include <stdexcept>
 
 // see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
 #include <H5Cpp.h>
 
-#include "types/RowCol.h"
+#include "except/Exception.h"
+#include "hdf5/lite/HDF5Exception.h"
 
 // Utility routines for INTERNAL use!
 
@@ -35,11 +37,7 @@ namespace lite
 {
 namespace details
 {
-
-int getSimpleExtentNdims(const H5::DataSpace&);
-std::vector<hsize_t> getSimpleExtentDims(const H5::DataSpace&);
-types::RowCol<size_t> getSimpleExtentSize(const H5::DataSet&);
-
+void try_catch_H5Exceptions(std::function<void(void*)> f, void* context = nullptr);
 }
 }
 }

@@ -22,55 +22,13 @@
 
 #include "hdf5/lite/Read.h"
 
-#include <stdexcept>
 #include <tuple> // std::ignore
 #include <vector>
-#include <functional>
 
-#include "except/Exception.h"
 #include "coda_oss/cstddef.h" // byte
 
-#include "hdf5/lite/HDF5Exception.h"
-
 #include "H5.h"
-
-static void try_catch_H5Exception(std::function<void(void*)> f, void* context=nullptr)
-{
-    try
-    {
-        /*
-         * Turn off the auto-printing when failure occurs so that we can
-         * handle the errors appropriately
-         */
-        H5::Exception::dontPrint();
-
-        f(context);
-    }
-    // catch failure caused by the H5File operations
-    catch (const H5::FileIException& error)
-    {
-        const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
-        throw except::IOException(ctx);
-    }
-    // catch failure caused by the DataSet operations
-    catch (const H5::DataSetIException& error)
-    {
-        const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
-        throw hdf5::lite::DataSetException11(ctx);
-    }
-    // catch failure caused by the DataSpace operations
-    catch (const H5::DataSpaceIException& error)
-    {
-        const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
-        throw hdf5::lite::DataSpaceException11(ctx);
-    }
-    // catch failure caused by the DataType operations
-    catch (const H5::DataTypeIException& error)
-    {
-        const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
-        throw hdf5::lite::DataTypeException11(ctx);
-    }
-}
+#include "hdf5.lite.h"
 
 template<typename T>
 static types::RowCol<size_t> readDatasetT(const H5::DataSet& dataset, H5T_class_t type_class, const H5::DataType& mem_type,
@@ -115,6 +73,6 @@ types::RowCol<size_t> hdf5::lite::readFile(coda_oss::filesystem::path fileName, 
 {
     types::RowCol<size_t> retval;
     auto call_readFile_ = [&](void*) { retval = readFile_(fileName, datasetName, result); };
-    try_catch_H5Exception(call_readFile_);
+    details::try_catch_H5Exceptions(call_readFile_);
     return retval;
 }
