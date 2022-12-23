@@ -92,7 +92,7 @@ struct FileInfo final
 };
 
 
-CODA_OSS_API FileInfo fileInfo(const coda_oss::filesystem::path&);
+CODA_OSS_API FileInfo fileInfo(coda_oss::filesystem::path);
 
 }
 }

@@ -41,18 +41,18 @@ namespace details
 // Call the given function, converting H5 exceptions to our own.
 void try_catch_H5Exceptions_(std::function<void(void*)> f, void* context = nullptr);
 
-template<typename TFunc, typename ...TArgs>
+template<typename TReturn, typename TFunc, typename ...TArgs>
 auto try_catch_H5Exceptions(TFunc f, TArgs&&... args)
 {
     // Figure out return type by "calling" the function at compile-time
-    decltype(f(std::forward<TArgs...>(args...))) retval;
-
+    //decltype(f(std::forward<TArgs>(args)...)) retval;
+    TReturn retval; 
+    
     // "Hide" the arguments inside of a lambda
-    auto call_f = [&](void*) { retval = f(std::forward<TArgs...>(args...)); };
+    auto call_f = [&](void*) { retval = f(std::forward<TArgs>(args)...); };
     details::try_catch_H5Exceptions_(call_f);
     return retval;
 }
-
 
 }
 }
