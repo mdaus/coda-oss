@@ -93,7 +93,6 @@ struct FileInfo final
 
 
 CODA_OSS_API FileInfo fileInfo(const coda_oss::filesystem::path&);
-//CODA_OSS_API void locationRead(const std::string& loc, const std::string& datasetName); // e.g, s3://
 
 }
 }

@@ -34,13 +34,8 @@
 // see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
 #include <H5Cpp.h>
 
-static types::RowCol<size_t> getSimpleExtentSize(const H5::DataSet& dataset)
+static int getSimpleExtentNdims(const H5::DataSpace& dataspace)
 {
-    /*
-     * Get dataspace of the dataset.
-     */
-    const auto dataspace = dataset.getSpace();
-
     /*
      * Get the number of dimensions in the dataspace.
      */
@@ -50,18 +45,42 @@ static types::RowCol<size_t> getSimpleExtentSize(const H5::DataSet& dataset)
     {
         throw std::invalid_argument("'rank' must be 1 or 2.");
     }
+    return rank;
+}
+
+static std::vector<hsize_t> getSimpleExtentDims(const H5::DataSpace& dataspace)
+{
+    /*
+     * Get the number of dimensions in the dataspace.
+     */
+    const auto rank = getSimpleExtentNdims(dataspace);
 
     /*
      * Get the dimension size of each dimension in the dataspace.
      */
     std::vector<hsize_t> dims_out(rank);
     dims_out.resize(rank);
-    const auto ndims = dataspace.getSimpleExtentDims(dims_out.data(), nullptr);
+    const auto ndims = dataspace.getSimpleExtentDims(dims_out.data());
     dims_out.resize(ndims);
     if (dims_out.empty() || (dims_out.size() > 2))
     {
         throw std::invalid_argument("dims_out.size() must be 1 or 2.");
     }
+
+    return dims_out;
+}
+
+static types::RowCol<size_t> getSimpleExtentSize(const H5::DataSet& dataset)
+{
+    /*
+     * Get dataspace of the dataset.
+     */
+    const auto dataspace = dataset.getSpace();
+
+    /*
+     * Get the dimension size of each dimension in the dataspace.
+     */
+    const auto dims_out = getSimpleExtentDims(dataspace);
 
     // Does it matter whether it's 1-row and n-cols or n-cols and 1-row?
     types::RowCol<size_t> retval;
@@ -98,6 +117,17 @@ inline types::RowCol<size_t> readDataset_(const H5::DataSet& dataset, std::vecto
     return readDatasetT(dataset, H5T_FLOAT, H5::PredType::IEEE_F64LE, result);
 }
 
+types::RowCol<size_t> readFile_(const coda_oss::filesystem::path& fileName,
+                                const std::string& datasetName,
+                                std::vector<double>& result)
+{
+    /*
+     * Open the specified file and the specified dataset in the file.
+     */
+    H5::H5File file(fileName.string(), H5F_ACC_RDONLY);
+    const auto dataset = file.openDataSet(datasetName);
+    return readDataset_(dataset, result);
+}
 types::RowCol<size_t> hdf5::lite::readFile(const coda_oss::filesystem::path& fileName, const std::string& datasetName,
     std::vector<double>& result)
 {
@@ -109,12 +139,7 @@ types::RowCol<size_t> hdf5::lite::readFile(const coda_oss::filesystem::path& fil
          */
         H5::Exception::dontPrint();
 
-        /*
-         * Open the specified file and the specified dataset in the file.
-         */
-        H5::H5File file(fileName.string(), H5F_ACC_RDONLY);
-        const auto dataset = file.openDataSet(datasetName);
-        return readDataset_(dataset, result);
+        return readFile_(fileName, datasetName, result);
     }
     // catch failure caused by the H5File operations
     catch (const H5::FileIException& error)
