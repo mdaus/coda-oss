@@ -29,12 +29,15 @@
 
 static hdf5::lite::FileInfo fileInfo_(const coda_oss::filesystem::path& fileName)
 {
+    hdf5::lite::FileInfo retval;
+    retval.name = fileName.string();
+
     /*
      * Open the specified file and the specified dataset in the file.
      */
-    H5::H5File file(fileName.string(), H5F_ACC_RDONLY);
+    H5::H5File file(retval.name, H5F_ACC_RDONLY);
 
-    return hdf5::lite::FileInfo{};
+    return retval;
 }
 
 hdf5::lite::FileInfo hdf5::lite::fileInfo(coda_oss::filesystem::path fileName)

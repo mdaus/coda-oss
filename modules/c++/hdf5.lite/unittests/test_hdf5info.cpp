@@ -41,8 +41,25 @@ TEST_CASE(test_hdf5Info)
 
     // https://www.mathworks.com/help/matlab/ref/h5info.html
     const auto info = hdf5::lite::fileInfo(path);
+    TEST_ASSERT_EQ(path.string(), info.name);
+}
+
+TEST_CASE(test_hdf5Info_IOException)
+{
+    static const std::filesystem::path path = "does not exist . h5";
+     try
+    {
+        // https://www.mathworks.com/help/matlab/ref/h5info.html
+        const auto info = hdf5::lite::fileInfo(path);
+        TEST_FAIL;
+    }
+    catch (const except::IOException&)
+    {
+        TEST_SUCCESS;
+    }
 }
 
 TEST_MAIN(
     TEST_CHECK(test_hdf5Info);
+    TEST_CHECK(test_hdf5Info_IOException);
 )
