@@ -31,63 +31,7 @@
 
 #include "hdf5/lite/HDF5Exception.h"
 
-// see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
-#include <H5Cpp.h>
-
-static int getSimpleExtentNdims(const H5::DataSpace& dataspace)
-{
-    /*
-     * Get the number of dimensions in the dataspace.
-     */
-    const auto rank = dataspace.getSimpleExtentNdims();
-    // we only support 1- and 2-D data
-    if ((rank != 1) && (rank != 2))
-    {
-        throw std::invalid_argument("'rank' must be 1 or 2.");
-    }
-    return rank;
-}
-
-static std::vector<hsize_t> getSimpleExtentDims(const H5::DataSpace& dataspace)
-{
-    /*
-     * Get the number of dimensions in the dataspace.
-     */
-    const auto rank = getSimpleExtentNdims(dataspace);
-
-    /*
-     * Get the dimension size of each dimension in the dataspace.
-     */
-    std::vector<hsize_t> dims_out(rank);
-    dims_out.resize(rank);
-    const auto ndims = dataspace.getSimpleExtentDims(dims_out.data());
-    dims_out.resize(ndims);
-    if (dims_out.empty() || (dims_out.size() > 2))
-    {
-        throw std::invalid_argument("dims_out.size() must be 1 or 2.");
-    }
-
-    return dims_out;
-}
-
-static types::RowCol<size_t> getSimpleExtentSize(const H5::DataSet& dataset)
-{
-    /*
-     * Get dataspace of the dataset.
-     */
-    const auto dataspace = dataset.getSpace();
-
-    /*
-     * Get the dimension size of each dimension in the dataspace.
-     */
-    const auto dims_out = getSimpleExtentDims(dataspace);
-
-    // Does it matter whether it's 1-row and n-cols or n-cols and 1-row?
-    types::RowCol<size_t> retval;
-    retval.row = dims_out[0];
-    retval.col = dims_out.size() == 2 ? dims_out[1] : 1;
-    return retval;
-}
+#include "H5.h"
 
 template<typename T>
 static types::RowCol<size_t> readDatasetT(const H5::DataSet& dataset, H5T_class_t type_class, const H5::DataType& mem_type,
@@ -98,7 +42,7 @@ static types::RowCol<size_t> readDatasetT(const H5::DataSet& dataset, H5T_class_
         throw std::invalid_argument("getTypeClass() returned wrong value.");
     }
 
-    const auto retval = getSimpleExtentSize(dataset);
+    const auto retval = hdf5::lite::details::getSimpleExtentSize(dataset);
     result.resize(retval.area());
     dataset.read(result.data(), mem_type);
 
