@@ -45,6 +45,7 @@ TEST_CASE(test_hdf5Info)
     TEST_ASSERT_EQ("/", info.name);
     TEST_ASSERT_EQ(info.groups.size(), 4);
     TEST_ASSERT_TRUE(info.datasets.empty());
+    TEST_ASSERT_TRUE(info.datatypes.empty());
 }
 
 TEST_CASE(test_hdf5Info_IOException)
@@ -73,6 +74,7 @@ TEST_CASE(test_hdf5Info_loc)
     TEST_ASSERT_EQ("/g4", info.name);
     TEST_ASSERT_TRUE(info.groups.empty());
     TEST_ASSERT_EQ(info.datasets.size(), 4);
+    TEST_ASSERT_TRUE(info.datatypes.empty());
 }
 
 TEST_MAIN(

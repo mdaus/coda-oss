@@ -65,11 +65,15 @@ struct DatatypeInfo final
     size_t size = 0;
 };
 
+struct DataspaceInfo final
+{
+};
+
 struct DatasetInfo final
 {
     std::string name;
     DatatypeInfo datatype;
-    // Dataspace
+    DataspaceInfo dataspace;
     // ChunkSize
     // FillValue
     // Filter

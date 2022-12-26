@@ -90,7 +90,38 @@ static std::vector<hdf5::lite::DatasetInfo> getDatasets(H5::Group& group)
     }
 
     return retval;
+ }
 
+// https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/h5group_8cpp-example.html
+static herr_t datatype_info(hid_t loc_id, const char *name, const H5L_info_t* /*linfo*/, void *opdata)
+{
+    // only interested in Datatypes
+    const auto obj = H5Topen2(loc_id, name, H5P_DEFAULT);
+    if (obj > 0)
+    {
+        H5Tclose(obj);
+
+        hdf5::lite::DatatypeInfo info;
+        info.name = name;
+
+        auto pRetval = static_cast<std::vector<hdf5::lite::DatatypeInfo>*>(opdata);
+        pRetval->push_back(info);
+    }
+
+    return 0;
+}
+static std::vector<hdf5::lite::DatatypeInfo> getDatatypes(H5::Group& group)
+ {
+    std::vector<hdf5::lite::DatatypeInfo> retval;
+
+    const auto herr = H5Literate(group.getId(), H5_INDEX_NAME, H5_ITER_INC, nullptr /*idx*/, datatype_info,  &retval);
+    if (herr != 0)
+    {
+        // How can this happen?
+        throw std::logic_error("H5Literate failed.");
+    }
+
+    return retval;
  }
 
 // https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
@@ -108,6 +139,7 @@ static hdf5::lite::FileInfo fileInfo_(coda_oss::filesystem::path filename, std::
 
     retval.groups = getGroups(group);
     retval.datasets = getDatasets(group);
+    retval.datatypes = getDatatypes(group);
 
     return retval;
 }
