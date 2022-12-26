@@ -77,9 +77,22 @@ TEST_CASE(test_hdf5Info_loc)
     TEST_ASSERT_TRUE(info.datatypes.empty());
 }
 
+TEST_CASE(test_hdf5DatasetInfo)
+{
+    static const auto path = find_unittest_file("example.h5");
+
+    // https://www.mathworks.com/help/matlab/ref/h5info.html
+    const auto info = hdf5::lite::datasetInfo(path, "/g4/time");
+
+    TEST_ASSERT_EQ(path.string(), info.filename);
+    TEST_ASSERT_EQ("time", info.name);
+    TEST_ASSERT(info.datatype.h5Class == hdf5::lite::Class::Float);
+}
+
 TEST_MAIN(
     TEST_CHECK(test_hdf5Info);
     TEST_CHECK(test_hdf5Info_IOException);
 
     TEST_CHECK(test_hdf5Info_loc);
+    TEST_CHECK(test_hdf5DatasetInfo);
 )

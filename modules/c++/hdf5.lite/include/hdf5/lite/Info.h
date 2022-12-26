@@ -59,6 +59,7 @@ enum class Class
 
 struct DatatypeInfo final
 {
+    std::string filename;  // could be a URL, so not std::filesystem::path
     std::string name;
     Class h5Class;
     // Type
@@ -71,6 +72,7 @@ struct DataspaceInfo final
 
 struct DatasetInfo final
 {
+    std::string filename;  // could be a URL, so not std::filesystem::path
     std::string name;
     DatatypeInfo datatype;
     DataspaceInfo dataspace;
@@ -82,6 +84,7 @@ struct DatasetInfo final
 
 struct GroupInfo
 {
+    std::string filename;  // could be a URL, so not std::filesystem::path
     std::string name;
     std::vector<GroupInfo> groups;
     std::vector<DatasetInfo> datasets;
@@ -92,12 +95,13 @@ struct GroupInfo
 
 struct FileInfo final : public GroupInfo
 {
-    std::string filename; // could be a URL, so not std::filesystem::path
 };
 
 
 CODA_OSS_API FileInfo fileInfo(coda_oss::filesystem::path);
 CODA_OSS_API FileInfo fileInfo(coda_oss::filesystem::path, std::string loc);
+
+CODA_OSS_API DatasetInfo datasetInfo(coda_oss::filesystem::path, std::string loc);
 
 }
 }

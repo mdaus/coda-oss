@@ -23,6 +23,7 @@
 #include "hdf5/lite/Info.h"
 
 #include <tuple> // std::ignore
+#include <stdexcept>
 
 #include "H5.h"
 #include "hdf5.lite.h"
@@ -152,3 +153,57 @@ hdf5::lite::FileInfo hdf5::lite::fileInfo(coda_oss::filesystem::path filename)
     return fileInfo(filename, "/" /*loc*/);
 }
 
+static hdf5::lite::Class H5T_class_to_Class(H5T_class_t type_class)
+{
+    switch (type_class)
+    {
+        case H5T_NO_CLASS: return hdf5::lite::Class::NoClass;
+        case H5T_INTEGER: return hdf5::lite::Class::Integer;
+        case H5T_FLOAT: return hdf5::lite::Class::Float;
+        case H5T_TIME: return hdf5::lite::Class::Time;
+        case H5T_STRING: return hdf5::lite::Class::String;
+        case H5T_BITFIELD: return hdf5::lite::Class::Bitfield;
+        case H5T_OPAQUE: return hdf5::lite::Class::Opaque;
+        case H5T_COMPOUND: return hdf5::lite::Class::Compound;
+        case H5T_REFERENCE: return hdf5::lite::Class::Reference;
+        case H5T_ENUM: return hdf5::lite::Class::Enum;
+        case H5T_VLEN: return hdf5::lite::Class::Vlen;
+        case H5T_ARRAY: return hdf5::lite::Class::Array;
+
+        case H5T_NCLASSES: /*shouldn't be used*/
+            throw std::logic_error("Unexpected H5T_class_t.");    
+        default:
+            throw std::logic_error("Unknown H5T_class_t.");    
+    }
+}
+static hdf5::lite::Class H5T_class_to_Class(const H5::DataSet& dataset)
+{
+    return H5T_class_to_Class(dataset.getTypeClass());
+}
+
+// https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
+static hdf5::lite::DatasetInfo datasetInfo_(coda_oss::filesystem::path filename, std::string loc)
+{
+    hdf5::lite::DatasetInfo retval;
+    retval.filename = filename.string();
+
+    /*
+     * Open the specified file and the specified dataset in the file.
+     */
+    H5::H5File file(retval.filename, H5F_ACC_RDONLY);
+    const auto dataset = file.openDataSet(loc);
+
+    const coda_oss::filesystem::path name = dataset.getObjName(); // e.g., "/g4/time"
+    retval.name = name.filename().string(); // "time"
+
+    /*
+     * Get the class of the datatype that is used by the dataset.
+     */
+    retval.datatype.h5Class = H5T_class_to_Class(dataset);
+
+    return retval;
+}
+hdf5::lite::DatasetInfo hdf5::lite::datasetInfo(coda_oss::filesystem::path filename, std::string loc)
+{
+    return details::try_catch_H5Exceptions(datasetInfo_, filename, loc);
+}
