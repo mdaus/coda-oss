@@ -57,10 +57,15 @@ enum class Class
     Array = 10, /**< array types                             */
 };
 
-struct DatatypeInfo final
+// https://docs.hdfgroup.org/hdf5/develop/_h5_d_m__u_g.html
+struct NamedObject
 {
     std::string filename;  // could be a URL, so not std::filesystem::path
     std::string name;
+};
+
+struct DatatypeInfo final : public NamedObject
+{
     Class h5Class;
     // Type
     size_t size = 0;
@@ -70,10 +75,8 @@ struct DataspaceInfo final
 {
 };
 
-struct DatasetInfo final
+struct DatasetInfo final : public NamedObject
 {
-    std::string filename;  // could be a URL, so not std::filesystem::path
-    std::string name;
     DatatypeInfo datatype;
     DataspaceInfo dataspace;
     // ChunkSize
@@ -82,10 +85,8 @@ struct DatasetInfo final
     // Attributes
 };
 
-struct GroupInfo
+struct GroupInfo : public NamedObject
 {
-    std::string filename;  // could be a URL, so not std::filesystem::path
-    std::string name;
     std::vector<GroupInfo> groups;
     std::vector<DatasetInfo> datasets;
     std::vector<DatatypeInfo> datatypes;
