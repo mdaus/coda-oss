@@ -32,25 +32,13 @@ static hdf5::lite::FileInfo fileInfo_(coda_oss::filesystem::path filename, std::
 {
     hdf5::lite::FileInfo retval;
     retval.filename = filename.string();
+    retval.name = loc;
 
     /*
      * Open the specified file and the specified dataset in the file.
      */
     H5::H5File file(retval.filename, H5F_ACC_RDONLY);
-    if (!loc.empty())
-    {
-        retval.name = loc;
-
-        // I'm sure this needs to be (much?) more sophisticated ... but get
-        // a simple unit-test working.
-        const auto name = retval.name.substr(1); // removing leading '/'
-
-        const auto dataset = file.openDataSet(name);
-    }
-    else
-    {
-        retval.name = "/";
-    }
+    const auto group = file.openGroup(retval.name);
 
     return retval;
 }
@@ -60,6 +48,6 @@ hdf5::lite::FileInfo hdf5::lite::fileInfo(coda_oss::filesystem::path filename, s
 }
 hdf5::lite::FileInfo hdf5::lite::fileInfo(coda_oss::filesystem::path filename)
 {
-    return fileInfo(filename, "" /*loc*/);
+    return fileInfo(filename, "/" /*loc*/);
 }
 
