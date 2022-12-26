@@ -27,6 +27,39 @@
 #include "H5.h"
 #include "hdf5.lite.h"
 
+
+// https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/h5group_8cpp-example.html
+static herr_t group_info(hid_t loc_id, const char *name, const H5L_info_t* /*linfo*/, void *opdata)
+{
+    // only interested in groups
+    const auto group = H5Gopen2(loc_id, name, H5P_DEFAULT);
+    if (group > 0)
+    {
+        H5Gclose(group);
+
+        hdf5::lite::GroupInfo groupInfo;
+        groupInfo.name = name;
+
+        auto pRetval = static_cast<std::vector<hdf5::lite::GroupInfo>*>(opdata);
+        pRetval->push_back(groupInfo);
+    }
+
+    return 0;
+}
+static std::vector<hdf5::lite::GroupInfo> getGroups(H5::Group& group)
+{
+    std::vector<hdf5::lite::GroupInfo> retval;
+
+    const auto herr = H5Literate(group.getId(), H5_INDEX_NAME, H5_ITER_INC, nullptr /*idx*/, group_info,  &retval);
+    if (herr != 0)
+    {
+        // How can this happen?
+        throw std::logic_error("H5Literate failed.");
+    }
+
+    return retval;
+ }
+
 // https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
 static hdf5::lite::FileInfo fileInfo_(coda_oss::filesystem::path filename, std::string loc)
 {
@@ -38,7 +71,9 @@ static hdf5::lite::FileInfo fileInfo_(coda_oss::filesystem::path filename, std::
      * Open the specified file and the specified dataset in the file.
      */
     H5::H5File file(retval.filename, H5F_ACC_RDONLY);
-    const auto group = file.openGroup(retval.name);
+    auto group = file.openGroup(retval.name);
+
+    retval.groups = getGroups(group);
 
     return retval;
 }

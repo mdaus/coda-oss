@@ -43,6 +43,7 @@ TEST_CASE(test_hdf5Info)
     const auto info = hdf5::lite::fileInfo(path);
     TEST_ASSERT_EQ(path.string(), info.filename);
     TEST_ASSERT_EQ("/", info.name);
+    TEST_ASSERT_EQ(info.groups.size(), 4);
 }
 
 TEST_CASE(test_hdf5Info_IOException)
@@ -69,11 +70,12 @@ TEST_CASE(test_hdf5Info_loc)
 
     TEST_ASSERT_EQ(path.string(), info.filename);
     TEST_ASSERT_EQ("/g4", info.name);
+    TEST_ASSERT_TRUE(info.groups.empty());
 }
 
 TEST_MAIN(
     TEST_CHECK(test_hdf5Info);
     TEST_CHECK(test_hdf5Info_IOException);
 
-    //TEST_CHECK(test_hdf5Info_loc);
+    TEST_CHECK(test_hdf5Info_loc);
 )

@@ -41,10 +41,6 @@ namespace hdf5
 {
 namespace lite
 {
-struct GroupInfo final
-{
-};
-
 enum class Class
 {
     NoClass = -1, /**< error                                   */
@@ -80,15 +76,19 @@ struct DatasetInfo final
     // Attributes
 };
 
-struct FileInfo final
+struct GroupInfo
 {
-    std::string filename; // could be a URL, so not std::filesystem::path
     std::string name;
     std::vector<GroupInfo> groups;
     std::vector<DatasetInfo> datasets;
     std::vector<DatatypeInfo> datatypes;
     // Links
     // Attributes
+};
+
+struct FileInfo final : public GroupInfo
+{
+    std::string filename; // could be a URL, so not std::filesystem::path
 };
 
 
