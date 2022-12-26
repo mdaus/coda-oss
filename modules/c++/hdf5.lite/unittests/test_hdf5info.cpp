@@ -61,6 +61,8 @@ TEST_CASE(test_hdf5FileInfo)
     TEST_ASSERT_EQ(info.groups.size(), 4);
     TEST_ASSERT_TRUE(info.datasets.empty());
     TEST_ASSERT_TRUE(info.datatypes.empty());
+    //TEST_ASSERT_TRUE(info.links.empty());
+    //TEST_ASSERT_EQ(info.attributes.size(), 2);
 }
 
 TEST_CASE(test_hdf5GroupInfo)
@@ -75,6 +77,8 @@ TEST_CASE(test_hdf5GroupInfo)
     TEST_ASSERT_TRUE(info.groups.empty());
     TEST_ASSERT_EQ(info.datasets.size(), 4);
     TEST_ASSERT_TRUE(info.datatypes.empty());
+    //TEST_ASSERT_TRUE(info.links.empty());
+    //TEST_ASSERT_TRUE(info.attributes.empty());
 }
 
 TEST_CASE(test_hdf5DatasetInfo)
@@ -87,6 +91,11 @@ TEST_CASE(test_hdf5DatasetInfo)
     TEST_ASSERT_EQ(path.string(), info.filename);
     TEST_ASSERT_EQ("time", info.name);
     TEST_ASSERT(info.datatype.h5Class == hdf5::lite::Class::Float);
+    //TEST_ASSERT(info.dataspace == hdf5::lite::Class::Float);
+    // TEST_ASSERT(info.chunkSize == hdf5::lite::Class::Float);
+    // TEST_ASSERT(info.fillValue == hdf5::lite::Class::Float);
+    //TEST_ASSERT_TRUE(info.filters.empty());
+    //TEST_ASSERT_EQ(info.attributes.size(), 2);
 }
 
 TEST_MAIN(
