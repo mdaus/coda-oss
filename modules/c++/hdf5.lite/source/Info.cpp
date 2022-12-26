@@ -126,9 +126,9 @@ static std::vector<hdf5::lite::DatatypeInfo> getDatatypes(H5::Group& group)
  }
 
 // https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
-static hdf5::lite::FileInfo fileInfo_(coda_oss::filesystem::path filename, std::string loc)
+static hdf5::lite::GroupInfo groupInfo_(coda_oss::filesystem::path filename, std::string loc)
 {
-    hdf5::lite::FileInfo retval;
+    hdf5::lite::GroupInfo retval;
     retval.filename = filename.string();
     retval.name = loc;
 
@@ -144,13 +144,16 @@ static hdf5::lite::FileInfo fileInfo_(coda_oss::filesystem::path filename, std::
 
     return retval;
 }
-hdf5::lite::FileInfo hdf5::lite::fileInfo(coda_oss::filesystem::path filename, std::string loc)
+hdf5::lite::GroupInfo hdf5::lite::groupInfo(coda_oss::filesystem::path filename, std::string loc)
 {
-    return details::try_catch_H5Exceptions(fileInfo_, filename, loc);
+    return details::try_catch_H5Exceptions(groupInfo_, filename, loc);
 }
 hdf5::lite::FileInfo hdf5::lite::fileInfo(coda_oss::filesystem::path filename)
 {
-    return fileInfo(filename, "/" /*loc*/);
+    hdf5::lite::FileInfo retval;
+    hdf5::lite::GroupInfo& retval_ = retval;
+    retval_= groupInfo(filename, "/" /*loc*/);
+    return retval;
 }
 
 static hdf5::lite::Class H5T_class_to_Class(H5T_class_t type_class)

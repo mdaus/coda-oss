@@ -34,20 +34,6 @@ static std::filesystem::path find_unittest_file(const std::filesystem::path& nam
     static const auto unittests = std::filesystem::path("modules") / "c++" / "hdf5.lite" / "unittests";
     return sys::test::findGITModuleFile("coda-oss", unittests, name);
 }
-
-TEST_CASE(test_hdf5Info)
-{
-    static const auto path = find_unittest_file("example.h5");
-
-    // https://www.mathworks.com/help/matlab/ref/h5info.html
-    const auto info = hdf5::lite::fileInfo(path);
-    TEST_ASSERT_EQ(path.string(), info.filename);
-    TEST_ASSERT_EQ("/", info.name);
-    TEST_ASSERT_EQ(info.groups.size(), 4);
-    TEST_ASSERT_TRUE(info.datasets.empty());
-    TEST_ASSERT_TRUE(info.datatypes.empty());
-}
-
 TEST_CASE(test_hdf5Info_IOException)
 {
     static const std::filesystem::path path = "does not exist . h5";
@@ -63,12 +49,26 @@ TEST_CASE(test_hdf5Info_IOException)
     }
 }
 
-TEST_CASE(test_hdf5Info_loc)
+
+TEST_CASE(test_hdf5FileInfo)
 {
     static const auto path = find_unittest_file("example.h5");
 
     // https://www.mathworks.com/help/matlab/ref/h5info.html
-    const auto info = hdf5::lite::fileInfo(path, "/g4");
+    const auto info = hdf5::lite::fileInfo(path);
+    TEST_ASSERT_EQ(path.string(), info.filename);
+    TEST_ASSERT_EQ("/", info.name);
+    TEST_ASSERT_EQ(info.groups.size(), 4);
+    TEST_ASSERT_TRUE(info.datasets.empty());
+    TEST_ASSERT_TRUE(info.datatypes.empty());
+}
+
+TEST_CASE(test_hdf5GroupInfo)
+{
+    static const auto path = find_unittest_file("example.h5");
+
+    // https://www.mathworks.com/help/matlab/ref/h5info.html
+    const auto info = hdf5::lite::groupInfo(path, "/g4");
 
     TEST_ASSERT_EQ(path.string(), info.filename);
     TEST_ASSERT_EQ("/g4", info.name);
@@ -90,9 +90,9 @@ TEST_CASE(test_hdf5DatasetInfo)
 }
 
 TEST_MAIN(
-    TEST_CHECK(test_hdf5Info);
     TEST_CHECK(test_hdf5Info_IOException);
 
-    TEST_CHECK(test_hdf5Info_loc);
+    TEST_CHECK(test_hdf5FileInfo);
+    TEST_CHECK(test_hdf5GroupInfo);
     TEST_CHECK(test_hdf5DatasetInfo);
 )
