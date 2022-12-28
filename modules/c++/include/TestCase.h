@@ -190,7 +190,8 @@ inline int main(TFunc f)
 #define TEST_ASSERT_ALMOST_EQ_EPS(X1, X2, EPS) test::assert_almost_eq_eps(X1, X2, EPS, testName, __FILE__, SYS_FUNC, __LINE__)
 #define TEST_ASSERT_ALMOST_EQ(X1, X2) TEST_ASSERT_ALMOST_EQ_EPS(X1, X2,  std::numeric_limits<float>::epsilon())
 
-#define CODA_OSS_TEST_EXCEPTION_catch_ catch (const except::Throwable&){} catch (const std::exception&){}
+#define CODA_OSS_TEST_EXCEPTION_catch_ \
+    catch (const except::Throwable&){ TEST_ASSERT_TRUE(true); } catch (const std::exception&){ TEST_ASSERT_TRUE(true); }
 #define TEST_EXCEPTION(X) try{ (X); test_diePrintf0("%s (%s,%s,%d): FAILED: Should have thrown exception\n"); } \
   CODA_OSS_TEST_EXCEPTION_catch_
 #define TEST_THROWS(X) try{ (X); test_diePrintf0("%s (%s,%s,%d): FAILED: Should have thrown exception\n"); } catch (...){}
