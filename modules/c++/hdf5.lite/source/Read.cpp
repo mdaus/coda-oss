@@ -126,18 +126,18 @@ types::RowCol<size_t> hdf5::lite::readFile(const coda_oss::filesystem::path& fil
     catch (const H5::DataSetIException& error)
     {
         const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
-        throw DataSetExceptionEx(ctx);
+        throw DataSetException(ctx);
     }
     // catch failure caused by the DataSpace operations
     catch (const H5::DataSpaceIException& error)
     {
         const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
-        throw DataSpaceExceptionEx(ctx);
+        throw DataSpaceException(ctx);
     }
     // catch failure caused by the DataType operations
     catch (const H5::DataTypeIException& error)
     {
         const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
-        throw DataTypeExceptionEx(ctx);
+        throw DataTypeException(ctx);
     }
 }

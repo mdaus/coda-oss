@@ -72,9 +72,6 @@
     DECLARE_EXTENDED_EXCEPTION(_Name, except::Exception) \
     DECLARE_EXTENDED_EXCEPTIONEX(_Name, except::ExceptionEx)
 
-// Use this in new code
-#define DECLARE_EXCEPTIONEX(_Name) DECLARE_EXTENDED_EXCEPTIONEX(_Name, except::ExceptionEx)
-
 namespace except
 {
 
@@ -125,6 +122,11 @@ struct Exception : public Throwable
         return "Exception";
     }
 };
+
+
+// Use this in new code: name is FooException (not FooExceptionEx), base is except::ExceptionEx (not except::Exception).
+#define CODA_OSS_DECLARE_EXTENDED_EXCEPTION(name_, base_) DECLARE_EXTENDED_EXCEPTION_(name_, Exception, base_)
+#define CODA_OSS_DECLARE_EXCEPTION(name_) CODA_OSS_DECLARE_EXTENDED_EXCEPTION(name_, except::ExceptionEx)
 
 struct ExceptionEx : public ThrowableEx
 {

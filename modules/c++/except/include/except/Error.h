@@ -55,9 +55,6 @@
     DECLARE_EXTENDED_ERROR(_Name, except::Error); \
     DECLARE_EXTENDED_ERROREX(_Name, except::ErrorEx)
 
-// Use this in new code
-#define DECLARE_ERROREX(_Name) DECLARE_EXTENDED_ERROREX(_Name, except::ErrorEx)
-
 namespace except
 {
 /*!
@@ -110,6 +107,10 @@ struct Error : public Throwable
         return "Error";
     }
 };
+
+// Use this in new code: name is FooErrror (not FooErrorEx), base is except::ErrorEx (not except::Error).
+#define CODA_OSS_DECLARE_EXTENDED_ERROR(name_, base_) DECLARE_EXTENDED_ERROR_(name_, Error, base_)
+#define CODA_OSS_DECLARE_ERROR(name_) CODA_OSS_DECLARE_EXTENDED_ERROR(name_, except::ErrorEx)
 
 struct ErrorEx : public ThrowableEx
 {
