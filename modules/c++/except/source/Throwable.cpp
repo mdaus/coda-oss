@@ -76,7 +76,7 @@ except::Throwable::Throwable(const Context* pContext, const Throwable* pThrowabl
 : Throwable(pContext, pThrowable, pMessage, callGetBacktrace, nullptr)
 {
 }
-except::Throwable::Throwable(const Context* pContext, const Throwable11* pThrowable, const std::string* pMessage, bool callGetBacktrace)
+except::Throwable::Throwable(const Context* pContext, const ThrowableEx* pThrowable, const std::string* pMessage, bool callGetBacktrace)
 : Throwable(pContext, pThrowable, pMessage, callGetBacktrace, nullptr)
 {
 }
@@ -92,16 +92,16 @@ except::Throwable::Throwable(except::Context c) : Throwable(&c)
 except::Throwable::Throwable(const except::Throwable& t, except::Context c) : Throwable(&c, &t)
 {
 }
-except::Throwable::Throwable(const except::Throwable11& t, except::Context c) : Throwable(&c, &t)
+except::Throwable::Throwable(const except::ThrowableEx& t, except::Context c) : Throwable(&c, &t)
 {
 }
-except::Throwable::Throwable(const except::Throwable11& t) : Throwable(nullptr, &t)
+except::Throwable::Throwable(const except::ThrowableEx& t) : Throwable(nullptr, &t)
 {
 }
 
 //******************************************************************************
 
-void except::Throwable11::doGetBacktrace()
+void except::ThrowableEx::doGetBacktrace()
 {
     // This could be time-consuming or generate a lot of (noisy) output; only do
     // it if requested
@@ -110,7 +110,7 @@ void except::Throwable11::doGetBacktrace()
 }
 
 template <typename TThrowable>
-except::Throwable11::Throwable11(const Context* pContext,
+except::ThrowableEx::ThrowableEx(const Context* pContext,
                                  const TThrowable* pThrowable,
                                  const std::string* pMessage,
                                  bool callGetBacktrace,
@@ -152,41 +152,41 @@ except::Throwable11::Throwable11(const Context* pContext,
         doGetBacktrace();
     }
 }
-except::Throwable11::Throwable11(const Context* pContext,
-                             const Throwable11* pThrowable,
+except::ThrowableEx::ThrowableEx(const Context* pContext,
+                             const ThrowableEx* pThrowable,
                              const std::string* pMessage,
                              bool callGetBacktrace) :
-    Throwable11(pContext, pThrowable, pMessage, callGetBacktrace, nullptr)
+    ThrowableEx(pContext, pThrowable, pMessage, callGetBacktrace, nullptr)
 {
 }
-except::Throwable11::Throwable11(const Context* pContext,
+except::ThrowableEx::ThrowableEx(const Context* pContext,
                                  const Throwable* pThrowable,
                                  const std::string* pMessage,
                                  bool callGetBacktrace) :
-    Throwable11(pContext, pThrowable, pMessage, callGetBacktrace, nullptr)
+    ThrowableEx(pContext, pThrowable, pMessage, callGetBacktrace, nullptr)
 {
 }
 
-except::Throwable11::Throwable11(const std::string& message) :
-    Throwable11(nullptr, static_cast<const Throwable11*>(nullptr), &message)
+except::ThrowableEx::ThrowableEx(const std::string& message) :
+    ThrowableEx(nullptr, static_cast<const ThrowableEx*>(nullptr), &message)
 {
 }
 
-except::Throwable11::Throwable11(const except::Context& c) : Throwable11(&c)
+except::ThrowableEx::ThrowableEx(const except::Context& c) : ThrowableEx(&c)
 {
 }
 
-except::Throwable11::Throwable11(const except::Throwable11& t,
+except::ThrowableEx::ThrowableEx(const except::ThrowableEx& t,
                                  const except::Context& c) :
-    Throwable11(&c, &t)
+    ThrowableEx(&c, &t)
 {
 }
-except::Throwable11::Throwable11(const except::Throwable& t,
+except::ThrowableEx::ThrowableEx(const except::Throwable& t,
                                  const except::Context& c) :
-    Throwable11(&c, &t)
+    ThrowableEx(&c, &t)
 {
 }
-except::Throwable11::Throwable11(const except::Throwable& t) :
-    Throwable11(nullptr, &t)
+except::ThrowableEx::ThrowableEx(const except::Throwable& t) :
+    ThrowableEx(nullptr, &t)
 {
 }

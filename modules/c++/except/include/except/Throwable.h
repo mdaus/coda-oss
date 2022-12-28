@@ -42,14 +42,17 @@
  * "catch" will be needed and we'll have standard what().  But doing so could
  * break existing code as "catch (const std::exception&)" will catch
  * except::Throwable when it didn't before.
+ *
+ * A lot of existing code has "catch (std::exception)" BEFORE "catch (except::Throwable)" 
+ * making it difficult to change without the risk of breaking something. :-(
  */
-#ifdef CODA_OSS_THROWABLE_IS_NOT_AN_EXCEPTION // -DCODA_OSS_THROWABLE_IS_NOT_AN_EXCEPTION
+#ifdef CODA_OSS_THROWABLE_ISA_STD_EXCEPTION  // -CODA_OSS_THROWABLE_ISA_STD_EXCEPTION
 #ifdef CODA_OSS_except_Throwable_ISA_std_exception
 #error "CODA_OSS_except_Throwable_ISA_std_exception already #define'd."
 #endif
-#define CODA_OSS_except_Throwable_ISA_std_exception 0
+#define CODA_OSS_except_Throwable_ISA_std_exception 1
 #endif
-#ifndef CODA_OSS_except_Throwable_ISA_std_exception // or, -DCODA_OSS_except_Throwable_ISA_std_exception=0
+#ifndef CODA_OSS_except_Throwable_ISA_std_exception // or, -DCODA_OSS_except_Throwable_ISA_std_exception=1
 #define CODA_OSS_except_Throwable_ISA_std_exception 0
 #endif
 
@@ -70,7 +73,7 @@ namespace except
  * This class provides the base interface for exceptions and errors.
  */
 
-class Throwable11;
+class ThrowableEx;
 class CODA_OSS_API Throwable
 #if CODA_OSS_except_Throwable_ISA_std_exception    
     : public std::exception
@@ -80,7 +83,7 @@ class CODA_OSS_API Throwable
     template<typename TThrowable>
     Throwable(const Context*, const TThrowable* pT, const std::string* pMessage, bool callGetBacktrace, std::nullptr_t);
     Throwable(const Context*, const Throwable* pT = nullptr, const std::string* pMessage = nullptr, bool callGetBacktrace = false);
-    Throwable(const Context*, const Throwable11* pT, const std::string* pMessage = nullptr, bool callGetBacktrace = false);
+    Throwable(const Context*, const ThrowableEx* pT, const std::string* pMessage = nullptr, bool callGetBacktrace = false);
 
 public:
     Throwable() = default;
@@ -89,7 +92,7 @@ public:
     Throwable(Throwable&&) = default;
     Throwable& operator=(Throwable&&) = default;
 
-    Throwable(const Throwable11&);
+    Throwable(const ThrowableEx&);
 
     /*!
      * Constructor.  Takes a message
@@ -109,7 +112,7 @@ public:
      * \param c The Context
      */
     Throwable(const Throwable&, Context);
-    Throwable(const Throwable11&, Context);
+    Throwable(const ThrowableEx&, Context);
 
     /*!
      * Destructor
@@ -211,7 +214,7 @@ private:
 };
 
 /*!
- * \class Throwable11
+ * \class ThrowableEx
  * \brief The interface for exceptions and errors
  *
  * This class provides the base interface for exceptions and errors.
@@ -223,53 +226,53 @@ private:
  * break existing code as "catch (const std::exception&)" will catch
  * except::Throwable when it didn't before.
  */
-class Throwable11 : public std::exception
+class ThrowableEx : public std::exception // "ThrowableEx" = "Throwable exception"
 {
     void doGetBacktrace();
     template <typename TThrowable>
-    Throwable11(const Context*,
+    ThrowableEx(const Context*,
               const TThrowable* pT,
               const std::string* pMessage,
               bool callGetBacktrace,
               std::nullptr_t);
-    Throwable11(const Context*,
-                const Throwable11* pT = nullptr,
+    ThrowableEx(const Context*,
+                const ThrowableEx* pT = nullptr,
                 const std::string* pMessage = nullptr,
                 bool callGetBacktrace = false);
-    Throwable11(const Context*,
+    ThrowableEx(const Context*,
                 const Throwable* pT,
                 const std::string* pMessage = nullptr,
                 bool callGetBacktrace = false);
 
 public:
-    Throwable11() = default;
-    virtual ~Throwable11() = default;
-    Throwable11(const Throwable11&) = default;
-    Throwable11& operator=(const Throwable11&) = default;
-    Throwable11(Throwable11&&) = default;
-    Throwable11& operator=(Throwable11&&) = default;
+    ThrowableEx() = default;
+    virtual ~ThrowableEx() = default;
+    ThrowableEx(const ThrowableEx&) = default;
+    ThrowableEx& operator=(const ThrowableEx&) = default;
+    ThrowableEx(ThrowableEx&&) = default;
+    ThrowableEx& operator=(ThrowableEx&&) = default;
 
-    Throwable11(const Throwable&);
+    ThrowableEx(const Throwable&);
 
     /*!
      * Constructor.  Takes a message
      * \param message The message
      */
-    Throwable11(const std::string& message);
+    ThrowableEx(const std::string& message);
 
     /*!
      * Constructor.  Takes a Context.
      * \param c The Context
      */
-    Throwable11(const Context&);
+    ThrowableEx(const Context&);
 
     /*!
      * Constructor. Takes a Throwable and a Context
      * \param t The throwable
      * \param c The Context
      */
-    Throwable11(const Throwable11&, const Context&);
-    Throwable11(const Throwable&, const Context&);
+    ThrowableEx(const ThrowableEx&, const Context&);
+    ThrowableEx(const Throwable&, const Context&);
 
     /*!
      * Get the message
@@ -304,7 +307,7 @@ public:
      */
     virtual std::string getType() const noexcept
     {
-        return "Throwable11";
+        return "ThrowableEx";
     }
 
     virtual std::string toString() const
@@ -325,7 +328,7 @@ public:
 
     // It seems that overloading constructors creates ambiguities ... so allow
     // for a "fluent" way of doing this.: throw Exception(...).backtrace()
-    Throwable11& backtrace()
+    ThrowableEx& backtrace()
     {
         doGetBacktrace();
         return *this;
@@ -363,6 +366,7 @@ private:
     mutable std::string mWhat;
     std::vector<std::string> mBacktrace;
 };
+using Throwable11 = ThrowableEx; // keep old name around for other projects
 }
 
 #endif // CODA_OSS_except_Throwable_h_INCLUDED_

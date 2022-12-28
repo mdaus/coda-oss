@@ -60,7 +60,7 @@
       _Name##Exception_(const except::Context& c) : _Base(c){} \
       _Name##Exception_(const std::string& msg) : _Base(msg){} \
       _Name##Exception_(const except::Throwable& t, const except::Context& c) : _Base(t, c){} \
-      _Name##Exception_(const except::Throwable11& t, const except::Context& c) : _Base(t, c){} \
+      _Name##Exception_(const except::ThrowableEx& t, const except::Context& c) : _Base(t, c){} \
       CODA_OSS_except_Exception_suppress_26447_BEGIN_ \
       std::string getType() const noexcept override { return #_Name #Exception_; } \
      CODA_OSS_except_Exception_suppress_26447_END_ };
@@ -103,7 +103,7 @@ struct Exception : public Throwable
         Throwable(t, c)
     {
     }
-    Exception(const Throwable11& t, const Context& c) : Throwable(t, c)
+    Exception(const ThrowableEx& t, const Context& c) : Throwable(t, c)
     {
     }
 
@@ -122,7 +122,7 @@ struct Exception : public Throwable
     }
 };
 
-struct Exception11 : public Throwable11
+struct Exception11 : public ThrowableEx
 {
     Exception11() = default;
     virtual ~Exception11() = default;
@@ -131,7 +131,7 @@ struct Exception11 : public Throwable11
      * Constructor. Takes a Context
      * \param c The Context
      */
-    Exception11(const Context& c) : Throwable11(c)
+    Exception11(const Context& c) : ThrowableEx(c)
     {
     }
 
@@ -140,10 +140,10 @@ struct Exception11 : public Throwable11
      * \param t The Throwable
      * \param c The Context
      */
-    Exception11(const Throwable11& t, const Context& c) : Throwable11(t, c)
+    Exception11(const ThrowableEx& t, const Context& c) : ThrowableEx(t, c)
     {
     }
-    Exception11(const Throwable& t, const Context& c) : Throwable11(t, c)
+    Exception11(const Throwable& t, const Context& c) : ThrowableEx(t, c)
     {
     }
 
@@ -151,7 +151,7 @@ struct Exception11 : public Throwable11
      * Constructor.  Takes a message
      * \param message The message
      */
-    Exception11(const std::string& message) : Throwable11(message)
+    Exception11(const std::string& message) : ThrowableEx(message)
     {
     }
 

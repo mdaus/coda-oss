@@ -188,11 +188,11 @@ class Throwable(_object):
         __init__(except::Throwable self) -> Throwable
         __init__(except::Throwable self, Throwable arg2) -> Throwable
         __init__(except::Throwable self, Throwable arg2) -> Throwable
-        __init__(except::Throwable self, Throwable11 arg2) -> Throwable
+        __init__(except::Throwable self, ThrowableEx arg2) -> Throwable
         __init__(except::Throwable self, std::string const & message) -> Throwable
         __init__(except::Throwable self, Context arg2) -> Throwable
         __init__(except::Throwable self, Throwable arg2, Context arg3) -> Throwable
-        __init__(except::Throwable self, Throwable11 arg2, Context arg3) -> Throwable
+        __init__(except::Throwable self, ThrowableEx arg2, Context arg3) -> Throwable
         """
         this = _coda_except.new_Throwable(*args)
         try:
@@ -245,76 +245,76 @@ class Throwable(_object):
 Throwable_swigregister = _coda_except.Throwable_swigregister
 Throwable_swigregister(Throwable)
 
-class Throwable11(_object):
-    """Proxy of C++ except::Throwable11 class."""
+class ThrowableEx(_object):
+    """Proxy of C++ except::ThrowableEx class."""
 
     __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, Throwable11, name, value)
+    __setattr__ = lambda self, name, value: _swig_setattr(self, ThrowableEx, name, value)
     __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, Throwable11, name)
+    __getattr__ = lambda self, name: _swig_getattr(self, ThrowableEx, name)
     __repr__ = _swig_repr
-    __swig_destroy__ = _coda_except.delete_Throwable11
+    __swig_destroy__ = _coda_except.delete_ThrowableEx
     __del__ = lambda self: None
 
     def __init__(self, *args):
         """
-        __init__(except::Throwable11 self) -> Throwable11
-        __init__(except::Throwable11 self, Throwable11 arg2) -> Throwable11
-        __init__(except::Throwable11 self, Throwable11 arg2) -> Throwable11
-        __init__(except::Throwable11 self, Throwable arg2) -> Throwable11
-        __init__(except::Throwable11 self, std::string const & message) -> Throwable11
-        __init__(except::Throwable11 self, Context arg2) -> Throwable11
-        __init__(except::Throwable11 self, Throwable11 arg2, Context arg3) -> Throwable11
-        __init__(except::Throwable11 self, Throwable arg2, Context arg3) -> Throwable11
+        __init__(except::ThrowableEx self) -> ThrowableEx
+        __init__(except::ThrowableEx self, ThrowableEx arg2) -> ThrowableEx
+        __init__(except::ThrowableEx self, ThrowableEx arg2) -> ThrowableEx
+        __init__(except::ThrowableEx self, Throwable arg2) -> ThrowableEx
+        __init__(except::ThrowableEx self, std::string const & message) -> ThrowableEx
+        __init__(except::ThrowableEx self, Context arg2) -> ThrowableEx
+        __init__(except::ThrowableEx self, ThrowableEx arg2, Context arg3) -> ThrowableEx
+        __init__(except::ThrowableEx self, Throwable arg2, Context arg3) -> ThrowableEx
         """
-        this = _coda_except.new_Throwable11(*args)
+        this = _coda_except.new_ThrowableEx(*args)
         try:
             self.this.append(this)
         except __builtin__.Exception:
             self.this = this
 
     def getMessage(self) -> "std::string":
-        """getMessage(Throwable11 self) -> std::string"""
-        return _coda_except.Throwable11_getMessage(self)
+        """getMessage(ThrowableEx self) -> std::string"""
+        return _coda_except.ThrowableEx_getMessage(self)
 
 
     def getTrace(self, *args) -> "Trace &":
         """
-        getTrace(Throwable11 self) -> Trace const
-        getTrace(Throwable11 self) -> Trace &
+        getTrace(ThrowableEx self) -> Trace const
+        getTrace(ThrowableEx self) -> Trace &
         """
-        return _coda_except.Throwable11_getTrace(self, *args)
+        return _coda_except.ThrowableEx_getTrace(self, *args)
 
 
     def getType(self) -> "std::string":
-        """getType(Throwable11 self) -> std::string"""
-        return _coda_except.Throwable11_getType(self)
+        """getType(ThrowableEx self) -> std::string"""
+        return _coda_except.ThrowableEx_getType(self)
 
 
     def getBacktrace(self) -> "std::vector< std::string > const &":
-        """getBacktrace(Throwable11 self) -> std::vector< std::string > const &"""
-        return _coda_except.Throwable11_getBacktrace(self)
+        """getBacktrace(ThrowableEx self) -> std::vector< std::string > const &"""
+        return _coda_except.ThrowableEx_getBacktrace(self)
 
 
-    def backtrace(self) -> "except::Throwable11 &":
-        """backtrace(Throwable11 self) -> Throwable11"""
-        return _coda_except.Throwable11_backtrace(self)
+    def backtrace(self) -> "except::ThrowableEx &":
+        """backtrace(ThrowableEx self) -> ThrowableEx"""
+        return _coda_except.ThrowableEx_backtrace(self)
 
 
     def toString(self, *args) -> "std::string":
         """
-        toString(Throwable11 self) -> std::string
-        toString(Throwable11 self, bool includeBacktrace) -> std::string
+        toString(ThrowableEx self) -> std::string
+        toString(ThrowableEx self, bool includeBacktrace) -> std::string
         """
-        return _coda_except.Throwable11_toString(self, *args)
+        return _coda_except.ThrowableEx_toString(self, *args)
 
 
     def what(self) -> "char const *":
-        """what(Throwable11 self) -> char const *"""
-        return _coda_except.Throwable11_what(self)
+        """what(ThrowableEx self) -> char const *"""
+        return _coda_except.ThrowableEx_what(self)
 
-Throwable11_swigregister = _coda_except.Throwable11_swigregister
-Throwable11_swigregister(Throwable11)
+ThrowableEx_swigregister = _coda_except.ThrowableEx_swigregister
+ThrowableEx_swigregister(ThrowableEx)
 
 class Exception(Throwable):
     """Proxy of C++ except::Exception class."""
@@ -336,7 +336,7 @@ class Exception(Throwable):
         __init__(except::Exception self) -> Exception
         __init__(except::Exception self, Context c) -> Exception
         __init__(except::Exception self, Throwable t, Context c) -> Exception
-        __init__(except::Exception self, Throwable11 t, Context c) -> Exception
+        __init__(except::Exception self, ThrowableEx t, Context c) -> Exception
         __init__(except::Exception self, std::string const & message) -> Exception
         """
         this = _coda_except.new_Exception(*args)
@@ -352,15 +352,15 @@ class Exception(Throwable):
 Exception_swigregister = _coda_except.Exception_swigregister
 Exception_swigregister(Exception)
 
-class Exception11(Throwable11):
+class Exception11(ThrowableEx):
     """Proxy of C++ except::Exception11 class."""
 
     __swig_setmethods__ = {}
-    for _s in [Throwable11]:
+    for _s in [ThrowableEx]:
         __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
     __setattr__ = lambda self, name, value: _swig_setattr(self, Exception11, name, value)
     __swig_getmethods__ = {}
-    for _s in [Throwable11]:
+    for _s in [ThrowableEx]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, Exception11, name)
     __repr__ = _swig_repr
@@ -371,7 +371,7 @@ class Exception11(Throwable11):
         """
         __init__(except::Exception11 self) -> Exception11
         __init__(except::Exception11 self, Context c) -> Exception11
-        __init__(except::Exception11 self, Throwable11 t, Context c) -> Exception11
+        __init__(except::Exception11 self, ThrowableEx t, Context c) -> Exception11
         __init__(except::Exception11 self, Throwable t, Context c) -> Exception11
         __init__(except::Exception11 self, std::string const & message) -> Exception11
         """
@@ -411,7 +411,7 @@ class IOException(Exception):
         __init__(except::IOException self, Context c) -> IOException
         __init__(except::IOException self, std::string const & msg) -> IOException
         __init__(except::IOException self, Throwable t, Context c) -> IOException
-        __init__(except::IOException self, Throwable11 t, Context c) -> IOException
+        __init__(except::IOException self, ThrowableEx t, Context c) -> IOException
         """
         this = _coda_except.new_IOException(*args)
         try:
@@ -449,7 +449,7 @@ class IOException11(Exception11):
         __init__(except::IOException11 self, Context c) -> IOException11
         __init__(except::IOException11 self, std::string const & msg) -> IOException11
         __init__(except::IOException11 self, Throwable t, Context c) -> IOException11
-        __init__(except::IOException11 self, Throwable11 t, Context c) -> IOException11
+        __init__(except::IOException11 self, ThrowableEx t, Context c) -> IOException11
         """
         this = _coda_except.new_IOException11(*args)
         try:
@@ -487,7 +487,7 @@ class FileNotFoundException(IOException):
         __init__(except::FileNotFoundException self, Context c) -> FileNotFoundException
         __init__(except::FileNotFoundException self, std::string const & msg) -> FileNotFoundException
         __init__(except::FileNotFoundException self, Throwable t, Context c) -> FileNotFoundException
-        __init__(except::FileNotFoundException self, Throwable11 t, Context c) -> FileNotFoundException
+        __init__(except::FileNotFoundException self, ThrowableEx t, Context c) -> FileNotFoundException
         """
         this = _coda_except.new_FileNotFoundException(*args)
         try:
@@ -525,7 +525,7 @@ class BadCastException(Exception):
         __init__(except::BadCastException self, Context c) -> BadCastException
         __init__(except::BadCastException self, std::string const & msg) -> BadCastException
         __init__(except::BadCastException self, Throwable t, Context c) -> BadCastException
-        __init__(except::BadCastException self, Throwable11 t, Context c) -> BadCastException
+        __init__(except::BadCastException self, ThrowableEx t, Context c) -> BadCastException
         """
         this = _coda_except.new_BadCastException(*args)
         try:
@@ -563,7 +563,7 @@ class BadCastException11(Exception11):
         __init__(except::BadCastException11 self, Context c) -> BadCastException11
         __init__(except::BadCastException11 self, std::string const & msg) -> BadCastException11
         __init__(except::BadCastException11 self, Throwable t, Context c) -> BadCastException11
-        __init__(except::BadCastException11 self, Throwable11 t, Context c) -> BadCastException11
+        __init__(except::BadCastException11 self, ThrowableEx t, Context c) -> BadCastException11
         """
         this = _coda_except.new_BadCastException11(*args)
         try:
@@ -601,7 +601,7 @@ class InvalidFormatException(Exception):
         __init__(except::InvalidFormatException self, Context c) -> InvalidFormatException
         __init__(except::InvalidFormatException self, std::string const & msg) -> InvalidFormatException
         __init__(except::InvalidFormatException self, Throwable t, Context c) -> InvalidFormatException
-        __init__(except::InvalidFormatException self, Throwable11 t, Context c) -> InvalidFormatException
+        __init__(except::InvalidFormatException self, ThrowableEx t, Context c) -> InvalidFormatException
         """
         this = _coda_except.new_InvalidFormatException(*args)
         try:
@@ -639,7 +639,7 @@ class InvalidFormatException11(Exception11):
         __init__(except::InvalidFormatException11 self, Context c) -> InvalidFormatException11
         __init__(except::InvalidFormatException11 self, std::string const & msg) -> InvalidFormatException11
         __init__(except::InvalidFormatException11 self, Throwable t, Context c) -> InvalidFormatException11
-        __init__(except::InvalidFormatException11 self, Throwable11 t, Context c) -> InvalidFormatException11
+        __init__(except::InvalidFormatException11 self, ThrowableEx t, Context c) -> InvalidFormatException11
         """
         this = _coda_except.new_InvalidFormatException11(*args)
         try:
@@ -677,7 +677,7 @@ class IndexOutOfRangeException(Exception):
         __init__(except::IndexOutOfRangeException self, Context c) -> IndexOutOfRangeException
         __init__(except::IndexOutOfRangeException self, std::string const & msg) -> IndexOutOfRangeException
         __init__(except::IndexOutOfRangeException self, Throwable t, Context c) -> IndexOutOfRangeException
-        __init__(except::IndexOutOfRangeException self, Throwable11 t, Context c) -> IndexOutOfRangeException
+        __init__(except::IndexOutOfRangeException self, ThrowableEx t, Context c) -> IndexOutOfRangeException
         """
         this = _coda_except.new_IndexOutOfRangeException(*args)
         try:
@@ -715,7 +715,7 @@ class IndexOutOfRangeException11(Exception11):
         __init__(except::IndexOutOfRangeException11 self, Context c) -> IndexOutOfRangeException11
         __init__(except::IndexOutOfRangeException11 self, std::string const & msg) -> IndexOutOfRangeException11
         __init__(except::IndexOutOfRangeException11 self, Throwable t, Context c) -> IndexOutOfRangeException11
-        __init__(except::IndexOutOfRangeException11 self, Throwable11 t, Context c) -> IndexOutOfRangeException11
+        __init__(except::IndexOutOfRangeException11 self, ThrowableEx t, Context c) -> IndexOutOfRangeException11
         """
         this = _coda_except.new_IndexOutOfRangeException11(*args)
         try:
@@ -753,7 +753,7 @@ class OutOfMemoryException(Exception):
         __init__(except::OutOfMemoryException self, Context c) -> OutOfMemoryException
         __init__(except::OutOfMemoryException self, std::string const & msg) -> OutOfMemoryException
         __init__(except::OutOfMemoryException self, Throwable t, Context c) -> OutOfMemoryException
-        __init__(except::OutOfMemoryException self, Throwable11 t, Context c) -> OutOfMemoryException
+        __init__(except::OutOfMemoryException self, ThrowableEx t, Context c) -> OutOfMemoryException
         """
         this = _coda_except.new_OutOfMemoryException(*args)
         try:
@@ -791,7 +791,7 @@ class OutOfMemoryException11(Exception11):
         __init__(except::OutOfMemoryException11 self, Context c) -> OutOfMemoryException11
         __init__(except::OutOfMemoryException11 self, std::string const & msg) -> OutOfMemoryException11
         __init__(except::OutOfMemoryException11 self, Throwable t, Context c) -> OutOfMemoryException11
-        __init__(except::OutOfMemoryException11 self, Throwable11 t, Context c) -> OutOfMemoryException11
+        __init__(except::OutOfMemoryException11 self, ThrowableEx t, Context c) -> OutOfMemoryException11
         """
         this = _coda_except.new_OutOfMemoryException11(*args)
         try:
@@ -829,7 +829,7 @@ class NullPointerReferenceException(Exception):
         __init__(except::NullPointerReferenceException self, Context c) -> NullPointerReferenceException
         __init__(except::NullPointerReferenceException self, std::string const & msg) -> NullPointerReferenceException
         __init__(except::NullPointerReferenceException self, Throwable t, Context c) -> NullPointerReferenceException
-        __init__(except::NullPointerReferenceException self, Throwable11 t, Context c) -> NullPointerReferenceException
+        __init__(except::NullPointerReferenceException self, ThrowableEx t, Context c) -> NullPointerReferenceException
         """
         this = _coda_except.new_NullPointerReferenceException(*args)
         try:
@@ -867,7 +867,7 @@ class NullPointerReferenceException11(Exception11):
         __init__(except::NullPointerReferenceException11 self, Context c) -> NullPointerReferenceException11
         __init__(except::NullPointerReferenceException11 self, std::string const & msg) -> NullPointerReferenceException11
         __init__(except::NullPointerReferenceException11 self, Throwable t, Context c) -> NullPointerReferenceException11
-        __init__(except::NullPointerReferenceException11 self, Throwable11 t, Context c) -> NullPointerReferenceException11
+        __init__(except::NullPointerReferenceException11 self, ThrowableEx t, Context c) -> NullPointerReferenceException11
         """
         this = _coda_except.new_NullPointerReferenceException11(*args)
         try:
@@ -905,7 +905,7 @@ class NoSuchKeyException(Exception):
         __init__(except::NoSuchKeyException self, Context c) -> NoSuchKeyException
         __init__(except::NoSuchKeyException self, std::string const & msg) -> NoSuchKeyException
         __init__(except::NoSuchKeyException self, Throwable t, Context c) -> NoSuchKeyException
-        __init__(except::NoSuchKeyException self, Throwable11 t, Context c) -> NoSuchKeyException
+        __init__(except::NoSuchKeyException self, ThrowableEx t, Context c) -> NoSuchKeyException
         """
         this = _coda_except.new_NoSuchKeyException(*args)
         try:
@@ -943,7 +943,7 @@ class NoSuchKeyException11(Exception11):
         __init__(except::NoSuchKeyException11 self, Context c) -> NoSuchKeyException11
         __init__(except::NoSuchKeyException11 self, std::string const & msg) -> NoSuchKeyException11
         __init__(except::NoSuchKeyException11 self, Throwable t, Context c) -> NoSuchKeyException11
-        __init__(except::NoSuchKeyException11 self, Throwable11 t, Context c) -> NoSuchKeyException11
+        __init__(except::NoSuchKeyException11 self, ThrowableEx t, Context c) -> NoSuchKeyException11
         """
         this = _coda_except.new_NoSuchKeyException11(*args)
         try:
@@ -981,7 +981,7 @@ class NoSuchReferenceException(Exception):
         __init__(except::NoSuchReferenceException self, Context c) -> NoSuchReferenceException
         __init__(except::NoSuchReferenceException self, std::string const & msg) -> NoSuchReferenceException
         __init__(except::NoSuchReferenceException self, Throwable t, Context c) -> NoSuchReferenceException
-        __init__(except::NoSuchReferenceException self, Throwable11 t, Context c) -> NoSuchReferenceException
+        __init__(except::NoSuchReferenceException self, ThrowableEx t, Context c) -> NoSuchReferenceException
         """
         this = _coda_except.new_NoSuchReferenceException(*args)
         try:
@@ -1019,7 +1019,7 @@ class NoSuchReferenceException11(Exception11):
         __init__(except::NoSuchReferenceException11 self, Context c) -> NoSuchReferenceException11
         __init__(except::NoSuchReferenceException11 self, std::string const & msg) -> NoSuchReferenceException11
         __init__(except::NoSuchReferenceException11 self, Throwable t, Context c) -> NoSuchReferenceException11
-        __init__(except::NoSuchReferenceException11 self, Throwable11 t, Context c) -> NoSuchReferenceException11
+        __init__(except::NoSuchReferenceException11 self, ThrowableEx t, Context c) -> NoSuchReferenceException11
         """
         this = _coda_except.new_NoSuchReferenceException11(*args)
         try:
@@ -1057,7 +1057,7 @@ class KeyAlreadyExistsException(Exception):
         __init__(except::KeyAlreadyExistsException self, Context c) -> KeyAlreadyExistsException
         __init__(except::KeyAlreadyExistsException self, std::string const & msg) -> KeyAlreadyExistsException
         __init__(except::KeyAlreadyExistsException self, Throwable t, Context c) -> KeyAlreadyExistsException
-        __init__(except::KeyAlreadyExistsException self, Throwable11 t, Context c) -> KeyAlreadyExistsException
+        __init__(except::KeyAlreadyExistsException self, ThrowableEx t, Context c) -> KeyAlreadyExistsException
         """
         this = _coda_except.new_KeyAlreadyExistsException(*args)
         try:
@@ -1095,7 +1095,7 @@ class KeyAlreadyExistsException11(Exception11):
         __init__(except::KeyAlreadyExistsException11 self, Context c) -> KeyAlreadyExistsException11
         __init__(except::KeyAlreadyExistsException11 self, std::string const & msg) -> KeyAlreadyExistsException11
         __init__(except::KeyAlreadyExistsException11 self, Throwable t, Context c) -> KeyAlreadyExistsException11
-        __init__(except::KeyAlreadyExistsException11 self, Throwable11 t, Context c) -> KeyAlreadyExistsException11
+        __init__(except::KeyAlreadyExistsException11 self, ThrowableEx t, Context c) -> KeyAlreadyExistsException11
         """
         this = _coda_except.new_KeyAlreadyExistsException11(*args)
         try:
@@ -1133,7 +1133,7 @@ class NotImplementedException(Exception):
         __init__(except::NotImplementedException self, Context c) -> NotImplementedException
         __init__(except::NotImplementedException self, std::string const & msg) -> NotImplementedException
         __init__(except::NotImplementedException self, Throwable t, Context c) -> NotImplementedException
-        __init__(except::NotImplementedException self, Throwable11 t, Context c) -> NotImplementedException
+        __init__(except::NotImplementedException self, ThrowableEx t, Context c) -> NotImplementedException
         """
         this = _coda_except.new_NotImplementedException(*args)
         try:
@@ -1171,7 +1171,7 @@ class NotImplementedException11(Exception11):
         __init__(except::NotImplementedException11 self, Context c) -> NotImplementedException11
         __init__(except::NotImplementedException11 self, std::string const & msg) -> NotImplementedException11
         __init__(except::NotImplementedException11 self, Throwable t, Context c) -> NotImplementedException11
-        __init__(except::NotImplementedException11 self, Throwable11 t, Context c) -> NotImplementedException11
+        __init__(except::NotImplementedException11 self, ThrowableEx t, Context c) -> NotImplementedException11
         """
         this = _coda_except.new_NotImplementedException11(*args)
         try:
@@ -1209,7 +1209,7 @@ class InvalidArgumentException(Exception):
         __init__(except::InvalidArgumentException self, Context c) -> InvalidArgumentException
         __init__(except::InvalidArgumentException self, std::string const & msg) -> InvalidArgumentException
         __init__(except::InvalidArgumentException self, Throwable t, Context c) -> InvalidArgumentException
-        __init__(except::InvalidArgumentException self, Throwable11 t, Context c) -> InvalidArgumentException
+        __init__(except::InvalidArgumentException self, ThrowableEx t, Context c) -> InvalidArgumentException
         """
         this = _coda_except.new_InvalidArgumentException(*args)
         try:
@@ -1247,7 +1247,7 @@ class InvalidArgumentException11(Exception11):
         __init__(except::InvalidArgumentException11 self, Context c) -> InvalidArgumentException11
         __init__(except::InvalidArgumentException11 self, std::string const & msg) -> InvalidArgumentException11
         __init__(except::InvalidArgumentException11 self, Throwable t, Context c) -> InvalidArgumentException11
-        __init__(except::InvalidArgumentException11 self, Throwable11 t, Context c) -> InvalidArgumentException11
+        __init__(except::InvalidArgumentException11 self, ThrowableEx t, Context c) -> InvalidArgumentException11
         """
         this = _coda_except.new_InvalidArgumentException11(*args)
         try:
@@ -1285,7 +1285,7 @@ class SerializationException(IOException):
         __init__(except::SerializationException self, Context c) -> SerializationException
         __init__(except::SerializationException self, std::string const & msg) -> SerializationException
         __init__(except::SerializationException self, Throwable t, Context c) -> SerializationException
-        __init__(except::SerializationException self, Throwable11 t, Context c) -> SerializationException
+        __init__(except::SerializationException self, ThrowableEx t, Context c) -> SerializationException
         """
         this = _coda_except.new_SerializationException(*args)
         try:
@@ -1323,7 +1323,7 @@ class ParseException(IOException):
         __init__(except::ParseException self, Context c) -> ParseException
         __init__(except::ParseException self, std::string const & msg) -> ParseException
         __init__(except::ParseException self, Throwable t, Context c) -> ParseException
-        __init__(except::ParseException self, Throwable11 t, Context c) -> ParseException
+        __init__(except::ParseException self, ThrowableEx t, Context c) -> ParseException
         """
         this = _coda_except.new_ParseException(*args)
         try:

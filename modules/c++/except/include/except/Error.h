@@ -44,7 +44,7 @@
       _Name##Error_(const except::Context& c) : _Base(c){} \
       _Name##Error_(const std::string& msg) : _Base(msg){} \
       _Name##Error_(const except::Throwable& t, const except::Context& c) : _Base(t, c){} \
-      _Name##Error_(const except::Throwable11& t, const except::Context& c) : _Base(t, c){} \
+      _Name##Error_(const except::ThrowableEx& t, const except::Context& c) : _Base(t, c){} \
       std::string getType() getType_specifiers { return #_Name; } \
   };
 #define DECLARE_EXTENDED_ERROR(_Name, _Base) \
@@ -99,7 +99,7 @@ struct Error : public Throwable
         Throwable(t, c)
     {
     }
-    Error(const Throwable11& t, const Context& c) : Throwable(t, c)
+    Error(const ThrowableEx& t, const Context& c) : Throwable(t, c)
     {
     }
 
@@ -109,7 +109,7 @@ struct Error : public Throwable
     }
 };
 
-struct Error11 : public Throwable11
+struct Error11 : public ThrowableEx
 {
     Error11() = default;
     virtual ~Error11() = default;
@@ -118,7 +118,7 @@ struct Error11 : public Throwable11
      * Constructor. Takes a Context
      * \param c The Context
      */
-    Error11(const Context& c) : Throwable11(c)
+    Error11(const Context& c) : ThrowableEx(c)
     {
     }
 
@@ -126,7 +126,7 @@ struct Error11 : public Throwable11
      * Constructor.  Takes a message
      * \param message The message
      */
-    Error11(const std::string& message) : Throwable11(message)
+    Error11(const std::string& message) : ThrowableEx(message)
     {
     }
 
@@ -135,10 +135,10 @@ struct Error11 : public Throwable11
      * \param t The Throwable
      * \param c The Context
      */
-    Error11(const Throwable11& t, const Context& c) : Throwable11(t, c)
+    Error11(const ThrowableEx& t, const Context& c) : ThrowableEx(t, c)
     {
     }
-    Error11(const Throwable& t, const Context& c) : Throwable11(t, c)
+    Error11(const Throwable& t, const Context& c) : ThrowableEx(t, c)
     {
     }
 

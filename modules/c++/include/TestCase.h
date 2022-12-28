@@ -139,7 +139,7 @@ inline void specific_exception(TFunc f,
     {
         diePrintf(format, testName, file, func, line);
     }
-    catch (const except::Throwable11&)
+    catch (const except::ThrowableEx&)
     {
         diePrintf(format, testName, file, func, line);
     }
@@ -171,7 +171,7 @@ inline int main(TFunc f)
 
 #define TEST_CHECK(X) try{ X(std::string(#X)); std::cerr << #X << ": PASSED\n"; } \
   catch(const except::Throwable& ex) { test::diePrintf("%s: FAILED: Exception thrown: %s\n", #X, ex.toString().c_str()); } \
-  catch(const except::Throwable11& ex) { test::diePrintf("%s: FAILED: Exception thrown: %s\n", #X, ex.what()); }
+  catch(const except::ThrowableEx& ex) { test::diePrintf("%s: FAILED: Exception thrown: %s\n", #X, ex.what()); }
 
 #define TEST_ASSERT_NULL(X) if ((X) != nullptr) { test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be NULL\n"); }
 #define TEST_ASSERT_NOT_NULL(X) if ((X) == nullptr) { test_diePrintf0("%s (%s,%s,%d): FAILED: Value should *not* be NULL\n"); }
@@ -186,7 +186,7 @@ inline int main(TFunc f)
 #define TEST_ASSERT_ALMOST_EQ_EPS(X1, X2, EPS) test::assert_almost_eq_eps(X1, X2, EPS, testName, __FILE__, SYS_FUNC, __LINE__)
 #define TEST_ASSERT_ALMOST_EQ(X1, X2) TEST_ASSERT_ALMOST_EQ_EPS(X1, X2,  std::numeric_limits<float>::epsilon())
 #define TEST_EXCEPTION(X) try{ (X); test_diePrintf0("%s (%s,%s,%d): FAILED: Should have thrown exception\n"); } \
-  catch (const except::Throwable&){} catch (const except::Throwable11&){}
+  catch (const except::Throwable&){} catch (const except::ThrowableEx&){}
 #define TEST_THROWS(X) try{ (X); test_diePrintf0("%s (%s,%s,%d): FAILED: Should have thrown exception\n"); } catch (...){}
 # define TEST_SPECIFIC_EXCEPTION(X, Y) test::specific_exception<Y>([&](){(X);}, \
     "%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName, __FILE__, SYS_FUNC, __LINE__)
@@ -218,7 +218,7 @@ inline int main(TFunc f)
 /*
 #  define TEST_SPECIFIC_EXCEPTION(X,Y) try{ (X); die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__); } catch(const Y&) { }  \
     catch (const except::Throwable&){ die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__);} \
-    catch (const except::Throwable11&){ die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__);} #  define TEST_CASE(X) void X(std::string testName)
+    catch (const except::ThrowableEx&){ die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__);} #  define TEST_CASE(X) void X(std::string testName)
 #define TEST_MAIN(X) int main(int argc, char** argv) {  try { X;  return EXIT_SUCCESS; } \
     catch (const except::Exception& ex) { std::cerr << ex.toString() << std::endl; } \
     catch (const std::exception& e)  { std::cerr << e.what() << std::endl; } \
