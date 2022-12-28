@@ -44,7 +44,7 @@ namespace lite
  *  This is the default XML exception, for when
  *  other, more specialized exception make no sense
  */
-DECLARE_EXTENDED_EXCEPTIONEX(HDF5, except::ExceptionEx);
+DECLARE_EXCEPTIONEX(HDF5);
 
 DECLARE_EXTENDED_EXCEPTIONEX(DataSet, hdf5::lite::HDF5ExceptionEx)
 DECLARE_EXTENDED_EXCEPTIONEX(DataSpace, hdf5::lite::HDF5ExceptionEx)
