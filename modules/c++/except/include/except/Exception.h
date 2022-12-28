@@ -51,7 +51,7 @@
     #endif
 #endif
 
-#define DECLARE_EXTENDED_EXCEPTION_(_Name, Exception_, _Base, getType_specifiers) \
+#define DECLARE_EXTENDED_EXCEPTION_(_Name, Exception_, _Base) \
   struct _Name##Exception_ : public _Base \
   { \
       _Name##Exception_() = default; virtual ~_Name##Exception_() = default; \
@@ -62,12 +62,10 @@
       _Name##Exception_(const except::Throwable& t, const except::Context& c) : _Base(t, c){} \
       _Name##Exception_(const except::Throwable11& t, const except::Context& c) : _Base(t, c){} \
       CODA_OSS_except_Exception_suppress_26447_BEGIN_ \
-      std::string getType() getType_specifiers { return #_Name #Exception_; } \
+      std::string getType() const noexcept override { return #_Name #Exception_; } \
      CODA_OSS_except_Exception_suppress_26447_END_ };
-#define DECLARE_EXTENDED_EXCEPTION(_Name, _Base) \
-    DECLARE_EXTENDED_EXCEPTION_(_Name, Exception, _Base, const override)
-#define DECLARE_EXTENDED_EXCEPTION11(_Name, _Base) \
-    DECLARE_EXTENDED_EXCEPTION_(_Name, Exception11, _Base, const noexcept override)
+#define DECLARE_EXTENDED_EXCEPTION(_Name, _Base) DECLARE_EXTENDED_EXCEPTION_(_Name, Exception, _Base)
+#define DECLARE_EXTENDED_EXCEPTION11(_Name, _Base) DECLARE_EXTENDED_EXCEPTION_(_Name, Exception11, _Base)
 
 #define DECLARE_EXCEPTION(_Name) \
     DECLARE_EXTENDED_EXCEPTION(_Name, except::Exception) \

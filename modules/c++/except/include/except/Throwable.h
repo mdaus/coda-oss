@@ -36,6 +36,23 @@
 #include "config/compiler_extensions.h"
 #include "except/Trace.h"
 
+/* Determine whether except::Throwable derives from std::exception.
+ *
+ * It can be quite convenient to derive from std::exception as often one less
+ * "catch" will be needed and we'll have standard what().  But doing so could
+ * break existing code as "catch (const std::exception&)" will catch
+ * except::Throwable when it didn't before.
+ */
+#ifdef CODA_OSS_THROWABLE_IS_NOT_AN_EXCEPTION // -DCODA_OSS_THROWABLE_IS_NOT_AN_EXCEPTION
+#ifdef CODA_OSS_except_Throwable_ISA_std_exception
+#error "CODA_OSS_except_Throwable_ISA_std_exception already #define'd."
+#endif
+#define CODA_OSS_except_Throwable_ISA_std_exception 0
+#endif
+#ifndef CODA_OSS_except_Throwable_ISA_std_exception // or, -DCODA_OSS_except_Throwable_ISA_std_exception=0
+#define CODA_OSS_except_Throwable_ISA_std_exception 0
+#endif
+
 /*!
  * \file Throwable.h
  * \brief Contains the classes to do with error handling
@@ -55,6 +72,9 @@ namespace except
 
 class Throwable11;
 class CODA_OSS_API Throwable
+#if CODA_OSS_except_Throwable_ISA_std_exception    
+    : public std::exception
+#endif
 {
     void doGetBacktrace();
     template<typename TThrowable>
@@ -169,6 +189,10 @@ public:
     }
 
     const char* what() const noexcept
+    #if CODA_OSS_except_Throwable_ISA_std_exception    
+    // can't use "final" unless what() is virtual
+    final  // derived classes override toString()
+    #endif
     {
         // adding this to toString() output could (significantly) alter existing display
         mWhat = toString(true /*includeBacktrace*/); // call any derived toString()
