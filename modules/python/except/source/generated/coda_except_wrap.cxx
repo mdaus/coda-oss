@@ -3007,31 +3007,31 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 #define SWIGTYPE_p_Trace swig_types[0]
 #define SWIGTYPE_p_char swig_types[1]
 #define SWIGTYPE_p_except__BadCastException swig_types[2]
-#define SWIGTYPE_p_except__BadCastException11 swig_types[3]
+#define SWIGTYPE_p_except__BadCastExceptionEx swig_types[3]
 #define SWIGTYPE_p_except__Context swig_types[4]
 #define SWIGTYPE_p_except__Exception swig_types[5]
-#define SWIGTYPE_p_except__Exception11 swig_types[6]
+#define SWIGTYPE_p_except__ExceptionEx swig_types[6]
 #define SWIGTYPE_p_except__FileNotFoundException swig_types[7]
 #define SWIGTYPE_p_except__IOException swig_types[8]
-#define SWIGTYPE_p_except__IOException11 swig_types[9]
+#define SWIGTYPE_p_except__IOExceptionEx swig_types[9]
 #define SWIGTYPE_p_except__IndexOutOfRangeException swig_types[10]
-#define SWIGTYPE_p_except__IndexOutOfRangeException11 swig_types[11]
+#define SWIGTYPE_p_except__IndexOutOfRangeExceptionEx swig_types[11]
 #define SWIGTYPE_p_except__InvalidArgumentException swig_types[12]
-#define SWIGTYPE_p_except__InvalidArgumentException11 swig_types[13]
+#define SWIGTYPE_p_except__InvalidArgumentExceptionEx swig_types[13]
 #define SWIGTYPE_p_except__InvalidFormatException swig_types[14]
-#define SWIGTYPE_p_except__InvalidFormatException11 swig_types[15]
+#define SWIGTYPE_p_except__InvalidFormatExceptionEx swig_types[15]
 #define SWIGTYPE_p_except__KeyAlreadyExistsException swig_types[16]
-#define SWIGTYPE_p_except__KeyAlreadyExistsException11 swig_types[17]
+#define SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx swig_types[17]
 #define SWIGTYPE_p_except__NoSuchKeyException swig_types[18]
-#define SWIGTYPE_p_except__NoSuchKeyException11 swig_types[19]
+#define SWIGTYPE_p_except__NoSuchKeyExceptionEx swig_types[19]
 #define SWIGTYPE_p_except__NoSuchReferenceException swig_types[20]
-#define SWIGTYPE_p_except__NoSuchReferenceException11 swig_types[21]
+#define SWIGTYPE_p_except__NoSuchReferenceExceptionEx swig_types[21]
 #define SWIGTYPE_p_except__NotImplementedException swig_types[22]
-#define SWIGTYPE_p_except__NotImplementedException11 swig_types[23]
+#define SWIGTYPE_p_except__NotImplementedExceptionEx swig_types[23]
 #define SWIGTYPE_p_except__NullPointerReferenceException swig_types[24]
-#define SWIGTYPE_p_except__NullPointerReferenceException11 swig_types[25]
+#define SWIGTYPE_p_except__NullPointerReferenceExceptionEx swig_types[25]
 #define SWIGTYPE_p_except__OutOfMemoryException swig_types[26]
-#define SWIGTYPE_p_except__OutOfMemoryException11 swig_types[27]
+#define SWIGTYPE_p_except__OutOfMemoryExceptionEx swig_types[27]
 #define SWIGTYPE_p_except__ParseException swig_types[28]
 #define SWIGTYPE_p_except__SerializationException swig_types[29]
 #define SWIGTYPE_p_except__Throwable swig_types[30]
@@ -6090,32 +6090,32 @@ SWIGINTERN PyObject *Exception_swigregister(PyObject *SWIGUNUSEDPARM(self), PyOb
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_Exception11__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_ExceptionEx__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::Exception11 *result = 0 ;
+  except::ExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)":new_Exception11")) SWIG_fail;
-  result = (except::Exception11 *)new except::Exception11();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__Exception11, SWIG_POINTER_NEW |  0 );
+  if (!PyArg_ParseTuple(args,(char *)":new_ExceptionEx")) SWIG_fail;
+  result = (except::ExceptionEx *)new except::ExceptionEx();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__ExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_Exception11(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_ExceptionEx(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::Exception11 *arg1 = (except::Exception11 *) 0 ;
+  except::ExceptionEx *arg1 = (except::ExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_Exception11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__Exception11, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_ExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__ExceptionEx, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_Exception11" "', argument " "1"" of type '" "except::Exception11 *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ExceptionEx" "', argument " "1"" of type '" "except::ExceptionEx *""'"); 
   }
-  arg1 = reinterpret_cast< except::Exception11 * >(argp1);
+  arg1 = reinterpret_cast< except::ExceptionEx * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -6124,32 +6124,32 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_Exception11__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_ExceptionEx__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Context *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::Exception11 *result = 0 ;
+  except::ExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_Exception11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_ExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_Exception11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_ExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_Exception11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_ExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   arg1 = reinterpret_cast< except::Context * >(argp1);
-  result = (except::Exception11 *)new except::Exception11((except::Context const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__Exception11, SWIG_POINTER_NEW |  0 );
+  result = (except::ExceptionEx *)new except::ExceptionEx((except::Context const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__ExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_Exception11__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_ExceptionEx__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::ThrowableEx *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -6159,34 +6159,34 @@ SWIGINTERN PyObject *_wrap_new_Exception11__SWIG_2(PyObject *SWIGUNUSEDPARM(self
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::Exception11 *result = 0 ;
+  except::ExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_Exception11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_ExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__ThrowableEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_Exception11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_ExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_Exception11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_ExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   arg1 = reinterpret_cast< except::ThrowableEx * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_Exception11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_ExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_Exception11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_ExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::Exception11 *)new except::Exception11((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__Exception11, SWIG_POINTER_NEW |  0 );
+  result = (except::ExceptionEx *)new except::ExceptionEx((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__ExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_Exception11__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_ExceptionEx__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Throwable *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -6196,59 +6196,59 @@ SWIGINTERN PyObject *_wrap_new_Exception11__SWIG_3(PyObject *SWIGUNUSEDPARM(self
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::Exception11 *result = 0 ;
+  except::ExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_Exception11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_ExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Throwable,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_Exception11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_ExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_Exception11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_ExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   arg1 = reinterpret_cast< except::Throwable * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_Exception11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_ExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_Exception11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_ExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::Exception11 *)new except::Exception11((except::Throwable const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__Exception11, SWIG_POINTER_NEW |  0 );
+  result = (except::ExceptionEx *)new except::ExceptionEx((except::Throwable const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__ExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_Exception11__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_ExceptionEx__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   std::string *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::Exception11 *result = 0 ;
+  except::ExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_Exception11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_ExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_std__string,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_Exception11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_ExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_Exception11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_ExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   arg1 = reinterpret_cast< std::string * >(argp1);
-  result = (except::Exception11 *)new except::Exception11((std::string const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__Exception11, SWIG_POINTER_NEW |  0 );
+  result = (except::ExceptionEx *)new except::ExceptionEx((std::string const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__ExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_Exception11(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_ExceptionEx(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
@@ -6261,14 +6261,14 @@ SWIGINTERN PyObject *_wrap_new_Exception11(PyObject *self, PyObject *args) {
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
   if (argc == 0) {
-    return _wrap_new_Exception11__SWIG_0(self, args);
+    return _wrap_new_ExceptionEx__SWIG_0(self, args);
   }
   if (argc == 1) {
     int _v;
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__Context, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_Exception11__SWIG_1(self, args);
+      return _wrap_new_ExceptionEx__SWIG_1(self, args);
     }
   }
   if (argc == 1) {
@@ -6276,7 +6276,7 @@ SWIGINTERN PyObject *_wrap_new_Exception11(PyObject *self, PyObject *args) {
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_std__string, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_Exception11__SWIG_4(self, args);
+      return _wrap_new_ExceptionEx__SWIG_4(self, args);
     }
   }
   if (argc == 2) {
@@ -6287,7 +6287,7 @@ SWIGINTERN PyObject *_wrap_new_Exception11(PyObject *self, PyObject *args) {
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_Exception11__SWIG_3(self, args);
+        return _wrap_new_ExceptionEx__SWIG_3(self, args);
       }
     }
   }
@@ -6299,38 +6299,38 @@ SWIGINTERN PyObject *_wrap_new_Exception11(PyObject *self, PyObject *args) {
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_Exception11__SWIG_2(self, args);
+        return _wrap_new_ExceptionEx__SWIG_2(self, args);
       }
     }
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_Exception11'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_ExceptionEx'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    except::Exception11::Exception11()\n"
-    "    except::Exception11::Exception11(except::Context const &)\n"
-    "    except::Exception11::Exception11(except::ThrowableEx const &,except::Context const &)\n"
-    "    except::Exception11::Exception11(except::Throwable const &,except::Context const &)\n"
-    "    except::Exception11::Exception11(std::string const &)\n");
+    "    except::ExceptionEx::ExceptionEx()\n"
+    "    except::ExceptionEx::ExceptionEx(except::Context const &)\n"
+    "    except::ExceptionEx::ExceptionEx(except::ThrowableEx const &,except::Context const &)\n"
+    "    except::ExceptionEx::ExceptionEx(except::Throwable const &,except::Context const &)\n"
+    "    except::ExceptionEx::ExceptionEx(std::string const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_Exception11_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_ExceptionEx_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::Exception11 *arg1 = (except::Exception11 *) 0 ;
+  except::ExceptionEx *arg1 = (except::ExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   std::string result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:Exception11_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__Exception11, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:ExceptionEx_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__ExceptionEx, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Exception11_getType" "', argument " "1"" of type '" "except::Exception11 const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ExceptionEx_getType" "', argument " "1"" of type '" "except::ExceptionEx const *""'"); 
   }
-  arg1 = reinterpret_cast< except::Exception11 * >(argp1);
-  result = ((except::Exception11 const *)arg1)->getType();
+  arg1 = reinterpret_cast< except::ExceptionEx * >(argp1);
+  result = ((except::ExceptionEx const *)arg1)->getType();
   resultobj = SWIG_NewPointerObj((new std::string(static_cast< const std::string& >(result))), SWIGTYPE_p_std__string, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -6338,10 +6338,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *Exception11_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *ExceptionEx_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_except__Exception11, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_except__ExceptionEx, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -6669,32 +6669,32 @@ SWIGINTERN PyObject *IOException_swigregister(PyObject *SWIGUNUSEDPARM(self), Py
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_IOException11__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IOExceptionEx__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::IOException11 *result = 0 ;
+  except::IOExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)":new_IOException11")) SWIG_fail;
-  result = (except::IOException11 *)new except::IOException11();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IOException11, SWIG_POINTER_NEW |  0 );
+  if (!PyArg_ParseTuple(args,(char *)":new_IOExceptionEx")) SWIG_fail;
+  result = (except::IOExceptionEx *)new except::IOExceptionEx();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IOExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_IOException11(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_IOExceptionEx(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::IOException11 *arg1 = (except::IOException11 *) 0 ;
+  except::IOExceptionEx *arg1 = (except::IOExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_IOException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__IOException11, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_IOExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__IOExceptionEx, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_IOException11" "', argument " "1"" of type '" "except::IOException11 *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_IOExceptionEx" "', argument " "1"" of type '" "except::IOExceptionEx *""'"); 
   }
-  arg1 = reinterpret_cast< except::IOException11 * >(argp1);
+  arg1 = reinterpret_cast< except::IOExceptionEx * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -6703,107 +6703,107 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_IOException11__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IOExceptionEx__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::IOException11 *arg1 = 0 ;
+  except::IOExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::IOException11 *result = 0 ;
+  except::IOExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_IOException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__IOException11,  0  | 0);
+  if (!PyArg_ParseTuple(args,(char *)"O:new_IOExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__IOExceptionEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IOException11" "', argument " "1"" of type '" "except::IOException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IOExceptionEx" "', argument " "1"" of type '" "except::IOExceptionEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOException11" "', argument " "1"" of type '" "except::IOException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOExceptionEx" "', argument " "1"" of type '" "except::IOExceptionEx const &""'"); 
   }
-  arg1 = reinterpret_cast< except::IOException11 * >(argp1);
-  result = (except::IOException11 *)new except::IOException11((except::IOException11 const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IOException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::IOExceptionEx * >(argp1);
+  result = (except::IOExceptionEx *)new except::IOExceptionEx((except::IOExceptionEx const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IOExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_IOException11__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IOExceptionEx__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::IOException11 *arg1 = 0 ;
+  except::IOExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::IOException11 *result = 0 ;
+  except::IOExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_IOException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__IOException11,  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:new_IOExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__IOExceptionEx,  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IOException11" "', argument " "1"" of type '" "except::IOException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IOExceptionEx" "', argument " "1"" of type '" "except::IOExceptionEx &&""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOException11" "', argument " "1"" of type '" "except::IOException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOExceptionEx" "', argument " "1"" of type '" "except::IOExceptionEx &&""'"); 
   }
-  arg1 = reinterpret_cast< except::IOException11 * >(argp1);
-  result = (except::IOException11 *)new except::IOException11((except::IOException11 &&)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IOException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::IOExceptionEx * >(argp1);
+  result = (except::IOExceptionEx *)new except::IOExceptionEx((except::IOExceptionEx &&)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IOExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_IOException11__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IOExceptionEx__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Context *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::IOException11 *result = 0 ;
+  except::IOExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_IOException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_IOExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IOException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IOExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   arg1 = reinterpret_cast< except::Context * >(argp1);
-  result = (except::IOException11 *)new except::IOException11((except::Context const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IOException11, SWIG_POINTER_NEW |  0 );
+  result = (except::IOExceptionEx *)new except::IOExceptionEx((except::Context const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IOExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_IOException11__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IOExceptionEx__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   std::string *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::IOException11 *result = 0 ;
+  except::IOExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_IOException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_IOExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_std__string,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IOException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IOExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   arg1 = reinterpret_cast< std::string * >(argp1);
-  result = (except::IOException11 *)new except::IOException11((std::string const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IOException11, SWIG_POINTER_NEW |  0 );
+  result = (except::IOExceptionEx *)new except::IOExceptionEx((std::string const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IOExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_IOException11__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IOExceptionEx__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Throwable *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -6813,34 +6813,34 @@ SWIGINTERN PyObject *_wrap_new_IOException11__SWIG_5(PyObject *SWIGUNUSEDPARM(se
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::IOException11 *result = 0 ;
+  except::IOExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_IOException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_IOExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Throwable,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IOException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IOExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   arg1 = reinterpret_cast< except::Throwable * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_IOException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_IOExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::IOException11 *)new except::IOException11((except::Throwable const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IOException11, SWIG_POINTER_NEW |  0 );
+  result = (except::IOExceptionEx *)new except::IOExceptionEx((except::Throwable const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IOExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_IOException11__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IOExceptionEx__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::ThrowableEx *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -6850,34 +6850,34 @@ SWIGINTERN PyObject *_wrap_new_IOException11__SWIG_6(PyObject *SWIGUNUSEDPARM(se
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::IOException11 *result = 0 ;
+  except::IOExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_IOException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_IOExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__ThrowableEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IOException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IOExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   arg1 = reinterpret_cast< except::ThrowableEx * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_IOException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_IOExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IOExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::IOException11 *)new except::IOException11((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IOException11, SWIG_POINTER_NEW |  0 );
+  result = (except::IOExceptionEx *)new except::IOExceptionEx((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IOExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_IOException11(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IOExceptionEx(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
@@ -6890,23 +6890,23 @@ SWIGINTERN PyObject *_wrap_new_IOException11(PyObject *self, PyObject *args) {
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
   if (argc == 0) {
-    return _wrap_new_IOException11__SWIG_0(self, args);
+    return _wrap_new_IOExceptionEx__SWIG_0(self, args);
   }
   if (argc == 1) {
     int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__IOException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__IOExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_IOException11__SWIG_1(self, args);
+      return _wrap_new_IOExceptionEx__SWIG_1(self, args);
     }
   }
   if (argc == 1) {
     int _v;
     void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__IOException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__IOExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_IOException11__SWIG_2(self, args);
+      return _wrap_new_IOExceptionEx__SWIG_2(self, args);
     }
   }
   if (argc == 1) {
@@ -6914,7 +6914,7 @@ SWIGINTERN PyObject *_wrap_new_IOException11(PyObject *self, PyObject *args) {
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__Context, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_IOException11__SWIG_3(self, args);
+      return _wrap_new_IOExceptionEx__SWIG_3(self, args);
     }
   }
   if (argc == 1) {
@@ -6922,7 +6922,7 @@ SWIGINTERN PyObject *_wrap_new_IOException11(PyObject *self, PyObject *args) {
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_std__string, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_IOException11__SWIG_4(self, args);
+      return _wrap_new_IOExceptionEx__SWIG_4(self, args);
     }
   }
   if (argc == 2) {
@@ -6933,7 +6933,7 @@ SWIGINTERN PyObject *_wrap_new_IOException11(PyObject *self, PyObject *args) {
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_IOException11__SWIG_5(self, args);
+        return _wrap_new_IOExceptionEx__SWIG_5(self, args);
       }
     }
   }
@@ -6945,40 +6945,40 @@ SWIGINTERN PyObject *_wrap_new_IOException11(PyObject *self, PyObject *args) {
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_IOException11__SWIG_6(self, args);
+        return _wrap_new_IOExceptionEx__SWIG_6(self, args);
       }
     }
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_IOException11'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_IOExceptionEx'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    except::IOException11::IOException11()\n"
-    "    except::IOException11::IOException11(except::IOException11 const &)\n"
-    "    except::IOException11::IOException11(except::IOException11 &&)\n"
-    "    except::IOException11::IOException11(except::Context const &)\n"
-    "    except::IOException11::IOException11(std::string const &)\n"
-    "    except::IOException11::IOException11(except::Throwable const &,except::Context const &)\n"
-    "    except::IOException11::IOException11(except::ThrowableEx const &,except::Context const &)\n");
+    "    except::IOExceptionEx::IOExceptionEx()\n"
+    "    except::IOExceptionEx::IOExceptionEx(except::IOExceptionEx const &)\n"
+    "    except::IOExceptionEx::IOExceptionEx(except::IOExceptionEx &&)\n"
+    "    except::IOExceptionEx::IOExceptionEx(except::Context const &)\n"
+    "    except::IOExceptionEx::IOExceptionEx(std::string const &)\n"
+    "    except::IOExceptionEx::IOExceptionEx(except::Throwable const &,except::Context const &)\n"
+    "    except::IOExceptionEx::IOExceptionEx(except::ThrowableEx const &,except::Context const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_IOException11_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_IOExceptionEx_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::IOException11 *arg1 = (except::IOException11 *) 0 ;
+  except::IOExceptionEx *arg1 = (except::IOExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   std::string result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:IOException11_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__IOException11, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:IOExceptionEx_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__IOExceptionEx, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IOException11_getType" "', argument " "1"" of type '" "except::IOException11 const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IOExceptionEx_getType" "', argument " "1"" of type '" "except::IOExceptionEx const *""'"); 
   }
-  arg1 = reinterpret_cast< except::IOException11 * >(argp1);
-  result = ((except::IOException11 const *)arg1)->getType();
+  arg1 = reinterpret_cast< except::IOExceptionEx * >(argp1);
+  result = ((except::IOExceptionEx const *)arg1)->getType();
   resultobj = SWIG_NewPointerObj((new std::string(static_cast< const std::string& >(result))), SWIGTYPE_p_std__string, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -6986,10 +6986,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *IOException11_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *IOExceptionEx_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_except__IOException11, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_except__IOExceptionEx, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -7641,32 +7641,32 @@ SWIGINTERN PyObject *BadCastException_swigregister(PyObject *SWIGUNUSEDPARM(self
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_BadCastException11__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_BadCastExceptionEx__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::BadCastException11 *result = 0 ;
+  except::BadCastExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)":new_BadCastException11")) SWIG_fail;
-  result = (except::BadCastException11 *)new except::BadCastException11();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__BadCastException11, SWIG_POINTER_NEW |  0 );
+  if (!PyArg_ParseTuple(args,(char *)":new_BadCastExceptionEx")) SWIG_fail;
+  result = (except::BadCastExceptionEx *)new except::BadCastExceptionEx();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__BadCastExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_BadCastException11(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_BadCastExceptionEx(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::BadCastException11 *arg1 = (except::BadCastException11 *) 0 ;
+  except::BadCastExceptionEx *arg1 = (except::BadCastExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_BadCastException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__BadCastException11, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_BadCastExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__BadCastExceptionEx, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_BadCastException11" "', argument " "1"" of type '" "except::BadCastException11 *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_BadCastExceptionEx" "', argument " "1"" of type '" "except::BadCastExceptionEx *""'"); 
   }
-  arg1 = reinterpret_cast< except::BadCastException11 * >(argp1);
+  arg1 = reinterpret_cast< except::BadCastExceptionEx * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -7675,107 +7675,107 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_BadCastException11__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_BadCastExceptionEx__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::BadCastException11 *arg1 = 0 ;
+  except::BadCastExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::BadCastException11 *result = 0 ;
+  except::BadCastExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_BadCastException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__BadCastException11,  0  | 0);
+  if (!PyArg_ParseTuple(args,(char *)"O:new_BadCastExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__BadCastExceptionEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_BadCastException11" "', argument " "1"" of type '" "except::BadCastException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_BadCastExceptionEx" "', argument " "1"" of type '" "except::BadCastExceptionEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastException11" "', argument " "1"" of type '" "except::BadCastException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastExceptionEx" "', argument " "1"" of type '" "except::BadCastExceptionEx const &""'"); 
   }
-  arg1 = reinterpret_cast< except::BadCastException11 * >(argp1);
-  result = (except::BadCastException11 *)new except::BadCastException11((except::BadCastException11 const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__BadCastException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::BadCastExceptionEx * >(argp1);
+  result = (except::BadCastExceptionEx *)new except::BadCastExceptionEx((except::BadCastExceptionEx const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__BadCastExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_BadCastException11__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_BadCastExceptionEx__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::BadCastException11 *arg1 = 0 ;
+  except::BadCastExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::BadCastException11 *result = 0 ;
+  except::BadCastExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_BadCastException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__BadCastException11,  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:new_BadCastExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__BadCastExceptionEx,  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_BadCastException11" "', argument " "1"" of type '" "except::BadCastException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_BadCastExceptionEx" "', argument " "1"" of type '" "except::BadCastExceptionEx &&""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastException11" "', argument " "1"" of type '" "except::BadCastException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastExceptionEx" "', argument " "1"" of type '" "except::BadCastExceptionEx &&""'"); 
   }
-  arg1 = reinterpret_cast< except::BadCastException11 * >(argp1);
-  result = (except::BadCastException11 *)new except::BadCastException11((except::BadCastException11 &&)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__BadCastException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::BadCastExceptionEx * >(argp1);
+  result = (except::BadCastExceptionEx *)new except::BadCastExceptionEx((except::BadCastExceptionEx &&)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__BadCastExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_BadCastException11__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_BadCastExceptionEx__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Context *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::BadCastException11 *result = 0 ;
+  except::BadCastExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_BadCastException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_BadCastExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_BadCastException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_BadCastExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   arg1 = reinterpret_cast< except::Context * >(argp1);
-  result = (except::BadCastException11 *)new except::BadCastException11((except::Context const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__BadCastException11, SWIG_POINTER_NEW |  0 );
+  result = (except::BadCastExceptionEx *)new except::BadCastExceptionEx((except::Context const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__BadCastExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_BadCastException11__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_BadCastExceptionEx__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   std::string *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::BadCastException11 *result = 0 ;
+  except::BadCastExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_BadCastException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_BadCastExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_std__string,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_BadCastException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_BadCastExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   arg1 = reinterpret_cast< std::string * >(argp1);
-  result = (except::BadCastException11 *)new except::BadCastException11((std::string const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__BadCastException11, SWIG_POINTER_NEW |  0 );
+  result = (except::BadCastExceptionEx *)new except::BadCastExceptionEx((std::string const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__BadCastExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_BadCastException11__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_BadCastExceptionEx__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Throwable *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -7785,34 +7785,34 @@ SWIGINTERN PyObject *_wrap_new_BadCastException11__SWIG_5(PyObject *SWIGUNUSEDPA
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::BadCastException11 *result = 0 ;
+  except::BadCastExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_BadCastException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_BadCastExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Throwable,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_BadCastException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_BadCastExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   arg1 = reinterpret_cast< except::Throwable * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_BadCastException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_BadCastExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::BadCastException11 *)new except::BadCastException11((except::Throwable const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__BadCastException11, SWIG_POINTER_NEW |  0 );
+  result = (except::BadCastExceptionEx *)new except::BadCastExceptionEx((except::Throwable const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__BadCastExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_BadCastException11__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_BadCastExceptionEx__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::ThrowableEx *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -7822,34 +7822,34 @@ SWIGINTERN PyObject *_wrap_new_BadCastException11__SWIG_6(PyObject *SWIGUNUSEDPA
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::BadCastException11 *result = 0 ;
+  except::BadCastExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_BadCastException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_BadCastExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__ThrowableEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_BadCastException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_BadCastExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   arg1 = reinterpret_cast< except::ThrowableEx * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_BadCastException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_BadCastExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_BadCastExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::BadCastException11 *)new except::BadCastException11((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__BadCastException11, SWIG_POINTER_NEW |  0 );
+  result = (except::BadCastExceptionEx *)new except::BadCastExceptionEx((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__BadCastExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_BadCastException11(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_BadCastExceptionEx(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
@@ -7862,23 +7862,23 @@ SWIGINTERN PyObject *_wrap_new_BadCastException11(PyObject *self, PyObject *args
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
   if (argc == 0) {
-    return _wrap_new_BadCastException11__SWIG_0(self, args);
+    return _wrap_new_BadCastExceptionEx__SWIG_0(self, args);
   }
   if (argc == 1) {
     int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__BadCastException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__BadCastExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_BadCastException11__SWIG_1(self, args);
+      return _wrap_new_BadCastExceptionEx__SWIG_1(self, args);
     }
   }
   if (argc == 1) {
     int _v;
     void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__BadCastException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__BadCastExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_BadCastException11__SWIG_2(self, args);
+      return _wrap_new_BadCastExceptionEx__SWIG_2(self, args);
     }
   }
   if (argc == 1) {
@@ -7886,7 +7886,7 @@ SWIGINTERN PyObject *_wrap_new_BadCastException11(PyObject *self, PyObject *args
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__Context, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_BadCastException11__SWIG_3(self, args);
+      return _wrap_new_BadCastExceptionEx__SWIG_3(self, args);
     }
   }
   if (argc == 1) {
@@ -7894,7 +7894,7 @@ SWIGINTERN PyObject *_wrap_new_BadCastException11(PyObject *self, PyObject *args
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_std__string, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_BadCastException11__SWIG_4(self, args);
+      return _wrap_new_BadCastExceptionEx__SWIG_4(self, args);
     }
   }
   if (argc == 2) {
@@ -7905,7 +7905,7 @@ SWIGINTERN PyObject *_wrap_new_BadCastException11(PyObject *self, PyObject *args
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_BadCastException11__SWIG_5(self, args);
+        return _wrap_new_BadCastExceptionEx__SWIG_5(self, args);
       }
     }
   }
@@ -7917,40 +7917,40 @@ SWIGINTERN PyObject *_wrap_new_BadCastException11(PyObject *self, PyObject *args
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_BadCastException11__SWIG_6(self, args);
+        return _wrap_new_BadCastExceptionEx__SWIG_6(self, args);
       }
     }
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_BadCastException11'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_BadCastExceptionEx'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    except::BadCastException11::BadCastException11()\n"
-    "    except::BadCastException11::BadCastException11(except::BadCastException11 const &)\n"
-    "    except::BadCastException11::BadCastException11(except::BadCastException11 &&)\n"
-    "    except::BadCastException11::BadCastException11(except::Context const &)\n"
-    "    except::BadCastException11::BadCastException11(std::string const &)\n"
-    "    except::BadCastException11::BadCastException11(except::Throwable const &,except::Context const &)\n"
-    "    except::BadCastException11::BadCastException11(except::ThrowableEx const &,except::Context const &)\n");
+    "    except::BadCastExceptionEx::BadCastExceptionEx()\n"
+    "    except::BadCastExceptionEx::BadCastExceptionEx(except::BadCastExceptionEx const &)\n"
+    "    except::BadCastExceptionEx::BadCastExceptionEx(except::BadCastExceptionEx &&)\n"
+    "    except::BadCastExceptionEx::BadCastExceptionEx(except::Context const &)\n"
+    "    except::BadCastExceptionEx::BadCastExceptionEx(std::string const &)\n"
+    "    except::BadCastExceptionEx::BadCastExceptionEx(except::Throwable const &,except::Context const &)\n"
+    "    except::BadCastExceptionEx::BadCastExceptionEx(except::ThrowableEx const &,except::Context const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_BadCastException11_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_BadCastExceptionEx_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::BadCastException11 *arg1 = (except::BadCastException11 *) 0 ;
+  except::BadCastExceptionEx *arg1 = (except::BadCastExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   std::string result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:BadCastException11_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__BadCastException11, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:BadCastExceptionEx_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__BadCastExceptionEx, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "BadCastException11_getType" "', argument " "1"" of type '" "except::BadCastException11 const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "BadCastExceptionEx_getType" "', argument " "1"" of type '" "except::BadCastExceptionEx const *""'"); 
   }
-  arg1 = reinterpret_cast< except::BadCastException11 * >(argp1);
-  result = ((except::BadCastException11 const *)arg1)->getType();
+  arg1 = reinterpret_cast< except::BadCastExceptionEx * >(argp1);
+  result = ((except::BadCastExceptionEx const *)arg1)->getType();
   resultobj = SWIG_NewPointerObj((new std::string(static_cast< const std::string& >(result))), SWIGTYPE_p_std__string, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -7958,10 +7958,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *BadCastException11_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *BadCastExceptionEx_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_except__BadCastException11, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_except__BadCastExceptionEx, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -8289,32 +8289,32 @@ SWIGINTERN PyObject *InvalidFormatException_swigregister(PyObject *SWIGUNUSEDPAR
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_InvalidFormatException11__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidFormatExceptionEx__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::InvalidFormatException11 *result = 0 ;
+  except::InvalidFormatExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)":new_InvalidFormatException11")) SWIG_fail;
-  result = (except::InvalidFormatException11 *)new except::InvalidFormatException11();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidFormatException11, SWIG_POINTER_NEW |  0 );
+  if (!PyArg_ParseTuple(args,(char *)":new_InvalidFormatExceptionEx")) SWIG_fail;
+  result = (except::InvalidFormatExceptionEx *)new except::InvalidFormatExceptionEx();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidFormatExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_InvalidFormatException11(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_InvalidFormatExceptionEx(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::InvalidFormatException11 *arg1 = (except::InvalidFormatException11 *) 0 ;
+  except::InvalidFormatExceptionEx *arg1 = (except::InvalidFormatExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_InvalidFormatException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__InvalidFormatException11, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_InvalidFormatExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__InvalidFormatExceptionEx, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_InvalidFormatException11" "', argument " "1"" of type '" "except::InvalidFormatException11 *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_InvalidFormatExceptionEx" "', argument " "1"" of type '" "except::InvalidFormatExceptionEx *""'"); 
   }
-  arg1 = reinterpret_cast< except::InvalidFormatException11 * >(argp1);
+  arg1 = reinterpret_cast< except::InvalidFormatExceptionEx * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -8323,107 +8323,107 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_InvalidFormatException11__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidFormatExceptionEx__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::InvalidFormatException11 *arg1 = 0 ;
+  except::InvalidFormatExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::InvalidFormatException11 *result = 0 ;
+  except::InvalidFormatExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidFormatException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__InvalidFormatException11,  0  | 0);
+  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidFormatExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__InvalidFormatExceptionEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidFormatException11" "', argument " "1"" of type '" "except::InvalidFormatException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidFormatExceptionEx" "', argument " "1"" of type '" "except::InvalidFormatExceptionEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatException11" "', argument " "1"" of type '" "except::InvalidFormatException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatExceptionEx" "', argument " "1"" of type '" "except::InvalidFormatExceptionEx const &""'"); 
   }
-  arg1 = reinterpret_cast< except::InvalidFormatException11 * >(argp1);
-  result = (except::InvalidFormatException11 *)new except::InvalidFormatException11((except::InvalidFormatException11 const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidFormatException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::InvalidFormatExceptionEx * >(argp1);
+  result = (except::InvalidFormatExceptionEx *)new except::InvalidFormatExceptionEx((except::InvalidFormatExceptionEx const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidFormatExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_InvalidFormatException11__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidFormatExceptionEx__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::InvalidFormatException11 *arg1 = 0 ;
+  except::InvalidFormatExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::InvalidFormatException11 *result = 0 ;
+  except::InvalidFormatExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidFormatException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__InvalidFormatException11,  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidFormatExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__InvalidFormatExceptionEx,  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidFormatException11" "', argument " "1"" of type '" "except::InvalidFormatException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidFormatExceptionEx" "', argument " "1"" of type '" "except::InvalidFormatExceptionEx &&""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatException11" "', argument " "1"" of type '" "except::InvalidFormatException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatExceptionEx" "', argument " "1"" of type '" "except::InvalidFormatExceptionEx &&""'"); 
   }
-  arg1 = reinterpret_cast< except::InvalidFormatException11 * >(argp1);
-  result = (except::InvalidFormatException11 *)new except::InvalidFormatException11((except::InvalidFormatException11 &&)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidFormatException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::InvalidFormatExceptionEx * >(argp1);
+  result = (except::InvalidFormatExceptionEx *)new except::InvalidFormatExceptionEx((except::InvalidFormatExceptionEx &&)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidFormatExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_InvalidFormatException11__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidFormatExceptionEx__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Context *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::InvalidFormatException11 *result = 0 ;
+  except::InvalidFormatExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidFormatException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidFormatExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidFormatException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidFormatExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   arg1 = reinterpret_cast< except::Context * >(argp1);
-  result = (except::InvalidFormatException11 *)new except::InvalidFormatException11((except::Context const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidFormatException11, SWIG_POINTER_NEW |  0 );
+  result = (except::InvalidFormatExceptionEx *)new except::InvalidFormatExceptionEx((except::Context const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidFormatExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_InvalidFormatException11__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidFormatExceptionEx__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   std::string *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::InvalidFormatException11 *result = 0 ;
+  except::InvalidFormatExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidFormatException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidFormatExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_std__string,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidFormatException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidFormatExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   arg1 = reinterpret_cast< std::string * >(argp1);
-  result = (except::InvalidFormatException11 *)new except::InvalidFormatException11((std::string const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidFormatException11, SWIG_POINTER_NEW |  0 );
+  result = (except::InvalidFormatExceptionEx *)new except::InvalidFormatExceptionEx((std::string const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidFormatExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_InvalidFormatException11__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidFormatExceptionEx__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Throwable *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -8433,34 +8433,34 @@ SWIGINTERN PyObject *_wrap_new_InvalidFormatException11__SWIG_5(PyObject *SWIGUN
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::InvalidFormatException11 *result = 0 ;
+  except::InvalidFormatExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_InvalidFormatException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_InvalidFormatExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Throwable,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidFormatException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidFormatExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   arg1 = reinterpret_cast< except::Throwable * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_InvalidFormatException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_InvalidFormatExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::InvalidFormatException11 *)new except::InvalidFormatException11((except::Throwable const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidFormatException11, SWIG_POINTER_NEW |  0 );
+  result = (except::InvalidFormatExceptionEx *)new except::InvalidFormatExceptionEx((except::Throwable const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidFormatExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_InvalidFormatException11__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidFormatExceptionEx__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::ThrowableEx *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -8470,34 +8470,34 @@ SWIGINTERN PyObject *_wrap_new_InvalidFormatException11__SWIG_6(PyObject *SWIGUN
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::InvalidFormatException11 *result = 0 ;
+  except::InvalidFormatExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_InvalidFormatException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_InvalidFormatExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__ThrowableEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidFormatException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidFormatExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   arg1 = reinterpret_cast< except::ThrowableEx * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_InvalidFormatException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_InvalidFormatExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidFormatExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::InvalidFormatException11 *)new except::InvalidFormatException11((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidFormatException11, SWIG_POINTER_NEW |  0 );
+  result = (except::InvalidFormatExceptionEx *)new except::InvalidFormatExceptionEx((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidFormatExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_InvalidFormatException11(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidFormatExceptionEx(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
@@ -8510,23 +8510,23 @@ SWIGINTERN PyObject *_wrap_new_InvalidFormatException11(PyObject *self, PyObject
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
   if (argc == 0) {
-    return _wrap_new_InvalidFormatException11__SWIG_0(self, args);
+    return _wrap_new_InvalidFormatExceptionEx__SWIG_0(self, args);
   }
   if (argc == 1) {
     int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__InvalidFormatException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__InvalidFormatExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_InvalidFormatException11__SWIG_1(self, args);
+      return _wrap_new_InvalidFormatExceptionEx__SWIG_1(self, args);
     }
   }
   if (argc == 1) {
     int _v;
     void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__InvalidFormatException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__InvalidFormatExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_InvalidFormatException11__SWIG_2(self, args);
+      return _wrap_new_InvalidFormatExceptionEx__SWIG_2(self, args);
     }
   }
   if (argc == 1) {
@@ -8534,7 +8534,7 @@ SWIGINTERN PyObject *_wrap_new_InvalidFormatException11(PyObject *self, PyObject
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__Context, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_InvalidFormatException11__SWIG_3(self, args);
+      return _wrap_new_InvalidFormatExceptionEx__SWIG_3(self, args);
     }
   }
   if (argc == 1) {
@@ -8542,7 +8542,7 @@ SWIGINTERN PyObject *_wrap_new_InvalidFormatException11(PyObject *self, PyObject
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_std__string, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_InvalidFormatException11__SWIG_4(self, args);
+      return _wrap_new_InvalidFormatExceptionEx__SWIG_4(self, args);
     }
   }
   if (argc == 2) {
@@ -8553,7 +8553,7 @@ SWIGINTERN PyObject *_wrap_new_InvalidFormatException11(PyObject *self, PyObject
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_InvalidFormatException11__SWIG_5(self, args);
+        return _wrap_new_InvalidFormatExceptionEx__SWIG_5(self, args);
       }
     }
   }
@@ -8565,40 +8565,40 @@ SWIGINTERN PyObject *_wrap_new_InvalidFormatException11(PyObject *self, PyObject
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_InvalidFormatException11__SWIG_6(self, args);
+        return _wrap_new_InvalidFormatExceptionEx__SWIG_6(self, args);
       }
     }
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_InvalidFormatException11'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_InvalidFormatExceptionEx'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    except::InvalidFormatException11::InvalidFormatException11()\n"
-    "    except::InvalidFormatException11::InvalidFormatException11(except::InvalidFormatException11 const &)\n"
-    "    except::InvalidFormatException11::InvalidFormatException11(except::InvalidFormatException11 &&)\n"
-    "    except::InvalidFormatException11::InvalidFormatException11(except::Context const &)\n"
-    "    except::InvalidFormatException11::InvalidFormatException11(std::string const &)\n"
-    "    except::InvalidFormatException11::InvalidFormatException11(except::Throwable const &,except::Context const &)\n"
-    "    except::InvalidFormatException11::InvalidFormatException11(except::ThrowableEx const &,except::Context const &)\n");
+    "    except::InvalidFormatExceptionEx::InvalidFormatExceptionEx()\n"
+    "    except::InvalidFormatExceptionEx::InvalidFormatExceptionEx(except::InvalidFormatExceptionEx const &)\n"
+    "    except::InvalidFormatExceptionEx::InvalidFormatExceptionEx(except::InvalidFormatExceptionEx &&)\n"
+    "    except::InvalidFormatExceptionEx::InvalidFormatExceptionEx(except::Context const &)\n"
+    "    except::InvalidFormatExceptionEx::InvalidFormatExceptionEx(std::string const &)\n"
+    "    except::InvalidFormatExceptionEx::InvalidFormatExceptionEx(except::Throwable const &,except::Context const &)\n"
+    "    except::InvalidFormatExceptionEx::InvalidFormatExceptionEx(except::ThrowableEx const &,except::Context const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_InvalidFormatException11_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_InvalidFormatExceptionEx_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::InvalidFormatException11 *arg1 = (except::InvalidFormatException11 *) 0 ;
+  except::InvalidFormatExceptionEx *arg1 = (except::InvalidFormatExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   std::string result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:InvalidFormatException11_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__InvalidFormatException11, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:InvalidFormatExceptionEx_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__InvalidFormatExceptionEx, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "InvalidFormatException11_getType" "', argument " "1"" of type '" "except::InvalidFormatException11 const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "InvalidFormatExceptionEx_getType" "', argument " "1"" of type '" "except::InvalidFormatExceptionEx const *""'"); 
   }
-  arg1 = reinterpret_cast< except::InvalidFormatException11 * >(argp1);
-  result = ((except::InvalidFormatException11 const *)arg1)->getType();
+  arg1 = reinterpret_cast< except::InvalidFormatExceptionEx * >(argp1);
+  result = ((except::InvalidFormatExceptionEx const *)arg1)->getType();
   resultobj = SWIG_NewPointerObj((new std::string(static_cast< const std::string& >(result))), SWIGTYPE_p_std__string, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -8606,10 +8606,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *InvalidFormatException11_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *InvalidFormatExceptionEx_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_except__InvalidFormatException11, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_except__InvalidFormatExceptionEx, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -8937,32 +8937,32 @@ SWIGINTERN PyObject *IndexOutOfRangeException_swigregister(PyObject *SWIGUNUSEDP
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeExceptionEx__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::IndexOutOfRangeException11 *result = 0 ;
+  except::IndexOutOfRangeExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)":new_IndexOutOfRangeException11")) SWIG_fail;
-  result = (except::IndexOutOfRangeException11 *)new except::IndexOutOfRangeException11();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IndexOutOfRangeException11, SWIG_POINTER_NEW |  0 );
+  if (!PyArg_ParseTuple(args,(char *)":new_IndexOutOfRangeExceptionEx")) SWIG_fail;
+  result = (except::IndexOutOfRangeExceptionEx *)new except::IndexOutOfRangeExceptionEx();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IndexOutOfRangeExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_IndexOutOfRangeException11(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_IndexOutOfRangeExceptionEx(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::IndexOutOfRangeException11 *arg1 = (except::IndexOutOfRangeException11 *) 0 ;
+  except::IndexOutOfRangeExceptionEx *arg1 = (except::IndexOutOfRangeExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_IndexOutOfRangeException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__IndexOutOfRangeException11, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_IndexOutOfRangeExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__IndexOutOfRangeExceptionEx, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_IndexOutOfRangeException11" "', argument " "1"" of type '" "except::IndexOutOfRangeException11 *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_IndexOutOfRangeExceptionEx" "', argument " "1"" of type '" "except::IndexOutOfRangeExceptionEx *""'"); 
   }
-  arg1 = reinterpret_cast< except::IndexOutOfRangeException11 * >(argp1);
+  arg1 = reinterpret_cast< except::IndexOutOfRangeExceptionEx * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -8971,107 +8971,107 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeExceptionEx__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::IndexOutOfRangeException11 *arg1 = 0 ;
+  except::IndexOutOfRangeExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::IndexOutOfRangeException11 *result = 0 ;
+  except::IndexOutOfRangeExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_IndexOutOfRangeException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__IndexOutOfRangeException11,  0  | 0);
+  if (!PyArg_ParseTuple(args,(char *)"O:new_IndexOutOfRangeExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__IndexOutOfRangeExceptionEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IndexOutOfRangeException11" "', argument " "1"" of type '" "except::IndexOutOfRangeException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "1"" of type '" "except::IndexOutOfRangeExceptionEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeException11" "', argument " "1"" of type '" "except::IndexOutOfRangeException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "1"" of type '" "except::IndexOutOfRangeExceptionEx const &""'"); 
   }
-  arg1 = reinterpret_cast< except::IndexOutOfRangeException11 * >(argp1);
-  result = (except::IndexOutOfRangeException11 *)new except::IndexOutOfRangeException11((except::IndexOutOfRangeException11 const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IndexOutOfRangeException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::IndexOutOfRangeExceptionEx * >(argp1);
+  result = (except::IndexOutOfRangeExceptionEx *)new except::IndexOutOfRangeExceptionEx((except::IndexOutOfRangeExceptionEx const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IndexOutOfRangeExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeExceptionEx__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::IndexOutOfRangeException11 *arg1 = 0 ;
+  except::IndexOutOfRangeExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::IndexOutOfRangeException11 *result = 0 ;
+  except::IndexOutOfRangeExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_IndexOutOfRangeException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__IndexOutOfRangeException11,  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:new_IndexOutOfRangeExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__IndexOutOfRangeExceptionEx,  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IndexOutOfRangeException11" "', argument " "1"" of type '" "except::IndexOutOfRangeException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "1"" of type '" "except::IndexOutOfRangeExceptionEx &&""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeException11" "', argument " "1"" of type '" "except::IndexOutOfRangeException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "1"" of type '" "except::IndexOutOfRangeExceptionEx &&""'"); 
   }
-  arg1 = reinterpret_cast< except::IndexOutOfRangeException11 * >(argp1);
-  result = (except::IndexOutOfRangeException11 *)new except::IndexOutOfRangeException11((except::IndexOutOfRangeException11 &&)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IndexOutOfRangeException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::IndexOutOfRangeExceptionEx * >(argp1);
+  result = (except::IndexOutOfRangeExceptionEx *)new except::IndexOutOfRangeExceptionEx((except::IndexOutOfRangeExceptionEx &&)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IndexOutOfRangeExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeExceptionEx__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Context *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::IndexOutOfRangeException11 *result = 0 ;
+  except::IndexOutOfRangeExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_IndexOutOfRangeException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_IndexOutOfRangeExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IndexOutOfRangeException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   arg1 = reinterpret_cast< except::Context * >(argp1);
-  result = (except::IndexOutOfRangeException11 *)new except::IndexOutOfRangeException11((except::Context const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IndexOutOfRangeException11, SWIG_POINTER_NEW |  0 );
+  result = (except::IndexOutOfRangeExceptionEx *)new except::IndexOutOfRangeExceptionEx((except::Context const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IndexOutOfRangeExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeExceptionEx__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   std::string *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::IndexOutOfRangeException11 *result = 0 ;
+  except::IndexOutOfRangeExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_IndexOutOfRangeException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_IndexOutOfRangeExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_std__string,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IndexOutOfRangeException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   arg1 = reinterpret_cast< std::string * >(argp1);
-  result = (except::IndexOutOfRangeException11 *)new except::IndexOutOfRangeException11((std::string const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IndexOutOfRangeException11, SWIG_POINTER_NEW |  0 );
+  result = (except::IndexOutOfRangeExceptionEx *)new except::IndexOutOfRangeExceptionEx((std::string const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IndexOutOfRangeExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeExceptionEx__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Throwable *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -9081,34 +9081,34 @@ SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11__SWIG_5(PyObject *SWIG
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::IndexOutOfRangeException11 *result = 0 ;
+  except::IndexOutOfRangeExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_IndexOutOfRangeException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_IndexOutOfRangeExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Throwable,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IndexOutOfRangeException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   arg1 = reinterpret_cast< except::Throwable * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_IndexOutOfRangeException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::IndexOutOfRangeException11 *)new except::IndexOutOfRangeException11((except::Throwable const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IndexOutOfRangeException11, SWIG_POINTER_NEW |  0 );
+  result = (except::IndexOutOfRangeExceptionEx *)new except::IndexOutOfRangeExceptionEx((except::Throwable const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IndexOutOfRangeExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeExceptionEx__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::ThrowableEx *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -9118,34 +9118,34 @@ SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11__SWIG_6(PyObject *SWIG
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::IndexOutOfRangeException11 *result = 0 ;
+  except::IndexOutOfRangeExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_IndexOutOfRangeException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_IndexOutOfRangeExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__ThrowableEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IndexOutOfRangeException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   arg1 = reinterpret_cast< except::ThrowableEx * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_IndexOutOfRangeException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_IndexOutOfRangeExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::IndexOutOfRangeException11 *)new except::IndexOutOfRangeException11((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IndexOutOfRangeException11, SWIG_POINTER_NEW |  0 );
+  result = (except::IndexOutOfRangeExceptionEx *)new except::IndexOutOfRangeExceptionEx((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__IndexOutOfRangeExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeExceptionEx(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
@@ -9158,23 +9158,23 @@ SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11(PyObject *self, PyObje
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
   if (argc == 0) {
-    return _wrap_new_IndexOutOfRangeException11__SWIG_0(self, args);
+    return _wrap_new_IndexOutOfRangeExceptionEx__SWIG_0(self, args);
   }
   if (argc == 1) {
     int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__IndexOutOfRangeException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__IndexOutOfRangeExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_IndexOutOfRangeException11__SWIG_1(self, args);
+      return _wrap_new_IndexOutOfRangeExceptionEx__SWIG_1(self, args);
     }
   }
   if (argc == 1) {
     int _v;
     void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__IndexOutOfRangeException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__IndexOutOfRangeExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_IndexOutOfRangeException11__SWIG_2(self, args);
+      return _wrap_new_IndexOutOfRangeExceptionEx__SWIG_2(self, args);
     }
   }
   if (argc == 1) {
@@ -9182,7 +9182,7 @@ SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11(PyObject *self, PyObje
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__Context, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_IndexOutOfRangeException11__SWIG_3(self, args);
+      return _wrap_new_IndexOutOfRangeExceptionEx__SWIG_3(self, args);
     }
   }
   if (argc == 1) {
@@ -9190,7 +9190,7 @@ SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11(PyObject *self, PyObje
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_std__string, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_IndexOutOfRangeException11__SWIG_4(self, args);
+      return _wrap_new_IndexOutOfRangeExceptionEx__SWIG_4(self, args);
     }
   }
   if (argc == 2) {
@@ -9201,7 +9201,7 @@ SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11(PyObject *self, PyObje
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_IndexOutOfRangeException11__SWIG_5(self, args);
+        return _wrap_new_IndexOutOfRangeExceptionEx__SWIG_5(self, args);
       }
     }
   }
@@ -9213,40 +9213,40 @@ SWIGINTERN PyObject *_wrap_new_IndexOutOfRangeException11(PyObject *self, PyObje
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_IndexOutOfRangeException11__SWIG_6(self, args);
+        return _wrap_new_IndexOutOfRangeExceptionEx__SWIG_6(self, args);
       }
     }
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_IndexOutOfRangeException11'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_IndexOutOfRangeExceptionEx'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    except::IndexOutOfRangeException11::IndexOutOfRangeException11()\n"
-    "    except::IndexOutOfRangeException11::IndexOutOfRangeException11(except::IndexOutOfRangeException11 const &)\n"
-    "    except::IndexOutOfRangeException11::IndexOutOfRangeException11(except::IndexOutOfRangeException11 &&)\n"
-    "    except::IndexOutOfRangeException11::IndexOutOfRangeException11(except::Context const &)\n"
-    "    except::IndexOutOfRangeException11::IndexOutOfRangeException11(std::string const &)\n"
-    "    except::IndexOutOfRangeException11::IndexOutOfRangeException11(except::Throwable const &,except::Context const &)\n"
-    "    except::IndexOutOfRangeException11::IndexOutOfRangeException11(except::ThrowableEx const &,except::Context const &)\n");
+    "    except::IndexOutOfRangeExceptionEx::IndexOutOfRangeExceptionEx()\n"
+    "    except::IndexOutOfRangeExceptionEx::IndexOutOfRangeExceptionEx(except::IndexOutOfRangeExceptionEx const &)\n"
+    "    except::IndexOutOfRangeExceptionEx::IndexOutOfRangeExceptionEx(except::IndexOutOfRangeExceptionEx &&)\n"
+    "    except::IndexOutOfRangeExceptionEx::IndexOutOfRangeExceptionEx(except::Context const &)\n"
+    "    except::IndexOutOfRangeExceptionEx::IndexOutOfRangeExceptionEx(std::string const &)\n"
+    "    except::IndexOutOfRangeExceptionEx::IndexOutOfRangeExceptionEx(except::Throwable const &,except::Context const &)\n"
+    "    except::IndexOutOfRangeExceptionEx::IndexOutOfRangeExceptionEx(except::ThrowableEx const &,except::Context const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_IndexOutOfRangeException11_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_IndexOutOfRangeExceptionEx_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::IndexOutOfRangeException11 *arg1 = (except::IndexOutOfRangeException11 *) 0 ;
+  except::IndexOutOfRangeExceptionEx *arg1 = (except::IndexOutOfRangeExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   std::string result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:IndexOutOfRangeException11_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__IndexOutOfRangeException11, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:IndexOutOfRangeExceptionEx_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__IndexOutOfRangeExceptionEx, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IndexOutOfRangeException11_getType" "', argument " "1"" of type '" "except::IndexOutOfRangeException11 const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IndexOutOfRangeExceptionEx_getType" "', argument " "1"" of type '" "except::IndexOutOfRangeExceptionEx const *""'"); 
   }
-  arg1 = reinterpret_cast< except::IndexOutOfRangeException11 * >(argp1);
-  result = ((except::IndexOutOfRangeException11 const *)arg1)->getType();
+  arg1 = reinterpret_cast< except::IndexOutOfRangeExceptionEx * >(argp1);
+  result = ((except::IndexOutOfRangeExceptionEx const *)arg1)->getType();
   resultobj = SWIG_NewPointerObj((new std::string(static_cast< const std::string& >(result))), SWIGTYPE_p_std__string, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -9254,10 +9254,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *IndexOutOfRangeException11_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *IndexOutOfRangeExceptionEx_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_except__IndexOutOfRangeException11, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_except__IndexOutOfRangeExceptionEx, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -9585,32 +9585,32 @@ SWIGINTERN PyObject *OutOfMemoryException_swigregister(PyObject *SWIGUNUSEDPARM(
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_OutOfMemoryExceptionEx__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::OutOfMemoryException11 *result = 0 ;
+  except::OutOfMemoryExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)":new_OutOfMemoryException11")) SWIG_fail;
-  result = (except::OutOfMemoryException11 *)new except::OutOfMemoryException11();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__OutOfMemoryException11, SWIG_POINTER_NEW |  0 );
+  if (!PyArg_ParseTuple(args,(char *)":new_OutOfMemoryExceptionEx")) SWIG_fail;
+  result = (except::OutOfMemoryExceptionEx *)new except::OutOfMemoryExceptionEx();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__OutOfMemoryExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_OutOfMemoryException11(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_OutOfMemoryExceptionEx(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::OutOfMemoryException11 *arg1 = (except::OutOfMemoryException11 *) 0 ;
+  except::OutOfMemoryExceptionEx *arg1 = (except::OutOfMemoryExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_OutOfMemoryException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__OutOfMemoryException11, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_OutOfMemoryExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__OutOfMemoryExceptionEx, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_OutOfMemoryException11" "', argument " "1"" of type '" "except::OutOfMemoryException11 *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_OutOfMemoryExceptionEx" "', argument " "1"" of type '" "except::OutOfMemoryExceptionEx *""'"); 
   }
-  arg1 = reinterpret_cast< except::OutOfMemoryException11 * >(argp1);
+  arg1 = reinterpret_cast< except::OutOfMemoryExceptionEx * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -9619,107 +9619,107 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_OutOfMemoryExceptionEx__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::OutOfMemoryException11 *arg1 = 0 ;
+  except::OutOfMemoryExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::OutOfMemoryException11 *result = 0 ;
+  except::OutOfMemoryExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_OutOfMemoryException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__OutOfMemoryException11,  0  | 0);
+  if (!PyArg_ParseTuple(args,(char *)"O:new_OutOfMemoryExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__OutOfMemoryExceptionEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_OutOfMemoryException11" "', argument " "1"" of type '" "except::OutOfMemoryException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_OutOfMemoryExceptionEx" "', argument " "1"" of type '" "except::OutOfMemoryExceptionEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryException11" "', argument " "1"" of type '" "except::OutOfMemoryException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryExceptionEx" "', argument " "1"" of type '" "except::OutOfMemoryExceptionEx const &""'"); 
   }
-  arg1 = reinterpret_cast< except::OutOfMemoryException11 * >(argp1);
-  result = (except::OutOfMemoryException11 *)new except::OutOfMemoryException11((except::OutOfMemoryException11 const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__OutOfMemoryException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::OutOfMemoryExceptionEx * >(argp1);
+  result = (except::OutOfMemoryExceptionEx *)new except::OutOfMemoryExceptionEx((except::OutOfMemoryExceptionEx const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__OutOfMemoryExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_OutOfMemoryExceptionEx__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::OutOfMemoryException11 *arg1 = 0 ;
+  except::OutOfMemoryExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::OutOfMemoryException11 *result = 0 ;
+  except::OutOfMemoryExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_OutOfMemoryException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__OutOfMemoryException11,  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:new_OutOfMemoryExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__OutOfMemoryExceptionEx,  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_OutOfMemoryException11" "', argument " "1"" of type '" "except::OutOfMemoryException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_OutOfMemoryExceptionEx" "', argument " "1"" of type '" "except::OutOfMemoryExceptionEx &&""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryException11" "', argument " "1"" of type '" "except::OutOfMemoryException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryExceptionEx" "', argument " "1"" of type '" "except::OutOfMemoryExceptionEx &&""'"); 
   }
-  arg1 = reinterpret_cast< except::OutOfMemoryException11 * >(argp1);
-  result = (except::OutOfMemoryException11 *)new except::OutOfMemoryException11((except::OutOfMemoryException11 &&)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__OutOfMemoryException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::OutOfMemoryExceptionEx * >(argp1);
+  result = (except::OutOfMemoryExceptionEx *)new except::OutOfMemoryExceptionEx((except::OutOfMemoryExceptionEx &&)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__OutOfMemoryExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_OutOfMemoryExceptionEx__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Context *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::OutOfMemoryException11 *result = 0 ;
+  except::OutOfMemoryExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_OutOfMemoryException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_OutOfMemoryExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_OutOfMemoryException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_OutOfMemoryExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   arg1 = reinterpret_cast< except::Context * >(argp1);
-  result = (except::OutOfMemoryException11 *)new except::OutOfMemoryException11((except::Context const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__OutOfMemoryException11, SWIG_POINTER_NEW |  0 );
+  result = (except::OutOfMemoryExceptionEx *)new except::OutOfMemoryExceptionEx((except::Context const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__OutOfMemoryExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_OutOfMemoryExceptionEx__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   std::string *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::OutOfMemoryException11 *result = 0 ;
+  except::OutOfMemoryExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_OutOfMemoryException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_OutOfMemoryExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_std__string,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_OutOfMemoryException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_OutOfMemoryExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   arg1 = reinterpret_cast< std::string * >(argp1);
-  result = (except::OutOfMemoryException11 *)new except::OutOfMemoryException11((std::string const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__OutOfMemoryException11, SWIG_POINTER_NEW |  0 );
+  result = (except::OutOfMemoryExceptionEx *)new except::OutOfMemoryExceptionEx((std::string const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__OutOfMemoryExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_OutOfMemoryExceptionEx__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Throwable *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -9729,34 +9729,34 @@ SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11__SWIG_5(PyObject *SWIGUNUS
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::OutOfMemoryException11 *result = 0 ;
+  except::OutOfMemoryExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_OutOfMemoryException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_OutOfMemoryExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Throwable,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_OutOfMemoryException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_OutOfMemoryExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   arg1 = reinterpret_cast< except::Throwable * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_OutOfMemoryException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_OutOfMemoryExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::OutOfMemoryException11 *)new except::OutOfMemoryException11((except::Throwable const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__OutOfMemoryException11, SWIG_POINTER_NEW |  0 );
+  result = (except::OutOfMemoryExceptionEx *)new except::OutOfMemoryExceptionEx((except::Throwable const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__OutOfMemoryExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_OutOfMemoryExceptionEx__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::ThrowableEx *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -9766,34 +9766,34 @@ SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11__SWIG_6(PyObject *SWIGUNUS
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::OutOfMemoryException11 *result = 0 ;
+  except::OutOfMemoryExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_OutOfMemoryException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_OutOfMemoryExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__ThrowableEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_OutOfMemoryException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_OutOfMemoryExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   arg1 = reinterpret_cast< except::ThrowableEx * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_OutOfMemoryException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_OutOfMemoryExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_OutOfMemoryExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::OutOfMemoryException11 *)new except::OutOfMemoryException11((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__OutOfMemoryException11, SWIG_POINTER_NEW |  0 );
+  result = (except::OutOfMemoryExceptionEx *)new except::OutOfMemoryExceptionEx((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__OutOfMemoryExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_OutOfMemoryExceptionEx(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
@@ -9806,23 +9806,23 @@ SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11(PyObject *self, PyObject *
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
   if (argc == 0) {
-    return _wrap_new_OutOfMemoryException11__SWIG_0(self, args);
+    return _wrap_new_OutOfMemoryExceptionEx__SWIG_0(self, args);
   }
   if (argc == 1) {
     int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__OutOfMemoryException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__OutOfMemoryExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_OutOfMemoryException11__SWIG_1(self, args);
+      return _wrap_new_OutOfMemoryExceptionEx__SWIG_1(self, args);
     }
   }
   if (argc == 1) {
     int _v;
     void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__OutOfMemoryException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__OutOfMemoryExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_OutOfMemoryException11__SWIG_2(self, args);
+      return _wrap_new_OutOfMemoryExceptionEx__SWIG_2(self, args);
     }
   }
   if (argc == 1) {
@@ -9830,7 +9830,7 @@ SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11(PyObject *self, PyObject *
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__Context, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_OutOfMemoryException11__SWIG_3(self, args);
+      return _wrap_new_OutOfMemoryExceptionEx__SWIG_3(self, args);
     }
   }
   if (argc == 1) {
@@ -9838,7 +9838,7 @@ SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11(PyObject *self, PyObject *
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_std__string, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_OutOfMemoryException11__SWIG_4(self, args);
+      return _wrap_new_OutOfMemoryExceptionEx__SWIG_4(self, args);
     }
   }
   if (argc == 2) {
@@ -9849,7 +9849,7 @@ SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11(PyObject *self, PyObject *
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_OutOfMemoryException11__SWIG_5(self, args);
+        return _wrap_new_OutOfMemoryExceptionEx__SWIG_5(self, args);
       }
     }
   }
@@ -9861,40 +9861,40 @@ SWIGINTERN PyObject *_wrap_new_OutOfMemoryException11(PyObject *self, PyObject *
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_OutOfMemoryException11__SWIG_6(self, args);
+        return _wrap_new_OutOfMemoryExceptionEx__SWIG_6(self, args);
       }
     }
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_OutOfMemoryException11'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_OutOfMemoryExceptionEx'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    except::OutOfMemoryException11::OutOfMemoryException11()\n"
-    "    except::OutOfMemoryException11::OutOfMemoryException11(except::OutOfMemoryException11 const &)\n"
-    "    except::OutOfMemoryException11::OutOfMemoryException11(except::OutOfMemoryException11 &&)\n"
-    "    except::OutOfMemoryException11::OutOfMemoryException11(except::Context const &)\n"
-    "    except::OutOfMemoryException11::OutOfMemoryException11(std::string const &)\n"
-    "    except::OutOfMemoryException11::OutOfMemoryException11(except::Throwable const &,except::Context const &)\n"
-    "    except::OutOfMemoryException11::OutOfMemoryException11(except::ThrowableEx const &,except::Context const &)\n");
+    "    except::OutOfMemoryExceptionEx::OutOfMemoryExceptionEx()\n"
+    "    except::OutOfMemoryExceptionEx::OutOfMemoryExceptionEx(except::OutOfMemoryExceptionEx const &)\n"
+    "    except::OutOfMemoryExceptionEx::OutOfMemoryExceptionEx(except::OutOfMemoryExceptionEx &&)\n"
+    "    except::OutOfMemoryExceptionEx::OutOfMemoryExceptionEx(except::Context const &)\n"
+    "    except::OutOfMemoryExceptionEx::OutOfMemoryExceptionEx(std::string const &)\n"
+    "    except::OutOfMemoryExceptionEx::OutOfMemoryExceptionEx(except::Throwable const &,except::Context const &)\n"
+    "    except::OutOfMemoryExceptionEx::OutOfMemoryExceptionEx(except::ThrowableEx const &,except::Context const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_OutOfMemoryException11_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_OutOfMemoryExceptionEx_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::OutOfMemoryException11 *arg1 = (except::OutOfMemoryException11 *) 0 ;
+  except::OutOfMemoryExceptionEx *arg1 = (except::OutOfMemoryExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   std::string result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:OutOfMemoryException11_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__OutOfMemoryException11, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:OutOfMemoryExceptionEx_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__OutOfMemoryExceptionEx, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "OutOfMemoryException11_getType" "', argument " "1"" of type '" "except::OutOfMemoryException11 const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "OutOfMemoryExceptionEx_getType" "', argument " "1"" of type '" "except::OutOfMemoryExceptionEx const *""'"); 
   }
-  arg1 = reinterpret_cast< except::OutOfMemoryException11 * >(argp1);
-  result = ((except::OutOfMemoryException11 const *)arg1)->getType();
+  arg1 = reinterpret_cast< except::OutOfMemoryExceptionEx * >(argp1);
+  result = ((except::OutOfMemoryExceptionEx const *)arg1)->getType();
   resultobj = SWIG_NewPointerObj((new std::string(static_cast< const std::string& >(result))), SWIGTYPE_p_std__string, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -9902,10 +9902,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *OutOfMemoryException11_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *OutOfMemoryExceptionEx_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_except__OutOfMemoryException11, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_except__OutOfMemoryExceptionEx, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -10233,32 +10233,32 @@ SWIGINTERN PyObject *NullPointerReferenceException_swigregister(PyObject *SWIGUN
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NullPointerReferenceExceptionEx__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NullPointerReferenceException11 *result = 0 ;
+  except::NullPointerReferenceExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)":new_NullPointerReferenceException11")) SWIG_fail;
-  result = (except::NullPointerReferenceException11 *)new except::NullPointerReferenceException11();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NullPointerReferenceException11, SWIG_POINTER_NEW |  0 );
+  if (!PyArg_ParseTuple(args,(char *)":new_NullPointerReferenceExceptionEx")) SWIG_fail;
+  result = (except::NullPointerReferenceExceptionEx *)new except::NullPointerReferenceExceptionEx();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NullPointerReferenceExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_NullPointerReferenceException11(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_NullPointerReferenceExceptionEx(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NullPointerReferenceException11 *arg1 = (except::NullPointerReferenceException11 *) 0 ;
+  except::NullPointerReferenceExceptionEx *arg1 = (except::NullPointerReferenceExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_NullPointerReferenceException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NullPointerReferenceException11, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_NullPointerReferenceExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NullPointerReferenceExceptionEx, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_NullPointerReferenceException11" "', argument " "1"" of type '" "except::NullPointerReferenceException11 *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_NullPointerReferenceExceptionEx" "', argument " "1"" of type '" "except::NullPointerReferenceExceptionEx *""'"); 
   }
-  arg1 = reinterpret_cast< except::NullPointerReferenceException11 * >(argp1);
+  arg1 = reinterpret_cast< except::NullPointerReferenceExceptionEx * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -10267,107 +10267,107 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NullPointerReferenceExceptionEx__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NullPointerReferenceException11 *arg1 = 0 ;
+  except::NullPointerReferenceExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NullPointerReferenceException11 *result = 0 ;
+  except::NullPointerReferenceExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NullPointerReferenceException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NullPointerReferenceException11,  0  | 0);
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NullPointerReferenceExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NullPointerReferenceExceptionEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NullPointerReferenceException11" "', argument " "1"" of type '" "except::NullPointerReferenceException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "1"" of type '" "except::NullPointerReferenceExceptionEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceException11" "', argument " "1"" of type '" "except::NullPointerReferenceException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "1"" of type '" "except::NullPointerReferenceExceptionEx const &""'"); 
   }
-  arg1 = reinterpret_cast< except::NullPointerReferenceException11 * >(argp1);
-  result = (except::NullPointerReferenceException11 *)new except::NullPointerReferenceException11((except::NullPointerReferenceException11 const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NullPointerReferenceException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::NullPointerReferenceExceptionEx * >(argp1);
+  result = (except::NullPointerReferenceExceptionEx *)new except::NullPointerReferenceExceptionEx((except::NullPointerReferenceExceptionEx const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NullPointerReferenceExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NullPointerReferenceExceptionEx__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NullPointerReferenceException11 *arg1 = 0 ;
+  except::NullPointerReferenceExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NullPointerReferenceException11 *result = 0 ;
+  except::NullPointerReferenceExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NullPointerReferenceException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NullPointerReferenceException11,  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NullPointerReferenceExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NullPointerReferenceExceptionEx,  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NullPointerReferenceException11" "', argument " "1"" of type '" "except::NullPointerReferenceException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "1"" of type '" "except::NullPointerReferenceExceptionEx &&""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceException11" "', argument " "1"" of type '" "except::NullPointerReferenceException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "1"" of type '" "except::NullPointerReferenceExceptionEx &&""'"); 
   }
-  arg1 = reinterpret_cast< except::NullPointerReferenceException11 * >(argp1);
-  result = (except::NullPointerReferenceException11 *)new except::NullPointerReferenceException11((except::NullPointerReferenceException11 &&)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NullPointerReferenceException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::NullPointerReferenceExceptionEx * >(argp1);
+  result = (except::NullPointerReferenceExceptionEx *)new except::NullPointerReferenceExceptionEx((except::NullPointerReferenceExceptionEx &&)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NullPointerReferenceExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NullPointerReferenceExceptionEx__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Context *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NullPointerReferenceException11 *result = 0 ;
+  except::NullPointerReferenceExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NullPointerReferenceException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NullPointerReferenceExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NullPointerReferenceException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   arg1 = reinterpret_cast< except::Context * >(argp1);
-  result = (except::NullPointerReferenceException11 *)new except::NullPointerReferenceException11((except::Context const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NullPointerReferenceException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NullPointerReferenceExceptionEx *)new except::NullPointerReferenceExceptionEx((except::Context const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NullPointerReferenceExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NullPointerReferenceExceptionEx__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   std::string *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NullPointerReferenceException11 *result = 0 ;
+  except::NullPointerReferenceExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NullPointerReferenceException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NullPointerReferenceExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_std__string,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NullPointerReferenceException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   arg1 = reinterpret_cast< std::string * >(argp1);
-  result = (except::NullPointerReferenceException11 *)new except::NullPointerReferenceException11((std::string const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NullPointerReferenceException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NullPointerReferenceExceptionEx *)new except::NullPointerReferenceExceptionEx((std::string const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NullPointerReferenceExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NullPointerReferenceExceptionEx__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Throwable *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -10377,34 +10377,34 @@ SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11__SWIG_5(PyObject 
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::NullPointerReferenceException11 *result = 0 ;
+  except::NullPointerReferenceExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_NullPointerReferenceException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_NullPointerReferenceExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Throwable,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NullPointerReferenceException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   arg1 = reinterpret_cast< except::Throwable * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NullPointerReferenceException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::NullPointerReferenceException11 *)new except::NullPointerReferenceException11((except::Throwable const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NullPointerReferenceException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NullPointerReferenceExceptionEx *)new except::NullPointerReferenceExceptionEx((except::Throwable const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NullPointerReferenceExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NullPointerReferenceExceptionEx__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::ThrowableEx *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -10414,34 +10414,34 @@ SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11__SWIG_6(PyObject 
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::NullPointerReferenceException11 *result = 0 ;
+  except::NullPointerReferenceExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_NullPointerReferenceException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_NullPointerReferenceExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__ThrowableEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NullPointerReferenceException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   arg1 = reinterpret_cast< except::ThrowableEx * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NullPointerReferenceException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NullPointerReferenceExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::NullPointerReferenceException11 *)new except::NullPointerReferenceException11((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NullPointerReferenceException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NullPointerReferenceExceptionEx *)new except::NullPointerReferenceExceptionEx((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NullPointerReferenceExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NullPointerReferenceExceptionEx(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
@@ -10454,23 +10454,23 @@ SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11(PyObject *self, P
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
   if (argc == 0) {
-    return _wrap_new_NullPointerReferenceException11__SWIG_0(self, args);
+    return _wrap_new_NullPointerReferenceExceptionEx__SWIG_0(self, args);
   }
   if (argc == 1) {
     int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__NullPointerReferenceException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__NullPointerReferenceExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NullPointerReferenceException11__SWIG_1(self, args);
+      return _wrap_new_NullPointerReferenceExceptionEx__SWIG_1(self, args);
     }
   }
   if (argc == 1) {
     int _v;
     void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__NullPointerReferenceException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__NullPointerReferenceExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NullPointerReferenceException11__SWIG_2(self, args);
+      return _wrap_new_NullPointerReferenceExceptionEx__SWIG_2(self, args);
     }
   }
   if (argc == 1) {
@@ -10478,7 +10478,7 @@ SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11(PyObject *self, P
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__Context, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NullPointerReferenceException11__SWIG_3(self, args);
+      return _wrap_new_NullPointerReferenceExceptionEx__SWIG_3(self, args);
     }
   }
   if (argc == 1) {
@@ -10486,7 +10486,7 @@ SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11(PyObject *self, P
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_std__string, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NullPointerReferenceException11__SWIG_4(self, args);
+      return _wrap_new_NullPointerReferenceExceptionEx__SWIG_4(self, args);
     }
   }
   if (argc == 2) {
@@ -10497,7 +10497,7 @@ SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11(PyObject *self, P
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_NullPointerReferenceException11__SWIG_5(self, args);
+        return _wrap_new_NullPointerReferenceExceptionEx__SWIG_5(self, args);
       }
     }
   }
@@ -10509,40 +10509,40 @@ SWIGINTERN PyObject *_wrap_new_NullPointerReferenceException11(PyObject *self, P
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_NullPointerReferenceException11__SWIG_6(self, args);
+        return _wrap_new_NullPointerReferenceExceptionEx__SWIG_6(self, args);
       }
     }
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_NullPointerReferenceException11'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_NullPointerReferenceExceptionEx'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    except::NullPointerReferenceException11::NullPointerReferenceException11()\n"
-    "    except::NullPointerReferenceException11::NullPointerReferenceException11(except::NullPointerReferenceException11 const &)\n"
-    "    except::NullPointerReferenceException11::NullPointerReferenceException11(except::NullPointerReferenceException11 &&)\n"
-    "    except::NullPointerReferenceException11::NullPointerReferenceException11(except::Context const &)\n"
-    "    except::NullPointerReferenceException11::NullPointerReferenceException11(std::string const &)\n"
-    "    except::NullPointerReferenceException11::NullPointerReferenceException11(except::Throwable const &,except::Context const &)\n"
-    "    except::NullPointerReferenceException11::NullPointerReferenceException11(except::ThrowableEx const &,except::Context const &)\n");
+    "    except::NullPointerReferenceExceptionEx::NullPointerReferenceExceptionEx()\n"
+    "    except::NullPointerReferenceExceptionEx::NullPointerReferenceExceptionEx(except::NullPointerReferenceExceptionEx const &)\n"
+    "    except::NullPointerReferenceExceptionEx::NullPointerReferenceExceptionEx(except::NullPointerReferenceExceptionEx &&)\n"
+    "    except::NullPointerReferenceExceptionEx::NullPointerReferenceExceptionEx(except::Context const &)\n"
+    "    except::NullPointerReferenceExceptionEx::NullPointerReferenceExceptionEx(std::string const &)\n"
+    "    except::NullPointerReferenceExceptionEx::NullPointerReferenceExceptionEx(except::Throwable const &,except::Context const &)\n"
+    "    except::NullPointerReferenceExceptionEx::NullPointerReferenceExceptionEx(except::ThrowableEx const &,except::Context const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_NullPointerReferenceException11_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_NullPointerReferenceExceptionEx_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NullPointerReferenceException11 *arg1 = (except::NullPointerReferenceException11 *) 0 ;
+  except::NullPointerReferenceExceptionEx *arg1 = (except::NullPointerReferenceExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   std::string result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:NullPointerReferenceException11_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NullPointerReferenceException11, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:NullPointerReferenceExceptionEx_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NullPointerReferenceExceptionEx, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "NullPointerReferenceException11_getType" "', argument " "1"" of type '" "except::NullPointerReferenceException11 const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "NullPointerReferenceExceptionEx_getType" "', argument " "1"" of type '" "except::NullPointerReferenceExceptionEx const *""'"); 
   }
-  arg1 = reinterpret_cast< except::NullPointerReferenceException11 * >(argp1);
-  result = ((except::NullPointerReferenceException11 const *)arg1)->getType();
+  arg1 = reinterpret_cast< except::NullPointerReferenceExceptionEx * >(argp1);
+  result = ((except::NullPointerReferenceExceptionEx const *)arg1)->getType();
   resultobj = SWIG_NewPointerObj((new std::string(static_cast< const std::string& >(result))), SWIGTYPE_p_std__string, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -10550,10 +10550,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *NullPointerReferenceException11_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *NullPointerReferenceExceptionEx_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_except__NullPointerReferenceException11, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_except__NullPointerReferenceExceptionEx, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -10881,32 +10881,32 @@ SWIGINTERN PyObject *NoSuchKeyException_swigregister(PyObject *SWIGUNUSEDPARM(se
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchKeyExceptionEx__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NoSuchKeyException11 *result = 0 ;
+  except::NoSuchKeyExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)":new_NoSuchKeyException11")) SWIG_fail;
-  result = (except::NoSuchKeyException11 *)new except::NoSuchKeyException11();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchKeyException11, SWIG_POINTER_NEW |  0 );
+  if (!PyArg_ParseTuple(args,(char *)":new_NoSuchKeyExceptionEx")) SWIG_fail;
+  result = (except::NoSuchKeyExceptionEx *)new except::NoSuchKeyExceptionEx();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchKeyExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_NoSuchKeyException11(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_NoSuchKeyExceptionEx(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NoSuchKeyException11 *arg1 = (except::NoSuchKeyException11 *) 0 ;
+  except::NoSuchKeyExceptionEx *arg1 = (except::NoSuchKeyExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_NoSuchKeyException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NoSuchKeyException11, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_NoSuchKeyExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NoSuchKeyExceptionEx, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_NoSuchKeyException11" "', argument " "1"" of type '" "except::NoSuchKeyException11 *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_NoSuchKeyExceptionEx" "', argument " "1"" of type '" "except::NoSuchKeyExceptionEx *""'"); 
   }
-  arg1 = reinterpret_cast< except::NoSuchKeyException11 * >(argp1);
+  arg1 = reinterpret_cast< except::NoSuchKeyExceptionEx * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -10915,107 +10915,107 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchKeyExceptionEx__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NoSuchKeyException11 *arg1 = 0 ;
+  except::NoSuchKeyExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NoSuchKeyException11 *result = 0 ;
+  except::NoSuchKeyExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchKeyException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NoSuchKeyException11,  0  | 0);
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchKeyExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NoSuchKeyExceptionEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchKeyException11" "', argument " "1"" of type '" "except::NoSuchKeyException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchKeyExceptionEx" "', argument " "1"" of type '" "except::NoSuchKeyExceptionEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyException11" "', argument " "1"" of type '" "except::NoSuchKeyException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyExceptionEx" "', argument " "1"" of type '" "except::NoSuchKeyExceptionEx const &""'"); 
   }
-  arg1 = reinterpret_cast< except::NoSuchKeyException11 * >(argp1);
-  result = (except::NoSuchKeyException11 *)new except::NoSuchKeyException11((except::NoSuchKeyException11 const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchKeyException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::NoSuchKeyExceptionEx * >(argp1);
+  result = (except::NoSuchKeyExceptionEx *)new except::NoSuchKeyExceptionEx((except::NoSuchKeyExceptionEx const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchKeyExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchKeyExceptionEx__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NoSuchKeyException11 *arg1 = 0 ;
+  except::NoSuchKeyExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NoSuchKeyException11 *result = 0 ;
+  except::NoSuchKeyExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchKeyException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NoSuchKeyException11,  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchKeyExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NoSuchKeyExceptionEx,  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchKeyException11" "', argument " "1"" of type '" "except::NoSuchKeyException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchKeyExceptionEx" "', argument " "1"" of type '" "except::NoSuchKeyExceptionEx &&""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyException11" "', argument " "1"" of type '" "except::NoSuchKeyException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyExceptionEx" "', argument " "1"" of type '" "except::NoSuchKeyExceptionEx &&""'"); 
   }
-  arg1 = reinterpret_cast< except::NoSuchKeyException11 * >(argp1);
-  result = (except::NoSuchKeyException11 *)new except::NoSuchKeyException11((except::NoSuchKeyException11 &&)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchKeyException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::NoSuchKeyExceptionEx * >(argp1);
+  result = (except::NoSuchKeyExceptionEx *)new except::NoSuchKeyExceptionEx((except::NoSuchKeyExceptionEx &&)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchKeyExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchKeyExceptionEx__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Context *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NoSuchKeyException11 *result = 0 ;
+  except::NoSuchKeyExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchKeyException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchKeyExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchKeyException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchKeyExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   arg1 = reinterpret_cast< except::Context * >(argp1);
-  result = (except::NoSuchKeyException11 *)new except::NoSuchKeyException11((except::Context const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchKeyException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NoSuchKeyExceptionEx *)new except::NoSuchKeyExceptionEx((except::Context const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchKeyExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchKeyExceptionEx__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   std::string *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NoSuchKeyException11 *result = 0 ;
+  except::NoSuchKeyExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchKeyException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchKeyExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_std__string,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchKeyException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchKeyExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   arg1 = reinterpret_cast< std::string * >(argp1);
-  result = (except::NoSuchKeyException11 *)new except::NoSuchKeyException11((std::string const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchKeyException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NoSuchKeyExceptionEx *)new except::NoSuchKeyExceptionEx((std::string const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchKeyExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchKeyExceptionEx__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Throwable *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -11025,34 +11025,34 @@ SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11__SWIG_5(PyObject *SWIGUNUSED
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::NoSuchKeyException11 *result = 0 ;
+  except::NoSuchKeyExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_NoSuchKeyException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_NoSuchKeyExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Throwable,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchKeyException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchKeyExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   arg1 = reinterpret_cast< except::Throwable * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NoSuchKeyException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NoSuchKeyExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::NoSuchKeyException11 *)new except::NoSuchKeyException11((except::Throwable const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchKeyException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NoSuchKeyExceptionEx *)new except::NoSuchKeyExceptionEx((except::Throwable const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchKeyExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchKeyExceptionEx__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::ThrowableEx *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -11062,34 +11062,34 @@ SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11__SWIG_6(PyObject *SWIGUNUSED
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::NoSuchKeyException11 *result = 0 ;
+  except::NoSuchKeyExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_NoSuchKeyException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_NoSuchKeyExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__ThrowableEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchKeyException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchKeyExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   arg1 = reinterpret_cast< except::ThrowableEx * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NoSuchKeyException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NoSuchKeyExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchKeyExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::NoSuchKeyException11 *)new except::NoSuchKeyException11((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchKeyException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NoSuchKeyExceptionEx *)new except::NoSuchKeyExceptionEx((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchKeyExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchKeyExceptionEx(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
@@ -11102,23 +11102,23 @@ SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11(PyObject *self, PyObject *ar
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
   if (argc == 0) {
-    return _wrap_new_NoSuchKeyException11__SWIG_0(self, args);
+    return _wrap_new_NoSuchKeyExceptionEx__SWIG_0(self, args);
   }
   if (argc == 1) {
     int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__NoSuchKeyException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__NoSuchKeyExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NoSuchKeyException11__SWIG_1(self, args);
+      return _wrap_new_NoSuchKeyExceptionEx__SWIG_1(self, args);
     }
   }
   if (argc == 1) {
     int _v;
     void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__NoSuchKeyException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__NoSuchKeyExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NoSuchKeyException11__SWIG_2(self, args);
+      return _wrap_new_NoSuchKeyExceptionEx__SWIG_2(self, args);
     }
   }
   if (argc == 1) {
@@ -11126,7 +11126,7 @@ SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11(PyObject *self, PyObject *ar
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__Context, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NoSuchKeyException11__SWIG_3(self, args);
+      return _wrap_new_NoSuchKeyExceptionEx__SWIG_3(self, args);
     }
   }
   if (argc == 1) {
@@ -11134,7 +11134,7 @@ SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11(PyObject *self, PyObject *ar
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_std__string, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NoSuchKeyException11__SWIG_4(self, args);
+      return _wrap_new_NoSuchKeyExceptionEx__SWIG_4(self, args);
     }
   }
   if (argc == 2) {
@@ -11145,7 +11145,7 @@ SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11(PyObject *self, PyObject *ar
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_NoSuchKeyException11__SWIG_5(self, args);
+        return _wrap_new_NoSuchKeyExceptionEx__SWIG_5(self, args);
       }
     }
   }
@@ -11157,40 +11157,40 @@ SWIGINTERN PyObject *_wrap_new_NoSuchKeyException11(PyObject *self, PyObject *ar
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_NoSuchKeyException11__SWIG_6(self, args);
+        return _wrap_new_NoSuchKeyExceptionEx__SWIG_6(self, args);
       }
     }
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_NoSuchKeyException11'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_NoSuchKeyExceptionEx'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    except::NoSuchKeyException11::NoSuchKeyException11()\n"
-    "    except::NoSuchKeyException11::NoSuchKeyException11(except::NoSuchKeyException11 const &)\n"
-    "    except::NoSuchKeyException11::NoSuchKeyException11(except::NoSuchKeyException11 &&)\n"
-    "    except::NoSuchKeyException11::NoSuchKeyException11(except::Context const &)\n"
-    "    except::NoSuchKeyException11::NoSuchKeyException11(std::string const &)\n"
-    "    except::NoSuchKeyException11::NoSuchKeyException11(except::Throwable const &,except::Context const &)\n"
-    "    except::NoSuchKeyException11::NoSuchKeyException11(except::ThrowableEx const &,except::Context const &)\n");
+    "    except::NoSuchKeyExceptionEx::NoSuchKeyExceptionEx()\n"
+    "    except::NoSuchKeyExceptionEx::NoSuchKeyExceptionEx(except::NoSuchKeyExceptionEx const &)\n"
+    "    except::NoSuchKeyExceptionEx::NoSuchKeyExceptionEx(except::NoSuchKeyExceptionEx &&)\n"
+    "    except::NoSuchKeyExceptionEx::NoSuchKeyExceptionEx(except::Context const &)\n"
+    "    except::NoSuchKeyExceptionEx::NoSuchKeyExceptionEx(std::string const &)\n"
+    "    except::NoSuchKeyExceptionEx::NoSuchKeyExceptionEx(except::Throwable const &,except::Context const &)\n"
+    "    except::NoSuchKeyExceptionEx::NoSuchKeyExceptionEx(except::ThrowableEx const &,except::Context const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_NoSuchKeyException11_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_NoSuchKeyExceptionEx_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NoSuchKeyException11 *arg1 = (except::NoSuchKeyException11 *) 0 ;
+  except::NoSuchKeyExceptionEx *arg1 = (except::NoSuchKeyExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   std::string result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:NoSuchKeyException11_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NoSuchKeyException11, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:NoSuchKeyExceptionEx_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NoSuchKeyExceptionEx, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "NoSuchKeyException11_getType" "', argument " "1"" of type '" "except::NoSuchKeyException11 const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "NoSuchKeyExceptionEx_getType" "', argument " "1"" of type '" "except::NoSuchKeyExceptionEx const *""'"); 
   }
-  arg1 = reinterpret_cast< except::NoSuchKeyException11 * >(argp1);
-  result = ((except::NoSuchKeyException11 const *)arg1)->getType();
+  arg1 = reinterpret_cast< except::NoSuchKeyExceptionEx * >(argp1);
+  result = ((except::NoSuchKeyExceptionEx const *)arg1)->getType();
   resultobj = SWIG_NewPointerObj((new std::string(static_cast< const std::string& >(result))), SWIGTYPE_p_std__string, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -11198,10 +11198,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *NoSuchKeyException11_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *NoSuchKeyExceptionEx_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_except__NoSuchKeyException11, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_except__NoSuchKeyExceptionEx, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -11529,32 +11529,32 @@ SWIGINTERN PyObject *NoSuchReferenceException_swigregister(PyObject *SWIGUNUSEDP
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchReferenceExceptionEx__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NoSuchReferenceException11 *result = 0 ;
+  except::NoSuchReferenceExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)":new_NoSuchReferenceException11")) SWIG_fail;
-  result = (except::NoSuchReferenceException11 *)new except::NoSuchReferenceException11();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchReferenceException11, SWIG_POINTER_NEW |  0 );
+  if (!PyArg_ParseTuple(args,(char *)":new_NoSuchReferenceExceptionEx")) SWIG_fail;
+  result = (except::NoSuchReferenceExceptionEx *)new except::NoSuchReferenceExceptionEx();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchReferenceExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_NoSuchReferenceException11(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_NoSuchReferenceExceptionEx(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NoSuchReferenceException11 *arg1 = (except::NoSuchReferenceException11 *) 0 ;
+  except::NoSuchReferenceExceptionEx *arg1 = (except::NoSuchReferenceExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_NoSuchReferenceException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NoSuchReferenceException11, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_NoSuchReferenceExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NoSuchReferenceExceptionEx, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_NoSuchReferenceException11" "', argument " "1"" of type '" "except::NoSuchReferenceException11 *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_NoSuchReferenceExceptionEx" "', argument " "1"" of type '" "except::NoSuchReferenceExceptionEx *""'"); 
   }
-  arg1 = reinterpret_cast< except::NoSuchReferenceException11 * >(argp1);
+  arg1 = reinterpret_cast< except::NoSuchReferenceExceptionEx * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -11563,107 +11563,107 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchReferenceExceptionEx__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NoSuchReferenceException11 *arg1 = 0 ;
+  except::NoSuchReferenceExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NoSuchReferenceException11 *result = 0 ;
+  except::NoSuchReferenceExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchReferenceException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NoSuchReferenceException11,  0  | 0);
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchReferenceExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NoSuchReferenceExceptionEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchReferenceException11" "', argument " "1"" of type '" "except::NoSuchReferenceException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "1"" of type '" "except::NoSuchReferenceExceptionEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceException11" "', argument " "1"" of type '" "except::NoSuchReferenceException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "1"" of type '" "except::NoSuchReferenceExceptionEx const &""'"); 
   }
-  arg1 = reinterpret_cast< except::NoSuchReferenceException11 * >(argp1);
-  result = (except::NoSuchReferenceException11 *)new except::NoSuchReferenceException11((except::NoSuchReferenceException11 const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchReferenceException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::NoSuchReferenceExceptionEx * >(argp1);
+  result = (except::NoSuchReferenceExceptionEx *)new except::NoSuchReferenceExceptionEx((except::NoSuchReferenceExceptionEx const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchReferenceExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchReferenceExceptionEx__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NoSuchReferenceException11 *arg1 = 0 ;
+  except::NoSuchReferenceExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NoSuchReferenceException11 *result = 0 ;
+  except::NoSuchReferenceExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchReferenceException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NoSuchReferenceException11,  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchReferenceExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NoSuchReferenceExceptionEx,  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchReferenceException11" "', argument " "1"" of type '" "except::NoSuchReferenceException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "1"" of type '" "except::NoSuchReferenceExceptionEx &&""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceException11" "', argument " "1"" of type '" "except::NoSuchReferenceException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "1"" of type '" "except::NoSuchReferenceExceptionEx &&""'"); 
   }
-  arg1 = reinterpret_cast< except::NoSuchReferenceException11 * >(argp1);
-  result = (except::NoSuchReferenceException11 *)new except::NoSuchReferenceException11((except::NoSuchReferenceException11 &&)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchReferenceException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::NoSuchReferenceExceptionEx * >(argp1);
+  result = (except::NoSuchReferenceExceptionEx *)new except::NoSuchReferenceExceptionEx((except::NoSuchReferenceExceptionEx &&)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchReferenceExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchReferenceExceptionEx__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Context *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NoSuchReferenceException11 *result = 0 ;
+  except::NoSuchReferenceExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchReferenceException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchReferenceExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchReferenceException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   arg1 = reinterpret_cast< except::Context * >(argp1);
-  result = (except::NoSuchReferenceException11 *)new except::NoSuchReferenceException11((except::Context const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchReferenceException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NoSuchReferenceExceptionEx *)new except::NoSuchReferenceExceptionEx((except::Context const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchReferenceExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchReferenceExceptionEx__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   std::string *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NoSuchReferenceException11 *result = 0 ;
+  except::NoSuchReferenceExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchReferenceException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NoSuchReferenceExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_std__string,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchReferenceException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   arg1 = reinterpret_cast< std::string * >(argp1);
-  result = (except::NoSuchReferenceException11 *)new except::NoSuchReferenceException11((std::string const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchReferenceException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NoSuchReferenceExceptionEx *)new except::NoSuchReferenceExceptionEx((std::string const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchReferenceExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchReferenceExceptionEx__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Throwable *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -11673,34 +11673,34 @@ SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11__SWIG_5(PyObject *SWIG
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::NoSuchReferenceException11 *result = 0 ;
+  except::NoSuchReferenceExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_NoSuchReferenceException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_NoSuchReferenceExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Throwable,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchReferenceException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   arg1 = reinterpret_cast< except::Throwable * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NoSuchReferenceException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::NoSuchReferenceException11 *)new except::NoSuchReferenceException11((except::Throwable const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchReferenceException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NoSuchReferenceExceptionEx *)new except::NoSuchReferenceExceptionEx((except::Throwable const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchReferenceExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchReferenceExceptionEx__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::ThrowableEx *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -11710,34 +11710,34 @@ SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11__SWIG_6(PyObject *SWIG
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::NoSuchReferenceException11 *result = 0 ;
+  except::NoSuchReferenceExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_NoSuchReferenceException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_NoSuchReferenceExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__ThrowableEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchReferenceException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   arg1 = reinterpret_cast< except::ThrowableEx * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NoSuchReferenceException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NoSuchReferenceExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::NoSuchReferenceException11 *)new except::NoSuchReferenceException11((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchReferenceException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NoSuchReferenceExceptionEx *)new except::NoSuchReferenceExceptionEx((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NoSuchReferenceExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NoSuchReferenceExceptionEx(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
@@ -11750,23 +11750,23 @@ SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11(PyObject *self, PyObje
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
   if (argc == 0) {
-    return _wrap_new_NoSuchReferenceException11__SWIG_0(self, args);
+    return _wrap_new_NoSuchReferenceExceptionEx__SWIG_0(self, args);
   }
   if (argc == 1) {
     int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__NoSuchReferenceException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__NoSuchReferenceExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NoSuchReferenceException11__SWIG_1(self, args);
+      return _wrap_new_NoSuchReferenceExceptionEx__SWIG_1(self, args);
     }
   }
   if (argc == 1) {
     int _v;
     void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__NoSuchReferenceException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__NoSuchReferenceExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NoSuchReferenceException11__SWIG_2(self, args);
+      return _wrap_new_NoSuchReferenceExceptionEx__SWIG_2(self, args);
     }
   }
   if (argc == 1) {
@@ -11774,7 +11774,7 @@ SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11(PyObject *self, PyObje
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__Context, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NoSuchReferenceException11__SWIG_3(self, args);
+      return _wrap_new_NoSuchReferenceExceptionEx__SWIG_3(self, args);
     }
   }
   if (argc == 1) {
@@ -11782,7 +11782,7 @@ SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11(PyObject *self, PyObje
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_std__string, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NoSuchReferenceException11__SWIG_4(self, args);
+      return _wrap_new_NoSuchReferenceExceptionEx__SWIG_4(self, args);
     }
   }
   if (argc == 2) {
@@ -11793,7 +11793,7 @@ SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11(PyObject *self, PyObje
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_NoSuchReferenceException11__SWIG_5(self, args);
+        return _wrap_new_NoSuchReferenceExceptionEx__SWIG_5(self, args);
       }
     }
   }
@@ -11805,40 +11805,40 @@ SWIGINTERN PyObject *_wrap_new_NoSuchReferenceException11(PyObject *self, PyObje
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_NoSuchReferenceException11__SWIG_6(self, args);
+        return _wrap_new_NoSuchReferenceExceptionEx__SWIG_6(self, args);
       }
     }
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_NoSuchReferenceException11'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_NoSuchReferenceExceptionEx'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    except::NoSuchReferenceException11::NoSuchReferenceException11()\n"
-    "    except::NoSuchReferenceException11::NoSuchReferenceException11(except::NoSuchReferenceException11 const &)\n"
-    "    except::NoSuchReferenceException11::NoSuchReferenceException11(except::NoSuchReferenceException11 &&)\n"
-    "    except::NoSuchReferenceException11::NoSuchReferenceException11(except::Context const &)\n"
-    "    except::NoSuchReferenceException11::NoSuchReferenceException11(std::string const &)\n"
-    "    except::NoSuchReferenceException11::NoSuchReferenceException11(except::Throwable const &,except::Context const &)\n"
-    "    except::NoSuchReferenceException11::NoSuchReferenceException11(except::ThrowableEx const &,except::Context const &)\n");
+    "    except::NoSuchReferenceExceptionEx::NoSuchReferenceExceptionEx()\n"
+    "    except::NoSuchReferenceExceptionEx::NoSuchReferenceExceptionEx(except::NoSuchReferenceExceptionEx const &)\n"
+    "    except::NoSuchReferenceExceptionEx::NoSuchReferenceExceptionEx(except::NoSuchReferenceExceptionEx &&)\n"
+    "    except::NoSuchReferenceExceptionEx::NoSuchReferenceExceptionEx(except::Context const &)\n"
+    "    except::NoSuchReferenceExceptionEx::NoSuchReferenceExceptionEx(std::string const &)\n"
+    "    except::NoSuchReferenceExceptionEx::NoSuchReferenceExceptionEx(except::Throwable const &,except::Context const &)\n"
+    "    except::NoSuchReferenceExceptionEx::NoSuchReferenceExceptionEx(except::ThrowableEx const &,except::Context const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_NoSuchReferenceException11_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_NoSuchReferenceExceptionEx_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NoSuchReferenceException11 *arg1 = (except::NoSuchReferenceException11 *) 0 ;
+  except::NoSuchReferenceExceptionEx *arg1 = (except::NoSuchReferenceExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   std::string result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:NoSuchReferenceException11_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NoSuchReferenceException11, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:NoSuchReferenceExceptionEx_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NoSuchReferenceExceptionEx, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "NoSuchReferenceException11_getType" "', argument " "1"" of type '" "except::NoSuchReferenceException11 const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "NoSuchReferenceExceptionEx_getType" "', argument " "1"" of type '" "except::NoSuchReferenceExceptionEx const *""'"); 
   }
-  arg1 = reinterpret_cast< except::NoSuchReferenceException11 * >(argp1);
-  result = ((except::NoSuchReferenceException11 const *)arg1)->getType();
+  arg1 = reinterpret_cast< except::NoSuchReferenceExceptionEx * >(argp1);
+  result = ((except::NoSuchReferenceExceptionEx const *)arg1)->getType();
   resultobj = SWIG_NewPointerObj((new std::string(static_cast< const std::string& >(result))), SWIGTYPE_p_std__string, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -11846,10 +11846,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *NoSuchReferenceException11_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *NoSuchReferenceExceptionEx_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_except__NoSuchReferenceException11, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_except__NoSuchReferenceExceptionEx, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -12177,32 +12177,32 @@ SWIGINTERN PyObject *KeyAlreadyExistsException_swigregister(PyObject *SWIGUNUSED
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsExceptionEx__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::KeyAlreadyExistsException11 *result = 0 ;
+  except::KeyAlreadyExistsExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)":new_KeyAlreadyExistsException11")) SWIG_fail;
-  result = (except::KeyAlreadyExistsException11 *)new except::KeyAlreadyExistsException11();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__KeyAlreadyExistsException11, SWIG_POINTER_NEW |  0 );
+  if (!PyArg_ParseTuple(args,(char *)":new_KeyAlreadyExistsExceptionEx")) SWIG_fail;
+  result = (except::KeyAlreadyExistsExceptionEx *)new except::KeyAlreadyExistsExceptionEx();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_KeyAlreadyExistsException11(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_KeyAlreadyExistsExceptionEx(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::KeyAlreadyExistsException11 *arg1 = (except::KeyAlreadyExistsException11 *) 0 ;
+  except::KeyAlreadyExistsExceptionEx *arg1 = (except::KeyAlreadyExistsExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_KeyAlreadyExistsException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__KeyAlreadyExistsException11, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_KeyAlreadyExistsExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_KeyAlreadyExistsException11" "', argument " "1"" of type '" "except::KeyAlreadyExistsException11 *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_KeyAlreadyExistsExceptionEx" "', argument " "1"" of type '" "except::KeyAlreadyExistsExceptionEx *""'"); 
   }
-  arg1 = reinterpret_cast< except::KeyAlreadyExistsException11 * >(argp1);
+  arg1 = reinterpret_cast< except::KeyAlreadyExistsExceptionEx * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -12211,107 +12211,107 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsExceptionEx__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::KeyAlreadyExistsException11 *arg1 = 0 ;
+  except::KeyAlreadyExistsExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::KeyAlreadyExistsException11 *result = 0 ;
+  except::KeyAlreadyExistsExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_KeyAlreadyExistsException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__KeyAlreadyExistsException11,  0  | 0);
+  if (!PyArg_ParseTuple(args,(char *)"O:new_KeyAlreadyExistsExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_KeyAlreadyExistsException11" "', argument " "1"" of type '" "except::KeyAlreadyExistsException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "1"" of type '" "except::KeyAlreadyExistsExceptionEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsException11" "', argument " "1"" of type '" "except::KeyAlreadyExistsException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "1"" of type '" "except::KeyAlreadyExistsExceptionEx const &""'"); 
   }
-  arg1 = reinterpret_cast< except::KeyAlreadyExistsException11 * >(argp1);
-  result = (except::KeyAlreadyExistsException11 *)new except::KeyAlreadyExistsException11((except::KeyAlreadyExistsException11 const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__KeyAlreadyExistsException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::KeyAlreadyExistsExceptionEx * >(argp1);
+  result = (except::KeyAlreadyExistsExceptionEx *)new except::KeyAlreadyExistsExceptionEx((except::KeyAlreadyExistsExceptionEx const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsExceptionEx__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::KeyAlreadyExistsException11 *arg1 = 0 ;
+  except::KeyAlreadyExistsExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::KeyAlreadyExistsException11 *result = 0 ;
+  except::KeyAlreadyExistsExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_KeyAlreadyExistsException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__KeyAlreadyExistsException11,  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:new_KeyAlreadyExistsExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx,  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_KeyAlreadyExistsException11" "', argument " "1"" of type '" "except::KeyAlreadyExistsException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "1"" of type '" "except::KeyAlreadyExistsExceptionEx &&""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsException11" "', argument " "1"" of type '" "except::KeyAlreadyExistsException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "1"" of type '" "except::KeyAlreadyExistsExceptionEx &&""'"); 
   }
-  arg1 = reinterpret_cast< except::KeyAlreadyExistsException11 * >(argp1);
-  result = (except::KeyAlreadyExistsException11 *)new except::KeyAlreadyExistsException11((except::KeyAlreadyExistsException11 &&)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__KeyAlreadyExistsException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::KeyAlreadyExistsExceptionEx * >(argp1);
+  result = (except::KeyAlreadyExistsExceptionEx *)new except::KeyAlreadyExistsExceptionEx((except::KeyAlreadyExistsExceptionEx &&)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsExceptionEx__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Context *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::KeyAlreadyExistsException11 *result = 0 ;
+  except::KeyAlreadyExistsExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_KeyAlreadyExistsException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_KeyAlreadyExistsExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_KeyAlreadyExistsException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   arg1 = reinterpret_cast< except::Context * >(argp1);
-  result = (except::KeyAlreadyExistsException11 *)new except::KeyAlreadyExistsException11((except::Context const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__KeyAlreadyExistsException11, SWIG_POINTER_NEW |  0 );
+  result = (except::KeyAlreadyExistsExceptionEx *)new except::KeyAlreadyExistsExceptionEx((except::Context const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsExceptionEx__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   std::string *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::KeyAlreadyExistsException11 *result = 0 ;
+  except::KeyAlreadyExistsExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_KeyAlreadyExistsException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_KeyAlreadyExistsExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_std__string,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_KeyAlreadyExistsException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   arg1 = reinterpret_cast< std::string * >(argp1);
-  result = (except::KeyAlreadyExistsException11 *)new except::KeyAlreadyExistsException11((std::string const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__KeyAlreadyExistsException11, SWIG_POINTER_NEW |  0 );
+  result = (except::KeyAlreadyExistsExceptionEx *)new except::KeyAlreadyExistsExceptionEx((std::string const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsExceptionEx__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Throwable *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -12321,34 +12321,34 @@ SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11__SWIG_5(PyObject *SWI
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::KeyAlreadyExistsException11 *result = 0 ;
+  except::KeyAlreadyExistsExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_KeyAlreadyExistsException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_KeyAlreadyExistsExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Throwable,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_KeyAlreadyExistsException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   arg1 = reinterpret_cast< except::Throwable * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_KeyAlreadyExistsException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::KeyAlreadyExistsException11 *)new except::KeyAlreadyExistsException11((except::Throwable const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__KeyAlreadyExistsException11, SWIG_POINTER_NEW |  0 );
+  result = (except::KeyAlreadyExistsExceptionEx *)new except::KeyAlreadyExistsExceptionEx((except::Throwable const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsExceptionEx__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::ThrowableEx *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -12358,34 +12358,34 @@ SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11__SWIG_6(PyObject *SWI
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::KeyAlreadyExistsException11 *result = 0 ;
+  except::KeyAlreadyExistsExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_KeyAlreadyExistsException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_KeyAlreadyExistsExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__ThrowableEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_KeyAlreadyExistsException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   arg1 = reinterpret_cast< except::ThrowableEx * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_KeyAlreadyExistsException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_KeyAlreadyExistsExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::KeyAlreadyExistsException11 *)new except::KeyAlreadyExistsException11((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__KeyAlreadyExistsException11, SWIG_POINTER_NEW |  0 );
+  result = (except::KeyAlreadyExistsExceptionEx *)new except::KeyAlreadyExistsExceptionEx((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsExceptionEx(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
@@ -12398,23 +12398,23 @@ SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11(PyObject *self, PyObj
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
   if (argc == 0) {
-    return _wrap_new_KeyAlreadyExistsException11__SWIG_0(self, args);
+    return _wrap_new_KeyAlreadyExistsExceptionEx__SWIG_0(self, args);
   }
   if (argc == 1) {
     int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__KeyAlreadyExistsException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_KeyAlreadyExistsException11__SWIG_1(self, args);
+      return _wrap_new_KeyAlreadyExistsExceptionEx__SWIG_1(self, args);
     }
   }
   if (argc == 1) {
     int _v;
     void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__KeyAlreadyExistsException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_KeyAlreadyExistsException11__SWIG_2(self, args);
+      return _wrap_new_KeyAlreadyExistsExceptionEx__SWIG_2(self, args);
     }
   }
   if (argc == 1) {
@@ -12422,7 +12422,7 @@ SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11(PyObject *self, PyObj
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__Context, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_KeyAlreadyExistsException11__SWIG_3(self, args);
+      return _wrap_new_KeyAlreadyExistsExceptionEx__SWIG_3(self, args);
     }
   }
   if (argc == 1) {
@@ -12430,7 +12430,7 @@ SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11(PyObject *self, PyObj
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_std__string, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_KeyAlreadyExistsException11__SWIG_4(self, args);
+      return _wrap_new_KeyAlreadyExistsExceptionEx__SWIG_4(self, args);
     }
   }
   if (argc == 2) {
@@ -12441,7 +12441,7 @@ SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11(PyObject *self, PyObj
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_KeyAlreadyExistsException11__SWIG_5(self, args);
+        return _wrap_new_KeyAlreadyExistsExceptionEx__SWIG_5(self, args);
       }
     }
   }
@@ -12453,40 +12453,40 @@ SWIGINTERN PyObject *_wrap_new_KeyAlreadyExistsException11(PyObject *self, PyObj
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_KeyAlreadyExistsException11__SWIG_6(self, args);
+        return _wrap_new_KeyAlreadyExistsExceptionEx__SWIG_6(self, args);
       }
     }
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_KeyAlreadyExistsException11'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_KeyAlreadyExistsExceptionEx'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    except::KeyAlreadyExistsException11::KeyAlreadyExistsException11()\n"
-    "    except::KeyAlreadyExistsException11::KeyAlreadyExistsException11(except::KeyAlreadyExistsException11 const &)\n"
-    "    except::KeyAlreadyExistsException11::KeyAlreadyExistsException11(except::KeyAlreadyExistsException11 &&)\n"
-    "    except::KeyAlreadyExistsException11::KeyAlreadyExistsException11(except::Context const &)\n"
-    "    except::KeyAlreadyExistsException11::KeyAlreadyExistsException11(std::string const &)\n"
-    "    except::KeyAlreadyExistsException11::KeyAlreadyExistsException11(except::Throwable const &,except::Context const &)\n"
-    "    except::KeyAlreadyExistsException11::KeyAlreadyExistsException11(except::ThrowableEx const &,except::Context const &)\n");
+    "    except::KeyAlreadyExistsExceptionEx::KeyAlreadyExistsExceptionEx()\n"
+    "    except::KeyAlreadyExistsExceptionEx::KeyAlreadyExistsExceptionEx(except::KeyAlreadyExistsExceptionEx const &)\n"
+    "    except::KeyAlreadyExistsExceptionEx::KeyAlreadyExistsExceptionEx(except::KeyAlreadyExistsExceptionEx &&)\n"
+    "    except::KeyAlreadyExistsExceptionEx::KeyAlreadyExistsExceptionEx(except::Context const &)\n"
+    "    except::KeyAlreadyExistsExceptionEx::KeyAlreadyExistsExceptionEx(std::string const &)\n"
+    "    except::KeyAlreadyExistsExceptionEx::KeyAlreadyExistsExceptionEx(except::Throwable const &,except::Context const &)\n"
+    "    except::KeyAlreadyExistsExceptionEx::KeyAlreadyExistsExceptionEx(except::ThrowableEx const &,except::Context const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_KeyAlreadyExistsException11_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_KeyAlreadyExistsExceptionEx_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::KeyAlreadyExistsException11 *arg1 = (except::KeyAlreadyExistsException11 *) 0 ;
+  except::KeyAlreadyExistsExceptionEx *arg1 = (except::KeyAlreadyExistsExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   std::string result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:KeyAlreadyExistsException11_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__KeyAlreadyExistsException11, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:KeyAlreadyExistsExceptionEx_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "KeyAlreadyExistsException11_getType" "', argument " "1"" of type '" "except::KeyAlreadyExistsException11 const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "KeyAlreadyExistsExceptionEx_getType" "', argument " "1"" of type '" "except::KeyAlreadyExistsExceptionEx const *""'"); 
   }
-  arg1 = reinterpret_cast< except::KeyAlreadyExistsException11 * >(argp1);
-  result = ((except::KeyAlreadyExistsException11 const *)arg1)->getType();
+  arg1 = reinterpret_cast< except::KeyAlreadyExistsExceptionEx * >(argp1);
+  result = ((except::KeyAlreadyExistsExceptionEx const *)arg1)->getType();
   resultobj = SWIG_NewPointerObj((new std::string(static_cast< const std::string& >(result))), SWIGTYPE_p_std__string, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -12494,10 +12494,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *KeyAlreadyExistsException11_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *KeyAlreadyExistsExceptionEx_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_except__KeyAlreadyExistsException11, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_except__KeyAlreadyExistsExceptionEx, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -12825,32 +12825,32 @@ SWIGINTERN PyObject *NotImplementedException_swigregister(PyObject *SWIGUNUSEDPA
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_NotImplementedException11__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NotImplementedExceptionEx__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NotImplementedException11 *result = 0 ;
+  except::NotImplementedExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)":new_NotImplementedException11")) SWIG_fail;
-  result = (except::NotImplementedException11 *)new except::NotImplementedException11();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NotImplementedException11, SWIG_POINTER_NEW |  0 );
+  if (!PyArg_ParseTuple(args,(char *)":new_NotImplementedExceptionEx")) SWIG_fail;
+  result = (except::NotImplementedExceptionEx *)new except::NotImplementedExceptionEx();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NotImplementedExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_NotImplementedException11(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_NotImplementedExceptionEx(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NotImplementedException11 *arg1 = (except::NotImplementedException11 *) 0 ;
+  except::NotImplementedExceptionEx *arg1 = (except::NotImplementedExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_NotImplementedException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NotImplementedException11, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_NotImplementedExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NotImplementedExceptionEx, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_NotImplementedException11" "', argument " "1"" of type '" "except::NotImplementedException11 *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_NotImplementedExceptionEx" "', argument " "1"" of type '" "except::NotImplementedExceptionEx *""'"); 
   }
-  arg1 = reinterpret_cast< except::NotImplementedException11 * >(argp1);
+  arg1 = reinterpret_cast< except::NotImplementedExceptionEx * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -12859,107 +12859,107 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NotImplementedException11__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NotImplementedExceptionEx__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NotImplementedException11 *arg1 = 0 ;
+  except::NotImplementedExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NotImplementedException11 *result = 0 ;
+  except::NotImplementedExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NotImplementedException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NotImplementedException11,  0  | 0);
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NotImplementedExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NotImplementedExceptionEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NotImplementedException11" "', argument " "1"" of type '" "except::NotImplementedException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NotImplementedExceptionEx" "', argument " "1"" of type '" "except::NotImplementedExceptionEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedException11" "', argument " "1"" of type '" "except::NotImplementedException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedExceptionEx" "', argument " "1"" of type '" "except::NotImplementedExceptionEx const &""'"); 
   }
-  arg1 = reinterpret_cast< except::NotImplementedException11 * >(argp1);
-  result = (except::NotImplementedException11 *)new except::NotImplementedException11((except::NotImplementedException11 const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NotImplementedException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::NotImplementedExceptionEx * >(argp1);
+  result = (except::NotImplementedExceptionEx *)new except::NotImplementedExceptionEx((except::NotImplementedExceptionEx const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NotImplementedExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NotImplementedException11__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NotImplementedExceptionEx__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NotImplementedException11 *arg1 = 0 ;
+  except::NotImplementedExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NotImplementedException11 *result = 0 ;
+  except::NotImplementedExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NotImplementedException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NotImplementedException11,  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NotImplementedExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__NotImplementedExceptionEx,  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NotImplementedException11" "', argument " "1"" of type '" "except::NotImplementedException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NotImplementedExceptionEx" "', argument " "1"" of type '" "except::NotImplementedExceptionEx &&""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedException11" "', argument " "1"" of type '" "except::NotImplementedException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedExceptionEx" "', argument " "1"" of type '" "except::NotImplementedExceptionEx &&""'"); 
   }
-  arg1 = reinterpret_cast< except::NotImplementedException11 * >(argp1);
-  result = (except::NotImplementedException11 *)new except::NotImplementedException11((except::NotImplementedException11 &&)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NotImplementedException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::NotImplementedExceptionEx * >(argp1);
+  result = (except::NotImplementedExceptionEx *)new except::NotImplementedExceptionEx((except::NotImplementedExceptionEx &&)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NotImplementedExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NotImplementedException11__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NotImplementedExceptionEx__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Context *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NotImplementedException11 *result = 0 ;
+  except::NotImplementedExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NotImplementedException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NotImplementedExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NotImplementedException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NotImplementedExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   arg1 = reinterpret_cast< except::Context * >(argp1);
-  result = (except::NotImplementedException11 *)new except::NotImplementedException11((except::Context const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NotImplementedException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NotImplementedExceptionEx *)new except::NotImplementedExceptionEx((except::Context const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NotImplementedExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NotImplementedException11__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NotImplementedExceptionEx__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   std::string *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::NotImplementedException11 *result = 0 ;
+  except::NotImplementedExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_NotImplementedException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_NotImplementedExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_std__string,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NotImplementedException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NotImplementedExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   arg1 = reinterpret_cast< std::string * >(argp1);
-  result = (except::NotImplementedException11 *)new except::NotImplementedException11((std::string const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NotImplementedException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NotImplementedExceptionEx *)new except::NotImplementedExceptionEx((std::string const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NotImplementedExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NotImplementedException11__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NotImplementedExceptionEx__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Throwable *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -12969,34 +12969,34 @@ SWIGINTERN PyObject *_wrap_new_NotImplementedException11__SWIG_5(PyObject *SWIGU
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::NotImplementedException11 *result = 0 ;
+  except::NotImplementedExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_NotImplementedException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_NotImplementedExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Throwable,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NotImplementedException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NotImplementedExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   arg1 = reinterpret_cast< except::Throwable * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NotImplementedException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NotImplementedExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::NotImplementedException11 *)new except::NotImplementedException11((except::Throwable const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NotImplementedException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NotImplementedExceptionEx *)new except::NotImplementedExceptionEx((except::Throwable const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NotImplementedExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NotImplementedException11__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NotImplementedExceptionEx__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::ThrowableEx *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -13006,34 +13006,34 @@ SWIGINTERN PyObject *_wrap_new_NotImplementedException11__SWIG_6(PyObject *SWIGU
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::NotImplementedException11 *result = 0 ;
+  except::NotImplementedExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_NotImplementedException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_NotImplementedExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__ThrowableEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NotImplementedException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_NotImplementedExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   arg1 = reinterpret_cast< except::ThrowableEx * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NotImplementedException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_NotImplementedExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_NotImplementedExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::NotImplementedException11 *)new except::NotImplementedException11((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NotImplementedException11, SWIG_POINTER_NEW |  0 );
+  result = (except::NotImplementedExceptionEx *)new except::NotImplementedExceptionEx((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__NotImplementedExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_NotImplementedException11(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_NotImplementedExceptionEx(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
@@ -13046,23 +13046,23 @@ SWIGINTERN PyObject *_wrap_new_NotImplementedException11(PyObject *self, PyObjec
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
   if (argc == 0) {
-    return _wrap_new_NotImplementedException11__SWIG_0(self, args);
+    return _wrap_new_NotImplementedExceptionEx__SWIG_0(self, args);
   }
   if (argc == 1) {
     int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__NotImplementedException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__NotImplementedExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NotImplementedException11__SWIG_1(self, args);
+      return _wrap_new_NotImplementedExceptionEx__SWIG_1(self, args);
     }
   }
   if (argc == 1) {
     int _v;
     void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__NotImplementedException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__NotImplementedExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NotImplementedException11__SWIG_2(self, args);
+      return _wrap_new_NotImplementedExceptionEx__SWIG_2(self, args);
     }
   }
   if (argc == 1) {
@@ -13070,7 +13070,7 @@ SWIGINTERN PyObject *_wrap_new_NotImplementedException11(PyObject *self, PyObjec
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__Context, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NotImplementedException11__SWIG_3(self, args);
+      return _wrap_new_NotImplementedExceptionEx__SWIG_3(self, args);
     }
   }
   if (argc == 1) {
@@ -13078,7 +13078,7 @@ SWIGINTERN PyObject *_wrap_new_NotImplementedException11(PyObject *self, PyObjec
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_std__string, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_NotImplementedException11__SWIG_4(self, args);
+      return _wrap_new_NotImplementedExceptionEx__SWIG_4(self, args);
     }
   }
   if (argc == 2) {
@@ -13089,7 +13089,7 @@ SWIGINTERN PyObject *_wrap_new_NotImplementedException11(PyObject *self, PyObjec
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_NotImplementedException11__SWIG_5(self, args);
+        return _wrap_new_NotImplementedExceptionEx__SWIG_5(self, args);
       }
     }
   }
@@ -13101,40 +13101,40 @@ SWIGINTERN PyObject *_wrap_new_NotImplementedException11(PyObject *self, PyObjec
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_NotImplementedException11__SWIG_6(self, args);
+        return _wrap_new_NotImplementedExceptionEx__SWIG_6(self, args);
       }
     }
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_NotImplementedException11'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_NotImplementedExceptionEx'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    except::NotImplementedException11::NotImplementedException11()\n"
-    "    except::NotImplementedException11::NotImplementedException11(except::NotImplementedException11 const &)\n"
-    "    except::NotImplementedException11::NotImplementedException11(except::NotImplementedException11 &&)\n"
-    "    except::NotImplementedException11::NotImplementedException11(except::Context const &)\n"
-    "    except::NotImplementedException11::NotImplementedException11(std::string const &)\n"
-    "    except::NotImplementedException11::NotImplementedException11(except::Throwable const &,except::Context const &)\n"
-    "    except::NotImplementedException11::NotImplementedException11(except::ThrowableEx const &,except::Context const &)\n");
+    "    except::NotImplementedExceptionEx::NotImplementedExceptionEx()\n"
+    "    except::NotImplementedExceptionEx::NotImplementedExceptionEx(except::NotImplementedExceptionEx const &)\n"
+    "    except::NotImplementedExceptionEx::NotImplementedExceptionEx(except::NotImplementedExceptionEx &&)\n"
+    "    except::NotImplementedExceptionEx::NotImplementedExceptionEx(except::Context const &)\n"
+    "    except::NotImplementedExceptionEx::NotImplementedExceptionEx(std::string const &)\n"
+    "    except::NotImplementedExceptionEx::NotImplementedExceptionEx(except::Throwable const &,except::Context const &)\n"
+    "    except::NotImplementedExceptionEx::NotImplementedExceptionEx(except::ThrowableEx const &,except::Context const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_NotImplementedException11_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_NotImplementedExceptionEx_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::NotImplementedException11 *arg1 = (except::NotImplementedException11 *) 0 ;
+  except::NotImplementedExceptionEx *arg1 = (except::NotImplementedExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   std::string result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:NotImplementedException11_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NotImplementedException11, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:NotImplementedExceptionEx_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__NotImplementedExceptionEx, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "NotImplementedException11_getType" "', argument " "1"" of type '" "except::NotImplementedException11 const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "NotImplementedExceptionEx_getType" "', argument " "1"" of type '" "except::NotImplementedExceptionEx const *""'"); 
   }
-  arg1 = reinterpret_cast< except::NotImplementedException11 * >(argp1);
-  result = ((except::NotImplementedException11 const *)arg1)->getType();
+  arg1 = reinterpret_cast< except::NotImplementedExceptionEx * >(argp1);
+  result = ((except::NotImplementedExceptionEx const *)arg1)->getType();
   resultobj = SWIG_NewPointerObj((new std::string(static_cast< const std::string& >(result))), SWIGTYPE_p_std__string, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -13142,10 +13142,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *NotImplementedException11_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *NotImplementedExceptionEx_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_except__NotImplementedException11, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_except__NotImplementedExceptionEx, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -13473,32 +13473,32 @@ SWIGINTERN PyObject *InvalidArgumentException_swigregister(PyObject *SWIGUNUSEDP
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidArgumentExceptionEx__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::InvalidArgumentException11 *result = 0 ;
+  except::InvalidArgumentExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)":new_InvalidArgumentException11")) SWIG_fail;
-  result = (except::InvalidArgumentException11 *)new except::InvalidArgumentException11();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidArgumentException11, SWIG_POINTER_NEW |  0 );
+  if (!PyArg_ParseTuple(args,(char *)":new_InvalidArgumentExceptionEx")) SWIG_fail;
+  result = (except::InvalidArgumentExceptionEx *)new except::InvalidArgumentExceptionEx();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidArgumentExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_InvalidArgumentException11(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_InvalidArgumentExceptionEx(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::InvalidArgumentException11 *arg1 = (except::InvalidArgumentException11 *) 0 ;
+  except::InvalidArgumentExceptionEx *arg1 = (except::InvalidArgumentExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_InvalidArgumentException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__InvalidArgumentException11, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_InvalidArgumentExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__InvalidArgumentExceptionEx, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_InvalidArgumentException11" "', argument " "1"" of type '" "except::InvalidArgumentException11 *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_InvalidArgumentExceptionEx" "', argument " "1"" of type '" "except::InvalidArgumentExceptionEx *""'"); 
   }
-  arg1 = reinterpret_cast< except::InvalidArgumentException11 * >(argp1);
+  arg1 = reinterpret_cast< except::InvalidArgumentExceptionEx * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -13507,107 +13507,107 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidArgumentExceptionEx__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::InvalidArgumentException11 *arg1 = 0 ;
+  except::InvalidArgumentExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::InvalidArgumentException11 *result = 0 ;
+  except::InvalidArgumentExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidArgumentException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__InvalidArgumentException11,  0  | 0);
+  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidArgumentExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__InvalidArgumentExceptionEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidArgumentException11" "', argument " "1"" of type '" "except::InvalidArgumentException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidArgumentExceptionEx" "', argument " "1"" of type '" "except::InvalidArgumentExceptionEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentException11" "', argument " "1"" of type '" "except::InvalidArgumentException11 const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentExceptionEx" "', argument " "1"" of type '" "except::InvalidArgumentExceptionEx const &""'"); 
   }
-  arg1 = reinterpret_cast< except::InvalidArgumentException11 * >(argp1);
-  result = (except::InvalidArgumentException11 *)new except::InvalidArgumentException11((except::InvalidArgumentException11 const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidArgumentException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::InvalidArgumentExceptionEx * >(argp1);
+  result = (except::InvalidArgumentExceptionEx *)new except::InvalidArgumentExceptionEx((except::InvalidArgumentExceptionEx const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidArgumentExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidArgumentExceptionEx__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::InvalidArgumentException11 *arg1 = 0 ;
+  except::InvalidArgumentExceptionEx *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::InvalidArgumentException11 *result = 0 ;
+  except::InvalidArgumentExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidArgumentException11",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__InvalidArgumentException11,  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidArgumentExceptionEx",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__InvalidArgumentExceptionEx,  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidArgumentException11" "', argument " "1"" of type '" "except::InvalidArgumentException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidArgumentExceptionEx" "', argument " "1"" of type '" "except::InvalidArgumentExceptionEx &&""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentException11" "', argument " "1"" of type '" "except::InvalidArgumentException11 &&""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentExceptionEx" "', argument " "1"" of type '" "except::InvalidArgumentExceptionEx &&""'"); 
   }
-  arg1 = reinterpret_cast< except::InvalidArgumentException11 * >(argp1);
-  result = (except::InvalidArgumentException11 *)new except::InvalidArgumentException11((except::InvalidArgumentException11 &&)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidArgumentException11, SWIG_POINTER_NEW |  0 );
+  arg1 = reinterpret_cast< except::InvalidArgumentExceptionEx * >(argp1);
+  result = (except::InvalidArgumentExceptionEx *)new except::InvalidArgumentExceptionEx((except::InvalidArgumentExceptionEx &&)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidArgumentExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidArgumentExceptionEx__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Context *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::InvalidArgumentException11 *result = 0 ;
+  except::InvalidArgumentExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidArgumentException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidArgumentExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidArgumentException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidArgumentExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentException11" "', argument " "1"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentExceptionEx" "', argument " "1"" of type '" "except::Context const &""'"); 
   }
   arg1 = reinterpret_cast< except::Context * >(argp1);
-  result = (except::InvalidArgumentException11 *)new except::InvalidArgumentException11((except::Context const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidArgumentException11, SWIG_POINTER_NEW |  0 );
+  result = (except::InvalidArgumentExceptionEx *)new except::InvalidArgumentExceptionEx((except::Context const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidArgumentExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidArgumentExceptionEx__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   std::string *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  except::InvalidArgumentException11 *result = 0 ;
+  except::InvalidArgumentExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidArgumentException11",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:new_InvalidArgumentExceptionEx",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_std__string,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidArgumentException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidArgumentExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentException11" "', argument " "1"" of type '" "std::string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentExceptionEx" "', argument " "1"" of type '" "std::string const &""'"); 
   }
   arg1 = reinterpret_cast< std::string * >(argp1);
-  result = (except::InvalidArgumentException11 *)new except::InvalidArgumentException11((std::string const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidArgumentException11, SWIG_POINTER_NEW |  0 );
+  result = (except::InvalidArgumentExceptionEx *)new except::InvalidArgumentExceptionEx((std::string const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidArgumentExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidArgumentExceptionEx__SWIG_5(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::Throwable *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -13617,34 +13617,34 @@ SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11__SWIG_5(PyObject *SWIG
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::InvalidArgumentException11 *result = 0 ;
+  except::InvalidArgumentExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_InvalidArgumentException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_InvalidArgumentExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__Throwable,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidArgumentException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidArgumentExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentException11" "', argument " "1"" of type '" "except::Throwable const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentExceptionEx" "', argument " "1"" of type '" "except::Throwable const &""'"); 
   }
   arg1 = reinterpret_cast< except::Throwable * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_InvalidArgumentException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_InvalidArgumentExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::InvalidArgumentException11 *)new except::InvalidArgumentException11((except::Throwable const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidArgumentException11, SWIG_POINTER_NEW |  0 );
+  result = (except::InvalidArgumentExceptionEx *)new except::InvalidArgumentExceptionEx((except::Throwable const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidArgumentExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidArgumentExceptionEx__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   except::ThrowableEx *arg1 = 0 ;
   except::Context *arg2 = 0 ;
@@ -13654,34 +13654,34 @@ SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11__SWIG_6(PyObject *SWIG
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  except::InvalidArgumentException11 *result = 0 ;
+  except::InvalidArgumentExceptionEx *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:new_InvalidArgumentException11",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_InvalidArgumentExceptionEx",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_except__ThrowableEx,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidArgumentException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_InvalidArgumentExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentException11" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentExceptionEx" "', argument " "1"" of type '" "except::ThrowableEx const &""'"); 
   }
   arg1 = reinterpret_cast< except::ThrowableEx * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_except__Context,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_InvalidArgumentException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_InvalidArgumentExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentException11" "', argument " "2"" of type '" "except::Context const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_InvalidArgumentExceptionEx" "', argument " "2"" of type '" "except::Context const &""'"); 
   }
   arg2 = reinterpret_cast< except::Context * >(argp2);
-  result = (except::InvalidArgumentException11 *)new except::InvalidArgumentException11((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidArgumentException11, SWIG_POINTER_NEW |  0 );
+  result = (except::InvalidArgumentExceptionEx *)new except::InvalidArgumentExceptionEx((except::ThrowableEx const &)*arg1,(except::Context const &)*arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_except__InvalidArgumentExceptionEx, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_InvalidArgumentExceptionEx(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[3] = {
     0
@@ -13694,23 +13694,23 @@ SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11(PyObject *self, PyObje
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
   if (argc == 0) {
-    return _wrap_new_InvalidArgumentException11__SWIG_0(self, args);
+    return _wrap_new_InvalidArgumentExceptionEx__SWIG_0(self, args);
   }
   if (argc == 1) {
     int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__InvalidArgumentException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__InvalidArgumentExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_InvalidArgumentException11__SWIG_1(self, args);
+      return _wrap_new_InvalidArgumentExceptionEx__SWIG_1(self, args);
     }
   }
   if (argc == 1) {
     int _v;
     void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__InvalidArgumentException11, 0);
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_except__InvalidArgumentExceptionEx, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_InvalidArgumentException11__SWIG_2(self, args);
+      return _wrap_new_InvalidArgumentExceptionEx__SWIG_2(self, args);
     }
   }
   if (argc == 1) {
@@ -13718,7 +13718,7 @@ SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11(PyObject *self, PyObje
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_except__Context, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_InvalidArgumentException11__SWIG_3(self, args);
+      return _wrap_new_InvalidArgumentExceptionEx__SWIG_3(self, args);
     }
   }
   if (argc == 1) {
@@ -13726,7 +13726,7 @@ SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11(PyObject *self, PyObje
     int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_std__string, 0);
     _v = SWIG_CheckState(res);
     if (_v) {
-      return _wrap_new_InvalidArgumentException11__SWIG_4(self, args);
+      return _wrap_new_InvalidArgumentExceptionEx__SWIG_4(self, args);
     }
   }
   if (argc == 2) {
@@ -13737,7 +13737,7 @@ SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11(PyObject *self, PyObje
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_InvalidArgumentException11__SWIG_5(self, args);
+        return _wrap_new_InvalidArgumentExceptionEx__SWIG_5(self, args);
       }
     }
   }
@@ -13749,40 +13749,40 @@ SWIGINTERN PyObject *_wrap_new_InvalidArgumentException11(PyObject *self, PyObje
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_except__Context, 0);
       _v = SWIG_CheckState(res);
       if (_v) {
-        return _wrap_new_InvalidArgumentException11__SWIG_6(self, args);
+        return _wrap_new_InvalidArgumentExceptionEx__SWIG_6(self, args);
       }
     }
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_InvalidArgumentException11'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_InvalidArgumentExceptionEx'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    except::InvalidArgumentException11::InvalidArgumentException11()\n"
-    "    except::InvalidArgumentException11::InvalidArgumentException11(except::InvalidArgumentException11 const &)\n"
-    "    except::InvalidArgumentException11::InvalidArgumentException11(except::InvalidArgumentException11 &&)\n"
-    "    except::InvalidArgumentException11::InvalidArgumentException11(except::Context const &)\n"
-    "    except::InvalidArgumentException11::InvalidArgumentException11(std::string const &)\n"
-    "    except::InvalidArgumentException11::InvalidArgumentException11(except::Throwable const &,except::Context const &)\n"
-    "    except::InvalidArgumentException11::InvalidArgumentException11(except::ThrowableEx const &,except::Context const &)\n");
+    "    except::InvalidArgumentExceptionEx::InvalidArgumentExceptionEx()\n"
+    "    except::InvalidArgumentExceptionEx::InvalidArgumentExceptionEx(except::InvalidArgumentExceptionEx const &)\n"
+    "    except::InvalidArgumentExceptionEx::InvalidArgumentExceptionEx(except::InvalidArgumentExceptionEx &&)\n"
+    "    except::InvalidArgumentExceptionEx::InvalidArgumentExceptionEx(except::Context const &)\n"
+    "    except::InvalidArgumentExceptionEx::InvalidArgumentExceptionEx(std::string const &)\n"
+    "    except::InvalidArgumentExceptionEx::InvalidArgumentExceptionEx(except::Throwable const &,except::Context const &)\n"
+    "    except::InvalidArgumentExceptionEx::InvalidArgumentExceptionEx(except::ThrowableEx const &,except::Context const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_InvalidArgumentException11_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_InvalidArgumentExceptionEx_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  except::InvalidArgumentException11 *arg1 = (except::InvalidArgumentException11 *) 0 ;
+  except::InvalidArgumentExceptionEx *arg1 = (except::InvalidArgumentExceptionEx *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   std::string result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:InvalidArgumentException11_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__InvalidArgumentException11, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:InvalidArgumentExceptionEx_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_except__InvalidArgumentExceptionEx, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "InvalidArgumentException11_getType" "', argument " "1"" of type '" "except::InvalidArgumentException11 const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "InvalidArgumentExceptionEx_getType" "', argument " "1"" of type '" "except::InvalidArgumentExceptionEx const *""'"); 
   }
-  arg1 = reinterpret_cast< except::InvalidArgumentException11 * >(argp1);
-  result = ((except::InvalidArgumentException11 const *)arg1)->getType();
+  arg1 = reinterpret_cast< except::InvalidArgumentExceptionEx * >(argp1);
+  result = ((except::InvalidArgumentExceptionEx const *)arg1)->getType();
   resultobj = SWIG_NewPointerObj((new std::string(static_cast< const std::string& >(result))), SWIGTYPE_p_std__string, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -13790,10 +13790,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *InvalidArgumentException11_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *InvalidArgumentExceptionEx_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_except__InvalidArgumentException11, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_except__InvalidArgumentExceptionEx, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -14535,16 +14535,16 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"Exception_getType", _wrap_Exception_getType, METH_VARARGS, (char *)"Exception_getType(Exception self) -> std::string"},
 	 { (char *)"Exception_swigregister", Exception_swigregister, METH_VARARGS, NULL},
-	 { (char *)"delete_Exception11", _wrap_delete_Exception11, METH_VARARGS, (char *)"delete_Exception11(Exception11 self)"},
-	 { (char *)"new_Exception11", _wrap_new_Exception11, METH_VARARGS, (char *)"\n"
-		"Exception11()\n"
-		"Exception11(Context c)\n"
-		"Exception11(ThrowableEx t, Context c)\n"
-		"Exception11(Throwable t, Context c)\n"
-		"new_Exception11(std::string const & message) -> Exception11\n"
+	 { (char *)"delete_ExceptionEx", _wrap_delete_ExceptionEx, METH_VARARGS, (char *)"delete_ExceptionEx(ExceptionEx self)"},
+	 { (char *)"new_ExceptionEx", _wrap_new_ExceptionEx, METH_VARARGS, (char *)"\n"
+		"ExceptionEx()\n"
+		"ExceptionEx(Context c)\n"
+		"ExceptionEx(ThrowableEx t, Context c)\n"
+		"ExceptionEx(Throwable t, Context c)\n"
+		"new_ExceptionEx(std::string const & message) -> ExceptionEx\n"
 		""},
-	 { (char *)"Exception11_getType", _wrap_Exception11_getType, METH_VARARGS, (char *)"Exception11_getType(Exception11 self) -> std::string"},
-	 { (char *)"Exception11_swigregister", Exception11_swigregister, METH_VARARGS, NULL},
+	 { (char *)"ExceptionEx_getType", _wrap_ExceptionEx_getType, METH_VARARGS, (char *)"ExceptionEx_getType(ExceptionEx self) -> std::string"},
+	 { (char *)"ExceptionEx_swigregister", ExceptionEx_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_IOException", _wrap_delete_IOException, METH_VARARGS, (char *)"delete_IOException(IOException self)"},
 	 { (char *)"new_IOException", _wrap_new_IOException, METH_VARARGS, (char *)"\n"
 		"IOException()\n"
@@ -14557,18 +14557,18 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"IOException_getType", _wrap_IOException_getType, METH_VARARGS, (char *)"IOException_getType(IOException self) -> std::string"},
 	 { (char *)"IOException_swigregister", IOException_swigregister, METH_VARARGS, NULL},
-	 { (char *)"delete_IOException11", _wrap_delete_IOException11, METH_VARARGS, (char *)"delete_IOException11(IOException11 self)"},
-	 { (char *)"new_IOException11", _wrap_new_IOException11, METH_VARARGS, (char *)"\n"
-		"IOException11()\n"
-		"IOException11(IOException11 arg2)\n"
-		"IOException11(IOException11 arg2)\n"
-		"IOException11(Context c)\n"
-		"IOException11(std::string const & msg)\n"
-		"IOException11(Throwable t, Context c)\n"
-		"new_IOException11(ThrowableEx t, Context c) -> IOException11\n"
+	 { (char *)"delete_IOExceptionEx", _wrap_delete_IOExceptionEx, METH_VARARGS, (char *)"delete_IOExceptionEx(IOExceptionEx self)"},
+	 { (char *)"new_IOExceptionEx", _wrap_new_IOExceptionEx, METH_VARARGS, (char *)"\n"
+		"IOExceptionEx()\n"
+		"IOExceptionEx(IOExceptionEx arg2)\n"
+		"IOExceptionEx(IOExceptionEx arg2)\n"
+		"IOExceptionEx(Context c)\n"
+		"IOExceptionEx(std::string const & msg)\n"
+		"IOExceptionEx(Throwable t, Context c)\n"
+		"new_IOExceptionEx(ThrowableEx t, Context c) -> IOExceptionEx\n"
 		""},
-	 { (char *)"IOException11_getType", _wrap_IOException11_getType, METH_VARARGS, (char *)"IOException11_getType(IOException11 self) -> std::string"},
-	 { (char *)"IOException11_swigregister", IOException11_swigregister, METH_VARARGS, NULL},
+	 { (char *)"IOExceptionEx_getType", _wrap_IOExceptionEx_getType, METH_VARARGS, (char *)"IOExceptionEx_getType(IOExceptionEx self) -> std::string"},
+	 { (char *)"IOExceptionEx_swigregister", IOExceptionEx_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_FileNotFoundException", _wrap_delete_FileNotFoundException, METH_VARARGS, (char *)"delete_FileNotFoundException(FileNotFoundException self)"},
 	 { (char *)"new_FileNotFoundException", _wrap_new_FileNotFoundException, METH_VARARGS, (char *)"\n"
 		"FileNotFoundException()\n"
@@ -14593,18 +14593,18 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"BadCastException_getType", _wrap_BadCastException_getType, METH_VARARGS, (char *)"BadCastException_getType(BadCastException self) -> std::string"},
 	 { (char *)"BadCastException_swigregister", BadCastException_swigregister, METH_VARARGS, NULL},
-	 { (char *)"delete_BadCastException11", _wrap_delete_BadCastException11, METH_VARARGS, (char *)"delete_BadCastException11(BadCastException11 self)"},
-	 { (char *)"new_BadCastException11", _wrap_new_BadCastException11, METH_VARARGS, (char *)"\n"
-		"BadCastException11()\n"
-		"BadCastException11(BadCastException11 arg2)\n"
-		"BadCastException11(BadCastException11 arg2)\n"
-		"BadCastException11(Context c)\n"
-		"BadCastException11(std::string const & msg)\n"
-		"BadCastException11(Throwable t, Context c)\n"
-		"new_BadCastException11(ThrowableEx t, Context c) -> BadCastException11\n"
+	 { (char *)"delete_BadCastExceptionEx", _wrap_delete_BadCastExceptionEx, METH_VARARGS, (char *)"delete_BadCastExceptionEx(BadCastExceptionEx self)"},
+	 { (char *)"new_BadCastExceptionEx", _wrap_new_BadCastExceptionEx, METH_VARARGS, (char *)"\n"
+		"BadCastExceptionEx()\n"
+		"BadCastExceptionEx(BadCastExceptionEx arg2)\n"
+		"BadCastExceptionEx(BadCastExceptionEx arg2)\n"
+		"BadCastExceptionEx(Context c)\n"
+		"BadCastExceptionEx(std::string const & msg)\n"
+		"BadCastExceptionEx(Throwable t, Context c)\n"
+		"new_BadCastExceptionEx(ThrowableEx t, Context c) -> BadCastExceptionEx\n"
 		""},
-	 { (char *)"BadCastException11_getType", _wrap_BadCastException11_getType, METH_VARARGS, (char *)"BadCastException11_getType(BadCastException11 self) -> std::string"},
-	 { (char *)"BadCastException11_swigregister", BadCastException11_swigregister, METH_VARARGS, NULL},
+	 { (char *)"BadCastExceptionEx_getType", _wrap_BadCastExceptionEx_getType, METH_VARARGS, (char *)"BadCastExceptionEx_getType(BadCastExceptionEx self) -> std::string"},
+	 { (char *)"BadCastExceptionEx_swigregister", BadCastExceptionEx_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_InvalidFormatException", _wrap_delete_InvalidFormatException, METH_VARARGS, (char *)"delete_InvalidFormatException(InvalidFormatException self)"},
 	 { (char *)"new_InvalidFormatException", _wrap_new_InvalidFormatException, METH_VARARGS, (char *)"\n"
 		"InvalidFormatException()\n"
@@ -14617,18 +14617,18 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"InvalidFormatException_getType", _wrap_InvalidFormatException_getType, METH_VARARGS, (char *)"InvalidFormatException_getType(InvalidFormatException self) -> std::string"},
 	 { (char *)"InvalidFormatException_swigregister", InvalidFormatException_swigregister, METH_VARARGS, NULL},
-	 { (char *)"delete_InvalidFormatException11", _wrap_delete_InvalidFormatException11, METH_VARARGS, (char *)"delete_InvalidFormatException11(InvalidFormatException11 self)"},
-	 { (char *)"new_InvalidFormatException11", _wrap_new_InvalidFormatException11, METH_VARARGS, (char *)"\n"
-		"InvalidFormatException11()\n"
-		"InvalidFormatException11(InvalidFormatException11 arg2)\n"
-		"InvalidFormatException11(InvalidFormatException11 arg2)\n"
-		"InvalidFormatException11(Context c)\n"
-		"InvalidFormatException11(std::string const & msg)\n"
-		"InvalidFormatException11(Throwable t, Context c)\n"
-		"new_InvalidFormatException11(ThrowableEx t, Context c) -> InvalidFormatException11\n"
+	 { (char *)"delete_InvalidFormatExceptionEx", _wrap_delete_InvalidFormatExceptionEx, METH_VARARGS, (char *)"delete_InvalidFormatExceptionEx(InvalidFormatExceptionEx self)"},
+	 { (char *)"new_InvalidFormatExceptionEx", _wrap_new_InvalidFormatExceptionEx, METH_VARARGS, (char *)"\n"
+		"InvalidFormatExceptionEx()\n"
+		"InvalidFormatExceptionEx(InvalidFormatExceptionEx arg2)\n"
+		"InvalidFormatExceptionEx(InvalidFormatExceptionEx arg2)\n"
+		"InvalidFormatExceptionEx(Context c)\n"
+		"InvalidFormatExceptionEx(std::string const & msg)\n"
+		"InvalidFormatExceptionEx(Throwable t, Context c)\n"
+		"new_InvalidFormatExceptionEx(ThrowableEx t, Context c) -> InvalidFormatExceptionEx\n"
 		""},
-	 { (char *)"InvalidFormatException11_getType", _wrap_InvalidFormatException11_getType, METH_VARARGS, (char *)"InvalidFormatException11_getType(InvalidFormatException11 self) -> std::string"},
-	 { (char *)"InvalidFormatException11_swigregister", InvalidFormatException11_swigregister, METH_VARARGS, NULL},
+	 { (char *)"InvalidFormatExceptionEx_getType", _wrap_InvalidFormatExceptionEx_getType, METH_VARARGS, (char *)"InvalidFormatExceptionEx_getType(InvalidFormatExceptionEx self) -> std::string"},
+	 { (char *)"InvalidFormatExceptionEx_swigregister", InvalidFormatExceptionEx_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_IndexOutOfRangeException", _wrap_delete_IndexOutOfRangeException, METH_VARARGS, (char *)"delete_IndexOutOfRangeException(IndexOutOfRangeException self)"},
 	 { (char *)"new_IndexOutOfRangeException", _wrap_new_IndexOutOfRangeException, METH_VARARGS, (char *)"\n"
 		"IndexOutOfRangeException()\n"
@@ -14641,18 +14641,18 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"IndexOutOfRangeException_getType", _wrap_IndexOutOfRangeException_getType, METH_VARARGS, (char *)"IndexOutOfRangeException_getType(IndexOutOfRangeException self) -> std::string"},
 	 { (char *)"IndexOutOfRangeException_swigregister", IndexOutOfRangeException_swigregister, METH_VARARGS, NULL},
-	 { (char *)"delete_IndexOutOfRangeException11", _wrap_delete_IndexOutOfRangeException11, METH_VARARGS, (char *)"delete_IndexOutOfRangeException11(IndexOutOfRangeException11 self)"},
-	 { (char *)"new_IndexOutOfRangeException11", _wrap_new_IndexOutOfRangeException11, METH_VARARGS, (char *)"\n"
-		"IndexOutOfRangeException11()\n"
-		"IndexOutOfRangeException11(IndexOutOfRangeException11 arg2)\n"
-		"IndexOutOfRangeException11(IndexOutOfRangeException11 arg2)\n"
-		"IndexOutOfRangeException11(Context c)\n"
-		"IndexOutOfRangeException11(std::string const & msg)\n"
-		"IndexOutOfRangeException11(Throwable t, Context c)\n"
-		"new_IndexOutOfRangeException11(ThrowableEx t, Context c) -> IndexOutOfRangeException11\n"
+	 { (char *)"delete_IndexOutOfRangeExceptionEx", _wrap_delete_IndexOutOfRangeExceptionEx, METH_VARARGS, (char *)"delete_IndexOutOfRangeExceptionEx(IndexOutOfRangeExceptionEx self)"},
+	 { (char *)"new_IndexOutOfRangeExceptionEx", _wrap_new_IndexOutOfRangeExceptionEx, METH_VARARGS, (char *)"\n"
+		"IndexOutOfRangeExceptionEx()\n"
+		"IndexOutOfRangeExceptionEx(IndexOutOfRangeExceptionEx arg2)\n"
+		"IndexOutOfRangeExceptionEx(IndexOutOfRangeExceptionEx arg2)\n"
+		"IndexOutOfRangeExceptionEx(Context c)\n"
+		"IndexOutOfRangeExceptionEx(std::string const & msg)\n"
+		"IndexOutOfRangeExceptionEx(Throwable t, Context c)\n"
+		"new_IndexOutOfRangeExceptionEx(ThrowableEx t, Context c) -> IndexOutOfRangeExceptionEx\n"
 		""},
-	 { (char *)"IndexOutOfRangeException11_getType", _wrap_IndexOutOfRangeException11_getType, METH_VARARGS, (char *)"IndexOutOfRangeException11_getType(IndexOutOfRangeException11 self) -> std::string"},
-	 { (char *)"IndexOutOfRangeException11_swigregister", IndexOutOfRangeException11_swigregister, METH_VARARGS, NULL},
+	 { (char *)"IndexOutOfRangeExceptionEx_getType", _wrap_IndexOutOfRangeExceptionEx_getType, METH_VARARGS, (char *)"IndexOutOfRangeExceptionEx_getType(IndexOutOfRangeExceptionEx self) -> std::string"},
+	 { (char *)"IndexOutOfRangeExceptionEx_swigregister", IndexOutOfRangeExceptionEx_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_OutOfMemoryException", _wrap_delete_OutOfMemoryException, METH_VARARGS, (char *)"delete_OutOfMemoryException(OutOfMemoryException self)"},
 	 { (char *)"new_OutOfMemoryException", _wrap_new_OutOfMemoryException, METH_VARARGS, (char *)"\n"
 		"OutOfMemoryException()\n"
@@ -14665,18 +14665,18 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"OutOfMemoryException_getType", _wrap_OutOfMemoryException_getType, METH_VARARGS, (char *)"OutOfMemoryException_getType(OutOfMemoryException self) -> std::string"},
 	 { (char *)"OutOfMemoryException_swigregister", OutOfMemoryException_swigregister, METH_VARARGS, NULL},
-	 { (char *)"delete_OutOfMemoryException11", _wrap_delete_OutOfMemoryException11, METH_VARARGS, (char *)"delete_OutOfMemoryException11(OutOfMemoryException11 self)"},
-	 { (char *)"new_OutOfMemoryException11", _wrap_new_OutOfMemoryException11, METH_VARARGS, (char *)"\n"
-		"OutOfMemoryException11()\n"
-		"OutOfMemoryException11(OutOfMemoryException11 arg2)\n"
-		"OutOfMemoryException11(OutOfMemoryException11 arg2)\n"
-		"OutOfMemoryException11(Context c)\n"
-		"OutOfMemoryException11(std::string const & msg)\n"
-		"OutOfMemoryException11(Throwable t, Context c)\n"
-		"new_OutOfMemoryException11(ThrowableEx t, Context c) -> OutOfMemoryException11\n"
+	 { (char *)"delete_OutOfMemoryExceptionEx", _wrap_delete_OutOfMemoryExceptionEx, METH_VARARGS, (char *)"delete_OutOfMemoryExceptionEx(OutOfMemoryExceptionEx self)"},
+	 { (char *)"new_OutOfMemoryExceptionEx", _wrap_new_OutOfMemoryExceptionEx, METH_VARARGS, (char *)"\n"
+		"OutOfMemoryExceptionEx()\n"
+		"OutOfMemoryExceptionEx(OutOfMemoryExceptionEx arg2)\n"
+		"OutOfMemoryExceptionEx(OutOfMemoryExceptionEx arg2)\n"
+		"OutOfMemoryExceptionEx(Context c)\n"
+		"OutOfMemoryExceptionEx(std::string const & msg)\n"
+		"OutOfMemoryExceptionEx(Throwable t, Context c)\n"
+		"new_OutOfMemoryExceptionEx(ThrowableEx t, Context c) -> OutOfMemoryExceptionEx\n"
 		""},
-	 { (char *)"OutOfMemoryException11_getType", _wrap_OutOfMemoryException11_getType, METH_VARARGS, (char *)"OutOfMemoryException11_getType(OutOfMemoryException11 self) -> std::string"},
-	 { (char *)"OutOfMemoryException11_swigregister", OutOfMemoryException11_swigregister, METH_VARARGS, NULL},
+	 { (char *)"OutOfMemoryExceptionEx_getType", _wrap_OutOfMemoryExceptionEx_getType, METH_VARARGS, (char *)"OutOfMemoryExceptionEx_getType(OutOfMemoryExceptionEx self) -> std::string"},
+	 { (char *)"OutOfMemoryExceptionEx_swigregister", OutOfMemoryExceptionEx_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_NullPointerReferenceException", _wrap_delete_NullPointerReferenceException, METH_VARARGS, (char *)"delete_NullPointerReferenceException(NullPointerReferenceException self)"},
 	 { (char *)"new_NullPointerReferenceException", _wrap_new_NullPointerReferenceException, METH_VARARGS, (char *)"\n"
 		"NullPointerReferenceException()\n"
@@ -14689,18 +14689,18 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"NullPointerReferenceException_getType", _wrap_NullPointerReferenceException_getType, METH_VARARGS, (char *)"NullPointerReferenceException_getType(NullPointerReferenceException self) -> std::string"},
 	 { (char *)"NullPointerReferenceException_swigregister", NullPointerReferenceException_swigregister, METH_VARARGS, NULL},
-	 { (char *)"delete_NullPointerReferenceException11", _wrap_delete_NullPointerReferenceException11, METH_VARARGS, (char *)"delete_NullPointerReferenceException11(NullPointerReferenceException11 self)"},
-	 { (char *)"new_NullPointerReferenceException11", _wrap_new_NullPointerReferenceException11, METH_VARARGS, (char *)"\n"
-		"NullPointerReferenceException11()\n"
-		"NullPointerReferenceException11(NullPointerReferenceException11 arg2)\n"
-		"NullPointerReferenceException11(NullPointerReferenceException11 arg2)\n"
-		"NullPointerReferenceException11(Context c)\n"
-		"NullPointerReferenceException11(std::string const & msg)\n"
-		"NullPointerReferenceException11(Throwable t, Context c)\n"
-		"new_NullPointerReferenceException11(ThrowableEx t, Context c) -> NullPointerReferenceException11\n"
+	 { (char *)"delete_NullPointerReferenceExceptionEx", _wrap_delete_NullPointerReferenceExceptionEx, METH_VARARGS, (char *)"delete_NullPointerReferenceExceptionEx(NullPointerReferenceExceptionEx self)"},
+	 { (char *)"new_NullPointerReferenceExceptionEx", _wrap_new_NullPointerReferenceExceptionEx, METH_VARARGS, (char *)"\n"
+		"NullPointerReferenceExceptionEx()\n"
+		"NullPointerReferenceExceptionEx(NullPointerReferenceExceptionEx arg2)\n"
+		"NullPointerReferenceExceptionEx(NullPointerReferenceExceptionEx arg2)\n"
+		"NullPointerReferenceExceptionEx(Context c)\n"
+		"NullPointerReferenceExceptionEx(std::string const & msg)\n"
+		"NullPointerReferenceExceptionEx(Throwable t, Context c)\n"
+		"new_NullPointerReferenceExceptionEx(ThrowableEx t, Context c) -> NullPointerReferenceExceptionEx\n"
 		""},
-	 { (char *)"NullPointerReferenceException11_getType", _wrap_NullPointerReferenceException11_getType, METH_VARARGS, (char *)"NullPointerReferenceException11_getType(NullPointerReferenceException11 self) -> std::string"},
-	 { (char *)"NullPointerReferenceException11_swigregister", NullPointerReferenceException11_swigregister, METH_VARARGS, NULL},
+	 { (char *)"NullPointerReferenceExceptionEx_getType", _wrap_NullPointerReferenceExceptionEx_getType, METH_VARARGS, (char *)"NullPointerReferenceExceptionEx_getType(NullPointerReferenceExceptionEx self) -> std::string"},
+	 { (char *)"NullPointerReferenceExceptionEx_swigregister", NullPointerReferenceExceptionEx_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_NoSuchKeyException", _wrap_delete_NoSuchKeyException, METH_VARARGS, (char *)"delete_NoSuchKeyException(NoSuchKeyException self)"},
 	 { (char *)"new_NoSuchKeyException", _wrap_new_NoSuchKeyException, METH_VARARGS, (char *)"\n"
 		"NoSuchKeyException()\n"
@@ -14713,18 +14713,18 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"NoSuchKeyException_getType", _wrap_NoSuchKeyException_getType, METH_VARARGS, (char *)"NoSuchKeyException_getType(NoSuchKeyException self) -> std::string"},
 	 { (char *)"NoSuchKeyException_swigregister", NoSuchKeyException_swigregister, METH_VARARGS, NULL},
-	 { (char *)"delete_NoSuchKeyException11", _wrap_delete_NoSuchKeyException11, METH_VARARGS, (char *)"delete_NoSuchKeyException11(NoSuchKeyException11 self)"},
-	 { (char *)"new_NoSuchKeyException11", _wrap_new_NoSuchKeyException11, METH_VARARGS, (char *)"\n"
-		"NoSuchKeyException11()\n"
-		"NoSuchKeyException11(NoSuchKeyException11 arg2)\n"
-		"NoSuchKeyException11(NoSuchKeyException11 arg2)\n"
-		"NoSuchKeyException11(Context c)\n"
-		"NoSuchKeyException11(std::string const & msg)\n"
-		"NoSuchKeyException11(Throwable t, Context c)\n"
-		"new_NoSuchKeyException11(ThrowableEx t, Context c) -> NoSuchKeyException11\n"
+	 { (char *)"delete_NoSuchKeyExceptionEx", _wrap_delete_NoSuchKeyExceptionEx, METH_VARARGS, (char *)"delete_NoSuchKeyExceptionEx(NoSuchKeyExceptionEx self)"},
+	 { (char *)"new_NoSuchKeyExceptionEx", _wrap_new_NoSuchKeyExceptionEx, METH_VARARGS, (char *)"\n"
+		"NoSuchKeyExceptionEx()\n"
+		"NoSuchKeyExceptionEx(NoSuchKeyExceptionEx arg2)\n"
+		"NoSuchKeyExceptionEx(NoSuchKeyExceptionEx arg2)\n"
+		"NoSuchKeyExceptionEx(Context c)\n"
+		"NoSuchKeyExceptionEx(std::string const & msg)\n"
+		"NoSuchKeyExceptionEx(Throwable t, Context c)\n"
+		"new_NoSuchKeyExceptionEx(ThrowableEx t, Context c) -> NoSuchKeyExceptionEx\n"
 		""},
-	 { (char *)"NoSuchKeyException11_getType", _wrap_NoSuchKeyException11_getType, METH_VARARGS, (char *)"NoSuchKeyException11_getType(NoSuchKeyException11 self) -> std::string"},
-	 { (char *)"NoSuchKeyException11_swigregister", NoSuchKeyException11_swigregister, METH_VARARGS, NULL},
+	 { (char *)"NoSuchKeyExceptionEx_getType", _wrap_NoSuchKeyExceptionEx_getType, METH_VARARGS, (char *)"NoSuchKeyExceptionEx_getType(NoSuchKeyExceptionEx self) -> std::string"},
+	 { (char *)"NoSuchKeyExceptionEx_swigregister", NoSuchKeyExceptionEx_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_NoSuchReferenceException", _wrap_delete_NoSuchReferenceException, METH_VARARGS, (char *)"delete_NoSuchReferenceException(NoSuchReferenceException self)"},
 	 { (char *)"new_NoSuchReferenceException", _wrap_new_NoSuchReferenceException, METH_VARARGS, (char *)"\n"
 		"NoSuchReferenceException()\n"
@@ -14737,18 +14737,18 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"NoSuchReferenceException_getType", _wrap_NoSuchReferenceException_getType, METH_VARARGS, (char *)"NoSuchReferenceException_getType(NoSuchReferenceException self) -> std::string"},
 	 { (char *)"NoSuchReferenceException_swigregister", NoSuchReferenceException_swigregister, METH_VARARGS, NULL},
-	 { (char *)"delete_NoSuchReferenceException11", _wrap_delete_NoSuchReferenceException11, METH_VARARGS, (char *)"delete_NoSuchReferenceException11(NoSuchReferenceException11 self)"},
-	 { (char *)"new_NoSuchReferenceException11", _wrap_new_NoSuchReferenceException11, METH_VARARGS, (char *)"\n"
-		"NoSuchReferenceException11()\n"
-		"NoSuchReferenceException11(NoSuchReferenceException11 arg2)\n"
-		"NoSuchReferenceException11(NoSuchReferenceException11 arg2)\n"
-		"NoSuchReferenceException11(Context c)\n"
-		"NoSuchReferenceException11(std::string const & msg)\n"
-		"NoSuchReferenceException11(Throwable t, Context c)\n"
-		"new_NoSuchReferenceException11(ThrowableEx t, Context c) -> NoSuchReferenceException11\n"
+	 { (char *)"delete_NoSuchReferenceExceptionEx", _wrap_delete_NoSuchReferenceExceptionEx, METH_VARARGS, (char *)"delete_NoSuchReferenceExceptionEx(NoSuchReferenceExceptionEx self)"},
+	 { (char *)"new_NoSuchReferenceExceptionEx", _wrap_new_NoSuchReferenceExceptionEx, METH_VARARGS, (char *)"\n"
+		"NoSuchReferenceExceptionEx()\n"
+		"NoSuchReferenceExceptionEx(NoSuchReferenceExceptionEx arg2)\n"
+		"NoSuchReferenceExceptionEx(NoSuchReferenceExceptionEx arg2)\n"
+		"NoSuchReferenceExceptionEx(Context c)\n"
+		"NoSuchReferenceExceptionEx(std::string const & msg)\n"
+		"NoSuchReferenceExceptionEx(Throwable t, Context c)\n"
+		"new_NoSuchReferenceExceptionEx(ThrowableEx t, Context c) -> NoSuchReferenceExceptionEx\n"
 		""},
-	 { (char *)"NoSuchReferenceException11_getType", _wrap_NoSuchReferenceException11_getType, METH_VARARGS, (char *)"NoSuchReferenceException11_getType(NoSuchReferenceException11 self) -> std::string"},
-	 { (char *)"NoSuchReferenceException11_swigregister", NoSuchReferenceException11_swigregister, METH_VARARGS, NULL},
+	 { (char *)"NoSuchReferenceExceptionEx_getType", _wrap_NoSuchReferenceExceptionEx_getType, METH_VARARGS, (char *)"NoSuchReferenceExceptionEx_getType(NoSuchReferenceExceptionEx self) -> std::string"},
+	 { (char *)"NoSuchReferenceExceptionEx_swigregister", NoSuchReferenceExceptionEx_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_KeyAlreadyExistsException", _wrap_delete_KeyAlreadyExistsException, METH_VARARGS, (char *)"delete_KeyAlreadyExistsException(KeyAlreadyExistsException self)"},
 	 { (char *)"new_KeyAlreadyExistsException", _wrap_new_KeyAlreadyExistsException, METH_VARARGS, (char *)"\n"
 		"KeyAlreadyExistsException()\n"
@@ -14761,18 +14761,18 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"KeyAlreadyExistsException_getType", _wrap_KeyAlreadyExistsException_getType, METH_VARARGS, (char *)"KeyAlreadyExistsException_getType(KeyAlreadyExistsException self) -> std::string"},
 	 { (char *)"KeyAlreadyExistsException_swigregister", KeyAlreadyExistsException_swigregister, METH_VARARGS, NULL},
-	 { (char *)"delete_KeyAlreadyExistsException11", _wrap_delete_KeyAlreadyExistsException11, METH_VARARGS, (char *)"delete_KeyAlreadyExistsException11(KeyAlreadyExistsException11 self)"},
-	 { (char *)"new_KeyAlreadyExistsException11", _wrap_new_KeyAlreadyExistsException11, METH_VARARGS, (char *)"\n"
-		"KeyAlreadyExistsException11()\n"
-		"KeyAlreadyExistsException11(KeyAlreadyExistsException11 arg2)\n"
-		"KeyAlreadyExistsException11(KeyAlreadyExistsException11 arg2)\n"
-		"KeyAlreadyExistsException11(Context c)\n"
-		"KeyAlreadyExistsException11(std::string const & msg)\n"
-		"KeyAlreadyExistsException11(Throwable t, Context c)\n"
-		"new_KeyAlreadyExistsException11(ThrowableEx t, Context c) -> KeyAlreadyExistsException11\n"
+	 { (char *)"delete_KeyAlreadyExistsExceptionEx", _wrap_delete_KeyAlreadyExistsExceptionEx, METH_VARARGS, (char *)"delete_KeyAlreadyExistsExceptionEx(KeyAlreadyExistsExceptionEx self)"},
+	 { (char *)"new_KeyAlreadyExistsExceptionEx", _wrap_new_KeyAlreadyExistsExceptionEx, METH_VARARGS, (char *)"\n"
+		"KeyAlreadyExistsExceptionEx()\n"
+		"KeyAlreadyExistsExceptionEx(KeyAlreadyExistsExceptionEx arg2)\n"
+		"KeyAlreadyExistsExceptionEx(KeyAlreadyExistsExceptionEx arg2)\n"
+		"KeyAlreadyExistsExceptionEx(Context c)\n"
+		"KeyAlreadyExistsExceptionEx(std::string const & msg)\n"
+		"KeyAlreadyExistsExceptionEx(Throwable t, Context c)\n"
+		"new_KeyAlreadyExistsExceptionEx(ThrowableEx t, Context c) -> KeyAlreadyExistsExceptionEx\n"
 		""},
-	 { (char *)"KeyAlreadyExistsException11_getType", _wrap_KeyAlreadyExistsException11_getType, METH_VARARGS, (char *)"KeyAlreadyExistsException11_getType(KeyAlreadyExistsException11 self) -> std::string"},
-	 { (char *)"KeyAlreadyExistsException11_swigregister", KeyAlreadyExistsException11_swigregister, METH_VARARGS, NULL},
+	 { (char *)"KeyAlreadyExistsExceptionEx_getType", _wrap_KeyAlreadyExistsExceptionEx_getType, METH_VARARGS, (char *)"KeyAlreadyExistsExceptionEx_getType(KeyAlreadyExistsExceptionEx self) -> std::string"},
+	 { (char *)"KeyAlreadyExistsExceptionEx_swigregister", KeyAlreadyExistsExceptionEx_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_NotImplementedException", _wrap_delete_NotImplementedException, METH_VARARGS, (char *)"delete_NotImplementedException(NotImplementedException self)"},
 	 { (char *)"new_NotImplementedException", _wrap_new_NotImplementedException, METH_VARARGS, (char *)"\n"
 		"NotImplementedException()\n"
@@ -14785,18 +14785,18 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"NotImplementedException_getType", _wrap_NotImplementedException_getType, METH_VARARGS, (char *)"NotImplementedException_getType(NotImplementedException self) -> std::string"},
 	 { (char *)"NotImplementedException_swigregister", NotImplementedException_swigregister, METH_VARARGS, NULL},
-	 { (char *)"delete_NotImplementedException11", _wrap_delete_NotImplementedException11, METH_VARARGS, (char *)"delete_NotImplementedException11(NotImplementedException11 self)"},
-	 { (char *)"new_NotImplementedException11", _wrap_new_NotImplementedException11, METH_VARARGS, (char *)"\n"
-		"NotImplementedException11()\n"
-		"NotImplementedException11(NotImplementedException11 arg2)\n"
-		"NotImplementedException11(NotImplementedException11 arg2)\n"
-		"NotImplementedException11(Context c)\n"
-		"NotImplementedException11(std::string const & msg)\n"
-		"NotImplementedException11(Throwable t, Context c)\n"
-		"new_NotImplementedException11(ThrowableEx t, Context c) -> NotImplementedException11\n"
+	 { (char *)"delete_NotImplementedExceptionEx", _wrap_delete_NotImplementedExceptionEx, METH_VARARGS, (char *)"delete_NotImplementedExceptionEx(NotImplementedExceptionEx self)"},
+	 { (char *)"new_NotImplementedExceptionEx", _wrap_new_NotImplementedExceptionEx, METH_VARARGS, (char *)"\n"
+		"NotImplementedExceptionEx()\n"
+		"NotImplementedExceptionEx(NotImplementedExceptionEx arg2)\n"
+		"NotImplementedExceptionEx(NotImplementedExceptionEx arg2)\n"
+		"NotImplementedExceptionEx(Context c)\n"
+		"NotImplementedExceptionEx(std::string const & msg)\n"
+		"NotImplementedExceptionEx(Throwable t, Context c)\n"
+		"new_NotImplementedExceptionEx(ThrowableEx t, Context c) -> NotImplementedExceptionEx\n"
 		""},
-	 { (char *)"NotImplementedException11_getType", _wrap_NotImplementedException11_getType, METH_VARARGS, (char *)"NotImplementedException11_getType(NotImplementedException11 self) -> std::string"},
-	 { (char *)"NotImplementedException11_swigregister", NotImplementedException11_swigregister, METH_VARARGS, NULL},
+	 { (char *)"NotImplementedExceptionEx_getType", _wrap_NotImplementedExceptionEx_getType, METH_VARARGS, (char *)"NotImplementedExceptionEx_getType(NotImplementedExceptionEx self) -> std::string"},
+	 { (char *)"NotImplementedExceptionEx_swigregister", NotImplementedExceptionEx_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_InvalidArgumentException", _wrap_delete_InvalidArgumentException, METH_VARARGS, (char *)"delete_InvalidArgumentException(InvalidArgumentException self)"},
 	 { (char *)"new_InvalidArgumentException", _wrap_new_InvalidArgumentException, METH_VARARGS, (char *)"\n"
 		"InvalidArgumentException()\n"
@@ -14809,18 +14809,18 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"InvalidArgumentException_getType", _wrap_InvalidArgumentException_getType, METH_VARARGS, (char *)"InvalidArgumentException_getType(InvalidArgumentException self) -> std::string"},
 	 { (char *)"InvalidArgumentException_swigregister", InvalidArgumentException_swigregister, METH_VARARGS, NULL},
-	 { (char *)"delete_InvalidArgumentException11", _wrap_delete_InvalidArgumentException11, METH_VARARGS, (char *)"delete_InvalidArgumentException11(InvalidArgumentException11 self)"},
-	 { (char *)"new_InvalidArgumentException11", _wrap_new_InvalidArgumentException11, METH_VARARGS, (char *)"\n"
-		"InvalidArgumentException11()\n"
-		"InvalidArgumentException11(InvalidArgumentException11 arg2)\n"
-		"InvalidArgumentException11(InvalidArgumentException11 arg2)\n"
-		"InvalidArgumentException11(Context c)\n"
-		"InvalidArgumentException11(std::string const & msg)\n"
-		"InvalidArgumentException11(Throwable t, Context c)\n"
-		"new_InvalidArgumentException11(ThrowableEx t, Context c) -> InvalidArgumentException11\n"
+	 { (char *)"delete_InvalidArgumentExceptionEx", _wrap_delete_InvalidArgumentExceptionEx, METH_VARARGS, (char *)"delete_InvalidArgumentExceptionEx(InvalidArgumentExceptionEx self)"},
+	 { (char *)"new_InvalidArgumentExceptionEx", _wrap_new_InvalidArgumentExceptionEx, METH_VARARGS, (char *)"\n"
+		"InvalidArgumentExceptionEx()\n"
+		"InvalidArgumentExceptionEx(InvalidArgumentExceptionEx arg2)\n"
+		"InvalidArgumentExceptionEx(InvalidArgumentExceptionEx arg2)\n"
+		"InvalidArgumentExceptionEx(Context c)\n"
+		"InvalidArgumentExceptionEx(std::string const & msg)\n"
+		"InvalidArgumentExceptionEx(Throwable t, Context c)\n"
+		"new_InvalidArgumentExceptionEx(ThrowableEx t, Context c) -> InvalidArgumentExceptionEx\n"
 		""},
-	 { (char *)"InvalidArgumentException11_getType", _wrap_InvalidArgumentException11_getType, METH_VARARGS, (char *)"InvalidArgumentException11_getType(InvalidArgumentException11 self) -> std::string"},
-	 { (char *)"InvalidArgumentException11_swigregister", InvalidArgumentException11_swigregister, METH_VARARGS, NULL},
+	 { (char *)"InvalidArgumentExceptionEx_getType", _wrap_InvalidArgumentExceptionEx_getType, METH_VARARGS, (char *)"InvalidArgumentExceptionEx_getType(InvalidArgumentExceptionEx self) -> std::string"},
+	 { (char *)"InvalidArgumentExceptionEx_swigregister", InvalidArgumentExceptionEx_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_SerializationException", _wrap_delete_SerializationException, METH_VARARGS, (char *)"delete_SerializationException(SerializationException self)"},
 	 { (char *)"new_SerializationException", _wrap_new_SerializationException, METH_VARARGS, (char *)"\n"
 		"SerializationException()\n"
@@ -14851,41 +14851,41 @@ static PyMethodDef SwigMethods[] = {
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
-static void *_p_except__Exception11To_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::ThrowableEx *)  ((except::Exception11 *) x));
+static void *_p_except__ExceptionExTo_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ThrowableEx *)  ((except::ExceptionEx *) x));
 }
-static void *_p_except__IOException11To_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::ThrowableEx *) (except::Exception11 *) ((except::IOException11 *) x));
+static void *_p_except__IOExceptionExTo_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ThrowableEx *) (except::ExceptionEx *) ((except::IOExceptionEx *) x));
 }
-static void *_p_except__BadCastException11To_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::ThrowableEx *) (except::Exception11 *) ((except::BadCastException11 *) x));
+static void *_p_except__BadCastExceptionExTo_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ThrowableEx *) (except::ExceptionEx *) ((except::BadCastExceptionEx *) x));
 }
-static void *_p_except__InvalidFormatException11To_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::ThrowableEx *) (except::Exception11 *) ((except::InvalidFormatException11 *) x));
+static void *_p_except__InvalidFormatExceptionExTo_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ThrowableEx *) (except::ExceptionEx *) ((except::InvalidFormatExceptionEx *) x));
 }
-static void *_p_except__IndexOutOfRangeException11To_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::ThrowableEx *) (except::Exception11 *) ((except::IndexOutOfRangeException11 *) x));
+static void *_p_except__IndexOutOfRangeExceptionExTo_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ThrowableEx *) (except::ExceptionEx *) ((except::IndexOutOfRangeExceptionEx *) x));
 }
-static void *_p_except__OutOfMemoryException11To_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::ThrowableEx *) (except::Exception11 *) ((except::OutOfMemoryException11 *) x));
+static void *_p_except__OutOfMemoryExceptionExTo_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ThrowableEx *) (except::ExceptionEx *) ((except::OutOfMemoryExceptionEx *) x));
 }
-static void *_p_except__NullPointerReferenceException11To_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::ThrowableEx *) (except::Exception11 *) ((except::NullPointerReferenceException11 *) x));
+static void *_p_except__NullPointerReferenceExceptionExTo_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ThrowableEx *) (except::ExceptionEx *) ((except::NullPointerReferenceExceptionEx *) x));
 }
-static void *_p_except__NoSuchKeyException11To_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::ThrowableEx *) (except::Exception11 *) ((except::NoSuchKeyException11 *) x));
+static void *_p_except__NoSuchKeyExceptionExTo_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ThrowableEx *) (except::ExceptionEx *) ((except::NoSuchKeyExceptionEx *) x));
 }
-static void *_p_except__NoSuchReferenceException11To_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::ThrowableEx *) (except::Exception11 *) ((except::NoSuchReferenceException11 *) x));
+static void *_p_except__NoSuchReferenceExceptionExTo_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ThrowableEx *) (except::ExceptionEx *) ((except::NoSuchReferenceExceptionEx *) x));
 }
-static void *_p_except__KeyAlreadyExistsException11To_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::ThrowableEx *) (except::Exception11 *) ((except::KeyAlreadyExistsException11 *) x));
+static void *_p_except__KeyAlreadyExistsExceptionExTo_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ThrowableEx *) (except::ExceptionEx *) ((except::KeyAlreadyExistsExceptionEx *) x));
 }
-static void *_p_except__NotImplementedException11To_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::ThrowableEx *) (except::Exception11 *) ((except::NotImplementedException11 *) x));
+static void *_p_except__NotImplementedExceptionExTo_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ThrowableEx *) (except::ExceptionEx *) ((except::NotImplementedExceptionEx *) x));
 }
-static void *_p_except__InvalidArgumentException11To_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::ThrowableEx *) (except::Exception11 *) ((except::InvalidArgumentException11 *) x));
+static void *_p_except__InvalidArgumentExceptionExTo_p_except__ThrowableEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ThrowableEx *) (except::ExceptionEx *) ((except::InvalidArgumentExceptionEx *) x));
 }
 static void *_p_except__SerializationExceptionTo_p_except__Throwable(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((except::Throwable *) (except::Exception *)(except::IOException *) ((except::SerializationException *) x));
@@ -14983,67 +14983,67 @@ static void *_p_except__FileNotFoundExceptionTo_p_except__Exception(void *x, int
 static void *_p_except__IOExceptionTo_p_except__Exception(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((except::Exception *)  ((except::IOException *) x));
 }
-static void *_p_except__IOException11To_p_except__Exception11(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::Exception11 *)  ((except::IOException11 *) x));
+static void *_p_except__IOExceptionExTo_p_except__ExceptionEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ExceptionEx *)  ((except::IOExceptionEx *) x));
 }
-static void *_p_except__BadCastException11To_p_except__Exception11(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::Exception11 *)  ((except::BadCastException11 *) x));
+static void *_p_except__BadCastExceptionExTo_p_except__ExceptionEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ExceptionEx *)  ((except::BadCastExceptionEx *) x));
 }
-static void *_p_except__InvalidFormatException11To_p_except__Exception11(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::Exception11 *)  ((except::InvalidFormatException11 *) x));
+static void *_p_except__InvalidFormatExceptionExTo_p_except__ExceptionEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ExceptionEx *)  ((except::InvalidFormatExceptionEx *) x));
 }
-static void *_p_except__IndexOutOfRangeException11To_p_except__Exception11(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::Exception11 *)  ((except::IndexOutOfRangeException11 *) x));
+static void *_p_except__IndexOutOfRangeExceptionExTo_p_except__ExceptionEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ExceptionEx *)  ((except::IndexOutOfRangeExceptionEx *) x));
 }
-static void *_p_except__OutOfMemoryException11To_p_except__Exception11(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::Exception11 *)  ((except::OutOfMemoryException11 *) x));
+static void *_p_except__OutOfMemoryExceptionExTo_p_except__ExceptionEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ExceptionEx *)  ((except::OutOfMemoryExceptionEx *) x));
 }
-static void *_p_except__NullPointerReferenceException11To_p_except__Exception11(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::Exception11 *)  ((except::NullPointerReferenceException11 *) x));
+static void *_p_except__NullPointerReferenceExceptionExTo_p_except__ExceptionEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ExceptionEx *)  ((except::NullPointerReferenceExceptionEx *) x));
 }
-static void *_p_except__NoSuchKeyException11To_p_except__Exception11(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::Exception11 *)  ((except::NoSuchKeyException11 *) x));
+static void *_p_except__NoSuchKeyExceptionExTo_p_except__ExceptionEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ExceptionEx *)  ((except::NoSuchKeyExceptionEx *) x));
 }
-static void *_p_except__NoSuchReferenceException11To_p_except__Exception11(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::Exception11 *)  ((except::NoSuchReferenceException11 *) x));
+static void *_p_except__NoSuchReferenceExceptionExTo_p_except__ExceptionEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ExceptionEx *)  ((except::NoSuchReferenceExceptionEx *) x));
 }
-static void *_p_except__KeyAlreadyExistsException11To_p_except__Exception11(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::Exception11 *)  ((except::KeyAlreadyExistsException11 *) x));
+static void *_p_except__KeyAlreadyExistsExceptionExTo_p_except__ExceptionEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ExceptionEx *)  ((except::KeyAlreadyExistsExceptionEx *) x));
 }
-static void *_p_except__NotImplementedException11To_p_except__Exception11(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::Exception11 *)  ((except::NotImplementedException11 *) x));
+static void *_p_except__NotImplementedExceptionExTo_p_except__ExceptionEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ExceptionEx *)  ((except::NotImplementedExceptionEx *) x));
 }
-static void *_p_except__InvalidArgumentException11To_p_except__Exception11(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((except::Exception11 *)  ((except::InvalidArgumentException11 *) x));
+static void *_p_except__InvalidArgumentExceptionExTo_p_except__ExceptionEx(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((except::ExceptionEx *)  ((except::InvalidArgumentExceptionEx *) x));
 }
 static swig_type_info _swigt__p_Trace = {"_p_Trace", "Trace *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__BadCastException = {"_p_except__BadCastException", "except::BadCastException *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_except__BadCastException11 = {"_p_except__BadCastException11", "except::BadCastException11 *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_except__BadCastExceptionEx = {"_p_except__BadCastExceptionEx", "except::BadCastExceptionEx *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__Context = {"_p_except__Context", "except::Context *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__Exception = {"_p_except__Exception", "except::Exception *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_except__Exception11 = {"_p_except__Exception11", "except::Exception11 *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_except__ExceptionEx = {"_p_except__ExceptionEx", "except::ExceptionEx *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__FileNotFoundException = {"_p_except__FileNotFoundException", "except::FileNotFoundException *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__IOException = {"_p_except__IOException", "except::IOException *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_except__IOException11 = {"_p_except__IOException11", "except::IOException11 *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_except__IOExceptionEx = {"_p_except__IOExceptionEx", "except::IOExceptionEx *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__IndexOutOfRangeException = {"_p_except__IndexOutOfRangeException", "except::IndexOutOfRangeException *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_except__IndexOutOfRangeException11 = {"_p_except__IndexOutOfRangeException11", "except::IndexOutOfRangeException11 *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_except__IndexOutOfRangeExceptionEx = {"_p_except__IndexOutOfRangeExceptionEx", "except::IndexOutOfRangeExceptionEx *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__InvalidArgumentException = {"_p_except__InvalidArgumentException", "except::InvalidArgumentException *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_except__InvalidArgumentException11 = {"_p_except__InvalidArgumentException11", "except::InvalidArgumentException11 *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_except__InvalidArgumentExceptionEx = {"_p_except__InvalidArgumentExceptionEx", "except::InvalidArgumentExceptionEx *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__InvalidFormatException = {"_p_except__InvalidFormatException", "except::InvalidFormatException *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_except__InvalidFormatException11 = {"_p_except__InvalidFormatException11", "except::InvalidFormatException11 *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_except__InvalidFormatExceptionEx = {"_p_except__InvalidFormatExceptionEx", "except::InvalidFormatExceptionEx *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__KeyAlreadyExistsException = {"_p_except__KeyAlreadyExistsException", "except::KeyAlreadyExistsException *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_except__KeyAlreadyExistsException11 = {"_p_except__KeyAlreadyExistsException11", "except::KeyAlreadyExistsException11 *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_except__KeyAlreadyExistsExceptionEx = {"_p_except__KeyAlreadyExistsExceptionEx", "except::KeyAlreadyExistsExceptionEx *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__NoSuchKeyException = {"_p_except__NoSuchKeyException", "except::NoSuchKeyException *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_except__NoSuchKeyException11 = {"_p_except__NoSuchKeyException11", "except::NoSuchKeyException11 *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_except__NoSuchKeyExceptionEx = {"_p_except__NoSuchKeyExceptionEx", "except::NoSuchKeyExceptionEx *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__NoSuchReferenceException = {"_p_except__NoSuchReferenceException", "except::NoSuchReferenceException *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_except__NoSuchReferenceException11 = {"_p_except__NoSuchReferenceException11", "except::NoSuchReferenceException11 *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_except__NoSuchReferenceExceptionEx = {"_p_except__NoSuchReferenceExceptionEx", "except::NoSuchReferenceExceptionEx *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__NotImplementedException = {"_p_except__NotImplementedException", "except::NotImplementedException *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_except__NotImplementedException11 = {"_p_except__NotImplementedException11", "except::NotImplementedException11 *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_except__NotImplementedExceptionEx = {"_p_except__NotImplementedExceptionEx", "except::NotImplementedExceptionEx *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__NullPointerReferenceException = {"_p_except__NullPointerReferenceException", "except::NullPointerReferenceException *|except::NullPointerReference *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_except__NullPointerReferenceException11 = {"_p_except__NullPointerReferenceException11", "except::NullPointerReferenceException11 *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_except__NullPointerReferenceExceptionEx = {"_p_except__NullPointerReferenceExceptionEx", "except::NullPointerReferenceExceptionEx *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__OutOfMemoryException = {"_p_except__OutOfMemoryException", "except::OutOfMemoryException *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_except__OutOfMemoryException11 = {"_p_except__OutOfMemoryException11", "except::OutOfMemoryException11 *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_except__OutOfMemoryExceptionEx = {"_p_except__OutOfMemoryExceptionEx", "except::OutOfMemoryExceptionEx *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__ParseException = {"_p_except__ParseException", "except::ParseException *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__SerializationException = {"_p_except__SerializationException", "except::SerializationException *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__Throwable = {"_p_except__Throwable", "except::Throwable *", 0, 0, (void*)0, 0};
@@ -15056,31 +15056,31 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_Trace,
   &_swigt__p_char,
   &_swigt__p_except__BadCastException,
-  &_swigt__p_except__BadCastException11,
+  &_swigt__p_except__BadCastExceptionEx,
   &_swigt__p_except__Context,
   &_swigt__p_except__Exception,
-  &_swigt__p_except__Exception11,
+  &_swigt__p_except__ExceptionEx,
   &_swigt__p_except__FileNotFoundException,
   &_swigt__p_except__IOException,
-  &_swigt__p_except__IOException11,
+  &_swigt__p_except__IOExceptionEx,
   &_swigt__p_except__IndexOutOfRangeException,
-  &_swigt__p_except__IndexOutOfRangeException11,
+  &_swigt__p_except__IndexOutOfRangeExceptionEx,
   &_swigt__p_except__InvalidArgumentException,
-  &_swigt__p_except__InvalidArgumentException11,
+  &_swigt__p_except__InvalidArgumentExceptionEx,
   &_swigt__p_except__InvalidFormatException,
-  &_swigt__p_except__InvalidFormatException11,
+  &_swigt__p_except__InvalidFormatExceptionEx,
   &_swigt__p_except__KeyAlreadyExistsException,
-  &_swigt__p_except__KeyAlreadyExistsException11,
+  &_swigt__p_except__KeyAlreadyExistsExceptionEx,
   &_swigt__p_except__NoSuchKeyException,
-  &_swigt__p_except__NoSuchKeyException11,
+  &_swigt__p_except__NoSuchKeyExceptionEx,
   &_swigt__p_except__NoSuchReferenceException,
-  &_swigt__p_except__NoSuchReferenceException11,
+  &_swigt__p_except__NoSuchReferenceExceptionEx,
   &_swigt__p_except__NotImplementedException,
-  &_swigt__p_except__NotImplementedException11,
+  &_swigt__p_except__NotImplementedExceptionEx,
   &_swigt__p_except__NullPointerReferenceException,
-  &_swigt__p_except__NullPointerReferenceException11,
+  &_swigt__p_except__NullPointerReferenceExceptionEx,
   &_swigt__p_except__OutOfMemoryException,
-  &_swigt__p_except__OutOfMemoryException11,
+  &_swigt__p_except__OutOfMemoryExceptionEx,
   &_swigt__p_except__ParseException,
   &_swigt__p_except__SerializationException,
   &_swigt__p_except__Throwable,
@@ -15093,35 +15093,35 @@ static swig_type_info *swig_type_initial[] = {
 static swig_cast_info _swigc__p_Trace[] = {  {&_swigt__p_Trace, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__BadCastException[] = {  {&_swigt__p_except__BadCastException, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_except__BadCastException11[] = {  {&_swigt__p_except__BadCastException11, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_except__BadCastExceptionEx[] = {  {&_swigt__p_except__BadCastExceptionEx, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__Context[] = {  {&_swigt__p_except__Context, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__Exception[] = {  {&_swigt__p_except__ParseException, _p_except__ParseExceptionTo_p_except__Exception, 0, 0},  {&_swigt__p_except__SerializationException, _p_except__SerializationExceptionTo_p_except__Exception, 0, 0},  {&_swigt__p_except__InvalidArgumentException, _p_except__InvalidArgumentExceptionTo_p_except__Exception, 0, 0},  {&_swigt__p_except__NotImplementedException, _p_except__NotImplementedExceptionTo_p_except__Exception, 0, 0},  {&_swigt__p_except__KeyAlreadyExistsException, _p_except__KeyAlreadyExistsExceptionTo_p_except__Exception, 0, 0},  {&_swigt__p_except__NoSuchReferenceException, _p_except__NoSuchReferenceExceptionTo_p_except__Exception, 0, 0},  {&_swigt__p_except__NoSuchKeyException, _p_except__NoSuchKeyExceptionTo_p_except__Exception, 0, 0},  {&_swigt__p_except__NullPointerReferenceException, _p_except__NullPointerReferenceExceptionTo_p_except__Exception, 0, 0},  {&_swigt__p_except__OutOfMemoryException, _p_except__OutOfMemoryExceptionTo_p_except__Exception, 0, 0},  {&_swigt__p_except__IndexOutOfRangeException, _p_except__IndexOutOfRangeExceptionTo_p_except__Exception, 0, 0},  {&_swigt__p_except__InvalidFormatException, _p_except__InvalidFormatExceptionTo_p_except__Exception, 0, 0},  {&_swigt__p_except__BadCastException, _p_except__BadCastExceptionTo_p_except__Exception, 0, 0},  {&_swigt__p_except__FileNotFoundException, _p_except__FileNotFoundExceptionTo_p_except__Exception, 0, 0},  {&_swigt__p_except__Exception, 0, 0, 0},  {&_swigt__p_except__IOException, _p_except__IOExceptionTo_p_except__Exception, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_except__Exception11[] = {  {&_swigt__p_except__Exception11, 0, 0, 0},  {&_swigt__p_except__IOException11, _p_except__IOException11To_p_except__Exception11, 0, 0},  {&_swigt__p_except__BadCastException11, _p_except__BadCastException11To_p_except__Exception11, 0, 0},  {&_swigt__p_except__InvalidFormatException11, _p_except__InvalidFormatException11To_p_except__Exception11, 0, 0},  {&_swigt__p_except__IndexOutOfRangeException11, _p_except__IndexOutOfRangeException11To_p_except__Exception11, 0, 0},  {&_swigt__p_except__OutOfMemoryException11, _p_except__OutOfMemoryException11To_p_except__Exception11, 0, 0},  {&_swigt__p_except__NullPointerReferenceException11, _p_except__NullPointerReferenceException11To_p_except__Exception11, 0, 0},  {&_swigt__p_except__NoSuchKeyException11, _p_except__NoSuchKeyException11To_p_except__Exception11, 0, 0},  {&_swigt__p_except__NoSuchReferenceException11, _p_except__NoSuchReferenceException11To_p_except__Exception11, 0, 0},  {&_swigt__p_except__KeyAlreadyExistsException11, _p_except__KeyAlreadyExistsException11To_p_except__Exception11, 0, 0},  {&_swigt__p_except__NotImplementedException11, _p_except__NotImplementedException11To_p_except__Exception11, 0, 0},  {&_swigt__p_except__InvalidArgumentException11, _p_except__InvalidArgumentException11To_p_except__Exception11, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_except__ExceptionEx[] = {  {&_swigt__p_except__ExceptionEx, 0, 0, 0},  {&_swigt__p_except__IOExceptionEx, _p_except__IOExceptionExTo_p_except__ExceptionEx, 0, 0},  {&_swigt__p_except__BadCastExceptionEx, _p_except__BadCastExceptionExTo_p_except__ExceptionEx, 0, 0},  {&_swigt__p_except__InvalidFormatExceptionEx, _p_except__InvalidFormatExceptionExTo_p_except__ExceptionEx, 0, 0},  {&_swigt__p_except__IndexOutOfRangeExceptionEx, _p_except__IndexOutOfRangeExceptionExTo_p_except__ExceptionEx, 0, 0},  {&_swigt__p_except__OutOfMemoryExceptionEx, _p_except__OutOfMemoryExceptionExTo_p_except__ExceptionEx, 0, 0},  {&_swigt__p_except__NullPointerReferenceExceptionEx, _p_except__NullPointerReferenceExceptionExTo_p_except__ExceptionEx, 0, 0},  {&_swigt__p_except__NoSuchKeyExceptionEx, _p_except__NoSuchKeyExceptionExTo_p_except__ExceptionEx, 0, 0},  {&_swigt__p_except__NoSuchReferenceExceptionEx, _p_except__NoSuchReferenceExceptionExTo_p_except__ExceptionEx, 0, 0},  {&_swigt__p_except__KeyAlreadyExistsExceptionEx, _p_except__KeyAlreadyExistsExceptionExTo_p_except__ExceptionEx, 0, 0},  {&_swigt__p_except__NotImplementedExceptionEx, _p_except__NotImplementedExceptionExTo_p_except__ExceptionEx, 0, 0},  {&_swigt__p_except__InvalidArgumentExceptionEx, _p_except__InvalidArgumentExceptionExTo_p_except__ExceptionEx, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__FileNotFoundException[] = {  {&_swigt__p_except__FileNotFoundException, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__IOException[] = {  {&_swigt__p_except__IOException, 0, 0, 0},  {&_swigt__p_except__FileNotFoundException, _p_except__FileNotFoundExceptionTo_p_except__IOException, 0, 0},  {&_swigt__p_except__SerializationException, _p_except__SerializationExceptionTo_p_except__IOException, 0, 0},  {&_swigt__p_except__ParseException, _p_except__ParseExceptionTo_p_except__IOException, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_except__IOException11[] = {  {&_swigt__p_except__IOException11, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_except__IOExceptionEx[] = {  {&_swigt__p_except__IOExceptionEx, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__IndexOutOfRangeException[] = {  {&_swigt__p_except__IndexOutOfRangeException, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_except__IndexOutOfRangeException11[] = {  {&_swigt__p_except__IndexOutOfRangeException11, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_except__IndexOutOfRangeExceptionEx[] = {  {&_swigt__p_except__IndexOutOfRangeExceptionEx, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__InvalidArgumentException[] = {  {&_swigt__p_except__InvalidArgumentException, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_except__InvalidArgumentException11[] = {  {&_swigt__p_except__InvalidArgumentException11, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_except__InvalidArgumentExceptionEx[] = {  {&_swigt__p_except__InvalidArgumentExceptionEx, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__InvalidFormatException[] = {  {&_swigt__p_except__InvalidFormatException, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_except__InvalidFormatException11[] = {  {&_swigt__p_except__InvalidFormatException11, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_except__InvalidFormatExceptionEx[] = {  {&_swigt__p_except__InvalidFormatExceptionEx, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__KeyAlreadyExistsException[] = {  {&_swigt__p_except__KeyAlreadyExistsException, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_except__KeyAlreadyExistsException11[] = {  {&_swigt__p_except__KeyAlreadyExistsException11, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_except__KeyAlreadyExistsExceptionEx[] = {  {&_swigt__p_except__KeyAlreadyExistsExceptionEx, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__NoSuchKeyException[] = {  {&_swigt__p_except__NoSuchKeyException, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_except__NoSuchKeyException11[] = {  {&_swigt__p_except__NoSuchKeyException11, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_except__NoSuchKeyExceptionEx[] = {  {&_swigt__p_except__NoSuchKeyExceptionEx, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__NoSuchReferenceException[] = {  {&_swigt__p_except__NoSuchReferenceException, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_except__NoSuchReferenceException11[] = {  {&_swigt__p_except__NoSuchReferenceException11, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_except__NoSuchReferenceExceptionEx[] = {  {&_swigt__p_except__NoSuchReferenceExceptionEx, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__NotImplementedException[] = {  {&_swigt__p_except__NotImplementedException, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_except__NotImplementedException11[] = {  {&_swigt__p_except__NotImplementedException11, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_except__NotImplementedExceptionEx[] = {  {&_swigt__p_except__NotImplementedExceptionEx, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__NullPointerReferenceException[] = {  {&_swigt__p_except__NullPointerReferenceException, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_except__NullPointerReferenceException11[] = {  {&_swigt__p_except__NullPointerReferenceException11, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_except__NullPointerReferenceExceptionEx[] = {  {&_swigt__p_except__NullPointerReferenceExceptionEx, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__OutOfMemoryException[] = {  {&_swigt__p_except__OutOfMemoryException, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_except__OutOfMemoryException11[] = {  {&_swigt__p_except__OutOfMemoryException11, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_except__OutOfMemoryExceptionEx[] = {  {&_swigt__p_except__OutOfMemoryExceptionEx, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__ParseException[] = {  {&_swigt__p_except__ParseException, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__SerializationException[] = {  {&_swigt__p_except__SerializationException, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_except__Throwable[] = {  {&_swigt__p_except__Throwable, 0, 0, 0},  {&_swigt__p_except__NotImplementedException, _p_except__NotImplementedExceptionTo_p_except__Throwable, 0, 0},  {&_swigt__p_except__KeyAlreadyExistsException, _p_except__KeyAlreadyExistsExceptionTo_p_except__Throwable, 0, 0},  {&_swigt__p_except__NoSuchReferenceException, _p_except__NoSuchReferenceExceptionTo_p_except__Throwable, 0, 0},  {&_swigt__p_except__NoSuchKeyException, _p_except__NoSuchKeyExceptionTo_p_except__Throwable, 0, 0},  {&_swigt__p_except__NullPointerReferenceException, _p_except__NullPointerReferenceExceptionTo_p_except__Throwable, 0, 0},  {&_swigt__p_except__OutOfMemoryException, _p_except__OutOfMemoryExceptionTo_p_except__Throwable, 0, 0},  {&_swigt__p_except__IndexOutOfRangeException, _p_except__IndexOutOfRangeExceptionTo_p_except__Throwable, 0, 0},  {&_swigt__p_except__InvalidFormatException, _p_except__InvalidFormatExceptionTo_p_except__Throwable, 0, 0},  {&_swigt__p_except__BadCastException, _p_except__BadCastExceptionTo_p_except__Throwable, 0, 0},  {&_swigt__p_except__ParseException, _p_except__ParseExceptionTo_p_except__Throwable, 0, 0},  {&_swigt__p_except__SerializationException, _p_except__SerializationExceptionTo_p_except__Throwable, 0, 0},  {&_swigt__p_except__FileNotFoundException, _p_except__FileNotFoundExceptionTo_p_except__Throwable, 0, 0},  {&_swigt__p_except__IOException, _p_except__IOExceptionTo_p_except__Throwable, 0, 0},  {&_swigt__p_except__InvalidArgumentException, _p_except__InvalidArgumentExceptionTo_p_except__Throwable, 0, 0},  {&_swigt__p_except__Exception, _p_except__ExceptionTo_p_except__Throwable, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_except__ThrowableEx[] = {  {&_swigt__p_except__Exception11, _p_except__Exception11To_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__IOException11, _p_except__IOException11To_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__BadCastException11, _p_except__BadCastException11To_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__InvalidFormatException11, _p_except__InvalidFormatException11To_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__IndexOutOfRangeException11, _p_except__IndexOutOfRangeException11To_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__OutOfMemoryException11, _p_except__OutOfMemoryException11To_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__NullPointerReferenceException11, _p_except__NullPointerReferenceException11To_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__NoSuchKeyException11, _p_except__NoSuchKeyException11To_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__NoSuchReferenceException11, _p_except__NoSuchReferenceException11To_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__KeyAlreadyExistsException11, _p_except__KeyAlreadyExistsException11To_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__NotImplementedException11, _p_except__NotImplementedException11To_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__InvalidArgumentException11, _p_except__InvalidArgumentException11To_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__ThrowableEx, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_except__ThrowableEx[] = {  {&_swigt__p_except__ExceptionEx, _p_except__ExceptionExTo_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__IOExceptionEx, _p_except__IOExceptionExTo_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__BadCastExceptionEx, _p_except__BadCastExceptionExTo_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__InvalidFormatExceptionEx, _p_except__InvalidFormatExceptionExTo_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__IndexOutOfRangeExceptionEx, _p_except__IndexOutOfRangeExceptionExTo_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__OutOfMemoryExceptionEx, _p_except__OutOfMemoryExceptionExTo_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__NullPointerReferenceExceptionEx, _p_except__NullPointerReferenceExceptionExTo_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__NoSuchKeyExceptionEx, _p_except__NoSuchKeyExceptionExTo_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__NoSuchReferenceExceptionEx, _p_except__NoSuchReferenceExceptionExTo_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__KeyAlreadyExistsExceptionEx, _p_except__KeyAlreadyExistsExceptionExTo_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__NotImplementedExceptionEx, _p_except__NotImplementedExceptionExTo_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__InvalidArgumentExceptionEx, _p_except__InvalidArgumentExceptionExTo_p_except__ThrowableEx, 0, 0},  {&_swigt__p_except__ThrowableEx, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__ostream[] = {  {&_swigt__p_std__ostream, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__string[] = {  {&_swigt__p_std__string, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__vectorT_std__string_t[] = {  {&_swigt__p_std__vectorT_std__string_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -15130,31 +15130,31 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_Trace,
   _swigc__p_char,
   _swigc__p_except__BadCastException,
-  _swigc__p_except__BadCastException11,
+  _swigc__p_except__BadCastExceptionEx,
   _swigc__p_except__Context,
   _swigc__p_except__Exception,
-  _swigc__p_except__Exception11,
+  _swigc__p_except__ExceptionEx,
   _swigc__p_except__FileNotFoundException,
   _swigc__p_except__IOException,
-  _swigc__p_except__IOException11,
+  _swigc__p_except__IOExceptionEx,
   _swigc__p_except__IndexOutOfRangeException,
-  _swigc__p_except__IndexOutOfRangeException11,
+  _swigc__p_except__IndexOutOfRangeExceptionEx,
   _swigc__p_except__InvalidArgumentException,
-  _swigc__p_except__InvalidArgumentException11,
+  _swigc__p_except__InvalidArgumentExceptionEx,
   _swigc__p_except__InvalidFormatException,
-  _swigc__p_except__InvalidFormatException11,
+  _swigc__p_except__InvalidFormatExceptionEx,
   _swigc__p_except__KeyAlreadyExistsException,
-  _swigc__p_except__KeyAlreadyExistsException11,
+  _swigc__p_except__KeyAlreadyExistsExceptionEx,
   _swigc__p_except__NoSuchKeyException,
-  _swigc__p_except__NoSuchKeyException11,
+  _swigc__p_except__NoSuchKeyExceptionEx,
   _swigc__p_except__NoSuchReferenceException,
-  _swigc__p_except__NoSuchReferenceException11,
+  _swigc__p_except__NoSuchReferenceExceptionEx,
   _swigc__p_except__NotImplementedException,
-  _swigc__p_except__NotImplementedException11,
+  _swigc__p_except__NotImplementedExceptionEx,
   _swigc__p_except__NullPointerReferenceException,
-  _swigc__p_except__NullPointerReferenceException11,
+  _swigc__p_except__NullPointerReferenceExceptionEx,
   _swigc__p_except__OutOfMemoryException,
-  _swigc__p_except__OutOfMemoryException11,
+  _swigc__p_except__OutOfMemoryExceptionEx,
   _swigc__p_except__ParseException,
   _swigc__p_except__SerializationException,
   _swigc__p_except__Throwable,

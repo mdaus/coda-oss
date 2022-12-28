@@ -65,11 +65,11 @@
       std::string getType() const noexcept override { return #_Name #Exception_; } \
      CODA_OSS_except_Exception_suppress_26447_END_ };
 #define DECLARE_EXTENDED_EXCEPTION(_Name, _Base) DECLARE_EXTENDED_EXCEPTION_(_Name, Exception, _Base)
-#define DECLARE_EXTENDED_EXCEPTION11(_Name, _Base) DECLARE_EXTENDED_EXCEPTION_(_Name, Exception11, _Base)
+#define DECLARE_EXTENDED_EXCEPTIONEX(_Name, _Base) DECLARE_EXTENDED_EXCEPTION_(_Name, ExceptionEx, _Base)
 
 #define DECLARE_EXCEPTION(_Name) \
     DECLARE_EXTENDED_EXCEPTION(_Name, except::Exception) \
-    DECLARE_EXTENDED_EXCEPTION11(_Name, except::Exception11)
+    DECLARE_EXTENDED_EXCEPTIONEX(_Name, except::ExceptionEx)
 
 namespace except
 {
@@ -122,16 +122,16 @@ struct Exception : public Throwable
     }
 };
 
-struct Exception11 : public ThrowableEx
+struct ExceptionEx : public ThrowableEx
 {
-    Exception11() = default;
-    virtual ~Exception11() = default;
+    ExceptionEx() = default;
+    virtual ~ExceptionEx() = default;
 
     /*!
      * Constructor. Takes a Context
      * \param c The Context
      */
-    Exception11(const Context& c) : ThrowableEx(c)
+    ExceptionEx(const Context& c) : ThrowableEx(c)
     {
     }
 
@@ -140,10 +140,10 @@ struct Exception11 : public ThrowableEx
      * \param t The Throwable
      * \param c The Context
      */
-    Exception11(const ThrowableEx& t, const Context& c) : ThrowableEx(t, c)
+    ExceptionEx(const ThrowableEx& t, const Context& c) : ThrowableEx(t, c)
     {
     }
-    Exception11(const Throwable& t, const Context& c) : ThrowableEx(t, c)
+    ExceptionEx(const Throwable& t, const Context& c) : ThrowableEx(t, c)
     {
     }
 
@@ -151,15 +151,16 @@ struct Exception11 : public ThrowableEx
      * Constructor.  Takes a message
      * \param message The message
      */
-    Exception11(const std::string& message) : ThrowableEx(message)
+    ExceptionEx(const std::string& message) : ThrowableEx(message)
     {
     }
 
     std::string getType() const noexcept override
     {
-        return "Exception11";
+        return "ExceptionEx";
     }
 };
+using Exception11 = ExceptionEx; // keep old name around for other projects
 
 /*!
  * \class IOException

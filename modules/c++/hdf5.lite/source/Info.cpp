@@ -58,18 +58,18 @@ hdf5::lite::FileInfo hdf5::lite::fileInfo(const coda_oss::filesystem::path& file
     catch (const H5::DataSetIException& error)
     {
         const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
-        throw DataSetException11(ctx);
+        throw DataSetExceptionEx(ctx);
     }
     // catch failure caused by the DataSpace operations
     catch (const H5::DataSpaceIException& error)
     {
         const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
-        throw DataSpaceException11(ctx);
+        throw DataSpaceExceptionEx(ctx);
     }
     // catch failure caused by the DataType operations
     catch (const H5::DataTypeIException& error)
     {
         const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
-        throw DataTypeException11(ctx);
+        throw DataTypeExceptionEx(ctx);
     }
 }

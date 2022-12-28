@@ -44,11 +44,11 @@ namespace lite
  *  This is the default XML exception, for when
  *  other, more specialized exception make no sense
  */
-DECLARE_EXTENDED_EXCEPTION11(HDF5, except::Exception11);
+DECLARE_EXTENDED_EXCEPTIONEX(HDF5, except::ExceptionEx);
 
-DECLARE_EXTENDED_EXCEPTION11(DataSet, hdf5::lite::HDF5Exception11)
-DECLARE_EXTENDED_EXCEPTION11(DataSpace, hdf5::lite::HDF5Exception11)
-DECLARE_EXTENDED_EXCEPTION11(DataType, hdf5::lite::HDF5Exception11)
+DECLARE_EXTENDED_EXCEPTIONEX(DataSet, hdf5::lite::HDF5ExceptionEx)
+DECLARE_EXTENDED_EXCEPTIONEX(DataSpace, hdf5::lite::HDF5ExceptionEx)
+DECLARE_EXTENDED_EXCEPTIONEX(DataType, hdf5::lite::HDF5ExceptionEx)
 
 }
 }
