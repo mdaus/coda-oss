@@ -46,9 +46,9 @@
  * A lot of existing code has "catch (std::exception)" BEFORE "catch (except::Throwable)" 
  * making it difficult to change without the risk of breaking something. :-(
  */
-#ifdef CODA_OSS_THROWABLE_ISA_STD_EXCEPTION  // -CODA_OSS_THROWABLE_ISA_STD_EXCEPTION
+#ifdef CODA_OSS_THROWABLE_ISA_STD_EXCEPTION  // -DCODA_OSS_THROWABLE_ISA_STD_EXCEPTION
 #ifdef CODA_OSS_except_Throwable_ISA_std_exception
-#error "CODA_OSS_except_Throwable_ISA_std_exception already #define'd."
+#error "CODA_OSS_except_Throwable_ISA_std_exception is already #define'd."
 #endif
 #define CODA_OSS_except_Throwable_ISA_std_exception 1
 #endif
@@ -263,11 +263,13 @@ public:
     ThrowableEx(const ThrowableEx& t, const Context& ctx) : Throwable(t, ctx) {}
     ThrowableEx(const Throwable& t, const Context& ctx) : Throwable(t, ctx) {}
 
+    #if !CODA_OSS_except_Throwable_ISA_std_exception
     const char* what() const noexcept final  // derived classes override toString()
     {
         const Throwable* pThrowable = this;
         return pThrowable->what();
     }
+    #endif
 };
 using Throwable11 = ThrowableEx; // keep old name around for other projects
 }

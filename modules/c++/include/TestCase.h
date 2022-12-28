@@ -139,6 +139,10 @@ inline void specific_exception(TFunc f,
     {
         diePrintf(format, testName, file, func, line);
     }
+    catch (const std::exception&)
+    {
+        diePrintf(format, testName, file, func, line);
+    }
 }
 
 template <typename TFunc>
@@ -169,7 +173,8 @@ inline int main(TFunc f)
 
 #define CODA_OSS_TEST_CHECK_catch_diePrintf_(X, name_) \
       catch(const name_& ex) { test::diePrintf("%s: FAILED: Exception thrown: %s\n", #X, ex.what()); }
-#define CODA_OSS_TEST_CHECK_catch_(X) CODA_OSS_TEST_CHECK_catch_diePrintf_(X, except::Throwable)
+#define CODA_OSS_TEST_CHECK_catch_(X) CODA_OSS_TEST_CHECK_catch_diePrintf_(X, except::Throwable) \
+    CODA_OSS_TEST_CHECK_catch_diePrintf_(X, std::exception)
 #define TEST_CHECK(X) try{ X(std::string(#X)); std::cerr << #X << ": PASSED\n"; } CODA_OSS_TEST_CHECK_catch_(X)
 
 #define TEST_ASSERT_NULL(X) if ((X) != nullptr) { test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be NULL\n"); }
@@ -185,7 +190,7 @@ inline int main(TFunc f)
 #define TEST_ASSERT_ALMOST_EQ_EPS(X1, X2, EPS) test::assert_almost_eq_eps(X1, X2, EPS, testName, __FILE__, SYS_FUNC, __LINE__)
 #define TEST_ASSERT_ALMOST_EQ(X1, X2) TEST_ASSERT_ALMOST_EQ_EPS(X1, X2,  std::numeric_limits<float>::epsilon())
 
-#define CODA_OSS_TEST_EXCEPTION_catch_ catch (const except::Throwable&){}
+#define CODA_OSS_TEST_EXCEPTION_catch_ catch (const except::Throwable&){} catch (const std::exception&){}
 #define TEST_EXCEPTION(X) try{ (X); test_diePrintf0("%s (%s,%s,%d): FAILED: Should have thrown exception\n"); } \
   CODA_OSS_TEST_EXCEPTION_catch_
 #define TEST_THROWS(X) try{ (X); test_diePrintf0("%s (%s,%s,%d): FAILED: Should have thrown exception\n"); } catch (...){}
