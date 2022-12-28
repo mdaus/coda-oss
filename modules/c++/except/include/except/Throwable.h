@@ -82,6 +82,7 @@ class CODA_OSS_API Throwable
     void doGetBacktrace();
     template<typename TThrowable>
     Throwable(const Context*, const TThrowable* pT, const std::string* pMessage, bool callGetBacktrace, std::nullptr_t);
+protected:
     Throwable(const Context*, const Throwable* pT = nullptr, const std::string* pMessage = nullptr, bool callGetBacktrace = false);
     Throwable(const Context*, const ThrowableEx* pT, const std::string* pMessage = nullptr, bool callGetBacktrace = false);
 
@@ -226,24 +227,12 @@ private:
  * break existing code as "catch (const std::exception&)" will catch
  * except::Throwable when it didn't before.
  */
-class ThrowableEx : public std::exception // "ThrowableEx" = "Throwable exception"
+// Use multiple-inheritance :-( to reduce duplicated boilerplate code.
+class ThrowableEx : public Throwable // "ThrowableEx" = "Throwable exception"
+#if !CODA_OSS_except_Throwable_ISA_std_exception
+    , public std::exception
+#endif
 {
-    void doGetBacktrace();
-    template <typename TThrowable>
-    ThrowableEx(const Context*,
-              const TThrowable* pT,
-              const std::string* pMessage,
-              bool callGetBacktrace,
-              std::nullptr_t);
-    ThrowableEx(const Context*,
-                const ThrowableEx* pT = nullptr,
-                const std::string* pMessage = nullptr,
-                bool callGetBacktrace = false);
-    ThrowableEx(const Context*,
-                const Throwable* pT,
-                const std::string* pMessage = nullptr,
-                bool callGetBacktrace = false);
-
 public:
     ThrowableEx() = default;
     virtual ~ThrowableEx() = default;
@@ -252,119 +241,33 @@ public:
     ThrowableEx(ThrowableEx&&) = default;
     ThrowableEx& operator=(ThrowableEx&&) = default;
 
-    ThrowableEx(const Throwable&);
+    ThrowableEx(const Throwable& t) : Throwable(t){}
 
     /*!
      * Constructor.  Takes a message
      * \param message The message
      */
-    ThrowableEx(const std::string& message);
+    ThrowableEx(const std::string& message) : Throwable(message) {}
 
     /*!
      * Constructor.  Takes a Context.
      * \param c The Context
      */
-    ThrowableEx(const Context&);
+    ThrowableEx(const Context& ctx) : Throwable(ctx) {}
 
     /*!
      * Constructor. Takes a Throwable and a Context
      * \param t The throwable
      * \param c The Context
      */
-    ThrowableEx(const ThrowableEx&, const Context&);
-    ThrowableEx(const Throwable&, const Context&);
-
-    /*!
-     * Get the message
-     * \return The message
-     */
-    std::string getMessage() const
-    {
-        return mMessage;
-    }
-
-    /*!
-     * Get the trace
-     * \return The trace (const)
-     */
-    const Trace& getTrace() const noexcept
-    {
-        return mTrace;
-    }
-
-    /*!
-     * Get the trace
-     * \return The trace (non-const)
-     */
-    Trace& getTrace() noexcept
-    {
-        return mTrace;
-    }
-
-    /*!
-     * Get the type id
-     * \return The type
-     */
-    virtual std::string getType() const noexcept
-    {
-        return "ThrowableEx";
-    }
-
-    virtual std::string toString() const
-    {
-        std::ostringstream s;
-        s << getType() << ": " << getMessage();
-
-        const Trace& t = getTrace();
-        if (t.getSize() > 0)
-            s << ": " << t;
-        return s.str();
-    }
-
-    const std::vector<std::string>& getBacktrace() const noexcept
-    {
-        return mBacktrace;
-    }
-
-    // It seems that overloading constructors creates ambiguities ... so allow
-    // for a "fluent" way of doing this.: throw Exception(...).backtrace()
-    ThrowableEx& backtrace()
-    {
-        doGetBacktrace();
-        return *this;
-    }
-
-    virtual std::string toString(bool includeBacktrace) const
-    {
-        // Adding the backtrace to existing toString() output could substantally
-        // alter existing strings.
-        std::string backtrace;
-        if (includeBacktrace)
-        {
-            backtrace = "***** getBacktrace() *****\n";
-            backtrace += std::accumulate(mBacktrace.begin(),
-                                         mBacktrace.end(),
-                                         std::string());
-        }
-        return toString() + backtrace;
-    }
+    ThrowableEx(const ThrowableEx& t, const Context& ctx) : Throwable(t, ctx) {}
+    ThrowableEx(const Throwable& t, const Context& ctx) : Throwable(t, ctx) {}
 
     const char* what() const noexcept final  // derived classes override toString()
     {
-        // adding this to toString() output could (significantly) alter existing display
-        mWhat = toString(true /*includeBacktrace*/);  // call any derived toString()
-        return mWhat.c_str();
+        const Throwable* pThrowable = this;
+        return pThrowable->what();
     }
-
-protected:
-    //! The name of exception trace
-    Trace mTrace;
-    //! The name of the message the exception was thrown
-    std::string mMessage;
-
-private:
-    mutable std::string mWhat;
-    std::vector<std::string> mBacktrace;
 };
 using Throwable11 = ThrowableEx; // keep old name around for other projects
 }
