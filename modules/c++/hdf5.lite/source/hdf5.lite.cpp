@@ -44,18 +44,18 @@ void hdf5::lite::details::try_catch_H5Exceptions_(std::function<void(void*)> f, 
     catch (const H5::DataSetIException& error)
     {
         const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
-        throw hdf5::lite::DataSetException11(ctx);
+        throw hdf5::lite::DataSetException(ctx);
     }
     // catch failure caused by the DataSpace operations
     catch (const H5::DataSpaceIException& error)
     {
         const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
-        throw hdf5::lite::DataSpaceException11(ctx);
+        throw hdf5::lite::DataSpaceException(ctx);
     }
     // catch failure caused by the DataType operations
     catch (const H5::DataTypeIException& error)
     {
         const except::Context ctx(error.getDetailMsg(), __FILE__, __LINE__, error.getFuncName());
-        throw hdf5::lite::DataTypeException11(ctx);
+        throw hdf5::lite::DataTypeException(ctx);
     }
 }
