@@ -32,9 +32,6 @@
 
 namespace mem
 {
-//  std::auto_ptr was removed in C++17.
-template <typename T> using auto_ptr = std::unique_ptr<T>;
-
 // Pretty much give-up on mem::SharedPtr as it's too hard to get something that will
 // compile with all the different compilers; let somebody else worry about that
 // via std::shared_ptr.  The only code change is use_count() instead of getCount(),
