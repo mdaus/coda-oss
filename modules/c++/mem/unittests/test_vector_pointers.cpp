@@ -20,6 +20,10 @@
  *
  */
 
+#include <vector>
+#include <complex>
+#include <std/span>
+
 #include <mem/VectorOfPointers.h>
 
 #include "TestCase.h"
@@ -112,10 +116,28 @@ TEST_CASE(testVecOfSharedPointers)
     {
        std::vector<std::shared_ptr<int>> myVec2 = std_vector_shared_ptr_int();  // copy
     }
+}
 
+TEST_CASE(testSpanCxFloat)
+{
+    const std::vector<std::complex<float>> data{{1, 2}, {3, 4}, {5, 6}, {7, 8}};
+    const std::span<const std::complex<float>> view(data.data(), data.size());
+
+    TEST_ASSERT_EQ(data.size(), view.size());
+
+    TEST_ASSERT_EQ(view[0].real(), 1);
+    TEST_ASSERT_EQ(view[0].imag(), 2);
+    TEST_ASSERT_EQ(view[1].real(), 3);
+    TEST_ASSERT_EQ(view[1].imag(), 4);
+    TEST_ASSERT_EQ(view[2].real(), 5);
+    TEST_ASSERT_EQ(view[2].imag(), 6);
+    TEST_ASSERT_EQ(view[3].real(), 7);
+    TEST_ASSERT_EQ(view[3].imag(), 8);
 }
 
 TEST_MAIN(
     TEST_CHECK(testVecOfRawPointers);
     TEST_CHECK(testVecOfSharedPointers);
+
+    TEST_CHECK(testSpanCxFloat);
     )
