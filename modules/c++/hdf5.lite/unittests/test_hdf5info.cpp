@@ -55,6 +55,16 @@ TEST_CASE(test_hdf5FileInfo)
     static const auto path = find_unittest_file("example.h5");
 
     // https://www.mathworks.com/help/matlab/ref/h5info.html
+    /*
+    info = struct with fields:
+          Filename: '/mathworks/devel/bat/Bdoc22b/build/matlab/toolbox/matlab/demos/example.h5'
+              Name: '/'
+            Groups: [4x1 struct]
+          Datasets: []
+         Datatypes: []
+             Links: []
+        Attributes: [2x1 struct]
+    */
     const auto info = hdf5::lite::fileInfo(path);
     TEST_ASSERT_EQ(path.string(), info.filename);
     TEST_ASSERT_EQ("/", info.name);
@@ -71,7 +81,16 @@ TEST_CASE(test_hdf5GroupInfo)
 
     // https://www.mathworks.com/help/matlab/ref/h5info.html
     const auto info = hdf5::lite::groupInfo(path, "/g4");
-
+    /*
+    info = struct with fields:
+      Filename: '/mathworks/devel/bat/Bdoc22b/build/matlab/toolbox/matlab/demos/example.h5'
+          Name: '/g4'
+        Groups: []
+      Datasets: [4x1 struct]
+     Datatypes: []
+         Links: []
+    Attributes: []
+    */
     TEST_ASSERT_EQ(path.string(), info.filename);
     TEST_ASSERT_EQ("/g4", info.name);
     TEST_ASSERT_TRUE(info.groups.empty());
@@ -87,13 +106,23 @@ TEST_CASE(test_hdf5DatasetInfo)
 
     // https://www.mathworks.com/help/matlab/ref/h5info.html
     const auto info = hdf5::lite::datasetInfo(path, "/g4/time");
-
+    /*
+    info = struct with fields:
+      Filename: '/mathworks/devel/bat/Bdoc22b/build/matlab/toolbox/matlab/demos/example.h5'
+          Name: 'time'
+      Datatype: [1x1 struct]
+     Dataspace: [1x1 struct]
+     ChunkSize: 10
+     FillValue: 0
+       Filters: []
+    Attributes: [2x1 struct]    
+    */
     TEST_ASSERT_EQ(path.string(), info.filename);
     TEST_ASSERT_EQ("time", info.name);
     TEST_ASSERT(info.datatype.h5Class == hdf5::lite::Class::Float);
     //TEST_ASSERT(info.dataspace == hdf5::lite::Class::Float);
-    // TEST_ASSERT(info.chunkSize == hdf5::lite::Class::Float);
-    // TEST_ASSERT(info.fillValue == hdf5::lite::Class::Float);
+    //TEST_ASSERT_EQ(info.chunkSize, 10);
+    //TEST_ASSERT_EQ(info.fillValue, 0);
     //TEST_ASSERT_TRUE(info.filters.empty());
     //TEST_ASSERT_EQ(info.attributes.size(), 2);
 }
