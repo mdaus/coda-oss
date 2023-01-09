@@ -64,6 +64,20 @@ TEST_CASE(test_hdf5Read_IOException)
 
 TEST_CASE(test_hdf5Read_nested)
 {
+    /*
+    Group '/' 
+    Group '/1' 
+        Group '/1/bar' 
+            Group '/1/bar/cat' 
+                Dataset 'i' 
+                    Size:  10x1
+                    MaxSize:  10x1
+                    Datatype:   H5T_IEEE_F64LE (double)
+                    ChunkSize:  []
+                    Filters:  none
+                    FillValue:  0.000000
+    */
+
     // outer groups: 1, 2, 3
     // sub groups: bar, foo
     // sub-sub groups: cat, dog
@@ -71,19 +85,14 @@ TEST_CASE(test_hdf5Read_nested)
     static const auto path = find_unittest_file("123_barfoo_catdog_cx.h5");
 
     // https://www.mathworks.com/help/matlab/ref/h5read.html
-    std::vector<float> data;
-    try
-    {
-        auto rc = hdf5::lite::readFile(path, "/1/bar/cat/i", data);
-    }
-    catch (const except::IOException&)
-    {
-        TEST_SUCCESS; // TODO: remove try/catch
-    }
-    //TEST_ASSERT_EQ(rc.area(), 19);
-    //TEST_ASSERT_ALMOST_EQ(data[0], -90.0);
-    //TEST_ASSERT_ALMOST_EQ(data[0], -data[18]);
-    //auto rc = hdf5::lite::readFile(path, "/1/bar/cat/r", data);
+    std::vector<double> data; // TODO: float
+    auto rc = hdf5::lite::readFile(path, "/1/bar/cat/i", data);
+    TEST_ASSERT_EQ(rc.area(), 10);
+    TEST_ASSERT_EQ(rc.area(), data.size());
+
+    rc = hdf5::lite::readFile(path, "/3/foo/dog/r", data);
+    TEST_ASSERT_EQ(rc.area(), 10);
+    TEST_ASSERT_EQ(rc.area(), data.size());
 }
 
 TEST_MAIN(
