@@ -71,10 +71,10 @@ static types::RowCol<size_t> readFile_(const coda_oss::filesystem::path& fileNam
 types::RowCol<size_t> hdf5::lite::readFile(coda_oss::filesystem::path fileName, std::string datasetName,
     std::vector<double>& result)
 {
-    return details::try_catch_H5Exceptions(readFile_<double>, fileName, datasetName, result); 
+    return details::try_catch_H5Exceptions(readFile_<double>, __FILE__, __LINE__, fileName, datasetName, result); 
 }
 types::RowCol<size_t> hdf5::lite::readFile(coda_oss::filesystem::path fileName, std::string datasetName,
     std::vector<float>& result)
 {
-    return details::try_catch_H5Exceptions(readFile_<float>, fileName, datasetName, result); 
+    return details::try_catch_H5Exceptions(readFile_<float>, __FILE__, __LINE__, fileName, datasetName, result); 
 }
