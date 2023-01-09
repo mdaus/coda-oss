@@ -134,8 +134,8 @@ static void read_complex(const std::string& testName,
     const auto i_info = hdf5::lite::datasetInfo(path, datasetPath + "/i");
     TEST_ASSERT(i_info.datatype.h5Class == hdf5::lite::Class::Float);
 
-    //const auto r_info = hdf5::lite::datasetInfo(path, datasetPath + "/r");
-    //TEST_ASSERT(r_info.datatype.h5Class == hdf5::lite::Class::Float);
+    const auto r_info = hdf5::lite::datasetInfo(path, datasetPath + "/r");
+    TEST_ASSERT(r_info.datatype.h5Class == hdf5::lite::Class::Float);
 }
 
 TEST_CASE(test_hdf5Info_nested)
@@ -167,7 +167,7 @@ TEST_CASE(test_hdf5Info_nested)
     TEST_ASSERT_TRUE(info.datasets.empty());
     TEST_ASSERT_TRUE(info.datatypes.empty());
 
-    const std::vector<std::string> expectedOuterGroupNames{"1" /*, "2", "3"*/};
+    const std::vector<std::string> expectedOuterGroupNames{"1" , "2", "3"};
     TEST_ASSERT_EQ(info.groups.size(), expectedOuterGroupNames.size());
     for (size_t outer = 0; outer < info.groups.size(); outer++)
     {
@@ -176,7 +176,7 @@ TEST_CASE(test_hdf5Info_nested)
 
         const auto subGroupInfo = hdf5::lite::groupInfo(path, "/" + groupName);
 
-        const std::vector<std::string> expectedSubGroupNames{"bar" /*, "foo"*/};
+        const std::vector<std::string> expectedSubGroupNames{"bar", "foo"};
         TEST_ASSERT_EQ(subGroupInfo.groups.size(), expectedSubGroupNames.size());
         for (size_t sub = 0; sub < subGroupInfo.groups.size(); sub++)
         {
@@ -185,12 +185,12 @@ TEST_CASE(test_hdf5Info_nested)
 
             const auto subSubGroupInfo = hdf5::lite::groupInfo(path, "/" + groupName + "/" + subGroupName);
 
-            const std::vector<std::string> expectedSubSubGroupNames{"cat" /*, "dog"*/};
+            const std::vector<std::string> expectedSubSubGroupNames{"cat", "dog"};
             TEST_ASSERT_EQ(subSubGroupInfo.groups.size(), expectedSubSubGroupNames.size());
             for (size_t subsub = 0; subsub < subSubGroupInfo.groups.size(); subsub++)
             {
                 const auto subSubGroupName = subSubGroupInfo.groups[subsub].name;
-                TEST_ASSERT_EQ(subSubGroupName, expectedSubSubGroupNames[sub]);
+                TEST_ASSERT_EQ(subSubGroupName, expectedSubSubGroupNames[subsub]);
 
                 const auto datasetPath =  "/" + groupName + "/" + subGroupName + "/" + subSubGroupName;
                 read_complex(testName, path, datasetPath);
