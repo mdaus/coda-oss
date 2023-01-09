@@ -25,6 +25,7 @@
 #include <std/span>
 
 #include <mem/VectorOfPointers.h>
+#include <mem/ComplexView.h>
 
 #include "TestCase.h"
 
@@ -125,14 +126,48 @@ TEST_CASE(testSpanCxFloat)
 
     TEST_ASSERT_EQ(data.size(), view.size());
 
-    TEST_ASSERT_EQ(view[0].real(), 1);
-    TEST_ASSERT_EQ(view[0].imag(), 2);
-    TEST_ASSERT_EQ(view[1].real(), 3);
-    TEST_ASSERT_EQ(view[1].imag(), 4);
-    TEST_ASSERT_EQ(view[2].real(), 5);
-    TEST_ASSERT_EQ(view[2].imag(), 6);
-    TEST_ASSERT_EQ(view[3].real(), 7);
-    TEST_ASSERT_EQ(view[3].imag(), 8);
+    TEST_ASSERT_EQ(view[0].real(), 1.0f);
+    TEST_ASSERT_EQ(view[0].imag(), 2.0f);
+    TEST_ASSERT_EQ(view[1].real(), 3.0f);
+    TEST_ASSERT_EQ(view[1].imag(), 4.0f);
+    TEST_ASSERT_EQ(view[2].real(), 5.0f);
+    TEST_ASSERT_EQ(view[2].imag(), 6.0f);
+    TEST_ASSERT_EQ(view[3].real(), 7.0f);
+    TEST_ASSERT_EQ(view[3].imag(), 8.0f);
+}
+
+TEST_CASE(testComplexViewFloat)
+{
+    {
+        const std::vector<std::complex<float>> data{{1, 2}, {3, 4}, {5, 6}, {7, 8}};
+        const mem::details::ComplexArrayView<std::vector<std::complex<float>>> view(data);
+
+        TEST_ASSERT_EQ(data.size(), view.size());
+        TEST_ASSERT_EQ(view[0].real(), 1.0f);
+        TEST_ASSERT_EQ(view[0].imag(), 2.0f);
+        TEST_ASSERT_EQ(view[1].real(), 3.0f);
+        TEST_ASSERT_EQ(view[1].imag(), 4.0f);
+        TEST_ASSERT_EQ(view[2].real(), 5.0f);
+        TEST_ASSERT_EQ(view[2].imag(), 6.0f);
+        TEST_ASSERT_EQ(view[3].real(), 7.0f);
+        TEST_ASSERT_EQ(view[3].imag(), 8.0f);
+    }
+    {
+        const std::vector<std::complex<float>> reals{1, 3, 5, 7};
+        const std::vector<std::complex<float>> imags{2, 4, 6, 8};
+        TEST_ASSERT_EQ(imags.size(), reals.size());
+        const mem::details::ComplexParallelView<std::vector<std::complex<float>>> view(reals, imags);
+
+        TEST_ASSERT_EQ(reals.size(), view.size());
+        TEST_ASSERT_EQ(view[0].real(), 1.0f);
+        TEST_ASSERT_EQ(view[0].imag(), 2.0f);
+        TEST_ASSERT_EQ(view[1].real(), 3.0f);
+        TEST_ASSERT_EQ(view[1].imag(), 4.0f);
+        TEST_ASSERT_EQ(view[2].real(), 5.0f);
+        TEST_ASSERT_EQ(view[2].imag(), 6.0f);
+        TEST_ASSERT_EQ(view[3].real(), 7.0f);
+        TEST_ASSERT_EQ(view[3].imag(), 8.0f);
+    }
 }
 
 TEST_MAIN(
@@ -140,4 +175,5 @@ TEST_MAIN(
     TEST_CHECK(testVecOfSharedPointers);
 
     TEST_CHECK(testSpanCxFloat);
+    TEST_CHECK(testComplexViewFloat);
     )
