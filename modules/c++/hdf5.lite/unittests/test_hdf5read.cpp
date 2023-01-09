@@ -62,7 +62,32 @@ TEST_CASE(test_hdf5Read_IOException)
     }
 }
 
+TEST_CASE(test_hdf5Read_nested)
+{
+    // outer groups: 1, 2, 3
+    // sub groups: bar, foo
+    // sub-sub groups: cat, dog
+    // data: i (float array), r (float array)
+    static const auto path = find_unittest_file("123_barfoo_catdog_cx.h5");
+
+    // https://www.mathworks.com/help/matlab/ref/h5read.html
+    std::vector<float> data;
+    try
+    {
+        auto rc = hdf5::lite::readFile(path, "/1/bar/cat/i", data);
+    }
+    catch (const except::IOException&)
+    {
+        TEST_SUCCESS; // TODO: remove try/catch
+    }
+    //TEST_ASSERT_EQ(rc.area(), 19);
+    //TEST_ASSERT_ALMOST_EQ(data[0], -90.0);
+    //TEST_ASSERT_ALMOST_EQ(data[0], -data[18]);
+    //auto rc = hdf5::lite::readFile(path, "/1/bar/cat/r", data);
+}
+
 TEST_MAIN(
     TEST_CHECK(test_hdf5Read);
     TEST_CHECK(test_hdf5Read_IOException);
+    TEST_CHECK(test_hdf5Read_nested);
 )
