@@ -197,9 +197,11 @@ TEST_CASE(test_hdf5Info_nested)
 
 TEST_CASE(test_hdf5Info_nested_small)
 {
-    // outer groups: 1, 2, 3
+    // top group: Data
+    // outer groups: 1, 2, 3, 4, 5
     // sub groups: bar, foo
     // sub-sub groups: cat, dog
+    // sub-sub-sub groups: a, b, c, d
     // data: i (float array), r (float array)
     static const auto path = find_unittest_file("nested_complex_float_data_small.h5");
 

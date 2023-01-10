@@ -23,6 +23,7 @@
 #include <string>
 #include <std/filesystem>
 #include <numeric>
+#include <tuple>
 
 #include <TestCase.h>
 
@@ -93,9 +94,11 @@ TEST_CASE(test_hdf5Read_nested)
 
 TEST_CASE(test_hdf5Read_nested_small)
 {
-    // outer groups: 1, 2, 3
+    // top group: Data
+    // outer groups: 1, 2, 3, 4, 5
     // sub groups: bar, foo
     // sub-sub groups: cat, dog
+    // sub-sub-sub groups: a, b, c, d
     // data: i (float array), r (float array)
     static const auto path = find_unittest_file("nested_complex_float_data_small.h5");
 
@@ -114,9 +117,22 @@ TEST_CASE(test_hdf5Read_nested_small)
     TEST_ASSERT_EQ(actual, 10.0f);
 }
 
+TEST_CASE(test_hdf5Read_nested_small_wrongType)
+{
+    static const auto path = find_unittest_file("nested_complex_float_data_small.h5");
+
+    std::vector<double> data; // data is "float", not "double"
+    const auto rc = hdf5::lite::readFile(path, "/Data/1/bar/cat/a/r", data); // 10x 1.0f
+    TEST_ASSERT_EQ(rc.area(), 10);
+    TEST_ASSERT_EQ(rc.area(), data.size());
+    const auto actual = std::accumulate(data.cbegin(), data.cend(), 0.0);
+    TEST_ASSERT_EQ(actual, 10.0);
+}
+
 TEST_MAIN(
     TEST_CHECK(test_hdf5Read);
     TEST_CHECK(test_hdf5Read_IOException);
     TEST_CHECK(test_hdf5Read_nested);
     TEST_CHECK(test_hdf5Read_nested_small);
+    TEST_CHECK(test_hdf5Read_nested_small_wrongType);
 )
