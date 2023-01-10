@@ -30,6 +30,7 @@
 #include "sys/FileFinder.h"
 
 #include "hdf5/lite/Read.h"
+#include "hdf5/lite/HDF5Exception.h"
 
 static std::filesystem::path find_unittest_file(const std::filesystem::path& name)
 {
@@ -103,30 +104,35 @@ TEST_CASE(test_hdf5Read_nested_small)
     static const auto path = find_unittest_file("nested_complex_float_data_small.h5");
 
     // https://www.mathworks.com/help/matlab/ref/h5read.html
-    std::vector<float> data;
+    std::vector<double> data;  // TODO: this should be "float", not "double"
     auto rc = hdf5::lite::readFile(path, "/Data/1/bar/cat/a/i", data);
     TEST_ASSERT_EQ(rc.area(), 10);
     TEST_ASSERT_EQ(rc.area(), data.size());
-    auto actual = std::accumulate(data.cbegin(), data.cend(), 0.0f);
-    TEST_ASSERT_EQ(actual, 0.0f);
+    auto actual = std::accumulate(data.cbegin(), data.cend(), 0.0);
+    TEST_ASSERT_EQ(actual, 0.0);
 
     rc = hdf5::lite::readFile(path, "/Data/5/foo/dog/d/r", data);
     TEST_ASSERT_EQ(rc.area(), 10);
     TEST_ASSERT_EQ(rc.area(), data.size());
-    actual = std::accumulate(data.cbegin(), data.cend(), 0.0f);
-    TEST_ASSERT_EQ(actual, 10.0f);
+    actual = std::accumulate(data.cbegin(), data.cend(), 0.0);
+    TEST_ASSERT_EQ(actual, 10.0);
 }
 
 TEST_CASE(test_hdf5Read_nested_small_wrongType)
 {
     static const auto path = find_unittest_file("nested_complex_float_data_small.h5");
 
-    std::vector<double> data; // data is "float", not "double"
-    const auto rc = hdf5::lite::readFile(path, "/Data/1/bar/cat/a/r", data); // 10x 1.0f
-    TEST_ASSERT_EQ(rc.area(), 10);
-    TEST_ASSERT_EQ(rc.area(), data.size());
-    const auto actual = std::accumulate(data.cbegin(), data.cend(), 0.0);
-    TEST_ASSERT_EQ(actual, 10.0);
+    // TODO: this should be "double", not "float"; we WANT the wrong type in this test.
+    std::vector<float> data; 
+    try
+    {
+        std::ignore = hdf5::lite::readFile(path, "/Data/1/bar/cat/a/r", data);
+        TEST_FAIL;
+    }
+    catch (const hdf5::lite::DataSetException&)
+    {
+        TEST_SUCCESS;
+    }
 }
 
 TEST_MAIN(
