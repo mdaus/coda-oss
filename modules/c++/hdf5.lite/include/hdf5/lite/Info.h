@@ -99,9 +99,9 @@ struct FileInfo final : public GroupInfo
 };
 
 
-CODA_OSS_API FileInfo fileInfo(coda_oss::filesystem::path);
-CODA_OSS_API GroupInfo groupInfo(coda_oss::filesystem::path, std::string loc);
-CODA_OSS_API DatasetInfo datasetInfo(coda_oss::filesystem::path, std::string loc);
+CODA_OSS_API FileInfo fileInfo(const coda_oss::filesystem::path&);
+CODA_OSS_API GroupInfo groupInfo(const coda_oss::filesystem::path&, const std::string& loc);
+CODA_OSS_API DatasetInfo datasetInfo(const coda_oss::filesystem::path&, const std::string& loc);
 
 }
 }

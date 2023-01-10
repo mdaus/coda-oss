@@ -126,7 +126,7 @@ static std::vector<hdf5::lite::DatatypeInfo> getDatatypes(H5::Group& group)
  }
 
 // https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
-static hdf5::lite::GroupInfo groupInfo_(coda_oss::filesystem::path filename, std::string loc)
+static hdf5::lite::GroupInfo groupInfo_(const coda_oss::filesystem::path& filename, const std::string& loc)
 {
     hdf5::lite::GroupInfo retval;
     retval.filename = filename.string();
@@ -144,11 +144,11 @@ static hdf5::lite::GroupInfo groupInfo_(coda_oss::filesystem::path filename, std
 
     return retval;
 }
-hdf5::lite::GroupInfo hdf5::lite::groupInfo(coda_oss::filesystem::path filename, std::string loc)
+hdf5::lite::GroupInfo hdf5::lite::groupInfo(const coda_oss::filesystem::path& filename, const std::string& loc)
 {
     return details::try_catch_H5Exceptions(groupInfo_, __FILE__, __LINE__, filename, loc);
 }
-hdf5::lite::FileInfo hdf5::lite::fileInfo(coda_oss::filesystem::path filename)
+hdf5::lite::FileInfo hdf5::lite::fileInfo(const coda_oss::filesystem::path& filename)
 {
     hdf5::lite::FileInfo retval;
     hdf5::lite::GroupInfo& retval_ = retval;
@@ -185,7 +185,7 @@ static hdf5::lite::Class H5T_class_to_Class(const H5::DataSet& dataset)
 }
 
 // https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
-static hdf5::lite::DatasetInfo datasetInfo_(coda_oss::filesystem::path filename, std::string loc)
+static hdf5::lite::DatasetInfo datasetInfo_(const coda_oss::filesystem::path& filename, const std::string& loc)
 {
     hdf5::lite::DatasetInfo retval;
     retval.filename = filename.string();
@@ -206,7 +206,7 @@ static hdf5::lite::DatasetInfo datasetInfo_(coda_oss::filesystem::path filename,
 
     return retval;
 }
-hdf5::lite::DatasetInfo hdf5::lite::datasetInfo(coda_oss::filesystem::path filename, std::string loc)
+hdf5::lite::DatasetInfo hdf5::lite::datasetInfo(const coda_oss::filesystem::path& filename, const std::string& loc)
 {
     return details::try_catch_H5Exceptions(datasetInfo_, __FILE__, __LINE__, filename, loc);
 }
