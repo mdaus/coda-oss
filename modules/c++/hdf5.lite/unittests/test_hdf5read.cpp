@@ -22,6 +22,7 @@
 
 #include <string>
 #include <std/filesystem>
+#include <numeric>
 
 #include <TestCase.h>
 
@@ -77,15 +78,10 @@ TEST_CASE(test_hdf5Read_nested)
                     Filters:  none
                     FillValue:  0.000000
     */
-
-    // outer groups: 1, 2, 3
-    // sub groups: bar, foo
-    // sub-sub groups: cat, dog
-    // data: i (float array), r (float array)
     static const auto path = find_unittest_file("123_barfoo_catdog_cx.h5");
 
     // https://www.mathworks.com/help/matlab/ref/h5read.html
-    std::vector<double> data; // TODO: float
+    std::vector<double> data;
     auto rc = hdf5::lite::readFile(path, "/1/bar/cat/i", data);
     TEST_ASSERT_EQ(rc.area(), 10);
     TEST_ASSERT_EQ(rc.area(), data.size());
@@ -95,8 +91,32 @@ TEST_CASE(test_hdf5Read_nested)
     TEST_ASSERT_EQ(rc.area(), data.size());
 }
 
+TEST_CASE(test_hdf5Read_nested_small)
+{
+    // outer groups: 1, 2, 3
+    // sub groups: bar, foo
+    // sub-sub groups: cat, dog
+    // data: i (float array), r (float array)
+    static const auto path = find_unittest_file("nested_complex_float_data_small.h5");
+
+    // https://www.mathworks.com/help/matlab/ref/h5read.html
+    std::vector<float> data;
+    auto rc = hdf5::lite::readFile(path, "/Data/1/bar/cat/a/i", data);
+    TEST_ASSERT_EQ(rc.area(), 10);
+    TEST_ASSERT_EQ(rc.area(), data.size());
+    auto actual = std::accumulate(data.cbegin(), data.cend(), 0.0f);
+    TEST_ASSERT_EQ(actual, 0.0f);
+
+    rc = hdf5::lite::readFile(path, "/Data/5/foo/dog/d/r", data);
+    TEST_ASSERT_EQ(rc.area(), 10);
+    TEST_ASSERT_EQ(rc.area(), data.size());
+    actual = std::accumulate(data.cbegin(), data.cend(), 0.0f);
+    TEST_ASSERT_EQ(actual, 10.0f);
+}
+
 TEST_MAIN(
     TEST_CHECK(test_hdf5Read);
     TEST_CHECK(test_hdf5Read_IOException);
     TEST_CHECK(test_hdf5Read_nested);
+    TEST_CHECK(test_hdf5Read_nested_small);
 )

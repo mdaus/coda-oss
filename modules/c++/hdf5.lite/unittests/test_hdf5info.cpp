@@ -154,10 +154,6 @@ TEST_CASE(test_hdf5Info_nested)
                     FillValue:  0.000000
     */
 
-    // outer groups: 1, 2, 3
-    // sub groups: bar, foo
-    // sub-sub groups: cat, dog
-    // data: i (float array), r (float array)
     static const auto path = find_unittest_file("123_barfoo_catdog_cx.h5");
 
     // https://www.mathworks.com/help/matlab/ref/h5info.html
@@ -199,6 +195,74 @@ TEST_CASE(test_hdf5Info_nested)
     }
 }
 
+TEST_CASE(test_hdf5Info_nested_small)
+{
+    // outer groups: 1, 2, 3
+    // sub groups: bar, foo
+    // sub-sub groups: cat, dog
+    // data: i (float array), r (float array)
+    static const auto path = find_unittest_file("nested_complex_float_data_small.h5");
+
+    // https://www.mathworks.com/help/matlab/ref/h5info.html
+    const auto info = hdf5::lite::fileInfo(path);
+    TEST_ASSERT_EQ(path.string(), info.filename);
+    TEST_ASSERT_EQ("/", info.name);
+    TEST_ASSERT_TRUE(info.datasets.empty());
+    TEST_ASSERT_TRUE(info.datatypes.empty());
+
+    const std::vector<std::string> expectedDataGroupNames{"Data"};
+    TEST_ASSERT_EQ(info.groups.size(), expectedDataGroupNames.size());
+    TEST_ASSERT_EQ(info.groups.size(), 1);
+    const auto dataGroupName = info.groups[0].name;
+    TEST_ASSERT_EQ(dataGroupName, expectedDataGroupNames[0]);
+    const auto dataRootPath = "/" + dataGroupName;
+    
+    const auto dataGroupInfo = hdf5::lite::groupInfo(path, dataRootPath);
+    const std::vector<std::string> expectedOuterGroupNames{"1", "2", "3", "4", "5"};
+    TEST_ASSERT_EQ(dataGroupInfo.groups.size(), expectedOuterGroupNames.size());
+    for (size_t outer = 0; outer < dataGroupInfo.groups.size(); outer++)
+    {
+        const auto groupName = dataGroupInfo.groups[outer].name;
+        TEST_ASSERT_EQ(groupName, expectedOuterGroupNames[outer]);
+
+        const auto subGroupRoot = dataRootPath + "/" + groupName;
+        const auto subGroupInfo = hdf5::lite::groupInfo(path, subGroupRoot);
+
+        const std::vector<std::string> expectedSubGroupNames{"bar", "foo"};
+        TEST_ASSERT_EQ(subGroupInfo.groups.size(), expectedSubGroupNames.size());
+        for (size_t sub = 0; sub < subGroupInfo.groups.size(); sub++)
+        {
+            const auto subGroupName = subGroupInfo.groups[sub].name;
+            TEST_ASSERT_EQ(subGroupName, expectedSubGroupNames[sub]);
+
+            const auto subSubGroupRoot = subGroupRoot + "/" + subGroupName;
+            const auto subSubGroupInfo = hdf5::lite::groupInfo(path, subSubGroupRoot);
+
+            const std::vector<std::string> expectedSubSubGroupNames{"cat", "dog"};
+            TEST_ASSERT_EQ(subSubGroupInfo.groups.size(), expectedSubSubGroupNames.size());
+            for (size_t subsub = 0; subsub < subSubGroupInfo.groups.size(); subsub++)
+            {
+                const auto subSubGroupName = subSubGroupInfo.groups[subsub].name;
+                TEST_ASSERT_EQ(subSubGroupName, expectedSubSubGroupNames[subsub]);
+
+                const auto abcdGroupRoot = subSubGroupRoot + "/" + subSubGroupName;
+                const auto abcdGroupInfo = hdf5::lite::groupInfo(path, abcdGroupRoot);
+
+                const std::vector<std::string> expected_abcd_names { "a", "b", "c", "d"};
+                TEST_ASSERT_EQ(abcdGroupInfo.groups.size(), expected_abcd_names.size());
+                for (size_t abcd = 0; abcd < abcdGroupInfo.groups.size(); abcd++)
+                {
+                    const auto abcdGroupName = abcdGroupInfo.groups[abcd].name;
+                    TEST_ASSERT_EQ(abcdGroupName, expected_abcd_names[abcd]);
+
+                    const auto datasetPath =  abcdGroupRoot + "/" + abcdGroupName;
+                    read_complex(testName, path, datasetPath);
+                }
+            }
+        }
+    }
+}
+
 TEST_MAIN(
     TEST_CHECK(test_hdf5Info_IOException);
 
@@ -207,4 +271,5 @@ TEST_MAIN(
     TEST_CHECK(test_hdf5DatasetInfo);
 
     TEST_CHECK(test_hdf5Info_nested);
+    TEST_CHECK(test_hdf5Info_nested_small);
 )
