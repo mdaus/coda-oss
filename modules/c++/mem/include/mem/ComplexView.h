@@ -93,12 +93,14 @@ inline auto copy_axis(TView view, TAxisFunction axis)
 template <typename TView>
 inline auto copy_reals(TView view)
 {
-    return copy_axis(view, real_<TView>);
+    using axis_t = decltype(real_<TView>);
+    return copy_axis<TView, axis_t>(view, real_<TView>);
 }
 template <typename TView>
 inline auto copy_imags(TView view)
 {
-    return copy_axis(view, imag_<TView>);
+    using axis_t = decltype(imag_<TView>);
+    return copy_axis<TView, axis_t>(view, imag_<TView>);
 }
 
 }  // namespace details
