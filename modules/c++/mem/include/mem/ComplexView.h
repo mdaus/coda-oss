@@ -64,45 +64,6 @@ inline auto copy_view(TView view)
     return retval;
 }
 
-template <typename TView>
-inline auto real_(TView view, size_t i)
-{
-    auto retval = view.real(i);
-    assert(retval == view[i].real());
-    return retval;
-}
-template <typename TView>
-inline auto imag_(TView view, size_t i)
-{
-    auto retval = view.imag(i);
-    assert(retval == view[i].imag());
-    return retval;
-}
-template <typename TView, typename TAxisFunction>
-inline auto copy_axis(TView view, TAxisFunction axis)
-{
-    using cxvalue_type = typename TView::cxvalue_type;  // i.e., std::complex<float>
-    using value_type = typename cxvalue_type::value_type; // i.e., float
-    std::vector<value_type> retval(view.size());
-    for (size_t i = 0; i < view.size(); i++)
-    {
-        retval[i] = axis(view, i);
-    }
-    return retval;
-}
-template <typename TView>
-inline auto copy_reals(TView view)
-{
-    using axis_t = decltype(real_<TView>);
-    return copy_axis<TView, axis_t>(view, real_<TView>);
-}
-template <typename TView>
-inline auto copy_imags(TView view)
-{
-    using axis_t = decltype(imag_<TView>);
-    return copy_axis<TView, axis_t>(view, imag_<TView>);
-}
-
 }  // namespace details
 
 template <typename T>
@@ -138,13 +99,33 @@ struct ComplexSpanView final
 
     constexpr const cxvalue_type& operator[](size_type idx) const noexcept
     {
-        assert(idx < size());
         return data_[idx];
     }
 
     constexpr size_type size() const noexcept
     {
         return data_.size();
+    }
+
+    auto reals() const
+    {
+      using axis_type = typename value_type::value_type; // i.e., float
+      std::vector<axis_type> retval(size());
+      for (size_t i = 0; i < size(); i++)
+      {
+        retval[i] = real(i);
+      }
+      return retval;
+    }
+    auto imags() const
+    {
+      using axis_type = typename value_type::value_type; // i.e., float
+      std::vector<axis_type> retval(size());
+      for (size_t i = 0; i < size(); i++)
+      {
+        retval[i] = imag(i);
+      }
+      return retval;
     }
 
 private:
@@ -160,16 +141,6 @@ template <typename T>
 inline auto copy(ComplexSpanView<T> view) // for completeness and generic code
 {
     return details::copy_view(view);
-}
-template <typename T>
-inline auto reals(ComplexSpanView<T> view)  // for completeness and generic code
-{
-    return details::copy_reals(view);
-}
-template <typename T>
-inline auto imags(ComplexSpanView<T> view)  // for completeness and generic code
-{
-    return details::copy_imags(view);
 }
 
 template <typename TVectorLike>
@@ -210,6 +181,15 @@ struct ComplexArrayView final
         return view.size();
     }
 
+    auto reals() const
+    {
+        return view.reals();
+    }
+    auto imags() const
+    {
+        return view.imags();
+    }
+
     private:
     ComplexSpanView<typename value_type::value_type> view;
 };
@@ -223,16 +203,6 @@ template <typename TVectorLike>
 inline auto copy(ComplexArrayView<TVectorLike> view)  // for completeness and generic code
 {
     return details::copy_view(view);
-}
-template <typename TVectorLike>
-inline auto reals(ComplexArrayView<TVectorLike> view)  // for completeness and generic code
-{
-    return details::copy_reals(view);
-}
-template <typename TVectorLike>
-inline auto imags(ComplexArrayView<TVectorLike> view)  // for completeness and generic code
-{
-    return details::copy_imags(view);
 }
 
 template <typename T>
@@ -264,19 +234,15 @@ struct ComplexSpansView final // "Span_s_,", i.e., two spans. Avoiding "parallel
 
     constexpr auto real(size_type idx) const noexcept
     {
-        assert(idx < reals_.size());
         return reals_[idx];
     }
     constexpr auto imag(size_type idx) const noexcept
     {
-        assert(idx < imags_.size());
         return imags_[idx];
     }
 
     constexpr cxvalue_type operator[](size_type idx) const noexcept
     {
-        assert(idx < size());
-
         // Note that this is a COPY because the "real" and "imag" parts MUST be
         // next to each other. https://en.cppreference.com/w/cpp/numeric/complex
         return cxvalue_type(real(idx), imag(idx));
@@ -286,6 +252,15 @@ struct ComplexSpansView final // "Span_s_,", i.e., two spans. Avoiding "parallel
     {
         assert(reals_.size() == imags_.size());
         return reals_.size();
+    }
+
+    auto reals() const
+    {
+      return std::vector<value_type>(reals_.begin(), reals_.end());
+    }
+    auto imags() const
+    {
+      return std::vector<value_type>(imags_.begin(), imags_.end());
     }
 
     private:
@@ -302,16 +277,6 @@ template <typename T>
 inline auto copy(ComplexSpansView<T> view)
 {
     return details::copy_view(view);
-}
-template <typename T>
-inline auto reals(ComplexSpansView<T> view)  // for completeness and generic code
-{
-    return details::copy_reals(view);
-}
-template <typename T>
-inline auto imags(ComplexSpansView<T> view)  // for completeness and generic code
-{
-    return details::copy_imags(view);
 }
 
 template <typename TVectorLike>  // e.g., std::vector<float>
@@ -352,6 +317,16 @@ struct ComplexArraysView final // "Array_s_,", i.e., two arrays. Avoiding "paral
         return view.size();
     }
 
+    auto reals() const
+    {
+        return view.reals();
+    }
+    auto imags() const
+    {
+        return view.imags();
+    }
+
+
     private:
     ComplexSpansView<value_type> view;
 };
@@ -365,16 +340,6 @@ template <typename TVectorLike>
 inline auto copy(ComplexArraysView<TVectorLike> view)
 {
     return details::copy_view(view);
-}
-template <typename TVectorLike>
-inline auto reals(ComplexArraysView<TVectorLike> view)  // for completeness and generic code
-{
-    return details::copy_reals(view);
-}
-template <typename TVectorLike>
-inline auto imags(ComplexArraysView<TVectorLike> view)  // for completeness and generic code
-{
-    return details::copy_imags(view);
 }
 
 } 

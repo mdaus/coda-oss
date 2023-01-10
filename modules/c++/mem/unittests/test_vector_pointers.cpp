@@ -147,8 +147,8 @@ static void test_mem_ComplexView(const std::string& testName, const TView& view)
     TEST_ASSERT_EQ(view.real(3), 7.0f);
     TEST_ASSERT_EQ(view.imag(3), 8.0f);
 
-    const auto reals_ = reals(view);
-    const auto imags_ = imags(view);
+    const auto reals_ = view.reals();
+    const auto imags_ = view.imags();
     TEST_ASSERT_EQ(reals_.size(), imags_.size());
     TEST_ASSERT_EQ(reals_[0], 1.0f);
     TEST_ASSERT_EQ(reals_[1], 3.0f);
