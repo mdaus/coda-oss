@@ -23,6 +23,7 @@
 #include <vector>
 #include <complex>
 #include <std/span>
+#include <type_traits>
 
 #include <mem/VectorOfPointers.h>
 #include <mem/ComplexView.h>
@@ -119,13 +120,9 @@ TEST_CASE(testVecOfSharedPointers)
     }
 }
 
-TEST_CASE(testSpanCxFloat)
+template<typename TView>
+static void test_cx_view(const std::string& testName, const TView& view)
 {
-    const std::vector<std::complex<float>> data{{1, 2}, {3, 4}, {5, 6}, {7, 8}};
-    const std::span<const std::complex<float>> view(data.data(), data.size());
-
-    TEST_ASSERT_EQ(data.size(), view.size());
-
     TEST_ASSERT_EQ(view[0].real(), 1.0f);
     TEST_ASSERT_EQ(view[0].imag(), 2.0f);
     TEST_ASSERT_EQ(view[1].real(), 3.0f);
@@ -136,37 +133,33 @@ TEST_CASE(testSpanCxFloat)
     TEST_ASSERT_EQ(view[3].imag(), 8.0f);
 }
 
+using cx_float = std::complex<float>;
+TEST_CASE(testSpanCxFloat)
+{
+    const std::vector<cx_float> data{{1, 2}, {3, 4}, {5, 6}, {7, 8}};
+    const std::span<const cx_float> view(data.data(), data.size());
+
+    TEST_ASSERT_EQ(data.size(), view.size());
+    test_cx_view(testName, view);
+}
+
 TEST_CASE(testComplexViewFloat)
 {
     {
-        const std::vector<std::complex<float>> data{{1, 2}, {3, 4}, {5, 6}, {7, 8}};
-        const mem::details::ComplexArrayView<std::vector<std::complex<float>>> view(data);
+       const std::vector<cx_float> data{{1, 2}, {3, 4}, {5, 6}, {7, 8}};
+       const mem::ComplexArrayView<std::vector<cx_float>> view(data);
 
         TEST_ASSERT_EQ(data.size(), view.size());
-        TEST_ASSERT_EQ(view[0].real(), 1.0f);
-        TEST_ASSERT_EQ(view[0].imag(), 2.0f);
-        TEST_ASSERT_EQ(view[1].real(), 3.0f);
-        TEST_ASSERT_EQ(view[1].imag(), 4.0f);
-        TEST_ASSERT_EQ(view[2].real(), 5.0f);
-        TEST_ASSERT_EQ(view[2].imag(), 6.0f);
-        TEST_ASSERT_EQ(view[3].real(), 7.0f);
-        TEST_ASSERT_EQ(view[3].imag(), 8.0f);
+        test_cx_view(testName, view);
     }
     {
-        const std::vector<std::complex<float>> reals{1, 3, 5, 7};
-        const std::vector<std::complex<float>> imags{2, 4, 6, 8};
+        const std::vector<float> reals{1, 3, 5, 7};
+        const std::vector<float> imags{2, 4, 6, 8};
         TEST_ASSERT_EQ(imags.size(), reals.size());
-        const mem::details::ComplexParallelView<std::vector<std::complex<float>>> view(reals, imags);
+        const mem::ComplexParallelView<std::vector<float>> view(reals, imags);
 
         TEST_ASSERT_EQ(reals.size(), view.size());
-        TEST_ASSERT_EQ(view[0].real(), 1.0f);
-        TEST_ASSERT_EQ(view[0].imag(), 2.0f);
-        TEST_ASSERT_EQ(view[1].real(), 3.0f);
-        TEST_ASSERT_EQ(view[1].imag(), 4.0f);
-        TEST_ASSERT_EQ(view[2].real(), 5.0f);
-        TEST_ASSERT_EQ(view[2].imag(), 6.0f);
-        TEST_ASSERT_EQ(view[3].real(), 7.0f);
-        TEST_ASSERT_EQ(view[3].imag(), 8.0f);
+        test_cx_view(testName, view);
     }
 }
 
