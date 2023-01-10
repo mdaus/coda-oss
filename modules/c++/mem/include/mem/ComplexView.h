@@ -63,6 +63,44 @@ inline auto copy_view(TView view)
     }
     return retval;
 }
+
+template <typename TView>
+inline auto real_(TView view, size_t i)
+{
+    auto retval = view.real(i);
+    assert(retval == view[i].real());
+    return retval;
+}
+template <typename TView>
+inline auto imag_(TView view, size_t i)
+{
+    auto retval = view.imag(i);
+    assert(retval == view[i].imag());
+    return retval;
+}
+template <typename TView, typename TAxisFunction>
+inline auto copy_axis(TView view, TAxisFunction axis)
+{
+    using cxvalue_type = typename TView::cxvalue_type;  // i.e., std::complex<float>
+    using value_type = typename cxvalue_type::value_type; // i.e., float
+    std::vector<value_type> retval(view.size());
+    for (size_t i = 0; i < view.size(); i++)
+    {
+        retval[i] = axis(view, i);
+    }
+    return retval;
+}
+template <typename TView>
+inline auto copy_reals(TView view)
+{
+    return copy_axis(view, real_<TView>);
+}
+template <typename TView>
+inline auto copy_imags(TView view)
+{
+    return copy_axis(view, imag_<TView>);
+}
+
 }  // namespace details
 
 template <typename T>
@@ -121,6 +159,16 @@ inline auto copy(ComplexSpanView<T> view) // for completeness and generic code
 {
     return details::copy_view(view);
 }
+template <typename T>
+inline auto reals(ComplexSpanView<T> view)  // for completeness and generic code
+{
+    return details::copy_reals(view);
+}
+template <typename T>
+inline auto imags(ComplexSpanView<T> view)  // for completeness and generic code
+{
+    return details::copy_imags(view);
+}
 
 template <typename TVectorLike>
 struct ComplexArrayView final
@@ -173,6 +221,16 @@ template <typename TVectorLike>
 inline auto copy(ComplexArrayView<TVectorLike> view)  // for completeness and generic code
 {
     return details::copy_view(view);
+}
+template <typename TVectorLike>
+inline auto reals(ComplexArrayView<TVectorLike> view)  // for completeness and generic code
+{
+    return details::copy_reals(view);
+}
+template <typename TVectorLike>
+inline auto imags(ComplexArrayView<TVectorLike> view)  // for completeness and generic code
+{
+    return details::copy_imags(view);
 }
 
 template <typename T>
@@ -243,6 +301,16 @@ inline auto copy(ComplexSpansView<T> view)
 {
     return details::copy_view(view);
 }
+template <typename T>
+inline auto reals(ComplexSpansView<T> view)  // for completeness and generic code
+{
+    return details::copy_reals(view);
+}
+template <typename T>
+inline auto imags(ComplexSpansView<T> view)  // for completeness and generic code
+{
+    return details::copy_imags(view);
+}
 
 template <typename TVectorLike>  // e.g., std::vector<float>
 struct ComplexArraysView final // "Array_s_,", i.e., two arrays. Avoiding "parallel" because that can conjure up multi-threading thoughts.
@@ -295,6 +363,16 @@ template <typename TVectorLike>
 inline auto copy(ComplexArraysView<TVectorLike> view)
 {
     return details::copy_view(view);
+}
+template <typename TVectorLike>
+inline auto reals(ComplexArraysView<TVectorLike> view)  // for completeness and generic code
+{
+    return details::copy_reals(view);
+}
+template <typename TVectorLike>
+inline auto imags(ComplexArraysView<TVectorLike> view)  // for completeness and generic code
+{
+    return details::copy_imags(view);
 }
 
 } 
