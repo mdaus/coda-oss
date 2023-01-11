@@ -723,6 +723,12 @@
     <ClInclude Include="mem\include\mem\ComplexView.h">
       <Filter>mem</Filter>
     </ClInclude>
+    <ClInclude Include="mdspan\include\mdspan\mdspan.h">
+      <Filter>mdspan</Filter>
+    </ClInclude>
+    <ClInclude Include="coda_oss\include\coda_oss\mdspan.h">
+      <Filter>coda_oss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1136,6 +1142,9 @@
     <Filter Include="plugin">
       <UniqueIdentifier>{387bc6cb-323a-42b3-8502-4fac72586d12}</UniqueIdentifier>
     </Filter>
+    <Filter Include="mdspan">
+      <UniqueIdentifier>{da7e1aeb-d0b3-45b3-a5c1-6f8a988762c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="gsl\include\gsl\algorithm">
@@ -1194,6 +1203,15 @@
     </None>
     <None Include="sys\include\sys\sys_config.h.cmake.in">
       <Filter>sys</Filter>
+    </None>
+    <None Include="mdspan\include\mdspan\mdarray">
+      <Filter>mdspan</Filter>
+    </None>
+    <None Include="mdspan\include\mdspan\mdspan">
+      <Filter>mdspan</Filter>
+    </None>
+    <None Include="std\include\std\mdspan">
+      <Filter>std</Filter>
     </None>
   </ItemGroup>
 </Project>
