@@ -38,6 +38,7 @@
 #include "config/Exports.h"
 #include "sys/filesystem.h"
 #include "types/RowCol.h"
+#include "coda_oss/mdspan.h"
 
 namespace hdf5
 {

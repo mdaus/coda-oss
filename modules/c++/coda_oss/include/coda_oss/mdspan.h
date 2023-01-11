@@ -1,11 +1,11 @@
 /* =========================================================================
- * This file is part of mdspan-c++
+ * This file is part of coda_oss-c++
  * =========================================================================
  *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  * (C) Copyright 2023, Maxar Technologies, Inc.
  *
- * mdspan-c++ is free software; you can redistribute it and/or modify
+ * coda_oss-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -20,13 +20,17 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef CODA_OSS_mdspan_mdspan_h_INCLUDED_
-#define CODA_OSS_mdspan_mdspan_h_INCLUDED_
+#ifndef CODA_OSS_coda_oss_mdspan_h_INCLUDED_
+#define CODA_OSS_coda_oss_mdspan_h_INCLUDED_
 #pragma once
 
-#include <config/compiler_extensions.h>
+#include "coda_oss/namespace_.h"
 
-#include <mdspan/mdspan>
-#include <mdspan/mdarray>
+#include "mdspan/mdspan.h"  // not mdspan/mdspan; need #pragma here to turn off warnings
 
-#endif  // CODA_OSS_mdspan_mdspan_h_INCLUDED_
+namespace coda_oss
+{
+	using std::experimental::mdspan;
+}
+
+#endif  // CODA_OSS_coda_oss_mdspan_h_INCLUDED_
