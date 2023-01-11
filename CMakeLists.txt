@@ -27,10 +27,6 @@ if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
         string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
         string(REGEX REPLACE "/W[0-4]" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 	    add_compile_options(/std:c++14)
-
-        # use standard (not legacy) C pre-processor
-        add_compile_options(/Zc:preprocessor)
-        add_compile_options(/wd5105) # macro expansion producing '...' has undefined behavior
     elseif (UNIX)
         add_compile_options(
             -Wno-deprecated
