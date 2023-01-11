@@ -95,10 +95,10 @@ TEST_CASE(test_hdf5Read_nested_small)
     // sub-sub groups: cat, dog
     // sub-sub-sub groups: a, b, c, d
     // data: i (float array), r (float array)
-    static const auto path = find_unittest_file("nested_complex_float_data_small.h5");
+    static const auto path = find_unittest_file("nested_complex_float32_data_small.h5");
 
     // https://www.mathworks.com/help/matlab/ref/h5read.html
-    std::vector<double> data;  // TODO: this should be "float", not "double"
+    std::vector<float> data;
     auto rc = hdf5::lite::readFile(path, "/Data/1/bar/cat/a/i", data);
     TEST_ASSERT_EQ(rc.area(), 10);
     TEST_ASSERT_EQ(rc.area(), data.size());
@@ -114,10 +114,9 @@ TEST_CASE(test_hdf5Read_nested_small)
 
 TEST_CASE(test_hdf5Read_nested_small_wrongType)
 {
-    static const auto path = find_unittest_file("nested_complex_float_data_small.h5");
+    static const auto path = find_unittest_file("nested_complex_float32_data_small.h5");
 
-    // TODO: this should be "double", not "float"; we WANT the wrong type in this test.
-    std::vector<float> data; 
+    std::vector<double> data; 
     TEST_SPECIFIC_EXCEPTION(
         hdf5::lite::readFile(path, "/Data/1/bar/cat/a/r", data),
         hdf5::lite::DataSetException);

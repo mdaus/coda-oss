@@ -203,7 +203,7 @@ TEST_CASE(test_hdf5Info_nested_small)
     // sub-sub groups: cat, dog
     // sub-sub-sub groups: a, b, c, d
     // data: i (float array), r (float array)
-    static const auto path = find_unittest_file("nested_complex_float_data_small.h5");
+    static const auto path = find_unittest_file("nested_complex_float32_data_small.h5");
 
     // https://www.mathworks.com/help/matlab/ref/h5info.html
     const auto info = hdf5::lite::fileInfo(path);
