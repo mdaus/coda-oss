@@ -53,16 +53,10 @@ TEST_CASE(test_hdf5Read)
 TEST_CASE(test_hdf5Read_IOException)
 {
     static const std::filesystem::path path = "does not exist . h5";
-    try
-    {
-        std::vector<double> data;
-        hdf5::lite::readFile(path, "/g4/lat", data);
-        TEST_FAIL;
-    }
-    catch (const except::IOException&)
-    {
-        TEST_SUCCESS;
-    }
+    std::vector<double> data;
+    TEST_SPECIFIC_EXCEPTION(
+        hdf5::lite::readFile(path, "/g4/lat", data),
+        except::IOException);
 }
 
 TEST_CASE(test_hdf5Read_nested)
@@ -124,15 +118,9 @@ TEST_CASE(test_hdf5Read_nested_small_wrongType)
 
     // TODO: this should be "double", not "float"; we WANT the wrong type in this test.
     std::vector<float> data; 
-    try
-    {
-        std::ignore = hdf5::lite::readFile(path, "/Data/1/bar/cat/a/r", data);
-        TEST_FAIL;
-    }
-    catch (const hdf5::lite::DataSetException&)
-    {
-        TEST_SUCCESS;
-    }
+    TEST_SPECIFIC_EXCEPTION(
+        hdf5::lite::readFile(path, "/Data/1/bar/cat/a/r", data),
+        hdf5::lite::DataSetException);
 }
 
 TEST_MAIN(
