@@ -49,18 +49,18 @@ void hdf5::lite::details::try_catch_H5Exceptions_(std::function<void(void*)> f, 
     // catch failure caused by the DataSet operations
     catch (const H5::DataSetIException& error)
     {
-        throw hdf5::lite::DataSetException(make_Context(error, file, line));
+        throw hdf5::lite::DatasetException(make_Context(error, file, line));
     }
 
     // catch failure caused by the DataSpace operations
     catch (const H5::DataSpaceIException& error)
     {
-        throw hdf5::lite::DataSpaceException(make_Context(error, file, line));
+        throw hdf5::lite::DataspaceException(make_Context(error, file, line));
     }
 
     // catch failure caused by the DataType operations
     catch (const H5::DataTypeIException& error)
     {
-        throw hdf5::lite::DataTypeException(make_Context(error, file, line));
+        throw hdf5::lite::DatatypeException(make_Context(error, file, line));
     }
 }

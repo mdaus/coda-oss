@@ -33,31 +33,35 @@
 
 static void read(const H5::DataSet& dataset, std::vector<double>& result)
 {
+    static_assert(sizeof(double) * 8 == 64, "'double' should be 64-bits"); // IEEE_F64LE
+
     const auto mem_type = dataset.getDataType();
-    if (mem_type != H5::PredType::NATIVE_DOUBLE)
+    if (mem_type != H5::PredType::IEEE_F64LE)
     {
-        const except::Context context("mem_type != IEEE_F64LE", __FILE__, __LINE__, "read");
-        throw hdf5::lite::DataSetException(context);
+        const except::Context context("getDataType() != IEEE_F64LE", __FILE__, __LINE__, "read");
+        throw hdf5::lite::DatasetException(context);
     }
     dataset.read(result.data(), mem_type);
 }
 static void read(const H5::DataSet& dataset, std::vector<float>& result)
 {
+    static_assert(sizeof(float) * 8 == 32, "'float' should be 32-bits"); // IEEE_F32LE
+
     const auto mem_type = dataset.getDataType();
-    if (mem_type != H5::PredType::NATIVE_FLOAT)
+    if (mem_type != H5::PredType::IEEE_F32LE)
     {
-        const except::Context context("mem_type != IEEE_F32LE", __FILE__, __LINE__, "read");
-        throw hdf5::lite::DataSetException(context);
+        const except::Context context("getDataType() != IEEE_F32LE", __FILE__, __LINE__, "read");
+        throw hdf5::lite::DatasetException(context);
     }
     dataset.read(result.data(), mem_type);
 }
 template<typename T>
-static types::RowCol<size_t> readDatasetT(const H5::DataSet& dataset, H5T_class_t type_class,
-    std::vector<T>& result)
+static types::RowCol<size_t> readDatasetT(const H5::DataSet& dataset, std::vector<T>& result)
 {
-    if (type_class != dataset.getTypeClass())
+    if (dataset.getTypeClass() != H5T_FLOAT)
     {
-        throw std::invalid_argument("getTypeClass() returned wrong value.");
+        const except::Context context("getTypeClass() != H5T_FLOAT", __FILE__, __LINE__, "readDatasetT");
+        throw hdf5::lite::DatatypeException(context);
     }    
 
     const auto retval = hdf5::lite::details::getSimpleExtentSize(dataset);
@@ -72,13 +76,11 @@ static types::RowCol<size_t> readDatasetT(const H5::DataSet& dataset, H5T_class_
 
 inline types::RowCol<size_t> readDataset_(const H5::DataSet& dataset, std::vector<float>& result)
 {
-    static_assert(sizeof(float) * 8 == 32, "'float' should be 32-bits"); // IEEE_F32LE
-    return readDatasetT(dataset, H5T_FLOAT, result);
+    return readDatasetT(dataset, result);
 }
 inline types::RowCol<size_t> readDataset_(const H5::DataSet& dataset, std::vector<double>& result)
 {
-    static_assert(sizeof(double) * 8 == 64, "'double' should be 64-bits"); // IEEE_F64LE
-    return readDatasetT(dataset, H5T_FLOAT, result);
+    return readDatasetT(dataset, result);
 }
 template<typename T>
 static types::RowCol<size_t> readFile_(const coda_oss::filesystem::path& fileName, const std::string& datasetName,
