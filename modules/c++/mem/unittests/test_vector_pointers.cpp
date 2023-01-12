@@ -146,6 +146,19 @@ static void test_mem_ComplexView(const std::string& testName, const TView& view)
     TEST_ASSERT_EQ(view.imag(2), 6.0f);
     TEST_ASSERT_EQ(view.real(3), 7.0f);
     TEST_ASSERT_EQ(view.imag(3), 8.0f);
+
+    const auto reals_ = view.reals();
+    const auto imags_ = view.imags();
+    TEST_ASSERT_EQ(reals_.size(), imags_.size());
+    TEST_ASSERT_EQ(reals_[0], 1.0f);
+    TEST_ASSERT_EQ(reals_[1], 3.0f);
+    TEST_ASSERT_EQ(reals_[2], 5.0f);
+    TEST_ASSERT_EQ(reals_[3], 7.0f);
+
+    TEST_ASSERT_EQ(imags_[0], 2.0f);
+    TEST_ASSERT_EQ(imags_[1], 4.0f);
+    TEST_ASSERT_EQ(imags_[2], 6.0f);
+    TEST_ASSERT_EQ(imags_[3], 8.0f);
 }
 
 using cx_float = std::complex<float>;
@@ -170,13 +183,13 @@ TEST_CASE(testComplexViewFloat)
 
         TEST_ASSERT_EQ(data.size(), view.size());
         test_mem_ComplexView(testName, view);
-        test_cx_view(testName, copy(view));
+        test_cx_view(testName, view.values());
     }
     {
         const auto view = mem::make_ComplexArrayView(cx_data());
         TEST_ASSERT_EQ(cx_data().size(), view.size());
         test_mem_ComplexView(testName, view);
-        test_cx_view(testName, copy(view));
+        test_cx_view(testName, view.values());
     }
 
     const std::vector<float> reals{1, 3, 5, 7};
@@ -189,13 +202,13 @@ TEST_CASE(testComplexViewFloat)
 
         TEST_ASSERT_EQ(reals.size(), view.size());
         test_mem_ComplexView(testName, view);
-        test_cx_view(testName, copy(view));
+        test_cx_view(testName, view.values());
     }
     {
         const auto view = mem::make_ComplexArraysView(reals, imags);
         TEST_ASSERT_EQ(reals.size(), view.size());
         test_mem_ComplexView(testName, view);
-        test_cx_view(testName, copy(view));
+        test_cx_view(testName, view.values());
     }
 }
 
