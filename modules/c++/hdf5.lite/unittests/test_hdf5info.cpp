@@ -70,8 +70,8 @@ TEST_CASE(test_hdf5FileInfo)
     TEST_ASSERT_EQ(path.string(), info.filename);
     TEST_ASSERT_EQ("/", info.name);
     TEST_ASSERT_EQ(info.groups.size(), 4);
-    TEST_ASSERT_TRUE(info.datasets.empty());
-    TEST_ASSERT_TRUE(info.datatypes.empty());
+    TEST_ASSERT_TRUE(info.dataSets.empty());
+    TEST_ASSERT_TRUE(info.dataTypes.empty());
     //TEST_ASSERT_TRUE(info.links.empty());
     //TEST_ASSERT_EQ(info.attributes.size(), 2);
 }
@@ -95,8 +95,8 @@ TEST_CASE(test_hdf5GroupInfo)
     TEST_ASSERT_EQ(path.string(), info.filename);
     TEST_ASSERT_EQ("/g4", info.name);
     TEST_ASSERT_TRUE(info.groups.empty());
-    TEST_ASSERT_EQ(info.datasets.size(), 4);
-    TEST_ASSERT_TRUE(info.datatypes.empty());
+    TEST_ASSERT_EQ(info.dataSets.size(), 4);
+    TEST_ASSERT_TRUE(info.dataTypes.empty());
     //TEST_ASSERT_TRUE(info.links.empty());
     //TEST_ASSERT_TRUE(info.attributes.empty());
 }
@@ -106,7 +106,7 @@ TEST_CASE(test_hdf5DatasetInfo)
     static const auto path = find_unittest_file("example.h5");
 
     // https://www.mathworks.com/help/matlab/ref/h5info.html
-    const auto info = hdf5::lite::datasetInfo(path, "/g4/time");
+    const auto info = hdf5::lite::dataSetInfo(path, "/g4/time");
     /*
     info = struct with fields:
       Filename: '/mathworks/devel/bat/Bdoc22b/build/matlab/toolbox/matlab/demos/example.h5'
@@ -120,7 +120,7 @@ TEST_CASE(test_hdf5DatasetInfo)
     */
     TEST_ASSERT_EQ(path.string(), info.filename);
     TEST_ASSERT_EQ("time", info.name);
-    TEST_ASSERT(info.datatype.h5Class == hdf5::lite::Class::Float);
+    TEST_ASSERT(info.dataType.h5Class == hdf5::lite::Class::Float);
     //TEST_ASSERT(info.dataspace == hdf5::lite::Class::Float);
     //TEST_ASSERT_EQ(info.chunkSize, 10);
     //TEST_ASSERT_EQ(info.fillValue, 0);
@@ -131,11 +131,11 @@ TEST_CASE(test_hdf5DatasetInfo)
 static void read_complex(const std::string& testName,
     const std::filesystem::path& path, const std::string& datasetPath)
 {
-    const auto i_info = hdf5::lite::datasetInfo(path, datasetPath + "/i");
-    TEST_ASSERT(i_info.datatype.h5Class == hdf5::lite::Class::Float);
+    const auto i_info = hdf5::lite::dataSetInfo(path, datasetPath + "/i");
+    TEST_ASSERT(i_info.dataType.h5Class == hdf5::lite::Class::Float);
 
-    const auto r_info = hdf5::lite::datasetInfo(path, datasetPath + "/r");
-    TEST_ASSERT(r_info.datatype.h5Class == hdf5::lite::Class::Float);
+    const auto r_info = hdf5::lite::dataSetInfo(path, datasetPath + "/r");
+    TEST_ASSERT(r_info.dataType.h5Class == hdf5::lite::Class::Float);
 }
 
 TEST_CASE(test_hdf5Info_nested)
@@ -160,8 +160,8 @@ TEST_CASE(test_hdf5Info_nested)
     const auto info = hdf5::lite::fileInfo(path);
     TEST_ASSERT_EQ(path.string(), info.filename);
     TEST_ASSERT_EQ("/", info.name);
-    TEST_ASSERT_TRUE(info.datasets.empty());
-    TEST_ASSERT_TRUE(info.datatypes.empty());
+    TEST_ASSERT_TRUE(info.dataSets.empty());
+    TEST_ASSERT_TRUE(info.dataTypes.empty());
 
     const std::vector<std::string> expectedOuterGroupNames{"1" , "2", "3"};
     TEST_ASSERT_EQ(info.groups.size(), expectedOuterGroupNames.size());
@@ -209,8 +209,8 @@ TEST_CASE(test_hdf5Info_nested_small)
     const auto info = hdf5::lite::fileInfo(path);
     TEST_ASSERT_EQ(path.string(), info.filename);
     TEST_ASSERT_EQ("/", info.name);
-    TEST_ASSERT_TRUE(info.datasets.empty());
-    TEST_ASSERT_TRUE(info.datatypes.empty());
+    TEST_ASSERT_TRUE(info.dataSets.empty());
+    TEST_ASSERT_TRUE(info.dataTypes.empty());
 
     const std::vector<std::string> expectedDataGroupNames{"Data"};
     TEST_ASSERT_EQ(info.groups.size(), expectedDataGroupNames.size());

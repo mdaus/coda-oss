@@ -39,7 +39,7 @@ static void read(const H5::DataSet& dataset, std::vector<double>& result)
     if (mem_type != H5::PredType::IEEE_F64LE)
     {
         const except::Context context("getDataType() != IEEE_F64LE", __FILE__, __LINE__, "read");
-        throw hdf5::lite::DatasetException(context);
+        throw hdf5::lite::DataSetException(context);
     }
     dataset.read(result.data(), mem_type);
 }
@@ -51,7 +51,7 @@ static void read(const H5::DataSet& dataset, std::vector<float>& result)
     if (mem_type != H5::PredType::IEEE_F32LE)
     {
         const except::Context context("getDataType() != IEEE_F32LE", __FILE__, __LINE__, "read");
-        throw hdf5::lite::DatasetException(context);
+        throw hdf5::lite::DataSetException(context);
     }
     dataset.read(result.data(), mem_type);
 }
@@ -61,7 +61,7 @@ static types::RowCol<size_t> readDatasetT(const H5::DataSet& dataset, std::vecto
     if (dataset.getTypeClass() != H5T_FLOAT)
     {
         const except::Context context("getTypeClass() != H5T_FLOAT", __FILE__, __LINE__, "readDatasetT");
-        throw hdf5::lite::DatatypeException(context);
+        throw hdf5::lite::DataSetException(context);
     }    
 
     const auto retval = hdf5::lite::details::getSimpleExtentSize(dataset);

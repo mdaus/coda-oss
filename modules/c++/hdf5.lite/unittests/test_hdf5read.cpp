@@ -119,7 +119,7 @@ TEST_CASE(test_hdf5Read_nested_small_wrongType)
     std::vector<double> data; 
     TEST_SPECIFIC_EXCEPTION(
         hdf5::lite::readFile(path, "/Data/1/bar/cat/a/r", data),
-        hdf5::lite::DatasetException);
+        hdf5::lite::DataSetException);
 }
 
 TEST_MAIN(
