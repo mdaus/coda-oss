@@ -24,6 +24,7 @@
 #ifndef __SYS_OS_H__
 #define __SYS_OS_H__
 
+#include "config/compiler_extensions.h"
 #include "sys/AbstractOS.h"
 
 #if defined(WIN32) || defined(_WIN32)
@@ -54,11 +55,14 @@ namespace sys
 		//MacOS
 	};
 
+	CODA_OSS_disable_warning_push
+    CODA_OSS_disable_warning(5264) // '...': '...' variable is not used
 	#if _WIN32
 	constexpr auto Platform = PlatformType::Windows;
 	#else
     constexpr auto Platform = PlatformType::Linux;
 	#endif
+    CODA_OSS_disable_warning_pop
 }
 
 #endif
