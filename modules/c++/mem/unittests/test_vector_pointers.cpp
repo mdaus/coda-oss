@@ -212,22 +212,41 @@ TEST_CASE(testComplexViewFloat)
     }
 }
 
-template <typename TIter>
-static void test_mem_ComplexViewConstIterator(const std::string& testName, TIter begin, TIter end)
+template <typename TView>
+static void test_mem_ComplexViewConstIterator(const std::string& testName, TView view)
 {
+    auto begin = view.begin();
+    auto end = view.end();
     TEST_ASSERT(begin != end);
 
     const auto distance = std::distance(begin, end);
     TEST_ASSERT_EQ(4, distance);
 
-    //TEST_ASSERT_EQ(view[0].real(), 1.0f);
-    //TEST_ASSERT_EQ(view[0].imag(), 2.0f);
-    //TEST_ASSERT_EQ(view[1].real(), 3.0f);
-    //TEST_ASSERT_EQ(view[1].imag(), 4.0f);
-    //TEST_ASSERT_EQ(view[2].real(), 5.0f);
-    //TEST_ASSERT_EQ(view[2].imag(), 6.0f);
-    //TEST_ASSERT_EQ(view[3].real(), 7.0f);
-    //TEST_ASSERT_EQ(view[3].imag(), 8.0f);
+    auto it = begin;
+    TEST_ASSERT_EQ((*it).real(), 1.0f);
+    TEST_ASSERT_EQ((*it).imag(), 2.0f);
+
+    ++it;
+    TEST_ASSERT_EQ((*it).real(), 3.0f);
+    TEST_ASSERT_EQ((*it).imag(), 4.0f);
+    
+    it++;
+    TEST_ASSERT_EQ((*it).real(), 5.0f);
+    TEST_ASSERT_EQ((*it).imag(), 6.0f);
+    
+    it += 1;
+    TEST_ASSERT_EQ(it->real(), 7.0f);
+    TEST_ASSERT_EQ(it->imag(), 8.0f);
+
+    using cxvalue_type = typename TView::cxvalue_type;
+    cxvalue_type cx{1.0f, 2.0f};
+    for (auto&& v : view)
+    {
+        TEST_ASSERT_EQ(v.real(), cx.real());
+        TEST_ASSERT_EQ(v.imag(), cx.imag());
+
+        cx = cxvalue_type{cx.real() + 2.0f, cx.imag() + 2.0f};
+    }
 }
 
 TEST_CASE(testComplexViewFloatIterator)
@@ -235,14 +254,11 @@ TEST_CASE(testComplexViewFloatIterator)
     {
         const std::span<const cx_float> data(cx_data().data(), cx_data().size());
         const auto view = mem::make_ComplexSpanView(data);
-
-        test_mem_ComplexViewConstIterator(testName, view.begin(), view.end());
+        test_mem_ComplexViewConstIterator(testName, view);
     }
     {
         const auto view = mem::make_ComplexArrayView(cx_data());
-        TEST_ASSERT_EQ(cx_data().size(), view.size());
-        test_mem_ComplexView(testName, view);
-        test_cx_view(testName, view.values());
+        test_mem_ComplexViewConstIterator(testName, view);
     }
 
     const std::vector<float> reals{1, 3, 5, 7};
@@ -252,16 +268,11 @@ TEST_CASE(testComplexViewFloatIterator)
         const std::span<const float> reals_(reals.data(), reals.size());
         const std::span<const float> imags_(imags.data(), imags.size());
         const auto view = mem::make_ComplexSpansView(reals_, imags_);
-
-        TEST_ASSERT_EQ(reals.size(), view.size());
-        test_mem_ComplexView(testName, view);
-        test_cx_view(testName, view.values());
+        test_mem_ComplexViewConstIterator(testName, view);
     }
     {
         const auto view = mem::make_ComplexArraysView(reals, imags);
-        TEST_ASSERT_EQ(reals.size(), view.size());
-        test_mem_ComplexView(testName, view);
-        test_cx_view(testName, view.values());
+        test_mem_ComplexViewConstIterator(testName, view);
     }
 }
 
