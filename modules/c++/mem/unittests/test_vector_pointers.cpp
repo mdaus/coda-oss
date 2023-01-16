@@ -212,11 +212,9 @@ TEST_CASE(testComplexViewFloat)
     }
 }
 
-template <typename TView>
-static void test_mem_ComplexViewConstIterator(const std::string& testName, TView view)
+static void test_mem_ComplexViewConstIterator(const std::string& testName,
+    mem::ComplexViewConstIterator<float> begin, mem::ComplexViewConstIterator<float> end)
 {
-    auto begin = view.begin();
-    auto end = view.end();
     TEST_ASSERT(begin != end);
 
     const auto distance = std::distance(begin, end);
@@ -229,23 +227,28 @@ static void test_mem_ComplexViewConstIterator(const std::string& testName, TView
     ++it;
     TEST_ASSERT_EQ((*it).real(), 3.0f);
     TEST_ASSERT_EQ((*it).imag(), 4.0f);
-    
+
     it++;
     TEST_ASSERT_EQ((*it).real(), 5.0f);
     TEST_ASSERT_EQ((*it).imag(), 6.0f);
-    
+
     it += 1;
     TEST_ASSERT_EQ(it->real(), 7.0f);
     TEST_ASSERT_EQ(it->imag(), 8.0f);
+}
+template <typename TView>
+static void test_mem_ComplexViewConstIterator(const std::string& testName, TView view)
+{
+    test_mem_ComplexViewConstIterator(testName, view.begin(), view.end());
 
-    using cxvalue_type = typename TView::cxvalue_type;
-    cxvalue_type cx{1.0f, 2.0f};
+    using cxvalue_t = typename decltype(view.begin())::value_type; // i.e., std::complex<float>
+    cxvalue_t cx{1.0f, 2.0f};
     for (auto&& v : view)
     {
         TEST_ASSERT_EQ(v.real(), cx.real());
         TEST_ASSERT_EQ(v.imag(), cx.imag());
 
-        cx = cxvalue_type{cx.real() + 2.0f, cx.imag() + 2.0f};
+        cx = cxvalue_t{cx.real() + 2.0f, cx.imag() + 2.0f};
     }
 }
 
