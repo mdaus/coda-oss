@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef CODA_OSS_hdf5_lite_Read_h_INCLUDED_
-#define CODA_OSS_hdf5_lite_Read_h_INCLUDED_
+#ifndef CODA_OSS_hdf5_lite_Info_h_INCLUDED_
+#define CODA_OSS_hdf5_lite_Info_h_INCLUDED_
 #pragma once
 
 #include <string>
@@ -106,5 +106,4 @@ CODA_OSS_API DataSetInfo dataSetInfo(const coda_oss::filesystem::path&, const st
 }
 }
 
-#endif // CODA_OSS_hdf5_lite_Read_h_INCLUDED_
-
+#endif // CODA_OSS_hdf5_lite_Info_h_INCLUDED_
