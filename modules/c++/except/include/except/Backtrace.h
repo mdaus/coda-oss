@@ -28,8 +28,6 @@
 #include <string>
 #include <vector>
 
-#include "config/compiler_extensions.h"
-
 // We know at compile-time whether except::getBacktrace() is supported.
 #if defined(__GNUC__)
 // https://man7.org/linux/man-pages/man3/backtrace.3.html
@@ -42,10 +40,16 @@
 #endif 
 
 namespace version { namespace except {
-CODA_OSS_disable_warning_push
-CODA_OSS_disable_warning(5264) // '...': '...' variable is not used
+#if _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 5264) // '...': '...' variable is not used
+#endif // _MSC_VER
+
 constexpr auto backtrace = CODA_OSS_except_Backtrace;
-CODA_OSS_disable_warning_pop
+
+#if _MSC_VER
+#pragma warning(pop)
+#endif  // _MSC_VER
 } }
 
 namespace except

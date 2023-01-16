@@ -26,7 +26,6 @@
 #define CODA_OSS_sys_Dbg_h_INCLUDED_
 #pragma once
 
-#include "config/compiler_extensions.h"
 #include "config/Exports.h"
 
 // A "debug" build has debugging symbols, detailed call stacks, minimal optimization, STL validation, etc.
@@ -100,12 +99,18 @@
 
 namespace sys
 {
-    CODA_OSS_disable_warning_push
-    CODA_OSS_disable_warning(5264) // '...': '...' variable is not used
+    #if _MSC_VER
+    #pragma warning(push)
+    #pragma warning(disable : 5264)  // '...': '...' variable is not used
+    #endif  // _MSC_VER
+
     // compile-time for Dbg.h
     constexpr auto debug = CODA_OSS_DEBUG ? true : false;
     constexpr auto release = !debug;
-    CODA_OSS_disable_warning_pop
+
+    #if _MSC_VER
+    #pragma warning(pop)
+    #endif  // _MSC_VER
 
     // build-time for Dbg.cpp; may (although shouldn't) be different than above.
     // C++ says little about debug/release/optimize/etc. (there's NDEBUG inherited from C);
@@ -176,10 +181,16 @@ namespace sys
 
 namespace sys
 {
-CODA_OSS_disable_warning_push
-CODA_OSS_disable_warning(5264) // '...': '...' variable is not used
+#if _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 5264)  // '...': '...' variable is not used
+#endif  // _MSC_VER
+
 constexpr bool debugging = CODA_OSS_debugging ? true : false;
-CODA_OSS_disable_warning_pop
+
+#if _MSC_VER
+#pragma warning(pop)
+#endif  // _MSC_VER
 }
 
 namespace sys
