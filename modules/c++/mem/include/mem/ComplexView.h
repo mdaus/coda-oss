@@ -39,92 +39,6 @@
 namespace mem
 {
 
-template <typename TAxis>
-struct ComplexViewConstIterator final
-{
-    // https://stackoverflow.com/questions/8054273/how-to-implement-an-stl-style-iterator-and-avoid-common-pitfalls
-    using iterator_category = std::random_access_iterator_tag;
-    using value_type = std::complex<TAxis>;
-    using difference_type = ptrdiff_t;
-    using size_type = size_t;
-    using pointer = const value_type*;
-    using reference = const value_type&;
-
-    template <typename TView>
-    explicit ComplexViewConstIterator(TView view)
-    {
-        index_f_ = [view](size_type i) { return view[i]; };
-
-        // Help ensure the iterators use the same view
-        size_ = view.size();
-    }
-    // Help ensure the iterators use the same view
-    auto end_() const
-    {
-        auto retval = *this;
-        retval.index_ = size_;
-        return retval;
-    }
-
-    ComplexViewConstIterator() = default;
-    ~ComplexViewConstIterator() = default;
-    ComplexViewConstIterator(const ComplexViewConstIterator&) = default;
-    ComplexViewConstIterator& operator=(const ComplexViewConstIterator&) = default;
-    ComplexViewConstIterator(ComplexViewConstIterator&&) = default;
-    ComplexViewConstIterator& operator=(ComplexViewConstIterator&&) = default;
-
-    bool operator==(const ComplexViewConstIterator& rhs) const
-    {
-        // Checking the target() helps ensure the same type of view is used.
-        return (index_ == rhs.index_) && (size_ == rhs.size_) &&
-                (index_f_.target_type() == rhs.index_f_.target_type());
-    }
-    bool operator!=(const ComplexViewConstIterator& rhs) const
-    {
-        return !(*this == rhs);
-    }
-
-    ComplexViewConstIterator& operator++()
-    {
-        ++index_;
-        return *this;
-    }
-    ComplexViewConstIterator operator++(int)
-    {
-        auto retval = *this;
-        ++(*this);
-        return retval;
-    }
-    ComplexViewConstIterator& operator+=(size_type i)
-    {
-        index_ += i;
-        return *this;
-    }
-
-    difference_type operator-(const ComplexViewConstIterator& other) const
-    {
-        return index_ - other.index_;
-    }
-
-    reference operator*() const
-    {
-        current_value_ = index_f_(index_);
-        return current_value_;
-    }
-
-    pointer operator->() const
-    {
-        current_value_ = index_f_(index_);
-        return &current_value_;
-    }
-
-private:
-    mutable value_type current_value_;
-    size_type index_ = 0;
-    std::function<value_type(size_t)> index_f_;
-    size_type size_; // used to create the end_() iterator
-};
-
  /*!
  *  \class ComplexView
  *  \brief These classes class provide read-only views onto a collection of complex
@@ -145,8 +59,6 @@ struct ComplexSpanView final
     using value_type = std::complex<T>;
     using cxvalue_type = value_type;
     using axis_type = typename cxvalue_type::value_type; // i.e., float
-    using const_iterator = ComplexViewConstIterator<axis_type>;
-    using iterator = const_iterator;
 
     ComplexSpanView() = delete;
     ~ComplexSpanView() = default;
@@ -191,13 +103,15 @@ struct ComplexSpanView final
         return data_.size();
     }
     
-    iterator begin() const
+    using const_iterator = typename span_t_::iterator;
+    using iterator = const_iterator;
+    const_iterator begin() const
     {
-        return iterator(*this);
+        return data_.begin();
     }
-    iterator end() const
+    const_iterator end() const
     {
-        return begin().end_();
+        return data_.end();
     }
 
 private:
@@ -242,7 +156,7 @@ struct ComplexArrayView final
     using value_type = typename TVectorLike::value_type;
     using cxvalue_type = value_type;
     using axis_type = typename cxvalue_type::value_type;  // i.e., float
-    using const_iterator = ComplexViewConstIterator<axis_type>;
+    using const_iterator = typename ComplexSpanView<axis_type>::const_iterator;
     using iterator = const_iterator;
 
     ComplexArrayView() = delete;
@@ -279,15 +193,14 @@ struct ComplexArrayView final
         return view.size();
     }
 
-    iterator begin() const
+    auto begin() const
     {
-        return iterator(*this);
+        return view.begin();
     }
-    iterator end() const
+    auto end() const
     {
-        return begin().end_();
+        return view.end();
     }
-
 
     auto reals() const
     {
@@ -310,6 +223,98 @@ inline auto make_ComplexArrayView(const TVectorLike& v)
 {
     return ComplexArrayView<TVectorLike>(v);
 }
+
+template <typename TAxis>
+struct ComplexViewConstIterator final
+{
+    // https://stackoverflow.com/questions/8054273/how-to-implement-an-stl-style-iterator-and-avoid-common-pitfalls
+    using iterator_category = std::random_access_iterator_tag;
+    using value_type = std::complex<TAxis>;
+    using difference_type = ptrdiff_t;
+    using size_type = size_t;
+    using pointer = const value_type*;
+    using reference = const value_type&;
+
+    template <typename TView>
+    explicit ComplexViewConstIterator(TView view)
+    {
+        index_f_ = [view](size_type i) { return view[i]; };
+
+        // Help ensure the iterators use the same view
+        size_ = view.size();
+    }
+    // Help ensure the iterators use the same view
+    auto end_() const
+    {
+        auto retval = *this;
+        retval.index_ = size_;
+        return retval;
+    }
+
+    ComplexViewConstIterator() = default;
+    ~ComplexViewConstIterator() = default;
+    ComplexViewConstIterator(const ComplexViewConstIterator&) = default;
+    ComplexViewConstIterator& operator=(const ComplexViewConstIterator&) =
+            default;
+    ComplexViewConstIterator(ComplexViewConstIterator&&) = default;
+    ComplexViewConstIterator& operator=(ComplexViewConstIterator&&) = default;
+
+    bool operator==(const ComplexViewConstIterator& rhs) const
+    {
+        // Checking the target() helps ensure the same type of view is used.
+        return (index_ == rhs.index_) && (size_ == rhs.size_) &&
+                (index_f_.target_type() == rhs.index_f_.target_type());
+    }
+    bool operator!=(const ComplexViewConstIterator& rhs) const
+    {
+        return !(*this == rhs);
+    }
+
+    ComplexViewConstIterator& operator++()
+    {
+        ++index_;
+        return *this;
+    }
+    ComplexViewConstIterator operator++(int)
+    {
+        auto retval = *this;
+        ++(*this);
+        return retval;
+    }
+    ComplexViewConstIterator& operator+=(size_type i)
+    {
+        index_ += i;
+        return *this;
+    }
+
+    difference_type operator-(const ComplexViewConstIterator& other) const
+    {
+        return index_ - other.index_;
+    }
+
+    reference operator*() const
+    {
+        return *(current());
+    }
+
+    pointer operator->() const
+    {
+        return current();
+    }
+
+private:
+    // Need to store the current value because ->() returns a pointer
+    mutable value_type current_value_;
+    pointer current() const
+    {
+        current_value_ = index_f_(index_);
+        return &current_value_;
+    }
+
+    size_type index_ = 0;
+    std::function<value_type(size_t)> index_f_;
+    size_type size_;  // used to create the end_() iterator
+};
 
 template <typename T>
 struct ComplexSpansView final // "Span_s_,", i.e., two spans. Avoiding "parallel" because that can conjure up multi-threading thoughts.
@@ -410,7 +415,7 @@ struct ComplexArraysView final // "Array_s_,", i.e., two arrays. Avoiding "paral
     using value_type = typename TVectorLike::value_type;  // i.e., float
     using cxvalue_type = std::complex<value_type>;
     using axis_type = typename cxvalue_type::value_type;  // i.e., float
-    using const_iterator = ComplexViewConstIterator<axis_type>;
+    using const_iterator = typename ComplexSpansView<axis_type>::const_iterator;
     using iterator = const_iterator;
 
     ComplexArraysView() = delete;
@@ -448,15 +453,14 @@ struct ComplexArraysView final // "Array_s_,", i.e., two arrays. Avoiding "paral
         return view.size();
     }
 
-    iterator begin() const
+    auto begin() const
     {
-        return iterator(*this);
+        return view.begin();
     }
-    iterator end() const
+    auto end() const
     {
-        return begin().end_();
+        return view.end();
     }
-
 
     auto reals() const
     {
