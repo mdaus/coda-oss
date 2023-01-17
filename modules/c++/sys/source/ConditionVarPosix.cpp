@@ -19,15 +19,16 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 #include <sys/ConditionVarPosix.h>
+
+#include <coda_oss/memory.h>
 
 #if CODA_OSS_POSIX_SOURCE
 
 #include <pthread.h>
 
 sys::ConditionVarPosix::ConditionVarPosix() :
-    mMutexOwned(std::make_unique<sys::MutexPosix>()),
+    mMutexOwned(coda_oss::make_unique<sys::MutexPosix>()),
     mMutex(mMutexOwned.get())
 {
     if ( ::pthread_cond_init(&mNative, NULL) != 0)
