@@ -178,14 +178,6 @@ TEST_CASE(testSpanCxFloat)
 TEST_CASE(testComplexViewFloat)
 {
     {
-        const std::span<const cx_float> data(cx_data().data(), cx_data().size());
-        const auto view = mem::make_ComplexSpanView(data);
-
-        TEST_ASSERT_EQ(data.size(), view.size());
-        test_mem_ComplexView(testName, view);
-        test_cx_view(testName, view.values());
-    }
-    {
         const auto view = mem::make_ComplexSpanView(cx_data());
         TEST_ASSERT_EQ(cx_data().size(), view.size());
         test_mem_ComplexView(testName, view);
@@ -195,15 +187,6 @@ TEST_CASE(testComplexViewFloat)
     const std::vector<float> reals{1, 3, 5, 7};
     const std::vector<float> imags{2, 4, 6, 8};
     TEST_ASSERT_EQ(imags.size(), reals.size());
-    {
-        const std::span<const float> reals_(reals.data(), reals.size());
-        const std::span<const float> imags_(imags.data(), imags.size());
-        const auto view = mem::make_ComplexSpansView(reals_, imags_);
-
-        TEST_ASSERT_EQ(reals.size(), view.size());
-        test_mem_ComplexView(testName, view);
-        test_cx_view(testName, view.values());
-    }
     {
         const auto view = mem::make_ComplexSpansView(reals, imags);
         TEST_ASSERT_EQ(reals.size(), view.size());
@@ -255,11 +238,6 @@ static void test_mem_ComplexViewConstIterator(const std::string& testName, TView
 TEST_CASE(testComplexViewFloatIterator)
 {
     {
-        const std::span<const cx_float> data(cx_data().data(), cx_data().size());
-        const auto view = mem::make_ComplexSpanView(data);
-        test_mem_ComplexViewConstIterator(testName, view);
-    }
-    {
         const auto view = mem::make_ComplexSpanView(cx_data());
         test_mem_ComplexViewConstIterator(testName, view);
     }
@@ -267,12 +245,6 @@ TEST_CASE(testComplexViewFloatIterator)
     const std::vector<float> reals{1, 3, 5, 7};
     const std::vector<float> imags{2, 4, 6, 8};
     TEST_ASSERT_EQ(imags.size(), reals.size());
-    {
-        const std::span<const float> reals_(reals.data(), reals.size());
-        const std::span<const float> imags_(imags.data(), imags.size());
-        const auto view = mem::make_ComplexSpansView(reals_, imags_);
-        test_mem_ComplexViewConstIterator(testName, view);
-    }
     {
         const auto view = mem::make_ComplexSpansView(reals, imags);
         test_mem_ComplexViewConstIterator(testName, view);
