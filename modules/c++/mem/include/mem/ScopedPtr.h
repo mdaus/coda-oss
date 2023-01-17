@@ -26,9 +26,9 @@
 #pragma once
 
 #include <cstddef>
+#include <std/memory>
 #include <type_traits>
 
-#include "coda_oss/memory.h"
 #include "sys/Conf.h"
 #include "mem/SharedPtr.h"
 
@@ -64,7 +64,7 @@ class ScopedPtr
     }
     void duplicate(const T& from, std::false_type)
     {
-        reset(coda_oss::make_unique<T>(from));
+        reset(std::make_unique<T>(from));
     }
 
 public:

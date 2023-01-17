@@ -95,22 +95,19 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <iostream>
-#include <cstdarg>
+
+#if defined(__sgi) || defined(__sgi__)
+#   include <stdarg.h>
+#else
+#   include <cstdarg>
+#endif
 
 namespace sys
 {
-    #if _MSC_VER
-    #pragma warning(push)
-    #pragma warning(disable : 5264)  // '...': '...' variable is not used
-    #endif  // _MSC_VER
 
     // compile-time for Dbg.h
     constexpr auto debug = CODA_OSS_DEBUG ? true : false;
     constexpr auto release = !debug;
-
-    #if _MSC_VER
-    #pragma warning(pop)
-    #endif  // _MSC_VER
 
     // build-time for Dbg.cpp; may (although shouldn't) be different than above.
     // C++ says little about debug/release/optimize/etc. (there's NDEBUG inherited from C);
@@ -181,16 +178,7 @@ namespace sys
 
 namespace sys
 {
-#if _MSC_VER
-#pragma warning(push)
-#pragma warning(disable : 5264)  // '...': '...' variable is not used
-#endif  // _MSC_VER
-
 constexpr bool debugging = CODA_OSS_debugging ? true : false;
-
-#if _MSC_VER
-#pragma warning(pop)
-#endif  // _MSC_VER
 }
 
 namespace sys

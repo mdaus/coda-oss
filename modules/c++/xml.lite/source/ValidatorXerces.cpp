@@ -185,7 +185,7 @@ using XMLCh_t = wchar_t;
 static_assert(std::is_same<::XMLCh, XMLCh_t>::value, "XMLCh should be wchar_t");
 inline void reset(str::EncodedStringView xmlView, std::unique_ptr<std::wstring>& pWString)
 {
-    pWString = coda_oss::make_unique<std::wstring>(xmlView.wstring());
+    pWString = std::make_unique<std::wstring>(xmlView.wstring());
 }
 #else
 using XMLCh_t = char16_t;
@@ -194,11 +194,11 @@ static_assert(std::is_same<::XMLCh, XMLCh_t>::value, "XMLCh should be char16_t")
 
 inline void reset(str::EncodedStringView xmlView, std::unique_ptr<std::u16string>& pWString)
 {
-    pWString = coda_oss::make_unique<std::u16string>(xmlView.u16string());
+    pWString = std::make_unique<std::u16string>(xmlView.u16string());
 }
 inline void reset(str::EncodedStringView xmlView, std::unique_ptr<str::ui16string>& pWString)
 {
-    pWString = coda_oss::make_unique<str::ui16string>(xmlView.ui16string_());
+    pWString = std::make_unique<str::ui16string>(xmlView.ui16string_());
 }
 
 using XMLCh_string = std::basic_string<XMLCh_t>;

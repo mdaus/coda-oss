@@ -54,20 +54,11 @@ namespace sys
 		//MacOS
 	};
 
-	#if _MSC_VER
-	#pragma warning(push)
-	#pragma warning(disable : 5264)  // '...': '...' variable is not used
-	#endif  // _MSC_VER
-
 	#if _WIN32
 	constexpr auto Platform = PlatformType::Windows;
 	#else
     constexpr auto Platform = PlatformType::Linux;
 	#endif
-
-	#if _MSC_VER
-	#pragma warning(pop)
-	#endif  // _MSC_VER
 }
 
 #endif
