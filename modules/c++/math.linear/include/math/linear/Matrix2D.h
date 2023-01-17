@@ -25,9 +25,9 @@
 #include <cmath>
 #include <algorithm>
 #include <functional>
-#include <std/memory>
 #include <cstddef>
 
+#include <coda_oss/memory.h>
 #include <import/sys.h>
 #include <import/gsl.h>
 #include <mem/ScopedArray.h>
@@ -80,7 +80,7 @@ class Matrix2D
 
     void reset()
     {
-        mStorage = std::make_unique<_T[]>(mMN);
+        mStorage = coda_oss::make_unique<_T[]>(mMN);
         mRaw = mStorage.get();
     }
     Matrix2D(size_t M, size_t N, std::nullptr_t) :

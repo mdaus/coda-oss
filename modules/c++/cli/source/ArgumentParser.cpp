@@ -412,7 +412,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
         }
     }
 
-    auto results = std::make_unique<cli::Results>();
+    auto results = coda_oss::make_unique<cli::Results>();
     cli::Results *currentResults = NULL;
     for (size_t i = 0, s = explodedArgs.size(); i < s; ++i)
     {
