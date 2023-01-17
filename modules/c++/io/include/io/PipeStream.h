@@ -23,7 +23,8 @@
 #ifndef __IO_PIPE_STREAM_H__
 #define __IO_PIPE_STREAM_H__
 
-#include <coda_oss/memory.h>
+#include <std/memory>
+
 #include <import/except.h>
 #include <str/Convert.h>
 #include <sys/Err.h>
@@ -53,7 +54,7 @@ struct PipeStream : InputStream
                size_t streamBufferSize = DEFAULT_CHUNK_SIZE) : 
         InputStream(),
         mExecPipe(cmd),
-        mCharString(coda_oss::make_unique<char[]>(streamBufferSize)),
+        mCharString(std::make_unique<char[]>(streamBufferSize)),
         mBufferSize(streamBufferSize)
     {
         mExecPipe.run();

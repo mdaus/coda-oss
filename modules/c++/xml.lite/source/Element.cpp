@@ -36,7 +36,7 @@
 
 std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const std::string& qname, const std::string& uri, const std::string& characterData)
 {
-    return coda_oss::make_unique<Element>(qname, uri, characterData);
+    return std::make_unique<Element>(qname, uri, characterData);
 }
 std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const QName& qname, const std::string& characterData)
 {
@@ -44,7 +44,7 @@ std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const QName& qnam
 }
 std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const QName& qname, const coda_oss::u8string& characterData)
 {
-    return coda_oss::make_unique<Element>(qname,  characterData);
+    return std::make_unique<Element>(qname,  characterData);
 }
 
 xml::lite::Element::Element(const xml::lite::Element& node)

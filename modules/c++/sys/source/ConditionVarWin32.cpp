@@ -20,8 +20,6 @@
  *
  */
 
-#include <coda_oss/memory.h>
-
 
 #if defined(_WIN32)
 #include "sys/ConditionVarWin32.h"
@@ -201,7 +199,7 @@ void sys::ConditionVarDataWin32::broadcast()
 }
 
 sys::ConditionVarWin32::ConditionVarWin32() :
-    mMutexOwned(coda_oss::make_unique<sys::MutexWin32>()),
+    mMutexOwned(std::make_unique<sys::MutexWin32>()),
     mMutex(mMutexOwned.get())
 {}
 
