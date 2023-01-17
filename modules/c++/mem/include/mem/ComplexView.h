@@ -248,81 +248,13 @@ inline auto make_ComplexSpanView(coda_oss::span<const std::complex<T>> s)
 {
     return ComplexSpanView<T>(s);
 }
-
 template <typename TVectorLike>
-struct ComplexArrayView final
+inline auto make_ComplexSpanView(const TVectorLike& v)
 {
-    using size_type = size_t;
-    using value_type = typename TVectorLike::value_type;
-    using cxvalue_t_ = value_type;
-    using span_t_ = coda_oss::span<const cxvalue_t_>;
-    using axis_t_ = typename cxvalue_t_::value_type;  // i.e., float
-    using view_t_ = ComplexSpanView<axis_t_>;
-    using const_iterator = typename view_t_::const_iterator;
-    using iterator = const_iterator;
-
-    ComplexArrayView() = delete;
-    ~ComplexArrayView() = default;
-    explicit ComplexArrayView(const TVectorLike& data) : view_(span_t_(data.data(), data.size()))
-    {
-    }
-    ComplexArrayView(const ComplexArrayView&) = default;
-    ComplexArrayView& operator=(const ComplexArrayView&) = default;
-    ComplexArrayView(ComplexArrayView&&) = default;
-    ComplexArrayView& operator=(ComplexArrayView&&) = default;
-
-    constexpr auto real(size_type idx) const noexcept
-    {
-        return view_.real(idx);
-    }
-    constexpr auto imag(size_type idx) const noexcept
-    {
-        return view_.imag(idx);
-    }
-
-    constexpr const cxvalue_t_& index(size_type idx) const noexcept // i.e., std::complex<float>
-    {
-        return view_[idx];
-    }
-    constexpr const auto& operator[](size_type idx) const noexcept
-    {
-        return index(idx);
-    }
-
-    constexpr size_type size() const noexcept
-    {
-        return view_.size();
-    }
-
-    auto begin() const
-    {
-        return view_.begin();
-    }
-    auto end() const
-    {
-        return view_.end();
-    }
-
-    auto reals() const
-    {
-        return view_.reals();
-    }
-    auto imags() const
-    {
-        return view_.imags();
-    }
-    auto values() const
-    {
-        return view_.values();
-    }
-
-private:
-    view_t_ view_;  // i.e., ComplexSpanView<float>
-};
-template <typename TVectorLike>
-inline auto make_ComplexArrayView(const TVectorLike& v)
-{
-    return ComplexArrayView<TVectorLike>(v);
+    using cxvalue_t = typename TVectorLike::value_type; // i.e., std::complex<float>
+    const coda_oss::span<const cxvalue_t> s(v.data(), v.size());
+    using axis_t = typename cxvalue_t::value_type;  // i.e., float
+    return ComplexSpanView<axis_t>(s);
 }
 
 template <typename T>

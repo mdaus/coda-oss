@@ -186,7 +186,7 @@ TEST_CASE(testComplexViewFloat)
         test_cx_view(testName, view.values());
     }
     {
-        const auto view = mem::make_ComplexArrayView(cx_data());
+        const auto view = mem::make_ComplexSpanView(cx_data());
         TEST_ASSERT_EQ(cx_data().size(), view.size());
         test_mem_ComplexView(testName, view);
         test_cx_view(testName, view.values());
@@ -260,7 +260,7 @@ TEST_CASE(testComplexViewFloatIterator)
         test_mem_ComplexViewConstIterator(testName, view);
     }
     {
-        const auto view = mem::make_ComplexArrayView(cx_data());
+        const auto view = mem::make_ComplexSpanView(cx_data());
         test_mem_ComplexViewConstIterator(testName, view);
     }
 
