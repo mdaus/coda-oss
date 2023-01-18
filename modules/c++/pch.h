@@ -69,5 +69,6 @@
 #pragma warning(pop)
 
 #pragma warning(disable: 4251) // '...': class '...' needs to have dll-interface to be used by clients of class '...'
+#pragma warning(disable: 5105) // macro expansion producing '...' has undefined behavior
 
 #endif //CODA_OSS_pch_h_INCLUDED_
