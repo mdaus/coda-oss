@@ -12,6 +12,8 @@ if (MSVC)
 elseif (UNIX)
     # all warnings, warnings as errors
     add_compile_options(-Wall -Werror)
+    #add_compile_options(-Wpedantic -Werror)
+    #add_compile_options(-Wno-expansion-to-defined)
 endif()
 
 # add an interface library for unittests
