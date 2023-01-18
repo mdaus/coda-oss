@@ -10,10 +10,12 @@ if (MSVC)
     add_compile_options(/Zc:preprocessor)
     add_compile_options(/wd5105) # macro expansion producing '...' has undefined behavior
 elseif (UNIX)
-    # all warnings, warnings as errors
-    add_compile_options(-Wall -Werror)
-    #add_compile_options(-Wpedantic -Werror)
-    #add_compile_options(-Wno-expansion-to-defined)
+    add_compile_options(-Werror)
+    add_compile_options(-Wall)
+    #add_compile_options(-Wpedantic -Wextra)
+    add_compile_options(-Wno-deprecated-copy)
+    add_compile_options(-Wno-expansion-to-defined -Wno-type-limits)
+    add_compile_options(-Wno-unused-parameter)
 endif()
 
 # add an interface library for unittests
