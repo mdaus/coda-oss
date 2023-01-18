@@ -5,10 +5,6 @@ set(CXX_STANDARD_REQUIRED true)
 # turn on warnings as errors
 if (MSVC)
     add_compile_options(/WX /W4)
-    
-    # use standard (not legacy) C pre-processor
-    add_compile_options(/Zc:preprocessor)
-    add_compile_options(/wd5105) # macro expansion producing '...' has undefined behavior
 elseif (UNIX)
     add_compile_options(-Werror)
     add_compile_options(-Wall)
