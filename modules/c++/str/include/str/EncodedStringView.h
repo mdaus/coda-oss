@@ -55,7 +55,7 @@ class CODA_OSS_API EncodedStringView final
     explicit EncodedStringView(coda_oss::span<const coda_oss::u8string::value_type>);
     explicit EncodedStringView(coda_oss::span<const str::W1252string::value_type>);
 
-#if _WIN32
+    #ifdef _WIN32
     static constexpr bool mNativeIsUtf8 = false; // Windows-1252
     #else
     static constexpr bool mNativeIsUtf8 = true;  // !_WIN32, assume Linux
