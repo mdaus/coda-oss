@@ -55,14 +55,6 @@ inline std::u16string to_u16string(std::string::const_pointer s, size_t sz, bool
     }
     return str::to_u16string(str::cast<str::W1252string::const_pointer>(s), sz);
 }
-inline str::ui16string to_ui16string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
-{
-    if (is_utf8)
-    {
-        return str::to_ui16string(str::cast<coda_oss::u8string::const_pointer>(s), sz);
-    }
-    return str::to_ui16string(str::cast<str::W1252string::const_pointer>(s), sz);
-}
 
 static std::string to_native(coda_oss::u8string::const_pointer p, size_t sz)
 {
@@ -154,10 +146,6 @@ std::string str::EncodedStringView::asUtf8() const
 std::u16string str::EncodedStringView::u16string() const
 {
     return ::to_u16string(mString.data(), mString.size(), mIsUtf8);
-}
-str::ui16string str::EncodedStringView::ui16string_() const
-{
-    return ::to_ui16string(mString.data(), mString.size(), mIsUtf8);
 }
 
 inline std::u32string to_u32string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)

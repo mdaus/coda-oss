@@ -109,10 +109,6 @@ public:
     // is WCHAR (char* is converted to UTF-16).
     std::wstring wstring() const; // UTF-16 on Windows, UTF-32 on Linux
 
-    // With some older C++ compilers, uint16_t may be used instead of char16_t :-(
-    // Using this routine can avoid an extra copy.
-    str::ui16string ui16string_() const; // use sparingly!
-
     // These are for "advanced" use, most "normal" code should use the routines above.
     std::string::const_pointer c_str() const
     {
