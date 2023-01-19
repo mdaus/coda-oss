@@ -47,23 +47,17 @@
 #endif
 
 #include <assert.h>
-#include <iostream>
 #include <stdio.h>
 #include <stdint.h>
+
+#include <iostream>
 #include <algorithm>
-
-#if defined(__sgi) || defined(__sgi__)
-#   include <stdarg.h>
-#   include <stdlib.h>
-#else
-#   include <cstdarg>
-#   include <cstdlib>
-#endif
-
+#include <cstdarg>
+#include <cstdlib>
 #include <memory>
+
 #include "str/Format.h"
 #include "sys/TimeStamp.h"
-
 
 
 /*  Dance around the compiler to figure out  */
@@ -131,21 +125,6 @@ namespace sys
 }
 #else // !windows
 #   include <sys/types.h>
-#   if defined(__sgi) || defined(__sgi__)
-#       if defined(__GNUC__)
-#           ifdef _FIX_BROKEN_HEADERS
-                typedef __int64_t jid_t;
-#           endif
-#       endif
-#   endif
-#   if defined(__sun) || defined(__sun__) || defined(__sparc) || defined(__sparc) || defined(__sparc__)
-#       if !defined(__SunOS_5_6) && !defined(__SunOS_5_7) && !defined(__SunOS_5_8) && defined(__GNUC__)
-#           ifdef _FIX_BROKEN_HEADERS
-                typedef id_t projid_t;
-#           endif
-#       endif
-#       include <sys/stream.h>
-#  endif
 #  include <signal.h>
 #  include <errno.h>
 #  include <sys/stat.h>
@@ -153,11 +132,7 @@ namespace sys
 #  include <unistd.h>
 #  include <fcntl.h>
 #  include <dirent.h>
-#  if defined(_USE_STDINT)
-#      include <stdint.h>
-#  else
-#      include <inttypes.h>
-#  endif
+#  include <stdint.h>
 //#  include <sys/mman.h>
 
 namespace sys
