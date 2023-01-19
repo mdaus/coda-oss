@@ -25,6 +25,11 @@
 #define CODA_OSS_sys_Conf_h_INCLUDED_
 #pragma once
 
+// In case there is still a WIN32 (should be "_WIN32" with a leading '_') someplace.
+#if defined(_WIN32) && !defined(WIN32)
+#define WIN32 _WIN32
+#endif
+
 // POSIX is more-or-less "Unix"
 // https://linux.die.net/man/7/feature_test_macros
 // "If no feature test macros are explicitly defined, then the following feature test macros
@@ -67,7 +72,7 @@
 #if defined(__GNUC__)
     /*  We get a really nice function macro  */
 #   define NativeLayer_func__ __PRETTY_FUNCTION__
-#elif (defined(WIN32) || defined(_WIN32)) && (_MSC_VER >= 1300)
+#elif defined(_WIN32) && (_MSC_VER >= 1300)
 #   define NativeLayer_func__ __FUNCSIG__
 /*  Otherwise, lets look for C99 compatibility  */
 #elif defined (__STDC_VERSION__)
@@ -103,7 +108,7 @@ namespace sys
     typedef int64_t            Int64_T;
 }
 
-#if defined(WIN32) || defined(_WIN32)
+#ifdef _WIN32
 #  include <malloc.h>
 #  include <windows.h>
 #  include <process.h>
@@ -305,7 +310,7 @@ namespace sys
                               size_t alignment = SSE_INSTRUCTION_ALIGNMENT)
     {
         void* p = nullptr;
-#if defined(WIN32) || defined(_WIN32)
+#ifdef _WIN32
         p = _aligned_malloc(size, alignment);
 #elif CODA_OSS_POSIX2001_SOURCE
         // https://linux.die.net/man/3/posix_memalign
@@ -337,7 +342,7 @@ namespace sys
      */
     inline void alignedFree(void* p)
     {
-#if defined(WIN32) || defined(_WIN32)
+#ifdef _WIN32
         _aligned_free(p);
 #else
         free(p);

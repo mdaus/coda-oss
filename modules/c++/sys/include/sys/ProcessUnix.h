@@ -24,7 +24,7 @@
 #ifndef __SYS_PROCESS_UNIX_H__
 #define __SYS_PROCESS_UNIX_H__
 
-#if !(defined(WIN32) || defined(_WIN32))
+#ifndef _WIN32
 
 #include <assert.h>
 #include <sys/types.h>
