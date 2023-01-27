@@ -2,7 +2,7 @@
  * This file is part of hdf5.lite-c++ 
  * =========================================================================
  * 
- * (C) Copyright 2022, Maxar Technologies, Inc.
+ * (C) Copyright 2023, Maxar Technologies, Inc.
  *
  * hdf5.lite-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,16 +20,17 @@
  *
  */
 
-#ifndef CODA_OSS_hdf5_lite_Read_h_INCLUDED_
-#define CODA_OSS_hdf5_lite_Read_h_INCLUDED_
+#ifndef CODA_OSS_hdf5_lite_Write_h_INCLUDED_
+#define CODA_OSS_hdf5_lite_Write_h_INCLUDED_
 #pragma once
 
 /*!
  * \file  Read.h
  * \brief HDF File-reading API
  *
- * These are simple routines to read HDF5 files; they're loosely modeled after the MATLab API
- * https://www.mathworks.com/help/matlab/import_export/import-hdf5-files.html
+ * These are simple routines to write HDF5 files; they're loosely modeled after the MATLab API
+ * https://www.mathworks.com/help/matlab/ref/h5create.html
+ * https://www.mathworks.com/help/matlab/ref/h5write.html
  */
 
 #include <string>
@@ -43,11 +44,12 @@ namespace hdf5
 {
 namespace lite
 {
+CODA_OSS_API void createFile(const coda_oss::filesystem::path&, const std::string& ds, types::RowCol<size_t>);
 
-CODA_OSS_API types::RowCol<size_t> readFile(const coda_oss::filesystem::path&, const std::string& loc, std::vector<double>&);
-CODA_OSS_API types::RowCol<size_t> readFile(const coda_oss::filesystem::path&, const std::string& loc, std::vector<float>&);
+CODA_OSS_API void writeFile(const coda_oss::filesystem::path&, const std::string& loc, std::vector<double>&);
+CODA_OSS_API void writeFile(const coda_oss::filesystem::path&, const std::string& loc, std::vector<float>&);
 
 }
 }
 
-#endif // CODA_OSS_hdf5_lite_Read_h_INCLUDED_
+#endif // CODA_OSS_hdf5_lite_Write_h_INCLUDED_
