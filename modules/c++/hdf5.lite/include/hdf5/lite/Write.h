@@ -44,7 +44,8 @@ namespace hdf5
 {
 namespace lite
 {
-CODA_OSS_API void createFile(const coda_oss::filesystem::path&, const std::string& ds, types::RowCol<size_t>);
+template<typename TDataSet> // currently implemented for float and double
+CODA_OSS_API void createFile(const coda_oss::filesystem::path&, const std::string& ds, const types::RowCol<size_t>&);
 
 CODA_OSS_API void writeFile(const coda_oss::filesystem::path&, const std::string& loc, std::vector<double>&);
 CODA_OSS_API void writeFile(const coda_oss::filesystem::path&, const std::string& loc, std::vector<float>&);

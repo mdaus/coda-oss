@@ -31,4 +31,47 @@
 #include "H5.h"
 #include "hdf5.lite.h"
 
+// https://raw.githubusercontent.com/HDFGroup/hdf5/develop/c++/examples/h5tutr_rdwt.cpp
 
+template<typename T> static H5::PredType getPredType();
+template <>
+inline H5::PredType getPredType<float>()
+{
+    static_assert(sizeof(float) * 8 == 32, "'float' should be 32-bits"); // IEEE_F32LE
+    return H5::PredType::IEEE_F32LE;
+}
+template <>
+inline H5::PredType getPredType<double>()
+{
+    static_assert(sizeof(double) * 8 == 64, "'double' should be 64-bits"); // IEEE_F64LE
+    return H5::PredType::IEEE_F64LE;
+}
+
+template<typename T>
+static void createFile_(const coda_oss::filesystem::path& fileName, const std::string& ds, const types::RowCol<size_t>& sz)
+{
+    // https://raw.githubusercontent.com/HDFGroup/hdf5/develop/c++/examples/h5tutr_crtdat.cpp
+    //
+    // Create a new file using the default property lists.
+    H5::H5File file(fileName.string(), H5F_ACC_TRUNC);
+
+    // Create the data space for the dataset.
+    constexpr int RANK = 2;
+    const hsize_t dims[]{sz.row, sz.col};  // dataset dimensions
+    H5::DataSpace dataspace(RANK, dims);
+
+    // Create the dataset.
+    const auto data_type = getPredType<T>();
+    std::ignore = file.createDataSet(ds, data_type, dataspace);
+}
+
+template<>
+void hdf5::lite::createFile<float>(const coda_oss::filesystem::path& fileName, const std::string& ds, const types::RowCol<size_t>& sz)
+{
+    details::try_catch_H5ExceptionsV(createFile_<float>, __FILE__, __LINE__, fileName, ds, sz); 
+}
+template<>
+void hdf5::lite::createFile<double>(const coda_oss::filesystem::path& fileName, const std::string& ds, const types::RowCol<size_t>& sz)
+{
+    details::try_catch_H5ExceptionsV(createFile_<double>, __FILE__, __LINE__, fileName, ds, sz); 
+}
