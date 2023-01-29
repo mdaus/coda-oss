@@ -39,13 +39,15 @@
 #include "sys/filesystem.h"
 #include "types/RowCol.h"
 
+#include "SpanRC.h"
+
 namespace hdf5
 {
 namespace lite
 {
 
-CODA_OSS_API types::RowCol<size_t> readFile(const coda_oss::filesystem::path&, const std::string& loc, std::vector<double>&);
-CODA_OSS_API types::RowCol<size_t> readFile(const coda_oss::filesystem::path&, const std::string& loc, std::vector<float>&);
+CODA_OSS_API SpanRC<double> readFile(const coda_oss::filesystem::path&, const std::string& loc, std::vector<double>&);
+CODA_OSS_API SpanRC<float> readFile(const coda_oss::filesystem::path&, const std::string& loc, std::vector<float>&);
 
 }
 }
