@@ -64,7 +64,6 @@ static void createFile_(const coda_oss::filesystem::path& fileName, const std::s
     const auto data_type = getPredType<T>();
     std::ignore = file.createDataSet(ds, data_type, dataspace);
 }
-
 template<>
 void hdf5::lite::createFile<float>(const coda_oss::filesystem::path& fileName, const std::string& ds, const types::RowCol<size_t>& sz)
 {
@@ -74,4 +73,35 @@ template<>
 void hdf5::lite::createFile<double>(const coda_oss::filesystem::path& fileName, const std::string& ds, const types::RowCol<size_t>& sz)
 {
     details::try_catch_H5ExceptionsV(createFile_<double>, __FILE__, __LINE__, fileName, ds, sz); 
+}
+
+
+template<typename T>
+static void writeFile_(const coda_oss::filesystem::path& fileName, const std::string& ds, hdf5::lite::SpanRC<const T> data)
+{
+    // https://raw.githubusercontent.com/HDFGroup/hdf5/develop/c++/examples/h5tutr_rdwt.cpp
+    
+    // Open an existing file and dataset.
+    H5::H5File file(fileName.string(), H5F_ACC_RDWR);
+    auto dataset = file.openDataSet(ds);
+    
+    const auto dims = hdf5::lite::details::getSimpleExtentSize(dataset);
+    if (data.dims() != dims)
+    {
+        const except::Context ctx("dataSet dimensions do not match data dimensions", __FILE__, __LINE__, "writeFile");
+        throw hdf5::lite::DataSetException(ctx);
+    }
+
+    // Write the data to the dataset using default memory space, file
+    // space, and transfer properties.
+    const auto data_type = getPredType<T>();
+    dataset.write(data.data(), data_type);
+}
+void hdf5::lite::writeFile(const coda_oss::filesystem::path& fileName, const std::string& ds, SpanRC<const double> data)
+{
+    details::try_catch_H5ExceptionsV(writeFile_<double>, __FILE__, __LINE__, fileName, ds, data); 
+}
+void hdf5::lite::writeFile(const coda_oss::filesystem::path& fileName, const std::string& ds, SpanRC<const float> data)
+{
+    details::try_catch_H5ExceptionsV(writeFile_<float>, __FILE__, __LINE__, fileName, ds, data); 
 }
