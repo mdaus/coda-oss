@@ -99,6 +99,11 @@ struct SpanRC final
         return s_.empty();
     }
 
+    const auto& dims() const
+    {
+        return rc_;
+    }
+
     private:
     types::RowCol<size_t> rc_;
     coda_oss::span<T> s_;
