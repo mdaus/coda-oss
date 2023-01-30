@@ -74,6 +74,14 @@ void hdf5::lite::createFile<double>(const coda_oss::filesystem::path& fileName, 
 {
     details::try_catch_H5ExceptionsV(createFile_<double>, __FILE__, __LINE__, fileName, ds, sz); 
 }
+void hdf5::lite::createFile(const coda_oss::filesystem::path& fileName, const std::string& ds, hdf5::lite::SpanRC<const float> data)
+{
+    createFile<float>(fileName, ds, data.dims());
+}
+void hdf5::lite::createFile(const coda_oss::filesystem::path& fileName, const std::string& ds, hdf5::lite::SpanRC<const double> data)
+{
+    createFile<double>(fileName, ds, data.dims());
+}
 
 
 template<typename T>

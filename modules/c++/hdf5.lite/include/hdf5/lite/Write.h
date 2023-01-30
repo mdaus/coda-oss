@@ -48,9 +48,31 @@ namespace lite
 {
 template<typename TDataSet> // currently implemented for float and double
 CODA_OSS_API void createFile(const coda_oss::filesystem::path&, const std::string& ds, const types::RowCol<size_t>&);
+CODA_OSS_API void createFile(const coda_oss::filesystem::path&, const std::string& ds, SpanRC<const double>);
+inline void createFile(const coda_oss::filesystem::path& path, const std::string& ds, SpanRC<double> data_)
+{
+	SpanRC<const double> data(data_.data(), data_.dims());
+	createFile(path, ds, data);
+}
+CODA_OSS_API void createFile(const coda_oss::filesystem::path&, const std::string& ds, SpanRC<const float>);
+inline void createFile(const coda_oss::filesystem::path& path, const std::string& ds, SpanRC<float> data_)
+{
+    SpanRC<const float> data(data_.data(), data_.dims());
+	createFile(path, ds, data);
+}
 
 CODA_OSS_API void writeFile(const coda_oss::filesystem::path&, const std::string& loc, SpanRC<const double>);
+inline void writeFile(const coda_oss::filesystem::path& path, const std::string& ds, SpanRC<double> data_)
+{
+	SpanRC<const double> data(data_.data(), data_.dims());
+    writeFile(path, ds, data);
+}
 CODA_OSS_API void writeFile(const coda_oss::filesystem::path&, const std::string& loc, SpanRC<const float>);
+inline void writeFile(const coda_oss::filesystem::path& path, const std::string& ds, SpanRC<float> data_)
+{
+    SpanRC<const float> data(data_.data(), data_.dims());
+    writeFile(path, ds, data);
+}
 
 }
 }
