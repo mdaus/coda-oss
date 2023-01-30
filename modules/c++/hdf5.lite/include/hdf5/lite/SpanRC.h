@@ -50,7 +50,7 @@ struct SpanRC final
     using pointer = T*;
     using reference = T&;
 
-    SpanRC() noexcept = default;
+    SpanRC() = default;
     SpanRC(pointer p, size_type rc) noexcept : s_(p, rc.area()), rc_(rc)
     {
     }
@@ -71,7 +71,7 @@ struct SpanRC final
     }
     /*constexpr*/ reference operator()(size_t r, size_t c) const noexcept
     {
-        const auto offset = (r * dims.col) + c;
+        const auto offset = (r * dims().col) + c;
         return (*this)[offset];
     }
     /*constexpr*/ reference operator[](size_type idx) const noexcept
