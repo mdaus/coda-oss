@@ -24,7 +24,7 @@
 #include "xml/lite/Document.h"
 #include "xml/lite/Element.h"
 #include "xml/lite/QName.h"
-
+#include <iostream>
 static const std::string test_text = "SOAP Test";
 
 struct SOAPBody : public xml::lite::Element
@@ -45,7 +45,8 @@ struct SOAP : public xml::lite::Document
         xml::lite::Element * elem;
         xml::lite::QName asQName(uri, qname);
         elem = new SOAPBody(asQName);
-        elem->setCharacterData(test_text);
+        elem->setCharacterData(characterData);
+        //elem->setCharacterData(test_text);
         return elem;
     }
 };
@@ -54,6 +55,8 @@ TEST_CASE(test_overrideCreateElement)
 {
     SOAP soap_test;
     auto a = soap_test.createElement("a","b","Not SOAP Test");
+    std::cout << test_text << std::endl;
+    std::cout << a->getCharacterData() << std::endl;
     TEST_ASSERT_EQ(a->getCharacterData(), test_text); 
 }
 
