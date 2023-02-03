@@ -19,11 +19,11 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
+
 #include <TestCase.h>
 #include "xml/lite/Document.h"
 #include "xml/lite/Element.h"
 #include "xml/lite/QName.h"
-#include <iostream>
 static const std::string test_text = "SOAP Test";
 
 struct SOAPBody : public xml::lite::Element
@@ -52,15 +52,10 @@ struct SOAP : public xml::lite::Document
 
 TEST_CASE(test_overrideCreateElement)
 {
-    SOAP *soap_test = new SOAP();
-    xml::lite::Document * doc = new xml::lite::Document();
+    xml::lite::Document *soap_test = new SOAP();
     xml::lite::Element * a = soap_test->createElement("a","b","Not SOAP Test");
-    SOAPBody* b = dynamic_cast<SOAPBody*>(a);
-    xml::lite::Element *  c = doc->createElement("a","b","Not Soap Test");
+    SOAPBody* b = static_cast<SOAPBody*>(a);
     TEST_ASSERT_NOT_NULL(b);
-    std::cout << a->getCharacterData() << std::endl;
-    std::cout << b->getCharacterData() << std::endl;
-    std::cout << c->getCharacterData() << std::endl;
     std::cout << test_text << std::endl;
     TEST_ASSERT_EQ(a->getCharacterData(), test_text);
     TEST_ASSERT_EQ(b->getCharacterData(), test_text);
