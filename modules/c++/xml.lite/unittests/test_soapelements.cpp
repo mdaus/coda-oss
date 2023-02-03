@@ -54,9 +54,8 @@ TEST_CASE(test_overrideCreateElement)
 {
     xml::lite::Document *soap_test = new SOAP();
     xml::lite::Element * a = soap_test->createElement("a","b","Not SOAP Test");
-    SOAPBody* b = static_cast<SOAPBody*>(a);
+    SOAPBody* b = dynamic_cast<SOAPBody*>(a);
     TEST_ASSERT_NOT_NULL(b);
-    std::cout << test_text << std::endl;
     TEST_ASSERT_EQ(a->getCharacterData(), test_text);
     TEST_ASSERT_EQ(b->getCharacterData(), test_text);
 }
