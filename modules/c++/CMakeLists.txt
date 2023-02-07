@@ -10,9 +10,6 @@ elseif (UNIX)
     #add_compile_options(-Werror)
     add_compile_options(-Wall)
     #add_compile_options(-Wpedantic -Wextra)
-    add_compile_options(-Wno-deprecated-copy)
-    add_compile_options(-Wno-expansion-to-defined -Wno-type-limits)
-    add_compile_options(-Wno-unused-parameter)
 endif()
 
 # add an interface library for unittests
