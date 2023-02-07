@@ -4,7 +4,7 @@ set(CXX_STANDARD_REQUIRED true)
 
 # turn on warnings as errors
 if (MSVC)
-    add_compile_options(/WX /W4)
+    add_compile_options(/WX /W4) # /Wall
 elseif (UNIX)
     add_compile_options(-Werror -Wall -Wpedantic -Wextra)
 endif()
