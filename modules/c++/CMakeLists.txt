@@ -6,10 +6,7 @@ set(CXX_STANDARD_REQUIRED true)
 if (MSVC)
     add_compile_options(/WX /W4)
 elseif (UNIX)
-    # still building with older GCC :-(
-    #add_compile_options(-Werror)
-    add_compile_options(-Wall)
-    #add_compile_options(-Wpedantic -Wextra)
+    add_compile_options(-Werror -Wall -Wpedantic -Wextra)
 endif()
 
 # add an interface library for unittests
