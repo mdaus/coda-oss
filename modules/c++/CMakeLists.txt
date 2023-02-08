@@ -7,9 +7,6 @@ if (MSVC)
     add_compile_options(/WX /W4) # /Wall
 elseif (UNIX)
     add_compile_options(-Werror -Wall -Wpedantic -Wextra)
-
-    # Older GCC compilers (on build servers) issue this warning, newer ones don't?
-    add_compile_options(-Wno-noexcept-type)
 endif()
 
 # add an interface library for unittests
