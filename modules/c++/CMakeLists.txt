@@ -1,12 +1,14 @@
 set(TARGET_LANGUAGE c++)
-set(CMAKE_CXX_STANDARD 14)
-set(CXX_STANDARD_REQUIRED true)
 
 # turn on warnings as errors
 if (MSVC)
-    add_compile_options(/WX /W4) # /Wall
+    add_compile_options(/std:c++14)
+
+    add_compile_options(/W4) # /Wall
 elseif (UNIX)
-    add_compile_options(-Werror -Wall -Wpedantic -Wextra)
+    add_compile_options(-std=c++14)
+
+    add_compile_options(-Wall -pedantic -Wextra)
 endif()
 
 # add an interface library for unittests
