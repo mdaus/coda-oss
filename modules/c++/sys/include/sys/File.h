@@ -20,8 +20,9 @@
  *
  */
 
-#ifndef __SYS_FILE_H__
-#define __SYS_FILE_H__
+#ifndef CODA_OSS_sys_File_h_INCLUDED_
+#define CODA_OSS_sys_File_h_INCLUDED_
+#pragma once
 
 #include "sys/Conf.h"
 #include "sys/SystemException.h"
@@ -127,6 +128,11 @@ struct CODA_OSS_API File
         if (isOpen())
             close();
     }
+
+    File(const File&) = default;
+    File& operator=(const File&) = default;
+    File(File&&) = default;
+    File& operator=(File&&) = default;
 
     /*!
      *  Is the file open?
@@ -238,7 +244,11 @@ protected:
 
 };
 
+// These routines use sys::expandEnvironmentVariables() if the initial open attempt fails.
+CODA_OSS_API File make_File(const coda_oss::filesystem::path&, int accessFlags = File::READ_ONLY, int creationFlags =  File::EXISTING);
+CODA_OSS_API File make_File(const coda_oss::filesystem::path& parent, const coda_oss::filesystem::path& name,
+        int accessFlags =  File::READ_ONLY, int creationFlags =  File::EXISTING);
+
 }
 
-#endif
-
+#endif  // CODA_OSS_sys_File_h_INCLUDED_
