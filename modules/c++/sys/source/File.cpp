@@ -30,6 +30,8 @@ static sys::File make_File_(const std::string& path, int accessFlags, int creati
 {
     const auto checkIfExists = (creationFlags & sys::File::EXISTING) == sys::File::EXISTING;
     const auto expanded = sys::Path::expandEnvironmentVariables(path, checkIfExists);
+
+    std::clog << "*** " << expanded << "\n";
     return sys::File(expanded, accessFlags, creationFlags);
 }
 sys::File sys::make_File(const coda_oss::filesystem::path& path, int accessFlags, int creationFlags)
@@ -40,7 +42,7 @@ sys::File sys::make_File(const coda_oss::filesystem::path& path, int accessFlags
     }
     catch (const sys::SystemException& ex)
     {
-        static const std::string message("Error opening file:"); // see File::create();
+        static const std::string message("Error opening file"); // see File::create();
         if (!str::starts_with(ex.getMessage(), message))
         {
             throw ex;
@@ -67,7 +69,7 @@ sys::File sys::make_File(const coda_oss::filesystem::path& parent, const coda_os
     }
     catch (const sys::SystemException& ex)
     {
-        static const std::string message("Error opening file:"); // see File::create();
+        static const std::string message("Error opening file"); // see File::create();
         if (!str::starts_with(ex.getMessage(), message))
         {
             throw ex;

@@ -401,28 +401,28 @@ TEST_CASE(testFsFileSize)
     }
 }
 
-TEST_CASE(test_makeFile)
+static sys::File makeFile_()
 {
 #ifdef _WIN32
     static const sys::filesystem::path name("explorer.exe");
-    auto file = sys::make_File("%SystemRoot%" / name);
+    return sys::make_File("%SystemRoot%" / name);
 
 #else
-    sys::File file;
     static const sys::filesystem::path dot_cshrc(".cshrc");
     try
     {
-        file = sys::make_File("$HOME" / dot_cshrc);
+        return sys::make_File("$HOME" / dot_cshrc);
     }
-    catch (const sys::SystemException&)
-    {
-    }  // no .cshrc; try .bashrc
+    catch (const sys::SystemException&) { }  // no .cshrc; try .bashrc
 
-    static const sys::filesystem::path dot_bash(".bashrc");
-    file = sys::make_File("$HOME" / dot_bash);
+    static const sys::filesystem::path dot_bashrc(".bashrc");
+    return sys::make_File("$HOME" / dot_bashrc);
 #endif
-
-    TEST_ASSERT_TRUE(file.isOpen());
+}
+TEST_CASE(test_makeFile)
+{
+  auto file = makeFile_();
+  TEST_ASSERT_TRUE(file.isOpen());
 }
 
 
