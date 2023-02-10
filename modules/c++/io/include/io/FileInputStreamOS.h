@@ -23,10 +23,13 @@
 #ifndef __IO_FILE_INPUT_STREAM_OS_H__
 #define __IO_FILE_INPUT_STREAM_OS_H__
 
+#include "config/Exports.h"
+
 #if !defined(USE_IO_STREAMS)
 
 #include "except/Exception.h"
 #include "sys/File.h"
+#include "sys/filesystem.h"
 #include "io/InputStream.h"
 #include "io/SeekableStreams.h"
 
@@ -50,7 +53,7 @@ namespace io
  *  method is based on the pos in the file, and the streamTo() and read()
  *  are file operations
  */
-struct FileInputStreamOS : public SeekableInputStream
+struct CODA_OSS_API FileInputStreamOS : public SeekableInputStream
 {
 protected:
     sys::File mFile;
@@ -70,6 +73,10 @@ public:
                      sys::File::READ_ONLY,
                      sys::File::EXISTING);
     }
+    explicit FileInputStreamOS(const coda_oss::filesystem::path& inputFile) :
+        FileInputStreamOS(inputFile.string()) { }
+    FileInputStreamOS(const char* inputFile) : // "file.txt" could be either std::string or std::filesystem::path
+        FileInputStreamOS(std::string(inputFile))  {  }
 
     FileInputStreamOS(const sys::File& inputFile)
     {

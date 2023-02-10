@@ -1,10 +1,10 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of xml.lite-c++
  * =========================================================================
  *
  * (C) Copyright 2004 - 2019, MDA Information Systems LLC
  *
- * io-c++ is free software; you can redistribute it and/or modify
+ * xml.lite-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -26,8 +26,10 @@
 #include <TestCase.h>
 
 #include "xml/lite/MinidomParser.h"
+#include "xml/lite/QName.h"
 
-static const std::string uri = "urn:example.com";
+static const std::string strUri = "urn:example.com";
+static const xml::lite::Uri uri(strUri);
 static const std::string strXml_1_ = R"(
 <root>
     <doc name="doc">
@@ -37,7 +39,7 @@ static const std::string strXml_1_ = R"(
 static const std::string strXml_2_ = R"(" ns:int="314" />
     </doc>
 </root>)";
-static const auto strXml = strXml_1_ + uri + strXml_2_;
+static const auto strXml = strXml_1_ + strUri + strXml_2_;
 
 struct test_MinidomParser final
 {
@@ -48,13 +50,14 @@ struct test_MinidomParser final
         ss.stream() << strXml;
 
         xmlParser.parse(ss);
-        const auto doc = xmlParser.getDocument();
-        return doc->getRootElement();    
+        return getDocument(xmlParser).getRootElement();
     }
 };
 
 TEST_CASE(test_getAttribute)
 {
+    using namespace xml::lite::literals;  // _q and _u for QName and Uri
+
     test_MinidomParser xmlParser;
     const auto root = xmlParser.getRootElement();
 
@@ -63,6 +66,10 @@ TEST_CASE(test_getAttribute)
 
     std::string value;
     value = attributes.getValue("a");
+    TEST_ASSERT_EQ("a", value);
+    value = attributes["a"];
+    TEST_ASSERT_EQ("a", value);
+    value = attributes["a"_q];
     TEST_ASSERT_EQ("a", value);
 
     const auto result = attributes.getValue("a", value);
@@ -81,11 +88,11 @@ TEST_CASE(test_getAttributeByNS)
     using namespace xml::lite;
 
     std::string strValue;
-    strValue = attributes.getValue(uri, "int");
+    strValue = attributes.getValue(xml::lite::QName(uri, "int"));
     TEST_ASSERT_EQ("314", strValue);
     strValue = getValue<std::string>(attributes, uri, "int");
     TEST_ASSERT_EQ("314", strValue);
-    const auto key = std::make_tuple(uri, "int");
+    const auto key = xml::lite::QName(uri, "int");
     strValue = getValue<std::string>(attributes, key);
     TEST_ASSERT_EQ("314", strValue);
 
@@ -181,7 +188,7 @@ TEST_CASE(test_getAttributeValue)
     }
     {
         auto toType = [](const std::string& value) { return value == "yes"; };
-        bool value;
+        bool value = false;
         auto result = castValue(attributes, "bool", value, toType);
         TEST_ASSERT_TRUE(result);
         TEST_ASSERT_EQ(true, value);
@@ -326,6 +333,15 @@ TEST_CASE(test_setAttributeValue)
         result = getValue(attributes, "string", value);
         TEST_ASSERT_TRUE(result);
         TEST_ASSERT_EQ("xyz", value);
+
+        attributes["string"] = "abc";
+        value = attributes["string"];
+        TEST_ASSERT_EQ("abc", value);
+
+        using namespace xml::lite::literals;  // _q and _u for QName and Uri
+        attributes["string"_q] = "123";
+        value = attributes["string"_q];
+        TEST_ASSERT_EQ("123", value);
     }
     {
         auto toString = [](const bool& value) { return value ? "yes" : "no"; };
@@ -333,7 +349,7 @@ TEST_CASE(test_setAttributeValue)
         TEST_ASSERT_TRUE(result);
 
         auto toType = [](const std::string& value) { return value == "yes"; };
-        bool value;
+        bool value = false;
         result = castValue(attributes, "bool", value, toType);
         TEST_ASSERT_TRUE(result);
         TEST_ASSERT_EQ(true, value);

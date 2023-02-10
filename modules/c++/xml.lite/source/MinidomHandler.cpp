@@ -21,9 +21,14 @@
  */
 
 #include <stdexcept>
+#include <std/string>
+#include <utility>
 
 #include "str/Manip.h"
 #include "str/Convert.h"
+#include "str/Encoding.h"
+#include "sys/OS.h"
+#include "str/EncodedStringView.h"
 
 #include "xml/lite/MinidomHandler.h"
 
@@ -37,115 +42,59 @@ void xml::lite::MinidomHandler::setDocument(Document *newDocument, bool own)
     mDocument = newDocument;
     mOwnDocument = own;
 }
+void xml::lite::MinidomHandler::setDocument(std::unique_ptr<Document>&& newDocument)
+{
+    setDocument(newDocument.release(), true /*own*/);
+}
+std::unique_ptr<xml::lite::Document>& xml::lite::MinidomHandler::getDocument(std::unique_ptr<Document>& pDocument)
+{
+    pDocument.reset(getDocument(true /*steal*/));
+    return pDocument;
+}
 
 void xml::lite::MinidomHandler::clear()
 {
     mDocument->destroy();
-    currentCharacterData = "";
+    currentCharacterData.clear();
     assert(bytesForElement.empty());
     assert(nodeStack.empty());
 }
 
-void xml::lite::MinidomHandler::characters(const char* value, int length, const string_encoding* pEncoding)
+void xml::lite::MinidomHandler::characters(std::u8string&& s)
 {
-    if (pEncoding != nullptr)
-    {
-        if (mpEncoding != nullptr)
-        {
-            // be sure the given encoding matches any encoding already set
-            if (*pEncoding != *mpEncoding)
-            {
-                throw std::invalid_argument("New 'encoding' is different than value already set.");
-            }
-        }
-        else if (storeEncoding())
-        {
-            mpEncoding = std::make_shared<const string_encoding>(*pEncoding);
-        }
-    }
-
-    // Append new data
-    if (length)
-        currentCharacterData += std::string(value, length);
-
     // Append number of bytes added to this node's stack value
     assert(bytesForElement.size());
-    bytesForElement.top() += length;
+    bytesForElement.top() += static_cast<int>(s.length());
+
+    // Append new data
+    currentCharacterData += std::move(s);
 }
 void xml::lite::MinidomHandler::characters(const char *value, int length)
 {
-    const string_encoding* pEncoding = nullptr;
-    #ifdef _WIN32
-    if (use_wchar_t())
+    // If we're still here despite use_char() being "false" then the
+    // wide-character routine "failed."  On Windows, that means the char* value
+    // is encoded as Windows-1252 (more-or-less ISO8859-1).
+    const str::EncodedString chars(std::string(value, length)); 
+    characters(chars.u8string());
+}
+
+bool xml::lite::MinidomHandler::vcharacters(const void /*XMLCh*/* chars_, size_t length)
+{
+    if (chars_ == nullptr)
     {
-        // If we're still here despite use_char() being "false" then the wide-character
-        // routine "failed."  On Windows, that means the char* value is encoded
-        // as Windows-1252 (more-or-less ISO8859-1).
-        static const auto encoding = string_encoding::windows_1252;
-        pEncoding = &encoding;
+        throw std::invalid_argument("chars_ is NULL.");
     }
-    #endif
-    characters(value, length, pEncoding);
-}
+    if (length == 0)
+    {
+        throw std::invalid_argument("length is 0.");
+    }
 
-template<typename CharT, typename ValueT>
-inline std::string toUtf8_(const ValueT* value_, size_t length)
-{
-    const void* const pValue = value_;
-    const auto value = reinterpret_cast<CharT>(pValue);
-    static_assert(sizeof(*value_) == sizeof(*value), "sizeof(*CharT) != sizeof(*ValueT)"); 
+    static_assert(sizeof(XMLCh) == sizeof(char16_t), "XMLCh should be 16-bits.");
+    auto pChars16 = static_cast<const char16_t*>(chars_);
 
-    str::U8string utf8Value;
-    str::strto8(value, length, utf8Value);
-    return str::c_str<std::string::const_pointer>(utf8Value);
-}
-inline std::string toUtf8(const uint16_t* value, size_t length)
-{
-    return toUtf8_<std::u16string::const_pointer>(value, length);
-}
-inline std::string toUtf8(const uint32_t* value, size_t length)
-{
-    return toUtf8_<std::u32string::const_pointer>(value, length);
-}
-
-bool xml::lite::MinidomHandler::call_characters(const std::string& utf8Value)
-{
-    const auto length = static_cast<int>(utf8Value.length());
-    static const auto encoding = xml::lite::string_encoding::utf_8;
-    characters(utf8Value.c_str(), length, &encoding);
-    return true;  // all done, characters(char*) already called, above
-}
-
-template <typename T>
-bool xml::lite::MinidomHandler::characters_(const T* value, size_t length)
-{
-    #ifndef _WIN32
-    const auto utf8Value = toUtf8(value, length);
-    return call_characters(utf8Value);  // all done, characters(char*) already called, above
-    #else
-    UNREFERENCED_PARAMETER(value);
-    UNREFERENCED_PARAMETER(length);
-    // On Windows, we want std::string encoded as Windows-1252 (ISO8859-1)
-    // so that western European characters will be displayed.  We can't convert
-    // to UTF-8 (as above on Linux), because Windows doesn't have good support
-    // for displaying such strings.  Using UTF-16 would be preferred on Windows, but
-    // all existing code uses std::string instead of std::wstring.
-    return false; // call characters(char*) to get a Windows-1252 string
-    #endif
-}
-bool xml::lite::MinidomHandler::wcharacters_(const uint32_t* value, size_t length)
-{
-    return characters_(value, length);
-}
-bool xml::lite::MinidomHandler::wcharacters_(const uint16_t* value, size_t length)
-{
-    return characters_(value, length);
-}
-
-bool xml::lite::MinidomHandler::use_wchar_t() const
-{
-    // if we're storing the encoding, get wchar_t so that we can convert
-    return storeEncoding();
+    auto chars = str::EncodedString(std::u16string(pChars16, length)).u8string();
+    characters(std::move(chars));
+    return true; // vcharacters() processed
 }
 
 void xml::lite::MinidomHandler::startElement(const std::string & uri,
@@ -153,9 +102,7 @@ void xml::lite::MinidomHandler::startElement(const std::string & uri,
                                              const std::string & qname,
                                              const xml::lite::Attributes & atts)
 {
-    // Assign what we can now, and push rest on stack
-    // for later
-
+    // Assign what we can now, and push rest on stack for later
     xml::lite::Element * current = mDocument->createElement(qname, uri);
 
     current->setAttributes(atts);
@@ -166,14 +113,14 @@ void xml::lite::MinidomHandler::startElement(const std::string & uri,
 }
 
 // This function subtracts off the char place from the push
-std::string xml::lite::MinidomHandler::adjustCharacterData()
+std::u8string xml::lite::MinidomHandler::adjustCharacterData()
 {
     // Edit the string with regard to this node's char data
     // Get rid of what we take on char data accumulator
 
     int diff = (int) (currentCharacterData.length()) - bytesForElement.top();
 
-    std::string newCharacterData(currentCharacterData.substr(
+    auto newCharacterData(currentCharacterData.substr(
                                  diff,
                                  currentCharacterData.length())
                 );
@@ -185,7 +132,7 @@ std::string xml::lite::MinidomHandler::adjustCharacterData()
     return newCharacterData;
 }
 
-void xml::lite::MinidomHandler::trim(std::string & s)
+void xml::lite::MinidomHandler::trim(std::u8string& s)
 {
     str::trim(s);
 }
@@ -198,7 +145,7 @@ void xml::lite::MinidomHandler::endElement(const std::string & /*uri*/,
     xml::lite::Element * current = nodeStack.top();
     nodeStack.pop();
 
-    current->setCharacterData_(adjustCharacterData(), mpEncoding.get());
+    current->setCharacterData(adjustCharacterData());
 
     // Remove corresponding int on bytes stack
     bytesForElement.pop();
@@ -223,23 +170,3 @@ void xml::lite::MinidomHandler::preserveCharacterData(bool preserve)
     mPreserveCharData = preserve;
 }
 
-void xml::lite::MinidomHandler::storeEncoding(bool value)
-{
-    mStoreEncoding = value;
-}
-
-bool xml::lite::MinidomHandler::storeEncoding() const
-{
-    // Without mPreserveCharData=true, we gets asserts when parsing text containing
-    // non-ASCII characters.  Given that, don't bother storing an encoding w/o 
-    // mPreserveCharData also set.  This also further preserves existing behavior.
-    // Also note that much code leaves mPreserveCharData as it's default of false.
-    if (mStoreEncoding)
-    {
-        if (!mPreserveCharData)
-        {
-            throw std::logic_error("preserveCharacterData() must be set with storeEncoding()");
-        }
-    }
-    return mStoreEncoding && mPreserveCharData;
-}

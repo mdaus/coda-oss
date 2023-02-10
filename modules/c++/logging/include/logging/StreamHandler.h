@@ -28,6 +28,7 @@
 #define __LOGGING_STREAM_HANDLER_H__
 
 #include <memory>
+#include "config/Exports.h"
 #include "logging/LogRecord.h"
 #include "logging/Handler.h"
 #include <import/io.h>
@@ -40,7 +41,7 @@ namespace logging
  * \class StreamHandler
  * \brief Emits LogRecords to an io::OutputStream
  */
-struct StreamHandler : public Handler
+struct CODA_OSS_API StreamHandler : public Handler
 {
     //! Constructs a StreamHandler that uses an io::StandardOutStream
     StreamHandler(LogLevel level = LogLevel::LOG_NOTSET);
@@ -57,6 +58,7 @@ struct StreamHandler : public Handler
     //! adds the need to write epilogue before deleting formatter
     //  and then writing the prologue with the new formatter
     virtual void setFormatter(Formatter* formatter);
+    virtual void setFormatter(std::unique_ptr<Formatter>&&);
 
     virtual void close();
 
@@ -70,9 +72,9 @@ protected:
 
     //! for writing directly to stream,
     // used for the bulk of the logging for speed
-    virtual void emitRecord(const LogRecord* record);
+    void emitRecord(const LogRecord* record) override;
 
-    mem::auto_ptr<io::OutputStream> mStream;
+    std::unique_ptr<io::OutputStream> mStream;
 
 private:
     bool mClosed;

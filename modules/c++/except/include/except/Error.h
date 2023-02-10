@@ -37,17 +37,23 @@
 /*!
  * Useful macro for defining Exception classes
  */
-#define DECLARE_EXTENDED_ERROR(_Name, _Base) \
-  struct _Name##Error : public _Base \
+#define DECLARE_EXTENDED_ERROR_(_Name, Error_, _Base) \
+  struct _Name##Error_ : public _Base \
   { \
-      _Name##Error() = default; virtual ~_Name##Error() = default; \
-      _Name##Error(const except::Context& c) : _Base(c){} \
-      _Name##Error(const std::string& msg) : _Base(msg){} \
-      _Name##Error(const except::Throwable& t, const except::Context& c) : _Base(t, c){} \
-      std::string getType() const override { return #_Name; } \
-  };
+      _Name##Error_() = default; virtual ~_Name##Error_() = default; \
+      _Name##Error_(const except::Context& c) : _Base(c){} \
+      _Name##Error_(const std::string& msg) : _Base(msg){} \
+      _Name##Error_(const except::Throwable& t, const except::Context& c) : _Base(t, c){} \
+      _Name##Error_(const except::ThrowableEx& t, const except::Context& c) : _Base(t, c){} \
+      std::string getType() const noexcept override { return #_Name; } \
+  }
+#define DECLARE_EXTENDED_ERROR(_Name, _Base) DECLARE_EXTENDED_ERROR_(_Name, Error, _Base)
+#define DECLARE_EXTENDED_ERROREX(_Name, _Base) DECLARE_EXTENDED_ERROR_(_Name, ErrorEx, _Base)
 
-#define DECLARE_ERROR(_Name) DECLARE_EXTENDED_ERROR(_Name, except::Error)
+// Need to keep this around for existing code
+#define DECLARE_ERROR(_Name) \
+    DECLARE_EXTENDED_ERROR(_Name, except::Error);		\
+    DECLARE_EXTENDED_ERROREX(_Name, except::ErrorEx)
 
 namespace except
 {
@@ -92,6 +98,9 @@ struct Error : public Throwable
         Throwable(t, c)
     {
     }
+    Error(const ThrowableEx& t, const Context& c) : Throwable(t, c)
+    {
+    }
 
     std::string getType() const override 
     {
@@ -99,11 +108,55 @@ struct Error : public Throwable
     }
 };
 
+// Use this in new code: name is FooErrror (not FooErrorEx), base is except::ErrorEx (not except::Error).
+#define CODA_OSS_DECLARE_EXTENDED_ERROR(name_, base_) DECLARE_EXTENDED_ERROR_(name_, Error, base_)
+#define CODA_OSS_DECLARE_ERROR(name_) CODA_OSS_DECLARE_EXTENDED_ERROR(name_, except::ErrorEx)
+
+struct ErrorEx : public ThrowableEx
+{
+    ErrorEx() = default;
+    virtual ~ErrorEx() = default;
+
+    /*!
+     * Constructor. Takes a Context
+     * \param c The Context
+     */
+    ErrorEx(const Context& c) : ThrowableEx(c)
+    {
+    }
+
+    /*!
+     * Constructor.  Takes a message
+     * \param message The message
+     */
+    ErrorEx(const std::string& message) : ThrowableEx(message)
+    {
+    }
+
+    /*!
+     * Constructor. Takes an Throwable and a Context
+     * \param t The Throwable
+     * \param c The Context
+     */
+    ErrorEx(const ThrowableEx& t, const Context& c) : ThrowableEx(t, c)
+    {
+    }
+    ErrorEx(const Throwable& t, const Context& c) : ThrowableEx(t, c)
+    {
+    }
+
+    std::string getType() const noexcept override
+    {
+        return "ErrorEx";
+    }
+};
+using Error11 = ErrorEx; // keep old name around for other projects
+
 /*!
  * \class InvalidDerivedTypeError
  * \brief Represents an invalid derived type error.
  */
-DECLARE_ERROR(InvalidDerivedType)
+DECLARE_ERROR(InvalidDerivedType);
 
 }
 

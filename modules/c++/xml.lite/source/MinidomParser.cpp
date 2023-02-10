@@ -22,16 +22,24 @@
 
 #include "xml/lite/MinidomParser.h"
 
+#include <stdexcept>
+
 xml::lite::MinidomParser::MinidomParser(bool storeEncoding)
 {
+    if (!storeEncoding)
+    {
+        throw std::invalid_argument("'storeEncoding' is no longer used and must always be 'true'");
+    }
     mReader.setContentHandler(&mHandler);
-    mHandler.storeEncoding(storeEncoding);
 }
 
-void xml::lite::MinidomParser::parse(io::InputStream& is,
-                                     int size)
+void xml::lite::MinidomParser::parse(io::InputStream& is, int size)
 {
     mReader.parse(is, size);
+}
+void xml::lite::MinidomParser::parse(io::InputStream& is, const void*pInitialEncoding, const void* pFallbackEncoding, int size)
+{
+    mReader.parse(is, pInitialEncoding, pFallbackEncoding, size);
 }
 
 void xml::lite::MinidomParser::clear()
@@ -48,19 +56,21 @@ xml::lite::Document* xml::lite::MinidomParser::getDocument(bool steal)
 {
     return mHandler.getDocument(steal);
 }
+std::unique_ptr<xml::lite::Document>& xml::lite::MinidomParser::getDocument(std::unique_ptr<Document>& pDocument)
+{
+    return mHandler.getDocument(pDocument);
+}
 
-void xml::lite::MinidomParser::setDocument(xml::lite::Document* newDocument,
-                                           bool own)
+void xml::lite::MinidomParser::setDocument(xml::lite::Document* newDocument, bool own)
 {
     mHandler.setDocument(newDocument, own);
+}
+void xml::lite::MinidomParser::setDocument(std::unique_ptr<Document>&& newDocument)
+{
+    mHandler.setDocument(std::move(newDocument));
 }
 
 void xml::lite::MinidomParser::preserveCharacterData(bool preserve)
 {
     mHandler.preserveCharacterData(preserve);
-}
-
-void xml::lite::MinidomParser::storeEncoding(bool preserve)
-{
-    mHandler.storeEncoding(preserve);
 }
