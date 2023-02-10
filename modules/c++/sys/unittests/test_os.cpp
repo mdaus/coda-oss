@@ -32,6 +32,7 @@
 #include <sys/Dbg.h>
 #include <sys/DateTime.h>
 #include <sys/sys_filesystem.h>
+#include <sys/File.h>
 #include "TestCase.h"
 
 void createFile(const std::string& pathname)
@@ -400,6 +401,31 @@ TEST_CASE(testFsFileSize)
     }
 }
 
+TEST_CASE(test_makeFile)
+{
+#ifdef _WIN32
+    static const sys::filesystem::path name("explorer.exe");
+    auto file = sys::make_File("%SystemRoot%" / name);
+
+#else
+    sys::File file;
+    static const sys::filesystem::path dot_cshrc(".cshrc");
+    try
+    {
+        file = sys::make_File("$HOME" / dot_cshrc);
+    }
+    catch (const sys::SystemException&)
+    {
+    }  // no .cshrc; try .bashrc
+
+    static const sys::filesystem::path dot_bash(".bashrc");
+    file = sys::make_File("$HOME" / dot_bash);
+#endif
+
+    TEST_ASSERT_TRUE(file.isOpen());
+}
+
+
 TEST_MAIN(
     //sys::AbstractOS::setArgvPathname(argv[0]);
     TEST_CHECK(testRecursiveRemove);
@@ -411,4 +437,5 @@ TEST_MAIN(
     TEST_CHECK(testBacktrace);
     TEST_CHECK(testSpecialEnvVars);
     TEST_CHECK(testFsFileSize);
+    TEST_CHECK(test_makeFile);
 )
