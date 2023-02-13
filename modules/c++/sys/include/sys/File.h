@@ -24,6 +24,8 @@
 #define CODA_OSS_sys_File_h_INCLUDED_
 #pragma once
 
+#include <memory>
+
 #include "sys/Conf.h"
 #include "sys/SystemException.h"
 #include "sys/Path.h"
@@ -241,6 +243,8 @@ struct CODA_OSS_API File
 protected:
     _SYS_HANDLE_TYPE mHandle = SYS_INVALID_HANDLE;
     std::string mPath;
+    
+    static _SYS_HANDLE_TYPE createFile(const coda_oss::filesystem::path&, int accessFlags, int creationFlags) noexcept;
 
 };
 
