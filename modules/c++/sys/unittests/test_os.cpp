@@ -425,6 +425,32 @@ TEST_CASE(test_makeFile)
   TEST_ASSERT_TRUE(file.isOpen());
 }
 
+static FILE* sys_fopen()
+{
+    static const std::string mode("r");
+
+#ifdef _WIN32
+    static const sys::filesystem::path name("explorer.exe");
+    return sys::fopen("%SystemRoot%" / name, mode);
+
+#else
+    static const sys::filesystem::path dot_cshrc(".cshrc");
+    auto retval = sys::fopen("$HOME" / dot_cshrc, mode);
+    if (retval == nullptr)
+    {
+        // no .cshrc; try .bashrc
+        static const sys::filesystem::path dot_bashrc(".bashrc");
+        return sys::fopen("$HOME" / dot_bashrc, mode);
+    }
+#endif
+}
+TEST_CASE(test_sys_fopen)
+{
+    auto fp = sys_fopen();
+    TEST_ASSERT_NOT_NULL(fp);
+    fclose(fp);
+}
+
 
 TEST_MAIN(
     //sys::AbstractOS::setArgvPathname(argv[0]);
@@ -438,4 +464,5 @@ TEST_MAIN(
     TEST_CHECK(testSpecialEnvVars);
     TEST_CHECK(testFsFileSize);
     TEST_CHECK(test_makeFile);
-)
+    TEST_CHECK(test_sys_fopen);
+    )
