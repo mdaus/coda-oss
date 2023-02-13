@@ -55,3 +55,35 @@ sys::File sys::make_File(const coda_oss::filesystem::path& parent, const coda_os
     // let the File constructor deal with combining the expanded paths as well as checking for existence.
     return sys::File(expanded_parent, expanded_name, accessFlags, creationFlags);
 }
+
+#ifdef _WIN32
+static FILE* fopen_(const std::string& fname, const std::string& mode)
+{
+    FILE* retval = nullptr;
+    const auto result = fopen_s(&retval, fname.c_str(), mode.c_str());
+    if (result != 0) // "Zero if successful; ..."
+    {
+        return nullptr;
+    }
+    return retval;
+}
+#else
+static inline FILE* fopen_(const std::string& fname, const std::string& mode)
+{
+    return fopen(fname.c_str(), mode.c_str());
+}
+#endif
+
+FILE* sys::fopen(const coda_oss::filesystem::path& fname, const std::string& mode)
+{
+    // Call  sys::expandEnvironmentVariables() if the initial fopen() fails.
+    auto retval = fopen_(fname.string(), mode);
+    if (retval != nullptr)
+    {
+        return retval;
+    }
+
+    constexpr bool checkIfExists = false; // TODO: parse "mode" to set checkIfExists?
+    const auto expanded = sys::Path::expandEnvironmentVariables(fname.string(), checkIfExists);
+    return fopen_(expanded, mode);
+}

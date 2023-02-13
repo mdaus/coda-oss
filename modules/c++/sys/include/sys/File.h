@@ -24,6 +24,8 @@
 #define CODA_OSS_sys_File_h_INCLUDED_
 #pragma once
 
+#include <stdio.h>
+
 #include <memory>
 
 #include "sys/Conf.h"
@@ -267,6 +269,10 @@ protected:
 CODA_OSS_API File make_File(const coda_oss::filesystem::path&, int accessFlags = File::READ_ONLY, int creationFlags =  File::EXISTING);
 CODA_OSS_API File make_File(const coda_oss::filesystem::path& parent, const coda_oss::filesystem::path& name,
         int accessFlags =  File::READ_ONLY, int creationFlags =  File::EXISTING);
+
+
+// Call  sys::expandEnvironmentVariables() if the initial fopen() fails.
+CODA_OSS_API FILE* fopen(const coda_oss::filesystem::path&, const std::string& mode);
 
 }
 
