@@ -436,12 +436,13 @@ static FILE* sys_fopen()
 #else
     static const sys::filesystem::path dot_cshrc(".cshrc");
     auto retval = sys::fopen("$HOME" / dot_cshrc, mode);
-    if (retval == nullptr)
+    if (retval != nullptr)
     {
-        // no .cshrc; try .bashrc
-        static const sys::filesystem::path dot_bashrc(".bashrc");
-        return sys::fopen("$HOME" / dot_bashrc, mode);
+	return retval;
     }
+    // no .cshrc; try .bashrc
+    static const sys::filesystem::path dot_bashrc(".bashrc");
+    return sys::fopen("$HOME" / dot_bashrc, mode);
 #endif
 }
 TEST_CASE(test_sys_fopen)
