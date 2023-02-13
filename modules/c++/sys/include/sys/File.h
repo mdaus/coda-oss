@@ -182,7 +182,7 @@ struct CODA_OSS_API File
      */
     void create(const std::string& str, int accessFlags, int creationFlags);
     void create(std::nothrow_t, const coda_oss::filesystem::path& path,
-                           int accessFlags, int creationFlags) noexcept // caller MUST check isOpen()
+                           int accessFlags, int creationFlags) // caller MUST check isOpen()
     {
         mHandle = createFile(path, accessFlags, creationFlags);
         mPath = path.string();

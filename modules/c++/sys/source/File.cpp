@@ -26,52 +26,32 @@
 #include "sys/Path.h"
 #include "str/Manip.h"
 
-static sys::File make_File_(const std::string& path, int accessFlags, int creationFlags)
-{
-    const auto checkIfExists = (creationFlags & sys::File::EXISTING) == sys::File::EXISTING;
-    const auto expanded = sys::Path::expandEnvironmentVariables(path, checkIfExists);
-    return sys::File(expanded, accessFlags, creationFlags);
-}
 sys::File sys::make_File(const coda_oss::filesystem::path& path, int accessFlags, int creationFlags)
 {
-    try
+    sys::File retval(std::nothrow, path, accessFlags, creationFlags);
+    if (retval.isOpen())
     {
-        return sys::File(path.string(), accessFlags, creationFlags);
+        return retval;
     }
-    catch (const sys::SystemException& ex)
-    {
-        static const std::string message("Error opening file"); // see File::create();
-        if (!str::starts_with(ex.getMessage(), message))
-        {
-            throw ex;
-        }
-    }
-    return make_File_(path.string(), accessFlags, creationFlags);
+
+    const auto checkIfExists = (creationFlags & sys::File::EXISTING) == sys::File::EXISTING;
+    const auto expanded = sys::Path::expandEnvironmentVariables(path.string(), checkIfExists);
+    return sys::File(expanded, accessFlags, creationFlags);
 }
 
-static sys::File make_File_(const std::string& parent, const std::string& name, int accessFlags, int creationFlags)
-{
-    const auto expanded_parent = sys::Path::expandEnvironmentVariables(parent, coda_oss::filesystem::file_type::directory);
-    // 'name' probably won't work without 'parent'
-    const auto expanded_name =  sys::Path::expandEnvironmentVariables(name, false /*checkIfExists*/);
-
-    // let the File constructor deal with combining the expanded paths as well as checking for existence.
-    return sys::File(expanded_parent, expanded_name, accessFlags, creationFlags);
-}
 sys::File sys::make_File(const coda_oss::filesystem::path& parent, const coda_oss::filesystem::path& name,
         int accessFlags, int creationFlags)
 {
-    try
+    sys::File retval(std::nothrow, parent, name, accessFlags, creationFlags);
+    if (retval.isOpen())
     {
-        return sys::File(parent.string(), name.string(), accessFlags, creationFlags);
+        return retval;
     }
-    catch (const sys::SystemException& ex)
-    {
-        static const std::string message("Error opening file"); // see File::create();
-        if (!str::starts_with(ex.getMessage(), message))
-        {
-            throw ex;
-        }
-    }
-    return make_File_(parent.string(), name.string(), accessFlags, creationFlags);
+
+    const auto expanded_parent = sys::Path::expandEnvironmentVariables(parent.string(), coda_oss::filesystem::file_type::directory);
+    // 'name' probably won't work without 'parent'
+    const auto expanded_name =  sys::Path::expandEnvironmentVariables(name.string(), false /*checkIfExists*/);
+
+    // let the File constructor deal with combining the expanded paths as well as checking for existence.
+    return sys::File(expanded_parent, expanded_name, accessFlags, creationFlags);
 }

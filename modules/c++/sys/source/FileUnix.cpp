@@ -34,14 +34,7 @@ _SYS_HANDLE_TYPE sys::File::createFile(const coda_oss::filesystem::path& str_, i
 
     if (accessFlags & sys::File::WRITE_ONLY)
         creationFlags |= sys::File::TRUNCATE;
-    mHandle = open(str.c_str(), accessFlags | creationFlags, _SYS_DEFAULT_PERM);
-
-    if (mHandle < 0)
-    {
-        throw sys::SystemException(Ctxt(FmtX("Error opening file [%d]: [%s]",
-                                             mHandle, str.c_str())));
-    }
-    mPath = str;
+    return open(str.c_str(), accessFlags | creationFlags, _SYS_DEFAULT_PERM);
 }
 void sys::File::create(const std::string& str, int accessFlags,
         int creationFlags)
