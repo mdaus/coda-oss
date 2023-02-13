@@ -103,11 +103,21 @@ struct CODA_OSS_API File
     {
         create(path.getPath(), accessFlags, creationFlags);
     }
+    File(std::nothrow_t, const coda_oss::filesystem::path& path,
+         int accessFlags = READ_ONLY, int creationFlags = EXISTING) noexcept // caller MUST check isOpen()
+    {
+        create(std::nothrow, path, accessFlags, creationFlags);
+    }
 
     File(const Path& parent, std::string name, int accessFlags = READ_ONLY,
          int creationFlags = EXISTING)
     {
         create(parent.join(name).getPath(), accessFlags, creationFlags);
+    }
+    File(std::nothrow_t, const coda_oss::filesystem::path& parent, const coda_oss::filesystem::path& name,
+         int accessFlags = READ_ONLY, int creationFlags = EXISTING) noexcept // caller MUST check isOpen()
+    {
+        create(std::nothrow, parent / name, accessFlags, creationFlags);
     }
 
     /*!
@@ -170,8 +180,13 @@ struct CODA_OSS_API File
      *  \param accessFlags File access flags
      *  \param creationFlags File creation flags
      */
-    void create(const std::string& str, int accessFlags, 
-                int creationFlags);
+    void create(const std::string& str, int accessFlags, int creationFlags);
+    void create(std::nothrow_t, const coda_oss::filesystem::path& path,
+                           int accessFlags, int creationFlags) noexcept // caller MUST check isOpen()
+    {
+        mHandle = createFile(path, accessFlags, creationFlags);
+        mPath = path.string();
+    }
 
     /*!
      *  Read from the File into a buffer 'size' bytes.

@@ -46,13 +46,12 @@ _SYS_HANDLE_TYPE sys::File::createFile(const coda_oss::filesystem::path& str_, i
 void sys::File::create(const std::string& str, int accessFlags,
         int creationFlags)
 {
-    mHandle = createFile(str, accessFlags, creationFlags);
+    create(std::nothrow, str, accessFlags, creationFlags);
     if (mHandle < 0)
     {
         throw sys::SystemException(Ctxt(
                 FmtX("Error opening file [%d]: [%s]", mHandle, str.c_str())));
     }
-    mPath = str;
 }
 
 void sys::File::readInto(void* buffer, Size_T size)

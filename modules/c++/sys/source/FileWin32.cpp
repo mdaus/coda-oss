@@ -55,13 +55,12 @@ void sys::File::create(const std::string& str,
                        int accessFlags,
                        int creationFlags)
 {
-    mHandle = createFile(str, accessFlags, creationFlags);
+    create(std::nothrow, str, accessFlags, creationFlags);
     if (mHandle == INVALID_HANDLE_VALUE)
     {
         throw sys::SystemException(
                 Ctxt(FmtX("Error opening file: [%s]", str.c_str())));
     }
-    mPath = str;
 }
 
 void sys::File::readInto(void* buffer, size_t size)
