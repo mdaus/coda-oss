@@ -100,9 +100,9 @@ FILE* sys::fopen(const coda_oss::filesystem::path& fname, const std::string& mod
 }
 
 #ifdef _WIN32
-#define CODA_OSS_open _open
+#define CODA_OSS_open ::_open
 #else
-#define CODA_OSS_open open
+#define CODA_OSS_open ::open
 #endif
 
 static inline int open_(const std::string& pathname, int flags)
@@ -163,12 +163,12 @@ int sys::open(const coda_oss::filesystem::path& path, int flags, int mode)
 #undef CODA_OSS_open
 
 #ifdef _WIN32
-#define CODA_OSS_close _close
+#define CODA_OSS_close ::_close
 #else
-#define CODA_OSS_close close
+#define CODA_OSS_close ::close
 #endif
 int sys::close(int fd)
 {
-    return CODA_OSS_close(fd);
+  return CODA_OSS_close(fd);
 }
 #undef CODA_OSS_close

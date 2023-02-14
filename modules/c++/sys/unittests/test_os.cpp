@@ -471,7 +471,7 @@ static int sys_open()
 #else
     static const sys::filesystem::path dot_cshrc(".cshrc");
     auto retval = sys::open("$HOME" / dot_cshrc, flags);
-    if (retval != nullptr)
+    if (retval > -1)
     {
 	    return retval;
     }
@@ -483,7 +483,7 @@ static int sys_open()
 TEST_CASE(test_sys_open)
 {
     auto fd = sys_open();
-    TEST_ASSERT(fd >= 0);
+    TEST_ASSERT(fd > -1);
     sys::close(fd);
 }
 
