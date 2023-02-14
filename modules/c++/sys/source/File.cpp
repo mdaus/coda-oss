@@ -23,6 +23,7 @@
 
 #include "sys/File.h"
 
+#include "config/compiler_extensions.h"
 #include "sys/Path.h"
 #include "str/Manip.h"
 
@@ -61,6 +62,7 @@ sys::File sys::make_File(const coda_oss::filesystem::path& parent, const coda_os
 }
 
 #ifdef _WIN32
+// '...': This function or variable may be unsafe. Consider using _sopen_s instead.
 static FILE* fopen_(const std::string& fname, const std::string& mode)
 {
     FILE* retval = nullptr;
@@ -95,4 +97,66 @@ FILE* sys::fopen(const coda_oss::filesystem::path& fname, const std::string& mod
         return nullptr; // no need to even try fopen()
     }
     return fopen_(expanded, mode);
+}
+
+#ifdef _WIN32
+#define CODA_OSS_open _open
+#else
+#define CODA_OSS_open open
+#endif
+
+static inline int open_(const std::string& pathname, int flags)
+{
+    const auto p = pathname.c_str();
+    CODA_OSS_disable_warning_push
+    #ifdef _MSC_VER
+    #pragma warning(disable: 4996) // '...': This function or variable may be unsafe. Consider using _sopen_s instead.
+    #endif
+    return CODA_OSS_open(p, flags);
+    CODA_OSS_disable_warning_pop
+}
+int sys::open(const coda_oss::filesystem::path& path, int flags)
+{
+    // Call  sys::expandEnvironmentVariables() if the initial open() fails.
+    const auto retval = open_(path.string(), flags);
+    if (retval > -1)  // "On error, -1 is returned ..."
+    {
+        return retval;
+    }
+
+    constexpr bool checkIfExists = false; // TODO: look for O_CREAT ?
+    const auto expanded = sys::Path::expandEnvironmentVariables(path.string(), checkIfExists);
+    if (expanded.empty())
+    {
+        return retval;  // no need to even try another open()
+    }
+    return open_(expanded, flags);
+}
+
+static inline int open_(const std::string& pathname, int flags, int mode)
+{
+    const auto p = pathname.c_str();
+    CODA_OSS_disable_warning_push
+    #ifdef _MSC_VER
+    #pragma warning(disable: 4996) // '...': This function or variable may be unsafe. Consider using _sopen_s instead.
+    #endif
+    return CODA_OSS_open(p, flags, mode);
+    CODA_OSS_disable_warning_pop
+}
+int sys::open(const coda_oss::filesystem::path& path, int flags, int mode)
+{
+    // Call  sys::expandEnvironmentVariables() if the initial open() fails.
+    const auto retval = open_(path.string(), flags, mode);
+    if (retval > -1)  // "On error, -1 is returned ..."
+    {
+        return retval;
+    }
+
+    constexpr bool checkIfExists = false; // TODO: look for O_CREAT ?
+    const auto expanded = sys::Path::expandEnvironmentVariables(path.string(), checkIfExists);
+    if (expanded.empty())
+    {
+        return retval;  // no need to even try another open()
+    }
+    return open_(expanded, flags, mode);
 }

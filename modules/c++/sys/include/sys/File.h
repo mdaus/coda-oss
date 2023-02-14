@@ -25,6 +25,8 @@
 #pragma once
 
 #include <stdio.h>
+#include <io.h>
+#include <fcntl.h>
 
 #include <memory>
 
@@ -273,6 +275,8 @@ CODA_OSS_API File make_File(const coda_oss::filesystem::path& parent, const coda
 
 // Call  sys::expandEnvironmentVariables() if the initial fopen() fails.
 CODA_OSS_API FILE* fopen(const coda_oss::filesystem::path&, const std::string& mode);
+CODA_OSS_API int open(const coda_oss::filesystem::path&, int flags);
+CODA_OSS_API int open(const coda_oss::filesystem::path&, int flags, int mode);
 
 }
 
