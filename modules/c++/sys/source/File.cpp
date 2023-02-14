@@ -160,3 +160,15 @@ int sys::open(const coda_oss::filesystem::path& path, int flags, int mode)
     }
     return open_(expanded, flags, mode);
 }
+#undef CODA_OSS_open
+
+#ifdef _WIN32
+#define CODA_OSS_close _close
+#else
+#define CODA_OSS_close close
+#endif
+int sys::close(int fd)
+{
+    return CODA_OSS_close(fd);
+}
+#undef CODA_OSS_close

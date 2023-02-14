@@ -278,6 +278,8 @@ CODA_OSS_API FILE* fopen(const coda_oss::filesystem::path&, const std::string& m
 CODA_OSS_API int open(const coda_oss::filesystem::path&, int flags);
 CODA_OSS_API int open(const coda_oss::filesystem::path&, int flags, int mode);
 
+CODA_OSS_API int close(int fd); // needed to close a FD from open()
+
 }
 
 #endif  // CODA_OSS_sys_File_h_INCLUDED_

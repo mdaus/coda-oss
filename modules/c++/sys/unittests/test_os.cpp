@@ -438,7 +438,7 @@ static FILE* sys_fopen()
     auto retval = sys::fopen("$HOME" / dot_cshrc, mode);
     if (retval != nullptr)
     {
-	return retval;
+	    return retval;
     }
     // no .cshrc; try .bashrc
     static const sys::filesystem::path dot_bashrc(".bashrc");
@@ -460,6 +460,33 @@ TEST_CASE(test_sys_fopen_failure)
     TEST_ASSERT_NULL(fp);
 }
 
+static int sys_open()
+{
+    constexpr int flags = 0;
+
+#ifdef _WIN32
+    static const sys::filesystem::path name("explorer.exe");
+    return sys::open("%SystemRoot%" / name, flags);
+
+#else
+    static const sys::filesystem::path dot_cshrc(".cshrc");
+    auto retval = sys::open("$HOME" / dot_cshrc, flags);
+    if (retval != nullptr)
+    {
+	    return retval;
+    }
+    // no .cshrc; try .bashrc
+    static const sys::filesystem::path dot_bashrc(".bashrc");
+    return sys::open("$HOME" / dot_bashrc, flags);
+#endif
+}
+TEST_CASE(test_sys_open)
+{
+    auto fd = sys_open();
+    TEST_ASSERT(fd >= 0);
+    sys::close(fd);
+}
+
 TEST_MAIN(
     //sys::AbstractOS::setArgvPathname(argv[0]);
     TEST_CHECK(testRecursiveRemove);
@@ -474,4 +501,5 @@ TEST_MAIN(
     TEST_CHECK(test_makeFile);
     TEST_CHECK(test_sys_fopen);
     TEST_CHECK(test_sys_fopen_failure);
+    TEST_CHECK(test_sys_open);
     )
