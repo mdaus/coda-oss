@@ -502,7 +502,7 @@ static std::ifstream make_ifstream_()
     }
     // no .cshrc; try .bashrc
     static const sys::filesystem::path dot_bashrc(".bashrc");
-    return sys::make_ifstream("$HOME" / dot_bashrc, flags);
+    return sys::make_ifstream("$HOME" / dot_bashrc);
 #endif
 }
 TEST_CASE(test_make_ifstream)
