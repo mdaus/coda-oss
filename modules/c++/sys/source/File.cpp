@@ -35,7 +35,11 @@ sys::File sys::make_File(const coda_oss::filesystem::path& path, int accessFlags
     }
 
     const auto checkIfExists = (creationFlags & sys::File::EXISTING) == sys::File::EXISTING;
-    const auto expanded = sys::Path::expandEnvironmentVariables(path.string(), checkIfExists);
+    auto expanded = sys::Path::expandEnvironmentVariables(path.string(), checkIfExists);
+    if (expanded.empty())
+    {
+        expanded = path.string(); // Throw exception with non-empty path.
+    }
     return sys::File(expanded, accessFlags, creationFlags);
 }
 
@@ -49,7 +53,7 @@ sys::File sys::make_File(const coda_oss::filesystem::path& parent, const coda_os
     }
 
     const auto expanded_parent = sys::Path::expandEnvironmentVariables(parent.string(), coda_oss::filesystem::file_type::directory);
-    // 'name' probably won't work without 'parent'
+    // 'name' probably won't work without 'parent' so no need to checkIfExists
     const auto expanded_name =  sys::Path::expandEnvironmentVariables(name.string(), false /*checkIfExists*/);
 
     // let the File constructor deal with combining the expanded paths as well as checking for existence.
@@ -83,7 +87,12 @@ FILE* sys::fopen(const coda_oss::filesystem::path& fname, const std::string& mod
         return retval;
     }
 
-    constexpr bool checkIfExists = false; // TODO: parse "mode" to set checkIfExists?
+    const auto r_pos = mode.find('r');
+    const auto checkIfExists = r_pos != mode.npos;
     const auto expanded = sys::Path::expandEnvironmentVariables(fname.string(), checkIfExists);
+    if (expanded.empty())
+    {
+        return nullptr; // no need to even try fopen()
+    }
     return fopen_(expanded, mode);
 }

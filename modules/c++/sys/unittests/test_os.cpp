@@ -452,6 +452,13 @@ TEST_CASE(test_sys_fopen)
     fclose(fp);
 }
 
+TEST_CASE(test_sys_fopen_failure)
+{
+    static const std::string mode("r");
+    static const sys::filesystem::path name("does not exist . txt");
+    const auto fp = sys::fopen("$ENV_VAR_NOT_SET" / name, mode);
+    TEST_ASSERT_NULL(fp);
+}
 
 TEST_MAIN(
     //sys::AbstractOS::setArgvPathname(argv[0]);
@@ -466,4 +473,5 @@ TEST_MAIN(
     TEST_CHECK(testFsFileSize);
     TEST_CHECK(test_makeFile);
     TEST_CHECK(test_sys_fopen);
+    TEST_CHECK(test_sys_fopen_failure);
     )
