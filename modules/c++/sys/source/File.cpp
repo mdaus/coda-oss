@@ -23,6 +23,10 @@
 
 #include "sys/File.h"
 
+#ifdef _WIN32
+#include <io.h>
+#endif
+
 #include "config/compiler_extensions.h"
 #include "sys/Path.h"
 #include "str/Manip.h"
