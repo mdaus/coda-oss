@@ -23,6 +23,8 @@
 
 #include "sys/File.h"
 
+#include <assert.h>
+
 #ifdef _WIN32
 #include <io.h>
 #endif
@@ -176,3 +178,27 @@ int sys::close(int fd)
   return CODA_OSS_close(fd);
 }
 #undef CODA_OSS_close
+
+void sys::open(std::ifstream& ifs, const coda_oss::filesystem::path& path, std::ios_base::openmode mode)
+{
+    // Call  sys::expandEnvironmentVariables() if the initial open() fails.
+    ifs.open(path.string(), mode);
+    if (ifs.is_open())
+    {
+        return;
+    }
+
+    const auto checkIfExists = (mode & std::ios_base::in) == std::ios_base::in;
+    auto expanded = sys::Path::expandEnvironmentVariables(path.string(), checkIfExists);
+    if (expanded.empty())
+    {
+        expanded = path.string();  // Throw exception with non-empty path.
+    }
+    ifs.open(expanded, mode);
+}
+std::ifstream sys::make_ifstream(const coda_oss::filesystem::path& path, std::ios_base::openmode mode)
+{
+    std::ifstream retval;
+    open(retval, path, mode);
+    return retval;
+}

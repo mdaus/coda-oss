@@ -487,6 +487,30 @@ TEST_CASE(test_sys_open)
     sys::close(fd);
 }
 
+static std::ifstream make_ifstream_()
+{
+#ifdef _WIN32
+    static const sys::filesystem::path name("explorer.exe");
+    return sys::make_ifstream("%SystemRoot%" / name);
+
+#else
+    static const sys::filesystem::path dot_cshrc(".cshrc");
+    auto retval = sys::make_ifstream("$HOME" / dot_cshrc);
+    if (retval)
+    {
+        return retval;
+    }
+    // no .cshrc; try .bashrc
+    static const sys::filesystem::path dot_bashrc(".bashrc");
+    return sys::make_ifstream("$HOME" / dot_bashrc, flags);
+#endif
+}
+TEST_CASE(test_make_ifstream)
+{
+    const auto ifs = make_ifstream_();
+    TEST_ASSERT_TRUE(ifs.is_open());
+}
+
 TEST_MAIN(
     //sys::AbstractOS::setArgvPathname(argv[0]);
     TEST_CHECK(testRecursiveRemove);
@@ -502,4 +526,5 @@ TEST_MAIN(
     TEST_CHECK(test_sys_fopen);
     TEST_CHECK(test_sys_fopen_failure);
     TEST_CHECK(test_sys_open);
+    TEST_CHECK(test_make_ifstream);
     )

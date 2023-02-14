@@ -28,6 +28,7 @@
 #include <fcntl.h>
 
 #include <memory>
+#include <fstream>
 
 #include "sys/Conf.h"
 #include "sys/SystemException.h"
@@ -278,6 +279,10 @@ CODA_OSS_API int open(const coda_oss::filesystem::path&, int flags);
 CODA_OSS_API int open(const coda_oss::filesystem::path&, int flags, int mode);
 
 CODA_OSS_API int close(int fd); // needed to close a FD from open()
+
+// Call  sys::expandEnvironmentVariables() if the initial open attempt fails.
+CODA_OSS_API std::ifstream make_ifstream(const coda_oss::filesystem::path&, std::ios_base::openmode mode = std::ios_base::in); // https://en.cppreference.com/w/cpp/io/basic_ifstream/basic_ifstream
+CODA_OSS_API void open(std::ifstream&, const coda_oss::filesystem::path&, std::ios_base::openmode mode = std::ios_base::in); // https://en.cppreference.com/w/cpp/io/basic_ifstream/open
 
 }
 
