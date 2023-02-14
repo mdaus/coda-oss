@@ -26,6 +26,8 @@
 
 #include <stdio.h>
 #include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <memory>
 #include <fstream>
@@ -277,8 +279,15 @@ CODA_OSS_API File make_File(const coda_oss::filesystem::path& parent, const coda
 CODA_OSS_API FILE* fopen(const coda_oss::filesystem::path&, const std::string& mode);
 CODA_OSS_API int open(const coda_oss::filesystem::path&, int flags);
 CODA_OSS_API int open(const coda_oss::filesystem::path&, int flags, int mode);
-
 CODA_OSS_API int close(int fd); // needed to close a FD from open()
+
+#ifdef _WIN32
+#define CODA_OSS_struct_stat struct _stat
+#else
+#define CODA_OSS_struct_stat struct stat
+#endif
+// Call  sys::expandEnvironmentVariables() if the initial stat() attempt fails.
+CODA_OSS_API int stat(const coda_oss::filesystem::path&, CODA_OSS_struct_stat &buffer);
 
 // Call  sys::expandEnvironmentVariables() if the initial open attempt fails.
 CODA_OSS_API std::ifstream make_ifstream(const coda_oss::filesystem::path&, std::ios_base::openmode mode = std::ios_base::in); // https://en.cppreference.com/w/cpp/io/basic_ifstream/basic_ifstream

@@ -179,6 +179,40 @@ int sys::close(int fd)
 }
 #undef CODA_OSS_close
 
+#ifdef _WIN32
+#define CODA_OSS_stat ::_stat
+#else
+#define CODA_OSS_stat ::stat
+#endif
+static inline int stat_(const std::string& pathname,  CODA_OSS_struct_stat &buffer)
+{
+    const auto p = pathname.c_str();
+    CODA_OSS_disable_warning_push
+    #ifdef _MSC_VER
+    #pragma warning(disable: 4996) // '...': This function or variable may be unsafe. Consider using _sopen_s instead.
+    #endif
+    return CODA_OSS_stat(p, &buffer);
+    CODA_OSS_disable_warning_pop
+}
+#undef CODA_OSS_stat
+int sys::stat(const coda_oss::filesystem::path& path, CODA_OSS_struct_stat &buffer)
+{
+    // Call  sys::expandEnvironmentVariables() if the initial stat() fails.
+    const auto retval = stat_(path.string(), buffer);
+    if (retval > -1)  // "On error, -1 is returned ..."
+    {
+        return retval;
+    }
+
+    constexpr bool checkIfExists = true;
+    const auto expanded = sys::Path::expandEnvironmentVariables(path.string(), checkIfExists);
+    if (expanded.empty())
+    {
+        return retval;  // no need to even try another stat()
+    }
+    return stat_(expanded, buffer);
+}
+
 void sys::open(std::ifstream& ifs, const coda_oss::filesystem::path& path, std::ios_base::openmode mode)
 {
     // Call  sys::expandEnvironmentVariables() if the initial open() fails.
