@@ -26,7 +26,7 @@
 #define CHECK_NOTHROW(f) (f); TEST_SUCCESS
 #define REQUIRE(x) TEST_ASSERT_TRUE(x)
 #define CHECK_THAT(x, y) /* TEST_ASSERT(Equals(x, y)) */
-//static const std::string testName = "unknown";
+static const std::string testName = "unknown";
 
 using namespace HighFive;
 
@@ -218,11 +218,4 @@ TEMPLATE_LIST_TEST_CASE("ublas_matrix", "[template]", numerical_test_types) {
 
 #endif
 
-TEST_CASE(tests_high_five_multi_dims)
-{
-    TEST_SUCCESS;
-}
-
-TEST_MAIN(
-    TEST_CHECK(tests_high_five_multi_dims);
-)
+TEST_MAIN()
