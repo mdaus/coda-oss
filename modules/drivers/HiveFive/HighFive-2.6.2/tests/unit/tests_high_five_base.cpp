@@ -2584,5 +2584,3 @@ TEST_CASE("HighFiveEigen") {
 #endif
 }
 #endif
-
-TEST_MAIN()

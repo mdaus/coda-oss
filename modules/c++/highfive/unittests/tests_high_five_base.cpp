@@ -16,7 +16,6 @@
 #include <string>
 #include <typeinfo>
 #include <vector>
-#include <map>
 
 #include <highfive/H5DataSet.hpp>
 #include <highfive/H5DataSpace.hpp>
@@ -25,36 +24,15 @@
 #include <highfive/H5Reference.hpp>
 #include <highfive/H5Utility.hpp>
 
-template <typename T>
-inline bool Equals_(const std::vector<T>& lhs, const std::vector<T>& rhs)
-{
-    if (lhs.size() != rhs.size())
-    {
-        return false;
-    }
-    for (size_t i = 0; i < lhs.size(); i++)
-    {
-        if (lhs[i] != rhs[i])
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
-#include "TestCase.h"
-#define CHECK(x) TEST_ASSERT_TRUE(x)
-#define CHECK_THROWS_AS(f, e) TEST_SPECIFIC_EXCEPTION(f, e)
-#define CHECK_NOTHROW(f) (f); TEST_SUCCESS
-#define REQUIRE(x) TEST_ASSERT_TRUE(x)
-#define CHECK_THAT(x, y) /* TEST_ASSERT(Equals(x, y)) */
-static const std::string testName = "unknown";
+#define CATCH_CONFIG_MAIN
+#include <catch2/catch.hpp>
 
 #include "tests_high_five.hpp"
 
 using namespace HighFive;
+using Catch::Matchers::Equals;
 
-TEST_CASE(Basic_HighFive_tests) {
+TEST_CASE("Basic HighFive tests") {
     const std::string FILE_NAME("h5tutr_dset.h5");
     const std::string DATASET_NAME("dset");
 
@@ -92,7 +70,7 @@ TEST_CASE(Basic_HighFive_tests) {
     DataSet dataset_size_t = file.createDataSet<size_t>(DATASET_NAME + "_size_t", dataspace);
 }
 
-TEST_CASE(Test_silent_HighFive) {
+TEST_CASE("Test silent HighFive") {
     // Setting up a buffer for stderr so we can detect if the stack trace
     // was disabled
     fflush(stderr);
@@ -113,7 +91,7 @@ TEST_CASE(Test_silent_HighFive) {
     setvbuf(stderr, NULL, _IONBF, 0);
 }
 
-TEST_CASE(Test_open_modes_in_HighFive) {
+TEST_CASE("Test open modes in HighFive") {
     const std::string FILE_NAME("openmodes.h5");
 
     std::remove(FILE_NAME.c_str());
@@ -151,7 +129,7 @@ TEST_CASE(Test_open_modes_in_HighFive) {
     { File file(FILE_NAME, 0); }  // force empty-flags, does open without flags
 }
 
-TEST_CASE(Test_file_version_bounds) {
+TEST_CASE("Test file version bounds") {
     const std::string FILE_NAME("h5_version_bounds.h5");
 
     std::remove(FILE_NAME.c_str());
@@ -176,7 +154,7 @@ TEST_CASE(Test_file_version_bounds) {
 }
 
 #if H5_VERSION_GE(1, 10, 1)
-TEST_CASE(Test_file_space_strategy) {
+TEST_CASE("Test file space strategy") {
     const std::string FILE_NAME("h5_file_space_strategy.h5");
     auto strategies = std::vector<H5F_fspace_strategy_t>{H5F_FSPACE_STRATEGY_FSM_AGGR,
                                                          H5F_FSPACE_STRATEGY_AGGR,
@@ -198,7 +176,7 @@ TEST_CASE(Test_file_space_strategy) {
     }
 }
 
-TEST_CASE(Test_file_space_page_size) {
+TEST_CASE("Test file space page size") {
     const std::string FILE_NAME("h5_file_space_page_size.h5");
     hsize_t page_size = 1024;
     {
@@ -216,7 +194,7 @@ TEST_CASE(Test_file_space_page_size) {
 }
 
 #ifndef H5_HAVE_PARALLEL
-TEST_CASE(Test_page_buffer_size) {
+TEST_CASE("Test page buffer size") {
     const std::string FILE_NAME("h5_page_buffer_size.h5");
     hsize_t page_size = 1024;
     {
@@ -277,7 +255,7 @@ TEST_CASE(Test_page_buffer_size) {
 #endif
 #endif
 
-TEST_CASE(Test_metadata_block_size_assignment) {
+TEST_CASE("Test metadata block size assignment") {
     const std::string FILE_NAME("h5_meta_block_size.h5");
 
     std::remove(FILE_NAME.c_str());
@@ -298,7 +276,7 @@ TEST_CASE(Test_metadata_block_size_assignment) {
     }
 }
 
-TEST_CASE(Test_group_properties) {
+TEST_CASE("Test group properties") {
     const std::string FILE_NAME("h5_group_properties.h5");
     FileAccessProps fapl;
     // When using hdf5 1.10.2 and later, the lower bound may be set to
@@ -315,7 +293,7 @@ TEST_CASE(Test_group_properties) {
     CHECK(sizes.second == 500);
 }
 
-TEST_CASE(Test_allocation_time) {
+TEST_CASE("Test allocation time") {
     const std::string FILE_NAME("h5_dataset_alloc_time.h5");
     File file(FILE_NAME, File::Truncate);
 
@@ -333,7 +311,7 @@ TEST_CASE(Test_allocation_time) {
     CHECK(alloc_size == data.size() * sizeof(decltype(data)::value_type));
 }
 
-TEST_CASE(Test_default_constructors) {
+TEST_CASE("Test default constructors") {
     const std::string FILE_NAME("h5_group_test.h5");
     const std::string DATASET_NAME("dset");
     File file(FILE_NAME, File::Truncate);
@@ -346,7 +324,7 @@ TEST_CASE(Test_default_constructors) {
     CHECK(d2.isValid());
 }
 
-TEST_CASE(Test_groups_and_datasets) {
+TEST_CASE("Test groups and datasets") {
     const std::string FILE_NAME("h5_group_test.h5");
     const std::string DATASET_NAME("dset");
     const std::string CHUNKED_DATASET_NAME("chunked_dset");
@@ -442,7 +420,7 @@ TEST_CASE(Test_groups_and_datasets) {
     }
 }
 
-TEST_CASE(Test_extensible_datasets) {
+TEST_CASE("Test extensible datasets") {
     const std::string FILE_NAME("create_extensible_dataset_example.h5");
     const std::string DATASET_NAME("dset");
     constexpr long double t1[3][1] = {{2.0l}, {2.0l}, {4.0l}};
@@ -503,7 +481,7 @@ TEST_CASE(Test_extensible_datasets) {
     }
 }
 
-TEST_CASE(Test_reference_count) {
+TEST_CASE("Test reference count") {
     const std::string FILE_NAME("h5_ref_count_test.h5");
     const std::string DATASET_NAME("dset");
     const std::string GROUP_NAME1("/group1");
@@ -568,7 +546,7 @@ TEST_CASE(Test_reference_count) {
     }
 }
 
-TEST_CASE(Test_simple_listings) {
+TEST_CASE("Test simple listings") {
     const std::string FILE_NAME("h5_list_test.h5");
     const std::string GROUP_NAME_CORE("group_name");
     const std::string GROUP_NESTED_NAME("/group_nested");
@@ -630,7 +608,7 @@ TEST_CASE(Test_simple_listings) {
     }
 }
 
-TEST_CASE(Simple_test_for_type_equality) {
+TEST_CASE("Simple test for type equality") {
     AtomicType<double> d_var;
     AtomicType<size_t> size_var;
     AtomicType<double> d_var_test;
@@ -649,7 +627,7 @@ TEST_CASE(Simple_test_for_type_equality) {
     CHECK(int_var != uint_var);
 }
 
-TEST_CASE(DataTypeEqualTakeBack) {
+TEST_CASE("DataTypeEqualTakeBack") {
     const std::string FILE_NAME("h5tutr_dset.h5");
     const std::string DATASET_NAME("dset");
 
@@ -670,12 +648,12 @@ TEST_CASE(DataTypeEqualTakeBack) {
     CHECK(s == dataset.getDataType());
     CHECK(d != dataset.getDataType());
 
-    //// Test getAddress and expect deprecation warning
-    //auto addr = dataset.getInfo().getAddress();
-    //CHECK(addr != 0);
+    // Test getAddress and expect deprecation warning
+    auto addr = dataset.getInfo().getAddress();
+    CHECK(addr != 0);
 }
 
-TEST_CASE(DataSpaceTest) {
+TEST_CASE("DataSpaceTest") {
     const std::string FILE_NAME("h5tutr_space.h5");
     const std::string DATASET_NAME("dset");
 
@@ -700,7 +678,7 @@ TEST_CASE(DataSpaceTest) {
     CHECK(space.getDimensions()[1] == 1);
 }
 
-TEST_CASE(DataSpaceVectorTest) {
+TEST_CASE("DataSpaceVectorTest") {
     // Create 1D shortcut dataspace
     DataSpace space(7);
 
@@ -724,7 +702,7 @@ TEST_CASE(DataSpaceVectorTest) {
     CHECK(space2_res == space2_ans);
 }
 
-TEST_CASE(DataSpaceVariadicTest) {
+TEST_CASE("DataSpaceVariadicTest") {
     // Create 1D shortcut dataspace
     DataSpace space1{7};
 
@@ -758,7 +736,7 @@ TEST_CASE(DataSpaceVariadicTest) {
     CHECK(space2b_res == space2b_ans);
 }
 
-TEST_CASE(ChunkingConstructorsTest) {
+TEST_CASE("ChunkingConstructorsTest") {
     Chunking first(1, 2, 3);
 
     auto first_res = first.getDimensions();
@@ -781,7 +759,7 @@ TEST_CASE(ChunkingConstructorsTest) {
     CHECK(third_res == third_ans);
 }
 
-TEST_CASE(HighFiveReadWriteShortcut) {
+TEST_CASE("HighFiveReadWriteShortcut") {
     std::ostringstream filename;
     filename << "h5_rw_vec_shortcut_test.h5";
 
@@ -942,15 +920,15 @@ void readWriteAttributeVectorTest() {
     }
 }
 
-TEST_CASE(ReadWriteAttributeVectorString) {
+TEST_CASE("ReadWriteAttributeVectorString") {
     readWriteAttributeVectorTest<std::string>();
 }
-//
-//TEMPLATE_LIST_TEST_CASE("ReadWriteAttributeVector", "[template]", dataset_test_types) {
-//    readWriteAttributeVectorTest<TestType>();
-//}
 
-TEST_CASE(datasetOffset) {
+TEMPLATE_LIST_TEST_CASE("ReadWriteAttributeVector", "[template]", dataset_test_types) {
+    readWriteAttributeVectorTest<TestType>();
+}
+
+TEST_CASE("datasetOffset") {
     std::string filename = "datasetOffset.h5";
     std::string dsetname = "dset";
     const size_t size_dataset = 20;
@@ -1032,15 +1010,15 @@ void selectionArraySimpleTest() {
     }
 }
 
-TEST_CASE(selectionArraySimpleString) {
+TEST_CASE("selectionArraySimpleString") {
     selectionArraySimpleTest<std::string>();
 }
 
-//TEMPLATE_LIST_TEST_CASE("selectionArraySimple", "[template]", dataset_test_types) {
-//    selectionArraySimpleTest<TestType>();
-//}
+TEMPLATE_LIST_TEST_CASE("selectionArraySimple", "[template]", dataset_test_types) {
+    selectionArraySimpleTest<TestType>();
+}
 
-TEST_CASE(selectionByElementMultiDim) {
+TEST_CASE("selectionByElementMultiDim") {
     const std::string FILE_NAME("h5_test_selection_multi_dim.h5");
     // Create a 2-dim dataset
     File file(FILE_NAME, File::ReadWrite | File::Create | File::Truncate);
@@ -1119,9 +1097,9 @@ void columnSelectionTest() {
             REQUIRE(result[j][i] == values[j][columns[i]]);
 }
 
-//TEMPLATE_LIST_TEST_CASE("columnSelection", "[template]", numerical_test_types) {
-//    columnSelectionTest<TestType>();
-//}
+TEMPLATE_LIST_TEST_CASE("columnSelection", "[template]", numerical_test_types) {
+    columnSelectionTest<TestType>();
+}
 
 std::vector<std::array<size_t, 2>> global_indices_2d(const std::vector<size_t>& offset,
                                                      const std::vector<size_t>& count) {
@@ -1298,9 +1276,9 @@ void regularHyperSlabSelectionTest() {
     }
 }
 
-//TEMPLATE_LIST_TEST_CASE("hyperSlabSelection", "[template]", numerical_test_types) {
-//    regularHyperSlabSelectionTest<TestType>();
-//}
+TEMPLATE_LIST_TEST_CASE("hyperSlabSelection", "[template]", numerical_test_types) {
+    regularHyperSlabSelectionTest<TestType>();
+}
 
 struct IrregularHyperSlabAnswer {
     // These are the selected indices in the outer (larger) array.
@@ -1413,9 +1391,9 @@ void irregularHyperSlabSelectionReadTest() {
     }
 }
 
-//TEMPLATE_LIST_TEST_CASE("irregularHyperSlabSelectionRead", "[template]", numerical_test_types) {
-//    irregularHyperSlabSelectionReadTest<TestType>();
-//}
+TEMPLATE_LIST_TEST_CASE("irregularHyperSlabSelectionRead", "[template]", numerical_test_types) {
+    irregularHyperSlabSelectionReadTest<TestType>();
+}
 
 template <typename T>
 void irregularHyperSlabSelectionWriteTest() {
@@ -1465,9 +1443,9 @@ void irregularHyperSlabSelectionWriteTest() {
     }
 }
 
-//TEMPLATE_LIST_TEST_CASE("irregularHyperSlabSelectionWrite", "[template]", std::tuple<int>) {
-//    irregularHyperSlabSelectionWriteTest<TestType>();
-//}
+TEMPLATE_LIST_TEST_CASE("irregularHyperSlabSelectionWrite", "[template]", std::tuple<int>) {
+    irregularHyperSlabSelectionWriteTest<TestType>();
+}
 
 template <typename T>
 void attribute_scalar_rw() {
@@ -1505,16 +1483,16 @@ void attribute_scalar_rw() {
     }
 }
 
-//TEMPLATE_LIST_TEST_CASE("attribute_scalar_rw_all", "[template]", dataset_test_types) {
-//    attribute_scalar_rw<TestType>();
-//}
+TEMPLATE_LIST_TEST_CASE("attribute_scalar_rw_all", "[template]", dataset_test_types) {
+    attribute_scalar_rw<TestType>();
+}
 
-TEST_CASE(attribute_scalar_rw_string) {
+TEST_CASE("attribute_scalar_rw_string") {
     attribute_scalar_rw<std::string>();
 }
 
 // regression test https://github.com/BlueBrain/HighFive/issues/98
-TEST_CASE(HighFiveOutofDimension) {
+TEST_CASE("HighFiveOutofDimension") {
     std::string filename("h5_rw_reg_zero_dim_test.h5");
 
     const std::string DATASET_NAME("dset");
@@ -1600,9 +1578,9 @@ void readWriteShuffleDeflateTest() {
     }
 }
 
-//TEMPLATE_LIST_TEST_CASE("ReadWriteShuffleDeflate", "[template]", numerical_test_types) {
-//    readWriteShuffleDeflateTest<TestType>();
-//}
+TEMPLATE_LIST_TEST_CASE("ReadWriteShuffleDeflate", "[template]", numerical_test_types) {
+    readWriteShuffleDeflateTest<TestType>();
+}
 
 template <typename T>
 void readWriteSzipTest() {
@@ -1663,16 +1641,16 @@ void readWriteSzipTest() {
     }
 }
 
-//TEMPLATE_LIST_TEST_CASE("ReadWriteSzip", "[template]", dataset_test_types) {
-//    // SZIP is not consistently available across distributions.
-//    if (H5Zfilter_avail(H5Z_FILTER_SZIP)) {
-//        readWriteSzipTest<TestType>();
-//    } else {
-//        CHECK_THROWS_AS(readWriteSzipTest<TestType>(), PropertyException);
-//    }
-//}
+TEMPLATE_LIST_TEST_CASE("ReadWriteSzip", "[template]", dataset_test_types) {
+    // SZIP is not consistently available across distributions.
+    if (H5Zfilter_avail(H5Z_FILTER_SZIP)) {
+        readWriteSzipTest<TestType>();
+    } else {
+        CHECK_THROWS_AS(readWriteSzipTest<TestType>(), PropertyException);
+    }
+}
 
-TEST_CASE(HighFiveRecursiveGroups) {
+TEST_CASE("HighFiveRecursiveGroups") {
     const std::string FILE_NAME("h5_ds_exist.h5");
     const std::string GROUP_1("group1"), GROUP_2("group2");
     const std::string DS_PATH = GROUP_1 + "/" + GROUP_2;
@@ -1720,7 +1698,7 @@ TEST_CASE(HighFiveRecursiveGroups) {
     }
 }
 
-TEST_CASE(HighFiveInspect) {
+TEST_CASE("HighFiveInspect") {
     const std::string FILE_NAME("group_info.h5");
     const std::string GROUP_1("group1");
     const std::string DS_NAME = "ds";
@@ -1760,7 +1738,7 @@ TEST_CASE(HighFiveInspect) {
     CHECK(ds.getInfo().getRefCount() == 1);
 }
 
-TEST_CASE(HighFiveGetPath) {
+TEST_CASE("HighFiveGetPath") {
     File file("getpath.h5", File::ReadWrite | File::Create | File::Truncate);
 
     int number = 100;
@@ -1788,7 +1766,7 @@ TEST_CASE(HighFiveGetPath) {
     CHECK(d2.getFile().getPath() == "/");
 }
 
-TEST_CASE(HighFiveSoftLinks) {
+TEST_CASE("HighFiveSoftLinks") {
     const std::string FILE_NAME("softlinks.h5");
     const std::string DS_PATH("/hard_link/dataset");
     const std::string LINK_PATH("/soft_link/to_ds");
@@ -1818,7 +1796,7 @@ TEST_CASE(HighFiveSoftLinks) {
     }
 }
 
-TEST_CASE(HighFiveRename) {
+TEST_CASE("HighFiveRename") {
     File file("move.h5", File::ReadWrite | File::Create | File::Truncate);
 
     int number = 100;
@@ -1843,7 +1821,7 @@ TEST_CASE(HighFiveRename) {
     }
 }
 
-TEST_CASE(HighFiveRenameRelative) {
+TEST_CASE("HighFiveRenameRelative") {
     File file("move.h5", File::ReadWrite | File::Create | File::Truncate);
     Group group = file.createGroup("group");
 
@@ -1866,7 +1844,7 @@ TEST_CASE(HighFiveRenameRelative) {
     }
 }
 
-TEST_CASE(HighFivePropertyObjects) {
+TEST_CASE("HighFivePropertyObjects") {
     const auto& plist1 = FileCreateProps::Default();  // get const-ref, otherwise copies
     CHECK(plist1.getId() == H5P_DEFAULT);
     CHECK(!plist1.isValid());  // not valid -> no inc_ref
@@ -1915,7 +1893,7 @@ CompoundType create_compound_csl2() {
 HIGHFIVE_REGISTER_TYPE(CSL1, create_compound_csl1)
 HIGHFIVE_REGISTER_TYPE(CSL2, create_compound_csl2)
 
-TEST_CASE(HighFiveCompounds) {
+TEST_CASE("HighFiveCompounds") {
     const std::string FILE_NAME("compounds_test.h5");
     const std::string DATASET_NAME1("/a");
     const std::string DATASET_NAME2("/b");
@@ -2025,7 +2003,7 @@ HIGHFIVE_REGISTER_TYPE(GrandChild, create_compound_GrandChild)
 HIGHFIVE_REGISTER_TYPE(Child, create_compound_Child)
 HIGHFIVE_REGISTER_TYPE(Parent, create_compound_Parent)
 
-TEST_CASE(HighFiveCompoundsNested) {
+TEST_CASE("HighFiveCompoundsNested") {
     const std::string FILE_NAME("nested_compounds_test.h5");
     const std::string DATASET_NAME("/a");
 
@@ -2106,7 +2084,7 @@ std::string check(File& f) {
     return std::string(recs[0].s);
 }
 
-TEST_CASE(HighFiveCompoundsSeveralPadding) {
+TEST_CASE("HighFiveCompoundsSeveralPadding") {
     const std::string FILE_NAME("padded_compounds_test.h5");
 
     File file(FILE_NAME, File::ReadWrite | File::Create | File::Truncate);
@@ -2179,7 +2157,7 @@ EnumType<Direction> create_enum_direction() {
 }
 HIGHFIVE_REGISTER_TYPE(Direction, create_enum_direction)
 
-TEST_CASE(HighFiveEnum) {
+TEST_CASE("HighFiveEnum") {
     const std::string FILE_NAME("enum_test.h5");
     const std::string DATASET_NAME1("/a");
     const std::string DATASET_NAME2("/b");
@@ -2226,7 +2204,7 @@ TEST_CASE(HighFiveEnum) {
     }
 }
 
-TEST_CASE(HighFiveFixedString) {
+TEST_CASE("HighFiveFixedString") {
     const std::string FILE_NAME("array_atomic_types.h5");
     const std::string GROUP_1("group1");
 
@@ -2305,7 +2283,7 @@ TEST_CASE(HighFiveFixedString) {
     }
 }
 
-TEST_CASE(HighFiveFixedLenStringArrayStructure) {
+TEST_CASE("HighFiveFixedLenStringArrayStructure") {
     using fixed_array_t = FixedLenStringArray<10>;
     // increment the characters of a string written in a std::array
     auto increment_string = [](const fixed_array_t::value_type arr) {
@@ -2368,7 +2346,7 @@ TEST_CASE(HighFiveFixedLenStringArrayStructure) {
     }
 }
 
-TEST_CASE(HighFiveFixedLenStringArrayAttribute) {
+TEST_CASE("HighFiveFixedLenStringArrayAttribute") {
     const std::string FILE_NAME("fixed_array_attr.h5");
     // Create a new file using the default property lists.
     {
@@ -2387,7 +2365,7 @@ TEST_CASE(HighFiveFixedLenStringArrayAttribute) {
     }
 }
 
-TEST_CASE(HighFiveReference) {
+TEST_CASE("HighFiveReference") {
     const std::string FILE_NAME("h5_ref_test.h5");
     const std::string DATASET1_NAME("dset1");
     const std::string DATASET2_NAME("dset2");
@@ -2445,7 +2423,7 @@ TEST_CASE(HighFiveReference) {
     }
 }
 
-TEST_CASE(HighFiveReadWriteConsts) {
+TEST_CASE("HighFiveReadWriteConsts") {
     const std::string FILE_NAME("3d_dataset_from_flat.h5");
     const std::string DATASET_NAME("dset");
     const std::array<std::size_t, 3> DIMS{3, 3, 3};
@@ -2468,7 +2446,7 @@ TEST_CASE(HighFiveReadWriteConsts) {
     }
 }
 
-TEST_CASE(HighFiveDataTypeClass) {
+TEST_CASE("HighFiveDataTypeClass") {
     auto Float = DataTypeClass::Float;
     auto String = DataTypeClass::String;
     auto Invalid = DataTypeClass::Invalid;
