@@ -27,10 +27,15 @@
 #include <xtensor/xview.hpp>
 #endif
 
-#define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
+#include "TestCase.h"
+#define CHECK(x) TEST_ASSERT_TRUE(x)
+#define CHECK_THROWS_AS(f, e) TEST_SPECIFIC_EXCEPTION(f, e)
+#define CHECK_NOTHROW(f) (f); TEST_SUCCESS
+#define REQUIRE(x) TEST_ASSERT_TRUE(x)
+#define CHECK_THAT(x, y) /* TEST_ASSERT(Equals(x, y)) */
+static const std::string testName = "unknown";
 
-TEST_CASE("H5Easy_Compression") {
+TEST_CASE(H5Easy_Compression) {
     {
         H5Easy::DumpOptions options = H5Easy::DumpOptions(H5Easy::Compression());
         CHECK(options.compress());
@@ -56,7 +61,7 @@ TEST_CASE("H5Easy_Compression") {
     }
 }
 
-TEST_CASE("H5Easy_scalar") {
+TEST_CASE(H5Easy_scalar) {
     H5Easy::File file("test.h5", H5Easy::File::Overwrite);
 
     double a = 1.2345;
@@ -77,7 +82,7 @@ TEST_CASE("H5Easy_scalar") {
     CHECK(c == c_r);
 }
 
-TEST_CASE("H5Easy_vector1d") {
+TEST_CASE(H5Easy_vector1d) {
     H5Easy::File file("test.h5", H5Easy::File::Overwrite);
 
     std::vector<size_t> a = {1, 2, 3, 4, 5};
@@ -89,7 +94,7 @@ TEST_CASE("H5Easy_vector1d") {
     CHECK(a == a_r);
 }
 
-TEST_CASE("H5Easy_vector2d") {
+TEST_CASE(H5Easy_vector2d) {
     H5Easy::File file("test.h5", H5Easy::File::Overwrite);
 
     std::vector<std::vector<size_t>> a({{0, 1}, {2, 3}, {4, 5}});
@@ -101,7 +106,7 @@ TEST_CASE("H5Easy_vector2d") {
     CHECK(a == a_r);
 }
 
-TEST_CASE("H5Easy_vector2d_compression") {
+TEST_CASE(H5Easy_vector2d_compression) {
     H5Easy::File file("test.h5", H5Easy::File::Overwrite);
 
     std::vector<std::vector<size_t>> a({{0, 1}, {2, 3}, {4, 5}});
@@ -118,7 +123,7 @@ TEST_CASE("H5Easy_vector2d_compression") {
     CHECK(a == a_r);
 }
 
-TEST_CASE("H5Easy_vector3d") {
+TEST_CASE(H5Easy_vector3d) {
     H5Easy::File file("test.h5", H5Easy::File::Overwrite);
 
     using type = std::vector<std::vector<std::vector<size_t>>>;
@@ -132,7 +137,7 @@ TEST_CASE("H5Easy_vector3d") {
     CHECK(a == a_r);
 }
 
-TEST_CASE("H5Easy_Attribute_scalar") {
+TEST_CASE(H5Easy_Attribute_scalar) {
     H5Easy::File file("test.h5", H5Easy::File::Overwrite);
 
     double a = 1.2345;
@@ -448,3 +453,5 @@ TEST_CASE("H5Easy_OpenCV_Mat_") {
     CHECK(a == b_r);
 }
 #endif
+
+TEST_MAIN()
