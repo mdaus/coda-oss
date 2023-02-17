@@ -404,18 +404,18 @@ TEST_CASE(testFsFileSize)
 static sys::File makeFile_()
 {
 #ifdef _WIN32
-    static const sys::filesystem::path name("explorer.exe");
+    static const std::filesystem::path name("explorer.exe");
     return sys::make_File("%SystemRoot%" / name);
 
 #else
-    static const sys::filesystem::path dot_cshrc(".cshrc");
+    static const std::filesystem::path dot_cshrc(".cshrc");
     try
     {
         return sys::make_File("$HOME" / dot_cshrc);
     }
     catch (const sys::SystemException&) { }  // no .cshrc; try .bashrc
 
-    static const sys::filesystem::path dot_bashrc(".bashrc");
+    static const std::filesystem::path dot_bashrc(".bashrc");
     return sys::make_File("$HOME" / dot_bashrc);
 #endif
 }
@@ -430,18 +430,18 @@ static FILE* sys_fopen()
     static const std::string mode("r");
 
 #ifdef _WIN32
-    static const sys::filesystem::path name("explorer.exe");
+    static const std::filesystem::path name("explorer.exe");
     return sys::fopen("%SystemRoot%" / name, mode);
 
 #else
-    static const sys::filesystem::path dot_cshrc(".cshrc");
+    static const std::filesystem::path dot_cshrc(".cshrc");
     auto retval = sys::fopen("$HOME" / dot_cshrc, mode);
     if (retval != nullptr)
     {
 	    return retval;
     }
     // no .cshrc; try .bashrc
-    static const sys::filesystem::path dot_bashrc(".bashrc");
+    static const std::filesystem::path dot_bashrc(".bashrc");
     return sys::fopen("$HOME" / dot_bashrc, mode);
 #endif
 }
@@ -455,7 +455,7 @@ TEST_CASE(test_sys_fopen)
 TEST_CASE(test_sys_fopen_failure)
 {
     static const std::string mode("r");
-    static const sys::filesystem::path name("does not exist . txt");
+    static const std::filesystem::path name("does not exist . txt");
     const auto fp = sys::fopen("$ENV_VAR_NOT_SET" / name, mode);
     TEST_ASSERT_NULL(fp);
 }
@@ -465,18 +465,18 @@ static int sys_open()
     constexpr int flags = 0;
 
 #ifdef _WIN32
-    static const sys::filesystem::path name("explorer.exe");
+    static const std::filesystem::path name("explorer.exe");
     return sys::open("%SystemRoot%" / name, flags);
 
 #else
-    static const sys::filesystem::path dot_cshrc(".cshrc");
+    static const std::filesystem::path dot_cshrc(".cshrc");
     auto retval = sys::open("$HOME" / dot_cshrc, flags);
     if (retval > -1)
     {
 	    return retval;
     }
     // no .cshrc; try .bashrc
-    static const sys::filesystem::path dot_bashrc(".bashrc");
+    static const std::filesystem::path dot_bashrc(".bashrc");
     return sys::open("$HOME" / dot_bashrc, flags);
 #endif
 }
@@ -490,18 +490,18 @@ TEST_CASE(test_sys_open)
 static std::ifstream make_ifstream_()
 {
 #ifdef _WIN32
-    static const sys::filesystem::path name("explorer.exe");
+    static const std::filesystem::path name("explorer.exe");
     return sys::make_ifstream("%SystemRoot%" / name);
 
 #else
-    static const sys::filesystem::path dot_cshrc(".cshrc");
+    static const std::filesystem::path dot_cshrc(".cshrc");
     auto retval = sys::make_ifstream("$HOME" / dot_cshrc);
     if (retval)
     {
         return retval;
     }
     // no .cshrc; try .bashrc
-    static const sys::filesystem::path dot_bashrc(".bashrc");
+    static const std::filesystem::path dot_bashrc(".bashrc");
     return sys::make_ifstream("$HOME" / dot_bashrc);
 #endif
 }
