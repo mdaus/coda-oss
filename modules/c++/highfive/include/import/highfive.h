@@ -25,8 +25,8 @@
 #define CODA_OSS_import_highfive_h_INCLUDED_
 #pragma once
 
-#ifdef H5_USE_BOOST
-#undef H5_USE_BOOST
+#ifndef HIGHFIVE_USE_BOOST
+#define HIGHFIVE_USE_BOOST OFF
 #endif
 
 #include "highfive/H5Easy.hpp"
