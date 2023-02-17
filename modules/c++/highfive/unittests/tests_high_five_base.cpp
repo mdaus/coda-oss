@@ -2606,3 +2606,50 @@ TEST_CASE("HighFiveEigen") {
 #endif
 }
 #endif
+
+TEST_MAIN(
+    TEST_CHECK(Basic_HighFive_tests);
+    TEST_CHECK(Test_silent_HighFive);
+    TEST_CHECK(Test_file_version_bounds);
+    TEST_CHECK(Test_file_space_strategy);
+    TEST_CHECK(Test_file_space_page_size);
+    TEST_CHECK(Test_page_buffer_size);
+    TEST_CHECK(Test_metadata_block_size_assignment);
+    TEST_CHECK(Test_group_properties);
+    TEST_CHECK(Test_allocation_time);
+    TEST_CHECK(Test_default_constructors);
+    TEST_CHECK(Test_groups_and_datasets);
+    TEST_CHECK(Test_extensible_datasets);
+    TEST_CHECK(Test_reference_count);
+    TEST_CHECK(Test_simple_listings);
+    TEST_CHECK(Simple_test_for_type_equality);
+    TEST_CHECK(DataTypeEqualTakeBack);
+    TEST_CHECK(DataSpaceTest);
+    TEST_CHECK(DataSpaceVectorTest);
+    TEST_CHECK(DataSpaceVariadicTest);
+    TEST_CHECK(ChunkingConstructorsTest);
+    TEST_CHECK(HighFiveReadWriteShortcut);
+    TEST_CHECK(ReadWriteAttributeVectorString);
+    TEST_CHECK(datasetOffset);
+    TEST_CHECK(selectionArraySimpleString);
+    TEST_CHECK(selectionByElementMultiDim);
+    TEST_CHECK(attribute_scalar_rw_string);
+    TEST_CHECK(HighFiveOutofDimension);
+    TEST_CHECK(HighFiveRecursiveGroups);
+    TEST_CHECK(HighFiveInspect);
+    TEST_CHECK(HighFiveGetPath);
+    TEST_CHECK(HighFiveSoftLinks);
+    TEST_CHECK(HighFiveRename);
+    TEST_CHECK(HighFiveRenameRelative);
+    TEST_CHECK(HighFivePropertyObjects);
+    TEST_CHECK(HighFiveCompounds);
+    TEST_CHECK(HighFiveCompoundsNested);
+    TEST_CHECK(HighFiveCompoundsSeveralPadding);
+    TEST_CHECK(HighFiveEnum);
+    TEST_CHECK(HighFiveFixedString);
+    TEST_CHECK(HighFiveFixedLenStringArrayStructure);
+    TEST_CHECK(HighFiveFixedLenStringArrayAttribute);
+    TEST_CHECK(HighFiveReference);
+    TEST_CHECK(HighFiveReadWriteConsts);
+    TEST_CHECK(HighFiveDataTypeClass);
+)
