@@ -30,7 +30,7 @@ using namespace HighFive;
 
 /// \brief Test for 2D old-style arrays (T array[x][y])
 template <typename T>
-void readWrite2DArrayTest() {
+void readWrite2DArrayTest(const std::string& testName) {
     std::ostringstream filename;
     filename << "h5_rw_2d_array_" << typeNameHelper<T>() << "_test.h5";
     const std::string DATASET_NAME("dset");
@@ -70,7 +70,7 @@ void readWrite2DArrayTest() {
 //}
 
 template <typename T>
-void readWriteArrayTest() {
+void readWriteArrayTest(const std::string& testName) {
     const size_t x_size = 200;
     typename std::array<T, x_size> vec;
     ContentGenerate<T> generator;
@@ -90,7 +90,8 @@ void readWriteArrayTest() {
 
 
 template <typename T, typename VectorSubT>
-void readWriteVectorNDTest(std::vector<VectorSubT>& ndvec, const std::vector<size_t>& dims) {
+void readWriteVectorNDTest(const std::string& testName,
+std::vector<VectorSubT>& ndvec, const std::vector<size_t>& dims) {
     fillVec(ndvec, dims, ContentGenerate<T>());
 
     std::vector<VectorSubT> result;
@@ -134,7 +135,7 @@ void readWriteVectorNDTest(std::vector<VectorSubT>& ndvec, const std::vector<siz
 #ifdef H5_USE_BOOST
 
 template <typename T>
-void MultiArray3DTest() {
+void MultiArray3DTest(const std::string& testName) {
     typedef typename boost::multi_array<T, 3> MultiArray;
 
     std::ostringstream filename;
@@ -173,7 +174,7 @@ TEMPLATE_LIST_TEST_CASE("MultiArray3D", "[template]", numerical_test_types) {
 }
 
 template <typename T>
-void ublas_matrix_Test() {
+void ublas_matrix_Test(const std::string& testName) {
     using Matrix = boost::numeric::ublas::matrix<T>;
 
     std::ostringstream filename;

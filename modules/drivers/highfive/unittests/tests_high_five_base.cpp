@@ -1086,7 +1086,7 @@ TEST_CASE(selectionByElementMultiDim) {
 }
 
 template <typename T>
-void columnSelectionTest() {
+void columnSelectionTest(const std::string& testName) {
     std::ostringstream filename;
     filename << "h5_rw_select_column_test_" << typeNameHelper<T>() << "_test.h5";
 
@@ -1276,6 +1276,7 @@ File setupHyperSlabFile(T (&values)[x_size][y_size],
     return file;
 }
 
+#if 0
 template <typename T>
 void regularHyperSlabSelectionTest() {
     std::ostringstream filename;
@@ -1307,9 +1308,10 @@ void regularHyperSlabSelectionTest() {
     }
 }
 
-//TEMPLATE_LIST_TEST_CASE("hyperSlabSelection", "[template]", numerical_test_types) {
-//    regularHyperSlabSelectionTest<TestType>();
-//}
+TEMPLATE_LIST_TEST_CASE("hyperSlabSelection", "[template]", numerical_test_types) {
+    regularHyperSlabSelectionTest<TestType>();
+}
+#endif
 
 struct IrregularHyperSlabAnswer {
     // These are the selected indices in the outer (larger) array.
@@ -1391,6 +1393,7 @@ std::vector<IrregularHyperSlabTestData> make_irregular_hyperslab_test_data() {
     return test_data;
 }
 
+#if 0
 template <typename T>
 void irregularHyperSlabSelectionReadTest() {
     std::ostringstream filename;
@@ -1422,10 +1425,12 @@ void irregularHyperSlabSelectionReadTest() {
     }
 }
 
-//TEMPLATE_LIST_TEST_CASE("irregularHyperSlabSelectionRead", "[template]", numerical_test_types) {
-//    irregularHyperSlabSelectionReadTest<TestType>();
-//}
+TEMPLATE_LIST_TEST_CASE("irregularHyperSlabSelectionRead", "[template]", numerical_test_types) {
+    irregularHyperSlabSelectionReadTest<TestType>();
+}
+#endif
 
+#if 0
 template <typename T>
 void irregularHyperSlabSelectionWriteTest() {
     std::ostringstream filename;
@@ -1474,9 +1479,10 @@ void irregularHyperSlabSelectionWriteTest() {
     }
 }
 
-//TEMPLATE_LIST_TEST_CASE("irregularHyperSlabSelectionWrite", "[template]", std::tuple<int>) {
-//    irregularHyperSlabSelectionWriteTest<TestType>();
-//}
+TEMPLATE_LIST_TEST_CASE("irregularHyperSlabSelectionWrite", "[template]", std::tuple<int>) {
+    irregularHyperSlabSelectionWriteTest<TestType>();
+}
+#endif
 
 template <typename T>
 void attribute_scalar_rw(const std::string& testName) {
@@ -1549,7 +1555,7 @@ TEST_CASE(HighFiveOutofDimension) {
 }
 
 template <typename T>
-void readWriteShuffleDeflateTest() {
+void readWriteShuffleDeflateTest(const std::string& testName) {
     std::ostringstream filename;
     filename << "h5_rw_deflate_" << typeNameHelper<T>() << "_test.h5";
     const std::string DATASET_NAME("dset");
@@ -1614,7 +1620,7 @@ void readWriteShuffleDeflateTest() {
 //}
 
 template <typename T>
-void readWriteSzipTest() {
+void readWriteSzipTest(const std::string& testName) {
     std::ostringstream filename;
     filename << "h5_rw_szip_" << typeNameHelper<T>() << "_test.h5";
     const std::string DATASET_NAME("dset");
