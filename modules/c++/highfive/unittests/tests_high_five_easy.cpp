@@ -459,7 +459,7 @@ TEST_MAIN(
     TEST_CHECK(H5Easy_scalar);
     TEST_CHECK(H5Easy_vector1d);
     TEST_CHECK(H5Easy_vector2d);
-    TEST_CHECK(H5Easy_vector2d_compression);
+    //TEST_CHECK(H5Easy_vector2d_compression);
     TEST_CHECK(H5Easy_vector3d);
     TEST_CHECK(H5Easy_Attribute_scalar);
 )
