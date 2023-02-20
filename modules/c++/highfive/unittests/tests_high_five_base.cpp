@@ -48,7 +48,6 @@ inline bool Equals_(const std::vector<T>& lhs, const std::vector<T>& rhs)
 #define CHECK_NOTHROW(f) (f); TEST_SUCCESS
 #define REQUIRE(x) TEST_ASSERT_TRUE(x)
 #define CHECK_THAT(x, y) /* TEST_ASSERT(Equals(x, y)) */
-static const std::string testName = "unknown";
 
 #include "tests_high_five.hpp"
 
@@ -854,7 +853,7 @@ TEST_CASE(HighFiveReadWriteShortcut) {
 }
 
 template <typename T>
-void readWriteAttributeVectorTest() {
+void readWriteAttributeVectorTest(const std::string& testName) {
     std::ostringstream filename;
     filename << "h5_rw_attribute_vec_" << typeNameHelper<T>() << "_test.h5";
 
@@ -943,7 +942,7 @@ void readWriteAttributeVectorTest() {
 }
 
 TEST_CASE(ReadWriteAttributeVectorString) {
-    readWriteAttributeVectorTest<std::string>();
+    readWriteAttributeVectorTest<std::string>(testName);
 }
 //
 //TEMPLATE_LIST_TEST_CASE("ReadWriteAttributeVector", "[template]", dataset_test_types) {
@@ -964,7 +963,7 @@ TEST_CASE(datasetOffset) {
 }
 
 template <typename T>
-void selectionArraySimpleTest() {
+void selectionArraySimpleTest(const std::string& testName) {
     typedef typename std::vector<T> Vector;
 
     std::ostringstream filename;
@@ -1033,7 +1032,7 @@ void selectionArraySimpleTest() {
 }
 
 TEST_CASE(selectionArraySimpleString) {
-    selectionArraySimpleTest<std::string>();
+    selectionArraySimpleTest<std::string>(testName);
 }
 
 //TEMPLATE_LIST_TEST_CASE("selectionArraySimple", "[template]", dataset_test_types) {
@@ -1470,7 +1469,7 @@ void irregularHyperSlabSelectionWriteTest() {
 //}
 
 template <typename T>
-void attribute_scalar_rw() {
+void attribute_scalar_rw(const std::string& testName) {
     std::ostringstream filename;
     filename << "h5_rw_attribute_scalar_rw" << typeNameHelper<T>() << "_test.h5";
 
@@ -1510,7 +1509,7 @@ void attribute_scalar_rw() {
 //}
 
 TEST_CASE(attribute_scalar_rw_string) {
-    attribute_scalar_rw<std::string>();
+    attribute_scalar_rw<std::string>(testName);
 }
 
 // regression test https://github.com/BlueBrain/HighFive/issues/98
@@ -1686,7 +1685,7 @@ TEST_CASE(HighFiveRecursiveGroups) {
     // Without parents creating both groups will fail
     {
         SilenceHDF5 silencer;
-        CHECK_THROWS_AS(file.createGroup(DS_PATH, false), std::exception);
+        TEST_THROWS(file.createGroup(DS_PATH, false));
     }
     Group g2 = file.createGroup(DS_PATH);
 
