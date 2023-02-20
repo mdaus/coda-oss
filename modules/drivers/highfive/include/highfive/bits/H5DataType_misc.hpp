@@ -55,7 +55,7 @@ inline bool DataType::isVariableStr() const {
     if (var_value < 0) {
         HDF5ErrMapper::ToException<DataTypeException>("Unable to define datatype size to variable");
     }
-    return static_cast<bool>(var_value);
+    return var_value ? true : false;
 }
 
 inline bool DataType::isFixedLenStr() const {

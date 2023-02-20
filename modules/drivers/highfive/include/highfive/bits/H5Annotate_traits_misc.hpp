@@ -113,7 +113,7 @@ inline bool AnnotateTraits<Derivate>::hasAttribute(const std::string& attr_name)
         HDF5ErrMapper::ToException<AttributeException>(
             std::string("Unable to check for attribute in group"));
     }
-    return res;
+    return res ? true : false;
 }
 
 }  // namespace HighFive
