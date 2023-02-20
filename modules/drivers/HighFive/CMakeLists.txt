@@ -1,4 +1,5 @@
-set(MODULE_NAME highfive)
+set(MODULE_NAME HighFive)
+set(TARGET_LANGUAGE c++)
 
 if(CODA_ENABLE_HDF5)
     set(MODULE_DEPS config-c++)

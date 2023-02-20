@@ -21,14 +21,15 @@
  */
 
 
-#ifndef CODA_OSS_import_highfive_h_INCLUDED_
-#define CODA_OSS_import_highfive_h_INCLUDED_
+#ifndef CODA_OSS_import_HighFive_h_INCLUDED_
+#define CODA_OSS_import_HighFive_h_INCLUDED_
 #pragma once
 
 #ifdef H5_USE_BOOST
 #undef H5_USE_BOOST
 #endif
 
-#include "highfive/H5Easy.hpp"
+#include "HighFive/H5Easy.hpp"
 
-#endif // CODA_OSS_import_highfive_h_INCLUDED_
+#endif // CODA_OSS_import_HighFive_h_INCLUDED_
+

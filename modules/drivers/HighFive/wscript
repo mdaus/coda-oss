@@ -1,4 +1,4 @@
-NAME            = 'highfive'
+NAME            = 'HighFive'
 VERSION         = '2.6.2'
 MODULE_DEPS     = 'hdf5 hdf5cpp config'
 USELIB_LOCAL    = 'hdf5-c hdf5cpp-c'
