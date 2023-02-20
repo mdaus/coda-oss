@@ -20,6 +20,7 @@
 
 #include <string>
 #include <vector>
+#include <utility>
 
 // optionally enable xtensor plug-in and load the library
 #ifdef XTENSOR_VERSION_MAJOR
@@ -130,13 +131,18 @@ class DumpOptions {
     ///
     /// \brief Constructor: accept all default settings.
     DumpOptions() = default;
+    DumpOptions(const DumpOptions&) = default;
+    DumpOptions& operator=(const DumpOptions&) = default;
+    DumpOptions(DumpOptions&&) = default;
+    DumpOptions& operator=(DumpOptions&&) = default;
+    ~DumpOptions() = default;
 
     ///
     /// \brief Constructor: overwrite (some of the) defaults.
     /// \param args any of DumpMode(), Flush(), Compression() in arbitrary number and order.
     template <class... Args>
-    DumpOptions(Args... args) {
-        set(args...);
+    DumpOptions(Args&&... args) {
+        set(std::forward<Args>(args)...);
     }
 
     ///
@@ -159,7 +165,7 @@ class DumpOptions {
     /// \param arg any of DumpMode(), Flush(), Compression in arbitrary number and order.
     /// \param args any of DumpMode(), Flush(), Compression in arbitrary number and order.
     template <class T, class... Args>
-    inline void set(T arg, Args... args);
+    inline void set(T arg, Args&&... args);
 
     ///
     /// \brief Set chunk-size. If the input is rank (size) zero, automatic chunking is enabled.

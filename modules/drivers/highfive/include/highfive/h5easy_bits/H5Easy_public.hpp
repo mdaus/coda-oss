@@ -9,6 +9,8 @@
 #ifndef H5EASY_BITS_PUBLIC_HPP
 #define H5EASY_BITS_PUBLIC_HPP
 
+#include <utility>
+
 #include "../H5Easy.hpp"
 
 namespace H5Easy {
@@ -42,9 +44,9 @@ inline void DumpOptions::set(const Compression& level) {
 }
 
 template <class T, class... Args>
-inline void DumpOptions::set(T arg, Args... args) {
+inline void DumpOptions::set(T arg, Args&&... args) {
     set(arg);
-    set(args...);
+    set(std::forward<Args>(args)...);
 }
 
 template <class T>
