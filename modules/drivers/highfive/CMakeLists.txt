@@ -2,7 +2,7 @@ set(MODULE_NAME highfive)
 set(TARGET_LANGUAGE c++)
 
 if(CODA_ENABLE_HDF5)
-    set(MODULE_DEPS config-c++)
+    set(MODULE_DEPS config-c++ sys-c++)
     list(APPEND MODULE_DEPS hdf5-c++)
 
     coda_add_module(
