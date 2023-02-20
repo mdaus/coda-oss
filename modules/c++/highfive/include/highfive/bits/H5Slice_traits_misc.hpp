@@ -191,7 +191,8 @@ inline void SliceTraits<Derivate>::read(T& array, const DataTransferProps& xfer_
     auto t = create_datatype<typename details::inspector<T>::base_type>();
     auto c = t.getClass();
     if (c == DataTypeClass::VarLen) {
-        (void) H5Dvlen_reclaim(t.getId(), mem_space.getId(), xfer_props.getId(), r.get_pointer());
+        //(void) H5Dvlen_reclaim(t.getId(), mem_space.getId(), xfer_props.getId(), r.get_pointer());
+        throw std::logic_error("H5Dvlen_reclaim() is deprecated.");
     }
 }
 

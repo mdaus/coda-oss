@@ -18,6 +18,10 @@
 #include <vector>
 #include <map>
 
+#if _MSC_VER
+#pragma warning(disable : 4127)  // conditional expression is constant
+#endif
+
 #include <highfive/H5DataSet.hpp>
 #include <highfive/H5DataSpace.hpp>
 #include <highfive/H5File.hpp>

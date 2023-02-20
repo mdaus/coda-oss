@@ -80,7 +80,8 @@ inline void Attribute::read(T& array) const {
     auto t = create_datatype<typename details::inspector<T>::base_type>();
     auto c = t.getClass();
     if (c == DataTypeClass::VarLen) {
-        (void) H5Dvlen_reclaim(t.getId(), mem_space.getId(), H5P_DEFAULT, r.get_pointer());
+        //(void) H5Dvlen_reclaim(t.getId(), mem_space.getId(), H5P_DEFAULT, r.get_pointer());
+        throw std::logic_error("H5Dvlen_reclaim() is deprecated.");
     }
 }
 
