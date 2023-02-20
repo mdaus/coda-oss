@@ -102,7 +102,7 @@ class Compression {
     ///
     /// \param level the compression level
     template <class T>
-    explicit Compression(T level);
+    explicit Compression(T /*level*/);
     
     Compression(const Compression&) = default;
     Compression& operator=(const Compression&) = default;

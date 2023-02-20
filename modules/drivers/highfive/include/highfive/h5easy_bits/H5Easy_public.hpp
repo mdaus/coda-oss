@@ -32,11 +32,11 @@ inline unsigned Compression::get() const {
 }
 
 inline void DumpOptions::set(DumpMode mode) {
-    m_overwrite = static_cast<bool>(mode);
+    m_overwrite = mode == DumpMode::Overwrite;
 }
 
 inline void DumpOptions::set(Flush mode) {
-    m_flush = static_cast<bool>(mode);
+    m_flush = mode == Flush::True;
 }
 
 inline void DumpOptions::set(const Compression& level) {
