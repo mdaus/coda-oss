@@ -101,14 +101,20 @@ class Compression {
     ///
     /// \param level the compression level
     template <class T>
-    Compression(T level);
+    explicit Compression(T level);
+    
+    Compression(const Compression&) = default;
+    Compression& operator=(const Compression&) = default;
+    Compression(Compression&&) = default;
+    Compression& operator=(Compression&&) = default;
+    ~Compression() = default;
 
     ///
     /// \brief Return compression level.
     inline unsigned get() const;
 
   private:
-    unsigned m_compression_level;
+    unsigned m_compression_level = 9;
 };
 
 ///
