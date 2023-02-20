@@ -25,8 +25,6 @@
 #define CHECK_THROWS_AS(f, e) TEST_SPECIFIC_EXCEPTION(f, e)
 #define CHECK_NOTHROW(f) (f); TEST_SUCCESS
 #define REQUIRE(x) TEST_ASSERT_TRUE(x)
-#define CHECK_THAT(x, y) /* TEST_ASSERT(Equals(x, y)) */
-//static const std::string testName = "unknown";
 
 using namespace HighFive;
 

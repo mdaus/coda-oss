@@ -30,6 +30,11 @@
 #include <highfive/H5Utility.hpp>
 
 template <typename T>
+inline const std::vector<T>& Equals(const std::vector<T>& v)
+{
+    return v;
+}
+template <typename T>
 inline bool Equals_(const std::vector<T>& lhs, const std::vector<T>& rhs)
 {
     if (lhs.size() != rhs.size())
@@ -46,12 +51,13 @@ inline bool Equals_(const std::vector<T>& lhs, const std::vector<T>& rhs)
     return true;
 }
 
+
 #include "TestCase.h"
 #define CHECK(x) TEST_ASSERT_TRUE(x)
 #define CHECK_THROWS_AS(f, e) TEST_SPECIFIC_EXCEPTION(f, e)
 #define CHECK_NOTHROW(f) (f); TEST_SUCCESS
 #define REQUIRE(x) TEST_ASSERT_TRUE(x)
-#define CHECK_THAT(x, y) /* TEST_ASSERT(Equals(x, y)) */
+#define CHECK_THAT(x, y) TEST_ASSERT(Equals_(x, y))
 
 #include "tests_high_five.hpp"
 
