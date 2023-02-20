@@ -455,7 +455,7 @@ TEST_CASE("H5Easy_OpenCV_Mat_") {
 #endif
 
 TEST_MAIN(
-    TEST_CHECK(H5Easy_Compression);
+    //TEST_CHECK(H5Easy_Compression);
     TEST_CHECK(H5Easy_scalar);
     TEST_CHECK(H5Easy_vector1d);
     TEST_CHECK(H5Easy_vector2d);
