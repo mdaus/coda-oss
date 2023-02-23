@@ -305,7 +305,18 @@ TEST_CASE(test_highfive_create)
     static const auto path = path_.parent_path() / "TEST_highfive_create_TMP.h5";
     H5Easy::File file(path.string(), H5Easy::File::Overwrite);
     
-    const std::vector<size_t> DS1 = {10, 20};
+    const types::RowCol<size_t> dims{10, 20};
+    std::vector<std::vector<float>> DS1(dims.row);
+    float d = 0.0f;
+    for (auto&& r : DS1)
+    {
+        r.resize(dims.col);
+        for (size_t c = 0; c < r.size(); c++)
+        {
+            r[c] = d++;
+        }
+    }
+
     H5Easy::dump(file, "/DS1", DS1);
     TEST_SUCCESS;
 }
@@ -328,11 +339,12 @@ TEST_CASE(test_highfive_write)
     }    
     {
         H5Easy::File file(path.string(), H5Easy::File::Overwrite);
-    
-        //const HighFive::DataSpace dataspace{std::vector<size_t>{dims.row, dims.col}};
-        //auto dataset = file.createDataSet<double>("DS1", dataspace);
-        //dataset.write_raw(data.data());
-        std::ignore = hdf5::lite::writeDataSet(file, data, "DS1");
+        const auto ds = hdf5::lite::writeDataSet(file, data, "DS1");
+        const auto dimensions = ds.getDimensions();
+        TEST_ASSERT_EQ(dimensions.size(), 2);
+        TEST_ASSERT_EQ(dims.row, dimensions[0]);
+        TEST_ASSERT_EQ(dims.col, dimensions[1]);
+        TEST_ASSERT_EQ(ds.getElementCount(), data.area());
     }
     // Be sure we can read the file just written
     {

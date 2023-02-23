@@ -19,7 +19,7 @@
 * add header-only [HighFive](https://github.com/BlueBrain/HighFive) HDF5-wrapper library.
 
 ## [Release 2022-12-14](https://github.com/mdaus/coda-oss/releases/tag/2022-12-14)
-* removed remaining vestigates of `std::auto_ptr`, provide `mem::AutoPtr` for the tiny handful of
+* removed remaining vestiges of `std::auto_ptr`, provide `mem::AutoPtr` for the tiny handful of
   places (e.g., SWIG bindings) that still need copying.
 * `xml::lite::Element` overloads to make creting new XML documents easier; see unittests for examples.
 * try even harder to find unittest files in various scenarios.
