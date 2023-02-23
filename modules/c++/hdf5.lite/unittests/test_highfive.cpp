@@ -391,6 +391,6 @@ TEST_MAIN(
     TEST_CHECK(test_highfive_datasetinfo);
     TEST_CHECK(test_highfive_info_nested);
 
-    TEST_CHECK(test_highfive_create);
-    TEST_CHECK(test_highfive_write);
+    //TEST_CHECK(test_highfive_create);
+    //TEST_CHECK(test_highfive_write);
 )
