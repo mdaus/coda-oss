@@ -334,20 +334,36 @@ TEST_CASE(test_highfive_write)
         std::ignore = hdf5::lite::writeDataSet(file, data, "DS1");
     }
     // Be sure we can read the file just written
-    const H5Easy::File file(path.string());
-
-    const auto DS1 = H5Easy::load<std::vector<std::vector<double>>>(file, "/DS1");
-    TEST_ASSERT_EQ(DS1.size(), dims.row);
-    TEST_ASSERT_EQ(DS1[0].size(), dims.col);
-
-    for (size_t r = 0; r < DS1.size(); r++)
     {
-        for (size_t c = 0; c < DS1[r].size(); c++)
+        const H5Easy::File file(path.string());
+
+        const auto DS1 = H5Easy::load<std::vector<std::vector<double>>>(file, "/DS1");
+        TEST_ASSERT_EQ(DS1.size(), dims.row);
+        TEST_ASSERT_EQ(DS1[0].size(), dims.col);
+
+        for (size_t r = 0; r < DS1.size(); r++)
         {
-            const auto expected = data(r, c);
-            const auto actual = DS1[r][c];
-            TEST_ASSERT_EQ(actual, expected);
-        }       
+            for (size_t c = 0; c < DS1[r].size(); c++)
+            {
+                const auto expected = data(r, c);
+                const auto actual = DS1[r][c];
+                TEST_ASSERT_EQ(actual, expected);
+            }
+        }
+    }
+    {
+        const H5Easy::File file(path.string());
+        auto ds1 = file.getDataSet("/DS1");
+
+        std::vector<double> result;
+        const auto rc = hdf5::lite::readDataSet(ds1, result);
+        TEST_ASSERT(rc.dims() == dims);
+        TEST_ASSERT_EQ(dims.area(), result.size());
+        for (size_t i = 0; i < result.size(); i++)
+        {
+            const auto expected = static_cast<double>(i);
+            TEST_ASSERT_EQ(result[i], expected);
+        }
     }
 }
 

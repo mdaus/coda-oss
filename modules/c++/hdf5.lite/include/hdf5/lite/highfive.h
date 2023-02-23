@@ -43,16 +43,27 @@ namespace hdf5
 {
 namespace lite
 {
-    template<typename T>
-    inline HighFive::DataSet writeDataSet(H5Easy::File& file,
-        SpanRC<T> data, const std::string& dataset_name /*TODO ...*/)
-    {
-        const std::vector<size_t> dims{data.dims().row, data.dims().col};
-        const HighFive::DataSpace dataspace{dims};
-        auto retval = file.createDataSet<T>(dataset_name, dataspace);
-        retval.write_raw(data.data());
-        return retval;
-    }
+template <typename T>
+inline HighFive::DataSet writeDataSet(H5Easy::File& file, SpanRC<T> data, const std::string& dataset_name /*TODO ...*/)
+{
+    const std::vector<size_t> dims{data.dims().row, data.dims().col};
+    const HighFive::DataSpace dataspace{dims};
+    auto retval = file.createDataSet<T>(dataset_name, dataspace);
+    retval.write_raw(data.data());
+    return retval;
+}
+
+template <typename T>
+inline SpanRC<T> readDataSet(HighFive::DataSet& dataSet, std::vector<T>& result)
+{
+    const auto dimensions = dataSet.getSpace().getDimensions();
+    const types::RowCol<size_t> dims(dimensions[0], dimensions[1]);
+
+    result.resize(dims.area());
+    dataSet.read(result.data());
+
+    return SpanRC<T>(result.data(), dims);
+}
 }
 }
 
