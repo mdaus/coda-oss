@@ -307,8 +307,7 @@ TEST_CASE(test_highfive_create)
     
     const std::vector<size_t> DS1 = {10, 20};
     H5Easy::dump(file, "/DS1", DS1);
-
-    TEST_ASSERT_TRUE(true);  // need to use hidden "testName" parameter
+    TEST_SUCCESS;
 }
 
 TEST_CASE(test_highfive_write)
