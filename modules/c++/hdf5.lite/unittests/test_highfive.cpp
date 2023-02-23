@@ -26,12 +26,14 @@
 #include <TestCase.h>
 
 #include "sys/FileFinder.h"
+#include "types/RowCol.h"
 
 #include "highfive/H5Easy.hpp"
 #include "highfive/H5DataSet.hpp"
 #include "highfive/H5File.hpp"
-#include "hdf5/lite/Read.h"
-#include "hdf5/lite/HDF5Exception.h"
+
+#include "hdf5/lite/SpanRC.h"
+#include "hdf5/lite/highfive.h"
 
 static std::filesystem::path find_unittest_file(const std::filesystem::path& name)
 {
@@ -326,9 +328,10 @@ TEST_CASE(test_highfive_write)
     {
         H5Easy::File file(path.string(), H5Easy::File::Overwrite);
     
-        const HighFive::DataSpace dataspace{std::vector<size_t>{dims.row, dims.col}};
-        auto dataset = file.createDataSet<double>("DS1", dataspace);
-        dataset.write_raw(data.data());
+        //const HighFive::DataSpace dataspace{std::vector<size_t>{dims.row, dims.col}};
+        //auto dataset = file.createDataSet<double>("DS1", dataspace);
+        //dataset.write_raw(data.data());
+        std::ignore = hdf5::lite::writeDataSet(file, data, "DS1");
     }
     // Be sure we can read the file just written
     const H5Easy::File file(path.string());
