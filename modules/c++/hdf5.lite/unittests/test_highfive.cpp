@@ -228,9 +228,11 @@ static void read_complex(const std::string& testName, const HighFive::Group& gro
 {
     const auto i = group.getDataSet("i");
     TEST_ASSERT(i.getDataType().getClass() == HighFive::DataTypeClass::Float);
-
+    TEST_ASSERT_EQ(i.getElementCount(), 10);
+    
     const auto r = group.getDataSet("r");
     TEST_ASSERT(r.getDataType().getClass() == HighFive::DataTypeClass::Float);
+    TEST_ASSERT_EQ(r.getElementCount(), 10);
 }
 TEST_CASE(test_highfive_info_nested)
 {
@@ -291,6 +293,61 @@ TEST_CASE(test_highfive_info_nested)
     }
 }
 
+//*******************************************************************************
+
+TEST_CASE(test_highfive_create)
+{
+    static const auto path_ = find_unittest_file("example.h5");
+    static const auto path = path_.parent_path() / "TEST_highfive_create_TMP.h5";
+    H5Easy::File file(path.string(), H5Easy::File::Overwrite);
+    
+    const std::vector<size_t> DS1 = {10, 20};
+    H5Easy::dump(file, "/DS1", DS1);
+
+    TEST_ASSERT_TRUE(true);  // need to use hidden "testName" parameter
+}
+
+TEST_CASE(test_highfive_write)
+{
+    static const auto path_ = find_unittest_file("example.h5");
+    static const auto path = path_.parent_path() / "TEST_highfive_write_TMP.h5";
+
+    const types::RowCol<size_t> dims{10, 20};
+    std::vector<double> data_(dims.area());
+    const hdf5::lite::SpanRC<double> data(data_.data(), dims);
+    double d = 0.0;
+    for (size_t r = 0; r<dims.row; r++)
+    {
+        for (size_t c = 0; c < dims.col; c++)
+        {
+            data(r, c) = d++;
+        }    
+    }    
+    {
+        H5Easy::File file(path.string(), H5Easy::File::Overwrite);
+    
+        const HighFive::DataSpace dataspace{std::vector<size_t>{dims.row, dims.col}};
+        auto dataset = file.createDataSet<double>("DS1", dataspace);
+        dataset.write_raw(data.data());
+    }
+    // Be sure we can read the file just written
+    const H5Easy::File file(path.string());
+
+    const auto DS1 = H5Easy::load<std::vector<std::vector<double>>>(file, "/DS1");
+    TEST_ASSERT_EQ(DS1.size(), dims.row);
+    TEST_ASSERT_EQ(DS1[0].size(), dims.col);
+
+    for (size_t r = 0; r < DS1.size(); r++)
+    {
+        for (size_t c = 0; c < DS1[r].size(); c++)
+        {
+            const auto expected = data(r, c);
+            const auto actual = DS1[r][c];
+            TEST_ASSERT_EQ(actual, expected);
+        }       
+    }
+}
+
 TEST_MAIN(
     TEST_CHECK(test_highfive_load);
     TEST_CHECK(test_highfive_FileException);
@@ -302,4 +359,7 @@ TEST_MAIN(
     TEST_CHECK(test_highfive_groupinfo);
     TEST_CHECK(test_highfive_datasetinfo);
     TEST_CHECK(test_highfive_info_nested);
+
+    TEST_CHECK(test_highfive_create);
+    TEST_CHECK(test_highfive_write);
 )
