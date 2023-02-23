@@ -55,6 +55,7 @@ TEST_CASE(test_highfive_load)
 TEST_CASE(test_highfive_FileException)
 {
     static const std::filesystem::path path = "does not exist . h5";
+    HighFive::SilenceHDF5 silencer; // no need for diagnostics, we're expecting a failure
     TEST_SPECIFIC_EXCEPTION(H5Easy::File(path.string()), HighFive::FileException);
 }
 
@@ -115,6 +116,7 @@ TEST_CASE(test_highfive_nested_small_wrongType)
     static const auto path = find_unittest_file("nested_complex_float32_data_small.h5");
 
     const H5Easy::File file(path.string());
+    HighFive::SilenceHDF5 silencer; // no need for diagnostics, we're expecting a failure
     TEST_SPECIFIC_EXCEPTION(
         H5Easy::load<std::vector<std::complex<float>>>(file, "/Data/1/bar/cat/a/i"),
         HighFive::DataSetException);
