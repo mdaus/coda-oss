@@ -354,11 +354,10 @@ TEST_CASE(test_highfive_write)
         }
     }
     {
-        const H5Easy::File file(path.string());
-        auto ds1 = file.getDataSet("/DS1");
+        H5Easy::File file(path.string());
 
         std::vector<double> result;
-        const auto rc = hdf5::lite::readDataSet(ds1, result);
+        const auto rc = hdf5::lite::load(file, "/DS1", result);
         TEST_ASSERT(rc.dims() == dims);
         TEST_ASSERT_EQ(dims.area(), result.size());
         for (size_t i = 0; i < result.size(); i++)

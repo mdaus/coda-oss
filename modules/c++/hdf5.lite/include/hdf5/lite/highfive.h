@@ -25,11 +25,8 @@
 #pragma once
 
 /*!
- * \file  Read.h
- * \brief HDF File-reading API
- *
- * These are simple routines to read HDF5 files; they're loosely modeled after the MATLab API
- * https://www.mathworks.com/help/matlab/import_export/import-hdf5-files.html
+ * \file  highfive.h
+ * \brief Utility routines for using HighFive
  */
 
 #include <string>
@@ -64,6 +61,15 @@ inline SpanRC<T> readDataSet(HighFive::DataSet& dataSet, std::vector<T>& result)
 
     return SpanRC<T>(result.data(), dims);
 }
+
+
+template <typename T>
+inline SpanRC<T> load(H5Easy::File& file, const std::string& dataset_name, std::vector<T>& result /*, TODO ...*/)
+{
+    auto dataSet = file.getDataSet(dataset_name);
+    return readDataSet(dataSet, result);
+}
+
 }
 }
 
