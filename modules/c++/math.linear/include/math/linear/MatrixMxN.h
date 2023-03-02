@@ -652,13 +652,7 @@ public:
      */
     MatrixMxN& scale(_T scalar)
     {
-        for (size_t i = 0; i < rows(); i++)
-        {
-            for (size_t j = 0; j < cols(); j++)
-            {
-                mRaw[i][j] *= scalar;
-            }
-        }
+        math::linear::scale(as_span(), scalar);
         return *this;
     }
 

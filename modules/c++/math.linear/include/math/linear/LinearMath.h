@@ -137,6 +137,34 @@ inline T angle(coda_oss::span<const T> lhs, coda_oss::span<const T> rhs)
     return angle_(lhs, rhs, dotProduct);
 }
 
+/*!
+    *  The scale function allows you to scale
+    *  the matrix by a scalar value in-place.
+    *  
+    *  If you can afford to mutate the matrix,
+    *  this will be more efficient than its
+    *  multiply counterpart
+    *
+    *  \code
+        Matrix<3, 3> mx = createIdentity<3, double>();
+        mx.scale(4.2f);   
+    *  \endcode
+    *
+    *
+    *  \param scalar The value to multiply into mx
+    *  \return This object
+    *
+    */
+template<typename T>
+void scale(coda_oss::span<T> m, T scalar)
+{
+    const auto sz = m.size();
+    for (size_t i = 0; i < sz; i++)
+    {
+        m[i] *= scalar;
+    }
+}
+
 }
 }
 

@@ -540,8 +540,7 @@ public:
      */
     Matrix2D& scale(_T scalar)
     {
-        for (size_t i = 0; i < mMN; ++i)
-            mRaw[i] *= scalar;
+        math::linear::scale(as_span(), scalar);
         return *this;
     }
 
