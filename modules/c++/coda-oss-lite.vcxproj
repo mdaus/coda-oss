@@ -100,7 +100,7 @@
     <ClInclude Include="math.linear\include\math\linear\Matrix2D.h" />
     <ClInclude Include="math.linear\include\math\linear\MatrixMxN.h" />
     <ClInclude Include="math.linear\include\math\linear\Vector.h" />
-    <ClInclude Include="math.linear\include\math\linear\VectorMath.h" />
+    <ClInclude Include="math.linear\include\math\linear\LinearMath.h" />
     <ClInclude Include="math.linear\include\math\linear\VectorN.h" />
     <ClInclude Include="math.poly\include\math\poly\Fit.h" />
     <ClInclude Include="math.poly\include\math\poly\Fixed1D.h" />

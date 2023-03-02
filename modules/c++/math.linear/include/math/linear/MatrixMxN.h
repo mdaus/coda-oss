@@ -30,6 +30,7 @@
 
 #include <import/sys.h>
 #include "coda_oss/span.h"
+#include "math/linear/LinearMath.h"
 
 namespace math
 {
@@ -1072,15 +1073,7 @@ public:
      */
     _T normSq() const
     {
-        _T acc(0);
-        for (size_t i = 0; i < rows(); ++i)
-        {
-            for (size_t j = 0; j < cols(); ++j)
-            {
-                acc += mRaw[i][j] * mRaw[i][j];
-            }
-        }
-        return acc;
+        return math::linear::normSq(as_span());
     }
     
     /*!
@@ -1089,7 +1082,7 @@ public:
      */
     _T norm() const
     {
-        return static_cast<_T>(::sqrt(normSq()));
+        return static_cast<_T>(math::linear::norm(as_span()));
     }
     
     /*!

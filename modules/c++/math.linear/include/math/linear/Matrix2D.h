@@ -34,6 +34,7 @@
 #include <mem/SharedPtr.h>
 #include <coda_oss/span.h>
 #include <math/linear/MatrixMxN.h>
+#include <math/linear/LinearMath.h>
 
 namespace math
 {
@@ -985,13 +986,7 @@ public:
      */
      _T normSq() const
     {
-        const auto sz = mM * mN;
-        _T acc(0);
-        for (size_t i = 0; i < sz; ++i)
-        {
-            acc += mRaw[i] * mRaw[i];
-        }
-        return acc;
+         return math::linear::normSq(as_span());
     }
 
     /*!
@@ -1000,7 +995,7 @@ public:
      */
     _T norm() const
     {
-        return static_cast<_T>(std::sqrt(normSq()));
+        return static_cast<_T>(math::linear::norm(as_span()));
     }
 
     /*!

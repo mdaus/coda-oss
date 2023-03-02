@@ -3,6 +3,7 @@
  * =========================================================================
  * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
+ * (C) Copyright 2023, Maxar Technologies, Inc.
  *
  * math.linear-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,8 +20,8 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef CODA_OSS_math_linear_VectorMath_h_INCLUDED_
-#define CODA_OSS_math_linear_VectorMath_h_INCLUDED_
+#ifndef CODA_OSS_math_linear_LinearMath_h_INCLUDED_
+#define CODA_OSS_math_linear_LinearMath_h_INCLUDED_
 #pragma once
 
 #include <assert.h>
@@ -64,7 +65,33 @@ inline T dot(coda_oss::span<const T> lhs, coda_oss::span<const T> rhs)
     return dot(lhs, rhs, std::nothrow);
 }
 
+ /*
+ * Find the square of the L2 norm
+ * Sum of squares of the vector elements
+ */
+template <typename T>
+inline T normSq(coda_oss::span<const T> m)
+{
+    const auto sz = m.size();
+    T acc{0};
+    for (size_t i = 0; i < sz; ++i)
+    {
+        acc += m[i] * m[i]; // this is likely faster than std::pow(m[i], 2) ???
+    }
+    return acc;
+}
+
+/*!
+ *  Find the L2 norm of the matrix.
+ *  \return The norm
+ */
+template <typename T>
+T norm(coda_oss::span<const T> m)
+{
+    return ::sqrt(normSq(m));
+}
+
 }
 }
 
-#endif  // CODA_OSS_math_linear_VectorMath_h_INCLUDED_
+#endif  // CODA_OSS_math_linear_LinearMath_h_INCLUDED_

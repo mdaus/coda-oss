@@ -25,7 +25,7 @@
 #include <math/linear/Matrix2D.h>
 #include <cmath>
 
-#include "math/linear/VectorMath.h"
+#include "math/linear/LinearMath.h"
 
 namespace math
 {
@@ -239,7 +239,8 @@ public:
 
     _T angle(const Vector& v) const
     {
-        _T val = (dot(v) / norm()) / v.norm();
+        const auto dotProduct = dot(v);
+        _T val = (dotProduct / norm()) / v.norm();
         return std::acos(std::max(-1.0, std::min(val, 1.0)));
     }
     
