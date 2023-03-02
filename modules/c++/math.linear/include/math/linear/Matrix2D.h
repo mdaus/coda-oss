@@ -32,6 +32,7 @@
 #include <import/gsl.h>
 #include <mem/ScopedArray.h>
 #include <mem/SharedPtr.h>
+#include <coda_oss/span.h>
 #include <math/linear/MatrixMxN.h>
 
 namespace math
@@ -451,6 +452,15 @@ public:
 
     //! Get a constant ref to the underlying vector
     const _T* get() const { return mRaw; }
+    
+    coda_oss::span<_T> as_span()
+    {
+        return coda_oss::span<_T>(mRaw, size());
+    }
+    coda_oss::span<const _T> as_span() const
+    {
+        return coda_oss::span<const _T>(mRaw, size());
+    }
 
     /*!
      *  Equality operator test

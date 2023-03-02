@@ -735,6 +735,9 @@
     <ClInclude Include="config\include\config\disable_compiler_warnings.h">
       <Filter>config</Filter>
     </ClInclude>
+    <ClInclude Include="math.linear\include\math\linear\VectorMath.h">
+      <Filter>math.linear</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />

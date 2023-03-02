@@ -26,6 +26,7 @@
 #include <cmath>
 
 #include <math/linear/MatrixMxN.h>
+#include <math/linear/VectorMath.h>
 
 namespace math
 {
@@ -177,14 +178,18 @@ public:
 
     constexpr size_t size() const noexcept { return _ND; }
 
+    coda_oss::span<_T> as_span()
+    {
+        return mRaw.as_span();
+    }
+    coda_oss::span<const _T> as_span() const
+    {
+        return mRaw.as_span();
+    }
+
     _T dot(const VectorN<_ND>& vec) const
     {
-        _T acc(0);
-        for (size_t i = 0; i < size(); ++i)
-        {
-            acc += (*this)[i] * vec[i];
-        }
-        return acc;
+        return math::linear::dot(as_span(), vec.as_span(), std::nothrow);
     }
 
     //!  Compute normalized dot product 

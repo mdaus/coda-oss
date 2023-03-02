@@ -29,6 +29,7 @@
 #include <iomanip> // std::setw()
 
 #include <import/sys.h>
+#include "coda_oss/span.h"
 
 namespace math
 {
@@ -123,6 +124,14 @@ public:
 
     //!  Public but really should be avoided
     _T mRaw[_MD][_ND]{};
+    coda_oss::span<_T> as_span()
+    {
+        return coda_oss::span<_T>(&(mRaw[0][0]), size());
+    }
+    coda_oss::span<const _T> as_span() const
+    {
+        return coda_oss::span<const _T>(&(mRaw[0][0]), size());
+    }
 
     MatrixMxN() = default;
 

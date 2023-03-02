@@ -25,6 +25,8 @@
 #include <math/linear/Matrix2D.h>
 #include <cmath>
 
+#include "math/linear/VectorMath.h"
+
 namespace math
 {
 namespace linear
@@ -191,6 +193,15 @@ public:
 
     //!  Get back a const-vector
     const _T* get() const { return mRaw.get(); }
+    
+    coda_oss::span<_T> as_span()
+    {
+        return mRaw.as_span();
+    }
+    coda_oss::span<const _T> as_span() const
+    {
+        return mRaw.as_span();
+    }
 
     //!  Const dereference operator
     inline _T operator[](size_t i) const
@@ -223,15 +234,7 @@ public:
      */
     _T dot(const Vector& vec_) const
     {
-        _T acc(0);
-        size_t sz = mRaw.size();
-        if (vec_.size() != sz)
-            throw except::Exception(Ctxt("Dot product requires equal size vectors"));
-        for (size_t i = 0; i < sz; ++i)
-        {
-            acc += vec_[i] * mRaw.mRaw[i];
-        }
-        return acc;
+        return math::linear::dot(as_span(), vec_.as_span());
     }
 
     _T angle(const Vector& v) const
