@@ -173,7 +173,6 @@ public:
         assert( i < size() );
 #endif
         return mRaw[i][0];
-
     }
 
     constexpr size_t size() const noexcept { return _ND; }
@@ -217,9 +216,7 @@ public:
      */
     _T angle(const Like_T& v) const
     {
-        const auto dotProduct = dot(v);
-        _T val = (dotProduct / norm()) / v.norm();
-        return std::acos(std::max(-1.0, std::min(val, 1.0)));
+        return math::linear::angle(as_span(), v.as_span(). std::nothrow);
     }
 
     void normalize()

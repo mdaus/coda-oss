@@ -239,9 +239,7 @@ public:
 
     _T angle(const Vector& v) const
     {
-        const auto dotProduct = dot(v);
-        _T val = (dotProduct / norm()) / v.norm();
-        return std::acos(std::max(-1.0, std::min(val, 1.0)));
+        return math::linear::angle(as_span(), v.as_span());
     }
 
     //!  Compute normalized dot product
