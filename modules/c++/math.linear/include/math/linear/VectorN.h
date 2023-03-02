@@ -216,7 +216,7 @@ public:
      */
     _T angle(const Like_T& v) const
     {
-        return math::linear::angle(as_span(), v.as_span(). std::nothrow);
+        return math::linear::angle(as_span(), v.as_span(), std::nothrow);
     }
 
     void normalize()
