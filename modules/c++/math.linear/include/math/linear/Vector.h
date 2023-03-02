@@ -243,6 +243,12 @@ public:
         _T val = (dotProduct / norm()) / v.norm();
         return std::acos(std::max(-1.0, std::min(val, 1.0)));
     }
+
+    //!  Compute normalized dot product
+    _T normDot(const Vector& v) const
+    {
+        return math::linear::normDot(as_span(), v.as_span());
+    }
     
     _T normSq() const
     {

@@ -195,12 +195,7 @@ public:
     //!  Compute normalized dot product 
     _T normDot(const VectorN<_ND>& vec) const
     {
-        // We should be able to normalize the vectors first, then take the
-        // dot product.  However, due numerical precision we could still end
-        // up outsize the [-1, 1] range.
-
-        const _T dotProduct = dot(vec) / (norm() * vec.norm());
-        return std::max<_T>(std::min<_T>(dotProduct, 1.0), -1.0);
+        return math::linear::normDot(as_span(), vec.as_span(), std::nothrow);
     }
 
     /*!

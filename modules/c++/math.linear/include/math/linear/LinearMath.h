@@ -91,6 +91,31 @@ T norm(coda_oss::span<const T> m)
     return ::sqrt(normSq(m));
 }
 
+//!  Compute normalized dot product 
+template<typename T>
+inline T normDot_(coda_oss::span<const T> lhs, coda_oss::span<const T> rhs, T dot)
+{
+    // We should be able to normalize the vectors first, then take the
+    // dot product.  However, due numerical precision we could still end
+    // up outsize the [-1, 1] range.
+
+    const auto dotProduct = dot / (norm(lhs) * norm(rhs));
+    return std::max<T>(std::min<T>(dotProduct, 1.0), -1.0);
+}
+template<typename T>
+inline T normDot(coda_oss::span<const T> lhs, coda_oss::span<const T> rhs, std::nothrow_t)
+{
+    const auto dotProduct_ = dot(lhs, rhs, std::nothrow);
+    return normDot_(lhs, rhs, dotProduct_);
+}
+template<typename T>
+inline T normDot(coda_oss::span<const T> lhs, coda_oss::span<const T> rhs)
+{
+    const auto dotProduct_ = dot(lhs, rhs);
+    return normDot_(lhs, rhs, dotProduct_);
+}
+
+
 }
 }
 
