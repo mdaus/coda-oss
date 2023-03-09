@@ -32,9 +32,9 @@ if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
     elseif (UNIX)
        add_compile_options(-Werror) # warnings as errors
        if (ENABLE_ASAN)
-       	    # https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html
-	   add_compile_options(-fsanitize=address)
-	   add_link_options(-fsanitize=address)
+            # https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html
+            add_compile_options(-fsanitize=address)
+            add_link_options(-fsanitize=address)
        endif()
     endif()
 
