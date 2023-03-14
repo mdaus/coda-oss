@@ -27,6 +27,7 @@
 
 #include "sys/FileFinder.h"
 #include "types/RowCol.h"
+#include "mem/ComplexView.h"
 
 #include "highfive/H5Easy.hpp"
 #include "highfive/H5DataSet.hpp"
@@ -89,6 +90,14 @@ TEST_CASE(test_highfive_nested)
     TEST_ASSERT_EQ(i[0].size(), r[0].size());
 }
 
+static auto load_complex(const H5Easy::File file,
+                         const std::string& r_path, const std::string& i_path)
+{
+    const auto r = H5Easy::load<std::vector<float>>(file, r_path);
+    const auto i = H5Easy::load<std::vector<float>>(file, i_path);
+    return std::make_pair(r, i);
+}
+
 TEST_CASE(test_highfive_nested_small)
 {
     // top group: Data
@@ -100,15 +109,22 @@ TEST_CASE(test_highfive_nested_small)
     static const auto path = find_unittest_file("nested_complex_float32_data_small.h5");
 
     const H5Easy::File file(path.string());
+
     const auto i = H5Easy::load<std::vector<float>>(file, "/Data/1/bar/cat/a/i");
     TEST_ASSERT_EQ(i.size(), 10);
-    auto actual = std::accumulate(i.cbegin(), i.cend(), 0.0);
-    TEST_ASSERT_EQ(actual, 0.0);
+    auto actual = std::accumulate(i.begin(), i.end(), 0.0f);
+    TEST_ASSERT_EQ(actual, 0.0f);
 
     const auto r = H5Easy::load<std::vector<float>>(file, "/Data/5/foo/dog/d/r");
     TEST_ASSERT_EQ(r.size(), 10);
-    actual = std::accumulate(r.cbegin(), r.cend(), 0.0);
-    TEST_ASSERT_EQ(actual, 10.0);
+    actual = std::accumulate(r.begin(), r.end(), 0.0f);
+    TEST_ASSERT_EQ(actual, 10.0f);
+
+    const auto a = load_complex(file, "/Data/1/bar/cat/a/r",  "/Data/1/bar/cat/a/i");
+    const auto cx_view = mem::make_ComplexSpansView(a.first, a.second);
+    const auto cx_actual = std::accumulate(cx_view.begin(), cx_view.end(), std::complex<float>(0.0));
+    TEST_ASSERT_EQ(cx_actual.real(), 10.0f);
+    TEST_ASSERT_EQ(cx_actual.imag(), 0.0f);
 }
 
 TEST_CASE(test_highfive_nested_small_wrongType)
@@ -228,15 +244,19 @@ TEST_CASE(test_highfive_datasetinfo)
     TEST_ASSERT_EQ(time.listAttributeNames().size(), 2);
 }
 
-static void read_complex(const std::string& testName, const HighFive::Group& group)
+static void read_complex(const std::string& testName, const HighFive::DataSet& r, const HighFive::DataSet& i) 
 {
-    const auto i = group.getDataSet("i");
     TEST_ASSERT(i.getDataType().getClass() == HighFive::DataTypeClass::Float);
     TEST_ASSERT_EQ(i.getElementCount(), 10);
     
-    const auto r = group.getDataSet("r");
     TEST_ASSERT(r.getDataType().getClass() == HighFive::DataTypeClass::Float);
     TEST_ASSERT_EQ(r.getElementCount(), 10);
+}
+static void read_complex(const std::string& testName, const HighFive::Group& group)
+{
+    const auto i = group.getDataSet("i");   
+    const auto r = group.getDataSet("r");
+    read_complex(testName, r, i);
 }
 TEST_CASE(test_highfive_info_nested)
 {
