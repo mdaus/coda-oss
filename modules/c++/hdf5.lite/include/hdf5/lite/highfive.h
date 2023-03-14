@@ -30,6 +30,7 @@
  */
 
 #include <string>
+#include <stdexcept>
 
 #include "highfive/H5Easy.hpp"
 #include "highfive/H5DataSet.hpp"
@@ -50,11 +51,18 @@ inline HighFive::DataSet writeDataSet(H5Easy::File& file, SpanRC<T> data, const 
     return retval;
 }
 
+// This loads 2D data into one large block of contiguous memory.
+// (HighFive::DataSet::read() uses a vector of vectors).
 template <typename T>
 inline SpanRC<T> readDataSet(const HighFive::DataSet& dataSet, std::vector<T>& result /*, TODO ...*/)
 {
     const auto dimensions = dataSet.getSpace().getDimensions();
-    const types::RowCol<size_t> dims(dimensions[0], dimensions[1]);
+    if (dimensions.size() > 2)
+    {
+        throw std::invalid_argument("'dataSet' has unexpected dimensions.");
+    }
+    const auto col = dimensions.size() == 2 ? dimensions[1] : 1;
+    const types::RowCol<size_t> dims(dimensions[0], col);
 
     result.resize(dims.area());
     dataSet.read(result.data());

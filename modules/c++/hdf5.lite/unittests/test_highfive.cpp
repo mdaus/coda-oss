@@ -48,12 +48,22 @@ TEST_CASE(test_highfive_load)
 
     const H5Easy::File file(path.string());
 
-    const auto lat = H5Easy::load<std::vector<double>>(file, "/g4/lat");
-    //std::vector<double> lat;
-    //const auto rc = hdf5::lite::load(file, "/g4/lat", lat);
-    TEST_ASSERT_EQ(lat.size(), 19);
-    TEST_ASSERT_ALMOST_EQ(lat[0], -90.0);
-    TEST_ASSERT_ALMOST_EQ(lat[0], -lat[18]);
+    {
+        const auto lat = H5Easy::load<std::vector<double>>(file, "/g4/lat");
+        TEST_ASSERT_EQ(lat.size(), 19);
+        TEST_ASSERT_ALMOST_EQ(lat[0], -90.0);
+        TEST_ASSERT_ALMOST_EQ(lat[0], -lat[18]);
+    }
+    {
+        std::vector<double> lat;
+        const auto rc = hdf5::lite::load(file, "/g4/lat", lat);
+        TEST_ASSERT_EQ(lat.size(), 19);
+        TEST_ASSERT_EQ(lat.size(), rc.area());
+        TEST_ASSERT_EQ(rc.dims().row, 19);
+        TEST_ASSERT_EQ(rc.dims().col, 1);
+        TEST_ASSERT_ALMOST_EQ(lat[0], -90.0);
+        TEST_ASSERT_ALMOST_EQ(lat[0], -lat[18]);
+    }
 }
 
 TEST_CASE(test_highfive_FileException)
