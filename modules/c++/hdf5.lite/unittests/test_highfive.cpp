@@ -47,7 +47,10 @@ TEST_CASE(test_highfive_load)
     static const auto path = find_unittest_file("example.h5");
 
     const H5Easy::File file(path.string());
+
     const auto lat = H5Easy::load<std::vector<double>>(file, "/g4/lat");
+    //std::vector<double> lat;
+    //const auto rc = hdf5::lite::load(file, "/g4/lat", lat);
     TEST_ASSERT_EQ(lat.size(), 19);
     TEST_ASSERT_ALMOST_EQ(lat[0], -90.0);
     TEST_ASSERT_ALMOST_EQ(lat[0], -lat[18]);
