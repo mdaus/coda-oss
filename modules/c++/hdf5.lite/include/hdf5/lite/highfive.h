@@ -51,7 +51,7 @@ inline HighFive::DataSet writeDataSet(H5Easy::File& file, SpanRC<T> data, const 
 }
 
 template <typename T>
-inline SpanRC<T> readDataSet(HighFive::DataSet& dataSet, std::vector<T>& result /*, TODO ...*/)
+inline SpanRC<T> readDataSet(const HighFive::DataSet& dataSet, std::vector<T>& result /*, TODO ...*/)
 {
     const auto dimensions = dataSet.getSpace().getDimensions();
     const types::RowCol<size_t> dims(dimensions[0], dimensions[1]);
@@ -63,7 +63,7 @@ inline SpanRC<T> readDataSet(HighFive::DataSet& dataSet, std::vector<T>& result 
 }
 
 template <typename T>
-inline SpanRC<T> load(H5Easy::File& file, const std::string& dataset_name, std::vector<T>& result /*, TODO ...*/)
+inline SpanRC<T> load(const H5Easy::File& file, const std::string& dataset_name, std::vector<T>& result /*, TODO ...*/)
 {
     auto dataSet = file.getDataSet(dataset_name);
     return readDataSet(dataSet, result);

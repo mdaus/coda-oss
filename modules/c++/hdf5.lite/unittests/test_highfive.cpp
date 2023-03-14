@@ -91,7 +91,7 @@ TEST_CASE(test_highfive_nested)
 }
 
 template<typename T>
-static auto read_complex(HighFive::DataSet& r, HighFive::DataSet& i) 
+static auto read_complex(const HighFive::DataSet& r, const HighFive::DataSet& i) 
 {
     std::vector<T> r_result;
     hdf5::lite::readDataSet(r, r_result);
@@ -102,8 +102,8 @@ static auto read_complex(HighFive::DataSet& r, HighFive::DataSet& i)
 template<typename T>
 static auto read_complex(const HighFive::Group& group)
 {
-    auto i = group.getDataSet("i");   
-    auto r = group.getDataSet("r");
+    const auto i = group.getDataSet("i");   
+    const auto r = group.getDataSet("r");
     return read_complex<T>(r, i);
 }
 template<typename T>
@@ -261,7 +261,7 @@ TEST_CASE(test_highfive_datasetinfo)
     TEST_ASSERT_EQ(time.listAttributeNames().size(), 2);
 }
 
-static void read_complex(const std::string& testName, HighFive::DataSet& r, HighFive::DataSet& i) 
+static void read_complex(const std::string& testName, const HighFive::DataSet& r, const HighFive::DataSet& i) 
 {   
     TEST_ASSERT(r.getDataType().getClass() == HighFive::DataTypeClass::Float);
     TEST_ASSERT_EQ(r.getElementCount(), 10);
@@ -271,10 +271,8 @@ static void read_complex(const std::string& testName, HighFive::DataSet& r, High
 }
 static void read_complex(const std::string& testName, const HighFive::Group& group)
 {
-    auto r = group.getDataSet("r");
-    auto i = group.getDataSet("i");
-    read_complex(testName, r, i);
-    //std::ignore = read_complex<double>(group);
+    read_complex(testName, group.getDataSet("r"), group.getDataSet("i"));
+    std::ignore = read_complex<double>(group);
 }
 TEST_CASE(test_highfive_info_nested)
 {
