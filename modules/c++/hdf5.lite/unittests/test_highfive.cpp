@@ -91,11 +91,11 @@ TEST_CASE(test_highfive_nested)
     static const auto path = find_unittest_file("123_barfoo_catdog_cx.h5");
 
     const H5Easy::File file(path.string());
-    const auto i = H5Easy::load<std::vector<std::vector<double>>>(file, "/1/bar/cat/i");
+    const auto i = hdf5::lite::vv_load<double>(file, "/1/bar/cat/i");
     TEST_ASSERT_EQ(i.size(), 1);
     TEST_ASSERT_EQ(i[0].size(), 10);
 
-    const auto r = H5Easy::load<std::vector<std::vector<double>>>(file, "/1/bar/dog/r");
+    const auto r = hdf5::lite::vv_load<double>(file, "/1/bar/dog/r");
     TEST_ASSERT_EQ(r.size(), 1);
     TEST_ASSERT_EQ(r[0].size(), 10);
     
@@ -123,8 +123,8 @@ template<typename T>
 static auto load_complex(const H5Easy::File& file,
                          const std::string& r_path, const std::string& i_path)
 {
-    const auto r = H5Easy::load<std::vector<T>>(file, r_path);
-    const auto i = H5Easy::load<std::vector<T>>(file, i_path);
+    const auto r = hdf5::lite::v_load<T>(file, r_path);
+    const auto i = hdf5::lite::v_load<T>(file, i_path);
     return std::make_pair(r, i);
 }
 
@@ -140,12 +140,12 @@ TEST_CASE(test_highfive_nested_small)
 
     const H5Easy::File file(path.string());
 
-    const auto i = H5Easy::load<std::vector<float>>(file, "/Data/1/bar/cat/a/i");
+    const auto i = hdf5::lite::v_load<float>(file, "/Data/1/bar/cat/a/i");
     TEST_ASSERT_EQ(i.size(), 10);
     auto actual = std::accumulate(i.begin(), i.end(), 0.0f);
     TEST_ASSERT_EQ(actual, 0.0f);
 
-    const auto r = H5Easy::load<std::vector<float>>(file, "/Data/5/foo/dog/d/r");
+    const auto r = hdf5::lite::v_load<float>(file, "/Data/5/foo/dog/d/r");
     TEST_ASSERT_EQ(r.size(), 10);
     actual = std::accumulate(r.begin(), r.end(), 0.0f);
     TEST_ASSERT_EQ(actual, 10.0f);
@@ -399,7 +399,7 @@ TEST_CASE(test_highfive_write)
     {
         const H5Easy::File file(path.string());
 
-        const auto DS1 = H5Easy::load<std::vector<std::vector<double>>>(file, "/DS1");
+        const auto DS1 = hdf5::lite::vv_load<double>(file, "/DS1");
         TEST_ASSERT_EQ(DS1.size(), dims.row);
         TEST_ASSERT_EQ(DS1[0].size(), dims.col);
 

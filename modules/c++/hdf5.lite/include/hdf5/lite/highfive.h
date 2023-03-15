@@ -31,6 +31,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <vector>
 
 #include "highfive/H5Easy.hpp"
 #include "highfive/H5DataSet.hpp"
@@ -41,6 +42,19 @@ namespace hdf5
 {
 namespace lite
 {
+
+// Save the trouble of specifying a return type of std::vector<>
+template <typename T>
+inline auto v_load(const H5Easy::File& file, const std::string& dataset_name)
+{
+    return H5Easy::load<std::vector<T>>(file, dataset_name);
+}
+template <typename T>
+inline auto vv_load(const H5Easy::File& file, const std::string& dataset_name)
+{
+    return H5Easy::load<std::vector<std::vector<T>>>(file, dataset_name);
+}
+
 template <typename T>
 inline HighFive::DataSet writeDataSet(H5Easy::File& file, SpanRC<T> data, const std::string& dataset_name /*, TODO ...*/)
 {
