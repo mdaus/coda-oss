@@ -56,7 +56,7 @@ TEST_CASE(test_highfive_load)
     }
     {
         std::vector<double> lat;
-        const auto rc = hdf5::lite::load(file, "/g4/lat", lat);
+        const auto rc = hdf5::lite::loadDataSet(file, "/g4/lat", lat);
         TEST_ASSERT_EQ(lat.size(), 19);
         TEST_ASSERT_EQ(lat.size(), rc.area());
         TEST_ASSERT_EQ(rc.dims().row, 19);
@@ -417,7 +417,7 @@ TEST_CASE(test_highfive_write)
         H5Easy::File file(path.string());
 
         std::vector<double> result;
-        const auto rc = hdf5::lite::load(file, "/DS1", result);
+        const auto rc = hdf5::lite::loadDataSet(file, "/DS1", result);
         TEST_ASSERT(rc.dims() == dims);
         TEST_ASSERT_EQ(dims.area(), result.size());
         for (size_t i = 0; i < result.size(); i++)

@@ -85,7 +85,7 @@ inline SpanRC<T> readDataSet(const HighFive::DataSet& dataSet, std::vector<T>& r
 }
 
 template <typename T>
-inline SpanRC<T> load(const H5Easy::File& file, const std::string& dataset_name, std::vector<T>& result /*, TODO ...*/)
+inline SpanRC<T> loadDataSet(const H5Easy::File& file, const std::string& dataset_name, std::vector<T>& result /*, TODO ...*/)
 {
     auto dataSet = file.getDataSet(dataset_name);
     return readDataSet(dataSet, result);
