@@ -420,7 +420,7 @@ TEST_CASE(test_highfive_write)
     }    
     {
         H5Easy::File file(path.string(), H5Easy::File::Overwrite);
-        const auto ds = hdf5::lite::writeDataSet(file, data, "DS1");
+        const auto ds = hdf5::lite::writeDataSet(file, "DS1", data);
         const auto dimensions = ds.getDimensions();
         TEST_ASSERT_EQ(dimensions.size(), 2);
         TEST_ASSERT_EQ(dims.row, dimensions[0]);
