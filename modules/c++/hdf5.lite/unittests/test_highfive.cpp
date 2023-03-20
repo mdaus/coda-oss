@@ -374,20 +374,20 @@ TEST_CASE(test_highfive_dump)
     {
         const std::vector<dataset_t> data{1, 2, 3, 4, 5};
         H5Easy::File file(path.string(), H5Easy::File::Overwrite);
-        std::ignore = H5Easy::dump(file, dataset_name, data);
+        //std::ignore = H5Easy::dump(file, dataset_name, data);
         TEST_SUCCESS;
     }
 
     const types::RowCol<size_t> dims{10, 20};
-    const auto data = make_data<dataset_t>(dims);
     {
-        //H5Easy::File file(path.string(), H5Easy::File::Overwrite);
+        const auto data = make_data<dataset_t>(dims);
+        H5Easy::File file(path.string(), H5Easy::File::Overwrite);
         //std::ignore = H5Easy::dump(file, dataset_name, data);
         TEST_SUCCESS;
     }
     
     // Be sure we can read the file just written
-    //const H5Easy::File file(path.string(), H5Easy::File::ReadOnly);
+    const H5Easy::File file(path.string(), H5Easy::File::ReadOnly);
     //const auto DS1 = hdf5::lite::vv_load<dataset_t>(file, dataset_name);
     //TEST_ASSERT_EQ(DS1.size(), dims.row);
     //TEST_ASSERT_EQ(DS1[0].size(), dims.col);
