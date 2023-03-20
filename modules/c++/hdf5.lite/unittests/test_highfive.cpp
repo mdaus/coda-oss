@@ -348,26 +348,58 @@ TEST_CASE(test_highfive_info_nested)
 
 //*******************************************************************************
 
-TEST_CASE(test_highfive_create)
+template<typename T>
+static auto make_data(const types::RowCol<size_t>& dims)
 {
-    static const auto path_ = find_unittest_file("example.h5");
-    static const auto path = path_.parent_path() / "TEST_highfive_create_TMP.h5";
-    H5Easy::File file(path.string(), H5Easy::File::Overwrite);
-    
-    const types::RowCol<size_t> dims{10, 20};
-    std::vector<std::vector<float>> DS1(dims.row);
-    float d = 0.0f;
-    for (auto&& r : DS1)
+    std::vector<std::vector<T>> retval(dims.row);
+    int d = 0;
+    for (auto&& r : retval)
     {
         r.resize(dims.col);
-        for (size_t c = 0; c < r.size(); c++)
+        for (auto&& v : r)
         {
-            r[c] = d++;
+            v = static_cast<T>(d++);
         }
     }
+    return retval;
+}
 
-    H5Easy::dump(file, "/DS1", DS1);
-    TEST_SUCCESS;
+TEST_CASE(test_highfive_dump)
+{  
+    static const std::string dataset_name("/DS1");
+    using dataset_t = float;
+    static const auto path_ = find_unittest_file("example.h5");
+    const auto path = path_.parent_path() / "TEST_highfive_create_TMP.h5";
+
+    {
+        const std::vector<dataset_t> data{1, 2, 3, 4, 5};
+        H5Easy::File file(path.string(), H5Easy::File::Overwrite);
+        //std::ignore = H5Easy::dump(file, dataset_name, data);
+        TEST_SUCCESS;
+    }
+
+    const types::RowCol<size_t> dims{10, 20};
+    const auto data = make_data<dataset_t>(dims);
+    {
+        H5Easy::File file(path.string(), H5Easy::File::Overwrite);
+        //std::ignore = H5Easy::dump(file, dataset_name, data);
+        TEST_SUCCESS;
+    }
+    
+    // Be sure we can read the file just written
+    const H5Easy::File file(path.string(), H5Easy::File::ReadOnly);
+    //const auto DS1 = hdf5::lite::vv_load<dataset_t>(file, dataset_name);
+    //TEST_ASSERT_EQ(DS1.size(), dims.row);
+    //TEST_ASSERT_EQ(DS1[0].size(), dims.col);
+    //for (size_t r = 0; r < DS1.size(); r++)
+    //{
+    //    for (size_t c = 0; c < DS1[r].size(); c++)
+    //    {
+    //        const auto expected = data[r][c];
+    //        const auto actual = DS1[r][c];
+    //        TEST_ASSERT_EQ(actual, expected);
+    //    }
+    //}
 }
 
 TEST_CASE(test_highfive_write)
@@ -388,7 +420,7 @@ TEST_CASE(test_highfive_write)
     }    
     {
         H5Easy::File file(path.string(), H5Easy::File::Overwrite);
-        const auto ds = hdf5::lite::writeDataSet(file, data, "DS1");
+        const auto ds = hdf5::lite::writeDataSet(file, "DS1", data);
         const auto dimensions = ds.getDimensions();
         TEST_ASSERT_EQ(dimensions.size(), 2);
         TEST_ASSERT_EQ(dims.row, dimensions[0]);
@@ -440,6 +472,6 @@ TEST_MAIN(
     TEST_CHECK(test_highfive_datasetinfo);
     TEST_CHECK(test_highfive_info_nested);
 
-    //TEST_CHECK(test_highfive_create);
+    TEST_CHECK(test_highfive_dump);
     //TEST_CHECK(test_highfive_write);
 )

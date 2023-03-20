@@ -56,13 +56,21 @@ inline auto vv_load(const H5Easy::File& file, const std::string& dataset_name)
 }
 
 template <typename T>
-inline HighFive::DataSet writeDataSet(H5Easy::File& file, SpanRC<T> data, const std::string& dataset_name /*, TODO ...*/)
+inline HighFive::DataSet writeDataSet(H5Easy::File& file, const std::string& dataset_name, SpanRC<T> data /*, TODO ...*/)
 {
     const std::vector<size_t> dims{data.dims().row, data.dims().col};
     const HighFive::DataSpace dataspace{dims};
     auto retval = file.createDataSet<T>(dataset_name, dataspace);
     retval.write_raw(data.data());
     return retval;
+}
+
+template<typename T>
+inline HighFive::DataSet writeDataSet(const H5Easy::File& file, const std::string& dataset_name, const T& values /*, TODO ...*/)
+{ 
+    auto dataset = file.createDataSet<T>(dataset_name, HighFive::DataSpace::From(values));
+    dataset.write(values);
+    return dataset;
 }
 
 // This loads 2D data into one large block of contiguous memory.
