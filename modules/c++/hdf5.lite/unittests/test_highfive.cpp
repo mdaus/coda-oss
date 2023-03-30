@@ -481,25 +481,63 @@ TEST_CASE(test_highfive_getDataType)
     TEST_ASSERT_FALSE(dataType.isReference());
 }
 
+template <typename THighFive>
+static auto getAttribute(const std::string& testName,
+                         const THighFive& obj, const std::string& name,
+                         HighFive::DataTypeClass typeClass, const std::string& typeName)
+{
+    auto attribute = obj.getAttribute(name);
+    TEST_ASSERT_EQ(attribute.getName(), name);
+    TEST_ASSERT(attribute.getType() == HighFive::ObjectType::Attribute);
+    TEST_ASSERT(attribute.getDataType().getClass() == typeClass);
+    TEST_ASSERT_EQ(attribute.getDataType().string(), typeName);
+    return attribute;
+}
+
 TEST_CASE(test_highfive_getAttribute)
 {
     static const auto path = find_unittest_file("example.h5");
     const H5Easy::File file(path.string(), H5Easy::File::ReadOnly);
+
+    {
+        const auto attribute = getAttribute(testName, file, "attr1", HighFive::DataTypeClass::Integer, "Integer8");
+        const auto memSpace = attribute.getMemSpace();
+        const auto elements = memSpace.getElementCount();
+        TEST_ASSERT_EQ(elements, 10);
+        std::vector<int8_t> v;
+        attribute.read(v);
+        TEST_ASSERT_EQ(v.size(), elements);
+    }
+    {
+        const auto attribute = getAttribute(testName, file, "attr2", HighFive::DataTypeClass::Integer, "Integer32");
+        const auto memSpace = attribute.getMemSpace();
+        const auto elements = memSpace.getElementCount();
+        TEST_ASSERT_EQ(elements, 4);
+        std::vector<std::vector<int32_t>> v;
+        attribute.read(v);
+        TEST_ASSERT_EQ(v[0][0], 0);
+        TEST_ASSERT_EQ(v[0][1], 1);
+        TEST_ASSERT_EQ(v[1][0], 2);
+        TEST_ASSERT_EQ(v[1][1], 3);        
+    }
+
     const auto time = file.getDataSet("/g4/time");
-
-    auto attribute_NAME = time.getAttribute("NAME");
-    TEST_ASSERT_EQ(attribute_NAME.getName(), "NAME");
-
-    // throw DataSetException("Can't output std::string as fixed-length.  Use raw arrays or FixedLenStringArray");
-    // std::string value;
-    // attribute_NAME.read(value); 
-    // TEST_ASSERT_EQ(value, "time");
-    //HighFive::FixedLenStringArray<1024> arr;  // notice the output strings can be smaller
-
-    const auto attribute_CLASS = time.getAttribute("CLASS");
-    TEST_ASSERT_EQ(attribute_CLASS.getName(), "CLASS");
-    //attribute_CLASS.read(value);
-    //TEST_ASSERT_EQ(value, "DIMENSION_SCALE");
+    {
+        const auto attribute = getAttribute(testName, time, "NAME", HighFive::DataTypeClass::String, "String40");
+        // throw DataSetException("Can't output std::string as fixed-length. Use
+        // raw arrays or FixedLenStringArray"); std::string value;d
+        // attribute.read(value);
+        // TEST_ASSERT_EQ(value, "time");
+        // HighFive::FixedLenStringArray<1024> arr;  // notice the output
+        // strings can be smaller
+        //HighFive::FixedLenStringArray<16> arr;
+        //attribute.read(arr);
+    }
+    {
+        const auto attribute = getAttribute(testName, time, "CLASS", HighFive::DataTypeClass::String, "String128");
+        // attribute.read(value);
+        // TEST_ASSERT_EQ(value, "DIMENSION_SCALE");
+    }
 }
 
 
