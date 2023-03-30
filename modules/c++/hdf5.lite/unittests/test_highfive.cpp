@@ -460,6 +460,22 @@ TEST_CASE(test_highfive_write)
     }
 }
 
+TEST_CASE(test_highfive_getDataType)
+{
+    static const auto path = find_unittest_file("example.h5");
+    const H5Easy::File file(path.string(), H5Easy::File::ReadOnly);
+
+    auto time = file.getDataSet("/g4/time");
+    const auto dataType = time.getDataType();
+
+    TEST_ASSERT(dataType.getClass() == HighFive::DataTypeClass::Float);
+    TEST_ASSERT_EQ(dataType.string(), "Float64");
+    TEST_ASSERT_EQ(dataType.getSize(), sizeof(double));
+    TEST_ASSERT_FALSE(dataType.isVariableStr());
+    TEST_ASSERT_FALSE(dataType.isFixedLenStr());
+    TEST_ASSERT_FALSE(dataType.isReference());
+}
+
 TEST_MAIN(
     TEST_CHECK(test_highfive_load);
     TEST_CHECK(test_highfive_FileException);
@@ -474,4 +490,6 @@ TEST_MAIN(
 
     TEST_CHECK(test_highfive_dump);
     //TEST_CHECK(test_highfive_write);
-)
+
+    TEST_CHECK(test_highfive_getDataType);
+ )
