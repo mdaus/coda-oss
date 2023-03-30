@@ -464,10 +464,15 @@ TEST_CASE(test_highfive_getDataType)
 {
     static const auto path = find_unittest_file("example.h5");
     const H5Easy::File file(path.string(), H5Easy::File::ReadOnly);
+    
+    const auto time = file.getDataSet("/g4/time");
+    TEST_ASSERT(time.getType() == HighFive::ObjectType::Dataset);
+    TEST_ASSERT_EQ(time.getElementCount(), 10);
+    const auto dims = time.getDimensions();
+    TEST_ASSERT_EQ(dims.size(), 1);
+    TEST_ASSERT_EQ(dims[0], 10);
 
-    auto time = file.getDataSet("/g4/time");
     const auto dataType = time.getDataType();
-
     TEST_ASSERT(dataType.getClass() == HighFive::DataTypeClass::Float);
     TEST_ASSERT_EQ(dataType.string(), "Float64");
     TEST_ASSERT_EQ(dataType.getSize(), sizeof(double));
@@ -475,6 +480,28 @@ TEST_CASE(test_highfive_getDataType)
     TEST_ASSERT_FALSE(dataType.isFixedLenStr());
     TEST_ASSERT_FALSE(dataType.isReference());
 }
+
+TEST_CASE(test_highfive_getAttribute)
+{
+    static const auto path = find_unittest_file("example.h5");
+    const H5Easy::File file(path.string(), H5Easy::File::ReadOnly);
+    const auto time = file.getDataSet("/g4/time");
+
+    auto attribute_NAME = time.getAttribute("NAME");
+    TEST_ASSERT_EQ(attribute_NAME.getName(), "NAME");
+
+    // throw DataSetException("Can't output std::string as fixed-length.  Use raw arrays or FixedLenStringArray");
+    // std::string value;
+    // attribute_NAME.read(value); 
+    // TEST_ASSERT_EQ(value, "time");
+    //HighFive::FixedLenStringArray<1024> arr;  // notice the output strings can be smaller
+
+    const auto attribute_CLASS = time.getAttribute("CLASS");
+    TEST_ASSERT_EQ(attribute_CLASS.getName(), "CLASS");
+    //attribute_CLASS.read(value);
+    //TEST_ASSERT_EQ(value, "DIMENSION_SCALE");
+}
+
 
 TEST_MAIN(
     TEST_CHECK(test_highfive_load);
@@ -492,4 +519,5 @@ TEST_MAIN(
     //TEST_CHECK(test_highfive_write);
 
     TEST_CHECK(test_highfive_getDataType);
+    TEST_CHECK(test_highfive_getAttribute);
  )
