@@ -494,6 +494,21 @@ static auto getAttribute(const std::string& testName,
     return attribute;
 }
 
+std::string read(const HighFive::Attribute& a)
+{
+    // Attribute::read() doesn't seem to work for variable length strings
+
+    // https://stackoverflow.com/questions/31344648/c-c-hdf5-read-string-attribute
+    const auto size = a.getStorageSize();
+    std::vector<char> buf(size+1);
+    const auto err = H5Aread(a.getId(), a.getDataType().getId(), buf.data());
+    if (err < 0)
+    {
+        throw std::runtime_error("H5Aread() failed.");
+    }
+    return std::string(buf.data(), size);
+}
+
 TEST_CASE(test_highfive_getAttribute)
 {
     static const auto path = find_unittest_file("example.h5");
@@ -532,11 +547,14 @@ TEST_CASE(test_highfive_getAttribute)
         // strings can be smaller
         //HighFive::FixedLenStringArray<16> arr;
         //attribute.read(arr);
+        //const auto value = read(attribute);
+        //TEST_ASSERT_EQ(value, "time");
     }
     {
         const auto attribute = getAttribute(testName, time, "CLASS", HighFive::DataTypeClass::String, "String128");
         // attribute.read(value);
-        // TEST_ASSERT_EQ(value, "DIMENSION_SCALE");
+        //const auto value = read(attribute);
+        //TEST_ASSERT_EQ(value, "DIMENSION_SCALE");
     }
     
     const auto lat = file.getDataSet("/g4/lat");
@@ -544,6 +562,8 @@ TEST_CASE(test_highfive_getAttribute)
         const auto attribute = getAttribute(testName, lat, "units", HighFive::DataTypeClass::String, "String104");
         //HighFive::FixedLenStringArray<104> value;
         //attribute.read(value);
+        //const auto value = read(attribute);
+        //TEST_ASSERT_EQ(value, "DIMENSION_SCALE");
     }
 }
 
