@@ -538,8 +538,14 @@ TEST_CASE(test_highfive_getAttribute)
         // attribute.read(value);
         // TEST_ASSERT_EQ(value, "DIMENSION_SCALE");
     }
+    
+    const auto lat = file.getDataSet("/g4/lat");
+    {
+        const auto attribute = getAttribute(testName, lat, "units", HighFive::DataTypeClass::String, "String104");
+        //HighFive::FixedLenStringArray<104> value;
+        //attribute.read(value);
+    }
 }
-
 
 TEST_MAIN(
     TEST_CHECK(test_highfive_load);
