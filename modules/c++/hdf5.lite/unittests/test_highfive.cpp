@@ -476,6 +476,9 @@ TEST_CASE(test_highfive_getDataType)
     TEST_ASSERT(dataType.getClass() == HighFive::DataTypeClass::Float);
     TEST_ASSERT_EQ(dataType.string(), "Float64");
     TEST_ASSERT_EQ(dataType.getSize(), sizeof(double));
+    const auto doubleDataType = HighFive::create_datatype<double>();
+    TEST_ASSERT(doubleDataType == dataType);
+
     TEST_ASSERT_FALSE(dataType.isVariableStr());
     TEST_ASSERT_FALSE(dataType.isFixedLenStr());
     TEST_ASSERT_FALSE(dataType.isReference());
@@ -493,7 +496,6 @@ static auto getAttribute(const std::string& testName,
     TEST_ASSERT_EQ(attribute.getDataType().string(), typeName);
     return attribute;
 }
-
 TEST_CASE(test_highfive_getAttribute)
 {
     static const auto path = find_unittest_file("example.h5");
@@ -538,8 +540,8 @@ TEST_CASE(test_highfive_getAttribute)
         const auto value = hdf5::lite::read<std::string>(attribute);
         TEST_ASSERT_EQ(value, "DIMENSION_SCALE");
     }
-    
-    const auto lat = file.getDataSet("/g4/lat");
+
+     const auto lat = file.getDataSet("/g4/lat");
     {
         const auto attribute = getAttribute(testName, lat, "units", HighFive::DataTypeClass::String, "String104");
         //HighFive::FixedLenStringArray<104> value;
