@@ -47,6 +47,8 @@ TEST_CASE(test_hdf5Create)
 
     // https://www.mathworks.com/help/matlab/ref/h5write.html
     hdf5::lite::createFile<float>(path, "/DS1", {10, 20});
+
+    TEST_ASSERT_TRUE(true); // need to use hidden "testName" parameter
 }
 
 TEST_CASE(test_hdf5Write)
@@ -83,7 +85,7 @@ TEST_CASE(test_hdf5Write)
     for (size_t i = 0; i < result.size(); i++)
     {
         const auto expected = static_cast<double>(i);
-        TEST_ASSERT_ALMOST_EQ(result[i], expected);
+        TEST_ASSERT_EQ(result[i], expected);
     }
 }
 
