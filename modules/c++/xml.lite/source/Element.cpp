@@ -278,20 +278,10 @@ static void writeCharacterData_native(io::OutputStream& stream, const std::u8str
 {
     stream.write(str::EncodedStringView(characterData).native());
 }
-static void writeCharacterData(io::OutputStream& stream, const std::u8string& characterData, bool isConsoleOutput)
-{
-    if (!isConsoleOutput)
-    {
-        writeCharacterData_utf8(stream, characterData);
-    }
-    else
-    {
-        writeCharacterData_native(stream, characterData);  // write to the console using the platform native encoding
-    }
-}
 
 static void depthPrint_(const xml::lite::Element& element,
-    io::OutputStream& stream, int depth, const std::string& formatter, bool isConsoleOutput)
+    io::OutputStream& stream, int depth, const std::string& formatter,
+    void(*writeCharacterData)(io::OutputStream&, const std::u8string&))
 {
     // XML must be stored in UTF-8 (or UTF-16/32), in particular, not Windows-1252. 
     //
@@ -321,8 +311,7 @@ static void depthPrint_(const xml::lite::Element& element,
         acc += std::string("\"");
     }
 
-    coda_oss::u8string characterData;
-    element.getCharacterData(characterData);
+    const auto characterData = getCharacterData(element);
     auto&& children = element.getChildren();
     if (characterData.empty() && children.empty())
     {
@@ -332,13 +321,13 @@ static void depthPrint_(const xml::lite::Element& element,
     else
     {
         stream.write(acc + rBrack);            
-        writeCharacterData(stream, characterData, isConsoleOutput);
+        writeCharacterData(stream, characterData);
 
         for (auto&& child: children)
         {
             if (!formatter.empty())
                 stream.write("\n");
-            depthPrint_(*child, stream, depth + 1, formatter, isConsoleOutput);
+            depthPrint_(*child, stream, depth + 1, formatter, writeCharacterData);
         }
 
         if (!children.empty() && !formatter.empty())
@@ -352,7 +341,9 @@ static void depthPrint_(const xml::lite::Element& element,
 }
 void xml::lite::Element::depthPrint(io::OutputStream& stream, int depth, const std::string& formatter, bool isConsoleOutput) const
 {
-    depthPrint_(*this, stream, depth, formatter, isConsoleOutput);
+    const auto f = isConsoleOutput ? writeCharacterData_native // write to the console using the platform native encoding
+        : writeCharacterData_utf8;
+    depthPrint_(*this, stream, depth, formatter, f);
 }
 
 void xml::lite::Element::addChild(xml::lite::Element * node)
