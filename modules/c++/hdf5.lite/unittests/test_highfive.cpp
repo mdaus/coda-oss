@@ -476,7 +476,7 @@ TEST_CASE(test_highfive_getDataType)
     TEST_ASSERT(dataType.getClass() == HighFive::DataTypeClass::Float);
     TEST_ASSERT_EQ(dataType.string(), "Float64");
     TEST_ASSERT_EQ(dataType.getSize(), sizeof(double));
-    const auto doubleDataType = HighFive::create_datatype<double>();
+    const auto doubleDataType = HighFive::create_and_check_datatype<double>();
     TEST_ASSERT(doubleDataType == dataType);
 
     TEST_ASSERT_FALSE(dataType.isVariableStr());
