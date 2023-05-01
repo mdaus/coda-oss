@@ -37,27 +37,7 @@
 #include <stdint.h>
 #include <time.h>
 
-#include <limits>
-#include <complex>
-#include <memory>
-#include <new>
-#include <utility>
-#include <type_traits>
-#include <typeinfo>
-#include <array>
-#include <string>
-#include <vector>
-#include <map>
-#include <set>
-#include <numeric>
-#include <algorithm>
-#include <iterator>
-#include <iomanip>
-#include <iostream>
-#include <ostream>
-#include <sstream>
-#include <future>
-#include <functional>
+#include "import/std.h"
 #include <std/span>
 #include <std/string>
 #include <std/filesystem>
@@ -69,5 +49,6 @@
 #pragma warning(pop)
 
 #pragma warning(disable: 4251) // '...': class '...' needs to have dll-interface to be used by clients of class '...'
+#pragma warning(disable: 5105) // macro expansion producing '...' has undefined behavior
 
 #endif //CODA_OSS_pch_h_INCLUDED_
