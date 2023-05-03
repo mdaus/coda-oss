@@ -42,7 +42,7 @@ TEST_CASE(test_enums_value_to_keys)
     const auto& result = value_to_keys();
     TEST_ASSERT_EQ(result.size(), 3);
 
-     const auto it0 = result.find(0);
+    const auto it0 = result.find(0);
     TEST_ASSERT(it0 != result.end());
     TEST_ASSERT_EQ("0", it0->second);
 
@@ -81,18 +81,18 @@ TEST_CASE(test_enums_find_keys)
 {
     const auto& mm = value_to_keys();
 
-    auto result = enums::details::equal_range(mm, 0);
-    TEST_ASSERT_EQ(result.size(), 1);
+    auto results = enums::details::equal_range(mm, 0);
+    TEST_ASSERT_EQ(results.size(), 1);
 
-    result = enums::details::equal_range(mm, 1);
-    TEST_ASSERT_EQ(result.size(), 2);
-    for (auto&& v : result)
+    results = enums::details::equal_range(mm, 1);
+    TEST_ASSERT_EQ(results.size(), 2);
+    for (auto&& v : results)
     {
         TEST_ASSERT((v == "+1") || (v == "1"));
     }
 
-    result = enums::details::equal_range(mm, 999);
-    TEST_ASSERT_TRUE(result.empty());
+    results = enums::details::equal_range(mm, 999);
+    TEST_ASSERT_TRUE(results.empty());
 }
 
 TEST_MAIN(
