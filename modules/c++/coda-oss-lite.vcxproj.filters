@@ -735,6 +735,18 @@
     <ClInclude Include="config\include\config\disable_compiler_warnings.h">
       <Filter>config</Filter>
     </ClInclude>
+    <ClInclude Include="enums\include\enums\Convert.h">
+      <Filter>enums</Filter>
+    </ClInclude>
+    <ClInclude Include="enums\include\enums\Enum.h">
+      <Filter>enums</Filter>
+    </ClInclude>
+    <ClInclude Include="enums\include\enums\Macros.h">
+      <Filter>enums</Filter>
+    </ClInclude>
+    <ClInclude Include="enums\include\enums\Test.h">
+      <Filter>enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1150,6 +1162,9 @@
     </Filter>
     <Filter Include="plugin">
       <UniqueIdentifier>{387bc6cb-323a-42b3-8502-4fac72586d12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="enums">
+      <UniqueIdentifier>{97216b20-05c5-46bd-bcb9-0d34d36b79fb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
