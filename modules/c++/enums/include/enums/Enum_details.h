@@ -25,24 +25,55 @@
 #pragma once
 
 #include <map>
+#include <vector>
+#include "coda_oss/optional.h"
 
 namespace enums
 {
 namespace details
 {
-// A key-value map could have multiple unique keys going to the same value, e.g,
-// {{"+1", 1}, {"1", 1}}; i.e., both "+1" and "1" represent the integer value 1.
-// "Reversing" that map requires a multimap, since for the same key `1` we
-// have two values "+1 and "1".
+/**
+ * A key-value map could have multiple unique keys going to the same value, e.g,
+ * {{"+1", 1}, {"1", 1}}; i.e., both "+1" and "1" represent the integer value 1.
+ * "Reversing" that map requires a multimap, since for the same key `1` we
+ * have two values "+1 and "1".
+ */
 template <typename TKey, typename TValue>
-inline std::multimap<TValue, TKey> value_to_keys(
-        const std::map<TKey, TValue>& key_to_value)
+inline auto value_to_keys(const std::map<TKey, TValue>& key_to_value)
 {
     std::multimap<TValue, TKey> retval;
     for (auto&& kv : key_to_value)
     {
         retval.emplace(std::make_pair(kv.second, kv.first));
     }
+    return retval;
+}
+
+/**
+ * Lookup the specified key in the map; return NULL if not found.
+ */
+template <typename TKey, typename TValue, typename TKeyArg = TKey>
+inline auto find(const std::map<TKey, TValue>& m, const TKeyArg& key)
+{
+    const auto it = m.find(key);
+    return it == m.end() ? coda_oss::optional<TValue>() : coda_oss::optional<TValue>(it->second);
+}
+
+/**
+ * Lookup the specified key in the multimap; return all matching values or an empty vector if not found.
+ */
+template <typename TKey, typename TValue, typename TKeyArg = TKey>
+inline auto equal_range(const std::multimap<TKey, TValue>& mm, const TKeyArg& key)
+{
+    std::vector<TValue> retval;
+
+    // https://en.cppreference.com/w/cpp/container/multimap/equal_range
+    const auto range = mm.equal_range(key);
+    for (auto it = range.first; it != range.second; ++it)
+    {
+        retval.push_back(it->second);
+    }
+
     return retval;
 }
 

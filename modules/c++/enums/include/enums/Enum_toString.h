@@ -57,24 +57,6 @@ inline coda_oss::optional<TValue> contains(const std::map<TKey, TValue>& map, co
     return it == map.end() ? coda_oss::optional<TValue>() : coda_oss::optional<TValue>(it->second);
 }
 
-/**
- * Lookup the specified key in the map, returning all the corresponding values.
- */
-template <typename TKey, typename TValue>
-inline std::vector<TValue> equal_range(const std::multimap<TKey, TValue>& map, const TKey& key)
-{
-    std::vector<TValue> retval;
-
-    // https://en.cppreference.com/w/cpp/container/multimap/equal_range
-    const auto range = map.equal_range(key);
-    for (auto it = range.first; it != range.second; ++it)
-    {
-        retval.push_back(it->second);
-    }
-
-    return retval;
-}
-
 // Extracts the value from the given optional<>, throwing the
 // specified exception if has_value()==false.
 template<typename T, typename TException>

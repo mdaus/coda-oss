@@ -28,7 +28,7 @@
 
 static const auto& key_to_value()
 {
-    static const std::map<std::string, int> retval = {{"+1", 1}, {"1", 1}};
+    static const std::map<std::string, int> retval = {{"0", 0}, {"+1", 1}, {"1", 1}};
     return retval;
 }
 static const auto& value_to_keys()
@@ -40,7 +40,11 @@ static const auto& value_to_keys()
 TEST_CASE(test_enums_value_to_keys)
 {
     const auto& result = value_to_keys();
-    TEST_ASSERT_EQ(result.size(), key_to_value().size());
+    TEST_ASSERT_EQ(result.size(), 3);
+
+     const auto it0 = result.find(0);
+    TEST_ASSERT(it0 != result.end());
+    TEST_ASSERT_EQ("0", it0->second);
 
     const auto it1 = result.find(1);
     TEST_ASSERT(it1 != result.end());
@@ -54,10 +58,45 @@ TEST_CASE(test_enums_value_to_keys)
     }
     TEST_ASSERT_EQ(iter, 2);
 
-     const auto it0 = result.find(0);
-    TEST_ASSERT(it0 == result.end());
+     const auto it999 = result.find(999);
+    TEST_ASSERT(it999 == result.end());
+}
+
+TEST_CASE(test_enums_find_key)
+{
+    const auto& m = key_to_value();
+
+    const auto v_1 = enums::details::find(m, "+1");
+    TEST_ASSERT_TRUE(v_1.has_value());
+    TEST_ASSERT_EQ(*v_1, 1);
+    const auto v1 = enums::details::find(m, "1");
+    TEST_ASSERT_TRUE(v1.has_value());
+    TEST_ASSERT_EQ(*v1, 1);
+
+    const auto vXYZ = enums::details::find(m, "XYZ");
+    TEST_ASSERT_FALSE(vXYZ.has_value());
+}
+
+TEST_CASE(test_enums_find_keys)
+{
+    const auto& mm = value_to_keys();
+
+    auto result = enums::details::equal_range(mm, 0);
+    TEST_ASSERT_EQ(result.size(), 1);
+
+    result = enums::details::equal_range(mm, 1);
+    TEST_ASSERT_EQ(result.size(), 2);
+    for (auto&& v : result)
+    {
+        TEST_ASSERT((v == "+1") || (v == "1"));
+    }
+
+    result = enums::details::equal_range(mm, 999);
+    TEST_ASSERT_TRUE(result.empty());
 }
 
 TEST_MAIN(
     TEST_CHECK(test_enums_value_to_keys);
+    TEST_CHECK(test_enums_find_key);
+    TEST_CHECK(test_enums_find_keys);
     )
