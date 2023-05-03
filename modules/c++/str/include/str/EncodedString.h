@@ -160,6 +160,7 @@ inline std::string toString(const EncodedString& es)
 {
     return es.native();
 }
+
 inline std::ostream& operator<<(std::ostream& os, const EncodedString& es)
 {
     os << toString(es);

@@ -34,6 +34,7 @@
 #  include <import/sys.h>
 #  include <import/str.h>
 #  include <import/except.h>
+#  include <except/Throwable.h>
 
 #  define IS_NAN(X) X != X
 
@@ -65,35 +66,12 @@ inline void diePrintf(const char* format, const std::string& testName, const cha
 // older C++ compilers don't like __VA_ARGS__ :-(
 #define test_diePrintf0(format) test::diePrintf(format, testName, __FILE__, SYS_FUNC, __LINE__)
 
-// https://stackoverflow.com/questions/1005476/how-to-detect-whether-there-is-a-specific-member-variable-in-class/1007175#1007175
-namespace details
-{
-    // https://stackoverflow.com/a/9154394/8877
-    template<typename T>
-    inline auto toString_imp(const T& obj, int) -> decltype(toString(obj), std::string())
-    {
-        return toString(obj);
-    }
-
-    template<typename T>
-    inline auto toString_imp(const T& obj, long) -> decltype(str::toString(obj), std::string())
-    {
-        return str::toString(obj);
-    }
-
-    template<typename T>
-    inline auto toString(const T& obj) -> decltype(toString_imp(obj, 0), std::string())
-    {
-        return toString_imp(obj, 0);
-    }
-}
-
 // Route all toString() for unittests through here ... so that we can have more control
 // over the routine used.
 template <typename TX>
 inline std::string toString(const TX& X)
 {
-    return details::toString(X);
+    return str::toString(X);
 }
 
 template<typename TX>
@@ -102,7 +80,7 @@ inline void diePrintf_(const char* format, const std::string& testName, const ch
 {
     diePrintf(format, testName, file, func, line, test::toString(X));
 }
-#define test_diePrintf1(format, X1) test::diePrintf_(format, testName, __FILE__, SYS_FUNC, __LINE__, (X1)) // might not want str::toString()
+#define test_diePrintf1(format, X1) test::diePrintf_(format, testName, __FILE__, SYS_FUNC, __LINE__, X1)
 
 template<typename TX1, typename TX2>
 inline void diePrintf_(const char* format, const std::string& testName, const char* file, const char* func, int line,
@@ -110,7 +88,7 @@ inline void diePrintf_(const char* format, const std::string& testName, const ch
 {
     diePrintf(format, testName, file, func, line, test::toString(X1), test::toString(X2));
 }
-#define test_diePrintf2(format, X1, X2) test::diePrintf_(format, testName, __FILE__, SYS_FUNC, __LINE__, (X1), (X2)) // might not want str::toString()
+#define test_diePrintf2(format, X1, X2) test::diePrintf_(format, testName, __FILE__, SYS_FUNC, __LINE__, X1, X2)
 
 template<typename TX1, typename TX2>
 inline void diePrintf_(const char* format, const std::string& testName, const char* file, int line, const std::string& msg,
@@ -118,12 +96,12 @@ inline void diePrintf_(const char* format, const std::string& testName, const ch
 {
     diePrintf(format, testName, file, line, msg, test::toString(X1), test::toString(X2));
 }
-#define test_diePrintf2_msg(format, msg, X1, X2) test::diePrintf_(format, testName, __FILE__, __LINE__, msg, (X1), (X2)) // might not want str::toString()
+#define test_diePrintf2_msg(format, msg, X1, X2) test::diePrintf_(format, testName, __FILE__, __LINE__, msg, X1, X2)
 
-#define CODA_OSS_test_diePrintf_eq_(X1, X2) test_diePrintf2("%s (%s,%s,%d): FAILED: Recv'd %s, Expected %s\n", (X1), (X2))
-#define CODA_OSS_test_diePrintf_eq_msg_(msg, X1, X2) test_diePrintf2_msg("%s (%s,%d): FAILED (%s): Recv'd %s, Expected %s\n", msg, (X1), (X2))
+#define CODA_OSS_test_diePrintf_eq_(X1, X2) test_diePrintf2("%s (%s,%s,%d): FAILED: Recv'd %s, Expected %s\n", X1, X2)
+#define CODA_OSS_test_diePrintf_eq_msg_(msg, X1, X2) test_diePrintf2_msg("%s (%s,%d): FAILED (%s): Recv'd %s, Expected %s\n", msg, X1, X2)
 #define CODA_OSS_test_diePrintf_not_eq_(X1, X2) test_diePrintf2("%s (%s,%s,%d): FAILED: Recv'd %s should not equal %s\n", X1, X2)
-#define CODA_OSS_test_diePrintf_not_eq_msg_(msg, X1, X2) test_diePrintf2_msg("%s (%s,%d): FAILED (%s): Recv'd %s should not equal %s\n", msg, (X1), (X2))
+#define CODA_OSS_test_diePrintf_not_eq_msg_(msg, X1, X2) test_diePrintf2_msg("%s (%s,%d): FAILED (%s): Recv'd %s should not equal %s\n", msg, X1, X2)
 #define CODA_OSS_test_diePrintf_greater_eq_(X1, X2) test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be greater than or equal\n")
 #define CODA_OSS_test_diePrintf_greater_(X1, X2) test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be greater than\n")
 #define CODA_OSS_test_diePrintf_lesser_eq_(X1, X2) test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be less than or equal\n")
@@ -136,7 +114,6 @@ inline void diePrintf_(const char* format, const std::string& testName, const ch
 //    if (!(X1 == X2)) { ... }
 // behaves differently when it is in the functon (X1 and X2 are arguments).  An easy example
 // is std::vector::size() (size_t) compared to a literal 1 which is an "int" not "size_t".
-
 template<typename TX1, typename TX2, typename TEPS>
 inline void assert_almost_eq_eps(const TX1& X1, const TX2& X2, const TEPS& EPS,
     const std::string& testName, const char* file, const char* func, int line)
@@ -158,11 +135,13 @@ inline void specific_exception(TFunc f,
         diePrintf(format, testName, file, func, line);
     }
     catch (const TException&) {  }
+    #if !CODA_OSS_except_Throwable_ISA_std_exception
     catch (const except::Throwable&)
     {
         diePrintf(format, testName, file, func, line);
     }
-    catch (const except::Throwable11&)
+    #endif
+    catch (const std::exception&)
     {
         diePrintf(format, testName, file, func, line);
     }
@@ -176,10 +155,12 @@ inline int main(TFunc f)
         f();
         return EXIT_SUCCESS;
     }
+    #if !CODA_OSS_except_Throwable_ISA_std_exception    
     catch (const except::Exception& ex)
     {
-        std::cerr << ex.toString() << std::endl;
+        std::cerr << ex.what() << std::endl;
     }
+    #endif
     catch (const std::exception& e)
     {
         std::cerr << e.what() << std::endl;
@@ -192,9 +173,11 @@ inline int main(TFunc f)
 }
 }
 
-#define TEST_CHECK(X) try{ X(std::string(#X)); std::cerr << #X << ": PASSED\n"; } \
-  catch(const except::Throwable& ex) { test::diePrintf("%s: FAILED: Exception thrown: %s\n", #X, ex.toString().c_str()); } \
-  catch(const except::Throwable11& ex) { test::diePrintf("%s: FAILED: Exception thrown: %s\n", #X, ex.what()); }
+#define CODA_OSS_TEST_CHECK_catch_diePrintf_(X, name_) \
+      catch(const name_& ex) { test::diePrintf("%s: FAILED: Exception thrown: %s\n", #X, ex.what()); }
+#define CODA_OSS_TEST_CHECK_catch_(X) CODA_OSS_TEST_CHECK_catch_diePrintf_(X, except::Throwable) \
+    CODA_OSS_TEST_CHECK_catch_diePrintf_(X, std::exception)
+#define TEST_CHECK(X) try{ X(std::string(#X)); std::cerr << #X << ": PASSED\n"; } CODA_OSS_TEST_CHECK_catch_(X)
 
 #define TEST_ASSERT_NULL(X) if ((X) != nullptr) { test_diePrintf0("%s (%s,%s,%d): FAILED: Value should be NULL\n"); }
 #define TEST_ASSERT_NOT_NULL(X) if ((X) == nullptr) { test_diePrintf0("%s (%s,%s,%d): FAILED: Value should *not* be NULL\n"); }
@@ -208,11 +191,15 @@ inline int main(TFunc f)
 
 #define TEST_ASSERT_ALMOST_EQ_EPS(X1, X2, EPS) test::assert_almost_eq_eps(X1, X2, EPS, testName, __FILE__, SYS_FUNC, __LINE__)
 #define TEST_ASSERT_ALMOST_EQ(X1, X2) TEST_ASSERT_ALMOST_EQ_EPS(X1, X2,  std::numeric_limits<float>::epsilon())
+
+#define CODA_OSS_TEST_EXCEPTION_catch_ \
+    catch (const except::Throwable&){ TEST_ASSERT_TRUE(true); } catch (const std::exception&){ TEST_ASSERT_TRUE(true); }
 #define TEST_EXCEPTION(X) try{ (X); test_diePrintf0("%s (%s,%s,%d): FAILED: Should have thrown exception\n"); } \
-  catch (const except::Throwable&){} catch (const except::Throwable11&){}
+  CODA_OSS_TEST_EXCEPTION_catch_
 #define TEST_THROWS(X) try{ (X); test_diePrintf0("%s (%s,%s,%d): FAILED: Should have thrown exception\n"); } catch (...){}
 # define TEST_SPECIFIC_EXCEPTION(X, Y) test::specific_exception<Y>([&](){(X);}, \
     "%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName, __FILE__, SYS_FUNC, __LINE__)
+
 #  define TEST_CASE(X) void X(std::string testName)
 #define TEST_MAIN(X) int main() { return test::main([&](){X;}); }
 #define TEST_MAIN_ARGS(X) int main(int argc, char* argv[]) { return test::main([&](){X;}); }
@@ -238,16 +225,6 @@ inline int main(TFunc f)
 #define CODA_OSS_test_lt(X1, X2) (CODA_OSS_test_lt_(X1, X2) && !CODA_OSS_test_ge_(X1, X2))
 #  define TEST_ASSERT_LESSER_EQ(X1, X2) if (!CODA_OSS_test_le((X1), (X2))) { CODA_OSS_test_diePrintf_lesser_eq_(X1, X2); }
 #  define TEST_ASSERT_LESSER(X1, X2) if (!CODA_OSS_test_lt((X1), (X2))) { CODA_OSS_test_diePrintf_lesser_(X1, X2); }
-/*
-#  define TEST_SPECIFIC_EXCEPTION(X,Y) try{ (X); die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__); } catch(const Y&) { }  \
-    catch (const except::Throwable&){ die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__);} \
-    catch (const except::Throwable11&){ die_printf("%s (%s,%s,%d): FAILED: Should have thrown exception: " # Y ,  testName.c_str(), __FILE__, SYS_FUNC, __LINE__);} #  define TEST_CASE(X) void X(std::string testName)
-#define TEST_MAIN(X) int main(int argc, char** argv) {  try { X;  return EXIT_SUCCESS; } \
-    catch (const except::Exception& ex) { std::cerr << ex.toString() << std::endl; } \
-    catch (const std::exception& e)  { std::cerr << e.what() << std::endl; } \
-    catch (...) { std::cerr << "Unknown exception\n"; } \
-    return EXIT_FAILURE; }
-*/
 
 #else /* C only */
 #  include <math.h>
