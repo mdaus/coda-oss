@@ -32,6 +32,7 @@
 #include "coda_oss/optional.h"
 
 #include "underlying_type.h"
+#include "Enum_details.h"
 
 // Utilities to convert enums to/from strings.
 
@@ -71,17 +72,6 @@ inline std::vector<TValue> equal_range(const std::multimap<TKey, TValue>& map, c
         retval.push_back(it->second);
     }
 
-    return retval;
-}
-
-template <typename TKey, typename TValue>
-inline std::multimap<TValue, TKey> value_to_keys(const std::map<TKey, TValue>& key_to_value)
-{
-    std::multimap<TValue, TKey> retval;
-    for (auto&& kv : key_to_value)
-    {
-        retval.emplace(std::make_pair(kv.second, kv.first));
-    }
     return retval;
 }
 

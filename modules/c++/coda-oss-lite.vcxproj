@@ -33,6 +33,7 @@
     <ClInclude Include="config\include\config\Version.h" />
     <ClInclude Include="enums\include\enums\Convert.h" />
     <ClInclude Include="enums\include\enums\Enum.h" />
+    <ClInclude Include="enums\include\enums\Enum_details.h" />
     <ClInclude Include="enums\include\enums\Enum_fromString.h" />
     <ClInclude Include="enums\include\enums\Enum_toString.h" />
     <ClInclude Include="enums\include\enums\Macros.h" />

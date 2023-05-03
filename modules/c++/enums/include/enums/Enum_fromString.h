@@ -24,6 +24,8 @@
 #define CODA_OSS_enums_Enum_fromString_h_INCLUDED_
 #pragma once
 
+#include <map>
+
 #include "underlying_type.h"
 #include "Enum_toString.h"
 
@@ -31,6 +33,21 @@
 
 namespace enums
 {
+    namespace details
+    {
+        template <typename TEnum>
+        inline TEnum from_string(const std::string& s)
+        {
+        }
+    }
+
+    template<typename TEnum>
+    inline TEnum from_string(const std::string& s)
+    {
+
+    }
+
+
 // It would be really nice to make these just `T fromString(const std::string&)` ...
 // ... but I don't have enough C++ chops to do that.  The problem is that
 // fromString() might need to be overloaded for a specific type (e.g., to 

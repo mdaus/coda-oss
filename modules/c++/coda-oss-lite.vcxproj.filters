@@ -756,6 +756,9 @@
     <ClInclude Include="enums\include\enums\Enum_fromString.h">
       <Filter>enums</Filter>
     </ClInclude>
+    <ClInclude Include="enums\include\enums\Enum_details.h">
+      <Filter>enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
