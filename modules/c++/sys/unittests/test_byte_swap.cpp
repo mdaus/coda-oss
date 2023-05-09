@@ -22,10 +22,11 @@
 
 #include "TestCase.h"
 
-#include <array>
+#include <stdint.h>
 
+#include <array>
 #include <std/bit> // std::endian
-#include <std/cstddef>
+#include <std/cstddef> // std::byte
 
 #include <sys/Conf.h>
 
@@ -101,8 +102,53 @@ TEST_CASE(testByteSwap)
     }
 }
 
+TEST_CASE(testByteSwapInts)
+{
+    //const std::byte one_byte{ static_cast<std::byte>(0x31) };
+    //const auto swap1 = sys::byteSwap(one_byte);
+    //TEST_ASSERT(one_byte == swap1);
+
+    constexpr std::byte two_bytes[] { static_cast<std::byte>(0x31), static_cast<std::byte>(0x41) };
+    const void* pBytes = &(two_bytes[0]);
+    const auto pInt16 = static_cast<const int16_t*>(pBytes);
+    const auto swap2 = sys::byteSwap(*pInt16);
+    const void* pResult_ = &swap2;
+    auto pResult = static_cast<const std::byte*>(pResult_);
+    TEST_ASSERT(pResult[0] == two_bytes[1]);
+    TEST_ASSERT(pResult[1] == two_bytes[0]);
+
+    constexpr std::byte four_bytes[] { static_cast<std::byte>(0x31), static_cast<std::byte>(0x41), static_cast<std::byte>(0x59), static_cast<std::byte>(0x26)};
+    pBytes = &(four_bytes[0]);
+    const auto pInt32 = static_cast<const int32_t*>(pBytes);
+    const auto swap4 = sys::byteSwap(*pInt32);
+    pResult_ = &swap4;
+    pResult = static_cast<const std::byte*>(pResult_);
+    TEST_ASSERT(pResult[0] == four_bytes[3]);
+    TEST_ASSERT(pResult[1] == four_bytes[2]);
+    TEST_ASSERT(pResult[2] == four_bytes[1]);
+    TEST_ASSERT(pResult[3] == four_bytes[0]);
+
+    constexpr std::byte eight_bytes[] { static_cast<std::byte>(0x31), static_cast<std::byte>(0x41), static_cast<std::byte>(0x59), static_cast<std::byte>(0x26),
+     static_cast<std::byte>(0x01), static_cast<std::byte>(0x23), static_cast<std::byte>(0x45), static_cast<std::byte>(0x67)};
+    pBytes = &(eight_bytes[0]);
+    const auto pInt64 = static_cast<const int64_t*>(pBytes);
+    const auto swap8 = sys::byteSwap(*pInt64);
+    pResult_ = &swap8;
+    pResult = static_cast<const std::byte*>(pResult_);
+    TEST_ASSERT(pResult[0] == eight_bytes[7]);
+    TEST_ASSERT(pResult[1] == eight_bytes[6]);
+    TEST_ASSERT(pResult[2] == eight_bytes[5]);
+    TEST_ASSERT(pResult[3] == eight_bytes[4]);
+    TEST_ASSERT(pResult[4] == eight_bytes[3]);
+    TEST_ASSERT(pResult[5] == eight_bytes[2]);
+    TEST_ASSERT(pResult[6] == eight_bytes[1]);
+    TEST_ASSERT(pResult[7] == eight_bytes[0]);
+}
+
 
 TEST_MAIN(
     TEST_CHECK(testEndianness);
     TEST_CHECK(testByteSwap);
+    TEST_CHECK(testByteSwapInts);
     )
+     
