@@ -67,17 +67,17 @@ TEST_CASE(test_enums_find_key)
     const auto& m = key_to_value();
 
     const auto v_1 = enums::details::find(m, "+1");
-    TEST_ASSERT_TRUE(v_1.has_value());
-    TEST_ASSERT_EQ(*v_1, 1);
+    TEST_ASSERT_EQ(v_1, 1);
     const auto v1 = enums::details::find(m, "1");
-    TEST_ASSERT_TRUE(v1.has_value());
-    TEST_ASSERT_EQ(*v1, 1);
+    TEST_ASSERT_EQ(v1, 1);
 
-    const auto vXYZ = enums::details::find(m, "XYZ");
+    const auto vXYZ = enums::details::find(m, "XYZ", std::nothrow);
     TEST_ASSERT_FALSE(vXYZ.has_value());
+    
+    TEST_SPECIFIC_EXCEPTION(enums::details::find(m, "XYZ"), std::invalid_argument);
 }
 
-TEST_CASE(test_enums_find_keys)
+TEST_CASE(test_enums_equal_range)
 {
     const auto& mm = value_to_keys();
 
@@ -91,12 +91,14 @@ TEST_CASE(test_enums_find_keys)
         TEST_ASSERT((v == "+1") || (v == "1"));
     }
 
-    results = enums::details::equal_range(mm, 999);
+    results = enums::details::equal_range(mm, 999, std::nothrow);
     TEST_ASSERT_TRUE(results.empty());
+    
+    TEST_SPECIFIC_EXCEPTION(enums::details::equal_range(mm, 999), std::invalid_argument);
 }
 
 TEST_MAIN(
     TEST_CHECK(test_enums_value_to_keys);
     TEST_CHECK(test_enums_find_key);
-    TEST_CHECK(test_enums_find_keys);
+    TEST_CHECK(test_enums_equal_range);
     )

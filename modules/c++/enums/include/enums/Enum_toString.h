@@ -113,7 +113,7 @@ inline coda_oss::optional<std::string> contains(const std::map<T, std::string>& 
 template <typename T>
 inline std::vector<std::string> find_value(const std::multimap<T, std::string>& value_to_strings, const T& v)
 {
-    return details::equal_range(value_to_strings, v);
+    return details::equal_range(value_to_strings, v, std::nothrow);
 }
 
 /**

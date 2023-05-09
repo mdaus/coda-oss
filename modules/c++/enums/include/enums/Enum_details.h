@@ -26,6 +26,8 @@
 
 #include <map>
 #include <vector>
+#include <new> // std::nothrow_t
+#include <stdexcept>
 #include "coda_oss/optional.h"
 
 namespace enums
@@ -53,17 +55,32 @@ inline auto value_to_keys(const std::map<TKey, TValue>& key_to_value)
  * Lookup the specified key in the map; return NULL if not found.
  */
 template <typename TKey, typename TValue, typename TKeyArg = TKey>
-inline auto find(const std::map<TKey, TValue>& m, const TKeyArg& key)
+inline auto find(const std::map<TKey, TValue>& m, const TKeyArg& key, std::nothrow_t)
 {
     const auto it = m.find(key);
     return it == m.end() ? coda_oss::optional<TValue>() : coda_oss::optional<TValue>(it->second);
+}
+template <typename TKey, typename TValue, typename TException, typename TKeyArg = TKey>
+inline auto find(const std::map<TKey, TValue>& m, const TKeyArg& key, const TException& ex)
+{
+    const auto v = find(m, key, std::nothrow);
+    if (v.has_value())
+    {
+        return v.value();
+    }
+    throw ex;
+}
+template <typename TKey, typename TValue, typename TKeyArg = TKey>
+inline auto find(const std::map<TKey, TValue>& m, const TKeyArg& key)
+{
+    return find(m, key, std::invalid_argument("key"));
 }
 
 /**
  * Lookup the specified key in the multimap; return all matching values or an empty vector if not found.
  */
 template <typename TKey, typename TValue, typename TKeyArg = TKey>
-inline auto equal_range(const std::multimap<TKey, TValue>& mm, const TKeyArg& key)
+inline auto equal_range(const std::multimap<TKey, TValue>& mm, const TKeyArg& key, std::nothrow_t)
 {
     std::vector<TValue> retval;
 
@@ -75,6 +92,21 @@ inline auto equal_range(const std::multimap<TKey, TValue>& mm, const TKeyArg& ke
     }
 
     return retval;
+}
+template <typename TKey, typename TValue,  typename TException, typename TKeyArg = TKey>
+inline auto equal_range(const std::multimap<TKey, TValue>& mm, const TKeyArg& key, const TException& ex)
+{
+    auto retval = equal_range(mm, key, std::nothrow);
+    if (!retval.empty())
+    {
+        return retval;
+    }
+    throw ex;
+}
+template <typename TKey, typename TValue,  typename TKeyArg = TKey>
+inline auto equal_range(const std::multimap<TKey, TValue>& mm, const TKeyArg& key)
+{
+    return equal_range(mm, key, std::invalid_argument("key"));
 }
 
 }  // namespace details
