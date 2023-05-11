@@ -227,6 +227,10 @@ namespace sys
         }
         byteSwap_(buffer, elemSize, numElems);
     }
+    inline void byteSwapV(void* buffer, unsigned short elemSize, size_t numElems) // existing API
+    {
+        byteSwap_(buffer, elemSize, numElems);
+    }
    
     /*!
      *  Swap bytes into output buffer.  Note that a complex pixel
@@ -258,6 +262,10 @@ namespace sys
         {
             throw std::invalid_argument("sizeof(T) != elemSize");
         }
+        byteSwap_(buffer, elemSize, numElems, outputBuffer);
+    }
+    inline void byteSwapV(const void* buffer, unsigned short elemSize, size_t numElems, void* outputBuffer) // existing API
+    {
         byteSwap_(buffer, elemSize, numElems, outputBuffer);
     }
 
