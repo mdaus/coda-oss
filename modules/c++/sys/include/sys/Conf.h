@@ -317,6 +317,7 @@ namespace sys
     {
         return byteSwap_(val);
     }
+    #ifndef SWIGPYTHON
     #if defined(_MSC_VER)
     template <> inline auto byteSwap(unsigned short val)
     {
@@ -344,6 +345,7 @@ namespace sys
         return bswap_64(val);
     }
     #endif
+    #endif // SWIGPYTHON
 
     /*!
      *  Method to create a block of memory on an alignment
