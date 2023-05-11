@@ -317,35 +317,33 @@ namespace sys
     {
         return byteSwap_(val);
     }
-    #ifndef SWIGPYTHON
     #if defined(_MSC_VER)
-    template <> inline auto byteSwap(unsigned short val)
+    template <> inline unsigned short byteSwap(unsigned short val)
     {
         return _byteswap_ushort(val);
     }
-    template <> inline auto byteSwap(unsigned long val)
+    template <> inline unsigned long byteSwap(unsigned long val)
     {
         return _byteswap_ulong(val);
     }
-    template <> inline auto byteSwap(unsigned __int64 val)
+    template <> inline unsigned __int64 byteSwap(unsigned __int64 val)
     {
         return _byteswap_uint64(val);
     }
     #elif defined(__GNUC__)
-    template <> inline auto byteSwap(uint16_t val)
+    template <> inline uint16_t byteSwap(uint16_t val)
     {
         return bswap_16(val);
     }
-    template <> inline auto byteSwap(uint32_t val)
+    template <> inline uint32_t byteSwap(uint32_t val)
     {
         return bswap_32(val);
     }
-    template <> inline auto byteSwap(uint64_t val)
+    template <> inline uint64_t byteSwap(uint64_t val)
     {
         return bswap_64(val);
     }
     #endif
-    #endif // SWIGPYTHON
 
     /*!
      *  Method to create a block of memory on an alignment
