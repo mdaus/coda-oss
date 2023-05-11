@@ -108,19 +108,19 @@ TEST_CASE(testByteSwapInts)
     //const auto swap1 = sys::byteSwap(one_byte);
     //TEST_ASSERT(one_byte == swap1);
 
-    constexpr std::byte two_bytes[] { static_cast<std::byte>(0x31), static_cast<std::byte>(0x41) };
+    constexpr std::byte two_bytes[] { static_cast<std::byte>(0x00), static_cast<std::byte>(0xff) };
     const void* pBytes = &(two_bytes[0]);
-    const auto pInt16 = static_cast<const int16_t*>(pBytes);
-    const auto swap2 = sys::byteSwap(*pInt16);
+    const auto pUint16 = static_cast<const uint16_t*>(pBytes);
+    const auto swap2 = sys::byteSwap(*pUint16);
     const void* pResult_ = &swap2;
     auto pResult = static_cast<const std::byte*>(pResult_);
     TEST_ASSERT(pResult[0] == two_bytes[1]);
     TEST_ASSERT(pResult[1] == two_bytes[0]);
 
-    constexpr std::byte four_bytes[] { static_cast<std::byte>(0x31), static_cast<std::byte>(0x41), static_cast<std::byte>(0x59), static_cast<std::byte>(0x26)};
+    constexpr std::byte four_bytes[] { static_cast<std::byte>(0x00), static_cast<std::byte>(0x11), static_cast<std::byte>(0xee), static_cast<std::byte>(0xff)};
     pBytes = &(four_bytes[0]);
-    const auto pInt32 = static_cast<const int32_t*>(pBytes);
-    const auto swap4 = sys::byteSwap(*pInt32);
+    const auto pUint32 = static_cast<const uint32_t*>(pBytes);
+    const auto swap4 = sys::byteSwap(*pUint32);
     pResult_ = &swap4;
     pResult = static_cast<const std::byte*>(pResult_);
     TEST_ASSERT(pResult[0] == four_bytes[3]);
@@ -128,11 +128,11 @@ TEST_CASE(testByteSwapInts)
     TEST_ASSERT(pResult[2] == four_bytes[1]);
     TEST_ASSERT(pResult[3] == four_bytes[0]);
 
-    constexpr std::byte eight_bytes[] { static_cast<std::byte>(0x31), static_cast<std::byte>(0x41), static_cast<std::byte>(0x59), static_cast<std::byte>(0x26),
-     static_cast<std::byte>(0x01), static_cast<std::byte>(0x23), static_cast<std::byte>(0x45), static_cast<std::byte>(0x67)};
+    constexpr std::byte eight_bytes[] { static_cast<std::byte>(0x00), static_cast<std::byte>(0x11), static_cast<std::byte>(0x22), static_cast<std::byte>(0x33),
+     static_cast<std::byte>(0xcc), static_cast<std::byte>(0xdd), static_cast<std::byte>(0xee), static_cast<std::byte>(0xff)};
     pBytes = &(eight_bytes[0]);
-    const auto pInt64 = static_cast<const int64_t*>(pBytes);
-    const auto swap8 = sys::byteSwap(*pInt64);
+    const auto pUInt64 = static_cast<const uint64_t*>(pBytes);
+    const auto swap8 = sys::byteSwap(*pUInt64);
     pResult_ = &swap8;
     pResult = static_cast<const std::byte*>(pResult_);
     TEST_ASSERT(pResult[0] == eight_bytes[7]);
