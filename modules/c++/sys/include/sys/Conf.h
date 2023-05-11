@@ -213,29 +213,10 @@ namespace sys
      *  \param elemSize
      *  \param numElems
      */
-    inline void byteSwap(void* buffer,
-                         unsigned short elemSize,
-                         size_t numElems)
-    {
-        sys::byte* bufferPtr = static_cast<sys::byte*>(buffer);
-        if (!bufferPtr || elemSize < 2 || !numElems)
-            return;
-
-        const auto half = elemSize >> 1;
-        size_t offset = 0, innerOff = 0, innerSwap = 0;
-
-        for(size_t i = 0; i < numElems; ++i, offset += elemSize)
-        {
-            for(unsigned short j = 0; j < half; ++j)
-            {
-                innerOff = offset + j;
-                innerSwap = offset + elemSize - 1 - j;
-
-                std::swap(bufferPtr[innerOff], bufferPtr[innerSwap]);
-            }
-        }
-    }
-
+    CODA_OSS_API void byteSwap(void* buffer,
+                               unsigned short elemSize,
+                               size_t numElems);
+   
     /*!
      *  Swap bytes into output buffer.  Note that a complex pixel
      *  is equivalent to two floats so elemSize and numElems
@@ -246,34 +227,10 @@ namespace sys
      *  \param numElems
      *  \param[out] outputBuffer buffer to write swapped elements to
      */
-    inline void  byteSwap(const void* buffer,
-                          unsigned short elemSize,
-                          size_t numElems,
-                          void* outputBuffer)
-    {
-        const sys::byte* bufferPtr = static_cast<const sys::byte*>(buffer);
-        sys::byte* outputBufferPtr = static_cast<sys::byte*>(outputBuffer);
-
-        if (!numElems || !bufferPtr || !outputBufferPtr)
-        {
-            return;
-        }
-
-        const auto half = elemSize >> 1;
-        size_t offset = 0;
-
-        for (size_t ii = 0; ii < numElems; ++ii, offset += elemSize)
-        {
-            for (unsigned short jj = 0; jj < half; ++jj)
-            {
-                const size_t innerOff = offset + jj;
-                const size_t innerSwap = offset + elemSize - 1 - jj;
-
-                outputBufferPtr[innerOff] = bufferPtr[innerSwap];
-                outputBufferPtr[innerSwap] = bufferPtr[innerOff];
-            }
-        }
-    }
+    void CODA_OSS_API byteSwap(const void* buffer,
+                  unsigned short elemSize,
+                  size_t numElems,
+                  void* outputBuffer);
 
     /*!
      *  Function to swap one element irrespective of size.  The inplace
@@ -299,7 +256,7 @@ namespace sys
     {
         // Trying to byte-swap structs can result in garbage because of padding.
         static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value,
-                      "can only byte-swap numbers and enumeratons");
+                      "can only byte-swap numbers and enumerations");
 
         constexpr auto size = sizeof(T);
         T out;
@@ -317,33 +274,33 @@ namespace sys
     {
         return byteSwap_(val);
     }
-    #if defined(_MSC_VER)
-    template <> inline unsigned short byteSwap(unsigned short val)
+#if defined(_MSC_VER)
+    inline unsigned short byteSwap(unsigned short val)
     {
         return _byteswap_ushort(val);
     }
-    template <> inline unsigned long byteSwap(unsigned long val)
+    inline unsigned long byteSwap(unsigned long val)
     {
         return _byteswap_ulong(val);
     }
-    template <> inline unsigned __int64 byteSwap(unsigned __int64 val)
+    inline unsigned __int64 byteSwap(unsigned __int64 val)
     {
         return _byteswap_uint64(val);
     }
-    #elif defined(__GNUC__)
-    template <> inline uint16_t byteSwap(uint16_t val)
+#elif defined(__GNUC__)
+    inline uint16_t byteSwap(uint16_t val)
     {
         return bswap_16(val);
     }
-    template <> inline uint32_t byteSwap(uint32_t val)
+    inline uint32_t byteSwap(uint32_t val)
     {
         return bswap_32(val);
     }
-    template <> inline uint64_t byteSwap(uint64_t val)
+    inline uint64_t byteSwap(uint64_t val)
     {
         return bswap_64(val);
     }
-    #endif
+#endif
 
     /*!
      *  Method to create a block of memory on an alignment

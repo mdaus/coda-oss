@@ -64,3 +64,73 @@ bool sys::isBigEndianSystem()
     }
     return retval;
 }
+
+
+   /*!
+ *  Swap bytes in-place.  Note that a complex pixel
+ *  is equivalent to two floats so elemSize and numElems
+ *  must be adjusted accordingly.
+ *
+ *  \param [inout] buffer to transform
+ *  \param elemSize
+ *  \param numElems
+ */
+void sys::byteSwap(void* buffer, unsigned short elemSize, size_t numElems)
+{
+    sys::byte* bufferPtr = static_cast<sys::byte*>(buffer);
+    if (!bufferPtr || elemSize < 2 || !numElems)
+        return;
+
+    const auto half = elemSize >> 1;
+    size_t offset = 0, innerOff = 0, innerSwap = 0;
+
+    for (size_t i = 0; i < numElems; ++i, offset += elemSize)
+    {
+        for (unsigned short j = 0; j < half; ++j)
+        {
+            innerOff = offset + j;
+            innerSwap = offset + elemSize - 1 - j;
+
+            std::swap(bufferPtr[innerOff], bufferPtr[innerSwap]);
+        }
+    }
+}
+
+    /*!
+ *  Swap bytes into output buffer.  Note that a complex pixel
+ *  is equivalent to two floats so elemSize and numElems
+ *  must be adjusted accordingly.
+ *
+ *  \param buffer to transform
+ *  \param elemSize
+ *  \param numElems
+ *  \param[out] outputBuffer buffer to write swapped elements to
+ */
+void sys::byteSwap(const void* buffer,
+                     unsigned short elemSize,
+                     size_t numElems,
+                     void* outputBuffer)
+{
+    const sys::byte* bufferPtr = static_cast<const sys::byte*>(buffer);
+    sys::byte* outputBufferPtr = static_cast<sys::byte*>(outputBuffer);
+
+    if (!numElems || !bufferPtr || !outputBufferPtr)
+    {
+        return;
+    }
+
+    const auto half = elemSize >> 1;
+    size_t offset = 0;
+
+    for (size_t ii = 0; ii < numElems; ++ii, offset += elemSize)
+    {
+        for (unsigned short jj = 0; jj < half; ++jj)
+        {
+            const size_t innerOff = offset + jj;
+            const size_t innerSwap = offset + elemSize - 1 - jj;
+
+            outputBufferPtr[innerOff] = bufferPtr[innerSwap];
+            outputBufferPtr[innerSwap] = bufferPtr[innerOff];
+        }
+    }
+}
