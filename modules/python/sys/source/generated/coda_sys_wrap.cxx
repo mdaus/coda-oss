@@ -3610,7 +3610,7 @@ SWIGINTERN PyObject *_wrap_byteSwap__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyOb
   if (!SWIG_IsOK(res4)) {
     SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "byteSwap" "', argument " "4"" of type '" "void *""'"); 
   }
-  sys::byteSwap((void const *)arg1,arg2,arg3,arg4);
+  sys::byteSwap(arg1,arg2,arg3,arg4);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
