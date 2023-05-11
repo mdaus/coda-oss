@@ -75,7 +75,7 @@ bool sys::isBigEndianSystem()
  *  \param elemSize
  *  \param numElems
  */
-void sys::byteSwap(void* buffer, unsigned short elemSize, size_t numElems)
+void sys::byteSwap_(void* buffer, size_t elemSize, size_t numElems)
 {
     sys::byte* bufferPtr = static_cast<sys::byte*>(buffer);
     if (!bufferPtr || elemSize < 2 || !numElems)
@@ -106,10 +106,10 @@ void sys::byteSwap(void* buffer, unsigned short elemSize, size_t numElems)
  *  \param numElems
  *  \param[out] outputBuffer buffer to write swapped elements to
  */
-void sys::byteSwap(const void* buffer,
-                     unsigned short elemSize,
-                     size_t numElems,
-                     void* outputBuffer)
+void sys::byteSwap_(const void* buffer,
+                    size_t elemSize,
+                    size_t numElems,
+                    void* outputBuffer)
 {
     const sys::byte* bufferPtr = static_cast<const sys::byte*>(buffer);
     sys::byte* outputBufferPtr = static_cast<sys::byte*>(outputBuffer);

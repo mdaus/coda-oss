@@ -77,6 +77,7 @@
 #include <cstdlib>
 #include <memory>
 #include <type_traits>
+#include<stdexcept>
 
 #include "str/Format.h"
 #include "sys/TimeStamp.h"
@@ -213,9 +214,19 @@ namespace sys
      *  \param elemSize
      *  \param numElems
      */
-    CODA_OSS_API void byteSwap(void* buffer,
-                               unsigned short elemSize,
-                               size_t numElems);
+    void CODA_OSS_API byteSwap_(void* buffer, size_t elemSize, size_t numElems);
+    template<typename T>
+    inline void byteSwap(T* buffer, size_t elemSize, size_t numElems)
+    {
+        // Trying to byte-swap structs can result in garbage because of padding.
+        static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value,
+                      "can only byte-swap numbers and enumerations");
+        if (elemSize != sizeof(T))
+        {
+            throw std::invalid_argument("sizeof(T) != elemSize");
+        }
+        byteSwap_(buffer, elemSize, numElems);
+    }
    
     /*!
      *  Swap bytes into output buffer.  Note that a complex pixel
@@ -227,10 +238,28 @@ namespace sys
      *  \param numElems
      *  \param[out] outputBuffer buffer to write swapped elements to
      */
-    void CODA_OSS_API byteSwap(const void* buffer,
-                  unsigned short elemSize,
-                  size_t numElems,
-                  void* outputBuffer);
+    void CODA_OSS_API byteSwap_(const void* buffer,
+                                size_t elemSize,
+                                size_t numElems,
+                                void* outputBuffer);
+    template <typename T, typename U = T>
+    inline void byteSwap(const T* buffer,
+                         size_t elemSize,
+                         size_t numElems,
+                         U* outputBuffer) // e.g., "unsigned int" && "int"
+    {
+        // Trying to byte-swap structs can result in garbage because of padding.
+        static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value,
+                      "can only byte-swap numbers and enumerations");
+        static_assert(std::is_arithmetic<U>::value || std::is_enum<U>::value,
+                      "can only byte-swap numbers and enumerations");
+        static_assert(sizeof(T) == sizeof(U), "sizeof(T) != sizeof(U).");
+        if (elemSize != sizeof(T))
+        {
+            throw std::invalid_argument("sizeof(T) != elemSize");
+        }
+        byteSwap_(buffer, elemSize, numElems, outputBuffer);
+    }
 
     /*!
      *  Function to swap one element irrespective of size.  The inplace
@@ -270,7 +299,7 @@ namespace sys
         }
         return out;
     }
-    template <typename T> inline auto byteSwap(T val)
+    template <typename T> inline T byteSwap(T val)
     {
         return byteSwap_(val);
     }
