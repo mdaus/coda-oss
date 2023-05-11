@@ -66,12 +66,17 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+#ifdef __GNUC__
+#include <byteswap.h> // "These functions are GNU extensions."
+#endif
 
 #include <iostream>
 #include <algorithm>
 #include <cstdarg>
 #include <cstdlib>
 #include <memory>
+#include <type_traits>
 
 #include "str/Format.h"
 #include "sys/TimeStamp.h"
@@ -290,9 +295,13 @@ namespace sys
      *  \endcode
      *
      */
-    template <typename T> T byteSwap(T val)
+    template <typename T> inline T byteSwap_(T val)
     {
-        size_t size = sizeof(T);
+        // Trying to byte-swap structs can result in garbage because of padding.
+        static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value,
+                      "can only byte-swap numbers and enumeratons");
+
+        constexpr auto size = sizeof(T);
         T out;
 
         unsigned char* cOut = reinterpret_cast<unsigned char*>(&out);
@@ -304,7 +313,37 @@ namespace sys
         }
         return out;
     }
-
+    template <typename T> inline auto byteSwap(T val)
+    {
+        return byteSwap_(val);
+    }
+    #if defined(_MSC_VER)
+    template <> inline auto byteSwap(unsigned short val)
+    {
+        return _byteswap_ushort(val);
+    }
+    template <> inline auto byteSwap(unsigned long val)
+    {
+        return _byteswap_ulong(val);
+    }
+    template <> inline auto byteSwap(unsigned __int64 val)
+    {
+        return _byteswap_uint64(val);
+    }
+    #elif defined(__GNUC__)
+    template <> inline auto byteSwap(uint16_t val)
+    {
+        return bswap_16(val);
+    }
+    template <> inline auto byteSwap(uint32_t val)
+    {
+        return bswap_32(val);
+    }
+    template <> inline auto byteSwap(uint64_t val)
+    {
+        return bswap_64(val);
+    }
+    #endif
 
     /*!
      *  Method to create a block of memory on an alignment
