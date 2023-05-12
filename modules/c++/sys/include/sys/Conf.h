@@ -77,7 +77,9 @@
 #include <cstdlib>
 #include <memory>
 #include <type_traits>
-#include<stdexcept>
+#include <stdexcept>
+#include "coda_oss/span.h"
+#include <complex>
 
 #include "str/Format.h"
 #include "sys/TimeStamp.h"
@@ -264,6 +266,28 @@ namespace sys
         }
         byteSwap_(buffer, elemSize, numElems, outputBuffer);
     }
+    template <typename T, typename U = T>
+    inline void byteSwap(coda_oss::span<const T> buffer, coda_oss::span<U> outputBuffer) // e.g., "unsigned int" && "int"
+    {
+        const auto numElems = buffer.size();
+        if (numElems != outputBuffer.size())
+        {
+            throw std::invalid_argument("buffer.size() != outputBuffer.size()");
+        }
+        constexpr auto elemSize = sizeof(T);
+        byteSwap(buffer.data(), elemSize, numElems, outputBuffer.data());
+    }
+    template <typename T>
+    inline void byteSwap(coda_oss::span<const std::complex<T>> buffer, coda_oss::span<std::complex<T>> outputBuffer)
+    {
+        const void* pBuffer = buffer.data();
+        const coda_oss::span<const T> buffer_(static_cast<const T*>(pBuffer), buffer.size() * 2);  // real and imag
+        void* pOutputBuffer = outputBuffer.data();
+        const coda_oss::span<T> outputBuffer_(static_cast<T*>(pOutputBuffer), outputBuffer.size() * 2);  // real and imag
+
+        byteSwap(buffer_, outputBuffer_);
+    }
+
     inline void byteSwapV(const void* buffer, unsigned short elemSize, size_t numElems, void* outputBuffer) // existing API
     {
         byteSwap_(buffer, elemSize, numElems, outputBuffer);
