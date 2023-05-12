@@ -130,17 +130,19 @@ TEST_CASE(testByteSwapInts)
     constexpr std::byte two_bytes[]{x00, xFF};
     const void* pBytes = &(two_bytes[0]);
     const auto pUInt16 = static_cast<const uint16_t*>(pBytes);
-    const auto swap2 = sys::byteSwap(*pUInt16);
+    auto swap2 = sys::byteSwap(*pUInt16);
     TEST_ASSERT_NOT_EQ(*pUInt16, swap2);
     const void* pResult_ = &swap2;
     auto pResult = static_cast<const std::byte*>(pResult_);
     TEST_ASSERT(pResult[0] == two_bytes[1]);
     TEST_ASSERT(pResult[1] == two_bytes[0]);
+    swap2 = sys::byteSwap(swap2); // swap back
+    TEST_ASSERT_EQ(*pUInt16, swap2);
 
     constexpr std::byte four_bytes[] { x00, x11, xEE, xFF};
     pBytes = &(four_bytes[0]);
     const auto pUInt32 = static_cast<const uint32_t*>(pBytes);
-    const auto swap4 = sys::byteSwap(*pUInt32);
+    auto swap4 = sys::byteSwap(*pUInt32);
     TEST_ASSERT_NOT_EQ(*pUInt32, swap4);
     pResult_ = &swap4;
     pResult = static_cast<const std::byte*>(pResult_);
@@ -148,11 +150,13 @@ TEST_CASE(testByteSwapInts)
     TEST_ASSERT(pResult[1] == four_bytes[2]);
     TEST_ASSERT(pResult[2] == four_bytes[1]);
     TEST_ASSERT(pResult[3] == four_bytes[0]);
+    swap4 = sys::byteSwap(swap4);  // swap back
+    TEST_ASSERT_EQ(*pUInt32, swap4);
 
     constexpr std::byte eight_bytes[] { x00, x11, x22, x33, xCC, xDD, xEE, xFF};
     pBytes = &(eight_bytes[0]);
     const auto pUInt64 = static_cast<const uint64_t*>(pBytes);
-    const auto swap8 = sys::byteSwap(*pUInt64);
+    auto swap8 = sys::byteSwap(*pUInt64);
     TEST_ASSERT_NOT_EQ(*pUInt64, swap8);
     pResult_ = &swap8;
     pResult = static_cast<const std::byte*>(pResult_);
@@ -164,6 +168,8 @@ TEST_CASE(testByteSwapInts)
     TEST_ASSERT(pResult[5] == eight_bytes[2]);
     TEST_ASSERT(pResult[6] == eight_bytes[1]);
     TEST_ASSERT(pResult[7] == eight_bytes[0]);
+    swap8 = sys::byteSwap(swap8);  // swap back
+    TEST_ASSERT_EQ(*pUInt64, swap8);
 }
 
 TEST_MAIN(
