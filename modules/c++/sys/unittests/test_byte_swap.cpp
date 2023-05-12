@@ -121,45 +121,93 @@ CODA_OSS_define_byte(xEE);
 CODA_OSS_define_byte(xFF);
 #undef CODA_OSS_define_byte
 
-TEST_CASE(testByteSwapInts)
-{
-    //const std::byte one_byte{ static_cast<std::byte>(0x31) };
-    //const auto swap1 = sys::byteSwap(one_byte);
-    //TEST_ASSERT(one_byte == swap1);
+static constexpr std::byte two_bytes[]{x00, xFF};
+static constexpr std::byte four_bytes[]{x00, x11, xEE, xFF};
+static constexpr std::byte eight_bytes[]{x00, x11, x22, x33, xCC, xDD, xEE, xFF};
+static constexpr std::byte sixteen_bytes[]{x00, x11, x22, x33, x44, x55, x66, x77, x88, x99, xAA, xBB, xCC, xDD, xEE, xFF};
 
-    constexpr std::byte two_bytes[]{x00, xFF};
+TEST_CASE(testByteSwapUInt16)
+{
     const void* pBytes = &(two_bytes[0]);
-    const auto pUInt16 = static_cast<const uint16_t*>(pBytes);
-    auto swap2 = sys::byteSwap(*pUInt16);
-    TEST_ASSERT_NOT_EQ(*pUInt16, swap2);
-    const void* pResult_ = &swap2;
+    auto pUInt16 = static_cast<const uint16_t*>(pBytes);
+    auto swap = sys::byteSwap(*pUInt16);
+    TEST_ASSERT_NOT_EQ(*pUInt16, swap);
+    const void* pResult_ = &swap;
     auto pResult = static_cast<const std::byte*>(pResult_);
     TEST_ASSERT(pResult[0] == two_bytes[1]);
     TEST_ASSERT(pResult[1] == two_bytes[0]);
-    swap2 = sys::byteSwap(swap2); // swap back
-    TEST_ASSERT_EQ(*pUInt16, swap2);
+    swap = sys::byteSwap(swap);  // swap back
+    TEST_ASSERT_EQ(*pUInt16, swap);
 
-    constexpr std::byte four_bytes[] { x00, x11, xEE, xFF};
-    pBytes = &(four_bytes[0]);
-    const auto pUInt32 = static_cast<const uint32_t*>(pBytes);
-    auto swap4 = sys::byteSwap(*pUInt32);
-    TEST_ASSERT_NOT_EQ(*pUInt32, swap4);
-    pResult_ = &swap4;
-    pResult = static_cast<const std::byte*>(pResult_);
+    // array swap from input to output
+    pBytes = &(sixteen_bytes[0]);
+    const auto buffer = static_cast<const uint16_t*>(pBytes);
+    std::array<uint16_t, 8> outputBuffer;
+    sys::byteSwap(buffer, sizeof(uint16_t), outputBuffer.size(), outputBuffer.data());
+    for (auto&& v : outputBuffer)
+    {
+        swap = sys::byteSwap(v);
+        TEST_ASSERT_NOT_EQ(v, swap);
+        swap = sys::byteSwap(swap);  // swap back
+        TEST_ASSERT_EQ(v, swap);
+    }
+
+    // in-place swap
+    sys::byteSwap(outputBuffer.data(), sizeof(uint16_t), outputBuffer.size());
+    pBytes = outputBuffer.data();
+    pResult = static_cast<const std::byte*>(pBytes);
+    for (size_t i=0; i<16; i++)
+    {
+        TEST_ASSERT(pResult[i] == sixteen_bytes[i]);
+    }
+}
+
+TEST_CASE(testByteSwapUInt32)
+{
+    const void* pBytes = &(four_bytes[0]);
+    auto pUInt32 = static_cast<const uint32_t*>(pBytes);
+    auto swap = sys::byteSwap(*pUInt32);
+    TEST_ASSERT_NOT_EQ(*pUInt32, swap);
+    const void* pResult_ = &swap;
+    auto pResult = static_cast<const std::byte*>(pResult_);
     TEST_ASSERT(pResult[0] == four_bytes[3]);
     TEST_ASSERT(pResult[1] == four_bytes[2]);
     TEST_ASSERT(pResult[2] == four_bytes[1]);
     TEST_ASSERT(pResult[3] == four_bytes[0]);
-    swap4 = sys::byteSwap(swap4);  // swap back
-    TEST_ASSERT_EQ(*pUInt32, swap4);
+    swap = sys::byteSwap(swap);  // swap back
+    TEST_ASSERT_EQ(*pUInt32, swap);
 
-    constexpr std::byte eight_bytes[] { x00, x11, x22, x33, xCC, xDD, xEE, xFF};
-    pBytes = &(eight_bytes[0]);
-    const auto pUInt64 = static_cast<const uint64_t*>(pBytes);
-    auto swap8 = sys::byteSwap(*pUInt64);
-    TEST_ASSERT_NOT_EQ(*pUInt64, swap8);
-    pResult_ = &swap8;
-    pResult = static_cast<const std::byte*>(pResult_);
+    // array swap from input to output
+    pBytes = &(sixteen_bytes[0]);
+    const auto buffer = static_cast<const uint32_t*>(pBytes);
+    std::array<uint32_t, 4> outputBuffer;
+    sys::byteSwap(buffer, sizeof(uint32_t), outputBuffer.size(), outputBuffer.data());
+    for (auto&& v : outputBuffer)
+    {
+        swap = sys::byteSwap(v);
+        TEST_ASSERT_NOT_EQ(v, swap);
+        swap = sys::byteSwap(swap);  // swap back
+        TEST_ASSERT_EQ(v, swap);
+    }
+
+    // in-place swap
+    sys::byteSwap(outputBuffer.data(), sizeof(uint32_t), outputBuffer.size());
+    pBytes = outputBuffer.data();
+    pResult = static_cast<const std::byte*>(pBytes);
+    for (size_t i=0; i<16; i++)
+    {
+        TEST_ASSERT(pResult[i] == sixteen_bytes[i]);
+    }
+}
+
+TEST_CASE(testByteSwapUInt64)
+{
+    const void* pBytes = &(eight_bytes[0]);
+    auto pUInt64 = static_cast<const uint64_t*>(pBytes);
+    auto swap = sys::byteSwap(*pUInt64);
+    TEST_ASSERT_NOT_EQ(*pUInt64, swap);
+    const void* pResult_ = &swap;
+    auto pResult = static_cast<const std::byte*>(pResult_);
     TEST_ASSERT(pResult[0] == eight_bytes[7]);
     TEST_ASSERT(pResult[1] == eight_bytes[6]);
     TEST_ASSERT(pResult[2] == eight_bytes[5]);
@@ -168,13 +216,37 @@ TEST_CASE(testByteSwapInts)
     TEST_ASSERT(pResult[5] == eight_bytes[2]);
     TEST_ASSERT(pResult[6] == eight_bytes[1]);
     TEST_ASSERT(pResult[7] == eight_bytes[0]);
-    swap8 = sys::byteSwap(swap8);  // swap back
-    TEST_ASSERT_EQ(*pUInt64, swap8);
+    swap = sys::byteSwap(swap);  // swap back
+    TEST_ASSERT_EQ(*pUInt64, swap);
+
+    // array swap from input to output
+    pBytes = &(sixteen_bytes[0]);
+    const auto buffer = static_cast<const uint64_t*>(pBytes);
+    std::array<uint64_t, 2> outputBuffer;
+    sys::byteSwap(buffer, sizeof(uint64_t), outputBuffer.size(), outputBuffer.data());
+    for (auto&& v : outputBuffer)
+    {
+        swap = sys::byteSwap(v);
+        TEST_ASSERT_NOT_EQ(v, swap);
+        swap = sys::byteSwap(swap);  // swap back
+        TEST_ASSERT_EQ(v, swap);
+    }
+
+    // in-place swap
+    sys::byteSwap(outputBuffer.data(), sizeof(uint64_t), outputBuffer.size());
+    pBytes = outputBuffer.data();
+    pResult = static_cast<const std::byte*>(pBytes);
+    for (size_t i=0; i<16; i++)
+    {
+        TEST_ASSERT(pResult[i] == sixteen_bytes[i]);
+    }
 }
 
 TEST_MAIN(
     TEST_CHECK(testEndianness);
     TEST_CHECK(testByteSwap);
-    TEST_CHECK(testByteSwapInts);
+    TEST_CHECK(testByteSwapUInt16);
+    TEST_CHECK(testByteSwapUInt32);
+    TEST_CHECK(testByteSwapUInt64);
     )
      
