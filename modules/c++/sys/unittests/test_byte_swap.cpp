@@ -242,11 +242,99 @@ TEST_CASE(testByteSwapUInt64)
     }
 }
 
+TEST_CASE(testByteSwapFloat)
+{
+    static_assert(sizeof(float) == sizeof(uint32_t), "sizeof(float) != sizeof(uint32_t)");
+
+    const float v = 3.141592654f;
+    const void* pVoid = &v;
+    auto pFloat = static_cast<const float*>(pVoid);
+    auto swap = sys::byteSwap(*pFloat);
+    // The swapped bits could be nonsense as a `float`, so comparing might not work
+    //TEST_ASSERT_NOT_EQ(*pFloat, swap);
+    const void* pResult_ = &swap;
+    auto pResultBytes = static_cast<const std::byte*>(pResult_);
+    auto pValueBytes = static_cast<const std::byte*>(pVoid);
+    TEST_ASSERT(pResultBytes[0] == pValueBytes[3]);
+    TEST_ASSERT(pResultBytes[1] == pValueBytes[2]);
+    TEST_ASSERT(pResultBytes[2] == pValueBytes[1]);
+    TEST_ASSERT(pResultBytes[3] == pValueBytes[0]);
+    swap = sys::byteSwap(swap);  // swap back
+    TEST_ASSERT_EQ(*pFloat, swap);
+
+    // array swap from input to output
+    const float values[] = {1.0f, 2.0f, 3.0f, 4.0f};
+    pVoid = &(values[0]);
+    const auto buffer = static_cast<const float*>(pVoid);
+    std::array<float, 4> outputBuffer;
+    sys::byteSwap(buffer, sizeof(float), outputBuffer.size(), outputBuffer.data());
+    for (size_t i = 0; i<outputBuffer.size(); i++)
+    {
+        // can't test swapped bytes against anything; might not be a valid `float`
+        swap = sys::byteSwap(outputBuffer[i]);
+        TEST_ASSERT_EQ(values[i], swap);
+    }
+
+    // in-place swap
+    sys::byteSwap(outputBuffer.data(), sizeof(float), outputBuffer.size());
+    for (size_t i = 0; i < outputBuffer.size(); i++)
+    {
+        TEST_ASSERT_EQ(values[i], outputBuffer[i]);
+    }
+}
+
+TEST_CASE(testByteSwapDouble)
+{
+    static_assert(sizeof(double) == sizeof(uint64_t), "sizeof(double) != sizeof(uint64_t)");
+
+    const double v = 3.141592654;
+    const void* pVoid = &v;
+    auto pDouble = static_cast<const double*>(pVoid);
+    auto swap = sys::byteSwap(*pDouble);
+    // The swapped bits could be nonsense as a `double`, so comparing might not work
+    //TEST_ASSERT_NOT_EQ(*pDouble, swap);
+    const void* pResult_ = &swap;
+    auto pResultBytes = static_cast<const std::byte*>(pResult_);
+    auto pValueBytes = static_cast<const std::byte*>(pVoid);
+    TEST_ASSERT(pResultBytes[0] == pValueBytes[7]);
+    TEST_ASSERT(pResultBytes[1] == pValueBytes[6]);
+    TEST_ASSERT(pResultBytes[2] == pValueBytes[5]);
+    TEST_ASSERT(pResultBytes[3] == pValueBytes[4]);
+    TEST_ASSERT(pResultBytes[4] == pValueBytes[3]);
+    TEST_ASSERT(pResultBytes[5] == pValueBytes[2]);
+    TEST_ASSERT(pResultBytes[6] == pValueBytes[1]);
+    TEST_ASSERT(pResultBytes[7] == pValueBytes[0]);
+    swap = sys::byteSwap(swap);  // swap back
+    TEST_ASSERT_EQ(*pDouble, swap);
+
+    // array swap from input to output
+    const double values[] = {1.0, 2.0};
+    pVoid = &(values[0]);
+    const auto buffer = static_cast<const double*>(pVoid);
+    std::array<double, 2> outputBuffer;
+    sys::byteSwap(buffer, sizeof(double), outputBuffer.size(), outputBuffer.data());
+    for (size_t i = 0; i<outputBuffer.size(); i++)
+    {
+        // can't test swapped bytes against anything; might not be a valid `double`
+        swap = sys::byteSwap(outputBuffer[i]);
+        TEST_ASSERT_EQ(values[i], swap);
+    }
+
+    // in-place swap
+    sys::byteSwap(outputBuffer.data(), sizeof(double), outputBuffer.size());
+    for (size_t i = 0; i < outputBuffer.size(); i++)
+    {
+        TEST_ASSERT_EQ(values[i], outputBuffer[i]);
+    }
+}
+
 TEST_MAIN(
     TEST_CHECK(testEndianness);
     TEST_CHECK(testByteSwap);
     TEST_CHECK(testByteSwapUInt16);
     TEST_CHECK(testByteSwapUInt32);
     TEST_CHECK(testByteSwapUInt64);
+    TEST_CHECK(testByteSwapFloat);
+    TEST_CHECK(testByteSwapDouble);
     )
      
