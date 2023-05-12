@@ -133,9 +133,9 @@ TEST_CASE(testByteSwapUInt16)
     auto swap = sys::byteSwap(*pUInt16);
     TEST_ASSERT_NOT_EQ(*pUInt16, swap);
     const void* pResult_ = &swap;
-    auto pResult = static_cast<const std::byte*>(pResult_);
-    TEST_ASSERT(pResult[0] == two_bytes[1]);
-    TEST_ASSERT(pResult[1] == two_bytes[0]);
+    auto pResultBytes = static_cast<const std::byte*>(pResult_);
+    TEST_ASSERT(pResultBytes[0] == two_bytes[1]);
+    TEST_ASSERT(pResultBytes[1] == two_bytes[0]);
     swap = sys::byteSwap(swap);  // swap back
     TEST_ASSERT_EQ(*pUInt16, swap);
 
@@ -155,10 +155,10 @@ TEST_CASE(testByteSwapUInt16)
     // in-place swap
     sys::byteSwap(outputBuffer.data(), sizeof(uint16_t), outputBuffer.size());
     pBytes = outputBuffer.data();
-    pResult = static_cast<const std::byte*>(pBytes);
+    pResultBytes = static_cast<const std::byte*>(pBytes);
     for (size_t i=0; i<16; i++)
     {
-        TEST_ASSERT(pResult[i] == sixteen_bytes[i]);
+        TEST_ASSERT(pResultBytes[i] == sixteen_bytes[i]);
     }
 }
 
@@ -169,11 +169,11 @@ TEST_CASE(testByteSwapUInt32)
     auto swap = sys::byteSwap(*pUInt32);
     TEST_ASSERT_NOT_EQ(*pUInt32, swap);
     const void* pResult_ = &swap;
-    auto pResult = static_cast<const std::byte*>(pResult_);
-    TEST_ASSERT(pResult[0] == four_bytes[3]);
-    TEST_ASSERT(pResult[1] == four_bytes[2]);
-    TEST_ASSERT(pResult[2] == four_bytes[1]);
-    TEST_ASSERT(pResult[3] == four_bytes[0]);
+    auto pResultBytes = static_cast<const std::byte*>(pResult_);
+    TEST_ASSERT(pResultBytes[0] == four_bytes[3]);
+    TEST_ASSERT(pResultBytes[1] == four_bytes[2]);
+    TEST_ASSERT(pResultBytes[2] == four_bytes[1]);
+    TEST_ASSERT(pResultBytes[3] == four_bytes[0]);
     swap = sys::byteSwap(swap);  // swap back
     TEST_ASSERT_EQ(*pUInt32, swap);
 
@@ -193,10 +193,10 @@ TEST_CASE(testByteSwapUInt32)
     // in-place swap
     sys::byteSwap(outputBuffer.data(), sizeof(uint32_t), outputBuffer.size());
     pBytes = outputBuffer.data();
-    pResult = static_cast<const std::byte*>(pBytes);
+    pResultBytes = static_cast<const std::byte*>(pBytes);
     for (size_t i=0; i<16; i++)
     {
-        TEST_ASSERT(pResult[i] == sixteen_bytes[i]);
+        TEST_ASSERT(pResultBytes[i] == sixteen_bytes[i]);
     }
 }
 
@@ -207,15 +207,15 @@ TEST_CASE(testByteSwapUInt64)
     auto swap = sys::byteSwap(*pUInt64);
     TEST_ASSERT_NOT_EQ(*pUInt64, swap);
     const void* pResult_ = &swap;
-    auto pResult = static_cast<const std::byte*>(pResult_);
-    TEST_ASSERT(pResult[0] == eight_bytes[7]);
-    TEST_ASSERT(pResult[1] == eight_bytes[6]);
-    TEST_ASSERT(pResult[2] == eight_bytes[5]);
-    TEST_ASSERT(pResult[3] == eight_bytes[4]);
-    TEST_ASSERT(pResult[4] == eight_bytes[3]);
-    TEST_ASSERT(pResult[5] == eight_bytes[2]);
-    TEST_ASSERT(pResult[6] == eight_bytes[1]);
-    TEST_ASSERT(pResult[7] == eight_bytes[0]);
+    auto pResultBytes = static_cast<const std::byte*>(pResult_);
+    TEST_ASSERT(pResultBytes[0] == eight_bytes[7]);
+    TEST_ASSERT(pResultBytes[1] == eight_bytes[6]);
+    TEST_ASSERT(pResultBytes[2] == eight_bytes[5]);
+    TEST_ASSERT(pResultBytes[3] == eight_bytes[4]);
+    TEST_ASSERT(pResultBytes[4] == eight_bytes[3]);
+    TEST_ASSERT(pResultBytes[5] == eight_bytes[2]);
+    TEST_ASSERT(pResultBytes[6] == eight_bytes[1]);
+    TEST_ASSERT(pResultBytes[7] == eight_bytes[0]);
     swap = sys::byteSwap(swap);  // swap back
     TEST_ASSERT_EQ(*pUInt64, swap);
 
@@ -235,10 +235,10 @@ TEST_CASE(testByteSwapUInt64)
     // in-place swap
     sys::byteSwap(outputBuffer.data(), sizeof(uint64_t), outputBuffer.size());
     pBytes = outputBuffer.data();
-    pResult = static_cast<const std::byte*>(pBytes);
+    pResultBytes = static_cast<const std::byte*>(pBytes);
     for (size_t i=0; i<16; i++)
     {
-        TEST_ASSERT(pResult[i] == sixteen_bytes[i]);
+        TEST_ASSERT(pResultBytes[i] == sixteen_bytes[i]);
     }
 }
 
