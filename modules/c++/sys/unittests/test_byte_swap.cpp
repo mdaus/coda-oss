@@ -27,6 +27,7 @@
 #include <array>
 #include <std/bit> // std::endian
 #include <std/cstddef> // std::byte
+#include <std/span>
 
 #include <sys/Conf.h>
 
@@ -285,11 +286,12 @@ TEST_CASE(testByteSwapFloat)
 
 TEST_CASE(testByteSwapDouble)
 {
-    static_assert(sizeof(double) == sizeof(uint64_t), "sizeof(double) != sizeof(uint64_t)");
+    using value_type = double;
+    static_assert(sizeof(value_type) == sizeof(uint64_t), "sizeof(value_type) != sizeof(uint64_t)");
 
-    const double v = 3.141592654;
+    const value_type v = 3.141592654;
     const void* pVoid = &v;
-    auto pDouble = static_cast<const double*>(pVoid);
+    auto pDouble = static_cast<const value_type*>(pVoid);
     auto swap = sys::byteSwap(*pDouble);
     // The swapped bits could be nonsense as a `double`, so comparing might not work
     //TEST_ASSERT_NOT_EQ(*pDouble, swap);
@@ -308,23 +310,23 @@ TEST_CASE(testByteSwapDouble)
     TEST_ASSERT_EQ(*pDouble, swap);
 
     // array swap from input to output
-    const double values[] = {1.0, 2.0};
-    pVoid = &(values[0]);
-    const auto buffer = static_cast<const double*>(pVoid);
-    std::array<double, 2> outputBuffer;
-    sys::byteSwap(buffer, sizeof(double), outputBuffer.size(), outputBuffer.data());
-    for (size_t i = 0; i<outputBuffer.size(); i++)
+    const std::vector<value_type> values = {1.0, 2.0};
+    const std::span<const value_type> buffer(values.data(), values.size());
+    std::array<value_type, 2> outputBuffer;
+    const std::span<value_type> outputBuffer_(outputBuffer.data(), outputBuffer.size());
+    sys::byteSwap(buffer, outputBuffer_);
+    for (size_t i = 0; i < outputBuffer_.size(); i++)
     {
         // can't test swapped bytes against anything; might not be a valid `double`
-        swap = sys::byteSwap(outputBuffer[i]);
+        swap = sys::byteSwap(outputBuffer_[i]);
         TEST_ASSERT_EQ(values[i], swap);
     }
 
     // in-place swap
-    sys::byteSwap(outputBuffer.data(), sizeof(double), outputBuffer.size());
-    for (size_t i = 0; i < outputBuffer.size(); i++)
+    sys::byteSwap(outputBuffer_);
+    for (size_t i = 0; i < outputBuffer_.size(); i++)
     {
-        TEST_ASSERT_EQ(values[i], outputBuffer[i]);
+        TEST_ASSERT_EQ(values[i], outputBuffer_[i]);
     }
 }
 
@@ -359,7 +361,7 @@ TEST_CASE(testByteSwapCxFloat)
     std::array<value_type, 2> outputBuffer;
     const std::span<value_type> outputBuffer_(outputBuffer.data(), outputBuffer.size());
     sys::byteSwap(buffer, outputBuffer_);
-    for (size_t i = 0; i<outputBuffer.size(); i++)
+    for (size_t i = 0; i<outputBuffer_.size(); i++)
     {
         // can't test swapped bytes against anything; might not be a valid `double`
         swap = sys::byteSwap(outputBuffer_[i]);
