@@ -39,7 +39,7 @@ namespace enums
 // (read from a file) should be the enum value OTHER.
 //
 // Using a "struct enum" (not to be confused with "enum class"
-// from C++11 allows an enum to hold arbitrary member-data
+// from C++11) allows an enum to hold arbitrary member-data
 // to support a situation like SIX.  It also supports legacy code
 // that uses "struct enums" to simulate "enum class".
 
