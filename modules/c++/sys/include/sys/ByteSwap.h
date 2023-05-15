@@ -43,7 +43,7 @@ private:
  * \param outputBuffer buffer to write into
  */
 template <typename T, typename U = T>
-inline void byteSwap(coda_oss::span<const T> buffer,
+inline void threadedByteSwap(coda_oss::span<const T> buffer,
                      size_t numThreads,
                      coda_oss::span<U> outputBuffer)
 {

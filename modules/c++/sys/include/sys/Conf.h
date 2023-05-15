@@ -278,10 +278,11 @@ namespace sys
     inline void byteSwap(coda_oss::span<const T> buffer, coda_oss::span<U> outputBuffer) // e.g., "unsigned int" && "int"
     {
         const auto numElems = buffer.size();
-        if (numElems != outputBuffer.size())
-        {
-            throw std::invalid_argument("buffer.size() != outputBuffer.size()");
-        }
+        // outputBuffer could be std::byte
+        //if (numElems != outputBuffer.size())
+        //{
+        //    throw std::invalid_argument("buffer.size() != outputBuffer.size()");
+        //}
         constexpr auto elemSize = sizeof(T);
         byteSwap(buffer.data(), elemSize, numElems, outputBuffer.data());
     }
