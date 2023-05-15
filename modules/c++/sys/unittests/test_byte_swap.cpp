@@ -30,6 +30,7 @@
 #include <std/span>
 
 #include <sys/Conf.h>
+#include <sys/ByteSwap.h>
 
 TEST_CASE(testEndianness)
 {

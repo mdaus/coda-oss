@@ -1,154 +1,74 @@
-#ifndef __ALGS_BYTE_SWAP_H__
-#define __ALGS_BYTE_SWAP_H__
+#ifndef CODA_OSS_sys_ByteSwap_h_INCLUDED_
+#define CODA_OSS_sys_ByteSwap_h_INCLUDED_
+#pragma once
+
+#include <memory>
 
 #include <mt/ThreadPlanner.h>
 #include <mt/ThreadGroup.h>
 
-namespace algs
+#include "Conf.h"
+
+namespace sys
 {
-class ByteSwapRunnable : public sys::Runnable
+template <typename T, typename U = T>
+struct ByteSwapCopyRunnable final : public sys::Runnable
 {
-public:
-    ByteSwapRunnable(void* buffer,
-                     size_t elemSize,
-                     size_t startElement,
-                     size_t numElements) :
-        mBuffer(static_cast<sys::byte*>(buffer) + startElement * elemSize),
-        mElemSize(static_cast<unsigned short>(elemSize)),
-        mNumElements(numElements)
+    ByteSwapCopyRunnable() = delete;
+    ByteSwapCopyRunnable(coda_oss::span<const T> buffer, coda_oss::span<U> outputBuffer) :
+        mBuffer(buffer), mOutputBuffer(outputBuffer)
     {
     }
+    virtual ~ByteSwapCopyRunnable() = default;
+    ByteSwapCopyRunnable(const ByteSwapCopyRunnable&) = delete;
+    ByteSwapCopyRunnable& operator=(const ByteSwapCopyRunnable&) = delete;
+    ByteSwapCopyRunnable(ByteSwapCopyRunnable&&) = default;
+    ByteSwapCopyRunnable& operator=(ByteSwapCopyRunnable&&) = default;
 
-    virtual void run()
+    void run() override
     {
-        sys::byteSwap(mBuffer, mElemSize, mNumElements);
+        sys::byteSwap(mBuffer, mOutputBuffer);
     }
 
 private:
-    sys::byte* const mBuffer;
-    const unsigned short mElemSize;
-    const size_t mNumElements;
+    const coda_oss::span<const T> mBuffer;
+    const coda_oss::span<U> mOutputBuffer;
 };
-
-class ByteSwapCopyRunnable : public sys::Runnable
-{
-public:
-    ByteSwapCopyRunnable(const void* buffer,
-                         size_t elemSize,
-                         size_t startElement,
-                         size_t numElements,
-                         void* outputBuffer) :
-        mBuffer(static_cast<const sys::byte*>(buffer) + startElement * elemSize),
-        mElemSize(static_cast<unsigned short>(elemSize)),
-        mNumElements(numElements),
-        mOutputBuffer(static_cast<sys::byte*>(outputBuffer) + startElement * elemSize)
-    {
-    }
-
-    virtual void run()
-    {
-        sys::byteSwap(mBuffer, mElemSize, mNumElements, mOutputBuffer);
-    }
-
-private:
-    const sys::byte* const mBuffer;
-    const unsigned short mElemSize;
-    const size_t mNumElements;
-    sys::byte* const mOutputBuffer;
-};
-
-/*
- * Threaded byte-swapping
- *
- * \param buffer Buffer to swap (contents will be overridden)
- * \param elemSize Size of each element in 'buffer'
- * \param numElements Number of elements in 'buffer'
- * \param numThreads Number of threads to use for byte-swapping
- */
-inline
-void byteSwap(void* buffer,
-              size_t elemSize,
-              size_t numElements,
-              size_t numThreads)
-{
-    if (numThreads <= 1)
-    {
-        sys::byteSwap(buffer,
-                      static_cast<unsigned short>(elemSize),
-                      numElements);
-    }
-    else
-    {
-        mt::ThreadGroup threads;
-        const mt::ThreadPlanner planner(numElements, numThreads);
-
-        size_t threadNum(0);
-        size_t startElement(0);
-        size_t numElementsThisThread(0);
-        while (planner.getThreadInfo(threadNum++,
-                                     startElement,
-                                     numElementsThisThread))
-        {
-            std::unique_ptr<sys::Runnable> thread(new ByteSwapRunnable(
-                    buffer,
-                    elemSize,
-                    startElement,
-                    numElementsThisThread));
-
-            threads.createThread(thread.release());
-        }
-        threads.joinAll();
-    }
-}
 
 /*
  * Threaded byte-swapping and copy
  *
  * \param buffer Buffer to swap
- * \param elemSize Size of each element in 'buffer'
- * \param numElements Number of elements in 'buffer'
  * \param numThreads Number of threads to use for byte-swapping
  * \param outputBuffer buffer to write into
  */
-inline
-void byteSwap(const void* buffer,
-              size_t elemSize,
-              size_t numElements,
-              size_t numThreads,
-              void* outputBuffer)
+template <typename T, typename U = T>
+inline void byteSwap(coda_oss::span<const T> buffer,
+                     size_t numThreads,
+                     coda_oss::span<U> outputBuffer)
 {
     if (numThreads <= 1)
     {
-        sys::byteSwap(buffer,
-                      static_cast<unsigned short>(elemSize),
-                      numElements,
-                      outputBuffer);
+        sys::byteSwap(buffer, outputBuffer);
+        return;
     }
-    else
+
+    mt::ThreadGroup threads;
+    const mt::ThreadPlanner planner(buffer.size(), numThreads);
+
+    size_t threadNum(0);
+    size_t startElement(0);
+    size_t numElementsThisThread(0);
+    while (planner.getThreadInfo(threadNum++, startElement, numElementsThisThread))
     {
-        mt::ThreadGroup threads;
-        const mt::ThreadPlanner planner(numElements, numThreads);
+        const coda_oss::span<const T> buffer_(buffer.data() + startElement, numElementsThisThread);
+        const coda_oss::span<T> outputBuffer_(outputBuffer.data() + startElement, numElementsThisThread);
 
-        size_t threadNum(0);
-        size_t startElement(0);
-        size_t numElementsThisThread(0);
-        while (planner.getThreadInfo(threadNum++,
-                                     startElement,
-                                     numElementsThisThread))
-        {
-            std::unique_ptr<sys::Runnable> thread(new ByteSwapCopyRunnable(
-                    buffer,
-                    elemSize,
-                    startElement,
-                    numElementsThisThread,
-                    outputBuffer));
-
-            threads.createThread(thread.release());
-        }
-        threads.joinAll();
-
+        auto thread = std::make_unique<ByteSwapCopyRunnable<T, U>>(buffer_, outputBuffer_);
+        threads.createThread(thread.release());
     }
+    threads.joinAll();
 }
 }
 
-#endif
+#endif  // CODA_OSS_sys_ByteSwap_h_INCLUDED_
