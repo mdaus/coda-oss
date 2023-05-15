@@ -94,13 +94,14 @@ void sys::byteSwap_(void* buffer, size_t elemSize, size_t numElems)
  *  \param[out] outputBuffer buffer to write swapped elements to
  */
 template <typename TUInt>
-inline void byteSwap_n(const void *buffer_, size_t numElems, void *outputBuffer_)
+inline void byteSwap_n(const void *buffer_, size_t elemSize, size_t numElems, void *outputBuffer_)
 {
     static_assert(std::is_unsigned<TUInt>::value, "TUInt must be 'unsigned'");
     using value_type = TUInt;
-    constexpr auto elemSize = sizeof(value_type);
+    assert(sizeof(value_type) == elemSize);
 
     const coda_oss::span<const value_type> buffer(static_cast<const value_type*>(buffer_), numElems);
+    assert(buffer.size_bytes() == elemSize * numElems);
     const coda_oss::span<value_type> outputBuffer(static_cast<value_type*>(outputBuffer_), numElems);
 
     std::transform(buffer.begin(), buffer.end(), outputBuffer.begin(), [](const auto& v) { return sys::byteSwap(v); });
@@ -118,21 +119,15 @@ void sys::byteSwap_(const void* buffer,
 
     if (elemSize == 2)
     {
-        using value_type = uint16_t;
-        assert(sizeof(value_type) == elemSize);
-        return byteSwap_n<value_type>(buffer, numElems, outputBuffer);
+        return byteSwap_n<uint16_t>(buffer, elemSize, numElems, outputBuffer);
     }
     if (elemSize == 4)
     {
-        using value_type = uint32_t;
-        assert(sizeof(value_type) == elemSize);
-        return byteSwap_n<value_type>(buffer, numElems, outputBuffer);
+        return byteSwap_n<uint32_t>(buffer, elemSize, numElems, outputBuffer);
     }
     if (elemSize == 8)
     {
-        using value_type = uint64_t;
-        assert(sizeof(value_type) == elemSize);
-        return byteSwap_n<value_type>(buffer, numElems, outputBuffer);
+        return byteSwap_n<uint64_t>(buffer, elemSize, numElems, outputBuffer);
     }
 
     const sys::byte* bufferPtr = static_cast<const sys::byte*>(buffer);
