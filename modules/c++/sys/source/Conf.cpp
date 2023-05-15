@@ -20,8 +20,11 @@
  *
  */
 
+#include <assert.h>
+
 #include <stdexcept>
 #include <type_traits>
+#include <algorithm>
 
 #include "sys/Conf.h"
 #include "coda_oss/bit.h"
@@ -90,18 +93,50 @@ void sys::byteSwap_(void* buffer, size_t elemSize, size_t numElems)
  *  \param numElems
  *  \param[out] outputBuffer buffer to write swapped elements to
  */
+template <typename TUInt>
+inline void byteSwap_n(const void *buffer_, size_t numElems, void *outputBuffer_)
+{
+    static_assert(std::is_unsigned<TUInt>::value, "TUInt must be 'unsigned'");
+    using value_type = TUInt;
+    constexpr auto elemSize = sizeof(value_type);
+
+    const coda_oss::span<const value_type> buffer(static_cast<const value_type*>(buffer_), numElems);
+    const coda_oss::span<value_type> outputBuffer(static_cast<value_type*>(outputBuffer_), numElems);
+
+    std::transform(buffer.begin(), buffer.end(), outputBuffer.begin(), [](const auto& v) { return sys::byteSwap(v); });
+}
+
 void sys::byteSwap_(const void* buffer,
                     size_t elemSize,
                     size_t numElems,
                     void* outputBuffer)
 {
-    const sys::byte* bufferPtr = static_cast<const sys::byte*>(buffer);
-    sys::byte* outputBufferPtr = static_cast<sys::byte*>(outputBuffer);
-
-    if (!numElems || !bufferPtr || !outputBufferPtr)
+    if (!numElems || !buffer || !outputBuffer)
     {
         return;
     }
+
+    if (elemSize == 2)
+    {
+        using value_type = uint16_t;
+        assert(sizeof(value_type) == elemSize);
+        return byteSwap_n<value_type>(buffer, numElems, outputBuffer);
+    }
+    if (elemSize == 4)
+    {
+        using value_type = uint32_t;
+        assert(sizeof(value_type) == elemSize);
+        return byteSwap_n<value_type>(buffer, numElems, outputBuffer);
+    }
+    if (elemSize == 8)
+    {
+        using value_type = uint64_t;
+        assert(sizeof(value_type) == elemSize);
+        return byteSwap_n<value_type>(buffer, numElems, outputBuffer);
+    }
+
+    const sys::byte* bufferPtr = static_cast<const sys::byte*>(buffer);
+    sys::byte* outputBufferPtr = static_cast<sys::byte*>(outputBuffer);
 
     const auto half = elemSize >> 1;
     size_t offset = 0;

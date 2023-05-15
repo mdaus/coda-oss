@@ -342,15 +342,16 @@ namespace sys
         return byteSwap_(val);
     }
 #if defined(_MSC_VER)
-    inline unsigned short byteSwap(unsigned short val)
+    // These routines should geneerate a single instruction; see https://devblogs.microsoft.com/cppblog/a-tour-of-4-msvc-backend-improvements/
+    inline uint16_t byteSwap(uint16_t val)
     {
         return _byteswap_ushort(val);
     }
-    inline unsigned long byteSwap(unsigned long val)
+    inline uint32_t byteSwap(uint32_t val)
     {
         return _byteswap_ulong(val);
     }
-    inline unsigned __int64 byteSwap(unsigned __int64 val)
+    inline uint64_t byteSwap(uint64_t val)
     {
         return _byteswap_uint64(val);
     }
