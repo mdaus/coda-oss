@@ -12,29 +12,6 @@
 
 namespace mt
 {
-struct ByteSwapRunnable final : public sys::Runnable
-{
-    ByteSwapRunnable(void* buffer,
-                     size_t elemSize,
-                     size_t startElement,
-                     size_t numElements) :
-        mBuffer(static_cast<sys::byte*>(buffer) + startElement * elemSize),
-        mElemSize(static_cast<unsigned short>(elemSize)),
-        mNumElements(numElements)
-    {
-    }
-
-    void run() override
-    {
-        sys::byteSwapV(mBuffer, mElemSize, mNumElements);
-    }
-
-private:
-    sys::byte* const mBuffer;
-    const unsigned short mElemSize;
-    const size_t mNumElements;
-};
-
 struct ByteSwapCopyRunnable final : public sys::Runnable
 {
     ByteSwapCopyRunnable(const void* buffer,
@@ -62,50 +39,6 @@ private:
 };
 
 /*
- * Threaded byte-swapping
- *
- * \param buffer Buffer to swap (contents will be overridden)
- * \param elemSize Size of each element in 'buffer'
- * \param numElements Number of elements in 'buffer'
- * \param numThreads Number of threads to use for byte-swapping
- */
-inline
-void threadedByteSwap(void* buffer,
-              size_t elemSize,
-              size_t numElements,
-              size_t numThreads)
-{
-    if (numThreads <= 1)
-    {
-        sys::byteSwapV(buffer,
-                      static_cast<unsigned short>(elemSize),
-                      numElements);
-    }
-    else
-    {
-        mt::ThreadGroup threads;
-        const mt::ThreadPlanner planner(numElements, numThreads);
-
-        size_t threadNum(0);
-        size_t startElement(0);
-        size_t numElementsThisThread(0);
-        while (planner.getThreadInfo(threadNum++,
-                                     startElement,
-                                     numElementsThisThread))
-        {
-            auto thread = std::make_unique<ByteSwapRunnable>(
-                    buffer,
-                    elemSize,
-                    startElement,
-                    numElementsThisThread);
-
-            threads.createThread(thread.release());
-        }
-        threads.joinAll();
-    }
-}
-
-/*
  * Threaded byte-swapping and copy
  *
  * \param buffer Buffer to swap
@@ -127,31 +60,45 @@ void threadedByteSwap(const void* buffer,
                       static_cast<unsigned short>(elemSize),
                       numElements,
                       outputBuffer);
+        return;
     }
-    else
+
+    mt::ThreadGroup threads;
+    const mt::ThreadPlanner planner(numElements, numThreads);
+
+    size_t threadNum(0);
+    size_t startElement(0);
+    size_t numElementsThisThread(0);
+    while (planner.getThreadInfo(threadNum++, startElement, numElementsThisThread))
     {
-        mt::ThreadGroup threads;
-        const mt::ThreadPlanner planner(numElements, numThreads);
-
-        size_t threadNum(0);
-        size_t startElement(0);
-        size_t numElementsThisThread(0);
-        while (planner.getThreadInfo(threadNum++,
-                                     startElement,
-                                     numElementsThisThread))
-        {
-            auto thread = std::make_unique<ByteSwapCopyRunnable>(
-                    buffer,
-                    elemSize,
-                    startElement,
-                    numElementsThisThread,
-                    outputBuffer);
-
-            threads.createThread(thread.release());
-        }
-        threads.joinAll();
+        auto thread = std::make_unique<ByteSwapCopyRunnable>(
+                buffer,
+                elemSize,
+                startElement,
+                numElementsThisThread,
+                outputBuffer);
+        threads.createThread(thread.release());
     }
+    threads.joinAll();
 }
+
+/*
+ * Threaded byte-swapping
+ *
+ * \param buffer Buffer to swap (contents will be overridden)
+ * \param elemSize Size of each element in 'buffer'
+ * \param numElements Number of elements in 'buffer'
+ * \param numThreads Number of threads to use for byte-swapping
+ */
+inline
+void threadedByteSwap(void* buffer,
+              size_t elemSize,
+              size_t numElements,
+              size_t numThreads)
+{
+    threadedByteSwap(buffer, elemSize, numElements, numThreads, buffer);
+}
+
 }
 
 #endif  // CODA_OSS_mt_ByteSwap_h_INCLUDED_
