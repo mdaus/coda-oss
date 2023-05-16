@@ -277,14 +277,12 @@ namespace sys
     template <typename T, typename U = T>
     inline void byteSwap(coda_oss::span<const T> buffer, coda_oss::span<U> outputBuffer) // e.g., "unsigned int" && "int"
     {
-        const auto numElems = buffer.size();
         // outputBuffer could be std::byte
-        //if (numElems != outputBuffer.size())
-        //{
-        //    throw std::invalid_argument("buffer.size() != outputBuffer.size()");
-        //}
-        constexpr auto elemSize = sizeof(T);
-        byteSwap(buffer.data(), elemSize, numElems, outputBuffer.data());
+        if (buffer.size_bytes() != outputBuffer.size_bytes())
+        {
+            throw std::invalid_argument("buffer.size_bytes() != outputBuffer.size_bytes()");
+        }
+        byteSwap(buffer.data(), sizeof(T), buffer.size(), outputBuffer.data());
     }
     template <typename T>
     inline void byteSwap(coda_oss::span<const std::complex<T>> buffer, coda_oss::span<std::complex<T>> outputBuffer)

@@ -3,7 +3,9 @@
 #pragma once
 
 #include <memory>
+#include <stdexcept>
 
+#include "coda_oss/span.h"
 #include "sys/Conf.h"
 #include "sys/ByteSwap.h"
 
@@ -52,6 +54,16 @@ inline void threadedByteSwap(const T* buffer,
     }
     threads.joinAll();
 }
+template<typename T, typename U = T>
+inline void threadedByteSwap(coda_oss::span<const T> buffer, size_t numThreads, coda_oss::span<U> outputBuffer)
+{
+    // outputBuffer could be std::byte
+    if (buffer.size_bytes() != outputBuffer.size_bytes())
+    {
+        throw std::invalid_argument("buffer.size_bytes() != outputBuffer.size_bytes()");
+    }
+    threadedByteSwap(buffer.data(), sizeof(T), buffer.size(), numThreads, outputBuffer.data());
+}
 
 /*
  * Threaded byte-swapping
@@ -68,6 +80,11 @@ inline void threadedByteSwap(T* buffer,
               size_t numThreads)
 {
     threadedByteSwap(buffer, elemSize, numElements, numThreads, buffer);
+}
+template <typename T>
+inline void threadedByteSwap(coda_oss::span<T> buffer, size_t numThreads)
+{
+    threadedByteSwap(buffer.data(), sizeof(T), buffer.size(), numThreads);
 }
 
 }
