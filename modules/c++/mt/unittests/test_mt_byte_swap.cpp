@@ -49,7 +49,7 @@ TEST_CASE(testThreadedByteSwap)
     constexpr size_t NUM_PIXELS = 10000;
     const auto origValues = make_origValues(NUM_PIXELS);
 
-    constexpr size_t numThreads = 1;
+    constexpr size_t numThreads = 4;
 
     // Byte swap the old-fashioned way
     auto values1(origValues);

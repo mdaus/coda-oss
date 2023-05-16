@@ -5,39 +5,13 @@
 #include <memory>
 
 #include "sys/Conf.h"
-#include "sys/Runnable.h"
+#include "sys/ByteSwap.h"
 
 #include "ThreadPlanner.h"
 #include "ThreadGroup.h"
 
 namespace mt
 {
-struct ByteSwapCopyRunnable final : public sys::Runnable
-{
-    ByteSwapCopyRunnable(const void* buffer,
-                         size_t elemSize,
-                         size_t startElement,
-                         size_t numElements,
-                         void* outputBuffer) :
-        mBuffer(static_cast<const sys::byte*>(buffer) + startElement * elemSize),
-        mElemSize(static_cast<unsigned short>(elemSize)),
-        mNumElements(numElements),
-        mOutputBuffer(static_cast<sys::byte*>(outputBuffer) + startElement * elemSize)
-    {
-    }
-
-    void run() override
-    {
-        sys::byteSwapV(mBuffer, mElemSize, mNumElements, mOutputBuffer);
-    }
-
-private:
-    const sys::byte* const mBuffer;
-    const unsigned short mElemSize;
-    const size_t mNumElements;
-    sys::byte* const mOutputBuffer;
-};
-
 /*
  * Threaded byte-swapping and copy
  *
@@ -47,19 +21,16 @@ private:
  * \param numThreads Number of threads to use for byte-swapping
  * \param outputBuffer buffer to write into
  */
-inline
-void threadedByteSwap(const void* buffer,
+template<typename T, typename U = T>
+inline void threadedByteSwap(const T* buffer,
               size_t elemSize,
               size_t numElements,
               size_t numThreads,
-              void* outputBuffer)
+              U* outputBuffer)
 {
     if (numThreads <= 1)
     {
-        sys::byteSwapV(buffer,
-                      static_cast<unsigned short>(elemSize),
-                      numElements,
-                      outputBuffer);
+        sys::byteSwap(buffer, elemSize, numElements, outputBuffer);
         return;
     }
 
@@ -71,7 +42,7 @@ void threadedByteSwap(const void* buffer,
     size_t numElementsThisThread(0);
     while (planner.getThreadInfo(threadNum++, startElement, numElementsThisThread))
     {
-        auto thread = std::make_unique<ByteSwapCopyRunnable>(
+        auto thread = std::make_unique<sys::ByteSwapCopyRunnable<T, U>>(
                 buffer,
                 elemSize,
                 startElement,
@@ -90,8 +61,8 @@ void threadedByteSwap(const void* buffer,
  * \param numElements Number of elements in 'buffer'
  * \param numThreads Number of threads to use for byte-swapping
  */
-inline
-void threadedByteSwap(void* buffer,
+template <typename T>
+inline void threadedByteSwap(T* buffer,
               size_t elemSize,
               size_t numElements,
               size_t numThreads)

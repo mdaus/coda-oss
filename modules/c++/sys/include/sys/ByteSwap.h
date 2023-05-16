@@ -14,10 +14,10 @@ struct ByteSwapCopyRunnable final : public sys::Runnable
                          size_t startElement,
                          size_t numElements,
                          U* outputBuffer) :
-        mBuffer(static_cast<const sys::byte*>(static_cast<const void*>(buffer)) + startElement * elemSize),
-        mElemSize(static_cast<unsigned short>(elemSize)),
+        mBuffer(buffer + startElement),
+        mElemSize(elemSize),
         mNumElements(numElements),
-        mOutputBuffer(static_cast<sys::byte*>(static_cast<void*>(outputBuffer)) + startElement * elemSize)
+        mOutputBuffer(outputBuffer + startElement)
     {
     }
 
@@ -29,14 +29,14 @@ struct ByteSwapCopyRunnable final : public sys::Runnable
 
     void run() override
     {
-        sys::byteSwapV(mBuffer, mElemSize, mNumElements, mOutputBuffer);
+        sys::byteSwap(mBuffer, mElemSize, mNumElements, mOutputBuffer);
     }
 
 private:
-    const sys::byte* const mBuffer;
-    const unsigned short mElemSize;
+    const T* const mBuffer;
+    const size_t mElemSize;
     const size_t mNumElements;
-    sys::byte* const mOutputBuffer;
+    U* const mOutputBuffer;
 };
 
 }
