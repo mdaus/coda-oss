@@ -44,6 +44,28 @@ static std::vector<uint64_t> make_origValues(size_t NUM_PIXELS)
     return retval;
 }
 
+TEST_CASE(testThreadedByteSwapV)
+{
+    constexpr size_t NUM_PIXELS = 10000;
+    const auto origValues = make_origValues(NUM_PIXELS);
+
+    constexpr size_t numThreads = 4;
+
+    // Byte swap the old-fashioned way
+    auto values1(origValues);
+    mt::threadedByteSwap_(values1.data(), sizeof(uint64_t), NUM_PIXELS, numThreads);
+
+    // Byte swap into output buffer
+    std::vector<uint64_t> swappedValues2(origValues.size());
+    mt::threadedByteSwap_(origValues.data(), sizeof(uint64_t), NUM_PIXELS, numThreads, swappedValues2.data());
+
+    // Everything should match
+    for (size_t ii = 0; ii < NUM_PIXELS; ++ii)
+    {
+        TEST_ASSERT_EQ(values1[ii], swappedValues2[ii]);
+    }
+}
+
 TEST_CASE(testOldThreadedByteSwap)
 {
     constexpr size_t NUM_PIXELS = 10000;
@@ -92,6 +114,7 @@ TEST_CASE(testThreadedByteSwap)
 }
 
 TEST_MAIN(
+    TEST_CHECK(testThreadedByteSwapV);
     TEST_CHECK(testOldThreadedByteSwap);
     TEST_CHECK(testThreadedByteSwap);
     )

@@ -11,13 +11,8 @@ namespace sys
 template <typename T, typename U = T>
 struct ByteSwapCopyRunnable final : public sys::Runnable
 {
-    ByteSwapCopyRunnable(const T* buffer,
-                         size_t startElement,
-                         size_t numElements,
-                         U* outputBuffer) :
-        mBuffer(buffer + startElement),
-        mNumElements(numElements),
-        mOutputBuffer(outputBuffer + startElement)
+    ByteSwapCopyRunnable(coda_oss::span<const T> buffer, coda_oss::span<U> outputBuffer) :
+        mBuffer(buffer), mOutputBuffer(outputBuffer)
     {
     }
 
@@ -29,15 +24,12 @@ struct ByteSwapCopyRunnable final : public sys::Runnable
 
     void run() override
     {
-        const coda_oss::span<const T> buffer(mBuffer, mNumElements);
-        const coda_oss::span<U> outputBuffer(mOutputBuffer, mNumElements);
-        sys::byteSwap(buffer, outputBuffer);
+        sys::byteSwap(mBuffer, mOutputBuffer);
     }
 
 private:
-    const T* const mBuffer;
-    const size_t mNumElements;
-    U* const mOutputBuffer;
+    const coda_oss::span<const T> mBuffer;
+    const coda_oss::span<U> mOutputBuffer;
 };
 
 }
