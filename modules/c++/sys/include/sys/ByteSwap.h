@@ -19,10 +19,10 @@ struct ByteSwapCopyRunnable final : public sys::Runnable
                          size_t startElement,
                          size_t numElements,
                          U* outputBuffer) :
-        mBuffer(static_cast<const sys::byte*>(buffer) + startElement * elemSize),
+        mBuffer(static_cast<const sys::byte*>(static_cast<const void*>(buffer)) + startElement * elemSize),
         mElemSize(static_cast<unsigned short>(elemSize)),
         mNumElements(numElements),
-        mOutputBuffer(static_cast<sys::byte*>(outputBuffer) + startElement * elemSize)
+        mOutputBuffer(static_cast<sys::byte*>(static_cast<void*>(outputBuffer)) + startElement * elemSize)
     {
     }
 
