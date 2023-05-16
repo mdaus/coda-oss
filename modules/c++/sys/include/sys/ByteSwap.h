@@ -2,6 +2,8 @@
 #define CODA_OSS_sys_ByteSwap_h_INCLUDED_
 #pragma once
 
+#include "coda_oss/span.h"
+
 #include "Runnable.h"
 
 namespace sys
@@ -10,12 +12,10 @@ template <typename T, typename U = T>
 struct ByteSwapCopyRunnable final : public sys::Runnable
 {
     ByteSwapCopyRunnable(const T* buffer,
-                         size_t elemSize,
                          size_t startElement,
                          size_t numElements,
                          U* outputBuffer) :
         mBuffer(buffer + startElement),
-        mElemSize(elemSize),
         mNumElements(numElements),
         mOutputBuffer(outputBuffer + startElement)
     {
@@ -29,12 +29,13 @@ struct ByteSwapCopyRunnable final : public sys::Runnable
 
     void run() override
     {
-        sys::byteSwap(mBuffer, mElemSize, mNumElements, mOutputBuffer);
+        const coda_oss::span<const T> buffer(mBuffer, mNumElements);
+        const coda_oss::span<U> outputBuffer(mOutputBuffer, mNumElements);
+        sys::byteSwap(buffer, outputBuffer);
     }
 
 private:
     const T* const mBuffer;
-    const size_t mElemSize;
     const size_t mNumElements;
     U* const mOutputBuffer;
 };

@@ -53,12 +53,11 @@ TEST_CASE(testOldThreadedByteSwap)
 
     // Byte swap the old-fashioned way
     auto values1(origValues);
-    mt::threadedByteSwap(values1.data(), sizeof(uint64_t), NUM_PIXELS, numThreads);
+    mt::threadedByteSwap(values1.data(), NUM_PIXELS, numThreads);
 
     // Byte swap into output buffer
     std::vector<uint64_t> swappedValues2(origValues.size());
-    mt::threadedByteSwap(origValues.data(), sizeof(uint64_t), NUM_PIXELS, numThreads,
-                  swappedValues2.data());
+    mt::threadedByteSwap(origValues.data(), NUM_PIXELS, numThreads, swappedValues2.data());
 
     // Everything should match
     for (size_t ii = 0; ii < NUM_PIXELS; ++ii)
