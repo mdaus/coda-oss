@@ -149,6 +149,7 @@
     <ClInclude Include="mt\include\mt\RequestQueue.h" />
     <ClInclude Include="mt\include\mt\Runnable1D.h" />
     <ClInclude Include="mt\include\mt\Singleton.h" />
+    <ClInclude Include="mt\include\mt\ThreadedByteSwap.h" />
     <ClInclude Include="mt\include\mt\ThreadGroup.h" />
     <ClInclude Include="mt\include\mt\ThreadPlanner.h" />
     <ClInclude Include="mt\include\mt\ThreadPoolException.h" />

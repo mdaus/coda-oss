@@ -3,7 +3,7 @@
  * =========================================================================
  *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
- * (C) Copyright 2021, Maxar Technologies, Inc.
+ * (C) Copyright 2023, Maxar Technologies, Inc.
  *
  * sys-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,47 +28,82 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "coda_oss/cstddef.h"
 #include "config/Exports.h"
 
 #include "ByteSwapValue.h"
+#include "Runnable.h"
 
 namespace sys
 {
-   /*!
-     *  Swap bytes in-place.  Note that a complex pixel
-     *  is equivalent to two floats so elemSize and numElems
-     *  must be adjusted accordingly.
-     *
-     *  \param [inout] buffer to transform
-     *  \param elemSize
-     *  \param numElems
-     */
-    void CODA_OSS_API byteSwap_(void* buffer, size_t elemSize, size_t numElems);
-    inline void byteSwap(void* buffer,
-                         unsigned short elemSize,
-                         size_t numElems)
+/*!
+ *  Swap bytes in-place.  Note that a complex pixel
+ *  is equivalent to two floats so elemSize and numElems
+ *  must be adjusted accordingly.
+ *
+ *  \param [inout] buffer to transform
+ *  \param elemSize
+ *  \param numElems
+ */
+void CODA_OSS_API byteSwap_(void* buffer, size_t elemSize, size_t numElems);
+inline void byteSwap(void* buffer, unsigned short elemSize, size_t numElems)
+{
+    byteSwap_(buffer, elemSize, numElems);
+}
+
+/*!
+ *  Swap bytes into output buffer.  Note that a complex pixel
+ *  is equivalent to two floats so elemSize and numElems
+ *  must be adjusted accordingly.
+ *
+ *  \param buffer to transform
+ *  \param elemSize
+ *  \param numElems
+ *  \param[out] outputBuffer buffer to write swapped elements to
+ */
+void CODA_OSS_API byteSwap_(const void* buffer, size_t elemSize, size_t numElems, void* outputBuffer);
+inline void byteSwap(const void* buffer, unsigned short elemSize, size_t numElems, void* outputBuffer)
+{
+    byteSwap_(buffer, elemSize, numElems, outputBuffer);
+}
+
+struct ByteSwapRunnable final : public sys::Runnable
+{
+    ByteSwapRunnable(void* buffer, size_t elemSize, size_t startElement, size_t numElements) :
+        mBuffer(static_cast<coda_oss::byte*>(buffer) + startElement * elemSize),
+        mElemSize(elemSize), mNumElements(numElements)
     {
-        byteSwap_(buffer, elemSize, numElems);
+    }
+    void run() override
+    {
+        sys::byteSwap_(mBuffer, mElemSize, mNumElements);
     }
 
-    /*!
-     *  Swap bytes into output buffer.  Note that a complex pixel
-     *  is equivalent to two floats so elemSize and numElems
-     *  must be adjusted accordingly.
-     *
-     *  \param buffer to transform
-     *  \param elemSize
-     *  \param numElems
-     *  \param[out] outputBuffer buffer to write swapped elements to
-     */
-    void CODA_OSS_API byteSwap_(const void* buffer, size_t elemSize, size_t numElems, void* outputBuffer);
-    inline void  byteSwap(const void* buffer,
-                          unsigned short elemSize,
-                          size_t numElems,
-                          void* outputBuffer)
+private:
+    void* const mBuffer;
+    const size_t mElemSize;
+    const size_t mNumElements;
+};
+
+struct ByteSwapCopyRunnable final : public sys::Runnable
+{
+    ByteSwapCopyRunnable(const void* buffer, size_t elemSize, size_t startElement, size_t numElements, void* outputBuffer) :
+        mBuffer(static_cast<const coda_oss::byte*>(buffer) + startElement * elemSize),
+        mElemSize(elemSize), mNumElements(numElements),
+        mOutputBuffer(static_cast<coda_oss::byte*>(outputBuffer) + startElement * elemSize)
     {
-        byteSwap_(buffer, elemSize, numElems, outputBuffer);
     }
+    void run() override
+    {
+        sys::byteSwap_(mBuffer, mElemSize, mNumElements, mOutputBuffer);
+    }
+
+private:
+    const void* const mBuffer;
+    const size_t mElemSize;
+    const size_t mNumElements;
+    void* const mOutputBuffer;
+};
 
 }
-#endif // CODA_OSS_sys_ByteSwap_h_INCLUDED_
+#endif  // CODA_OSS_sys_ByteSwap_h_INCLUDED_

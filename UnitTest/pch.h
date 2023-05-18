@@ -87,6 +87,7 @@
 #include <mt/RequestQueue.h>
 #include <mt/ThreadPoolException.h>
 #include <mt/GenerationThreadPool.h>
+#include <mt/ThreadedByteSwap.h>
 #include <import/mt.h>
 #include <avx/extractf.h>
 #include <logging/ExceptionLogger.h>
