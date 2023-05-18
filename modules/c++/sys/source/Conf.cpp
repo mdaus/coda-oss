@@ -19,6 +19,7 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
+#include "sys/Conf.h"
 
 #include <assert.h>
 
@@ -26,10 +27,9 @@
 #include <type_traits>
 #include <algorithm>
 #include <tuple>
-
-#include "sys/Conf.h"
 #include "coda_oss/bit.h"
 #include "coda_oss/cstddef.h"
+#include "coda_oss/span.h"
 
 // https://en.cppreference.com/w/cpp/types/endian
 using endian = coda_oss::endian;
