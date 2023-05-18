@@ -208,27 +208,12 @@ namespace sys
      *  \param elemSize
      *  \param numElems
      */
+    void CODA_OSS_API byteSwap_(void* buffer, size_t elemSize, size_t numElems);
     inline void byteSwap(void* buffer,
                          unsigned short elemSize,
                          size_t numElems)
     {
-        sys::byte* bufferPtr = static_cast<sys::byte*>(buffer);
-        if (!bufferPtr || elemSize < 2 || !numElems)
-            return;
-
-        const auto half = elemSize >> 1;
-        size_t offset = 0, innerOff = 0, innerSwap = 0;
-
-        for(size_t i = 0; i < numElems; ++i, offset += elemSize)
-        {
-            for(unsigned short j = 0; j < half; ++j)
-            {
-                innerOff = offset + j;
-                innerSwap = offset + elemSize - 1 - j;
-
-                std::swap(bufferPtr[innerOff], bufferPtr[innerSwap]);
-            }
-        }
+        byteSwap_(buffer, elemSize, numElems);
     }
 
     /*!
@@ -241,33 +226,13 @@ namespace sys
      *  \param numElems
      *  \param[out] outputBuffer buffer to write swapped elements to
      */
+    void CODA_OSS_API byteSwap_(const void* buffer, size_t elemSize, size_t numElems, void* outputBuffer);
     inline void  byteSwap(const void* buffer,
                           unsigned short elemSize,
                           size_t numElems,
                           void* outputBuffer)
     {
-        const sys::byte* bufferPtr = static_cast<const sys::byte*>(buffer);
-        sys::byte* outputBufferPtr = static_cast<sys::byte*>(outputBuffer);
-
-        if (!numElems || !bufferPtr || !outputBufferPtr)
-        {
-            return;
-        }
-
-        const auto half = elemSize >> 1;
-        size_t offset = 0;
-
-        for (size_t ii = 0; ii < numElems; ++ii, offset += elemSize)
-        {
-            for (unsigned short jj = 0; jj < half; ++jj)
-            {
-                const size_t innerOff = offset + jj;
-                const size_t innerSwap = offset + elemSize - 1 - jj;
-
-                outputBufferPtr[innerOff] = bufferPtr[innerSwap];
-                outputBufferPtr[innerSwap] = bufferPtr[innerOff];
-            }
-        }
+        byteSwap_(buffer, elemSize, numElems, outputBuffer);
     }
 
     /*!
