@@ -125,7 +125,7 @@ inline void byteSwap_n(void *buffer_, size_t elemSize, size_t numElems)
 }
 void sys::byteSwap_(void* buffer, size_t elemSize, size_t numElems)
 {
-    sys::byte* bufferPtr = static_cast<sys::byte*>(buffer);
+    auto const bufferPtr = static_cast<coda_oss::byte*>(buffer);
     if (!bufferPtr || elemSize < 2 || !numElems)
         return;
 
@@ -204,17 +204,11 @@ void sys::byteSwap_(const void* buffer, size_t elemSize, size_t numElems, void* 
         return byteSwap_n<uint64_t>(buffer, elemSize, numElems, outputBuffer);
     }
 
-    const sys::byte* bufferPtr = static_cast<const sys::byte*>(buffer);
-    sys::byte* outputBufferPtr = static_cast<sys::byte*>(outputBuffer);
-
-    if (!numElems || !bufferPtr || !outputBufferPtr)
-    {
-        return;
-    }
+    auto const bufferPtr = static_cast<const coda_oss::byte*>(buffer);
+    auto const outputBufferPtr = static_cast<coda_oss::byte*>(outputBuffer);
 
     const auto half = elemSize >> 1;
     size_t offset = 0;
-
     for (size_t ii = 0; ii < numElems; ++ii, offset += elemSize)
     {
         for (unsigned short jj = 0; jj < half; ++jj)

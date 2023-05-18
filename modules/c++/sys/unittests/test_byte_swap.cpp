@@ -160,9 +160,35 @@ TEST_CASE(testByteSwapValues)
     testByteSwapValues_<uint64_t>(testName, eight_bytes);
 }
 
+TEST_CASE(testByteSwap10)
+{
+    // test a goofy element size
+    static constexpr std::byte ten_bytes[]{
+        x00, x11, x22, x33, x44,
+        xAA, xBB, xDD, xEE, xFF};
+
+    std::array<std::byte, 10> swappedValues;
+    constexpr auto elemSize = 10;
+    constexpr auto numElements = swappedValues.size() / elemSize;
+    sys::byteSwap(ten_bytes, elemSize, numElements, swappedValues.data());
+
+    const auto pResultBytes = swappedValues.data();
+    const auto pValueBytes = &(ten_bytes[0]);
+    TEST_ASSERT(pResultBytes[0] == pValueBytes[9]);
+    TEST_ASSERT(pResultBytes[1] == pValueBytes[8]);
+    TEST_ASSERT(pResultBytes[2] == pValueBytes[7]);
+    TEST_ASSERT(pResultBytes[3] == pValueBytes[6]);
+    TEST_ASSERT(pResultBytes[4] == pValueBytes[5]);
+    TEST_ASSERT(pResultBytes[5] == pValueBytes[4]);
+    TEST_ASSERT(pResultBytes[6] == pValueBytes[3]);
+    TEST_ASSERT(pResultBytes[7] == pValueBytes[2]);
+    TEST_ASSERT(pResultBytes[8] == pValueBytes[1]);
+    TEST_ASSERT(pResultBytes[9] == pValueBytes[0]);
+}
 
 TEST_MAIN(
     TEST_CHECK(testEndianness);
     TEST_CHECK(testByteSwap);
-    TEST_CHECK(testByteSwapValues)
+    TEST_CHECK(testByteSwapValues);
+    TEST_CHECK(testByteSwap10);
     )
