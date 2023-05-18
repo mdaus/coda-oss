@@ -79,6 +79,12 @@ struct ByteSwapRunnable final : public sys::Runnable
         sys::byteSwap_(mBuffer, mElemSize, mNumElements);
     }
 
+    virtual ~ByteSwapRunnable() = default;
+    ByteSwapRunnable(const ByteSwapRunnable&) = delete;
+    ByteSwapRunnable& operator=(const ByteSwapRunnable&) = delete;
+    ByteSwapRunnable(ByteSwapRunnable&&) = delete;
+    ByteSwapRunnable& operator=(ByteSwapRunnable&&) = delete;
+
 private:
     void* const mBuffer;
     const size_t mElemSize;
@@ -90,13 +96,19 @@ struct ByteSwapCopyRunnable final : public sys::Runnable
     ByteSwapCopyRunnable(const void* buffer, size_t elemSize, size_t startElement, size_t numElements, void* outputBuffer) :
         mBuffer(static_cast<const coda_oss::byte*>(buffer) + startElement * elemSize),
         mElemSize(elemSize), mNumElements(numElements),
-        mOutputBuffer(static_cast<coda_oss::byte*>(outputBuffer) + startElement * elemSize)
+         mOutputBuffer(static_cast<coda_oss::byte*>(outputBuffer) + startElement * elemSize)
     {
     }
     void run() override
     {
         sys::byteSwap_(mBuffer, mElemSize, mNumElements, mOutputBuffer);
     }
+
+    virtual ~ByteSwapCopyRunnable() = default;
+    ByteSwapCopyRunnable(const ByteSwapCopyRunnable&) = delete;
+    ByteSwapCopyRunnable& operator=(const ByteSwapCopyRunnable&) = delete;
+    ByteSwapCopyRunnable(ByteSwapCopyRunnable&&) = delete;
+    ByteSwapCopyRunnable& operator=(ByteSwapCopyRunnable&&) = delete;
 
 private:
     const void* const mBuffer;
