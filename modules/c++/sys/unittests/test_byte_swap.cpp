@@ -26,6 +26,7 @@
 #include <vector>
 #include <std/bit> // std::endian
 #include <std/cstddef>
+#include <std/span>
 
 #include <sys/Conf.h>
 
@@ -176,7 +177,7 @@ TEST_CASE(testByteSwap12)
     const auto pValueBytes = &(twelve_bytes[0]);
 
     std::array<std::byte, 12> swappedValues;
-    std::span<std::byte> pResultBytes(swappedValues.data(), 12);
+    std::span<std::byte> pResultBytes(swappedValues.data(), swappedValues.size());
 
     auto elemSize = 12;
     auto numElements = swappedValues.size() / elemSize;
