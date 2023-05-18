@@ -39,7 +39,7 @@ namespace sys
         return val;  // no-op
     }
     #if defined(_MSC_VER)
-    // These routines should geneerate a single instruction; see https://devblogs.microsoft.com/cppblog/a-tour-of-4-msvc-backend-improvements/
+    // These routines should generate a single instruction; see https://devblogs.microsoft.com/cppblog/a-tour-of-4-msvc-backend-improvements/
     inline uint16_t byteSwap(uint16_t val)
     {
         return _byteswap_ushort(val);

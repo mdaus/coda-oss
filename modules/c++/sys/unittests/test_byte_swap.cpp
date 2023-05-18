@@ -23,7 +23,7 @@
 #include "TestCase.h"
 
 #include <array>
-
+#include <vector>
 #include <std/bit> // std::endian
 #include <std/cstddef>
 
@@ -134,17 +134,23 @@ static void testByteSwapValues_(const std::string& testName, const void* pBytes)
     auto pUInt = static_cast<const TUInt*>(pBytes);
     auto swap = sys::byteSwap(*pUInt);
     TEST_ASSERT_NOT_EQ(*pUInt, swap);
+
     const void* pResult_ = &swap;
-    auto pResultBytes = static_cast<const std::byte*>(pResult_);
-    TEST_ASSERT(pResultBytes[0] == two_bytes[1]);
-    TEST_ASSERT(pResultBytes[1] == two_bytes[0]);
+    auto const pResultBytes = static_cast<const std::byte*>(pResult_);
+    auto const pValueBytes = static_cast<const std::byte*>(pBytes);
+    for (size_t i = 0, j = sizeof(TUInt)-1; i < sizeof(TUInt) && j >= 0; i++, j--)
+    {
+        TEST_ASSERT(pResultBytes[i] == pValueBytes[j]);
+    }
+
     swap = sys::byteSwap(swap);  // swap back
     TEST_ASSERT_EQ(*pUInt, swap);
 }
 TEST_CASE(testByteSwapValues)
 {
-    const void* pBytes = &(two_bytes[0]);
-    testByteSwapValues_<uint16_t>(testName, pBytes);
+    testByteSwapValues_<uint16_t>(testName, two_bytes);
+    testByteSwapValues_<uint32_t>(testName, four_bytes);
+    testByteSwapValues_<uint64_t>(testName, eight_bytes);
 }
 
 
