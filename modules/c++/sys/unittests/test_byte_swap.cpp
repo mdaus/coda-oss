@@ -70,29 +70,32 @@ TEST_CASE(testEndianness)
     }
 }
 
-TEST_CASE(testByteSwap)
+static std::vector<uint64_t> make_origValues(size_t NUM_PIXELS)
 {
     ::srand(334);
 
-    static const size_t NUM_PIXELS = 10000;
-    std::vector<sys::Uint64_T> origValues(NUM_PIXELS);
+    std::vector<uint64_t> retval(NUM_PIXELS);
     for (size_t ii = 0; ii < NUM_PIXELS; ++ii)
     {
         const auto value = static_cast<float>(::rand()) / RAND_MAX *
-                std::numeric_limits<sys::Uint64_T>::max();
-        origValues[ii] = static_cast<sys::Uint64_T>(value);
+                std::numeric_limits<uint64_t>::max();
+        retval[ii] = static_cast<uint64_t>(value);
     }
+    return retval;
+}
+
+TEST_CASE(testByteSwap)
+{
+    constexpr size_t NUM_PIXELS = 10000;
+    const auto origValues = make_origValues(NUM_PIXELS);
 
     // Byte swap the old-fashioned way
-    std::vector<sys::Uint64_T> values1(origValues);
-    sys::byteSwap(&values1[0], sizeof(sys::Uint64_T), NUM_PIXELS);
-
+    auto values1(origValues);
+    sys::byteSwap(values1.data(), sizeof(uint64_t), NUM_PIXELS);
 
     // Byte swap into output buffer
-    const std::vector<sys::Uint64_T> values2(origValues);
-    std::vector<sys::Uint64_T> swappedValues2(values2.size());
-    sys::byteSwap(&values2[0], sizeof(sys::Uint64_T), NUM_PIXELS,
-                  &swappedValues2[0]);
+    std::vector<uint64_t> swappedValues2(origValues.size());
+    sys::byteSwap(origValues.data(), sizeof(uint64_t), NUM_PIXELS, swappedValues2.data());
 
     // Everything should match
     for (size_t ii = 0; ii < NUM_PIXELS; ++ii)
@@ -101,8 +104,52 @@ TEST_CASE(testByteSwap)
     }
 }
 
+#define CODA_OSS_define_byte(v) constexpr static std::byte v = static_cast<std::byte>(0 ## v)
+CODA_OSS_define_byte(x00);
+CODA_OSS_define_byte(x11);
+CODA_OSS_define_byte(x22);
+CODA_OSS_define_byte(x33);
+CODA_OSS_define_byte(x44);
+CODA_OSS_define_byte(x55);
+CODA_OSS_define_byte(x66);
+CODA_OSS_define_byte(x77);
+CODA_OSS_define_byte(x88);
+CODA_OSS_define_byte(x99);
+CODA_OSS_define_byte(xAA);
+CODA_OSS_define_byte(xBB);
+CODA_OSS_define_byte(xCC);
+CODA_OSS_define_byte(xDD);
+CODA_OSS_define_byte(xEE);
+CODA_OSS_define_byte(xFF);
+#undef CODA_OSS_define_byte
+
+static constexpr std::byte two_bytes[]{x00, xFF};
+static constexpr std::byte four_bytes[]{x00, x11, xEE, xFF};
+static constexpr std::byte eight_bytes[]{x00, x11, x22, x33, xCC, xDD, xEE, xFF};
+static constexpr std::byte sixteen_bytes[]{x00, x11, x22, x33, x44, x55, x66, x77, x88, x99, xAA, xBB, xCC, xDD, xEE, xFF};
+
+template<typename TUInt>
+static void testByteSwapValues_(const std::string& testName, const void* pBytes)
+{
+    auto pUInt = static_cast<const TUInt*>(pBytes);
+    auto swap = sys::byteSwap(*pUInt);
+    TEST_ASSERT_NOT_EQ(*pUInt, swap);
+    const void* pResult_ = &swap;
+    auto pResultBytes = static_cast<const std::byte*>(pResult_);
+    TEST_ASSERT(pResultBytes[0] == two_bytes[1]);
+    TEST_ASSERT(pResultBytes[1] == two_bytes[0]);
+    swap = sys::byteSwap(swap);  // swap back
+    TEST_ASSERT_EQ(*pUInt, swap);
+}
+TEST_CASE(testByteSwapValues)
+{
+    const void* pBytes = &(two_bytes[0]);
+    testByteSwapValues_<uint16_t>(testName, pBytes);
+}
+
 
 TEST_MAIN(
     TEST_CHECK(testEndianness);
     TEST_CHECK(testByteSwap);
+    TEST_CHECK(testByteSwapValues)
     )
