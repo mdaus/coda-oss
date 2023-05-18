@@ -125,8 +125,7 @@ inline void byteSwap_n(void *buffer_, size_t elemSize, size_t numElems)
 }
 void sys::byteSwap_(void* buffer, size_t elemSize, size_t numElems)
 {
-    auto const bufferPtr = static_cast<coda_oss::byte*>(buffer);
-    if (!bufferPtr || elemSize < 2 || !numElems)
+    if ((buffer == nullptr) || (elemSize < 2) || (numElems == 0))
         return;
 
     if (elemSize == 2)
@@ -142,11 +141,12 @@ void sys::byteSwap_(void* buffer, size_t elemSize, size_t numElems)
         return byteSwap_n<uint64_t>(buffer, elemSize, numElems);
     }
 
+    auto const bufferPtr = static_cast<coda_oss::byte*>(buffer);
     const auto half = elemSize >> 1;
     size_t offset = 0, innerOff = 0, innerSwap = 0;
     for (size_t i = 0; i < numElems; ++i, offset += elemSize)
     {
-        for (unsigned short j = 0; j < half; ++j)
+        for (size_t j = 0; j < half; ++j)
         {
             innerOff = offset + j;
             innerSwap = offset + elemSize - 1 - j;
@@ -177,11 +177,12 @@ inline void byteSwap_n(const void *buffer_, size_t elemSize, size_t numElems, vo
     assert(buffer.size_bytes() == elemSize * numElems);
     const coda_oss::span<TUInt> outputBuffer(static_cast<TUInt*>(outputBuffer_), numElems);
 
-    std::transform(buffer.begin(), buffer.end(), outputBuffer.begin(), [](const auto& v) { return sys::byteSwap(v); });
+    const auto byteSwap = [](const auto& v) { return sys::byteSwap(v); };
+    std::transform(buffer.begin(), buffer.end(), outputBuffer.begin(), byteSwap);
 }
 void sys::byteSwap_(const void* buffer, size_t elemSize, size_t numElems, void* outputBuffer)
 {
-    if (!numElems || !buffer || !outputBuffer)
+    if ((numElems == 0) || (buffer == nullptr) || (outputBuffer == nullptr))
     {
         return;
     }
@@ -211,7 +212,7 @@ void sys::byteSwap_(const void* buffer, size_t elemSize, size_t numElems, void* 
     size_t offset = 0;
     for (size_t ii = 0; ii < numElems; ++ii, offset += elemSize)
     {
-        for (unsigned short jj = 0; jj < half; ++jj)
+        for (size_t jj = 0; jj < half; ++jj)
         {
             const size_t innerOff = offset + jj;
             const size_t innerSwap = offset + elemSize - 1 - jj;
