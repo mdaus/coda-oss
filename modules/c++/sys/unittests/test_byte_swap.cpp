@@ -104,6 +104,7 @@ TEST_CASE(testByteSwap)
     }
 }
 
+// 0xnn is an `int` which can't be used to initialize std::byte w/o a cast
 #define CODA_OSS_define_byte(v) constexpr static std::byte v = static_cast<std::byte>(0 ## v)
 CODA_OSS_define_byte(x00);
 CODA_OSS_define_byte(x11);
@@ -138,9 +139,9 @@ static void testByteSwapValues_(const std::string& testName, const void* pBytes)
     const void* pResult_ = &swap;
     auto const pResultBytes = static_cast<const std::byte*>(pResult_);
     auto const pValueBytes = static_cast<const std::byte*>(pBytes);
-    for (size_t i = 0, j = sizeof(TUInt)-1; i < sizeof(TUInt) && j >= 0; i++, j--)
+    for (size_t i = 0, j = sizeof(TUInt); i < sizeof(TUInt) && j > 0; i++, j--)
     {
-        TEST_ASSERT(pResultBytes[i] == pValueBytes[j]);
+        TEST_ASSERT(pResultBytes[i] == pValueBytes[j-1]);
     }
 
     swap = sys::byteSwap(swap);  // swap back
