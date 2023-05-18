@@ -176,7 +176,7 @@ TEST_CASE(testByteSwap12)
         x99, xAA, xBB, xDD, xEE, xFF};
     const auto pValueBytes = &(twelve_bytes[0]);
 
-    std::array<std::byte, 12> swappedValues;
+    std::vector<std::byte> swappedValues(12);
     std::span<std::byte> pResultBytes(swappedValues.data(), swappedValues.size());
 
     auto elemSize = 12;
@@ -196,7 +196,7 @@ TEST_CASE(testByteSwap12)
     TEST_ASSERT(pResultBytes[11] == pValueBytes[0]);
 
     // swap as a SINGLE 12-byte value
-    const auto result = sys::details::swapBytes<swappedValues.size()>(twelve_bytes, pResultBytes);
+    const auto result = sys::details::swapBytes<12>(twelve_bytes, pResultBytes);
     TEST_ASSERT(result[0] == pValueBytes[11]);
     TEST_ASSERT(result[1] == pValueBytes[10]);
     TEST_ASSERT(result[2] == pValueBytes[9]);
