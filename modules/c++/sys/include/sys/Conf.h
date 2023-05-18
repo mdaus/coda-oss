@@ -66,12 +66,20 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+#ifdef __GNUC__
+#include <byteswap.h> // "These functions are GNU extensions."
+#endif
 
 #include <iostream>
 #include <algorithm>
 #include <cstdarg>
 #include <cstdlib>
 #include <memory>
+#include <type_traits>
+#include <stdexcept>
+#include "coda_oss/span.h"
+#include <complex>
 
 #include "str/Format.h"
 #include "sys/TimeStamp.h"

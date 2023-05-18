@@ -25,9 +25,11 @@
 #include <array>
 #include <vector>
 #include <std/bit> // std::endian
-#include <std/cstddef>
+#include <std/cstddef> // std::byte
+#include <std/span>
 
 #include <sys/Conf.h>
+#include <sys/ByteSwap.h>
 
 TEST_CASE(testEndianness)
 {
@@ -156,6 +158,9 @@ TEST_CASE(testByteSwapValues)
 
 TEST_MAIN(
     TEST_CHECK(testEndianness);
+    TEST_CHECK(testByteSwapV);
+    TEST_CHECK(testOldByteSwap);
     TEST_CHECK(testByteSwap);
     TEST_CHECK(testByteSwapValues)
     )
+     

@@ -137,6 +137,7 @@
     <ClInclude Include="mt\include\mt\Algorithm.h" />
     <ClInclude Include="mt\include\mt\BalancedRunnable1D.h" />
     <ClInclude Include="mt\include\mt\BasicThreadPool.h" />
+    <ClInclude Include="mt\include\mt\ByteSwap.h" />
     <ClInclude Include="mt\include\mt\CPUAffinityInitializer.h" />
     <ClInclude Include="mt\include\mt\CPUAffinityInitializerLinux.h" />
     <ClInclude Include="mt\include\mt\CPUAffinityInitializerWin32.h" />

@@ -23,6 +23,8 @@
 
 #include <assert.h>
 
+#include <assert.h>
+
 #include <stdexcept>
 #include <type_traits>
 #include <algorithm>
