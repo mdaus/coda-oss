@@ -109,44 +109,45 @@ bool sys::isBigEndianSystem()
  *  \param numElems
  */
 template <typename TUInt>
-inline void byteSwap_n(void *buffer_, size_t elemSize, size_t numElems)
+inline void byteSwap_n_(void *buffer_, size_t numElems)
 {
     static_assert(std::is_unsigned<TUInt>::value, "TUInt must be 'unsigned'");
-    assert(sizeof(TUInt) == elemSize);
-    std::ignore = elemSize;
-
     const coda_oss::span<TUInt> buffer(static_cast<TUInt*>(buffer_), numElems);
-    assert(buffer.size_bytes() == elemSize * numElems);
+    assert(buffer.size_bytes() == sizeof(TUInt) * numElems);
 
     for (auto& v : buffer)
     {
         v = sys::byteSwap(v);
     }
 }
+template <typename TUInt>
+inline void byteSwap_n(void *buffer, size_t elemSize, size_t numElems)
+{
+    if (sizeof(TUInt) != elemSize)
+    {
+        throw std::invalid_argument("'elemSize' != sizeof(TUInt)");
+    }
+    byteSwap_n_<TUInt>(buffer, numElems);
+}
 void sys::byteSwap_(void* buffer, size_t elemSize, size_t numElems)
 {
-    auto const bufferPtr = static_cast<coda_oss::byte*>(buffer);
-    if (!bufferPtr || elemSize < 2 || !numElems)
+    if ((buffer == nullptr) || (elemSize < 2) || (numElems == 0))
         return;
-
-    if (elemSize == 2)
+    
+    switch (elemSize)
     {
-        return byteSwap_n<uint16_t>(buffer, elemSize, numElems);
-    }
-    if (elemSize == 4)
-    {
-        return byteSwap_n<uint32_t>(buffer, elemSize, numElems);
-    }
-    if (elemSize == 8)
-    {
-        return byteSwap_n<uint64_t>(buffer, elemSize, numElems);
+        case 2: return byteSwap_n<uint16_t>(buffer, elemSize, numElems);
+        case 4: return byteSwap_n<uint32_t>(buffer, elemSize, numElems);
+        case 8: return byteSwap_n<uint64_t>(buffer, elemSize, numElems);
+        default: break;
     }
 
+    auto const bufferPtr = static_cast<coda_oss::byte*>(buffer);
     const auto half = elemSize >> 1;
     size_t offset = 0, innerOff = 0, innerSwap = 0;
     for (size_t i = 0; i < numElems; ++i, offset += elemSize)
     {
-        for (unsigned short j = 0; j < half; ++j)
+        for (size_t j = 0; j < half; ++j)
         {
             innerOff = offset + j;
             innerSwap = offset + elemSize - 1 - j;
@@ -167,41 +168,40 @@ void sys::byteSwap_(void* buffer, size_t elemSize, size_t numElems)
  *  \param[out] outputBuffer buffer to write swapped elements to
  */
 template <typename TUInt>
-inline void byteSwap_n(const void *buffer_, size_t elemSize, size_t numElems, void *outputBuffer_)
+inline void byteSwap_n_(const void *buffer_, size_t numElems, void *outputBuffer_)
 {
     static_assert(std::is_unsigned<TUInt>::value, "TUInt must be 'unsigned'");
-    assert(sizeof(TUInt) == elemSize);
-    std::ignore = elemSize;
 
     const coda_oss::span<const TUInt> buffer(static_cast<const TUInt*>(buffer_), numElems);
-    assert(buffer.size_bytes() == elemSize * numElems);
+    assert(buffer.size_bytes() == sizeof(TUInt) * numElems);
     const coda_oss::span<TUInt> outputBuffer(static_cast<TUInt*>(outputBuffer_), numElems);
 
-    std::transform(buffer.begin(), buffer.end(), outputBuffer.begin(), [](const auto& v) { return sys::byteSwap(v); });
+    const auto byteSwap = [](const auto& v) { return sys::byteSwap(v); };
+    std::transform(buffer.begin(), buffer.end(), outputBuffer.begin(), byteSwap);
+}
+template <typename TUInt>
+inline void byteSwap_n(const void *buffer, size_t elemSize, size_t numElems, void *outputBuffer)
+{
+    if (sizeof(TUInt) != elemSize)
+    {
+        throw std::invalid_argument("'elemSize' != sizeof(TUInt)");
+    }
+    byteSwap_n_<TUInt>(buffer, numElems, outputBuffer);
 }
 void sys::byteSwap_(const void* buffer, size_t elemSize, size_t numElems, void* outputBuffer)
 {
-    if (!numElems || !buffer || !outputBuffer)
+    if ((numElems == 0) || (buffer == nullptr) || (outputBuffer == nullptr))
     {
         return;
     }
 
-    if (elemSize == 1)
+    switch (elemSize)
     {
-        std::ignore = memcpy(outputBuffer, buffer, elemSize * numElems);
-        return;
-    }
-    if (elemSize == 2)
-    {
-        return byteSwap_n<uint16_t>(buffer, elemSize, numElems, outputBuffer);
-    }
-    if (elemSize == 4)
-    {
-        return byteSwap_n<uint32_t>(buffer, elemSize, numElems, outputBuffer);
-    }
-    if (elemSize == 8)
-    {
-        return byteSwap_n<uint64_t>(buffer, elemSize, numElems, outputBuffer);
+        case 1: std::ignore = memcpy(outputBuffer, buffer, elemSize * numElems); return;
+        case 2: return byteSwap_n<uint16_t>(buffer, elemSize, numElems, outputBuffer);
+        case 4: return byteSwap_n<uint32_t>(buffer, elemSize, numElems, outputBuffer);
+        case 8: return byteSwap_n<uint64_t>(buffer, elemSize, numElems, outputBuffer);
+        default: break;
     }
 
     auto const bufferPtr = static_cast<const coda_oss::byte*>(buffer);
@@ -211,7 +211,7 @@ void sys::byteSwap_(const void* buffer, size_t elemSize, size_t numElems, void* 
     size_t offset = 0;
     for (size_t ii = 0; ii < numElems; ++ii, offset += elemSize)
     {
-        for (unsigned short jj = 0; jj < half; ++jj)
+        for (size_t jj = 0; jj < half; ++jj)
         {
             const size_t innerOff = offset + jj;
             const size_t innerSwap = offset + elemSize - 1 - jj;
