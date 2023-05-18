@@ -176,11 +176,11 @@ TEST_CASE(testByteSwap12)
     const auto pValueBytes = &(twelve_bytes[0]);
 
     std::array<std::byte, 12> swappedValues;
-    coda_oss::span<coda_oss::byte> pResultBytes(swappedValues.data(), swappedValues.size());
+    std::span<std::byte> pResultBytes(swappedValues.data(), 12);
 
     auto elemSize = 12;
     auto numElements = swappedValues.size() / elemSize;
-    sys::byteSwap(twelve_bytes, elemSize, numElements, swappedValues.data());
+    sys::byteSwap(twelve_bytes, elemSize, numElements, pResultBytes.data());
     TEST_ASSERT(pResultBytes[0] == pValueBytes[11]);
     TEST_ASSERT(pResultBytes[1] == pValueBytes[10]);
     TEST_ASSERT(pResultBytes[2] == pValueBytes[9]);
