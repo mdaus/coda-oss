@@ -23,7 +23,7 @@ inline void threadedByteSwap(void* buffer, size_t elemSize, size_t numElements, 
 {
     if (numThreads <= 1)
     {
-        sys::byteSwap_(buffer, elemSize, numElements);
+        sys::byteSwap(buffer, elemSize, numElements);
     }
     else
     {
@@ -60,7 +60,7 @@ inline void threadedByteSwap(const void* buffer, size_t elemSize, size_t numElem
 {
     if (numThreads <= 1)
     {
-        sys::byteSwap_(buffer, elemSize, numElements, outputBuffer);
+        sys::byteSwap(buffer, elemSize, numElements, outputBuffer);
     }
     else
     {

@@ -46,7 +46,8 @@ namespace sys
  *  \param numElems
  */
 void CODA_OSS_API byteSwap_(void* buffer, size_t elemSize, size_t numElems);
-inline void byteSwap(void* buffer, unsigned short elemSize, size_t numElems)
+template <typename T>  // existing API is `unsigned short`, should be `size_t`
+inline void byteSwap(void* buffer, T elemSize, size_t numElems)
 {
     byteSwap_(buffer, elemSize, numElems);
 }
@@ -62,7 +63,8 @@ inline void byteSwap(void* buffer, unsigned short elemSize, size_t numElems)
  *  \param[out] outputBuffer buffer to write swapped elements to
  */
 void CODA_OSS_API byteSwap_(const void* buffer, size_t elemSize, size_t numElems, void* outputBuffer);
-inline void byteSwap(const void* buffer, unsigned short elemSize, size_t numElems, void* outputBuffer)
+template<typename T> // existing API is `unsigned short`, should be `size_t`
+inline void byteSwap(const void* buffer, T elemSize, size_t numElems, void* outputBuffer)
 {
     byteSwap_(buffer, elemSize, numElems, outputBuffer);
 }
@@ -76,7 +78,7 @@ struct ByteSwapRunnable final : public sys::Runnable
     }
     void run() override
     {
-        sys::byteSwap_(mBuffer, mElemSize, mNumElements);
+        byteSwap(mBuffer, mElemSize, mNumElements);
     }
 
     virtual ~ByteSwapRunnable() = default;
@@ -101,7 +103,7 @@ struct ByteSwapCopyRunnable final : public sys::Runnable
     }
     void run() override
     {
-        sys::byteSwap_(mBuffer, mElemSize, mNumElements, mOutputBuffer);
+        byteSwap(mBuffer, mElemSize, mNumElements, mOutputBuffer);
     }
 
     virtual ~ByteSwapCopyRunnable() = default;
