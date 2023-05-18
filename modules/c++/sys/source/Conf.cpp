@@ -23,8 +23,6 @@
 
 #include <assert.h>
 
-#include <assert.h>
-
 #include <stdexcept>
 #include <type_traits>
 #include <algorithm>
@@ -50,13 +48,36 @@ inline constexpr bool is_big_endian_<endian::little>()
 {
     return false;
 }
-inline bool is_big_endian()
+constexpr inline bool is_big_endian()
 {
     return is_big_endian_<endian::native>();
 }
+
+// Want to explicitly test against both endian::bit and endian::little; i.e.,
+// because of "mixed" endianness, little may not the same as !big
+template <endian endianness>
+inline bool is_little_endian_()
+{
+    throw std::logic_error("Mixed-endian not supported.");
+}
+template <>
+inline constexpr bool is_little_endian_<endian::big>()
+{
+    return false;
+}
+template <>
+inline constexpr bool is_little_endian_<endian::little>()
+{
+    return true;
+}
+constexpr inline bool is_little_endian()
+{
+    return is_little_endian_<endian::native>();
+}
+
 constexpr inline bool is_big_or_little_endian()
 {
-    return (endian::native == endian::big) || (endian::native == endian::little) ? true : false;
+    return is_big_endian() || is_little_endian();
 }
 
 inline bool isBigEndianSystem()
