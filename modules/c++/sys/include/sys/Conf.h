@@ -75,6 +75,7 @@
 
 #include "str/Format.h"
 #include "sys/TimeStamp.h"
+#include "sys/ByteSwap.h"
 
 
 /*  Dance around the compiler to figure out  */
@@ -199,78 +200,6 @@ namespace sys
     bool CODA_OSS_API isBigEndianSystem();
 
 
-   /*!
-     *  Swap bytes in-place.  Note that a complex pixel
-     *  is equivalent to two floats so elemSize and numElems
-     *  must be adjusted accordingly.
-     *
-     *  \param [inout] buffer to transform
-     *  \param elemSize
-     *  \param numElems
-     */
-    void CODA_OSS_API byteSwap_(void* buffer, size_t elemSize, size_t numElems);
-    inline void byteSwap(void* buffer,
-                         unsigned short elemSize,
-                         size_t numElems)
-    {
-        byteSwap_(buffer, elemSize, numElems);
-    }
-
-    /*!
-     *  Swap bytes into output buffer.  Note that a complex pixel
-     *  is equivalent to two floats so elemSize and numElems
-     *  must be adjusted accordingly.
-     *
-     *  \param buffer to transform
-     *  \param elemSize
-     *  \param numElems
-     *  \param[out] outputBuffer buffer to write swapped elements to
-     */
-    void CODA_OSS_API byteSwap_(const void* buffer, size_t elemSize, size_t numElems, void* outputBuffer);
-    inline void  byteSwap(const void* buffer,
-                          unsigned short elemSize,
-                          size_t numElems,
-                          void* outputBuffer)
-    {
-        byteSwap_(buffer, elemSize, numElems, outputBuffer);
-    }
-
-    /*!
-     *  Function to swap one element irrespective of size.  The inplace
-     *  buffer function should be preferred.
-     *
-     *  To specialize complex float, first include the complex library
-     *  \code
-        #include <complex>
-     *  \endcode
-     *
-     *  Then put an overload in as specified below:
-     *  \code
-        template <typename T> std::complex<T> byteSwap(std::complex<T> val)
-        {
-            std::complex<T> out(byteSwap<T>(val.real()),
-                                byteSwap<T>(val.imag()));
-            return out;
-        }
-     *  \endcode
-     *
-     */
-    template <typename T> T byteSwap(T val)
-    {
-        size_t size = sizeof(T);
-        T out;
-
-        unsigned char* cOut = reinterpret_cast<unsigned char*>(&out);
-        unsigned char* cIn = reinterpret_cast<unsigned char*>(&val);
-        for (size_t i = 0, j = size - 1; i < j; ++i, --j)
-        {
-            cOut[i] = cIn[j];
-            cOut[j] = cIn[i];
-        }
-        return out;
-    }
-
-
     /*!
      *  Method to create a block of memory on an alignment
      *  boundary specified by the user.
@@ -325,7 +254,6 @@ namespace sys
         free(p);
 #endif
     }
-
 
 }
 

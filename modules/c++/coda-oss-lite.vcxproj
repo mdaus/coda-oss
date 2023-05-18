@@ -191,6 +191,7 @@
     <ClInclude Include="sys\include\sys\AtomicCounter.h" />
     <ClInclude Include="sys\include\sys\AtomicCounterCpp11.h" />
     <ClInclude Include="sys\include\sys\Backtrace.h" />
+    <ClInclude Include="sys\include\sys\ByteSwap.h" />
     <ClInclude Include="sys\include\sys\ConditionVar.h" />
     <ClInclude Include="sys\include\sys\ConditionVarInterface.h" />
     <ClInclude Include="sys\include\sys\ConditionVarPosix.h" />
