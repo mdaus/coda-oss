@@ -30,6 +30,8 @@
 
 #include "config/Exports.h"
 
+#include "ByteSwapValue.h"
+
 namespace sys
 {
    /*!
@@ -68,39 +70,5 @@ namespace sys
         byteSwap_(buffer, elemSize, numElems, outputBuffer);
     }
 
-    /*!
-     *  Function to swap one element irrespective of size.  The inplace
-     *  buffer function should be preferred.
-     *
-     *  To specialize complex float, first include the complex library
-     *  \code
-        #include <complex>
-     *  \endcode
-     *
-     *  Then put an overload in as specified below:
-     *  \code
-        template <typename T> std::complex<T> byteSwap(std::complex<T> val)
-        {
-            std::complex<T> out(byteSwap<T>(val.real()),
-                                byteSwap<T>(val.imag()));
-            return out;
-        }
-     *  \endcode
-     *
-     */
-    template <typename T> T byteSwap(T val)
-    {
-        size_t size = sizeof(T);
-        T out;
-
-        unsigned char* cOut = reinterpret_cast<unsigned char*>(&out);
-        unsigned char* cIn = reinterpret_cast<unsigned char*>(&val);
-        for (size_t i = 0, j = size - 1; i < j; ++i, --j)
-        {
-            cOut[i] = cIn[j];
-            cOut[j] = cIn[i];
-        }
-        return out;
-    }
 }
 #endif // CODA_OSS_sys_ByteSwap_h_INCLUDED_
