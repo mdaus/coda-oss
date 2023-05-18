@@ -146,6 +146,12 @@ static void testByteSwapValues_(const std::string& testName, const void* pBytes)
 
     swap = sys::byteSwap(swap);  // swap back
     TEST_ASSERT_EQ(*pUInt, swap);
+
+    // swap as an "array" of one value
+    sys::byteSwap(pUInt, sizeof(TUInt), 1, &swap);
+    TEST_ASSERT_NOT_EQ(*pUInt, swap);
+    sys::byteSwap(&swap, sizeof(TUInt), 1); // swap back
+    TEST_ASSERT_EQ(*pUInt, swap);
 }
 TEST_CASE(testByteSwapValues)
 {
