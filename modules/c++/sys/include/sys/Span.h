@@ -33,7 +33,7 @@
 namespace sys // not "mem", it depends on sys.
 {
 
-// Creating a `span`s is verbose w/o deduction guidelines in C++17.
+// Creating a `span` is verbose w/o deduction guidelines in C++17.
 // Some overloads to ease the pain.
 template <typename T>
 inline auto make_span(const T* ptr, size_t sz)
