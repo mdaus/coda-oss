@@ -224,7 +224,7 @@ void sys::byteSwap(const void* buffer, size_t elemSize, size_t numElems, void* o
     }
 }
 
- coda_oss::span<const coda_oss::byte> sys::details::swapValueBytes(
+ coda_oss::span<const coda_oss::byte> sys::byteSwap(
         coda_oss::span<const coda_oss::byte> inPtr,
         coda_oss::span<coda_oss::byte> outPtr,
         std::nothrow_t) noexcept
@@ -234,10 +234,10 @@ void sys::byteSwap(const void* buffer, size_t elemSize, size_t numElems, void* o
 
     switch (elemSize)
     {
-        case sizeof(uint8_t): return details::swapUIntBytes<uint8_t>(inPtr, outPtr);
-        case sizeof(uint16_t): return details::swapUIntBytes<uint16_t>(inPtr, outPtr);
-        case sizeof(uint32_t): return details::swapUIntBytes<uint32_t>(inPtr, outPtr);
-        case sizeof(uint64_t): return details::swapUIntBytes<uint64_t>(inPtr, outPtr);
+        case sizeof(uint8_t): return details::swapUIntBytes<uint8_t>(inPtr, outPtr, std::nothrow);
+        case sizeof(uint16_t): return details::swapUIntBytes<uint16_t>(inPtr, outPtr, std::nothrow);
+        case sizeof(uint32_t): return details::swapUIntBytes<uint32_t>(inPtr, outPtr, std::nothrow);
+        case sizeof(uint64_t): return details::swapUIntBytes<uint64_t>(inPtr, outPtr, std::nothrow);
         default: break;
     }
 
@@ -251,14 +251,14 @@ void sys::byteSwap(const void* buffer, size_t elemSize, size_t numElems, void* o
     return make_const_span(outPtr);
 }
 
- coda_oss::span<const coda_oss::byte> sys::details::swapValueBytes(const void* inPtr, size_t elemSize, void* outPtr) noexcept
+ coda_oss::span<const coda_oss::byte> sys::byteSwap(const void* inPtr, size_t elemSize, void* outPtr) noexcept
 {
     auto const inBytes = make_span(static_cast<const coda_oss::byte*>(inPtr), elemSize);
     auto const outBytes = make_span(static_cast<coda_oss::byte*>(outPtr), elemSize);
-    return swapValueBytes(inBytes, outBytes, std::nothrow);
+    return byteSwap(inBytes, outBytes, std::nothrow);
 }
 
- coda_oss::span<const coda_oss::byte> sys::details::swapValueBytes(
+ coda_oss::span<const coda_oss::byte> sys::byteSwap(
         coda_oss::span<const coda_oss::byte> inPtr,
         coda_oss::span<coda_oss::byte> outPtr)
 {
@@ -266,5 +266,5 @@ void sys::byteSwap(const void* buffer, size_t elemSize, size_t numElems, void* o
     {
         throw std::invalid_argument("'size of byte buffers must match");
     }
-    return swapValueBytes(inPtr, outPtr, std::nothrow);
+    return byteSwap(inPtr, outPtr, std::nothrow);
 }

@@ -45,8 +45,6 @@
 
 namespace sys
 {
-    namespace details
-    {
     /*!
      * Swap bytes for a single value into output buffer.  API is `span<byte>` rather than `void*` since
      * we often know the size of the buffers.  These "low level" routines may be less efficient than
@@ -55,12 +53,14 @@ namespace sys
      *  \param buffer to transform
      *  \param[out] outputBuffer buffer to write swapped elements to
      */
-    coda_oss::span<const coda_oss::byte> CODA_OSS_API swapValueBytes(
+    coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(
         coda_oss::span<const coda_oss::byte> pIn, coda_oss::span<coda_oss::byte> outPtr, std::nothrow_t) noexcept;
-    coda_oss::span<const coda_oss::byte> CODA_OSS_API swapValueBytes(const void* pIn, size_t elemSize, void* outPtr) noexcept;
-    coda_oss::span<const coda_oss::byte> CODA_OSS_API swapValueBytes(
+    coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(const void* pIn, size_t elemSize, void* outPtr) noexcept;
+    coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(
         coda_oss::span<const coda_oss::byte> pIn, coda_oss::span<coda_oss::byte> outPtr);
 
+    namespace details
+    {
     template <typename TUInt>
     inline auto swapUIntBytes_(const TUInt* pIn, TUInt* pOut) noexcept
     {
@@ -109,11 +109,29 @@ namespace sys
 
     // This is a template so that we can have specializations for different sizes
     template <size_t elemSize>
-    inline auto swapBytes(const void* pIn, coda_oss::span<coda_oss::byte> outPtr)
+    inline auto swapBytes(const void* pIn, coda_oss::span<coda_oss::byte> outBytes)
     {
-        auto const inPtr = make_span<coda_oss::byte>(pIn, elemSize);
-        return swapValueBytes(inPtr, outPtr);
+        if (elemSize != outBytes.size())
+        {
+            throw std::invalid_argument("'elemSize != outBytes.size()");
+        }
+        auto const inBytes = make_span<coda_oss::byte>(pIn, elemSize);
+        return sys::byteSwap(inBytes, outBytes);  // size that wasn't specialized
     }
+    template <size_t elemSize>
+    inline auto swapBytes(coda_oss::span<const coda_oss::byte> inBytes, coda_oss::span<coda_oss::byte> outBytes)
+    {
+        if (elemSize != inBytes.size())
+        {
+            throw std::invalid_argument("'inBytes.size() != elemSize");
+        }
+        if (inBytes.size() != outBytes.size())
+        {
+            throw std::invalid_argument("'inBytes.size() != outBytes.size()");
+        }
+        return swapBytes<elemSize>(inBytes.data(), outBytes);
+    }
+
     template <>
     inline auto swapBytes<sizeof(uint8_t)>(const void* pIn, coda_oss::span<coda_oss::byte> pOut)
     {
@@ -188,7 +206,7 @@ namespace sys
 
     // Reverse the above: turn `span<byte>` back to T after byte-swapping
     template <typename T>
-    inline auto swapBytes(coda_oss::span<const coda_oss::byte> in)
+    inline auto fromSwappedBytes(coda_oss::span<const coda_oss::byte> in)
     {
         if (sizeof(T) != in.size())
         {
@@ -199,18 +217,24 @@ namespace sys
         // Don't want to cast the swapped bytes in `in` to T* as they might not be valid;
         // e.g., a byte-swapped `float` could be garbage.
         T retval;
-        details::swapBytes<sizeof(T)>(in, as_bytes(retval));
+        details::swapBytes<sizeof(T)>(in, as_writable_bytes(retval));
         return retval;
     }
     template <typename T>
-    inline auto swapBytes(const std::array<coda_oss::byte, sizeof(T)>& in)
+    inline auto fromSwappedBytes(const void* pIn)
     {
-        return swapBytes<T>(make_span(in));
+        auto const inBytes = make_span<coda_oss::byte>(pIn, sizeof(T));
+        return fromSwappedBytes<T>(inBytes);
     }
     template <typename T>
-    inline auto swapBytes(const std::vector<coda_oss::byte>& in)
+    inline auto fromSwappedBytes(const std::array<coda_oss::byte, sizeof(T)>& in)
     {
-        return swapBytes<T>(make_span(in));
+        return fromSwappedBytes<T>(make_span(in));
+    }
+    template <typename T>
+    inline auto fromSwappedBytes(const std::vector<coda_oss::byte>& in)
+    {
+        return fromSwappedBytes<T>(make_span(in));
     }
 
     /*!
