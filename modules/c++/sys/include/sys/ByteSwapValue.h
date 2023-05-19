@@ -27,14 +27,13 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#ifdef __GNUC__
-#include <byteswap.h>  // "These functions are GNU extensions."
-#endif
+#include <assert.h>
 
 #include <new>
 #include <type_traits>
 #include <coda_oss/span.h>
 #include <coda_oss/cstddef.h>
+#include <coda_oss/bit.h>
 #include <tuple>
 #include <vector>
 #include <array>
@@ -46,62 +45,11 @@
 
 namespace sys
 {
-    // Overloads for common types
-    inline constexpr uint8_t byteSwap(uint8_t val)
-    {
-        return val;  // no-op
-    }
-    #if defined(_MSC_VER)
-    // These routines should generate a single instruction; see https://devblogs.microsoft.com/cppblog/a-tour-of-4-msvc-backend-improvements/
-    inline uint16_t byteSwap(uint16_t val)
-    {
-        return _byteswap_ushort(val);
-    }
-    inline uint32_t byteSwap(uint32_t val)
-    {
-        return _byteswap_ulong(val);
-    }
-    inline uint64_t byteSwap(uint64_t val)
-    {
-        return _byteswap_uint64(val);
-    }
-    #elif defined(__GNUC__)
-    inline uint16_t byteSwap(uint16_t val)
-    {
-        return bswap_16(val);
-    }
-    inline uint32_t byteSwap(uint32_t val)
-    {
-        return bswap_32(val);
-    }
-    inline uint64_t byteSwap(uint64_t val)
-    {
-        return bswap_64(val);
-    }
-    #endif
-
     namespace details
     {
-    template <typename TUInt>
-    inline auto swapIntBytes(const void* pIn_, coda_oss::span<coda_oss::byte> pBytes)
-    {
-        static_assert(std::is_unsigned<TUInt>::value, "TUInt must be 'unsigned'");
-        if (sizeof(TUInt) != pBytes.size())
-        {
-            throw std::invalid_argument("'pBytes.size() != sizeof(TUInt)");
-        }
-
-        auto const pIn = static_cast<const TUInt*>(pIn_);
-        void* pOut_ = pBytes.data();
-        auto const pOut = static_cast<TUInt*>(pOut_);
-        *pOut = byteSwap(*pIn);
-
-        // Give the raw byte-swapped bytes back to the caller for easy serialization
-        return as_bytes(pOut);
-    }
-
     /*!
-     *  Swap bytes for a single value into output buffer. 
+     * Swap bytes for a single value into output buffer.  API is `span<byte>` rather than `void*` since
+     * we often know the size of the buffers.
      *
      *  \param buffer to transform
      *  \param[out] outputBuffer buffer to write swapped elements to
@@ -110,6 +58,44 @@ namespace sys
         coda_oss::span<const coda_oss::byte> pIn, coda_oss::span<coda_oss::byte> outPtr, std::nothrow_t) noexcept;
     coda_oss::span<const coda_oss::byte> CODA_OSS_API swapValueBytes(
         coda_oss::span<const coda_oss::byte> pIn, coda_oss::span<coda_oss::byte> outPtr);
+
+    template <typename TUInt>
+    inline auto swapUIntBytes(coda_oss::span<const coda_oss::byte> pInBytes, coda_oss::span<coda_oss::byte> pOutBytes,
+        std::nothrow_t) noexcept
+    {
+        static_assert(std::is_unsigned<TUInt>::value, "TUInt must be 'unsigned'");
+        assert(sizeof(TUInt) == pInBytes.size());
+        assert(pInBytes.size() == pOutBytes.size());
+
+        const void* const pIn_ = pInBytes.data();
+        auto const pIn = static_cast<const TUInt*>(pIn_);
+        void* pOut_ = pOutBytes.data();
+        auto const pOut = static_cast<TUInt*>(pOut_);
+
+        *pOut = coda_oss::byteswap(*pIn);
+
+        // Give the raw byte-swapped bytes back to the caller for easy serialization
+        return as_bytes(pOut);
+    }
+    template <typename TUInt>
+    inline auto swapUIntBytes(coda_oss::span<const coda_oss::byte> pInBytes, coda_oss::span<coda_oss::byte> pOutBytes)
+    {
+        if (sizeof(TUInt) != pInBytes.size())
+        {
+            throw std::invalid_argument("'pInBytes.size() != sizeof(TUInt)");
+        }
+        if (pInBytes.size() != pOutBytes.size())
+        {
+            throw std::invalid_argument("'pInBytes.size() != pOutBytes.size()");
+        }
+        return swapUIntBytes<TUInt>(pInBytes, pOutBytes, std::nothrow);
+    }
+    template <typename TUInt>
+    inline auto swapUIntBytes(const void* pIn_, coda_oss::span<coda_oss::byte> pOutBytes)
+    {
+        auto const pInBytes = as_bytes(static_cast<const TUInt*>(pIn_), sizeof(TUInt));
+        return swapUIntBytes<TUInt>(pInBytes, pOutBytes);
+    }
 
     // This is a template so that we can have specializations for different sizes
     template <size_t elemSize>
@@ -121,22 +107,22 @@ namespace sys
     template <>
     inline auto swapBytes<sizeof(uint8_t)>(const void* pIn, coda_oss::span<coda_oss::byte> pOut)
     {
-        return swapIntBytes<uint8_t>(pIn, pOut);
+        return swapUIntBytes<uint8_t>(pIn, pOut);
     }
     template <>
     inline auto swapBytes<sizeof(uint16_t)>(const void* pIn, coda_oss::span<coda_oss::byte> pOut)
     {
-        return swapIntBytes<uint16_t>(pIn, pOut);
+        return swapUIntBytes<uint16_t>(pIn, pOut);
     }
     template <>
     inline auto swapBytes<sizeof(uint32_t)>(const void* pIn, coda_oss::span<coda_oss::byte> pOut)
     {
-        return swapIntBytes<uint32_t>(pIn, pOut);
+        return swapUIntBytes<uint32_t>(pIn, pOut);
     }
     template <>
     inline auto swapBytes<sizeof(uint64_t)>(const void* pIn, coda_oss::span<coda_oss::byte> pOut)
     {
-        return swapIntBytes<uint64_t>(pIn, pOut);
+        return swapUIntBytes<uint64_t>(pIn, pOut);
     }
 
     template<typename T>
@@ -168,7 +154,7 @@ namespace sys
     template <typename T>
     inline coda_oss::span<const coda_oss::byte> swapBytes(const T* pIn, void* pOut)
     {
-        auto const pBytes = make_span<coda_oss::byte*>(pOut, sizeof(T));
+        auto const pBytes = make_span<coda_oss::byte>(pOut, sizeof(T));
         return swapBytes(pIn, pBytes);
     }
     template <typename T>
