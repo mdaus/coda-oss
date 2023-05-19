@@ -245,6 +245,7 @@ static inline void six_byteSwap(const void* in, T& out)
 }
 TEST_CASE(testSixByteSwap)
 {
+    TEST_SUCCESS;
     //const int i = 123;
     //int i_swapped;
     //six_byteSwap(&i, i_swapped);
