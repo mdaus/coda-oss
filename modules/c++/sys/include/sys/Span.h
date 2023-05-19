@@ -196,17 +196,17 @@ inline auto as_writable_bytes(T (&a)[N]) noexcept
 template <typename T>
 inline auto as_bytes(const T* ptr) noexcept
 {
-    return as_bytes(ptr, sizeof(T));
+    return as_bytes(ptr, 1);
 }
 template <typename T>
 inline auto as_bytes(T* ptr) noexcept
 {
-    return as_bytes(ptr, sizeof(T));
+    return as_bytes(ptr, 1);
 }
 template <typename T>
 inline auto as_writable_bytes(T* ptr) noexcept
 {
-    return as_writable_bytes(ptr, sizeof(T));
+    return as_writable_bytes(ptr, 1);
 }
 template <typename T>
 inline auto as_bytes(const T& v) noexcept
