@@ -39,6 +39,8 @@
 #include <array>
 #include <stdexcept>
 
+#include "Span.h"
+
 namespace sys
 {
     // Overloads for common types
@@ -92,7 +94,7 @@ namespace sys
         *pOut = byteSwap(*pIn);
 
         // Give the raw byte-swapped bytes back to the caller for easy serialization
-        return coda_oss::span<const coda_oss::byte>(static_cast<coda_oss::byte*>(pOut_), sizeof(TUInt));
+        return sys::make_span(static_cast<const coda_oss::byte*>(pOut_), sizeof(TUInt));
     }
 
     template <size_t elemSize>
@@ -111,7 +113,7 @@ namespace sys
         }
 
         // Give the raw byte-swapped bytes back to the caller for easy serialization
-        return coda_oss::span<const coda_oss::byte>(outPtr.data(), elemSize);
+        return sys::make_const_span(outPtr.data(), elemSize);
     }
     template <>
     inline auto swapBytes<sizeof(uint8_t)>(const void* pIn, coda_oss::span<coda_oss::byte> pOut)
@@ -164,15 +166,13 @@ namespace sys
     template <typename T>
     inline auto swapBytes(T in, std::array<coda_oss::byte, sizeof(T)>& out)
     {
-        const coda_oss::span<coda_oss::byte> pOut(out.data(), out.size());
-        return swapBytes(&in, pOut);
+        return swapBytes(&in, make_span(out));
     }
     template <typename T>
     inline auto swapBytes(T in, std::vector<coda_oss::byte>& out)
     {
         out.resize(sizeof(T));
-        const coda_oss::span<coda_oss::byte> pOut(out.data(), out.size());
-        return swapBytes(&in, pOut);
+        return swapBytes(&in, make_span(out));
     }
     template <typename T>
     inline auto swapBytes(T in)
