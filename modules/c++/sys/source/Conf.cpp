@@ -114,7 +114,7 @@ template <typename TUInt>
 inline void byteSwap_n_(void *buffer_, size_t numElems)
 {
     static_assert(std::is_unsigned<TUInt>::value, "TUInt must be 'unsigned'");
-    const auto buffer = sys::make_span(static_cast<TUInt*>(buffer_), numElems);
+    const auto buffer = sys::make_span<TUInt>(buffer_, numElems);
     assert(buffer.size_bytes() == sizeof(TUInt) * numElems);
 
     for (auto& v : buffer)
@@ -174,9 +174,9 @@ inline void byteSwap_n_(const void *buffer_, size_t numElems, void *outputBuffer
 {
     static_assert(std::is_unsigned<TUInt>::value, "TUInt must be 'unsigned'");
 
-    const auto buffer = sys::make_span(static_cast<const TUInt*>(buffer_), numElems);
+    const auto buffer = sys::make_span<TUInt>(buffer_, numElems);
     assert(buffer.size_bytes() == sizeof(TUInt) * numElems);
-    const auto outputBuffer = sys::make_span(static_cast<TUInt*>(outputBuffer_), numElems);
+    const auto outputBuffer = sys::make_span<TUInt>(outputBuffer_, numElems);
 
     const auto byteSwap = [](const auto& v) { return sys::byteSwap(v); };
     std::transform(buffer.begin(), buffer.end(), outputBuffer.begin(), byteSwap);
