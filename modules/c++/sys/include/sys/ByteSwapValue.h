@@ -182,6 +182,33 @@ namespace sys
         return retval;
     }
 
+    // Reverse the above: turn `span<byte>` back to T after byte-swapping
+    template <typename T>
+    inline auto swapBytes(coda_oss::span<const coda_oss::byte> in)
+    {
+        if (sizeof(T) != in.size())
+        {
+            throw std::invalid_argument("'in.size() != sizeof(T)");
+        }
+        static_assert(!std::is_compound<T>::value, "T should not be a 'struct'"); // see above
+
+        // Don't want to cast the swapped bytes in `in` to T* as they might not be valid;
+        // e.g., a byte-swapped `float` could be garbage.
+        T retval;
+        details::swapBytes<sizeof(T)>(in, as_bytes(retval));
+        return retval;
+    }
+    template <typename T>
+    inline auto swapBytes(const std::array<coda_oss::byte, sizeof(T)>& in)
+    {
+        return swapBytes(make_span(in));
+    }
+    template <typename T>
+    inline auto swapBytes(const std::vector<coda_oss::byte>& in)
+    {
+        return swapBytes(make_span(in));
+    }
+
     /*!
      *  Function to swap one element irrespective of size.  The inplace
      *  buffer function should be preferred.
