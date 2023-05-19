@@ -45,10 +45,16 @@ inline auto make_const_span(T* ptr, size_t sz)
 {
     return coda_oss::span<const T>(ptr, sz);
 }
+
+template <typename T>
+inline auto make_writable_span(T* ptr, size_t sz) // c.f., as_writable_bytes()
+{
+    return coda_oss::span<T>(ptr, sz);
+}
 template <typename T>
 inline auto make_span(T* ptr, size_t sz)
 {
-    return coda_oss::span<T>(ptr, sz);
+    return make_writable_span(ptr, sz);
 }
 
 template <typename T>
@@ -59,12 +65,12 @@ inline auto make_span(const void* ptr, size_t sz)
 template <typename T>
 inline auto make_const_span(void* ptr, size_t sz)
 {
-    return make_span(static_cast<const T*>(ptr), sz);
+    return make_const_span(static_cast<const T*>(ptr), sz);
 }
 template <typename T>
 inline auto make_span(void* ptr, size_t sz)
 {
-    return make_span(static_cast<T*>(ptr), sz);
+    return make_writable_span(static_cast<T*>(ptr), sz);
 }
 
 template <typename T>
@@ -81,7 +87,7 @@ inline auto make_span(const std::vector<T>& v)
 template <typename T>
 inline auto make_span(std::vector<T>& v)
 {
-    return make_span(v.data(), v.size());
+    return make_writable_span(v.data(), v.size());
 }
 
 template <typename T, size_t N>
@@ -92,7 +98,7 @@ inline auto make_span(const std::array<T, N>& v)
 template <typename T, size_t N>
 inline auto make_span(std::array<T, N>& v)
 {
-    return make_span(v.data(), v.size());
+    return make_writable_span(v.data(), v.size());
 }
 
 template <typename T, size_t N>
@@ -103,7 +109,7 @@ inline auto make_span(const T (&a)[N])
 template <typename T, size_t N>
 inline auto make_span(T (&a)[N])
 {
-    return make_span(a, N);
+    return make_writable_span(a, N);
 }
 
 // Calling as_bytes() or as_writable_bytes() requires a span, which as
@@ -121,7 +127,7 @@ inline auto as_bytes(T* ptr, size_t sz) // non-const to const
 template <typename T>
 inline auto as_writable_bytes(T* ptr, size_t sz)
 {
-    return coda_oss::as_writable_bytes(make_span(ptr, sz));
+    return coda_oss::as_writable_bytes(make_writable_span(ptr, sz));
 }
 
 template <typename T>
