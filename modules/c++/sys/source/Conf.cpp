@@ -261,12 +261,14 @@ coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<const coda_oss
 
  coda_oss::span<const coda_oss::byte> sys::byteSwap(
         coda_oss::span<const coda_oss::byte> inPtr,
-        coda_oss::span<coda_oss::byte> outPtr,
-        std::nothrow_t) noexcept
+        coda_oss::span<coda_oss::byte> outPtr)
 {
-    assert(inPtr.size() == outPtr.size());
-    const auto elemSize = inPtr.size();
+    if (inPtr.size() != outPtr.size())
+    {
+        throw std::invalid_argument("'size of byte buffers must match");
+    }
 
+    const auto elemSize = inPtr.size();
     switch (elemSize)
     {
         case sizeof(uint8_t): return details::swapUIntBytes<uint8_t>(inPtr, outPtr, std::nothrow);
@@ -284,14 +286,4 @@ coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<const coda_oss
 
     // Give the raw byte-swapped bytes back to the caller for easy serialization
     return make_const_span(outPtr);
-}
-coda_oss::span<const coda_oss::byte> sys::byteSwap(
-        coda_oss::span<const coda_oss::byte> inPtr,
-        coda_oss::span<coda_oss::byte> outPtr)
-{
-    if (inPtr.size() != outPtr.size())
-    {
-        throw std::invalid_argument("'size of byte buffers must match");
-    }
-    return byteSwap(inPtr, outPtr, std::nothrow);
 }
