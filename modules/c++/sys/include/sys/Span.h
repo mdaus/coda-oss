@@ -134,11 +134,6 @@ inline auto as_bytes(const T* ptr, size_t sz) noexcept
     return coda_oss::as_bytes(make_span(ptr, sz));
 }
 template <typename T>
-inline auto as_bytes(T* ptr, size_t sz) noexcept  // non-const to const
-{
-    return coda_oss::as_bytes(make_const_span(ptr, sz));
-}
-template <typename T>
 inline auto as_writable_bytes(T* ptr, size_t sz) noexcept
 {
     return coda_oss::as_writable_bytes(make_writable_span(ptr, sz));
@@ -146,11 +141,6 @@ inline auto as_writable_bytes(T* ptr, size_t sz) noexcept
 
 template <typename T>
 inline auto as_bytes(const std::vector<T>& v) noexcept
-{
-    return as_bytes(v.data(), v.size());
-}
-template <typename T>
-inline auto as_bytes(std::vector<T>& v) noexcept
 {
     return as_bytes(v.data(), v.size());
 }
@@ -166,11 +156,6 @@ inline auto as_bytes(const std::array<T, N>& v) noexcept
     return as_bytes(v.data(), v.size());
 }
 template <typename T, size_t N>
-inline auto as_bytes(std::array<T, N>& v) noexcept
-{
-    return as_bytes(v.data(), v.size());
-}
-template <typename T, size_t N>
 inline auto as_writable_bytes(std::array<T, N>& v) noexcept
 {
     return as_writable_bytes(v.data(), v.size());
@@ -182,11 +167,6 @@ inline auto as_bytes(const T (&a)[N]) noexcept
     return as_bytes(a, N);
 }
 template <typename T, size_t N>
-inline auto as_bytes(T (&a)[N]) noexcept
-{
-    return as_bytes(a, N);
-}
-template <typename T, size_t N>
 inline auto as_writable_bytes(T (&a)[N]) noexcept
 {
     return as_writable_bytes(a, N);
@@ -194,34 +174,14 @@ inline auto as_writable_bytes(T (&a)[N]) noexcept
 
 // "cast" a single value to bytes
 template <typename T>
-inline auto as_bytes(const T* ptr) noexcept
-{
-    return as_bytes(ptr, 1);
-}
-template <typename T>
-inline auto as_bytes(T* ptr) noexcept
-{
-    return as_bytes(ptr, 1);
-}
-template <typename T>
-inline auto as_writable_bytes(T* ptr) noexcept
-{
-    return as_writable_bytes(ptr, 1);
-}
-template <typename T>
 inline auto as_bytes(const T& v) noexcept
 {
-    return as_bytes(&v);
-}
-template <typename T>
-inline auto as_bytes(T& v) noexcept
-{
-    return as_bytes(&v);
+    return as_bytes(&v, 1);
 }
 template <typename T>
 inline auto as_writable_bytes(T& v) noexcept
 {
-    return as_writable_bytes(&v);
+    return as_writable_bytes(&v, 1);
 }
 
 }

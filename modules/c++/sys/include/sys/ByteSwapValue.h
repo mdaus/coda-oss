@@ -55,7 +55,6 @@ namespace sys
      */
     coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(
         coda_oss::span<const coda_oss::byte> pIn, coda_oss::span<coda_oss::byte> outPtr, std::nothrow_t) noexcept;
-    coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(const void* pIn, size_t elemSize, void* outPtr) noexcept;
     coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(
         coda_oss::span<const coda_oss::byte> pIn, coda_oss::span<coda_oss::byte> outPtr);
 

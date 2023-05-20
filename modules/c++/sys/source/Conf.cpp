@@ -250,15 +250,7 @@ void sys::byteSwap(const void* buffer, size_t elemSize, size_t numElems, void* o
     // Give the raw byte-swapped bytes back to the caller for easy serialization
     return make_const_span(outPtr);
 }
-
- coda_oss::span<const coda_oss::byte> sys::byteSwap(const void* inPtr, size_t elemSize, void* outPtr) noexcept
-{
-    auto const inBytes = make_span(static_cast<const coda_oss::byte*>(inPtr), elemSize);
-    auto const outBytes = make_span(static_cast<coda_oss::byte*>(outPtr), elemSize);
-    return byteSwap(inBytes, outBytes, std::nothrow);
-}
-
- coda_oss::span<const coda_oss::byte> sys::byteSwap(
+coda_oss::span<const coda_oss::byte> sys::byteSwap(
         coda_oss::span<const coda_oss::byte> inPtr,
         coda_oss::span<coda_oss::byte> outPtr)
 {
