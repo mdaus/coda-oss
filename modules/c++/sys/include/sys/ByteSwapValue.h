@@ -47,7 +47,7 @@ namespace sys
 {
     /*!
      * Swap bytes for a single value into output buffer.  API is `span<byte>` rather than `void*` since
-     * we often know the size of the buffers.  These "low level" routines may be less efficient than
+     * for a single value we know the size.  These "low level" routines may be less efficient than
      * the templates since it's not possible to specialize on a specific size.
      *
      *  \param buffer to transform
