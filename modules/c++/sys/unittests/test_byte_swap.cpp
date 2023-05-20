@@ -239,7 +239,8 @@ TEST_CASE(testByteSwap12)
 template <typename T>
 static inline void six_byteSwap(const void* in, T& out)
 {
-    out = sys::fromSwappedBytes<T>(in);
+    auto const inBytes = sys::make_span<std::byte>(in, sizeof(T));
+    out = sys::fromSwappedBytes<T>(inBytes);
 }
 TEST_CASE(testSixByteSwap)
 {

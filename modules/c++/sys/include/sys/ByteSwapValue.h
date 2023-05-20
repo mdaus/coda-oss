@@ -136,31 +136,26 @@ namespace sys
     * Returns the raw byte-swapped bytes for easy serialization.
     */
     template <typename T>
-    inline auto swapBytes(const T* pIn, coda_oss::span<coda_oss::byte> outBytes)
+    inline auto swapBytes(coda_oss::span<const coda_oss::byte> inBytes, coda_oss::span<coda_oss::byte> outBytes)
     {
         static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
-        if (sizeof(T) != outBytes.size())
-        {
-            throw std::invalid_argument("'outBytes.size() != sizeof(T)");
-        }
-        return details::swapBytes<sizeof(T)>(as_bytes(pIn), outBytes);
+        return details::swapBytes<sizeof(T)>(inBytes, outBytes);
     }
     template <typename T>
-    inline coda_oss::span<const coda_oss::byte> swapBytes(const T* pIn, void* pOut)
+    inline auto swapBytes(T in, coda_oss::span<coda_oss::byte> outBytes)
     {
-        auto const pBytes = make_span<coda_oss::byte>(pOut, sizeof(T));
-        return swapBytes(pIn, pBytes);
+        return swapBytes<T>(as_bytes(in), outBytes);
     }
     template <typename T>
     inline auto swapBytes(T in, std::array<coda_oss::byte, sizeof(T)>& out)
     {
-        return swapBytes(&in, make_span(out));
+        return swapBytes(in, make_span(out));
     }
     template <typename T>
     inline auto swapBytes(T in, std::vector<coda_oss::byte>& out)
     {
         out.resize(sizeof(T));
-        return swapBytes(&in, make_span(out));
+        return swapBytes(in, make_span(out));
     }
     template <typename T>
     inline auto swapBytes(T in)
@@ -174,23 +169,11 @@ namespace sys
     template <typename T>
     inline auto fromSwappedBytes(coda_oss::span<const coda_oss::byte> in)
     {
-        if (sizeof(T) != in.size())
-        {
-            throw std::invalid_argument("'in.size() != sizeof(T)");
-        }
-        static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'"); // see above
-
         // Don't want to cast the swapped bytes in `in` to T* as they might not be valid;
         // e.g., a byte-swapped `float` could be garbage.
         T retval;
-        details::swapBytes<sizeof(T)>(in, as_writable_bytes(retval));
+        swapBytes<T>(in, as_writable_bytes(retval));
         return retval;
-    }
-    template <typename T>
-    inline auto fromSwappedBytes(const void* pIn)
-    {
-        auto const inBytes = make_span<coda_oss::byte>(pIn, sizeof(T));
-        return fromSwappedBytes<T>(inBytes);
     }
     template <typename T>
     inline auto fromSwappedBytes(const std::array<coda_oss::byte, sizeof(T)>& in)
@@ -226,7 +209,7 @@ namespace sys
     template <typename T> inline T byteSwap(T val)
     {
         T out;
-        std::ignore = swapBytes(&val, &out);
+        std::ignore = swapBytes(val, as_writable_bytes(out));
         return out;
     }
 }
