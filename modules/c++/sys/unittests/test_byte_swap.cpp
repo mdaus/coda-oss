@@ -240,7 +240,7 @@ template <typename T>
 static inline void six_byteSwap(const void* in, T& out)
 {
     auto const inBytes = sys::make_span<std::byte>(in, sizeof(T));
-    out = sys::fromSwappedBytes<T>(inBytes);
+    out = sys::swapBytes<T>(inBytes);
 }
 TEST_CASE(testSixByteSwap)
 {

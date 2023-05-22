@@ -139,43 +139,23 @@ namespace sys
         return swapBytes<T>(as_bytes(in), outBytes);
     }
     template <typename T>
-    inline auto swapBytes(T in, std::array<coda_oss::byte, sizeof(T)>& out)
-    {
-        return swapBytes(in, make_span(out));
-    }
-    template <typename T>
-    inline auto swapBytes(T in, std::vector<coda_oss::byte>& out)
-    {
-        out.resize(sizeof(T));
-        return swapBytes(in, make_span(out));
-    }
-    template <typename T>
     inline auto swapBytes(T in)
     {
         std::vector<coda_oss::byte> retval;
-        std::ignore = swapBytes(in, retval);
+        retval.resize(sizeof(T));
+        std::ignore = swapBytes(in, make_span(retval));
         return retval;
     }
 
     // Reverse the above: turn `span<byte>` back to T after byte-swapping
     template <typename T>
-    inline auto fromSwappedBytes(coda_oss::span<const coda_oss::byte> in)
+    inline auto swapBytes(coda_oss::span<const coda_oss::byte> in)
     {
         // Don't want to cast the swapped bytes in `in` to T* as they might not be valid;
         // e.g., a byte-swapped `float` could be garbage.
         T retval;
         swapBytes<T>(in, as_writable_bytes(retval));
         return retval;
-    }
-    template <typename T>
-    inline auto fromSwappedBytes(const std::array<coda_oss::byte, sizeof(T)>& in)
-    {
-        return fromSwappedBytes<T>(make_span(in));
-    }
-    template <typename T>
-    inline auto fromSwappedBytes(const std::vector<coda_oss::byte>& in)
-    {
-        return fromSwappedBytes<T>(make_span(in));
     }
 
     /*!
