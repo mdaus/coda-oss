@@ -166,7 +166,21 @@ ValidatorXerces::ValidatorXerces(
     const auto schemas = loadSchemas(convert(schemaPaths), recursive);
 
     //  add the schema to the validator
-    addSchemasToValidator(schemas, *log);
+    //  add the schema to the validator
+    for (auto&& schema : schemas)
+    {
+        if (!mValidator->loadGrammar(schema.c_str(),
+                                     xercesc::Grammar::SchemaGrammarType,
+                                     true))
+        {
+            std::ostringstream oss;
+            oss << "Error: Failure to load schema " << schema;
+            log->warn(Ctxt(oss.str()));
+        }
+    }
+
+    //! no additional schemas will be loaded after this point!
+    mSchemaPool->lockPool();
 }
 
 std::vector<coda_oss::filesystem::path> ValidatorXerces::loadSchemas(const std::vector<coda_oss::filesystem::path>& schemaPaths, bool recursive)
@@ -175,25 +189,6 @@ std::vector<coda_oss::filesystem::path> ValidatorXerces::loadSchemas(const std::
     // search each directory for schemas
     sys::OS os;
     return os.search(schemaPaths, "", ".xsd", recursive);
-}
-
-void ValidatorXerces::addSchemasToValidator(const std::vector<coda_oss::filesystem::path> schemas, logging::Logger& log)
-{
-    //  add the schema to the validator
-    for (auto&& schema : schemas)
-    {
-        if (!mValidator->loadGrammar(schema.c_str(), 
-                                     xercesc::Grammar::SchemaGrammarType,
-                                     true))
-        {
-            std::ostringstream oss;
-            oss << "Error: Failure to load schema " << schema;
-            log.warn(Ctxt(oss.str()));
-        }
-    }
-
-    //! no additional schemas will be loaded after this point!
-    mSchemaPool->lockPool();
 }
 
 // From config.h.in: Define to the 16 bit type used to represent Xerces UTF-16 characters

@@ -141,9 +141,6 @@ public:
     static std::vector<coda_oss::filesystem::path> loadSchemas(const std::vector<coda_oss::filesystem::path>& schemaPaths, bool recursive=true);
 
 private:
-    // Calls loadGrammar() for each XSD
-    void addSchemasToValidator(const std::vector<coda_oss::filesystem::path> xsdFiles,  logging::Logger&);
-
     bool validate_(const coda_oss::u8string& xml, 
                    const std::string& xmlID,
                    std::vector<ValidationInfo>& errors) const;
