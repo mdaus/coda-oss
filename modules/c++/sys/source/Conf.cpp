@@ -132,40 +132,42 @@ bool sys::isLittleEndianSystem()
  *  \param numElems
  */
 template <typename TUInt>
-inline void byteSwap_n_(void *buffer_, size_t numElems)
+inline auto byteSwap(coda_oss::span<TUInt> buffer)
 {
     static_assert(std::is_unsigned<TUInt>::value, "TUInt must be 'unsigned'");
-    const auto buffer = sys::make_span<TUInt>(buffer_, numElems);
-    assert(buffer.size_bytes() == sizeof(TUInt) * numElems);
-
     for (auto& v : buffer)
     {
         v = sys::byteSwap(v);
     }
+    return sys::as_bytes(buffer);
 }
 template <typename TUInt>
-inline void byteSwap_n(void *buffer, size_t elemSize, size_t numElems)
+inline auto byteSwap_n_(coda_oss::span<coda_oss::byte> buffer_)
+{
+    const auto buffer = sys::make_span<TUInt>(buffer_.data(), buffer_.size_bytes() / sizeof(TUInt));
+    assert(buffer.size_bytes() == buffer_.size_bytes());
+    return byteSwap(buffer);
+}
+template <typename TUInt>
+inline auto byteSwap_n(coda_oss::span<coda_oss::byte> buffer, size_t elemSize)
 {
     if (sizeof(TUInt) != elemSize)
     {
         throw std::invalid_argument("'elemSize' != sizeof(TUInt)");
     }
-    byteSwap_n_<TUInt>(buffer, numElems);
+    return byteSwap_n_<TUInt>(buffer);
 }
-void sys::byteSwap(void* buffer, size_t elemSize, size_t numElems)
+static coda_oss::span<const coda_oss::byte> byteSwap_(coda_oss::span<coda_oss::byte> buffer, size_t elemSize, size_t numElems)
 {
-    if ((buffer == nullptr) || (elemSize < 2) || (numElems == 0))
-        return;
-
     switch (elemSize)
     {
-        case sizeof(uint16_t): return byteSwap_n<uint16_t>(buffer, elemSize, numElems);
-        case sizeof(uint32_t): return byteSwap_n<uint32_t>(buffer, elemSize, numElems);
-        case sizeof(uint64_t): return byteSwap_n<uint64_t>(buffer, elemSize, numElems);
+        case sizeof(uint16_t): return byteSwap_n<uint16_t>(buffer, elemSize);
+        case sizeof(uint32_t): return byteSwap_n<uint32_t>(buffer, elemSize);
+        case sizeof(uint64_t): return byteSwap_n<uint64_t>(buffer, elemSize);
         default: break;
     }
-    
-    auto const bufferPtr = static_cast<coda_oss::byte*>(buffer);
+
+    auto const bufferPtr = buffer.data();
     const auto half = elemSize >> 1;
     size_t offset = 0, innerOff = 0, innerSwap = 0;
     for (size_t i = 0; i < numElems; ++i, offset += elemSize)
@@ -178,6 +180,17 @@ void sys::byteSwap(void* buffer, size_t elemSize, size_t numElems)
             std::swap(bufferPtr[innerOff], bufferPtr[innerSwap]);
         }
     }
+
+    return sys::make_const_span(buffer);
+}
+void sys::byteSwap(void* buffer, size_t elemSize, size_t numElems)
+{
+    if ((buffer == nullptr) || (elemSize < 2) || (numElems == 0))
+        return;
+
+    auto const pBytes = static_cast<coda_oss::byte*>(buffer);
+    const coda_oss::span<coda_oss::byte> bytes(pBytes, elemSize * numElems);
+    std::ignore = byteSwap_(bytes, elemSize, numElems);
 }
 coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<coda_oss::byte> buffer, size_t elemSize)
 {
@@ -190,8 +203,7 @@ coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<coda_oss::byte
         throw std::invalid_argument("'buffer' is not a multiple of 'elemSize'");
     }
 
-    byteSwap(buffer.data(), elemSize, numElems);
-    return sys::make_const_span(buffer);
+    return byteSwap_(buffer, elemSize, numElems);
 }
 
     /*!
