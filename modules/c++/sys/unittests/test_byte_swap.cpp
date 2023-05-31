@@ -86,7 +86,7 @@ static std::vector<uint64_t> make_origValues(size_t NUM_PIXELS)
     return retval;
 }
 
-TEST_CASE(testByteSwap)
+TEST_CASE(testByteSwapRaw)
 {
     constexpr size_t NUM_PIXELS = 10000;
     const auto origValues = make_origValues(NUM_PIXELS);
@@ -98,6 +98,25 @@ TEST_CASE(testByteSwap)
     // Byte swap into output buffer
     std::vector<uint64_t> swappedValues2(origValues.size());
     sys::byteSwap(origValues.data(), sizeof(uint64_t), NUM_PIXELS, swappedValues2.data());
+
+    // Everything should match
+    for (size_t ii = 0; ii < NUM_PIXELS; ++ii)
+    {
+        TEST_ASSERT_EQ(values1[ii], swappedValues2[ii]);
+    }
+}
+
+TEST_CASE(testByteSwap)
+{
+    constexpr size_t NUM_PIXELS = 10000;
+    const auto origValues = make_origValues(NUM_PIXELS);
+
+    auto values1(origValues);
+    sys::byteSwap(sys::make_span(values1));
+
+    // Byte swap into output buffer
+    std::vector<uint64_t> swappedValues2(origValues.size());
+    sys::byteSwap(sys::make_span(origValues), sys::as_writable_bytes(swappedValues2));
 
     // Everything should match
     for (size_t ii = 0; ii < NUM_PIXELS; ++ii)
@@ -257,6 +276,7 @@ TEST_CASE(testSixByteSwap)
 TEST_MAIN(
     TEST_CHECK(testEndianness);
     TEST_CHECK(testByteSwap);
+    TEST_CHECK(testByteSwapRaw);
     TEST_CHECK(testByteSwapValues);
     TEST_CHECK(testByteSwap12);
     TEST_CHECK(testSixByteSwap);

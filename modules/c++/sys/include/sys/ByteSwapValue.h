@@ -37,18 +37,11 @@
 #include <vector>
 #include <array>
 #include <stdexcept>
+#include <new>
 
 #include "config/Exports.h"
 
 #include "Span.h"
-
-#include <type_traits>
-#include <coda_oss/span.h>
-#include <coda_oss/cstddef.h>
-#include <tuple>
-#include <vector>
-#include <array>
-#include <stdexcept>
 
 namespace sys
 {
@@ -149,8 +142,7 @@ namespace sys
     template <typename T>
     inline auto swapBytes(T in)
     {
-        std::vector<coda_oss::byte> retval;
-        retval.resize(sizeof(T));
+        std::vector<coda_oss::byte> retval(sizeof(T));
         std::ignore = swapBytes(in, make_span(retval));
         return retval;
     }

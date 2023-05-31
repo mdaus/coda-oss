@@ -50,6 +50,18 @@ namespace sys
 coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(coda_oss::span<coda_oss::byte>buffer, size_t elemSize);
 void CODA_OSS_API byteSwap(void* buffer, size_t elemSize, size_t numElems);
 
+template <typename T>
+inline auto byteSwap(coda_oss::span<coda_oss::byte> buffer)
+{
+    static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
+    return byteSwap(buffer, sizeof(T));
+}
+template <typename T>
+inline auto byteSwap(coda_oss::span<T> buffer)
+{
+    return byteSwap<T>(as_writable_bytes(buffer));
+}
+
 /*!
  *  Swap bytes into output buffer.  Note that a complex pixel
  *  is equivalent to two floats so elemSize and numElems
@@ -63,6 +75,25 @@ void CODA_OSS_API byteSwap(void* buffer, size_t elemSize, size_t numElems);
 coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(coda_oss::span<const coda_oss::byte> buffer,
          size_t elemSize, coda_oss::span<coda_oss::byte> outputBuffer);
 void CODA_OSS_API byteSwap(const void* buffer, size_t elemSize, size_t numElems, void* outputBuffer);
+
+template <typename T>
+inline auto byteSwap(coda_oss::span<const coda_oss::byte> buffer, coda_oss::span<coda_oss::byte> outputBuffer)
+{
+    static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
+    return byteSwap(buffer, sizeof(T), outputBuffer);
+}
+template <typename T>
+inline auto byteSwap(coda_oss::span<const T> buffer, coda_oss::span<coda_oss::byte> outputBuffer)
+{
+    return byteSwap<T>(as_bytes(buffer), outputBuffer);
+}
+template <typename T>
+inline auto byteSwap(coda_oss::span<const T> buffer)
+{
+    std::vector<coda_oss::byte> retval(buffer.size_bytes());
+    std::ignore = byteSwap(buffer, make_span(retval));
+    return retval;
+}
 
 struct ByteSwapRunnable final : public sys::Runnable
 {
