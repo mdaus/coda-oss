@@ -113,10 +113,10 @@ namespace sys
     // avoid copy-paste errors
     #define CODA_OSS_define_swapBytes_specialization_(T) template <> inline auto swapBytes<sizeof(T)> \
         (coda_oss::span<const coda_oss::byte> inBytes, coda_oss::span<coda_oss::byte> outBytes) { return swapUIntBytes<T>(inBytes, outBytes); }
-    CODA_OSS_define_swapBytes_specialization_(uint8_t);
-    CODA_OSS_define_swapBytes_specialization_(uint16_t);
-    CODA_OSS_define_swapBytes_specialization_(uint32_t);
-    CODA_OSS_define_swapBytes_specialization_(uint64_t);
+    CODA_OSS_define_swapBytes_specialization_(uint8_t) // no `;`, it's not needed and generates a -Wpedantic warning
+    CODA_OSS_define_swapBytes_specialization_(uint16_t)
+    CODA_OSS_define_swapBytes_specialization_(uint32_t)
+    CODA_OSS_define_swapBytes_specialization_(uint64_t)
     #undef CODA_OSS_define_swapBytes_specialization_
 
     template<typename T>
@@ -127,7 +127,7 @@ namespace sys
         // * `struct`s have padding that should be ignored.
         // * each individual member of a `struct` should be byte-swaped
         // * byte-swaped `float` or `double` bits are nonsense
-        return !std::is_compound<T>::value;
+      return (std::is_integral<T>::value || std::is_enum<T>::value) || !std::is_compound<T>::value;
     }
     }
 
