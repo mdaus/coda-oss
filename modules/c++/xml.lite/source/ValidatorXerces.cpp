@@ -126,17 +126,6 @@ ValidatorXerces::ValidatorXerces(
     //! no additional schemas will be loaded after this point!
     mSchemaPool->lockPool();
 }
-ValidatorXerces::ValidatorXerces(const coda_oss::filesystem::path& schema, logging::Logger& log) :
-    ValidatorXerces(std::vector<fs::path>{schema}, &log, false /*recursive*/)
-{
-    initialize();
-
-    //  add the schema to the validator
-    loadGrammar(schema, log);
-
-    //! no additional schemas will be loaded after this point!
-    mSchemaPool->lockPool();
-}
 
 void ValidatorXerces::initialize()
  {
