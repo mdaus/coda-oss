@@ -181,7 +181,7 @@ void sys::byteSwap(void* buffer, size_t elemSize, size_t numElems)
 }
 coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<coda_oss::byte> buffer, size_t elemSize)
 {
-    if ((buffer.size() == 0) || (elemSize < 2))
+    if ((buffer.empty()) || (elemSize < 2))
         return sys::make_const_span(buffer);
 
     size_t const numElems = buffer.size() / elemSize;
@@ -189,7 +189,7 @@ coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<coda_oss::byte
     {
         throw std::invalid_argument("'buffer' is not a multiple of 'elemSize'");
     }
-    
+
     byteSwap(buffer.data(), elemSize, numElems);
     return sys::make_const_span(buffer);
 }
@@ -261,7 +261,7 @@ void sys::byteSwap(const void* buffer, size_t elemSize, size_t numElems, void* o
 coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<const coda_oss::byte> buffer,
          size_t elemSize, coda_oss::span<coda_oss::byte> outputBuffer)
 {
-    if ((buffer.size() == 0) || (outputBuffer.size() == 0))
+    if ((buffer.empty()) || (outputBuffer.empty()))
     {
         return sys::make_const_span(outputBuffer);
     }
