@@ -27,6 +27,7 @@
 #include <std/bit> // std::endian
 #include <std/cstddef>
 #include <std/span>
+#include <type_traits>
 
 #include <sys/Conf.h>
 #include <sys/Span.h>
@@ -191,12 +192,13 @@ TEST_CASE(testByteSwapValues)
 TEST_CASE(testByteSwap12)
 {
     // test a goofy element size
-    static constexpr std::byte twelve_bytes[]{
+    constexpr std::byte twelve_bytes[]{
         x00, x11, x22, x33, x44, x55,
         x99, xAA, xBB, xDD, xEE, xFF};
     const auto pValueBytes = sys::as_bytes(twelve_bytes);
+    constexpr auto extent_twelve_bytes = std::extent<decltype(twelve_bytes)>::value;
 
-    std::vector<std::byte> swappedValues(12);
+    std::vector<std::byte> swappedValues(extent_twelve_bytes);
     auto pResultBytes = sys::make_span(swappedValues);
 
     auto elemSize = 12;
@@ -216,7 +218,7 @@ TEST_CASE(testByteSwap12)
     TEST_ASSERT(pResultBytes[11] == pValueBytes[0]);
 
     // swap as a SINGLE 12-byte value
-    const auto result = sys::details::swapBytes<12>(pValueBytes, pResultBytes);
+    const auto result = sys::details::swapBytes<extent_twelve_bytes>(pValueBytes, pResultBytes);
     TEST_ASSERT(result[0] == pValueBytes[11]);
     TEST_ASSERT(result[1] == pValueBytes[10]);
     TEST_ASSERT(result[2] == pValueBytes[9]);
