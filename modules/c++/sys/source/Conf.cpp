@@ -157,7 +157,7 @@ inline auto byteSwap_n(coda_oss::span<coda_oss::byte> buffer, size_t elemSize)
     }
     return byteSwap_n_<TUInt>(buffer);
 }
-static coda_oss::span<const coda_oss::byte> byteSwap_(coda_oss::span<coda_oss::byte> buffer, size_t elemSize, size_t numElems)
+static coda_oss::span<const coda_oss::byte> byteSwap(coda_oss::span<coda_oss::byte> buffer, size_t elemSize, size_t numElems)
 {
     switch (elemSize)
     {
@@ -190,7 +190,7 @@ void sys::byteSwap(void* buffer_, size_t elemSize, size_t numElems)
 
     auto const pBytes = static_cast<coda_oss::byte*>(buffer_);
     const coda_oss::span<coda_oss::byte> buffer(pBytes, elemSize * numElems);
-    std::ignore = byteSwap_(buffer, elemSize, numElems);
+    std::ignore = ::byteSwap(buffer, elemSize, numElems);
 }
 coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<coda_oss::byte> buffer, size_t elemSize)
 {
@@ -203,7 +203,7 @@ coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<coda_oss::byte
         throw std::invalid_argument("'buffer' is not a multiple of 'elemSize'");
     }
 
-    return byteSwap_(buffer, elemSize, numElems);
+    return ::byteSwap(buffer, elemSize, numElems);
 }
 
     /*!
@@ -244,7 +244,7 @@ inline auto byteSwap_n(coda_oss::span<const coda_oss::byte> buffer_, size_t elem
     return byteSwap_n_<TUInt>(buffer,  outputBuffer);
 }
 
-static auto byteSwap_(coda_oss::span<const coda_oss::byte> buffer,
+static auto byteSwap(coda_oss::span<const coda_oss::byte> buffer,
                       size_t elemSize, size_t numElems,
                       coda_oss::span<coda_oss::byte> outputBuffer)
 {
@@ -293,7 +293,7 @@ void sys::byteSwap(const void* buffer_, size_t elemSize, size_t numElems, void* 
     auto const pOutputBytes = static_cast<coda_oss::byte*>(outputBuffer_);
     const coda_oss::span<coda_oss::byte> outputBuffer(pOutputBytes, elemSize * numElems);
 
-    std::ignore = byteSwap_(buffer, elemSize, numElems, outputBuffer);
+    std::ignore = ::byteSwap(buffer, elemSize, numElems, outputBuffer);
 }
 coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<const coda_oss::byte> buffer,
          size_t elemSize, coda_oss::span<coda_oss::byte> outputBuffer)
@@ -315,7 +315,7 @@ coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<const coda_oss
         throw std::invalid_argument(s);
     }
 
-    return byteSwap_(buffer, elemSize, numElems, outputBuffer);
+    return ::byteSwap(buffer, elemSize, numElems, outputBuffer);
  }
 
 // byte-swap a single value

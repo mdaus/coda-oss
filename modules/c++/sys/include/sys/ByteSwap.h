@@ -54,32 +54,37 @@ coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(coda_oss::span<coda_o
 void CODA_OSS_API byteSwap(void* buffer, size_t elemSize, size_t numElems);
 
 // If the caller has given us bytes, assume she knows what she's doing; i.e., don't check sizeof(T)
-inline void byteSwap(coda_oss::byte* buffer, size_t elemSize, size_t numElems)
+template<typename TByte>
+inline void byteSwap_(TByte* buffer, size_t elemSize, size_t numElems)
 {
     void* const buffer_ = buffer;
     byteSwap(buffer_, elemSize, numElems);
+}
+inline void byteSwap(coda_oss::byte* buffer, size_t elemSize, size_t numElems)
+{
+    return byteSwap_(buffer, elemSize, numElems);
 }
 inline void byteSwap(byte* buffer, size_t elemSize, size_t numElems)
 {
-    void* const buffer_ = buffer;
-    byteSwap(buffer_, elemSize, numElems);
+    return byteSwap_(buffer, elemSize, numElems);
 }
 inline void byteSwap(ubyte* buffer, size_t elemSize, size_t numElems)
 {
+    return byteSwap_(buffer, elemSize, numElems);
+}
+
+// Otherwise, we can sanity-check the `elemSize` parameter
+template <typename T>
+inline void byteSwap(T* buffer, size_t elemSize, size_t numElems)
+{
+    static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
+    if (sizeof(T) != elemSize)
+    {
+        throw std::invalid_argument("'elemSize' != sizeof(T)");
+    }
     void* const buffer_ = buffer;
     byteSwap(buffer_, elemSize, numElems);
 }
-
-//template <typename T>
-//inline void byteSwap(T* buffer, size_t elemSize, size_t numElems)
-//{
-//    static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
-//    if (sizeof(T) != elemSize)
-//    {
-//        throw std::invalid_argument("'elemSize' != sizeof(T)");
-//    }
-//    byteSwap(static_cast<void*>(buffer), elemSize, numElems);
-//}
 
 template <typename T>
 inline auto byteSwap(coda_oss::span<T> buffer)
@@ -104,33 +109,42 @@ coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(coda_oss::span<const 
 void CODA_OSS_API byteSwap(const void* buffer, size_t elemSize, size_t numElems, void* outputBuffer);
 
 // If the caller has given us bytes, assume she knows what she's doing; i.e., don't check sizeof(T)
-inline void byteSwap(const coda_oss::byte* buffer, size_t elemSize, size_t numElems, void* outputBuffer)
+template<typename TByte, typename U>
+inline void byteSwap_(const TByte* buffer, size_t elemSize, size_t numElems, U* outputBuffer)
 {
     const void* const buffer_ = buffer;
-    byteSwap(buffer_, elemSize, numElems, outputBuffer);
+    void* const outputBuffer_ = outputBuffer;
+    byteSwap(buffer_, elemSize, numElems, outputBuffer_);
 }
-inline void byteSwap(const byte* buffer, size_t elemSize, size_t numElems, void* outputBuffer)
+template<typename U>
+inline void byteSwap(const coda_oss::byte* buffer, size_t elemSize, size_t numElems, U* outputBuffer)
 {
-    const void* const buffer_ = buffer;
-    byteSwap(buffer_, elemSize, numElems, outputBuffer);
+    byteSwap_(buffer, elemSize, numElems, outputBuffer);
 }
-inline void byteSwap(const ubyte* buffer, size_t elemSize, size_t numElems, void* outputBuffer)
+template <typename U>
+inline void byteSwap(const byte* buffer, size_t elemSize, size_t numElems, U* outputBuffer)
 {
-    const void* const buffer_ = buffer;
-    byteSwap(buffer_, elemSize, numElems, outputBuffer);
+    byteSwap_(buffer, elemSize, numElems, outputBuffer);
+}
+template <typename U>
+inline void byteSwap(const ubyte* buffer, size_t elemSize, size_t numElems, U* outputBuffer)
+{
+    byteSwap_(buffer, elemSize, numElems, outputBuffer);
 }
 
-//template <typename T, typename U = T>
-//inline void byteSwap(const T* buffer, size_t elemSize, size_t numElems, U* outputBuffer)
-//{
-//    static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
-//    if (sizeof(T) != elemSize)
-//    {
-//        throw std::invalid_argument("'elemSize' != sizeof(T)");
-//    }
-//
-//    byteSwap(static_cast<const void*>(buffer), elemSize, numElems, static_cast<void*>(outputBuffer));
-//}
+// Otherwise, we can sanity-check the `elemSize` parameter
+template <typename T, typename U>
+inline void byteSwap(const T* buffer, size_t elemSize, size_t numElems, U* outputBuffer)
+{
+    static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
+    if (sizeof(T) != elemSize)
+    {
+        throw std::invalid_argument("'elemSize' != sizeof(T)");
+    }    
+    const void* const buffer_ = buffer;
+    void* const outputBuffer_ = outputBuffer;
+    byteSwap(buffer_, elemSize, numElems, outputBuffer_);
+}
 
 template <typename T>
 inline auto byteSwap(coda_oss::span<const T> buffer, coda_oss::span<coda_oss::byte> outputBuffer)
