@@ -27,6 +27,7 @@
 #include <std/bit> // std::endian
 #include <std/cstddef>
 #include <std/span>
+#include <type_traits>
 
 #include <sys/Conf.h>
 #include <sys/Span.h>
@@ -86,7 +87,7 @@ static std::vector<uint64_t> make_origValues(size_t NUM_PIXELS)
     return retval;
 }
 
-TEST_CASE(testByteSwap)
+TEST_CASE(testByteSwapV)
 {
     constexpr size_t NUM_PIXELS = 10000;
     const auto origValues = make_origValues(NUM_PIXELS);
@@ -103,6 +104,40 @@ TEST_CASE(testByteSwap)
     for (size_t ii = 0; ii < NUM_PIXELS; ++ii)
     {
         TEST_ASSERT_EQ(values1[ii], swappedValues2[ii]);
+    }
+}
+
+template<typename T>
+inline std::span<const T> as_span(const std::vector<std::byte>& bytes)
+{
+    const void* const pBytes_ = bytes.data();
+    auto const p = static_cast<const T*>(pBytes_);
+    const auto sz = bytes.size() / sizeof(T);
+    return sys::make_span(p, sz);
+}
+
+TEST_CASE(testByteSwap)
+{
+    constexpr size_t NUM_PIXELS = 10000;
+    const auto origValues = make_origValues(NUM_PIXELS);
+    const auto origValues_ = sys::make_span(origValues);
+
+    auto values1(origValues);
+    sys::byteSwap(sys::make_span(values1));
+
+    // Byte swap into output buffer
+    std::vector<uint64_t> swappedValues2(origValues.size());
+    sys::byteSwap(origValues_, sys::as_writable_bytes(swappedValues2));
+
+    // std::vector<std::byte> returned
+    const auto swappedValues3_ = sys::byteSwap(origValues_);
+    const auto swappedValues3 = as_span<uint64_t>(swappedValues3_);
+
+    // Everything should match
+    for (size_t ii = 0; ii < NUM_PIXELS; ++ii)
+    {
+        TEST_ASSERT_EQ(values1[ii], swappedValues2[ii]);
+        TEST_ASSERT_EQ(values1[ii], swappedValues3[ii]);
     }
 }
 
@@ -172,12 +207,13 @@ TEST_CASE(testByteSwapValues)
 TEST_CASE(testByteSwap12)
 {
     // test a goofy element size
-    static constexpr std::byte twelve_bytes[]{
+    constexpr std::byte twelve_bytes[]{
         x00, x11, x22, x33, x44, x55,
         x99, xAA, xBB, xDD, xEE, xFF};
     const auto pValueBytes = sys::as_bytes(twelve_bytes);
+    constexpr auto extent_twelve_bytes = std::extent<decltype(twelve_bytes)>::value;
 
-    std::vector<std::byte> swappedValues(12);
+    std::vector<std::byte> swappedValues(extent_twelve_bytes);
     auto pResultBytes = sys::make_span(swappedValues);
 
     auto elemSize = 12;
@@ -197,7 +233,7 @@ TEST_CASE(testByteSwap12)
     TEST_ASSERT(pResultBytes[11] == pValueBytes[0]);
 
     // swap as a SINGLE 12-byte value
-    const auto result = sys::details::swapBytes<12>(pValueBytes, pResultBytes);
+    const auto result = sys::details::swapBytes<extent_twelve_bytes>(pValueBytes, pResultBytes);
     TEST_ASSERT(result[0] == pValueBytes[11]);
     TEST_ASSERT(result[1] == pValueBytes[10]);
     TEST_ASSERT(result[2] == pValueBytes[9]);
@@ -256,6 +292,7 @@ TEST_CASE(testSixByteSwap)
 
 TEST_MAIN(
     TEST_CHECK(testEndianness);
+    TEST_CHECK(testByteSwapV);
     TEST_CHECK(testByteSwap);
     TEST_CHECK(testByteSwapValues);
     TEST_CHECK(testByteSwap12);

@@ -37,18 +37,11 @@
 #include <vector>
 #include <array>
 #include <stdexcept>
+#include <new>
 
 #include "config/Exports.h"
 
 #include "Span.h"
-
-#include <type_traits>
-#include <coda_oss/span.h>
-#include <coda_oss/cstddef.h>
-#include <tuple>
-#include <vector>
-#include <array>
-#include <stdexcept>
 
 namespace sys
 {
@@ -65,6 +58,20 @@ namespace sys
 
     namespace details
     {
+    // "cast" a single value to bytes
+    template <typename T>
+    inline auto as_bytes(const T& v) noexcept
+    {
+        static_assert(!std::is_compound<T>::value, "T cannot be a 'struct'");
+        return sys::as_bytes(&v, 1);
+    }
+    template <typename T>
+    inline auto as_writable_bytes(T& v) noexcept
+    {
+        static_assert(!std::is_compound<T>::value, "T cannot be a 'struct'");
+        return sys::as_writable_bytes(&v, 1);
+    }
+
     template <typename TUInt>
     inline auto swapUIntBytes(coda_oss::span<const coda_oss::byte> inBytes, coda_oss::span<coda_oss::byte> outBytes,
         std::nothrow_t) noexcept
@@ -81,7 +88,7 @@ namespace sys
         *pOut = coda_oss::byteswap(*pIn); // at long last, swap the bytes
 
         // Give the raw byte-swapped bytes back to the caller for easy serialization
-        return as_bytes(pOut);
+        return as_bytes(*pOut);
     }
     template <typename TUInt>
     inline auto swapUIntBytes(coda_oss::span<const coda_oss::byte> inBytes, coda_oss::span<coda_oss::byte> outBytes)
@@ -144,13 +151,12 @@ namespace sys
     template <typename T>
     inline auto swapBytes(T in, coda_oss::span<coda_oss::byte> outBytes)
     {
-        return swapBytes<T>(as_bytes(in), outBytes);
+        return swapBytes<T>(details::as_bytes(in), outBytes);
     }
     template <typename T>
     inline auto swapBytes(T in)
     {
-        std::vector<coda_oss::byte> retval;
-        retval.resize(sizeof(T));
+        std::vector<coda_oss::byte> retval(sizeof(T));
         std::ignore = swapBytes(in, make_span(retval));
         return retval;
     }
@@ -162,7 +168,7 @@ namespace sys
         // Don't want to cast the swapped bytes in `in` to T* as they might not be valid;
         // e.g., a byte-swapped `float` could be garbage.
         T retval;
-        swapBytes<T>(in, as_writable_bytes(retval));
+        swapBytes<T>(in, details::as_writable_bytes(retval));
         return retval;
     }
 
@@ -189,7 +195,7 @@ namespace sys
     template <typename T> inline T byteSwap(T val)
     {
         T out;
-        std::ignore = swapBytes(val, as_writable_bytes(out));
+        std::ignore = swapBytes(val, details::as_writable_bytes(out));
         return out;
     }
 }

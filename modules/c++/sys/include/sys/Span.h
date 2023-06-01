@@ -29,6 +29,7 @@
 #include <coda_oss/cstddef.h>
 #include <vector>
 #include <array>
+#include <type_traits>
 
 namespace sys // not "mem", it depends on sys.
 {
@@ -136,7 +137,24 @@ inline auto as_bytes(const T* ptr, size_t sz) noexcept
 template <typename T>
 inline auto as_writable_bytes(T* ptr, size_t sz) noexcept
 {
+    static_assert(!std::is_const<T>::value, "T cannot be 'const'");
     return coda_oss::as_writable_bytes(make_writable_span(ptr, sz));
+}
+
+template <typename T>
+inline auto as_bytes(coda_oss::span<const T> s) noexcept
+{
+    return coda_oss::as_bytes(s);
+}
+template <typename T>
+inline auto as_bytes(coda_oss::span<T> s) noexcept
+{
+    return coda_oss::as_bytes(s);
+}
+template <typename T>
+inline auto as_writable_bytes(coda_oss::span<T> s) noexcept
+{
+    return coda_oss::as_writable_bytes(s);
 }
 
 template <typename T>
@@ -170,18 +188,6 @@ template <typename T, size_t N>
 inline auto as_writable_bytes(T (&a)[N]) noexcept
 {
     return as_writable_bytes(a, N);
-}
-
-// "cast" a single value to bytes
-template <typename T>
-inline auto as_bytes(const T& v) noexcept
-{
-    return as_bytes(&v, 1);
-}
-template <typename T>
-inline auto as_writable_bytes(T& v) noexcept
-{
-    return as_writable_bytes(&v, 1);
 }
 
 }

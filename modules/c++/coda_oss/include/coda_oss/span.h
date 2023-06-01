@@ -23,6 +23,8 @@
 #define CODA_OSS_coda_oss_span_h_INCLUDED_
 #pragma once
 
+#include <type_traits>
+
 #include "coda_oss/namespace_.h"
 #include "coda_oss/span_.h"
 #include "coda_oss/cstddef.h" // byte
@@ -41,21 +43,26 @@ namespace coda_oss
 
 // https://en.cppreference.com/w/cpp/container/span/as_bytes
 template <typename T>
-span<const byte> as_bytes(span<const T> s) noexcept
+inline auto as_bytes(span<const T> s) noexcept
 {
-    const void* const p = s.data();
-    return span<const byte>(static_cast<const byte*>(p), s.size_bytes());
+    const void* const p_ = s.data();
+    auto const p = static_cast<const byte*>(p_);
+    return span<const byte>(p, s.size_bytes());
 }
 template <typename T>
-span<const byte> as_bytes(span<T> s) noexcept
+inline auto as_bytes(span<T> s) noexcept
 {
-    return as_bytes(span<const T>(s.data(), s.size()));
+    const span<const T> s_(s.data(), s.size());
+    return as_bytes(s_);
 }
 template <typename T>
-span<byte> as_writable_bytes(span<T> s) noexcept
+inline span<byte> as_writable_bytes(span<T> s) noexcept
 {
-    void* const p = s.data();
-    return span<byte>(static_cast<byte*>(p), s.size_bytes());
+    static_assert(!std::is_const<T>::value, "T cannot be 'const'");
+
+    void* const p_ = s.data();
+    auto const p = static_cast<byte*>(p_);
+    return span<byte>(p, s.size_bytes());
 }
 
 }
