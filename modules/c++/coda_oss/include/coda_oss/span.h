@@ -52,7 +52,7 @@ inline auto as_bytes(span<const T> s) noexcept
 template <typename T>
 inline auto as_bytes(span<T> s) noexcept
 {
-    span<const T> s_(s.data(), s.size());
+    const span<const T> s_(s.data(), s.size());
     return as_bytes(s_);
 }
 template <typename T>
