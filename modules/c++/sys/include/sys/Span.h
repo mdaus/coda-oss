@@ -29,6 +29,7 @@
 #include <coda_oss/cstddef.h>
 #include <vector>
 #include <array>
+#include <type_traits>
 
 namespace sys // not "mem", it depends on sys.
 {
@@ -136,6 +137,7 @@ inline auto as_bytes(const T* ptr, size_t sz) noexcept
 template <typename T>
 inline auto as_writable_bytes(T* ptr, size_t sz) noexcept
 {
+    static_assert(!std::is_const<T>::value, "T cannot be 'const'");
     return coda_oss::as_writable_bytes(make_writable_span(ptr, sz));
 }
 

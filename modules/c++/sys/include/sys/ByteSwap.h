@@ -30,6 +30,7 @@
 
 #include <coda_oss/span.h>
 #include <coda_oss/cstddef.h>
+#include <type_traits>
 
 #include "config/Exports.h"
 
@@ -59,6 +60,7 @@ inline auto byteSwap(coda_oss::span<coda_oss::byte> buffer)
 template <typename T>
 inline auto byteSwap(coda_oss::span<T> buffer)
 {
+    static_assert(!std::is_const<T>::value, "T cannot be 'const'");
     return byteSwap<T>(as_writable_bytes(buffer));
 }
 
@@ -87,13 +89,18 @@ inline auto byteSwap(coda_oss::span<const T> buffer, coda_oss::span<coda_oss::by
 {
     return byteSwap<T>(as_bytes(buffer), outputBuffer);
 }
-template <typename T>
-inline auto byteSwap(coda_oss::span<const T> buffer)
+template <typename T, typename U = T>
+inline auto byteSwap(coda_oss::span<const T> buffer, coda_oss::span<U> outputBuffer)
 {
-    std::vector<coda_oss::byte> retval(buffer.size_bytes());
-    std::ignore = byteSwap(buffer, make_span(retval));
-    return retval;
+    return byteSwap(buffer, as_writable_bytes(outputBuffer));
 }
+//template <typename T>
+//inline auto byteSwap(coda_oss::span<const T> buffer)
+//{
+//    std::vector<coda_oss::byte> retval(buffer.size_bytes());
+//    std::ignore = byteSwap(buffer, make_span(retval));
+//    return retval;
+//}
 
 struct ByteSwapRunnable final : public sys::Runnable
 {

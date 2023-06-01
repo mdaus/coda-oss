@@ -115,14 +115,18 @@ TEST_CASE(testByteSwap)
     sys::byteSwap(sys::make_span(values1));
 
     // Byte swap into output buffer
-    const auto swappedBytes = sys::byteSwap(sys::make_span(origValues));
-    const auto numElems = swappedBytes.size() / sizeof(uint64_t);
-    const auto swappedValues2 = sys::make_span<uint64_t>(swappedBytes.data(), numElems);
+    std::vector<uint64_t> swappedValues2(origValues.size());
+    sys::byteSwap(sys::make_span(origValues), sys::make_span(swappedValues2));
+
+    //const auto swappedBytes = sys::byteSwap(sys::make_span(origValues));
+    //const auto numElems = swappedBytes.size() / sizeof(uint64_t);
+    //const auto swappedValues3 = sys::make_span<uint64_t>(swappedBytes.data(), numElems);
 
     // Everything should match
     for (size_t ii = 0; ii < NUM_PIXELS; ++ii)
     {
         TEST_ASSERT_EQ(values1[ii], swappedValues2[ii]);
+        //TEST_ASSERT_EQ(values1[ii], swappedValues3[ii]);
     }
 }
 
