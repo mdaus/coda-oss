@@ -310,7 +310,9 @@ coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<const coda_oss
     }
     if (buffer.size() != outputBuffer.size())
     {
-        throw std::invalid_argument("'buffer' and 'outputBuffer' are different sizes'");
+        const auto s = "'buffer' and 'outputBuffer' are different sizes: " +
+                std::to_string(buffer.size()) + " != " + std::to_string(outputBuffer.size());
+        throw std::invalid_argument(s);
     }
 
     return byteSwap_(buffer, elemSize, numElems, outputBuffer);
