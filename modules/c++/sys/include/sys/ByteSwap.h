@@ -52,16 +52,11 @@ coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(coda_oss::span<coda_o
 void CODA_OSS_API byteSwap(void* buffer, size_t elemSize, size_t numElems);
 
 template <typename T>
-inline auto byteSwap(coda_oss::span<coda_oss::byte> buffer)
-{
-    static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
-    return byteSwap(buffer, sizeof(T));
-}
-template <typename T>
 inline auto byteSwap(coda_oss::span<T> buffer)
 {
     static_assert(!std::is_const<T>::value, "T cannot be 'const'");
-    return byteSwap<T>(as_writable_bytes(buffer));
+    static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
+    return byteSwap(as_writable_bytes(buffer), sizeof(T));
 }
 
 /*!
@@ -79,21 +74,12 @@ coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(coda_oss::span<const 
 void CODA_OSS_API byteSwap(const void* buffer, size_t elemSize, size_t numElems, void* outputBuffer);
 
 template <typename T>
-inline auto byteSwap(coda_oss::span<const coda_oss::byte> buffer, coda_oss::span<coda_oss::byte> outputBuffer)
-{
-    static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
-    return byteSwap(buffer, sizeof(T), outputBuffer);
-}
-template <typename T>
 inline auto byteSwap(coda_oss::span<const T> buffer, coda_oss::span<coda_oss::byte> outputBuffer)
 {
-    return byteSwap<T>(as_bytes(buffer), outputBuffer);
+    static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
+    return byteSwap(as_bytes(buffer), sizeof(T), outputBuffer);
 }
-template <typename T, typename U = T>
-inline auto byteSwap(coda_oss::span<const T> buffer, coda_oss::span<U> outputBuffer)
-{
-    return byteSwap(buffer, as_writable_bytes(outputBuffer));
-}
+
 //template <typename T>
 //inline auto byteSwap(coda_oss::span<const T> buffer)
 //{
