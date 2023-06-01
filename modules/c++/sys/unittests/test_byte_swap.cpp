@@ -73,16 +73,17 @@ TEST_CASE(testEndianness)
     }
 }
 
-static std::vector<uint64_t> make_origValues(size_t NUM_PIXELS)
+template<typename T>
+static std::vector<T> make_origValues(size_t NUM_PIXELS)
 {
     ::srand(334);
 
-    std::vector<uint64_t> retval(NUM_PIXELS);
+    std::vector<T> retval(NUM_PIXELS);
     for (size_t ii = 0; ii < NUM_PIXELS; ++ii)
     {
         const auto value = static_cast<float>(::rand()) / RAND_MAX *
                 std::numeric_limits<uint64_t>::max();
-        retval[ii] = static_cast<uint64_t>(value);
+        retval[ii] = static_cast<T>(value);
     }
     return retval;
 }
@@ -90,7 +91,7 @@ static std::vector<uint64_t> make_origValues(size_t NUM_PIXELS)
 TEST_CASE(testByteSwapV)
 {
     constexpr size_t NUM_PIXELS = 10000;
-    const auto origValues = make_origValues(NUM_PIXELS);
+    const auto origValues = make_origValues <uint64_t>(NUM_PIXELS);
 
     // Byte swap the old-fashioned way
     auto values1(origValues);
@@ -107,6 +108,40 @@ TEST_CASE(testByteSwapV)
     }
 }
 
+TEST_CASE(testByteSwapCxV)
+{
+    constexpr size_t NUM_PIXELS = 10000;
+    using value_type = std::complex<float>;
+    const auto origValues = make_origValues<value_type>(NUM_PIXELS);
+
+    constexpr auto elemSize = sizeof(value_type) / 2;
+    constexpr auto numElems = NUM_PIXELS * 2;
+
+    // Byte swap the old-fashioned way
+    auto values1(origValues);
+    sys::byteSwap(values1.data(), elemSize, numElems);
+
+    // Byte swap into output buffer
+    std::vector<value_type> swappedValues2(origValues.size());
+    sys::byteSwap(origValues.data(), elemSize, numElems, swappedValues2.data());
+
+    // Everything should match
+    for (size_t ii = 0; ii < NUM_PIXELS; ++ii)
+    {
+        using int_type = uint64_t;
+        static_assert(sizeof(int_type) == sizeof(value_type), "Unknown sizeof(std::complex<float>)");
+
+        // If these values are byte-swapped, they could be bogus.
+        const void* const pValue1_ = &(values1[ii]);
+        const void* const pSwappedValue2_ = &(swappedValues2[ii]);
+        
+        auto const pValue1 = static_cast<const int_type*>(pValue1_);
+        auto const pSwappedValue2 = static_cast<const int_type*>(pSwappedValue2_);
+
+        TEST_ASSERT_EQ(*pValue1, *pSwappedValue2);
+    }
+}
+
 template<typename T>
 inline std::span<const T> as_span(const std::vector<std::byte>& bytes)
 {
@@ -119,7 +154,7 @@ inline std::span<const T> as_span(const std::vector<std::byte>& bytes)
 TEST_CASE(testByteSwap)
 {
     constexpr size_t NUM_PIXELS = 10000;
-    const auto origValues = make_origValues(NUM_PIXELS);
+    const auto origValues = make_origValues<uint64_t>(NUM_PIXELS);
     const auto origValues_ = sys::make_span(origValues);
 
     auto values1(origValues);
@@ -306,6 +341,7 @@ TEST_CASE(testSixByteSwap)
 TEST_MAIN(
     TEST_CHECK(testEndianness);
     TEST_CHECK(testByteSwapV);
+    TEST_CHECK(testByteSwapCxV);
     TEST_CHECK(testByteSwap);
     TEST_CHECK(testByteSwapValues);
     TEST_CHECK(testByteSwapCxValue);
