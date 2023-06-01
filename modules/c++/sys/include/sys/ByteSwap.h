@@ -104,13 +104,13 @@ inline auto byteSwap(coda_oss::span<const T> buffer, coda_oss::span<coda_oss::by
     return byteSwap(as_bytes(buffer), sizeof(T), outputBuffer);
 }
 
-//template <typename T>
-//inline auto byteSwap(coda_oss::span<const T> buffer)
-//{
-//    std::vector<coda_oss::byte> retval(buffer.size_bytes());
-//    std::ignore = byteSwap(buffer, make_span(retval));
-//    return retval;
-//}
+template <typename T>
+inline auto byteSwap(coda_oss::span<const T> buffer)
+{
+    std::vector<coda_oss::byte> retval(buffer.size_bytes());
+    std::ignore = byteSwap(buffer, make_span(retval));
+    return retval;
+}
 
 struct ByteSwapRunnable final : public sys::Runnable
 {

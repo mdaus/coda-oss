@@ -107,22 +107,37 @@ TEST_CASE(testByteSwapV)
     }
 }
 
+template<typename T>
+inline std::span<const T> as_span(const std::vector<std::byte>& bytes)
+{
+    const void* const pBytes_ = bytes.data();
+    auto const p = static_cast<const T*>(pBytes_);
+    const auto sz = bytes.size() / sizeof(T);
+    return sys::make_span(p, sz);
+}
+
 TEST_CASE(testByteSwap)
 {
     constexpr size_t NUM_PIXELS = 10000;
     const auto origValues = make_origValues(NUM_PIXELS);
+    const auto origValues_ = sys::make_span(origValues);
 
     auto values1(origValues);
     sys::byteSwap(sys::make_span(values1));
 
     // Byte swap into output buffer
     std::vector<uint64_t> swappedValues2(origValues.size());
-    sys::byteSwap(sys::make_span(origValues), sys::as_writable_bytes(swappedValues2));
+    sys::byteSwap(origValues_, sys::as_writable_bytes(swappedValues2));
+
+    // std::vector<std::byte> returned
+    const auto swappedValues3_ = sys::byteSwap(origValues_);
+    const auto swappedValues3 = as_span<uint64_t>(swappedValues3_);
 
     // Everything should match
     for (size_t ii = 0; ii < NUM_PIXELS; ++ii)
     {
         TEST_ASSERT_EQ(values1[ii], swappedValues2[ii]);
+        TEST_ASSERT_EQ(values1[ii], swappedValues3[ii]);
     }
 }
 
