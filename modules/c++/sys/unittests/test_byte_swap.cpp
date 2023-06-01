@@ -86,7 +86,7 @@ static std::vector<uint64_t> make_origValues(size_t NUM_PIXELS)
     return retval;
 }
 
-TEST_CASE(testByteSwapRaw)
+TEST_CASE(testByteSwapV)
 {
     constexpr size_t NUM_PIXELS = 10000;
     const auto origValues = make_origValues(NUM_PIXELS);
@@ -275,8 +275,8 @@ TEST_CASE(testSixByteSwap)
 
 TEST_MAIN(
     TEST_CHECK(testEndianness);
+    TEST_CHECK(testByteSwapV);
     TEST_CHECK(testByteSwap);
-    TEST_CHECK(testByteSwapRaw);
     TEST_CHECK(testByteSwapValues);
     TEST_CHECK(testByteSwap12);
     TEST_CHECK(testSixByteSwap);
