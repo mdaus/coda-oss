@@ -31,6 +31,7 @@
 #include <coda_oss/span.h>
 #include <coda_oss/cstddef.h>
 #include <type_traits>
+#include <stdexcept>
 
 #include "config/Exports.h"
 
@@ -50,6 +51,17 @@ namespace sys
  */
 coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(coda_oss::span<coda_oss::byte>buffer, size_t elemSize);
 void CODA_OSS_API byteSwap(void* buffer, size_t elemSize, size_t numElems);
+
+//template <typename T>
+//inline void byteSwap(T* buffer, size_t elemSize, size_t numElems)
+//{
+//    static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
+//    if (sizeof(T) != elemSize)
+//    {
+//        throw std::invalid_argument("'elemSize' != sizeof(T)");
+//    }
+//    byteSwap(static_cast<void*>(buffer), elemSize, numElems);
+//}
 
 template <typename T>
 inline auto byteSwap(coda_oss::span<T> buffer)
@@ -72,6 +84,18 @@ inline auto byteSwap(coda_oss::span<T> buffer)
 coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(coda_oss::span<const coda_oss::byte> buffer,
          size_t elemSize, coda_oss::span<coda_oss::byte> outputBuffer);
 void CODA_OSS_API byteSwap(const void* buffer, size_t elemSize, size_t numElems, void* outputBuffer);
+
+//template <typename T, typename U = T>
+//inline void byteSwap(const T* buffer, size_t elemSize, size_t numElems, U* outputBuffer)
+//{
+//    static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
+//    if (sizeof(T) != elemSize)
+//    {
+//        throw std::invalid_argument("'elemSize' != sizeof(T)");
+//    }
+//
+//    byteSwap(static_cast<const void*>(buffer), elemSize, numElems, static_cast<void*>(outputBuffer));
+//}
 
 template <typename T>
 inline auto byteSwap(coda_oss::span<const T> buffer, coda_oss::span<coda_oss::byte> outputBuffer)
