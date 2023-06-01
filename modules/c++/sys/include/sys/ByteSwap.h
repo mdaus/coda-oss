@@ -21,9 +21,9 @@
  *
  */
 
+#pragma once 
 #ifndef CODA_OSS_sys_ByteSwap_h_INCLUDED_
 #define CODA_OSS_sys_ByteSwap_h_INCLUDED_
-#pragma once
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -37,6 +37,7 @@
 
 #include "ByteSwapValue.h"
 #include "Runnable.h"
+#include "SysInt.h"
 
 namespace sys
 {
@@ -51,6 +52,23 @@ namespace sys
  */
 coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(coda_oss::span<coda_oss::byte>buffer, size_t elemSize);
 void CODA_OSS_API byteSwap(void* buffer, size_t elemSize, size_t numElems);
+
+// If the caller has given us bytes, assume she knows what she's doing; i.e., don't check sizeof(T)
+inline void byteSwap(coda_oss::byte* buffer, size_t elemSize, size_t numElems)
+{
+    void* const buffer_ = buffer;
+    byteSwap(buffer_, elemSize, numElems);
+}
+inline void byteSwap(byte* buffer, size_t elemSize, size_t numElems)
+{
+    void* const buffer_ = buffer;
+    byteSwap(buffer_, elemSize, numElems);
+}
+inline void byteSwap(ubyte* buffer, size_t elemSize, size_t numElems)
+{
+    void* const buffer_ = buffer;
+    byteSwap(buffer_, elemSize, numElems);
+}
 
 //template <typename T>
 //inline void byteSwap(T* buffer, size_t elemSize, size_t numElems)
@@ -84,6 +102,23 @@ inline auto byteSwap(coda_oss::span<T> buffer)
 coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(coda_oss::span<const coda_oss::byte> buffer,
          size_t elemSize, coda_oss::span<coda_oss::byte> outputBuffer);
 void CODA_OSS_API byteSwap(const void* buffer, size_t elemSize, size_t numElems, void* outputBuffer);
+
+// If the caller has given us bytes, assume she knows what she's doing; i.e., don't check sizeof(T)
+inline void byteSwap(const coda_oss::byte* buffer, size_t elemSize, size_t numElems, void* outputBuffer)
+{
+    const void* const buffer_ = buffer;
+    byteSwap(buffer_, elemSize, numElems, outputBuffer);
+}
+inline void byteSwap(const byte* buffer, size_t elemSize, size_t numElems, void* outputBuffer)
+{
+    const void* const buffer_ = buffer;
+    byteSwap(buffer_, elemSize, numElems, outputBuffer);
+}
+inline void byteSwap(const ubyte* buffer, size_t elemSize, size_t numElems, void* outputBuffer)
+{
+    const void* const buffer_ = buffer;
+    byteSwap(buffer_, elemSize, numElems, outputBuffer);
+}
 
 //template <typename T, typename U = T>
 //inline void byteSwap(const T* buffer, size_t elemSize, size_t numElems, U* outputBuffer)
