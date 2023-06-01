@@ -21,9 +21,9 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_sys_ByteSwapValue_h_INCLUDED_
 #define CODA_OSS_sys_ByteSwapValue_h_INCLUDED_
-#pragma once
 
 #include <stdint.h>
 #include <stdlib.h>

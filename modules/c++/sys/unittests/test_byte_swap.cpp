@@ -204,6 +204,19 @@ TEST_CASE(testByteSwapValues)
     testByteSwapValues_<uint64_t>(testName, eight_bytes);
 }
 
+TEST_CASE(testByteSwapCxValue)
+{
+    using value_type = std::complex<float>;
+    const value_type cx{3.14f, -31.4f}; // using raw bytes can lean to `nan`s
+    auto const pValue = &cx;
+
+    auto swap = sys::byteSwap(*pValue);
+    TEST_ASSERT_NOT_EQ(*pValue, swap); // technically a bit goofy as the bits may not represent `T`s
+            
+    swap = sys::byteSwap(swap);  // swap back
+    TEST_ASSERT_EQ(*pValue, swap);
+}
+
 TEST_CASE(testByteSwap12)
 {
     // test a goofy element size
@@ -295,6 +308,7 @@ TEST_MAIN(
     TEST_CHECK(testByteSwapV);
     TEST_CHECK(testByteSwap);
     TEST_CHECK(testByteSwapValues);
+    TEST_CHECK(testByteSwapCxValue);
     TEST_CHECK(testByteSwap12);
     TEST_CHECK(testSixByteSwap);
     )
