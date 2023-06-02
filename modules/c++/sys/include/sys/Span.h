@@ -130,18 +130,6 @@ inline auto make_span(T (&a)[N]) noexcept
 // Calling as_bytes() or as_writable_bytes() requires a span, which as
 // noted above is a nuisance to create w/o C++17
 template <typename T>
-inline auto as_bytes(const T* ptr, size_t sz) noexcept
-{
-    return coda_oss::as_bytes(make_span(ptr, sz));
-}
-template <typename T>
-inline auto as_writable_bytes(T* ptr, size_t sz) noexcept
-{
-    static_assert(!std::is_const<T>::value, "T cannot be 'const'");
-    return coda_oss::as_writable_bytes(make_writable_span(ptr, sz));
-}
-
-template <typename T>
 inline auto as_bytes(coda_oss::span<const T> s) noexcept
 {
     return coda_oss::as_bytes(s);
@@ -155,6 +143,18 @@ template <typename T>
 inline auto as_writable_bytes(coda_oss::span<T> s) noexcept
 {
     return coda_oss::as_writable_bytes(s);
+}
+
+template <typename T>
+inline auto as_bytes(const T* ptr, size_t sz) noexcept
+{
+    return as_bytes(make_span(ptr, sz));
+}
+template <typename T>
+inline auto as_writable_bytes(T* ptr, size_t sz) noexcept
+{
+    static_assert(!std::is_const<T>::value, "T cannot be 'const'");
+    return as_writable_bytes(make_writable_span(ptr, sz));
 }
 
 template <typename T>
@@ -188,6 +188,63 @@ template <typename T, size_t N>
 inline auto as_writable_bytes(T (&a)[N]) noexcept
 {
     return as_writable_bytes(a, N);
+}
+
+// Prefer `T*` routines above, not these which take `void*`
+template <typename T>
+inline coda_oss::span<const T> make_span_(const void* ptr, size_t sz) noexcept
+{
+    return make_span(static_cast<const T*>(ptr), sz);
+}
+template <typename T>
+inline coda_oss::span<const T> make_const_span_(void* ptr, size_t sz) noexcept
+{
+    return make_const_span(static_cast<T*>(ptr), sz);
+}
+template <typename T>
+inline coda_oss::span<T> make_writable_span_(void* ptr, size_t sz) noexcept  // c.f., as_writable_bytes()
+{
+    return make_writable_span(static_cast<T*>(ptr), sz);
+}
+template <typename T>
+inline coda_oss::span<T> make_span_(void* ptr, size_t sz) noexcept
+{
+    return make_span(static_cast<T*>(ptr), sz);
+}
+
+// Different "spelling" because I can't find anything similar in std::
+template <typename T>
+inline auto asSpan(coda_oss::span<const coda_oss::byte> bytes) noexcept
+{
+    const auto sz = bytes.size() / sizeof(T);
+    return make_span_<T>(bytes.data(), sz);
+}
+template <typename T>
+inline auto asSpan(coda_oss::span<coda_oss::byte> bytes) noexcept
+{
+    const auto sz = bytes.size() / sizeof(T);
+    return make_const_span_<T>(bytes.data(), sz);
+}
+template <typename T>
+inline auto asWritableSpan(coda_oss::span<coda_oss::byte> bytes) noexcept
+{
+    const auto sz = bytes.size() / sizeof(T);
+    return make_writable_span_<T>(bytes.data(), sz);
+}
+
+template <typename TPtr>
+inline TPtr byteCast(coda_oss::span<const coda_oss::byte> bytes) noexcept
+{
+    assert(sizeof(std::remove_pointer_t<TPtr>) == bytes.size());
+    const void* const p = bytes.data();
+    return static_cast<TPtr>(p);
+}
+template <typename TPtr>
+inline TPtr byteCast(coda_oss::span<coda_oss::byte> bytes) noexcept
+{
+    assert(sizeof(std::remove_pointer_t<TPtr>) == bytes.size());
+    void* const p = bytes.data();
+    return static_cast<TPtr>(p);
 }
 
 }
