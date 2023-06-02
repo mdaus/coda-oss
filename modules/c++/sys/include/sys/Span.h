@@ -148,13 +148,13 @@ inline auto as_writable_bytes(coda_oss::span<T> s) noexcept
 template <typename T>
 inline auto as_bytes(const T* ptr, size_t sz) noexcept
 {
-    return as_bytes(make_span(ptr, sz));
+    return coda_oss::as_bytes(make_span(ptr, sz));
 }
 template <typename T>
 inline auto as_writable_bytes(T* ptr, size_t sz) noexcept
 {
     static_assert(!std::is_const<T>::value, "T cannot be 'const'");
-    return as_writable_bytes(make_writable_span(ptr, sz));
+    return coda_oss::as_writable_bytes(make_writable_span(ptr, sz));
 }
 
 template <typename T>
