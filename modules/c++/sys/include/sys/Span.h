@@ -21,9 +21,9 @@
  *
  */
 
+#pragma once 
 #ifndef CODA_OSS_sys_Span_h_INCLUDED_
 #define CODA_OSS_sys_Span_h_INCLUDED_
-#pragma once
 
 #include <coda_oss/span.h>
 #include <coda_oss/cstddef.h>
@@ -191,21 +191,65 @@ inline auto as_writable_bytes(T (&a)[N]) noexcept
 }
 
 // Different "spelling" because I can't find anything similar in std::
+
+// Turn std::span<std::byte> into std::span<T>
+namespace details
+{
+template <typename T, typename TSpanBytes>
+inline auto asSpan(TSpanBytes&& bytes) noexcept
+{
+    // https://en.cppreference.com/w/cpp/types/is_trivially_copyable "... serialized to/from binary files ..."
+    static_assert(std::is_trivially_copyable<T>::value, "must be 'trivially' copyable.");
+
+    const void* const p_ = bytes.data();
+    auto const p = static_cast<const T*>(p_);
+    const auto sz = bytes.size() / sizeof(T);
+    return make_span(p, sz);
+}
+}
+template <typename T>
+inline auto asSpan(coda_oss::span<const coda_oss::byte> bytes) noexcept
+{
+    return details::asSpan<T>(bytes);
+}
+template <typename T>
+inline auto asSpan(coda_oss::span<coda_oss::byte> bytes) noexcept
+{
+    return details::asSpan<T>(bytes);
+}
+template <typename T>
+inline auto asWritableSpan(coda_oss::span<coda_oss::byte> bytes) noexcept
+{
+    // https://en.cppreference.com/w/cpp/types/is_trivially_copyable "... serialized to/from binary files ..."
+    static_assert(std::is_trivially_copyable<T>::value, "must be 'trivially' copyable.");
+
+    void* const p_ = bytes.data();
+    auto const p = static_cast<T*>(p_);
+    const auto sz = bytes.size() / sizeof(T);
+    return make_writable_span(p, sz);
+}
+
 namespace details
 {
 template <typename TPtr, typename TPtrVoid>
-inline TPtr castBytes(TPtrVoid&& p, size_t sz)
+inline TPtr castBytes(TPtrVoid&& p) noexcept
 {
     using value_type = std::remove_pointer_t<TPtr>;
 
     // https://en.cppreference.com/w/cpp/types/is_trivially_copyable "... serialized to/from binary files ..."
     static_assert(std::is_trivially_copyable<value_type>::value, "must be 'trivially' copyable.");
 
+    return static_cast<TPtr>(p);
+}
+template <typename TPtr, typename TPtrVoid>
+inline TPtr castBytes(TPtrVoid&& p, size_t sz)
+{
+    using value_type = std::remove_pointer_t<TPtr>;
     if (sizeof(value_type) != sz)
     {
         throw std::invalid_argument("bytes.size() != sizeof(*TPtr)");
     }
-    return static_cast<TPtr>(p);
+    return castBytes<TPtr>(p);
 }
 }
 template <typename TPtr>

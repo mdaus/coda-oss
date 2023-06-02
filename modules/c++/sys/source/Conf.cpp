@@ -144,7 +144,7 @@ inline auto byteSwap(coda_oss::span<TUInt> buffer)
 template <typename TUInt>
 inline auto byteSwap_n_(coda_oss::span<coda_oss::byte> buffer_)
 {
-    const auto buffer = sys::make_span<TUInt>(buffer_.data(), buffer_.size_bytes() / sizeof(TUInt));
+    const auto buffer = sys::asWritableSpan<TUInt>(buffer_);
     assert(buffer.size_bytes() == buffer_.size_bytes());
     return byteSwap(buffer);
 }
@@ -222,8 +222,7 @@ inline auto byteSwap_n_(coda_oss::span<const TUInt> buffer, coda_oss::span<coda_
     static_assert(std::is_unsigned<TUInt>::value, "TUInt must be 'unsigned'");
 
     assert(buffer.size_bytes() == outputBuffer_.size());
-    void* pOutputBuffer = outputBuffer_.data();
-    const auto outputBuffer = sys::make_span<TUInt>(pOutputBuffer, buffer.size());
+    const auto outputBuffer = sys::asWritableSpan<TUInt>(outputBuffer_);
     assert(buffer.size_bytes() == outputBuffer.size_bytes());
 
     const auto byteSwap = [](const auto& v) { return sys::byteSwap(v); };
@@ -239,7 +238,7 @@ inline auto byteSwap_n(coda_oss::span<const coda_oss::byte> buffer_, size_t elem
         throw std::invalid_argument("'elemSize' != sizeof(TUInt)");
     }
 
-    const auto buffer = sys::make_span<TUInt>(buffer_.data(), buffer_.size_bytes() / sizeof(TUInt));
+    const auto buffer = sys::asSpan<TUInt>(buffer_);
     assert(buffer.size_bytes() == buffer_.size_bytes());
     return byteSwap_n_<TUInt>(buffer,  outputBuffer);
 }
