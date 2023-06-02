@@ -190,5 +190,35 @@ inline auto as_writable_bytes(T (&a)[N]) noexcept
     return as_writable_bytes(a, N);
 }
 
+// Different "spelling" because I can't find anything similar in std::
+namespace details
+{
+template <typename TPtr, typename TPtrVoid>
+inline TPtr castBytes(TPtrVoid&& p, size_t sz)
+{
+    using value_type = std::remove_pointer_t<TPtr>;
+
+    // https://en.cppreference.com/w/cpp/types/is_trivially_copyable "... serialized to/from binary files ..."
+    static_assert(std::is_trivially_copyable<value_type>::value, "must be 'trivially' copyable.");
+
+    if (sizeof(value_type) != sz)
+    {
+        throw std::invalid_argument("bytes.size() != sizeof(*TPtr)");
+    }
+    return static_cast<TPtr>(p);
+}
+}
+template <typename TPtr>
+inline TPtr castBytes(coda_oss::span<const coda_oss::byte> bytes)
+{
+    const void* const p = bytes.data();
+    return details::castBytes<TPtr>(p, bytes.size());
+}
+template <typename TPtr>
+inline TPtr castBytes(coda_oss::span<coda_oss::byte> bytes)
+{
+    void* const p = bytes.data();
+    return details::castBytes<TPtr>(p, bytes.size());
+}
 }
 #endif // CODA_OSS_sys_Span_h_INCLUDED_
