@@ -80,8 +80,10 @@ namespace sys
         assert(sizeof(TUInt) == inBytes.size());
         assert(inBytes.size() == outBytes.size());
 
-        auto const pIn = sys::byteCast<const TUInt*>(inBytes);
-        auto const pOut = sys::byteCast<TUInt*>(outBytes);
+        const void* const pIn_ = inBytes.data();
+        auto const pIn = static_cast<const TUInt*>(pIn_);
+        void* const pOut_ = outBytes.data();
+        auto const pOut = static_cast<TUInt*>(pOut_);
         
         *pOut = coda_oss::byteswap(*pIn); // at long last, swap the bytes
 
