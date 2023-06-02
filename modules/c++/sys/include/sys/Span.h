@@ -130,18 +130,6 @@ inline auto make_span(T (&a)[N]) noexcept
 // Calling as_bytes() or as_writable_bytes() requires a span, which as
 // noted above is a nuisance to create w/o C++17
 template <typename T>
-inline auto as_bytes(const T* ptr, size_t sz) noexcept
-{
-    return coda_oss::as_bytes(make_span(ptr, sz));
-}
-template <typename T>
-inline auto as_writable_bytes(T* ptr, size_t sz) noexcept
-{
-    static_assert(!std::is_const<T>::value, "T cannot be 'const'");
-    return coda_oss::as_writable_bytes(make_writable_span(ptr, sz));
-}
-
-template <typename T>
 inline auto as_bytes(coda_oss::span<const T> s) noexcept
 {
     return coda_oss::as_bytes(s);
@@ -155,6 +143,18 @@ template <typename T>
 inline auto as_writable_bytes(coda_oss::span<T> s) noexcept
 {
     return coda_oss::as_writable_bytes(s);
+}
+
+template <typename T>
+inline auto as_bytes(const T* ptr, size_t sz) noexcept
+{
+    return as_bytes(make_span(ptr, sz));
+}
+template <typename T>
+inline auto as_writable_bytes(T* ptr, size_t sz) noexcept
+{
+    static_assert(!std::is_const<T>::value, "T cannot be 'const'");
+    return as_writable_bytes(make_writable_span(ptr, sz));
 }
 
 template <typename T>
