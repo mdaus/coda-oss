@@ -192,6 +192,15 @@ static constexpr std::byte four_bytes[]{x00, x11, xEE, xFF};
 static constexpr std::byte eight_bytes[]{x00, x11, x22, x33, xCC, xDD, xEE, xFF};
 static constexpr std::byte sixteen_bytes[]{x00, x11, x22, x33, x44, x55, x66, x77, x88, x99, xAA, xBB, xCC, xDD, xEE, xFF};
 
+static void test_assert_eq_swapped(const std::string& testName, size_t sz,
+    const std::byte* pValueBytes, const std::byte* pResultBytes)
+{
+    for (size_t i = 0, j = sz; i < sz && j > 0; i++, j--)
+    {
+        TEST_ASSERT(pResultBytes[i] == pValueBytes[j - 1]);
+    }
+}
+
 template<typename TUInt>
 static void testByteSwapValues_(const std::string& testName, const void* pBytes)
 {
@@ -202,10 +211,7 @@ static void testByteSwapValues_(const std::string& testName, const void* pBytes)
     const void* pResult_ = &swap;
     auto const pResultBytes = static_cast<const std::byte*>(pResult_);
     auto const pValueBytes = static_cast<const std::byte*>(pBytes);
-    for (size_t i = 0, j = sizeof(TUInt); i < sizeof(TUInt) && j > 0; i++, j--)
-    {
-        TEST_ASSERT(pResultBytes[i] == pValueBytes[j-1]);
-    }
+    test_assert_eq_swapped(testName, sizeof(TUInt), pResultBytes, pValueBytes);
 
     swap = sys::byteSwap(swap);  // swap back
     TEST_ASSERT_EQ(*pUInt, swap);
@@ -218,10 +224,7 @@ static void testByteSwapValues_(const std::string& testName, const void* pBytes)
 
     const auto resultBytes = sys::swapBytes(*pUInt);
     TEST_ASSERT_EQ(resultBytes.size(), sizeof(TUInt));
-    for (size_t i = 0, j = sizeof(TUInt); i < sizeof(TUInt) && j > 0; i++, j--)
-    {
-        TEST_ASSERT(resultBytes[i] == pValueBytes[j - 1]);
-    }
+    test_assert_eq_swapped(testName, sizeof(TUInt), resultBytes.data(), pValueBytes);
 }
 TEST_CASE(testByteSwapValues)
 {
