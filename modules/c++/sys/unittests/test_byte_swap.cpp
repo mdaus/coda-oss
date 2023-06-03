@@ -201,8 +201,9 @@ static constexpr std::byte four_bytes[]{x00, x11, xEE, xFF};
 static constexpr std::byte eight_bytes[]{x00, x11, x22, x33, xCC, xDD, xEE, xFF};
 static constexpr std::byte sixteen_bytes[]{x00, x11, x22, x33, x44, x55, x66, x77, x88, x99, xAA, xBB, xCC, xDD, xEE, xFF};
 
+template<typename TByteSpanLike1, typename TByteSpanLike2>
 static void test_assert_eq_swapped(const std::string& testName, size_t sz,
-    const std::byte* pValueBytes, const std::byte* pResultBytes)
+    const TByteSpanLike1& pValueBytes, const TByteSpanLike2& pResultBytes)
 {
     for (size_t i = 0, j = sz; i < sz && j > 0; i++, j--)
     {
@@ -270,51 +271,17 @@ TEST_CASE(testByteSwap12)
     auto elemSize = 12;
     auto numElements = swappedValues.size() / elemSize;
     sys::byteSwap(twelve_bytes, elemSize, numElements, pResultBytes.data());
-    TEST_ASSERT(pResultBytes[0] == pValueBytes[11]);
-    TEST_ASSERT(pResultBytes[1] == pValueBytes[10]);
-    TEST_ASSERT(pResultBytes[2] == pValueBytes[9]);
-    TEST_ASSERT(pResultBytes[3] == pValueBytes[8]);
-    TEST_ASSERT(pResultBytes[4] == pValueBytes[7]);
-    TEST_ASSERT(pResultBytes[5] == pValueBytes[6]);
-    TEST_ASSERT(pResultBytes[6] == pValueBytes[5]);
-    TEST_ASSERT(pResultBytes[7] == pValueBytes[4]);
-    TEST_ASSERT(pResultBytes[8] == pValueBytes[3]);
-    TEST_ASSERT(pResultBytes[9] == pValueBytes[2]);
-    TEST_ASSERT(pResultBytes[10] == pValueBytes[1]);
-    TEST_ASSERT(pResultBytes[11] == pValueBytes[0]);
+    test_assert_eq_swapped(testName, elemSize, pResultBytes, pValueBytes);
 
     // swap as a SINGLE 12-byte value
     const auto result = sys::details::swapBytes<extent_twelve_bytes>(pValueBytes, pResultBytes);
-    TEST_ASSERT(result[0] == pValueBytes[11]);
-    TEST_ASSERT(result[1] == pValueBytes[10]);
-    TEST_ASSERT(result[2] == pValueBytes[9]);
-    TEST_ASSERT(result[3] == pValueBytes[8]);
-    TEST_ASSERT(result[4] == pValueBytes[7]);
-    TEST_ASSERT(result[5] == pValueBytes[6]);
-    TEST_ASSERT(result[6] == pValueBytes[5]);
-    TEST_ASSERT(result[7] == pValueBytes[4]);
-    TEST_ASSERT(result[8] == pValueBytes[3]);
-    TEST_ASSERT(result[9] == pValueBytes[2]);
-    TEST_ASSERT(result[10] == pValueBytes[1]);
-    TEST_ASSERT(result[11] == pValueBytes[0]);
-
+    test_assert_eq_swapped(testName, elemSize, result, pValueBytes);
 
     elemSize = 6; // note that an ODD size doesn't work correctly
     numElements = swappedValues.size() / elemSize;
     sys::byteSwap(twelve_bytes, elemSize, numElements, swappedValues.data());
-    TEST_ASSERT(pResultBytes[0] == pValueBytes[5]);
-    TEST_ASSERT(pResultBytes[1] == pValueBytes[4]);
-    TEST_ASSERT(pResultBytes[2] == pValueBytes[3]);
-    TEST_ASSERT(pResultBytes[3] == pValueBytes[2]);
-    TEST_ASSERT(pResultBytes[4] == pValueBytes[1]);
-    TEST_ASSERT(pResultBytes[5] == pValueBytes[0]);
-
-    TEST_ASSERT(pResultBytes[6] == pValueBytes[11]);
-    TEST_ASSERT(pResultBytes[7] == pValueBytes[10]);
-    TEST_ASSERT(pResultBytes[8] == pValueBytes[9]);
-    TEST_ASSERT(pResultBytes[9] == pValueBytes[8]);
-    TEST_ASSERT(pResultBytes[10] == pValueBytes[7]);
-    TEST_ASSERT(pResultBytes[11] == pValueBytes[6]);
+    test_assert_eq_swapped(testName, elemSize, &(pResultBytes[0]), &(pValueBytes[0]));
+    test_assert_eq_swapped(testName, elemSize, &(pResultBytes[6]), &(pValueBytes[6]));
 
     sys::byteSwap(swappedValues.data(), elemSize, numElements); // swap back
     for (size_t i = 0; i < swappedValues.size(); i++)
