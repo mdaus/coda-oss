@@ -115,7 +115,7 @@ struct CODA_OSS_API Err
     //!  Return the last error
     virtual int getLast() const;
 
-    int getErrID() const { return mErrId; }
+    int getErrID() const noexcept { return mErrId; }
 
 protected:
 

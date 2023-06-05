@@ -155,27 +155,27 @@ public:
      * @return true if comparison holds, false otherwise.
      */
     //@{
-    bool operator<(const DateTime& rhs) const
+    bool operator<(const DateTime& rhs) const noexcept
     {
         return (mTimeInMillis < rhs.mTimeInMillis);
     }
 
-    bool operator<=(const DateTime& rhs) const
+    bool operator<=(const DateTime& rhs) const noexcept
     {
         return (mTimeInMillis <= rhs.mTimeInMillis);
     }
 
-    bool operator>(const DateTime& rhs) const
+    bool operator>(const DateTime& rhs) const noexcept
     {
         return (mTimeInMillis > rhs.mTimeInMillis);
     }
 
-    bool operator>=(const DateTime& rhs) const
+    bool operator>=(const DateTime& rhs) const noexcept
     {
         return (mTimeInMillis >= rhs.mTimeInMillis);
     }
 
-    bool operator==(const DateTime& rhs) const
+    bool operator==(const DateTime& rhs) const noexcept
     {
         return (mTimeInMillis == rhs.mTimeInMillis);
     }
