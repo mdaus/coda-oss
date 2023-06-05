@@ -158,22 +158,6 @@ inline auto as_writable_bytes(T* ptr, size_t sz) noexcept
 }
 
 template <typename T>
-inline auto as_bytes(coda_oss::span<const T> s) noexcept
-{
-    return coda_oss::as_bytes(s);
-}
-template <typename T>
-inline auto as_bytes(coda_oss::span<T> s) noexcept
-{
-    return coda_oss::as_bytes(s);
-}
-template <typename T>
-inline auto as_writable_bytes(coda_oss::span<T> s) noexcept
-{
-    return coda_oss::as_writable_bytes(s);
-}
-
-template <typename T>
 inline auto as_bytes(const std::vector<T>& v) noexcept
 {
     return as_bytes(v.data(), v.size());
