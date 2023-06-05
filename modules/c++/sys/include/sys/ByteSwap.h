@@ -32,6 +32,7 @@
 #include <coda_oss/cstddef.h>
 #include <type_traits>
 #include <stdexcept>
+#include <complex>
 
 #include "config/Exports.h"
 
@@ -73,15 +74,51 @@ inline void byteSwap(ubyte* buffer, size_t elemSize, size_t numElems)
     return byteSwap_(buffer, elemSize, numElems);
 }
 
-// Otherwise, we can sanity-check the `elemSize` parameter
-template <typename T>
-inline void byteSwap(T* buffer, size_t elemSize, size_t numElems)
+namespace details
 {
-    static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
+template <typename T>
+inline void check_elemSize(size_t elemSize)
+{
+    static_assert(is_byte_swappable<T>(), "T should not be a 'struct'");
     if (sizeof(T) != elemSize)
     {
         throw std::invalid_argument("'elemSize' != sizeof(T)");
     }
+}
+
+// Repackage into a span<T>; the size is 2* because for byte-swapping
+// we want to look at this as an array of `T`, not `std::complex<T>`.
+template <typename T>
+inline auto make_span(coda_oss::span<const std::complex<T>> s)
+{
+    const void* const p_ = s.data();
+    auto const p = static_cast<const T*>(p_);
+    const auto sz = s.size() * 2;  // real and imag
+    return sys::make_span(p, sz);
+}
+template<typename T>
+inline auto make_span(coda_oss::span<std::complex<T>> s)
+{
+    void* const p_ = s.data();
+    auto const p = static_cast<T*>(p_);
+    const auto sz = s.size() * 2;  // real and imag
+    return sys::make_span(p, sz);
+}
+
+}
+
+// Otherwise, we can sanity-check the `elemSize` parameter
+template <typename T>
+inline void byteSwap(T* buffer, size_t elemSize, size_t numElems)
+{
+    details::check_elemSize<T>(elemSize);
+    void* const buffer_ = buffer;
+    byteSwap(buffer_, elemSize, numElems);
+}
+template <typename T>
+inline void byteSwap(std::complex<T>* buffer, size_t elemSize, size_t numElems) // dont't want `T` as `std::complex<...>`
+{
+    details::check_elemSize<T>(elemSize);
     void* const buffer_ = buffer;
     byteSwap(buffer_, elemSize, numElems);
 }
@@ -92,6 +129,13 @@ inline auto byteSwap(coda_oss::span<T> buffer)
     static_assert(!std::is_const<T>::value, "T cannot be 'const'");
     static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
     return byteSwap(as_writable_bytes(buffer), sizeof(T));
+}
+
+// Take care of treating std::complex<T> as T[]
+template <typename T>
+inline auto byteSwap(coda_oss::span<std::complex<T>> buffer)
+{
+    return byteSwap(details::make_span(buffer));
 }
 
 /*!
@@ -136,11 +180,15 @@ inline void byteSwap(const ubyte* buffer, size_t elemSize, size_t numElems, U* o
 template <typename T, typename U>
 inline void byteSwap(const T* buffer, size_t elemSize, size_t numElems, U* outputBuffer)
 {
-    static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
-    if (sizeof(T) != elemSize)
-    {
-        throw std::invalid_argument("'elemSize' != sizeof(T)");
-    }    
+    details::check_elemSize<T>(elemSize); 
+    const void* const buffer_ = buffer;
+    void* const outputBuffer_ = outputBuffer;
+    byteSwap(buffer_, elemSize, numElems, outputBuffer_);
+}
+template <typename T, typename U>
+inline void byteSwap(const std::complex<T>* buffer, size_t elemSize, size_t numElems, U* outputBuffer) // dont't want `T` as `std::complex<...>`
+{
+    details::check_elemSize<T>(elemSize);
     const void* const buffer_ = buffer;
     void* const outputBuffer_ = outputBuffer;
     byteSwap(buffer_, elemSize, numElems, outputBuffer_);
@@ -152,6 +200,12 @@ inline auto byteSwap(coda_oss::span<const T> buffer, coda_oss::span<coda_oss::by
     static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
     return byteSwap(as_bytes(buffer), sizeof(T), outputBuffer);
 }
+// Take care of treating std::complex<T> as T[]
+template <typename T>
+inline auto byteSwap(coda_oss::span<const std::complex<T>> buffer, coda_oss::span<coda_oss::byte> outputBuffer)
+{
+    return byteSwap(details::make_span(buffer), outputBuffer);
+}
 
 template <typename T>
 inline auto byteSwap(coda_oss::span<const T> buffer)
@@ -160,6 +214,35 @@ inline auto byteSwap(coda_oss::span<const T> buffer)
     std::ignore = byteSwap(buffer, make_span(retval));
     return retval;
 }
+// Take care of treating std::complex<T> as T[]
+template <typename T>
+inline auto byteSwap(coda_oss::span<const std::complex<T>> buffer)
+{
+    return byteSwap(details::make_span(buffer));
+}
+
+// With buffer byte-swap now in place, we can safely byte-swap std::complex<T>.
+// This signature is from ByteSwapValue.h
+template <typename T>
+inline auto byteSwapValue(std::complex<T> z)
+{
+    // C++ mandates that `std::complex<T>` be the same as `T cx[2]`; that is
+    // the structure is contiguous. https://en.cppreference.com/w/cpp/numeric/complex
+    const auto& z_ = reinterpret_cast<T(&)[2]>(z);    
+    return byteSwap(make_span(z_));
+}
+template<typename T>
+inline auto byteSwap(std::complex<T> val)
+{
+    const auto bytes = byteSwapValue(val);
+    assert(bytes.size() == sizeof(val));
+
+    const void* const pBytes = bytes.data();
+    auto const pRetVal = static_cast<const std::complex<T>*>(pBytes);
+    return *pRetVal;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 struct ByteSwapRunnable final : public sys::Runnable
 {
