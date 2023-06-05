@@ -232,7 +232,7 @@ static void testByteSwapValues_(const std::string& testName, const void* pBytes)
     sys::byteSwap(&swap, sizeof(TUInt), 1); // swap back
     TEST_ASSERT_EQ(*pUInt, swap);
 
-    const auto resultBytes = sys::swapBytes(*pUInt);
+    const auto resultBytes = sys::byteSwapValue(*pUInt);
     TEST_ASSERT_EQ(resultBytes.size(), sizeof(TUInt));
     test_assert_eq_swapped(testName, sizeof(TUInt), resultBytes.data(), pValueBytes);
 }
@@ -294,7 +294,7 @@ template <typename T>
 static inline void six_byteSwap(const void* in, T& out)
 {
     auto const inBytes = sys::make_span<std::byte>(in, sizeof(T));
-    out = sys::swapBytes<T>(inBytes);
+    out = sys::byteSwapValue<T>(inBytes);
 }
 TEST_CASE(testSixByteSwap)
 {

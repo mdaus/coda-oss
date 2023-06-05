@@ -224,7 +224,7 @@ inline auto byteSwap(coda_oss::span<const std::complex<T>> buffer)
 // With buffer byte-swap now in place, we can safely byte-swap std::complex<T>.
 // This signature is from ByteSwapValue.h
 template <typename T>
-inline auto swapBytes(std::complex<T> z)
+inline auto byteSwapValue(std::complex<T> z)
 {
     // C++ mandates that `std::complex<T>` be the same as `T cx[2]`; that is
     // the structure is contiguous. https://en.cppreference.com/w/cpp/numeric/complex
@@ -234,7 +234,7 @@ inline auto swapBytes(std::complex<T> z)
 template<typename T>
 inline auto byteSwap(std::complex<T> val)
 {
-    const auto bytes = swapBytes(val);
+    const auto bytes = byteSwapValue(val);
     assert(bytes.size() == sizeof(val));
 
     const void* const pBytes = bytes.data();
