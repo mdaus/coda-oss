@@ -21,6 +21,7 @@
 * `mt::transform_async()` removed, it doesn't match C++17 techniques.'
 * Revamp `sys::byteSwap()` for improved type-safety and
   [better performance](https://devblogs.microsoft.com/cppblog/a-tour-of-4-msvc-backend-improvements/).
+ * Added case-insensitive string comparison utilties: `str::eq()` and `str::ne()`.
 
 ## [Release 2022-12-14](https://github.com/mdaus/coda-oss/releases/tag/2022-12-14)
 * removed remaining vestiges of `std::auto_ptr`, provide `mem::AutoPtr` for the tiny handful of
