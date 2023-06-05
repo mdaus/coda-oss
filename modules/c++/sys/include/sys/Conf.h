@@ -231,7 +231,7 @@ namespace sys
      *
      *  \param p A pointer to the data allocated using alignedAlloc
      */
-    inline void alignedFree(void* p)
+    inline void alignedFree(void* p) noexcept
     {
 #ifdef _WIN32
         _aligned_free(p);
