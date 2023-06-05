@@ -246,7 +246,7 @@ inline auto byteSwap(std::complex<T> val)
 
 struct ByteSwapRunnable final : public sys::Runnable
 {
-    ByteSwapRunnable(void* buffer, size_t elemSize, size_t startElement, size_t numElements) :
+    ByteSwapRunnable(void* buffer, size_t elemSize, size_t startElement, size_t numElements) noexcept :
         mBuffer(static_cast<coda_oss::byte*>(buffer) + startElement * elemSize),
         mElemSize(elemSize), mNumElements(numElements)
     {
@@ -270,7 +270,7 @@ private:
 
 struct ByteSwapCopyRunnable final : public sys::Runnable
 {
-    ByteSwapCopyRunnable(const void* buffer, size_t elemSize, size_t startElement, size_t numElements, void* outputBuffer) :
+    ByteSwapCopyRunnable(const void* buffer, size_t elemSize, size_t startElement, size_t numElements, void* outputBuffer) noexcept :
         mBuffer(static_cast<const coda_oss::byte*>(buffer) + startElement * elemSize),
         mElemSize(elemSize), mNumElements(numElements),
          mOutputBuffer(static_cast<coda_oss::byte*>(outputBuffer) + startElement * elemSize)
