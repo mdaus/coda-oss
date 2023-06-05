@@ -62,7 +62,7 @@ struct CODA_OSS_API Err
      * Copy constructor
      * \param err The err to take
      */
-    Err(const Err& err)
+    Err(const Err& err) noexcept
     {
         mErrId = err.getErrID();
     }
@@ -82,7 +82,7 @@ struct CODA_OSS_API Err
      *  Assignment operator
      *  \param err The err to take
      */
-    Err& operator=(const Err& err)
+    Err& operator=(const Err& err) noexcept
     {
         if (&err != this)
         {
@@ -158,7 +158,7 @@ struct SocketErr : public Err
      *  \param err The err to take
      *
      */
-    SocketErr& operator=(const SocketErr& err)
+    SocketErr& operator=(const SocketErr& err) noexcept
     {
         if (&err != this)
         {

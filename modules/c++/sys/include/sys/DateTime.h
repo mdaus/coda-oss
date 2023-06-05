@@ -180,7 +180,7 @@ public:
         return (mTimeInMillis == rhs.mTimeInMillis);
     }
 
-    bool operator!=(const DateTime& rhs) const
+    bool operator!=(const DateTime& rhs) const noexcept
     {
         return !operator==(rhs);
     }
