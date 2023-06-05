@@ -25,6 +25,8 @@
 
 #include <type_traits>
 
+#include <type_traits>
+
 #include "coda_oss/namespace_.h"
 #include "coda_oss/span_.h"
 #include "coda_oss/cstddef.h" // byte
