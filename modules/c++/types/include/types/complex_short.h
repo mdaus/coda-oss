@@ -28,6 +28,7 @@
 #include <complex>
 
 #include "coda_oss/CPlusPlus.h"
+#include "gsl/gsl.h"
 
 namespace types
 {
@@ -73,14 +74,23 @@ private:
     value_type z[2]{0, 0};
 };
 static_assert(sizeof(complex_short) == sizeof(float), "sizeof(complex_short) != sizeof(float)");
+
+// https://en.cppreference.com/w/cpp/numeric/complex/abs
+inline auto abs(const complex_short& z)
+{
+    const std::complex<float> z_(z.real(), z.imag());
+    const auto result = abs(z_);
+    return gsl::narrow_cast<complex_short::value_type>(result);
+}
+
 }
 
 #if CODA_OSS_cpp23
-    using complex_short = details::complex_short;
+    using details::complex_short;
 #else
     // no macro to turn this on/off, want to implement what we need in details::complex_short
     //using complex_short = std::complex<short>; // not valid in C++23
-    using complex_short = details::complex_short;
+    using details::complex_short;
 
     static_assert(sizeof(std::complex<short>) == sizeof(complex_short), "sizeof(sizeof(std::complex<short>) != sizeof(complex_short)");
 #endif
