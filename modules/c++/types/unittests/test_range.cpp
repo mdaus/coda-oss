@@ -24,6 +24,7 @@
 #include "TestCase.h"
 
 #include <types/Range.h>
+#include <types/complex_short.h>
 
 TEST_CASE(TestGetNumSharedElements)
 {
