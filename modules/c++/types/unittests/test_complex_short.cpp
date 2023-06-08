@@ -43,8 +43,8 @@ TEST_CASE(TestCxShort_abs)
     // Compute value "by hand", see https://en.cppreference.com/w/cpp/numeric/math/hypot
     const auto r_ = gsl::narrow<int64_t>(cx_short.real());
     const auto i_ = gsl::narrow<int64_t>(cx_short.imag());
-    const auto r_2 = r_ * r_;
-    const auto i_2 = i_ * i_;
+    const auto r_2 = gsl::narrow<short>(r_ * r_);
+    const auto i_2 = gsl::narrow<short>(i_ * i_);
     const auto result = sqrt(r_2 + i_2);
     auto actual = gsl::narrow_cast<short>(result);
     TEST_ASSERT_EQ(actual, expected);
