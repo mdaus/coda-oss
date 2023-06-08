@@ -750,6 +750,9 @@
     <ClInclude Include="types\include\types\complex_short.h">
       <Filter>types</Filter>
     </ClInclude>
+    <ClInclude Include="types\include\types\Datatype.h">
+      <Filter>types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
