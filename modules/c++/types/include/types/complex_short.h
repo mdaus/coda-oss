@@ -25,10 +25,10 @@
 #ifndef CODA_OSS_types_complex_short_h_INCLUDED_
 #define CODA_OSS_types_complex_short_h_INCLUDED_
 
-#include "import/std.h"
+#include <complex>
 
+#include "config/disable_compiler_warnings.h"
 #include "coda_oss/CPlusPlus.h"
-#include "gsl/gsl.h"
 
 namespace types
 {
@@ -75,15 +75,26 @@ private:
 };
 static_assert(sizeof(complex_short) == sizeof(float), "sizeof(complex_short) != sizeof(float)");
 
+CODA_OSS_disable_warning_push
+#ifdef _MSC_VER
+#pragma warning(disable: 4996) // '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
+#endif
+
+inline const std::complex<short>& cast(const complex_short& z)
+{
+    // Getting different results with GCC vs MSVC :-(  So just use
+    // std::complex<short> Assume by the time we're actually using C++23 with a
+    // compiler that enforces this restriction, "something" will be different.
+    const void* const pZ_ = &z;
+    return *static_cast<const std::complex<short>*>(pZ_);
+}
+
+CODA_OSS_disable_warning_pop
+
 // https://en.cppreference.com/w/cpp/numeric/complex/abs
 inline auto abs(const complex_short& z)
 {
-    // Getting different results with GCC vs MSVC :-(  So just use std::abs() with std::complex<short>
-    // Assume by the time we're actually using C++23 with a compiler that enforces
-    // this restriction, "things will be different."
-    const void* const pZ_ = &z;
-    auto const pZ = static_cast<const std::complex<short>*>(pZ_);
-    return std::abs(*pZ);
+    return abs(cast(z));
 }
 
 }
@@ -91,7 +102,8 @@ inline auto abs(const complex_short& z)
 #if CODA_OSS_cpp23
     using details::complex_short;
 #else
-    // no macro to turn this on/off, want to implement what we need in details::complex_short
+    // No macro to turn this on/off, want to implement what we need in details::complex_short.
+    // But keep in `details` in case somebody wants to uncomment.
     //using complex_short = std::complex<short>; // not valid in C++23
     using details::complex_short;
 

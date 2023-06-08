@@ -29,7 +29,12 @@ TEST_CASE(TestCxShort_abs)
     constexpr auto real = 123;
     constexpr auto imag = -321;
 
+    CODA_OSS_disable_warning_push
+    #ifdef _MSC_VER
+    #pragma warning(disable: 4996) // '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
+    #endif
     const std::complex<short> cx_short(real, imag);
+    CODA_OSS_disable_warning_pop
     const auto expected = abs(cx_short);
 
     const types::complex_short types_cx_short(real, imag);
