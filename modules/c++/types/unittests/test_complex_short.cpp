@@ -19,6 +19,13 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
+
+// Told ya this wasn't valid C++ ... :-)
+#define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING
+#ifdef _MSC_VER
+#pragma warning(disable: 4996) // '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
+#endif
+
 #include <complex>
 
 #include "TestCase.h"
@@ -33,8 +40,17 @@ TEST_CASE(TestCxShort_abs)
     const std::complex<short> cx_short(real, imag);
     const auto expected = abs(cx_short);
 
+    // Compute value "by hand", see https://en.cppreference.com/w/cpp/numeric/math/hypot
+    const auto r_ = gsl::narrow<int64_t>(cx_short.real());
+    const auto i_ = gsl::narrow<int64_t>(cx_short.imag());
+    const auto r_2 = r_ * r_;
+    const auto i_2 = i_ * i_;
+    const auto result = sqrt(r_2 + i_2);
+    auto actual = gsl::narrow_cast<short>(result);
+    TEST_ASSERT_EQ(actual, expected);
+
     const types::complex_short types_cx_short(real, imag);
-    const auto actual = abs(types_cx_short);
+    actual = abs(types_cx_short);
 
     TEST_ASSERT_EQ(actual, expected);
 }
