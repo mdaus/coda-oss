@@ -25,7 +25,7 @@
 #ifndef CODA_OSS_types_complex_short_h_INCLUDED_
 #define CODA_OSS_types_complex_short_h_INCLUDED_
 
-#include <complex>
+#include "import/std.h"
 
 #include "coda_oss/CPlusPlus.h"
 #include "gsl/gsl.h"
@@ -78,9 +78,12 @@ static_assert(sizeof(complex_short) == sizeof(float), "sizeof(complex_short) != 
 // https://en.cppreference.com/w/cpp/numeric/complex/abs
 inline auto abs(const complex_short& z)
 {
-    const std::complex<float> z_(z.real(), z.imag());
-    const auto result = std::abs(z_);
-    return gsl::narrow_cast<complex_short::value_type>(result);
+    // Getting different results with GCC vs MSVC :-(  So just use std::abs() with std::complex<short>
+    // Assume by the time we're actually using C++23 with a compiler that enforces
+    // this restriction, "things will be different."
+    const void* const pZ_ = &z;
+    auto const pZ = static_cast<const std::complex<short>*>(pZ_);
+    return std::abs(*pZ);
 }
 
 }

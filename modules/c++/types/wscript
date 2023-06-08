@@ -1,6 +1,6 @@
 NAME            = 'types'
 VERSION         = '1.0'
-MODULE_DEPS     = 'gsl coda_oss'
+MODULE_DEPS     = 'std gsl coda_oss'
 UNITTEST_DEPS   = 'sys'
 
 options = configure = distclean = lambda p: None

@@ -26,12 +26,26 @@
 #define CODA_OSS_import_cpp14_h_INCLUDED_
 #pragma once
 
+#include "coda_oss/CPlusPlus.h"
+#include "config/disable_compiler_warnings.h"
+
 // Common C++14 headers
 #include <limits>
 #include <memory>
 #include <new>
 
+CODA_OSS_disable_warning_push
+#ifdef _MSC_VER
+#pragma warning(disable: 4996) // '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
+#endif
+
 #include <complex>
+namespace
+{
+    std::complex<short> unused;
+}
+CODA_OSS_disable_warning_pop
+
 #include <utility>
 #include <tuple>
 #include <future>
