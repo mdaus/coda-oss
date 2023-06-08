@@ -26,6 +26,8 @@
 #pragma warning(disable: 4996) // '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
 #endif
 
+#include <math.h>
+
 #include <complex>
 
 #include "TestCase.h"
@@ -39,19 +41,16 @@ TEST_CASE(TestCxShort_abs)
 
     const std::complex<short> cx_short(real, imag);
     const auto expected = abs(cx_short);
+    TEST_ASSERT_EQ(343, expected);
 
-    // Compute value "by hand", see https://en.cppreference.com/w/cpp/numeric/math/hypot
-    const auto r_ = gsl::narrow<int64_t>(cx_short.real());
-    const auto i_ = gsl::narrow<int64_t>(cx_short.imag());
-    const auto r_2 = gsl::narrow<short>(r_ * r_);
-    const auto i_2 = gsl::narrow<short>(i_ * i_);
-    const auto result = sqrt(r_2 + i_2);
+    // Compute value "by hand", see
+    // https://en.cppreference.com/w/cpp/numeric/math/hypot
+    const auto result = hypotf(cx_short.real(), cx_short.imag());
     auto actual = gsl::narrow_cast<short>(result);
     TEST_ASSERT_EQ(actual, expected);
 
     const types::complex_short types_cx_short(real, imag);
     actual = abs(types_cx_short);
-
     TEST_ASSERT_EQ(actual, expected);
 }
 

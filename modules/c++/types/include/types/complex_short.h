@@ -78,8 +78,8 @@ static_assert(sizeof(complex_short) == sizeof(float), "sizeof(complex_short) != 
 // https://en.cppreference.com/w/cpp/numeric/complex/abs
 inline auto abs(const complex_short& z)
 {
-    const std::complex<long double> z_(z.real(), z.imag());
-    const auto result = abs(z_);
+    const std::complex<float> z_(z.real(), z.imag());
+    const auto result = std::abs(z_);
     return gsl::narrow_cast<complex_short::value_type>(result);
 }
 
