@@ -22,7 +22,7 @@
 
 #include "TestCase.h"
 
-#include <types/complex_short.h>
+#include <types/complex.h>
 
 TEST_CASE(TestCxShort_abs)
 {

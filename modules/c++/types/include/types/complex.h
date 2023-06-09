@@ -22,8 +22,8 @@
  */
 
 #pragma once
-#ifndef CODA_OSS_types_complex_short_h_INCLUDED_
-#define CODA_OSS_types_complex_short_h_INCLUDED_
+#ifndef CODA_OSS_types_complex_h_INCLUDED_
+#define CODA_OSS_types_complex_h_INCLUDED_
 
 #include <complex>
 
@@ -111,4 +111,4 @@ inline auto abs(const complex_short& z)
 #endif
 }
 
-#endif  // CODA_OSS_types_complex_short_h_INCLUDED_
+#endif  // CODA_OSS_types_complex_h_INCLUDED_
