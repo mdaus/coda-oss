@@ -29,7 +29,6 @@
 #include <utility>
 #include <stdexcept>
 #include "coda_oss/cstddef.h"
-#include "complex_short.h"
 
 namespace types
 {
@@ -68,7 +67,7 @@ constexpr int C_TYPE_UNSIGNED_CHAR = 112;
 constexpr int C_TYPE_UNSIGNED_SHORT = 113;
 constexpr int C_TYPE_UNSIGNED_INT = 114;
 
-constexpr int C_TYPE_SHORT_COMPLEX = 115; // types::complex_short; std::complex<short> is no longer valid in C++23
+//constexpr int C_TYPE_SHORT_COMPLEX = 115; // types::complex<short>; std::complex<short> is no longer valid in C++23
 constexpr int C_TYPE_LONG_DOUBLE_COMPLEX = 116; // std::complex<long double>
 constexpr int C_TYPE_UNSIGNED_LONG = 117;
 constexpr int C_TYPE_UNSIGNED_LONG_LONG = 118;
@@ -96,7 +95,7 @@ enum class Datatype
     FloatComplex = Complex,
     DoubleComplex = details::C_TYPE_DOUBLE_COMPLEX,
     LongDoubleComplex = details::C_TYPE_LONG_DOUBLE_COMPLEX,
-    ShortComplex = details::C_TYPE_SHORT_COMPLEX,
+    //ShortComplex = details::C_TYPE_SHORT_COMPLEX,
 
     UnsignedChar = details::C_TYPE_UNSIGNED_CHAR,
     UnsignedShort = details::C_TYPE_UNSIGNED_SHORT,
@@ -122,7 +121,7 @@ template<> constexpr Datatype getDatatype<float>() { return Datatype::Float; }
 template<> constexpr Datatype getDatatype<double>() { return Datatype::Double; }
 template<> constexpr Datatype getDatatype<long double>() { return Datatype::LongDouble; }
 
-template<> constexpr Datatype getDatatype<complex_short>() { return Datatype::ShortComplex; }
+//template<> constexpr Datatype getDatatype<complex_short>() { return Datatype::ShortComplex; }
 template<> constexpr Datatype getDatatype<std::complex<float>>() { return Datatype::FloatComplex; }
 template<> constexpr Datatype getDatatype<std::complex<double>>() { return Datatype::DoubleComplex; }
 template<> constexpr Datatype getDatatype<std::complex<long double>>() { return Datatype::LongDoubleComplex; }
@@ -134,11 +133,14 @@ template<> constexpr Datatype getDatatype<unsigned long>() { return Datatype::Un
 template<> constexpr Datatype getDatatype<unsigned long long>() { return Datatype::UnsignedLongLong; }
 
 // Hold a type such a `int` and it's Datatype together
+namespace details
+{
 template <typename T> struct Datatype_TagT final
 {
     using type = T; // e.g., `int`
     static constexpr Datatype value() { return getDatatype<T>(); } // Datatype::Int
 };
+}
 template <typename T> using Datatype_Tag = typename T::type;
 
 // Utility routine to make it easier to call template'd function using a Datatype.
@@ -147,30 +149,29 @@ template <typename T> using Datatype_Tag = typename T::type;
 //        const auto f = [&](auto tag) { foo<types::Datatype_Tag<decltype(tag)>(); };
 //        types::invoke(type, f);
 //    }
-template <typename T> using Datatype_Tag = typename T::type;
 template <typename F, typename ...Args>
 inline decltype(auto) invoke(Datatype t, F&& func, Args&& ...args) {
-if (t == Datatype::Byte) return std::forward<F>(func)(Datatype_TagT<coda_oss::byte>{}, std::forward<Args>(args)...);
-if (t == Datatype::Char) return std::forward<F>(func)(Datatype_TagT<char>{}, std::forward<Args>(args)...);
-if (t == Datatype::Short) return std::forward<F>(func)(Datatype_TagT<short>{}, std::forward<Args>(args)...);
-if (t == Datatype::Int) return std::forward<F>(func)(Datatype_TagT<int>{}, std::forward<Args>(args)...);
-if (t == Datatype::Long) return std::forward<F>(func)(Datatype_TagT<long>{}, std::forward<Args>(args)...);
-if (t == Datatype::LongLong) return std::forward<F>(func)(Datatype_TagT<long long>{}, std::forward<Args>(args)...);
+if (t == Datatype::Byte) return std::forward<F>(func)(details::Datatype_TagT<coda_oss::byte>{}, std::forward<Args>(args)...);
+if (t == Datatype::Char) return std::forward<F>(func)(details::Datatype_TagT<char>{}, std::forward<Args>(args)...);
+if (t == Datatype::Short) return std::forward<F>(func)(details::Datatype_TagT<short>{}, std::forward<Args>(args)...);
+if (t == Datatype::Int) return std::forward<F>(func)(details::Datatype_TagT<int>{}, std::forward<Args>(args)...);
+if (t == Datatype::Long) return std::forward<F>(func)(details::Datatype_TagT<long>{}, std::forward<Args>(args)...);
+if (t == Datatype::LongLong) return std::forward<F>(func)(details::Datatype_TagT<long long>{}, std::forward<Args>(args)...);
 
-if (t == Datatype::Float) return std::forward<F>(func)(Datatype_TagT<float>{}, std::forward<Args>(args)...);
-if (t == Datatype::Double) return std::forward<F>(func)(Datatype_TagT<double>{}, std::forward<Args>(args)...);
-if (t == Datatype::LongDouble) return std::forward<F>(func)(Datatype_TagT<long double>{}, std::forward<Args>(args)...);
+if (t == Datatype::Float) return std::forward<F>(func)(details::Datatype_TagT<float>{}, std::forward<Args>(args)...);
+if (t == Datatype::Double) return std::forward<F>(func)(details::Datatype_TagT<double>{}, std::forward<Args>(args)...);
+if (t == Datatype::LongDouble) return std::forward<F>(func)(details::Datatype_TagT<long double>{}, std::forward<Args>(args)...);
 
-if (t == Datatype::ShortComplex) return std::forward<F>(func)(Datatype_TagT<complex_short>{}, std::forward<Args>(args)...);
-if (t == Datatype::FloatComplex) return std::forward<F>(func)(Datatype_TagT<std::complex<float>>{}, std::forward<Args>(args)...);
-if (t == Datatype::DoubleComplex) return std::forward<F>(func)(Datatype_TagT<std::complex<double>>{}, std::forward<Args>(args)...);
-if (t == Datatype::LongDoubleComplex) return std::forward<F>(func)(Datatype_TagT<std::complex<long double>>{}, std::forward<Args>(args)...);
+//if (t == Datatype::ShortComplex) return std::forward<F>(func)(details::Datatype_TagT<complex_short>{}, std::forward<Args>(args)...);
+if (t == Datatype::FloatComplex) return std::forward<F>(func)(details::Datatype_TagT<std::complex<float>>{}, std::forward<Args>(args)...);
+if (t == Datatype::DoubleComplex) return std::forward<F>(func)(details::Datatype_TagT<std::complex<double>>{}, std::forward<Args>(args)...);
+if (t == Datatype::LongDoubleComplex) return std::forward<F>(func)(details::Datatype_TagT<std::complex<long double>>{}, std::forward<Args>(args)...);
 
-if (t == Datatype::UnsignedChar) return std::forward<F>(func)(Datatype_TagT<unsigned char>{}, std::forward<Args>(args)...);
-if (t == Datatype::UnsignedShort) return std::forward<F>(func)(Datatype_TagT<unsigned short>{}, std::forward<Args>(args)...);
-if (t == Datatype::UnsignedInt) return std::forward<F>(func)(Datatype_TagT<unsigned int>{}, std::forward<Args>(args)...);
-if (t == Datatype::UnsignedLong) return std::forward<F>(func)(Datatype_TagT<unsigned long>{}, std::forward<Args>(args)...);
-if (t == Datatype::UnsignedLongLong) return std::forward<F>(func)(Datatype_TagT<unsigned long long>{}, std::forward<Args>(args)...);
+if (t == Datatype::UnsignedChar) return std::forward<F>(func)(details::Datatype_TagT<unsigned char>{}, std::forward<Args>(args)...);
+if (t == Datatype::UnsignedShort) return std::forward<F>(func)(details::Datatype_TagT<unsigned short>{}, std::forward<Args>(args)...);
+if (t == Datatype::UnsignedInt) return std::forward<F>(func)(details::Datatype_TagT<unsigned int>{}, std::forward<Args>(args)...);
+if (t == Datatype::UnsignedLong) return std::forward<F>(func)(details::Datatype_TagT<unsigned long>{}, std::forward<Args>(args)...);
+if (t == Datatype::UnsignedLongLong) return std::forward<F>(func)(details::Datatype_TagT<unsigned long long>{}, std::forward<Args>(args)...);
 
 throw std::invalid_argument("Unexpected 'Datatype'");
 }

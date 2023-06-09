@@ -225,6 +225,9 @@
     <ClCompile Include="..\modules\c++\types\unittests\test_complex.cpp">
       <Filter>types</Filter>
     </ClCompile>
+    <ClCompile Include="..\modules\c++\types\unittests\test_Datatype.cpp">
+      <Filter>types</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

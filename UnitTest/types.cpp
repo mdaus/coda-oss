@@ -1,6 +1,13 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 
+#include <types/RowCol.h>
+#include <types/PageRowCol.h>
+#include <types/RangeList.h>
+#include <types/Range.h>
+#include <types/complex.h>
+#include <types/Datatype.h>
+
 namespace types
 {
 TEST_CLASS(test_page_row_col){ public:
@@ -18,5 +25,10 @@ TEST_CLASS(test_range_list){ public:
 TEST_CLASS(test_complex){ public:
 #include "types/unittests/test_complex.cpp"
 };
+
+TEST_CLASS(test_Datatype){ public:
+#include "types/unittests/test_Datatype.cpp"
+};
+
 
 }
