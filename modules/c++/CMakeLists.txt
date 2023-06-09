@@ -2,7 +2,7 @@ set(TARGET_LANGUAGE c++)
 
 # turn on maximum warnings
 if (MSVC)
-    add_compile_options(/std:c++14)
+    add_compile_options(/std:c++17)
 
     # By default, there is a /W3 on the command-line from somewhere (?); adding
     # /Wn results in a compiler warning.
@@ -10,7 +10,7 @@ if (MSVC)
     string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}") # /Wall
 
 elseif (UNIX)
-    add_compile_options(-std=c++14)
+    add_compile_options(-std=c++17)
 
     add_compile_options(-Wall -pedantic -Wextra)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wregister") # -Wvolatile

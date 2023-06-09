@@ -25,17 +25,12 @@
 #pragma once
 
 #include <string>
+#include <std/filesystem>
 
 #if !defined(USE_IO_STREAMS)
 
 #include "io/SeekableStreams.h"
-#include "sys/filesystem.h"
 #include "sys/File.h"
-
-#include "sys/CPlusPlus.h"
-#if CODA_OSS_cpp17
-#include <std/filesystem>
-#endif
 
 /*!
  *  \file FileOutputStream.h
@@ -63,17 +58,14 @@ protected:
 public:
     FileOutputStreamOS() = default;
 
+    using path = std::filesystem::path; // still used in SWIG bindings
+
     /*!
      *  Alternate Constructor.  Takes an output file and a mode
      *  \param outputFile The file name
      *  \param creationFlags  see sys::File
      */
-    #if CODA_OSS_cpp17
-    using path = std::filesystem::path;
-    #else
-    using path = coda_oss::filesystem::path;
-    #endif
-    FileOutputStreamOS(const path& outputFile,
+    FileOutputStreamOS(const std::filesystem::path& outputFile,
                        int creationFlags = sys::File::CREATE | sys::File::TRUNCATE);
 
     //! Destructor, closes the file stream.
@@ -99,7 +91,7 @@ public:
      *  \param file The file to open
      *  \param creationFlags see sys::File
      */
-    virtual void create(const path& str,
+    virtual void create(const std::filesystem::path& str,
                         int creationFlags = sys::File::CREATE | sys::File::TRUNCATE);
 
     //!  Close the file
