@@ -44,7 +44,7 @@ namespace details
  * `std::complex<TInt>` is no longer valid C++; provide a (partial) work-around.
  * See https://en.cppreference.com/w/cpp/numeric/complex for detals.
  * 
- * SIX (and others) mostly use `std::complex<short>` as a 
+ * SIX (and others) mostly use `std::complex<TInt>` as a 
  * convenient package for two values; very little "complex math" is done
  * using integers.
  */
@@ -61,6 +61,9 @@ struct complex final
     complex(complex&&) = default;
     complex& operator=(complex&&) = default;
     ~complex() = default;
+
+    // If someone already has a std::complex<TInt>, is there any harm in creating ours?
+    complex(const std::complex<value_type>& z_) : complex(z_.real(), z_.imag()) {}
 
     value_type real() const
     {
@@ -126,7 +129,6 @@ using zint8_t = complex<int8_t>;  // details:complex<int8_t>
 using zint16_t = complex<int16_t>;  // details:complex<int16_t>
 using zint32_t = complex<int32_t>;  // details::complex<int32_t>
 using zint64_t = complex<int64_t>;  // details::complex<int64_t>
-
 }
 
 #endif  // CODA_OSS_types_complex_h_INCLUDED_
