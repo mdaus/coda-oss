@@ -343,21 +343,15 @@ int getPrecision(const T&)
 {
     return 0;
 }
+template <> int getPrecision(const float& type);
+template <> int getPrecision(const double& type);
+template <> int getPrecision(const long double& type);
 
 template <typename T>
-int getPrecision(const std::complex<T>& type)
+inline int getPrecision(const std::complex<T>& type)
 {
     return getPrecision(type.real());
 }
-
-template <>
-int getPrecision(const float& type);
-
-template <>
-int getPrecision(const double& type);
-
-template <>
-int getPrecision(const long double& type);
 
 /** Generic casting routine; used by explicitly overloaded
  conversion operators.
