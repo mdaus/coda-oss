@@ -25,6 +25,14 @@
 #ifndef CODA_OSS_types_complex_h_INCLUDED_
 #define CODA_OSS_types_complex_h_INCLUDED_
 
+#include <stdint.h>
+
+// TODO: remove this once TIntergers are switched to types::details::complex<TInteger>
+// '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
+#ifndef _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING
+#define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING
+#endif
+
 #include <complex>
 #include <type_traits>
 
@@ -42,7 +50,7 @@ namespace details
  * `std::complex<TInt>` is no longer valid C++; provide a (partial) work-around.
  * See https://en.cppreference.com/w/cpp/numeric/complex for detals.
  * 
- * SIX (and others) mostly use `std::complex<short>` as a 
+ * SIX (and others) mostly use `std::complex<TInt>` as a 
  * convenient package for two values; very little "complex math" is done
  * using integers.
  */
@@ -50,7 +58,7 @@ template<typename T>
 struct complex final
 {
     using value_type = T;
-    static_assert(std::is_integral<T>::value, "Use std::complex<T> for floating-point.");
+    static_assert(!std::is_floating_point<T>::value, "Use std::complex<T> for floating-point.");
     static_assert(std::is_signed<T>::value, "T should be a signed integer.");
 
     complex(value_type re = 0, value_type im = 0) : z{re, im} {}
@@ -59,6 +67,9 @@ struct complex final
     complex(complex&&) = default;
     complex& operator=(complex&&) = default;
     ~complex() = default;
+
+    // If someone already has a std::complex<TInt>, is there any harm in creating ours?
+    complex(const std::complex<value_type>& z_) : complex(z_.real(), z_.imag()) {}
 
     value_type real() const
     {
@@ -108,16 +119,27 @@ inline auto abs(const complex<T>& z)
 
 }
 
-#if CODA_OSS_cpp23
-    using details::complex;
-#else
-    // No macro to turn this on/off, want to implement what we need in details::complex.
-    // But keep in `details` in case somebody wants to uncomment.
-    //using complex_short = std::complex<short>; // not valid in C++23
-    using details::complex;
+//// Have the compiler pick between std::complex and details::complex
+//template<typename T>
+//using complex = std::conditional_t<std::is_floating_point<T>::value, std::complex<T>, details::complex<T>>;
+//static_assert(std::is_same<details::complex<int>, complex<int>>::value, "should be details::complex<int>");
+template<typename T>
+using complex = std::complex<T>;
 
-    static_assert(sizeof(std::complex<short>) == sizeof(complex<short>), "sizeof(sizeof(std::complex<short>) != sizeof(complex<short>)");
-#endif
+static_assert(std::is_same<std::complex<float>, complex<float>>::value, "should be std::complex<float>");
+static_assert(sizeof(std::complex<short>) == sizeof(complex<short>), "sizeof(sizeof(std::complex<short>) != sizeof(complex<short>)");
+
+// Convenient aliases
+using zfloat = complex<float>; // std::complex<float>
+using zdouble = complex<double>; // std::complex<double>
+//using zlong_double = complex<long double>; // std::complex<long double>
+
+// Intentionally using somewhat cumbersome names
+// TODO: switch TIntergers to types::details::complex<TInteger>
+using zint8_t = complex<int8_t>;  // details:complex<int8_t>
+using zint16_t = complex<int16_t>;  // details:complex<int16_t>
+using zint32_t = complex<int32_t>;  // details::complex<int32_t>
+using zint64_t = complex<int64_t>;  // details::complex<int64_t>
 }
 
 #endif  // CODA_OSS_types_complex_h_INCLUDED_
