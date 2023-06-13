@@ -159,6 +159,11 @@ std::vector<std::string> Path::separate(const std::string& path, bool& isAbsolut
 
 std::string Path::absolutePath(const std::string& path)
 {
+    if (str::startsWith(path, "s3://"))
+    {
+        return path;
+    }
+
     std::string osDelimStr(Path::delimiter());
 
     Path::StringPair driveParts = Path::splitDrive(path);
@@ -177,6 +182,11 @@ std::string Path::absolutePath(const std::string& path)
 
 bool Path::isAbsolutePath(const std::string& path)
 {
+    if (str::startsWith(path, "s3://"))
+    {
+        return true;
+    }
+
 #ifdef _WIN32
     return !Path::splitDrive(path).first.empty();
 #else
