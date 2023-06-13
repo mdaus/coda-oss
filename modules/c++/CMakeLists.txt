@@ -13,13 +13,14 @@ elseif (UNIX)
     add_compile_options(-std=c++14)
 
     add_compile_options(-Wall -pedantic -Wextra)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wregister") # -Wvolatile
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weffc++")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wzero-as-null-pointer-constant")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Woverloaded-virtual")
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wold-style-cast")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-final-types -Wsuggest-final-methods")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-override")
+    add_compile_options(-Wregister) # -Wregister
+    #add_compile_options(-Weffc++)
+
+    add_compile_options(-Wzero-as-null-pointer-constant)
+    add_compile_options(-Woverloaded-virtual)
+    #add_compile_options(-Wold-style-cast)
+    add_compile_options(-Wsuggest-final-types -Wsuggest-final-methods)
+    add_compile_options(-Wsuggest-override)
 endif()
 
 # add an interface library for unittests
