@@ -113,8 +113,13 @@ TEST_CASE(test_std_filesystem_is_absolute)
 #endif
 
     std::filesystem::path url("x://example.com"); // 1 letter
-    TEST_ASSERT_TRUE(url.is_absolute());
+#ifdef _WIN32
+    TEST_ASSERT_TRUE(url.is_absolute()); // looks like a drive letter on Windows
     TEST_ASSERT_FALSE(url.is_relative());
+#else
+    TEST_ASSERT_FALSE(url.is_absolute());
+    TEST_ASSERT_TRUE(url.is_relative());
+#endif
 
     url = "s3://example.com";  // 2 letters
     TEST_ASSERT_FALSE(url.is_absolute());
