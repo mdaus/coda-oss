@@ -112,7 +112,24 @@ TEST_CASE(test_std_filesystem_is_absolute)
     TEST_ASSERT_TRUE(slash.is_absolute());
 #endif
 
-    const std::filesystem::path url("http://example.com");
+    std::filesystem::path url("x://example.com"); // 1 letter
+    TEST_ASSERT_TRUE(url.is_absolute());
+    TEST_ASSERT_FALSE(url.is_relative());
+
+    url = "s3://example.com";  // 2 letters
+    TEST_ASSERT_FALSE(url.is_absolute());
+    TEST_ASSERT_TRUE(url.is_relative());  // Should this be false?
+
+    url = "ftp://example.com"; // 3 letters
+    TEST_ASSERT_FALSE(url.is_absolute());
+
+    url = "http://example.com"; // 4 letters
+    TEST_ASSERT_FALSE(url.is_absolute());
+    
+    url = "https://example.com"; // 5 letters
+    TEST_ASSERT_FALSE(url.is_absolute());
+
+    url = "mailto:nobody@example.com";  // 6 letters
     TEST_ASSERT_FALSE(url.is_absolute());
     TEST_ASSERT_TRUE(url.is_relative());  // Should this be false?
 }
