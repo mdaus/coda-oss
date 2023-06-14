@@ -22,6 +22,13 @@
 
 #include <tuple> // std::ignore
 
+// TODO: remove this once TIntergers are switched to types::details::complex<TInteger>
+// '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
+#ifndef _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING
+#define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING
+#endif
+#include <complex>
+
 #include <config/compiler_extensions.h>
 #include <import/str.h>
 #include <types/complex.h>
