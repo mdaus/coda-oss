@@ -244,6 +244,24 @@ TEST_CASE(test_toStringComplexFloat)
     TEST_ASSERT_EQ(actual, expected);
 }
 
+TEST_CASE(test_toStringComplexShort)
+{
+    const std::string expected("(1,-2)");
+
+    const std::complex<short> std_cx_short(1, -2);
+    auto actual = str::toString(std_cx_short);
+    TEST_ASSERT_EQ(actual, expected);
+
+    const types::complex<short> types_cx_short(1, -2);
+    actual = str::toString(types_cx_short);
+    TEST_ASSERT_EQ(actual, expected);
+
+    const types::zint16_t zint16(1, -2);
+    actual = str::toString(zint16);
+    TEST_ASSERT_EQ(actual, expected);
+}
+
+
 TEST_MAIN(
     TEST_CHECK(testTrim);
     TEST_CHECK(testData);
@@ -267,4 +285,5 @@ TEST_MAIN(
     TEST_CHECK(testEscapeForXMLNoReplace);
     TEST_CHECK(testEscapeForXMLKitchenSink);
     TEST_CHECK(test_toStringComplexFloat);
+    TEST_CHECK(test_toStringComplexShort);
     )
