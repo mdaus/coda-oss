@@ -21,6 +21,8 @@
  *
  */
 
+#include <std/filesystem>
+
 #include <sys/Path.h>
 #include "TestCase.h"
 
@@ -79,6 +81,40 @@ TEST_CASE(testPathMerge)
     TEST_ASSERT_EQ(components.size(), static_cast<size_t>(3));
     result = sys::Path::merge(components, isAbsolute);
     TEST_ASSERT_EQ(result, path);
+}
+
+TEST_CASE(test_std_filesystem_is_absolute)
+{
+    std::filesystem::path path
+#ifdef _WIN32
+            (R"(c:\a\b\c)");
+#else
+            ("/a/b/c");
+#endif
+    TEST_ASSERT_TRUE(path.is_absolute());
+    path =
+#ifdef _WIN32
+            R"(a\b\c)";
+#else
+            "a/b/c";
+#endif
+    TEST_ASSERT_FALSE(path.is_absolute());
+    TEST_ASSERT_TRUE(path.is_relative());
+
+    const std::filesystem::path slash("/");
+    // https://en.cppreference.com/w/cpp/filesystem/path/is_absrel
+    // "The path "/" is absolute on a POSIX OS, but is relative on Windows."
+#ifdef _WIN32
+    TEST_ASSERT_TRUE(slash.is_relative());
+    TEST_ASSERT_FALSE(slash.is_absolute());
+#else
+    TEST_ASSERT_FALSE(slash.is_relative());
+    TEST_ASSERT_TRUE(slash.is_absolute());
+#endif
+
+    const std::filesystem::path url("https://example.com");
+    TEST_ASSERT_FALSE(url.is_absolute());
+    TEST_ASSERT_TRUE(url.is_relative());  // Should this be false?
 }
 
 TEST_CASE(testExpandEnvTilde)
@@ -322,6 +358,7 @@ TEST_CASE(testModifyVar2)
 
 TEST_MAIN(
     TEST_CHECK(testPathMerge);
+    TEST_CHECK(test_std_filesystem_is_absolute);
     TEST_CHECK(testExpandEnvTilde);
     TEST_CHECK(testExpandEnv);
     TEST_CHECK(testExpandEnvTildePath);
