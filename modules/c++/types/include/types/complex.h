@@ -133,25 +133,61 @@ inline auto& operator>>(std::basic_istream<CharT, Traits>& o, complex<T>& z)
     return o >> cast(z);
 }
 
-}
+} // namespace details
+
+// Clients shouldn't "know about" details::, but sometimes that know they want
+// a complex for integers.
+template<typename T>
+using zinteger_t = details::complex<T>;
+
+template<typename T>
+using zreal_t = std::complex<T>;
 
 // Have the compiler pick between std::complex and details::complex
-template<typename T>
-using complex = std::conditional_t<std::is_floating_point<T>::value, std::complex<T>, details::complex<T>>;
+//template<typename T>
+//using complex = std::conditional_t<std::is_floating_point<T>::value, zreal_t<T>, zinteger_t<T>>;
+
+// std::conditional_t makes for a very long and ugly type ... is this any better?
+namespace details
+{
+template <typename T>
+struct ztype final
+{
+    using type = zinteger_t<T>;
+};
+template <>
+struct ztype<float> final
+{
+    using type = zreal_t<float>;
+};
+template <>
+struct ztype<double> final
+{
+    using type = zreal_t<double>;
+};
+template <>
+struct ztype<long double> final
+{
+    using type = zreal_t<long double>;
+};
+} // namespace details
+ template<typename T>
+ using complex = typename details::ztype<T>::type;
+
 static_assert(std::is_same<details::complex<int>, complex<int>>::value, "should be details::complex<int>");
 static_assert(std::is_same<std::complex<float>, complex<float>>::value, "should be std::complex<float>");
 static_assert(sizeof(std::complex<short>) == sizeof(complex<short>), "sizeof(sizeof(std::complex<short>) != sizeof(complex<short>)");
 
 // Convenient aliases
-using zfloat = complex<float>; // std::complex<float>
-using zdouble = complex<double>; // std::complex<double>
-//using zlong_double = complex<long double>; // std::complex<long double>
+using zfloat = zreal_t<float>; // std::complex<float>
+using zdouble = zreal_t<double>; // std::complex<double>
+//using zlong_double = zreal_t<long double>; // std::complex<long double>
 
 // Intentionally using somewhat cumbersome names
-using zint8_t = complex<int8_t>;  // details:complex<int8_t>
-using zint16_t = complex<int16_t>;  // details:complex<int16_t>
-using zint32_t = complex<int32_t>;  // details::complex<int32_t>
-using zint64_t = complex<int64_t>;  // details::complex<int64_t>
+using zint8_t = zinteger_t<int8_t>;  // details:complex<int8_t>
+using zint16_t = zinteger_t<int16_t>;  // details:complex<int16_t>
+using zint32_t = zinteger_t<int32_t>;  // details::complex<int32_t>
+using zint64_t = zinteger_t<int64_t>;  // details::complex<int64_t>
 }
 
 #endif  // CODA_OSS_types_complex_h_INCLUDED_
