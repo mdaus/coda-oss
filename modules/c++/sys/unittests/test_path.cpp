@@ -112,7 +112,7 @@ TEST_CASE(test_std_filesystem_is_absolute)
     TEST_ASSERT_TRUE(slash.is_absolute());
 #endif
 
-    const std::filesystem::path url("https://example.com");
+    const std::filesystem::path url("http://example.com");
     TEST_ASSERT_FALSE(url.is_absolute());
     TEST_ASSERT_TRUE(url.is_relative());  // Should this be false?
 }
