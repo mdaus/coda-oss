@@ -24,6 +24,8 @@
 
 #include <config/compiler_extensions.h>
 #include <import/str.h>
+#include <types/complex.h>
+
 #include "TestCase.h"
 
 inline std::string to_string(const std::string& value)
@@ -225,6 +227,23 @@ TEST_CASE(testEscapeForXMLKitchenSink)
     TEST_ASSERT_EQ(message, expectedMessage);
 }
 
+TEST_CASE(test_toStringComplexFloat)
+{
+    const std::string expected("(1,-2)");
+
+    const std::complex<float> std_cx_float(1.0f, -2.0f);
+    auto actual = str::toString(std_cx_float);
+    TEST_ASSERT_EQ(actual, expected);
+
+    const types::complex<float> types_cx_float(1.0f, -2.0f);
+    actual = str::toString(types_cx_float);
+    TEST_ASSERT_EQ(actual, expected);
+
+    const types::zfloat zfloat(1.0f, -2.0f);
+    actual = str::toString(zfloat);
+    TEST_ASSERT_EQ(actual, expected);
+}
+
 TEST_MAIN(
     TEST_CHECK(testTrim);
     TEST_CHECK(testData);
@@ -247,4 +266,5 @@ TEST_MAIN(
     TEST_CHECK(testRoundDouble);
     TEST_CHECK(testEscapeForXMLNoReplace);
     TEST_CHECK(testEscapeForXMLKitchenSink);
+    TEST_CHECK(test_toStringComplexFloat);
     )
