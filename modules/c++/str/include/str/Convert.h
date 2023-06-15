@@ -198,7 +198,6 @@ inline std::string toString(const coda_oss::optional<T>& value)
 template <typename T>
 inline std::string toString(const T& real, const T& imag)
 {
-    static_assert(std::is_floating_point<T>::value, "std::complex<T> should use floating-point");
     return details::default_toString(std::complex<T>(real, imag));
 }
 

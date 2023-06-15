@@ -22,16 +22,9 @@
 
 #include <tuple> // std::ignore
 
-// TODO: remove this once TIntergers are switched to types::details::complex<TInteger>
-// '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
-#ifndef _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING
-#define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING
-#endif
-#include <complex>
-
+#include <types/complex.h>
 #include <config/compiler_extensions.h>
 #include <import/str.h>
-#include <types/complex.h>
 
 #include "TestCase.h"
 
@@ -301,7 +294,12 @@ TEST_CASE(test_toTypeComplexShort)
     auto strActual = str::toString(cx_actual);
     TEST_ASSERT_EQ(strActual, strValue);
 
+    CODA_OSS_disable_warning_push
+    #if _MSC_VER
+    #pragma warning(disable: 4996) // '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning
+    #endif
     auto zactual = str::toType<types::zinteger<short>>(strValue);
+    CODA_OSS_disable_warning_pop
     strActual = str::toString(zactual);
     TEST_ASSERT_EQ(strActual, strValue);
 
