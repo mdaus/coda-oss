@@ -280,7 +280,7 @@ TEST_CASE(test_toStringComplexShort)
     auto actual = str::toString(std_cx_short);
     TEST_ASSERT_EQ(actual, expected);
 
-    const types::zinteger<short> types_cx_short(1, -2);
+    const types::zinteger<short> types_cx_short(std_cx_short); // "copy constructor" or overload
     actual = str::toString(types_cx_short);
     TEST_ASSERT_EQ(actual, expected);
 
