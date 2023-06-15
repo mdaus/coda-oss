@@ -148,6 +148,38 @@ inline auto abs(const zintegerT<T>& z)
     return abs(cast(z));
 }
 
+// Control whether zinteger is std::complex or details::complex.
+// If it is std::complex, then a types::zinteger overload normally can't be
+// used as it will be the same as std::complex
+#ifdef CODA_OSS_types_FORCE_unique_zinteger // bypass checks below
+#define CODA_OSS_types_unique_zinteger 1
+#endif
+#ifdef CODA_OSS_types_NO_unique_zinteger
+#ifdef CODA_OSS_types_unique_zinteger
+#error "CODA_OSS_types_unique_zinteger already #define'd"
+#endif
+#define CODA_OSS_types_unique_zinteger 0
+#endif
+
+#ifndef CODA_OSS_types_unique_zinteger
+// If the warning about using std::complex<short> has been turned off, we might
+// as well use std:complex<short>.
+#ifdef _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING
+#define CODA_OSS_types_unique_zinteger 0
+#endif
+#endif
+
+#ifndef CODA_OSS_types_unique_zinteger
+#define CODA_OSS_types_unique_zinteger 1
+#endif
+
+template<typename T>
+#if CODA_OSS_types_unique_zinteger
+using zinteger = zintegerT<T>;
+#else
+using zinteger = std::complex<T>;
+#endif
+
 namespace details
 {
 // Explicit specializations so that clients can't do zreal<int>
@@ -165,24 +197,6 @@ template<> struct zreal<long double> final
     using type = std::complex<long double>;
 };
 } // namespace details
-
-// Control whether zinteger is std::complex or details::complex.
-// If it is std::complex, then a types::zinteger overload normally can't be
-// used as it will be the same as std::complex
-#ifdef CODA_OSS_types_NO_unique_zinteger
-#define CODA_OSS_types_unique_zinteger 0
-#endif
-#ifndef CODA_OSS_types_unique_zinteger
-#define CODA_OSS_types_unique_zinteger 1
-#endif
-
-template<typename T>
-#if CODA_OSS_types_unique_zinteger
-using zinteger = zintegerT<T>;
-#else
-using zinteger = std::complex<T>;
-#endif
-
 template<typename T>
 using zreal = typename details::zreal<T>::type;
 
