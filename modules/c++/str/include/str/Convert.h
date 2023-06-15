@@ -45,7 +45,7 @@
 namespace str
 {
 template <typename T> int getPrecision(const T& type);
-template <typename T> int getPrecision(const types::zreal<T>&);
+template <typename T> int getPrecision(const std::complex<T>&);
 template <typename T> int getPrecision(const types::zinteger<T>&);
 
 namespace details
@@ -330,7 +330,7 @@ int getPrecision(const T&)
 }
 
 template <typename T>
-int getPrecision(const types::zreal<T>& type)
+int getPrecision(const std::complex<T>& type)
 {
     return getPrecision(type.real());
 }
