@@ -37,15 +37,14 @@
 namespace types
 {
 /*!
- *  \class complex
+ *  \class zintegerT
  *  \brief Our own implementation of std::complex<T> for SIX and friends.
  *
- * `std::complex<TInt>` is no longer valid C++; provide a (partial) work-around.
- * See https://en.cppreference.com/w/cpp/numeric/complex for detals.
+ * `std::complex<TInteger>` is no longer valid C++; provide a (partial) work-around.
+ * See https://en.cppreference.com/w/cpp/numeric/complex for details.
  *
- * SIX (and others) mostly use `std::complex<TInt>` as a
- * convenient package for two values; very little "complex math" is done
- * using integers.
+ * SIX (and others) mostly use `std::complex<TInt>` as a convenient
+ * package for two values; very little "complex math" is done using integers.
  */
 template <typename T>
 struct zintegerT final
@@ -54,20 +53,15 @@ struct zintegerT final
     static_assert(!std::is_floating_point<T>::value, "Use std::complex<T> for floating-point.");
     static_assert(std::is_signed<T>::value, "T should be a signed integer.");
 
-    zintegerT(value_type re = 0, value_type im = 0) : z{re, im}
-    {
-    }
+    zintegerT(value_type re = 0, value_type im = 0) : z{re, im} { }
     zintegerT(const zintegerT&) = default;
     zintegerT& operator=(const zintegerT&) = default;
     zintegerT(zintegerT&&) = default;
     zintegerT& operator=(zintegerT&&) = default;
     ~zintegerT() = default;
 
-    // If someone already has a std::complex<TInt>, is there any harm in
-    // creating ours?
-    zintegerT(const std::complex<value_type>& z_) : zintegerT(z_.real(), z_.imag())
-    {
-    }
+    // If someone already has a std::complex<value_type>, is there any harm in creating ours?
+    zintegerT(const std::complex<value_type>& z_) : zintegerT(z_.real(), z_.imag()) { }
 
     value_type real() const
     {
@@ -95,21 +89,18 @@ CODA_OSS_disable_warning_push
 #ifdef _MSC_VER
 #pragma warning(disable : 4996)  // '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
 #endif
+// Getting different results with GCC vs MSVC :-(  So just use
+// std::complex<short> Assume by the time we're actually using C++23 with a
+// compiler that enforces this restriction, "something" will be different.
 template <typename T>
 inline const std::complex<T>& cast(const zintegerT<T>& z)
 {
-    // Getting different results with GCC vs MSVC :-(  So just use
-    // std::complex<short> Assume by the time we're actually using C++23 with a
-    // compiler that enforces this restriction, "something" will be different.
     const void* const pZ_ = &z;
     return *static_cast<const std::complex<T>*>(pZ_);
 }
 template <typename T>
 inline std::complex<T>& cast(zintegerT<T>& z)
 {
-    // Getting different results with GCC vs MSVC :-(  So just use
-    // std::complex<short> Assume by the time we're actually using C++23 with a
-    // compiler that enforces this restriction, "something" will be different.
     void* const pZ_ = &z;
     return *static_cast<std::complex<T>*>(pZ_);
 }
@@ -139,16 +130,14 @@ inline bool operator!=(const zintegerT<T>& lhs, const zintegerT<T>& rhs)
     return !(lhs == rhs);
 }
 
-// Keep functions like abs() to a minimum; complex math probably shouldn't
-// be done with integers.
-// https://en.cppreference.com/w/cpp/numeric/complex/abs
+// Keep functions like abs() to a minimum; complex math probably shouldn't be done with integers.
 template <typename T>
-inline auto abs(const zintegerT<T>& z)
+inline auto abs(const zintegerT<T>& z) // https://en.cppreference.com/w/cpp/numeric/complex/abs
 {
     return abs(cast(z));
 }
 
-// Control whether zinteger is std::complex or details::complex.
+// Control whether zinteger is std::complex or details::zintegerT.
 // If it is std::complex, then a types::zinteger overload normally can't be
 // used as it will be the same as std::complex
 #ifdef CODA_OSS_types_FORCE_unique_zinteger // bypass checks below
