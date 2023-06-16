@@ -61,7 +61,13 @@ struct Complex final
     ~Complex() = default;
 
     // If someone already has a std::complex<value_type>, is there any harm in creating ours?
-    Complex(const std::complex<value_type>& z_) : Complex(z_.real(), z_.imag()) { }
+    Complex(const std::complex<value_type>& other) : Complex(other.real(), other.imag()) { }
+    Complex& operator=(const std::complex<value_type>& other)
+    {
+        real(other.real());
+        imag(other.imag());
+        return *this;
+    }
 
     value_type real() const
     {
