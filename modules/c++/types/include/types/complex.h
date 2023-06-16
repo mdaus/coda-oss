@@ -69,6 +69,23 @@ struct Complex final
         return *this;
     }
 
+    CODA_OSS_disable_warning_push
+    #ifdef _MSC_VER
+    #pragma warning(disable : 4996)  // '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
+    #endif
+    // Better interop with existing code? Creates ambiguities?
+    operator const std::complex<T>&() const
+    {
+        const void* const pThis = this;
+        return *static_cast<const std::complex<T>*>(pThis);
+    }
+    operator std::complex<T>&()
+    {
+        void* const pThis = this;
+        return *static_cast<std::complex<T>*>(pThis);
+    }
+    CODA_OSS_disable_warning_pop
+
     value_type real() const
     {
         return z[0];
@@ -91,6 +108,8 @@ private:
     value_type z[2]{0, 0};
 };
 
+namespace details
+{
 CODA_OSS_disable_warning_push
 #ifdef _MSC_VER
 #pragma warning(disable : 4996)  // '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
@@ -111,17 +130,18 @@ inline std::complex<T>& cast(Complex<T>& z)
     return *static_cast<std::complex<T>*>(pZ_);
 }
 CODA_OSS_disable_warning_pop
+}
 
 // https://en.cppreference.com/w/cpp/numeric/complex/operator_ltltgtgt
 template <typename T, typename CharT, typename Traits>
 inline auto& operator<<(std::basic_ostream<CharT, Traits>& o, const Complex<T>& z)
 {
-    return o << cast(z);
+    return o << details::cast(z);
 }
 template <typename T, typename CharT, typename Traits>
 inline auto& operator>>(std::basic_istream<CharT, Traits>& o, Complex<T>& z)
 {
-    return o >> cast(z);
+    return o >> details::cast(z);
 }
 
 // https://en.cppreference.com/w/cpp/numeric/complex/operator_cmp
@@ -140,7 +160,7 @@ inline bool operator!=(const Complex<T>& lhs, const Complex<T>& rhs)
 template <typename T>
 inline auto abs(const Complex<T>& z) // https://en.cppreference.com/w/cpp/numeric/complex/abs
 {
-    return abs(cast(z));
+    return abs(details::cast(z));
 }
 
 // Control whether zinteger is std::complex or details::zintegerT.
