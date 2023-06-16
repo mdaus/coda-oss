@@ -22,8 +22,8 @@
  */
 
 #pragma once
-#ifndef CODA_OSS_types_complex_h_INCLUDED_
-#define CODA_OSS_types_complex_h_INCLUDED_
+#ifndef CODA_OSS_types_Complex_h_INCLUDED_
+#define CODA_OSS_types_Complex_h_INCLUDED_
 
 #include <stdint.h>
 
@@ -37,7 +37,7 @@
 namespace types
 {
 /*!
- *  \class zintegerT
+ *  \class Complex
  *  \brief Our own implementation of std::complex<T> for SIX and friends.
  *
  * `std::complex<TInteger>` is no longer valid C++; provide a (partial) work-around.
@@ -47,21 +47,21 @@ namespace types
  * package for two values; very little "complex math" is done using integers.
  */
 template <typename T>
-struct zintegerT final
+struct Complex final
 {
     using value_type = T;
     static_assert(!std::is_floating_point<T>::value, "Use std::complex<T> for floating-point.");
     static_assert(std::is_signed<T>::value, "T should be a signed integer.");
 
-    zintegerT(value_type re = 0, value_type im = 0) : z{re, im} { }
-    zintegerT(const zintegerT&) = default;
-    zintegerT& operator=(const zintegerT&) = default;
-    zintegerT(zintegerT&&) = default;
-    zintegerT& operator=(zintegerT&&) = default;
-    ~zintegerT() = default;
+    Complex(value_type re = 0, value_type im = 0) : z{re, im} { }
+    Complex(const Complex&) = default;
+    Complex& operator=(const Complex&) = default;
+    Complex(Complex&&) = default;
+    Complex& operator=(Complex&&) = default;
+    ~Complex() = default;
 
     // If someone already has a std::complex<value_type>, is there any harm in creating ours?
-    zintegerT(const std::complex<value_type>& z_) : zintegerT(z_.real(), z_.imag()) { }
+    Complex(const std::complex<value_type>& z_) : Complex(z_.real(), z_.imag()) { }
 
     value_type real() const
     {
@@ -93,13 +93,13 @@ CODA_OSS_disable_warning_push
 // std::complex<short> Assume by the time we're actually using C++23 with a
 // compiler that enforces this restriction, "something" will be different.
 template <typename T>
-inline const std::complex<T>& cast(const zintegerT<T>& z)
+inline const std::complex<T>& cast(const Complex<T>& z)
 {
     const void* const pZ_ = &z;
     return *static_cast<const std::complex<T>*>(pZ_);
 }
 template <typename T>
-inline std::complex<T>& cast(zintegerT<T>& z)
+inline std::complex<T>& cast(Complex<T>& z)
 {
     void* const pZ_ = &z;
     return *static_cast<std::complex<T>*>(pZ_);
@@ -108,31 +108,31 @@ CODA_OSS_disable_warning_pop
 
 // https://en.cppreference.com/w/cpp/numeric/complex/operator_ltltgtgt
 template <typename T, typename CharT, typename Traits>
-inline auto& operator<<(std::basic_ostream<CharT, Traits>& o, const zintegerT<T>& z)
+inline auto& operator<<(std::basic_ostream<CharT, Traits>& o, const Complex<T>& z)
 {
     return o << cast(z);
 }
 template <typename T, typename CharT, typename Traits>
-inline auto& operator>>(std::basic_istream<CharT, Traits>& o, zintegerT<T>& z)
+inline auto& operator>>(std::basic_istream<CharT, Traits>& o, Complex<T>& z)
 {
     return o >> cast(z);
 }
 
 // https://en.cppreference.com/w/cpp/numeric/complex/operator_cmp
 template <typename T>
-inline bool operator==(const zintegerT<T>& lhs, const zintegerT<T>& rhs)
+inline bool operator==(const Complex<T>& lhs, const Complex<T>& rhs)
 {
     return (lhs.real() == rhs.real()) && (lhs.imag() == rhs.imag());
 }
 template <typename T>
-inline bool operator!=(const zintegerT<T>& lhs, const zintegerT<T>& rhs)
+inline bool operator!=(const Complex<T>& lhs, const Complex<T>& rhs)
 {
     return !(lhs == rhs);
 }
 
 // Keep functions like abs() to a minimum; complex math probably shouldn't be done with integers.
 template <typename T>
-inline auto abs(const zintegerT<T>& z) // https://en.cppreference.com/w/cpp/numeric/complex/abs
+inline auto abs(const Complex<T>& z) // https://en.cppreference.com/w/cpp/numeric/complex/abs
 {
     return abs(cast(z));
 }
@@ -164,7 +164,7 @@ inline auto abs(const zintegerT<T>& z) // https://en.cppreference.com/w/cpp/nume
 
 template<typename T>
 #if CODA_OSS_types_unique_zinteger
-using zinteger = zintegerT<T>;
+using zinteger = Complex<T>;
 #else
 using zinteger = std::complex<T>;
 #endif
@@ -193,20 +193,20 @@ using zreal = typename details::zreal<T>::type;
 // that is generic for both integer and real complex types; recall that the primary
 // use of `std::integer<short>` is a "convenient package" for two values.
 // 
-//Have the compiler pick between std::complex and details::complex
+//Have the compiler pick between std::complex and Complex
 //template<typename T>
-//using complex = std::conditional_t<std::is_floating_point<T>::value, zreal_t<T>, zinteger_t<T>>;
-static_assert(sizeof(std::complex<short>) == sizeof(zintegerT<short>), "sizeof(sizeof(std::complex<short>) != sizeof(zintegerT<short>)");
+//using complex = std::conditional_t<std::is_floating_point<T>::value, zreal<T>, Complex<T>>;
+static_assert(sizeof(std::complex<short>) == sizeof(Complex<short>), "sizeof(sizeof(std::complex<short>) != sizeof(Complex<short>)");
 static_assert(std::is_same<std::complex<float>, zreal<float>>::value, "should be std::complex<float>");
 
 // Convenient aliases
 using zfloat = zreal<float>; // std::complex<float>
 using zdouble = zreal<double>; // std::complex<double>
 //using zlong_double = zreal_t<long double>; // std::complex<long double>
-using zint8_t = zinteger<int8_t>;  // details:complex<int8_t>
-using zint16_t = zinteger<int16_t>;  // details:complex<int16_t>
-using zint32_t = zinteger<int32_t>;  // details::complex<int32_t>
-using zint64_t = zinteger<int64_t>;  // details::complex<int64_t>
+using zint8_t = zinteger<int8_t>;  // Complex<int8_t>
+using zint16_t = zinteger<int16_t>;  // Complex<int16_t>
+using zint32_t = zinteger<int32_t>;  // Complex<int32_t>
+using zint64_t = zinteger<int64_t>;  // Complex<int64_t>
 }
 
-#endif  // CODA_OSS_types_complex_h_INCLUDED_
+#endif  // CODA_OSS_types_Complex_h_INCLUDED_
