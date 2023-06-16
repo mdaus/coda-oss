@@ -407,6 +407,7 @@
     <None Include="std\include\std\cstddef" />
     <None Include="std\include\std\filesystem" />
     <None Include="std\include\std\memory" />
+    <None Include="std\include\std\numbers" />
     <None Include="std\include\std\optional" />
     <None Include="std\include\std\span" />
     <None Include="std\include\std\string" />

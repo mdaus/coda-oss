@@ -1225,5 +1225,8 @@
     <None Include="sys\include\sys\sys_config.h.cmake.in">
       <Filter>sys</Filter>
     </None>
+    <None Include="std\include\std\numbers">
+      <Filter>std</Filter>
+    </None>
   </ItemGroup>
 </Project>
