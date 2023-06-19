@@ -69,6 +69,7 @@ struct Complex final
         return *this;
     }
 
+    #if defined(CODA_OSS_types_Complex_implicit_cast) || defined(_SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING)
     CODA_OSS_disable_warning_push
     #ifdef _MSC_VER
     #pragma warning(disable : 4996)  // '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
@@ -85,6 +86,7 @@ struct Complex final
         return *static_cast<std::complex<T>*>(pThis);
     }
     CODA_OSS_disable_warning_pop
+    #endif // CODA_OSS_types_Complex_implicit_cast || _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING
 
     value_type real() const
     {
@@ -163,76 +165,69 @@ inline auto abs(const Complex<T>& z) // https://en.cppreference.com/w/cpp/numeri
     return abs(details::cast(z));
 }
 
-// Control whether zinteger is std::complex or details::zintegerT.
-// If it is std::complex, then a types::zinteger overload normally can't be
+// Control whether ComplexInteger is std::complex or Complex.
+// If it is std::complex, then a types::ComplexInteger overload normally can't be
 // used as it will be the same as std::complex
-#ifdef CODA_OSS_types_FORCE_unique_zinteger // bypass checks below
-#define CODA_OSS_types_unique_zinteger 1
+#ifdef CODA_OSS_types_FORCE_unique_ComplexInteger // bypass checks below
+#define CODA_OSS_types_unique_ComplexInteger 1
 #endif
-#ifdef CODA_OSS_types_NO_unique_zinteger
-#ifdef CODA_OSS_types_unique_zinteger
-#error "CODA_OSS_types_unique_zinteger already #define'd"
+#ifdef CODA_OSS_types_NO_unique_ComplexInteger
+#ifdef CODA_OSS_types_unique_ComplexInteger
+#error "CODA_OSS_types_unique_ComplexInteger already #define'd"
 #endif
-#define CODA_OSS_types_unique_zinteger 0
+#define CODA_OSS_types_unique_ComplexInteger 0
 #endif
 
-#ifndef CODA_OSS_types_unique_zinteger
+#ifndef CODA_OSS_types_unique_ComplexInteger
 // If the warning about using std::complex<short> has been turned off, we might
 // as well use std:complex<short>.
 #ifdef _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING
-#define CODA_OSS_types_unique_zinteger 0
+#define CODA_OSS_types_unique_ComplexInteger 0
 #endif
 #endif
 
-#ifndef CODA_OSS_types_unique_zinteger
-#define CODA_OSS_types_unique_zinteger 1
+#ifndef CODA_OSS_types_unique_ComplexInteger
+#define CODA_OSS_types_unique_ComplexInteger 1
 #endif
 
 template<typename T>
-#if CODA_OSS_types_unique_zinteger
-using zinteger = Complex<T>;
+#if CODA_OSS_types_unique_ComplexInteger
+using ComplexInteger = Complex<T>;
 #else
-using zinteger = std::complex<T>;
+using ComplexInteger = std::complex<T>;
 #endif
 
 namespace details
 {
-// Explicit specializations so that clients can't do zreal<int>
-template<typename T> struct zreal;
-template<> struct zreal<float> final
+// This circumlocution is to prevent clients from doing `ComplexReal<int>`.
+// (And also to use the word "circumlocution." :-) )
+template<typename T> struct ComplexReal
 {
-    using type = std::complex<float>;
-};
-template<> struct zreal<double> final
-{
-    using type = std::complex<double>;
-};
-template<> struct zreal<long double> final
-{
-    using type = std::complex<long double>;
+    static_assert(std::is_floating_point<T>::value, "T must be floating-point.");
+    using type = std::complex<T>;
 };
 } // namespace details
 template<typename T>
-using zreal = typename details::zreal<T>::type;
+using ComplexReal = typename details::ComplexReal<T>::type;
 
 // This might be more trouble than it's worth: there really isn't that much code
 // that is generic for both integer and real complex types; recall that the primary
-// use of `std::integer<short>` is a "convenient package" for two values.
+// use of `std::complex<short>` is a "convenient package" for two values.
 // 
 //Have the compiler pick between std::complex and Complex
 //template<typename T>
-//using complex = std::conditional_t<std::is_floating_point<T>::value, zreal<T>, Complex<T>>;
+//using complex = std::conditional_t<std::is_floating_point<T>::value, ComplexReal<T>, ComplexInteger<T>>;
 static_assert(sizeof(std::complex<short>) == sizeof(Complex<short>), "sizeof(sizeof(std::complex<short>) != sizeof(Complex<short>)");
-static_assert(std::is_same<std::complex<float>, zreal<float>>::value, "should be std::complex<float>");
+static_assert(std::is_same<std::complex<float>, ComplexReal<float>>::value, "should be std::complex<float>");
 
 // Convenient aliases
-using zfloat = zreal<float>; // std::complex<float>
-using zdouble = zreal<double>; // std::complex<double>
-//using zlong_double = zreal_t<long double>; // std::complex<long double>
-using zint8_t = zinteger<int8_t>;  // Complex<int8_t>
-using zint16_t = zinteger<int16_t>;  // Complex<int16_t>
-using zint32_t = zinteger<int32_t>;  // Complex<int32_t>
-using zint64_t = zinteger<int64_t>;  // Complex<int64_t>
+using zfloat = ComplexReal<float>; // std::complex<float>
+using zdouble = ComplexReal<double>; // std::complex<double>
+//using zlong_double = ComplexReal<long double>; // std::complex<long double>
+using zint8_t = ComplexInteger<int8_t>;  // Complex<int8_t>
+using zint16_t = ComplexInteger<int16_t>;  // Complex<int16_t>
+using zint32_t = ComplexInteger<int32_t>;  // Complex<int32_t>
+using zint64_t = ComplexInteger<int64_t>;  // Complex<int64_t>
 }
 
 #endif  // CODA_OSS_types_Complex_h_INCLUDED_
