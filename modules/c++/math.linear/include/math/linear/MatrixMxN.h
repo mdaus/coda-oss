@@ -30,6 +30,8 @@
 
 #include <import/sys.h>
 #include "coda_oss/span.h"
+#include <sys/Span.h>
+
 #include "math/linear/LinearMath.h"
 
 namespace math
@@ -125,13 +127,13 @@ public:
 
     //!  Public but really should be avoided
     _T mRaw[_MD][_ND]{};
-    coda_oss::span<_T> as_span()
+    auto as_span()
     {
-        return coda_oss::span<_T>(&(mRaw[0][0]), size());
+        return sys::make_span(&(mRaw[0][0]), size());
     }
-    coda_oss::span<const _T> as_span() const
+    auto as_span() const
     {
-        return coda_oss::span<const _T>(&(mRaw[0][0]), size());
+        return sys::make_const_span(&(mRaw[0][0]), size());
     }
 
     MatrixMxN() = default;

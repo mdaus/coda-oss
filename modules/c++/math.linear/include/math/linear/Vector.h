@@ -194,11 +194,11 @@ public:
     //!  Get back a const-vector
     const _T* get() const { return mRaw.get(); }
     
-    coda_oss::span<_T> as_span()
+    auto as_span()
     {
         return mRaw.as_span();
     }
-    coda_oss::span<const _T> as_span() const
+    auto as_span() const
     {
         return mRaw.as_span();
     }

@@ -118,23 +118,26 @@ inline T normDot(coda_oss::span<const T> lhs, coda_oss::span<const T> rhs)
 /*
 * Angle between this vector and v
 */
+namespace details
+{
 template<typename T>
-inline T angle_(coda_oss::span<const T> lhs, coda_oss::span<const T> rhs, T dotProduct)
+inline T angle(coda_oss::span<const T> lhs, coda_oss::span<const T> rhs, T dotProduct)
 {
     const auto val = (dotProduct / norm(lhs)) / norm(rhs);
     return std::acos(std::max(-1.0, std::min(val, 1.0)));
+}
 }
 template<typename T>
 inline T angle(coda_oss::span<const T> lhs, coda_oss::span<const T> rhs, std::nothrow_t)
 {
     const auto dotProduct = dot(lhs, rhs, std::nothrow);
-    return angle_(lhs, rhs, dotProduct);
+    return details::angle(lhs, rhs, dotProduct);
 }
 template<typename T>
 inline T angle(coda_oss::span<const T> lhs, coda_oss::span<const T> rhs)
 {
     const auto dotProduct = dot(lhs, rhs);
-    return angle_(lhs, rhs, dotProduct);
+    return details::angle(lhs, rhs, dotProduct);
 }
 
 /*!

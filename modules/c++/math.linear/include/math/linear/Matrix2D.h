@@ -33,6 +33,8 @@
 #include <mem/ScopedArray.h>
 #include <mem/SharedPtr.h>
 #include <coda_oss/span.h>
+#include <sys/Span.h>
+
 #include <math/linear/MatrixMxN.h>
 #include <math/linear/LinearMath.h>
 
@@ -453,14 +455,15 @@ public:
 
     //! Get a constant ref to the underlying vector
     const _T* get() const { return mRaw; }
+    _T* get_() { return mRaw; }
     
-    coda_oss::span<_T> as_span()
+    auto as_span()
     {
-        return coda_oss::span<_T>(mRaw, size());
+        return sys::make_span(get_(), size());
     }
-    coda_oss::span<const _T> as_span() const
+    auto as_span() const
     {
-        return coda_oss::span<const _T>(mRaw, size());
+        return sys::make_span(get(), size());
     }
 
     /*!

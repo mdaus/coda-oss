@@ -750,6 +750,9 @@
     <ClInclude Include="types\include\types\Complex.h">
       <Filter>types</Filter>
     </ClInclude>
+    <ClInclude Include="math.linear\include\math\linear\LinearMath.h">
+      <Filter>math.linear</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
