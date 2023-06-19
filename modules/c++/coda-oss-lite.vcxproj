@@ -20,6 +20,7 @@
     <ClInclude Include="coda_oss\include\coda_oss\CPlusPlus.h" />
     <ClInclude Include="coda_oss\include\coda_oss\cstddef.h" />
     <ClInclude Include="coda_oss\include\coda_oss\namespace_.h" />
+    <ClInclude Include="coda_oss\include\coda_oss\numbers.h" />
     <ClInclude Include="coda_oss\include\coda_oss\optional.h" />
     <ClInclude Include="coda_oss\include\coda_oss\optional_.h" />
     <ClInclude Include="coda_oss\include\coda_oss\span.h" />

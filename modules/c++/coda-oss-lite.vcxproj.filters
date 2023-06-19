@@ -750,6 +750,9 @@
     <ClInclude Include="types\include\types\Complex.h">
       <Filter>types</Filter>
     </ClInclude>
+    <ClInclude Include="coda_oss\include\coda_oss\numbers.h">
+      <Filter>coda_oss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
