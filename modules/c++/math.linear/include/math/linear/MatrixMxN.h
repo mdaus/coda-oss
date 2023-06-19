@@ -127,13 +127,17 @@ public:
 
     //!  Public but really should be avoided
     _T mRaw[_MD][_ND]{};
-    auto as_span()
+    //! Get a constant ref to the underlying vector
+    const _T* get_() const { return &(mRaw[0][0]); }
+    _T* get_() { return &(mRaw[0][0]); }
+
+    coda_oss::span<_T> as_span()  // SWIG bindings don't like `auto` :-(
     {
-        return sys::make_span(&(mRaw[0][0]), size());
+        return sys::make_span(get_(), size());
     }
-    auto as_span() const
+    coda_oss::span<const _T> as_span() const  // SWIG bindings don't like `auto` :-(
     {
-        return sys::make_const_span(&(mRaw[0][0]), size());
+        return sys::make_span(get_(), size());
     }
 
     MatrixMxN() = default;

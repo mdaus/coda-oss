@@ -177,11 +177,11 @@ public:
 
     constexpr size_t size() const noexcept { return _ND; }
 
-    auto as_span()
+    coda_oss::span<_T> as_span()  // SWIG bindings don't like `auto` :-(
     {
         return mRaw.as_span();
     }
-    auto as_span() const
+    coda_oss::span<const _T> as_span() const // SWIG bindings don't like `auto` :-(
     {
         return mRaw.as_span();
     }

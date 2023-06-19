@@ -457,11 +457,11 @@ public:
     const _T* get() const { return mRaw; }
     _T* get_() { return mRaw; }
     
-    auto as_span()
+    coda_oss::span<_T> as_span() // SWIG bindings don't like `auto` :-(
     {
         return sys::make_span(get_(), size());
     }
-    auto as_span() const
+    coda_oss::span<const _T> as_span() const // SWIG bindings don't like `auto` :-(
     {
         return sys::make_span(get(), size());
     }

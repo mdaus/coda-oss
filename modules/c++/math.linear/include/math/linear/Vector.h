@@ -194,11 +194,11 @@ public:
     //!  Get back a const-vector
     const _T* get() const { return mRaw.get(); }
     
-    auto as_span()
+    coda_oss::span<_T> as_span()  // SWIG bindings don't like `auto` :-(
     {
         return mRaw.as_span();
     }
-    auto as_span() const
+    coda_oss::span<const _T> as_span() const // SWIG bindings don't like `auto` :-(
     {
         return mRaw.as_span();
     }
