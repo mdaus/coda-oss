@@ -65,4 +65,5 @@ add_subdirectory("numpyutils")
 add_subdirectory("hdf5.lite")
 add_subdirectory("gsl")
 add_subdirectory("std")
+add_subdirectory("simd")
 
