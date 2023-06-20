@@ -753,6 +753,9 @@
     <ClInclude Include="simd\include\simd\Vec.h">
       <Filter>simd</Filter>
     </ClInclude>
+    <ClInclude Include="simd\include\simd\Math.h">
+      <Filter>simd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1094,6 +1097,9 @@
     </ClCompile>
     <ClCompile Include="sys\source\File.cpp">
       <Filter>sys</Filter>
+    </ClCompile>
+    <ClCompile Include="simd\source\Math.cpp">
+      <Filter>simd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

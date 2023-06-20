@@ -98,6 +98,7 @@
 #include <import/re.h>
 #include "io/StringStream.h"
 #include <simd/Vec.h>
+#include <simd/Math.h>
 
 #include "TestCase.h"
 
