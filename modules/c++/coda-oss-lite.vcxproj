@@ -165,6 +165,7 @@
     <ClInclude Include="re\include\re\Regex.h" />
     <ClInclude Include="re\include\re\RegexException.h" />
     <ClInclude Include="re\include\re\RegexPredicate.h" />
+    <ClInclude Include="simd\include\simd\Vec.h" />
     <ClInclude Include="sio.lite\include\sio\lite\ElementType.h" />
     <ClInclude Include="sio.lite\include\sio\lite\FileHeader.h" />
     <ClInclude Include="sio.lite\include\sio\lite\FileReader.h" />
@@ -460,7 +461,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL;MT_DEFAULT_PINNING=0;RE_ENABLE_STD_REGEX=1</PreprocessorDefinitions>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;plugin\include\;polygon\include\;re\include\;sio.lite\include\;std\include\;str\include\;sys\include\;tiff\include;types\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;plugin\include\;polygon\include\;re\include\;sio.lite\include\;simd\include\;std\include\;str\include\;sys\include\;tiff\include\;types\include\;out\install\$(Platform)-$(Configuration)\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -489,7 +490,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL;MT_DEFAULT_PINNING=0;RE_ENABLE_STD_REGEX=1</PreprocessorDefinitions>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;plugin\include\;polygon\include\;re\include\;sio.lite\include\;std\include\;str\include\;sys\include\;tiff\include;types\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;plugin\include\;polygon\include\;re\include\;sio.lite\include\;simd\include\;std\include\;str\include\;sys\include\;tiff\include\;types\include\;out\install\$(Platform)-$(Configuration)\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

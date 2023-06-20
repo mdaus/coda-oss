@@ -750,6 +750,9 @@
     <ClInclude Include="coda_oss\include\coda_oss\numbers.h">
       <Filter>coda_oss</Filter>
     </ClInclude>
+    <ClInclude Include="simd\include\simd\Vec.h">
+      <Filter>simd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1165,6 +1168,9 @@
     </Filter>
     <Filter Include="plugin">
       <UniqueIdentifier>{387bc6cb-323a-42b3-8502-4fac72586d12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="simd">
+      <UniqueIdentifier>{6c0dc6f5-4522-45b7-8c1b-42216f605bd1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

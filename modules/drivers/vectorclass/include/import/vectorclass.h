@@ -24,8 +24,11 @@
 #ifndef CODA_OSS_import_vectorclass_h_INCLUDED_
 #define CODA_OSS_import_vectorclass_h_INCLUDED_
 
-#include "config/CPlusPlus.h"
+#include "coda_oss/CPlusPlus.h"
 
+#ifndef VCL_NAMESPACE
+#define VCL_NAMESPACE vcl // put stuff in vcl namespace
+#endif
 #if CODA_OSS_cpp17
 #include "vectorclass/version2/vectorclass.h"
 #else

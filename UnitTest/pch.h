@@ -97,6 +97,7 @@
 #include <import/logging.h>
 #include <import/re.h>
 #include "io/StringStream.h"
+#include <simd/Vec.h>
 
 #include "TestCase.h"
 

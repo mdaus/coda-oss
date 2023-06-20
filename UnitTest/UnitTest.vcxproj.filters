@@ -225,6 +225,9 @@
     <ClCompile Include="..\modules\c++\types\unittests\test_complex.cpp">
       <Filter>types</Filter>
     </ClCompile>
+    <ClCompile Include="simd.cpp">
+      <Filter>simd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -275,6 +278,9 @@
     </Filter>
     <Filter Include="re">
       <UniqueIdentifier>{d205c017-7e98-456f-923f-2f78870a3d7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="simd">
+      <UniqueIdentifier>{c14bee11-ddfb-48c7-b9bb-19b929441ba6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
