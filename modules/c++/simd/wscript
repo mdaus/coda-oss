@@ -1,7 +1,7 @@
 NAME            = 'simd'
 VERSION         = '1.0'
 MODULE_DEPS     = 'vectorclass coda_oss config gsl sys'
-TEST_DEPS       = 'std'
+UNITTEST_DEPS       = 'std'
 
 options = configure = distclean = lambda p: None
 
