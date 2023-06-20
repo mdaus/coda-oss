@@ -23,25 +23,53 @@
 
 #include "simd/Math.h"
 
+#include <iterator>
+
+#include "simd/Vec.h"
+
 void simd::Sin(coda_oss::span<const float> inputs, coda_oss::span<float> outputs)
 {
-	// TODO: better implementation! This is just to get something going ...
     auto begin = inputs.begin();
     const auto end = inputs.end();
     auto it = outputs.begin();
+
+    constexpr size_t width = 8;
+    simd::Vec<float, width> vec;  // i.e., vcl::Vec4f
+
     while (begin != end)
     {
-        *it++ = sin(*begin++);
+        // load_a() requires very strict alignment
+        vec.load(&(*begin));
+
+        const auto results = sin(vec);
+
+        // ditto for store_a()
+        results.store(&(*it));
+
+        std::advance(begin, width);
+        std::advance(it, width);
     }
 }
 void simd::Sin(coda_oss::span<const double> inputs, coda_oss::span<double> outputs)
 {
-	// TODO: better implementation! This is just to get something going ...
     auto begin = inputs.begin();
     const auto end = inputs.end();
     auto it = outputs.begin();
+
+    constexpr size_t width = 4;
+    simd::Vec<double, width> vec; // i.e., vcl::Vec4d
+
     while (begin != end)
     {
-        *it++ = sin(*begin++);
+        // load_a() requires very strict alignment
+        vec.load(&(*begin));
+
+        const auto results = sin(vec);
+
+        // ditto for store_a()
+        results.store(&(*it));
+
+        std::advance(begin, width);
+        std::advance(it, width);
     }
 }

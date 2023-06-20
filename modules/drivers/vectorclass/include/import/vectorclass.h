@@ -31,8 +31,10 @@
 #endif
 #if CODA_OSS_cpp17
 #include "vectorclass/version2/vectorclass.h"
+#include "vectorclass/version2/vectormath_trig.h"
 #else
 #include "vectorclass/version1/vectorclass.h"
+#include "vectorclass/version2/vectormath_trig.h"
 #endif
 
 #endif // CODA_OSS_import_vectorclass_h_INCLUDED_

@@ -61,6 +61,23 @@ struct Vec<float, 16> final
 {
     using type = vcl::Vec16f;
 };
+
+template <>
+struct Vec<double, 2> final
+{
+    using type = vcl::Vec2d;
+};
+template <>
+struct Vec<double, 4> final
+{
+    using type = vcl::Vec4d;
+};
+template <>
+struct Vec<double, 8> final
+{
+    using type = vcl::Vec8d;
+};
+
 }
 
 template <typename T, size_t elements_per_vector>
