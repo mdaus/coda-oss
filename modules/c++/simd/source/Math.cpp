@@ -53,37 +53,37 @@ Vec16f          single          16 			512 		AVX512
 Vec8d           double          8 			512 		AVX512
 */
 template<typename T>
-inline size_t getSSE2Width();
+constexpr size_t getSSE2Width();
 template <typename T>
-inline size_t getAVXWidth();
+constexpr size_t getAVXWidth();
 template <typename T>
-inline size_t getAVX512Width();
+constexpr size_t getAVX512Width();
 
-template<> static inline size_t getSSE2Width<float>()
+template<> constexpr size_t getSSE2Width<float>()
 {
-    return isSSE2() ? 4 : 0;
+    return 4;
 }
-template <> static inline size_t getSSE2Width<double>()
+template <> constexpr size_t getSSE2Width<double>()
 {
-    return isSSE2() ? 2 : 0;
-}
-
-template<> static inline size_t getAVXWidth<float>()
-{
-    return isAVX() ? 8 : 0;
-}
-template <> static inline size_t getAVXWidth<double>()
-{
-    return isAVX() ? 4 : 0;
+    return 2;
 }
 
-template<> static inline size_t getAVX512Width<float>()
+template<> constexpr size_t getAVXWidth<float>()
 {
-    return isAVX() ? 16 : 0;
+    return 8;
 }
-template <> static inline size_t getAVX512Width<double>()
+template <> constexpr size_t getAVXWidth<double>()
 {
-    return isAVX() ? 8 : 0;
+    return 4;
+}
+
+template<> constexpr size_t getAVX512Width<float>()
+{
+    return 16;
+}
+template <> constexpr size_t getAVX512Width<double>()
+{
+    return 8;
 }
 
 template<typename T>
@@ -105,15 +105,46 @@ inline size_t getWidth()
     throw std::runtime_error("Must have at least SSE2.");
 }
 
-template <size_t width, typename T>
-inline void Sin_(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
+template <size_t width, typename T, typename TFunc>
+inline size_t simd_Func(coda_oss::span<const T> inputs, coda_oss::span<T> outputs,
+    TFunc f)
+{
+    simd::Vec<T, width> vec;  // i.e., vcl::Vec8f
+
+    const auto inputs_size = inputs.size() < width ? 0 : inputs.size() - width;  // don't walk off end with `+= width`
+    size_t i = 0;
+    for (; i < inputs_size; i += width)
+    {
+        auto const pInputs = &(inputs[i]);
+        vec.load(pInputs);  // load_a() requires very strict alignment
+
+        const auto results = f(vec);
+
+        auto const pOutputs = &(outputs[i]);
+        results.store(pOutputs);  // store_a() requires very strict alignment
+    }
+    return i;
+}
+
+template <typename T, typename TFunc>
+inline void slow_Func(size_t i, coda_oss::span<const T> inputs, coda_oss::span<T> outputs,
+    TFunc f)
+{
+    // Finish any remaining one at a time
+    for (; i < inputs.size(); i++)
+    {
+        outputs[i] = f(inputs[i]);
+    }
+}
+
+template <size_t width, typename T, typename TFuncSimd, typename TFunc>
+inline void call_Funcs(coda_oss::span<const T> inputs, coda_oss::span<T> outputs,
+    TFuncSimd func_simd, TFunc func)
 {
     if (outputs.size() < inputs.size())
     {
         throw std::invalid_argument("'outputs' smaller than 'inputs'");
     }
-
-    simd::Vec<T, width> vec;  // i.e., vcl::Vec8f
 
     #ifndef NDEBUG // i.e., debug, not release
     // The output could be bigger than input; help identify walking off the end.
@@ -123,69 +154,50 @@ inline void Sin_(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
     }
     #endif
 
-    const auto inputs_size = inputs.size() < width ? 0 : inputs.size() - width;  // don't walk off end with `+= width`
-    size_t i = 0;
-    for (; i < inputs_size; i += width)
-    {
-        auto const pInputs = &(inputs[i]);
-        vec.load(pInputs);  // load_a() requires very strict alignment
-
-        const auto results = sin(vec);
-
-        auto const pOutputs = &(outputs[i]);
-        results.store(pOutputs);  // store_a() requires very strict alignment
-    }
-
-    // Finish any remaining one at a time
-    for (; i < inputs.size(); i++)
-    {
-        outputs[i] = sin(inputs[i]);
-    }
+    size_t i = simd_Func<width>(inputs, outputs, func_simd);
+    slow_Func(i, inputs, outputs, func);
 }
 
-void simd::Sin(coda_oss::span<const float> inputs, coda_oss::span<float> outputs)
+// For the given type and width, return the right function.
+template <typename T, typename TFuncSSE2, typename TFuncAVX, typename TFuncAVX512>
+inline auto getFuncForWidth(TFuncSSE2 fSSE2, TFuncAVX fAVX, TFuncAVX512 fAVX512)
 {
-    static const auto width_4 = [](coda_oss::span<const float> inputs, coda_oss::span<float> outputs) {
-        return  Sin_<4>(inputs, outputs);
-    };
-    static const auto width_8 = [](coda_oss::span<const float> inputs, coda_oss::span<float> outputs) {
-        return  Sin_<8>(inputs, outputs);
-    };
-    static const auto width_16 = [](coda_oss::span<const float> inputs, coda_oss::span<float> outputs) {
-        return  Sin_<16>(inputs, outputs);
-    };
-    static const auto width_none = [](coda_oss::span<const float>, coda_oss::span<float>) {
+    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
+    static const auto width = getWidth<T>();
+
+    static const auto width_none = [](coda_oss::span<const T>, coda_oss::span<T>) {
         throw std::logic_error("Unknown 'width' value.");
     };
 
-    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
-    static const auto width = getWidth<float>();
-    static const auto f = width == 4 ? width_4 :
-            (width == 8 ? width_8 :
-                (width == 16 ? width_16 : width_none));
-    // this should be a fast call (all lambdas) to a specific instantiation of Sin_<N>
+    return width == getSSE2Width<T>() ? fSSE2 :
+        (width ==  getAVXWidth<T>()  ? fAVX :
+            (width == getAVX512Width<T>() ? fAVX512 : width_none));
+}
+
+template<typename T>
+inline auto getSin()
+{
+    static const auto simd_sin = [&](const auto& v) { return sin(v); };
+    static const auto std_sin = [&](const auto& v) { return sin(v); };
+
+    static const auto fSSE2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return call_Funcs<getSSE2Width<T>()>(inputs, outputs,  simd_sin, std_sin);
+    };
+    static const auto fAVX = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return  call_Funcs<getAVXWidth<T>()>(inputs, outputs, simd_sin, std_sin);
+    };
+    static const auto fAVX512 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return  call_Funcs<getAVX512Width<T>()>(inputs, outputs, simd_sin, std_sin);
+    };
+    return getFuncForWidth<T>(fSSE2, fAVX, fAVX512);
+}
+void simd::Sin(coda_oss::span<const float> inputs, coda_oss::span<float> outputs)
+{
+    static const auto f = getSin<float>();
     f(inputs, outputs); 
 }
 void simd::Sin(coda_oss::span<const double> inputs, coda_oss::span<double> outputs)
 {
-    static const auto width_2 = [](coda_oss::span<const double> inputs, coda_oss::span<double> outputs) {
-        return  Sin_<2>(inputs, outputs);
-    };
-    static const auto width_4 = [](coda_oss::span<const double> inputs, coda_oss::span<double> outputs) {
-        return  Sin_<4>(inputs, outputs);
-    };
-    static const auto width_8 = [](coda_oss::span<const double> inputs, coda_oss::span<double> outputs) {
-        return  Sin_<8>(inputs, outputs);
-    };
-    static const auto width_none = [](coda_oss::span<const double>, coda_oss::span<double>) {
-        throw std::logic_error("Unknown 'width' value.");
-    };
-
-    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
-    static const auto width = getWidth<double>();
-    static const auto f = width == 2 ? width_2 :
-            (width == 4 ? width_4 :
-                (width == 8 ? width_8 : width_none));
-    // this should be a fast call (all lambdas) to a specific instantiation of Sin_<N>
+    static const auto f = getSin<double>();
     f(inputs, outputs); 
 }
