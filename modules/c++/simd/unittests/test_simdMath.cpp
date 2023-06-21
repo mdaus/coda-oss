@@ -23,6 +23,7 @@
 #include <vector>
 #include <std/numbers>
 #include <chrono>
+#include <std/span>
 
 #include <simd/Math.h>
 #include <sys/Span.h>
