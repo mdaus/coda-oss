@@ -750,10 +750,10 @@
     <ClInclude Include="coda_oss\include\coda_oss\numbers.h">
       <Filter>coda_oss</Filter>
     </ClInclude>
-    <ClInclude Include="simd\include\simd\Vec.h">
+    <ClInclude Include="simd\include\simd\Math.h">
       <Filter>simd</Filter>
     </ClInclude>
-    <ClInclude Include="simd\include\simd\Math.h">
+    <ClInclude Include="simd\source\Vec.h">
       <Filter>simd</Filter>
     </ClInclude>
   </ItemGroup>

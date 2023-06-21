@@ -27,7 +27,7 @@
 #include <stdexcept>
 #include <limits>
 
-#include "simd/Vec.h"
+#include "Vec.h"
 
 void simd::Sin(coda_oss::span<const float> inputs, coda_oss::span<float> outputs)
 {
@@ -37,7 +37,7 @@ void simd::Sin(coda_oss::span<const float> inputs, coda_oss::span<float> outputs
     }
 
     constexpr size_t width = 8;
-    simd::Vec<float, width> vec;  // i.e., vcl::Vec4f
+    simd::Vec<float, width> vec;  // i.e., vcl::Vec8f
 
     #ifndef NDEBUG // i.e., debug, not release
     // The output could be bigger than input; help identify walking off the end.
