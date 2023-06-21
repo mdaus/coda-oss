@@ -26,6 +26,7 @@
 #include <iterator>
 #include <stdexcept>
 #include <limits>
+#include <functional>
 
 #include "Vec.h"
 
@@ -159,19 +160,30 @@ inline void call_Funcs(coda_oss::span<const T> inputs, coda_oss::span<T> outputs
 }
 
 // For the given type and width, return the right function.
-template <typename T, typename TFuncSSE2, typename TFuncAVX, typename TFuncAVX512>
-inline auto getFuncForWidth(TFuncSSE2 fSSE2, TFuncAVX fAVX, TFuncAVX512 fAVX512)
+//
+// Each TFunc is a different type even though they have the same signature;
+// this is because they were generated from lambdas (below) and the type of
+// each lambda is unique.  Because of that, `auto` doesn't work since
+// the inferred types are different and incompatible.
+//
+// The fix is to use an actual function pointer instead of lambda which is
+// ever so slightly slower.
+template<typename T>
+using Func_t = std::function<void(coda_oss::span<const T>, coda_oss::span<T>)>;
+template <typename T>
+inline auto getFuncForWidth(Func_t<T> fSSE2, Func_t<T> fAVX, Func_t<T> fAVX512)
 {
     // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
     static const auto width = getWidth<T>();
+    switch (width)
+    {
+    case getSSE2Width<T>(): return fSSE2;
+    case getAVXWidth<T>(): return fAVX;
+    case getAVX512Width<T>(): return fAVX512;
+    default: break;
+    }
 
-    static const auto width_none = [](coda_oss::span<const T>, coda_oss::span<T>) {
-        throw std::logic_error("Unknown 'width' value.");
-    };
-
-    return width == getSSE2Width<T>() ? fSSE2 :
-        (width ==  getAVXWidth<T>()  ? fAVX :
-            (width == getAVX512Width<T>() ? fAVX512 : width_none));
+     throw std::logic_error("Unknown 'width' value = " + std::to_string(width));
 }
 
 template<typename T>
@@ -184,7 +196,7 @@ inline auto getSin()
         return call_Funcs<getSSE2Width<T>()>(inputs, outputs,  simd_sin, std_sin);
     };
     static const auto fAVX = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
-        return  call_Funcs<getAVXWidth<T>()>(inputs, outputs, simd_sin, std_sin);
+        return call_Funcs<getAVXWidth<T>()>(inputs, outputs, simd_sin, std_sin);
     };
     static const auto fAVX512 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
         return  call_Funcs<getAVX512Width<T>()>(inputs, outputs, simd_sin, std_sin);
