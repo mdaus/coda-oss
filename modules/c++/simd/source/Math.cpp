@@ -180,24 +180,24 @@ inline auto getFuncForWidth(Func_t<T> fSSE2, Func_t<T> fAVX, Func_t<T> fAVX512)
 template<typename T>
 inline void call_sin(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
 {
-    static const auto simd_sin = [](const auto& v) { return sin(v); };
-    static const auto std_sin = [](const auto& v) { return sin(v); };
+    static const auto simd_f = [](const auto& v) { return sin(v); };
+    static const auto std_f = [](const auto& v) { return sin(v); };
 
     // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
     static const auto fSSE2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
-        return call_Funcs<Elements_per_vector<T, instruction_set::SSE2>()>(inputs, outputs,  simd_sin, std_sin);
+        return call_Funcs<Elements_per_vector<T, instruction_set::SSE2>()>(inputs, outputs,  simd_f, std_f);
     };
     static const auto fAVX = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
-        return call_Funcs<Elements_per_vector<T, instruction_set::AVX>()>(inputs, outputs, simd_sin, std_sin);
+        return call_Funcs<Elements_per_vector<T, instruction_set::AVX>()>(inputs, outputs, simd_f, std_f);
     };
     static const auto fAVX512 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
-        return  call_Funcs<Elements_per_vector<T, instruction_set::AVX512>()>(inputs, outputs, simd_sin, std_sin);
+        return  call_Funcs<Elements_per_vector<T, instruction_set::AVX512>()>(inputs, outputs, simd_f, std_f);
     };
 
     // During runtime, these functions don't need to change
     // since SSE/AVX/AVX512 won't change.
-    static const auto func = getFuncForWidth<T>(fSSE2, fAVX, fAVX512);
-    func(inputs, outputs);
+    static const auto f = getFuncForWidth<T>(fSSE2, fAVX, fAVX512);
+    f(inputs, outputs);
 }
 void simd::Sin(coda_oss::span<const float> inputs, coda_oss::span<float> outputs)
 {
@@ -206,4 +206,66 @@ void simd::Sin(coda_oss::span<const float> inputs, coda_oss::span<float> outputs
 void simd::Sin(coda_oss::span<const double> inputs, coda_oss::span<double> outputs)
 {
     call_sin(inputs, outputs);
+}
+
+template<typename T>
+inline void call_cos(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
+{
+    static const auto simd_f = [](const auto& v) { return cos(v); };
+    static const auto std_f = [](const auto& v) { return cos(v); };
+
+    // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
+    static const auto fSSE2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return call_Funcs<Elements_per_vector<T, instruction_set::SSE2>()>(inputs, outputs,  simd_f, std_f);
+    };
+    static const auto fAVX = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return call_Funcs<Elements_per_vector<T, instruction_set::AVX>()>(inputs, outputs, simd_f, std_f);
+    };
+    static const auto fAVX512 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return  call_Funcs<Elements_per_vector<T, instruction_set::AVX512>()>(inputs, outputs, simd_f, std_f);
+    };
+
+    // During runtime, these functions don't need to change
+    // since SSE/AVX/AVX512 won't change.
+    static const auto f = getFuncForWidth<T>(fSSE2, fAVX, fAVX512);
+    f(inputs, outputs);
+}
+void simd::Cos(coda_oss::span<const float> inputs, coda_oss::span<float> outputs)
+{
+    call_cos(inputs, outputs);
+}
+void simd::Cos(coda_oss::span<const double> inputs, coda_oss::span<double> outputs)
+{
+    call_cos(inputs, outputs);
+}
+
+template<typename T>
+inline void call_tan(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
+{
+    static const auto simd_f = [](const auto& v) { return tan(v); };
+    static const auto std_f = [](const auto& v) { return tan(v); };
+
+    // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
+    static const auto fSSE2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return call_Funcs<Elements_per_vector<T, instruction_set::SSE2>()>(inputs, outputs,  simd_f, std_f);
+    };
+    static const auto fAVX = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return call_Funcs<Elements_per_vector<T, instruction_set::AVX>()>(inputs, outputs, simd_f, std_f);
+    };
+    static const auto fAVX512 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return  call_Funcs<Elements_per_vector<T, instruction_set::AVX512>()>(inputs, outputs, simd_f, std_f);
+    };
+
+    // During runtime, these functions don't need to change
+    // since SSE/AVX/AVX512 won't change.
+    static const auto f = getFuncForWidth<T>(fSSE2, fAVX, fAVX512);
+    f(inputs, outputs);
+}
+void simd::Tan(coda_oss::span<const float> inputs, coda_oss::span<float> outputs)
+{
+    call_tan(inputs, outputs);
+}
+void simd::Tan(coda_oss::span<const double> inputs, coda_oss::span<double> outputs)
+{
+    call_tan(inputs, outputs);
 }

@@ -62,6 +62,19 @@ static void slow_Sin(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
         *it++ = sin(*begin++);
     }
 }
+template <typename T>
+static void slow_Cos(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
+{
+    // This is intentionally slow so that we have something to compare with SIMD
+    // results
+    auto begin = inputs.begin();
+    const auto end = inputs.end();
+    auto it = outputs.begin();
+    while (begin != end)
+    {
+        *it++ = cos(*begin++);
+    }
+}
 
 static void test_simd_Sin_almost_equal(const std::string& testName, const float* pResults, const size_t size = 5)
 {
@@ -122,9 +135,41 @@ TEST_CASE(Test_simd_Sin_small)
     }
 }
 
+TEST_CASE(Test_simd_Sin_Cos)
+{
+    constexpr size_t iterations = sys::release ? 2000000 : 200;
+
+    const auto inputs = make_values<float>(iterations);
+    std::vector<float> results(inputs.size());
+
+    simd::Sin(sys::make_span(inputs), sys::make_span(results));
+    slow_Sin(sys::make_span(inputs), sys::make_span(results));
+
+    auto start = std::chrono::steady_clock::now();
+    simd::Sin(sys::make_span(inputs), sys::make_span(results));
+    simd::Cos(sys::make_const_span(results), sys::make_span(results));
+    auto end = std::chrono::steady_clock::now();
+    const std::chrono::duration<double> elapsed_simd = end - start;
+
+    start = std::chrono::steady_clock::now();
+    slow_Sin(sys::make_span(inputs), sys::make_span(results));
+    slow_Cos(sys::make_const_span(results), sys::make_span(results));
+    end = std::chrono::steady_clock::now();
+    const std::chrono::duration<double> elapsed_slow = end - start;
+
+    #if NDEBUG // DEBUG SIMD code is slow
+    const auto ratio = elapsed_slow / elapsed_simd;
+    // Ratios observed by testing
+    constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 10.0;
+    TEST_ASSERT_GREATER(ratio, expected_ratio);
+    #endif
+}
+
 TEST_MAIN(
 
     TEST_CHECK(Test_simd_Sin);
     TEST_CHECK(Test_simd_Sin_small);
+
+    TEST_CHECK(Test_simd_Sin_Cos);
 
 )

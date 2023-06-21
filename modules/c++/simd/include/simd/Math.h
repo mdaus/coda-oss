@@ -42,8 +42,12 @@ namespace simd
 // although clients aren't (too) aware of the implementation.
 CODA_OSS_API void Sin(coda_oss::span<const float>, coda_oss::span<float>);
 CODA_OSS_API void Sin(coda_oss::span<const double>, coda_oss::span<double>);
+
 CODA_OSS_API void Cos(coda_oss::span<const float>, coda_oss::span<float>);
+CODA_OSS_API void Cos(coda_oss::span<const double>, coda_oss::span<double>);
+
 CODA_OSS_API void Tan(coda_oss::span<const float>, coda_oss::span<float>);
+CODA_OSS_API void Tan(coda_oss::span<const double>, coda_oss::span<double>);
 
 }
 
