@@ -28,6 +28,7 @@
 #include <simd/Math.h>
 #include <sys/Span.h>
 #include <sys/Dbg.h>
+#include <sys/OS.h>
 
 #include "TestCase.h"
 
@@ -93,7 +94,9 @@ TEST_CASE(Test_simd_Sin)
 
     #if NDEBUG // DEBUG SIMD code is slow
     const auto ratio = elapsed_slow / elapsed_simd;
-    TEST_ASSERT_GREATER(ratio, 2.5);
+    // Ratios observed by testing
+    constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 10.0;
+    TEST_ASSERT_GREATER(ratio, expected_ratio);
     #endif
 }
 
