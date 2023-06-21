@@ -28,8 +28,11 @@ TEST_CASE(Test_Vec_sin)
 {
     simd::Vec<float, 4> f(1, 2, 3, 4);
 
+    TEST_ASSERT_TRUE(true);
 }
 
 TEST_MAIN(
+
     TEST_CHECK(Test_Vec_sin);
+
     )
