@@ -228,9 +228,6 @@
     <ClCompile Include="simd.cpp">
       <Filter>simd</Filter>
     </ClCompile>
-    <ClCompile Include="..\modules\c++\simd\unittests\test_Vec.cpp">
-      <Filter>simd</Filter>
-    </ClCompile>
     <ClCompile Include="..\modules\c++\simd\unittests\test_simdMath.cpp">
       <Filter>simd</Filter>
     </ClCompile>
