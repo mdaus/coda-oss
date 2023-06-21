@@ -25,9 +25,15 @@
 #define CODA_OSS_import_vectorclass_h_INCLUDED_
 
 #include "coda_oss/CPlusPlus.h"
+#include "config/compiler_extensions.h"
 
 #ifndef VCL_NAMESPACE
 #define VCL_NAMESPACE vcl // put stuff in vcl namespace
+#endif
+
+CODA_OSS_disable_warning_system_header_push
+#if !defined(_MSC_VER)
+CODA_OSS_disable_warning(zero-as-null-pointer-constant)
 #endif
 #if CODA_OSS_cpp17
 #include "vectorclass/version2/vectorclass.h"
@@ -36,6 +42,7 @@
 #include "vectorclass/version1/vectorclass.h"
 #include "vectorclass/version2/vectormath_trig.h"
 #endif
+CODA_OSS_disable_warning_pop
 
 #endif // CODA_OSS_import_vectorclass_h_INCLUDED_
 
