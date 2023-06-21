@@ -426,17 +426,19 @@ sys::SIMDInstructionSet sys::OSUnix::getSIMDInstructionSet() const
     // https://gcc.gnu.org/onlinedocs/gcc-4.8.2/gcc/X86-Built-in-Functions.html
     __builtin_cpu_init();
 
+    /*
     if (__builtin_cpu_supports("avx512"))
     {
-        return SimdInstructionSet::AVX512;
+        return SIMDInstructionSet::AVX512;
     }
+    */
     if (__builtin_cpu_supports("avx"))
     {
-        return SimdInstructionSet::AVX;
+        return SIMDInstructionSet::AVX;
     }
     if (__builtin_cpu_supports("sse2"))
     {
-        return SimdInstructionSet::SSE2;
+        return SIMDInstructionSet::SSE2;
     }
 
     throw std::runtime_error("SSE2 support is required.");
