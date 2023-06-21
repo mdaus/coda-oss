@@ -347,19 +347,19 @@ sys::SIMDInstructionSet sys::OSWin32::getSIMDInstructionSet() const
     // https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-isprocessorfeaturepresent
     if (IsProcessorFeaturePresent(PF_AVX512F_INSTRUCTIONS_AVAILABLE))
     {
-        return sys::SIMDInstructionSet::AVX512F;
+        return SIMDInstructionSet::AVX512F;
     }
     if (IsProcessorFeaturePresent(PF_AVX2_INSTRUCTIONS_AVAILABLE))
     {
-        return sys::SIMDInstructionSet::AVX2;
+        return SIMDInstructionSet::AVX2;
     }
     if (IsProcessorFeaturePresent(PF_AVX_INSTRUCTIONS_AVAILABLE))
     {
-        return sys::SIMDInstructionSet::AVX;
+        return SIMDInstructionSet::AVX;
     }
     if (IsProcessorFeaturePresent(PF_XMMI64_INSTRUCTIONS_AVAILABLE))
     {
-        return sys::SIMDInstructionSet::SSE2;
+        return SIMDInstructionSet::SSE2;
     }
 
     throw std::runtime_error("SSE2 support is required.");
