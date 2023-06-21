@@ -518,8 +518,9 @@ TEST_CASE(test_SIMD_Instructions)
 
     const auto isSSE2 = simdInstructionSet == sys::SIMDInstructionSet::SSE2;
     const auto isAVX = simdInstructionSet == sys::SIMDInstructionSet::AVX;
-    const auto isAVX512 = simdInstructionSet == sys::SIMDInstructionSet::AVX512;
-    TEST_ASSERT(isSSE2 || isAVX || isAVX512);
+    const auto isAVX2 = simdInstructionSet == sys::SIMDInstructionSet::AVX2;
+    const auto isAVX512F = simdInstructionSet == sys::SIMDInstructionSet::AVX512F;
+    TEST_ASSERT(isSSE2 || isAVX || isAVX2 || isAVX512F);
 }
 
 TEST_MAIN(
