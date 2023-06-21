@@ -61,36 +61,33 @@ static void slow_Sin(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
     }
 }
 
+static void test_simd_Sin_almost_equal(const std::string& testName, const float* pResults, const size_t size = 5)
+{
+    if (size >= 1) TEST_ASSERT_ALMOST_EQ(pResults[0], 0.5f);
+    if (size >= 2) TEST_ASSERT_ALMOST_EQ(pResults[1], 1.0f);
+    if (size >= 3) TEST_ASSERT_ALMOST_EQ(pResults[2], -0.7071067812f);
+    if (size >= 4) TEST_ASSERT_ALMOST_EQ(pResults[3], 0.0f);
+    if (size >= 5) TEST_ASSERT_ALMOST_EQ(pResults[4], -0.0f);
+}
 TEST_CASE(Test_simd_Sin)
 {
-    constexpr size_t iterations = sys::release ? 3000000 : 400;
+    constexpr size_t iterations = sys::release ? 4000000 : 400;
 
     const auto inputs = make_values<float>(iterations);
     std::vector<float> results(inputs.size());
 
     simd::Sin(sys::make_span(inputs), sys::make_span(results));
-    slow_Sin(sys::make_span(inputs), sys::make_span(results));
-
-    simd::Sin(sys::make_span(inputs), sys::make_span(results));
     auto start = std::chrono::steady_clock::now();
     simd::Sin(sys::make_span(inputs), sys::make_span(results));
     auto end = std::chrono::steady_clock::now();
-    TEST_ASSERT_ALMOST_EQ(results[0], 0.5f);
-    TEST_ASSERT_ALMOST_EQ(results[1], 1.0f);
-    TEST_ASSERT_ALMOST_EQ(results[2], -0.7071067812f);
-    TEST_ASSERT_ALMOST_EQ(results[3], 0.0f);
-    TEST_ASSERT_ALMOST_EQ(results[4], -0.0f);
+    test_simd_Sin_almost_equal(testName, &(results[0]));
     const std::chrono::duration<double> elapsed_simd = end - start;
     
     slow_Sin(sys::make_span(inputs), sys::make_span(results));
     start = std::chrono::steady_clock::now();
     slow_Sin(sys::make_span(inputs), sys::make_span(results));
     end = std::chrono::steady_clock::now();
-    TEST_ASSERT_ALMOST_EQ(results[0], 0.5f);
-    TEST_ASSERT_ALMOST_EQ(results[1], 1.0f);
-    TEST_ASSERT_ALMOST_EQ(results[2], -0.7071067812f);
-    TEST_ASSERT_ALMOST_EQ(results[3], 0.0f);
-    TEST_ASSERT_ALMOST_EQ(results[4], -0.0f);
+    test_simd_Sin_almost_equal(testName, &(results[0]));
     const std::chrono::duration<double> elapsed_slow = end - start;
 
     #if NDEBUG // DEBUG SIMD code is slow
@@ -99,8 +96,31 @@ TEST_CASE(Test_simd_Sin)
     #endif
 }
 
+TEST_CASE(Test_simd_Sin_small)
+{
+    constexpr size_t iterations = 2;
+    const auto inputs = make_values<float>(iterations);
+    std::vector<float> results(inputs.size());
+    
+    simd::Sin(sys::make_span(inputs), sys::make_span(results));
+    test_simd_Sin_almost_equal(testName, &(results[0]));
+    const size_t values_size = inputs.size() / iterations;
+    test_simd_Sin_almost_equal(testName, &(results[values_size]));
+    
+    // Be sure the end of the array is calculated correctly.
+    for (size_t count = 0; count < values_size; count++)
+    {
+        const size_t small_count = (values_size * (iterations - 1)) + count;
+
+        const std::span<const float> s(inputs.data(), small_count);
+        simd::Sin(s, sys::make_span(results));
+        test_simd_Sin_almost_equal(testName, &(results[values_size]), count);    
+    }
+}
+
 TEST_MAIN(
 
     TEST_CHECK(Test_simd_Sin);
+    TEST_CHECK(Test_simd_Sin_small);
 
 )

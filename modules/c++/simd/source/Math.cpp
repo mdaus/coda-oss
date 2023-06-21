@@ -24,30 +24,45 @@
 #include "simd/Math.h"
 
 #include <iterator>
+#include <stdexcept>
 
 #include "simd/Vec.h"
 
 void simd::Sin(coda_oss::span<const float> inputs, coda_oss::span<float> outputs)
 {
-    auto begin = inputs.begin();
-    const auto end = inputs.end();
-    auto it = outputs.begin();
+    if (outputs.size() < inputs.size())
+    {
+        throw std::invalid_argument("'outputs' smaller than 'inputs'");
+    }
 
     constexpr size_t width = 8;
     simd::Vec<float, width> vec;  // i.e., vcl::Vec4f
 
-    while (begin != end)
+    #ifndef NDEBUG
+    // The output could be bigger than input; help identify walking off the end.
+    for (auto& output : outputs)
     {
-        // load_a() requires very strict alignment
-        vec.load(&(*begin));
+        output = FLT_MIN;
+    }
+    #endif
+
+    const auto inputs_size = inputs.size() < width ? 0 : inputs.size() - width;  // don't walk off end with `+= width`
+    size_t i = 0;
+    for (; i < inputs_size; i += width)
+    {
+        auto const pInputs = &(inputs[i]);
+        vec.load(pInputs);  // load_a() requires very strict alignment
 
         const auto results = sin(vec);
 
-        // ditto for store_a()
-        results.store(&(*it));
+        auto const pOutputs = &(outputs[i]);
+        results.store(pOutputs);  // store_a() requires very strict alignment
+    }
 
-        std::advance(begin, width);
-        std::advance(it, width);
+    // Finish any remaining one at a time
+    for (; i < inputs.size(); i++)
+    {
+        outputs[i] = sin(inputs[i]);
     }
 }
 void simd::Sin(coda_oss::span<const double> inputs, coda_oss::span<double> outputs)
