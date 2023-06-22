@@ -105,23 +105,22 @@ inline void vec_Func(span<const T> inputs, span<T> outputs,
     results.store_partial(remaining, &(outputs[i]));
 }
 
+// "bind" the compile-time `width` to a particular insantiation for the given type `T`.
+template <size_t width, typename T, typename TFunc>
+inline auto bind(TFunc f)
+{
+    // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
+    return [&](span<const T> inputs, span<T> outputs) {
+        return vec_Func<width>(inputs, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
+    };
+}
+
 template<typename T, typename TFunc>
 inline void invoke(span<const T> inputs, span<T> outputs, TFunc f)
 {
     constexpr auto sse2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::SSE2>();
     constexpr auto avx2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX2>();
     constexpr auto avx512f_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX512F>();
-
-    // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
-    static const auto f_sse2 = [&](span<const T> inputs, span<T> outputs) {
-        return vec_Func<sse2_width>(inputs, outputs, f);
-    };
-    static const auto f_avx2 = [&](span<const T> inputs, span<T> outputs) {
-        return vec_Func<avx2_width>(inputs, outputs, f);
-    };
-    static const auto f_avx512f = [&](span<const T> inputs, span<T> outputs) {
-        return vec_Func<avx512f_width>(inputs, outputs, f);
-    };
 
     // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
     static const auto width = Elements_per_vector<T>();
@@ -138,9 +137,9 @@ inline void invoke(span<const T> inputs, span<T> outputs, TFunc f)
     static const auto get_simd_func = [&]() ->  retval_t {
         switch (width)
         {
-        case sse2_width: return f_sse2;
-        case avx2_width: return f_avx2;
-        case avx512f_width: return f_avx512f;
+        case sse2_width: return bind<sse2_width, T>(f);
+        case avx2_width: return bind<avx2_width, T>(f);
+        case avx512f_width: return bind<avx512f_width, T>(f);
         default:  break;
         }
         throw std::logic_error("Unknown 'width' value = " + std::to_string(width));
