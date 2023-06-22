@@ -36,7 +36,9 @@
 //     [...]
 //     9:  AVX512F
 #ifndef INSTRSET
-#define INSTRSET 9 // defined(__AVX512F__ ) || defined ( __AVX512__ )
+// This creates compilier errors/warnings with both GCC and MSVC
+// that need to eventually be sorted out ... until then ...
+//#define INSTRSET 9 // defined(__AVX512F__ ) || defined ( __AVX512__ )
 #endif
 #include "Vec.h"
 
