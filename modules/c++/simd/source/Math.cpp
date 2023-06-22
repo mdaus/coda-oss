@@ -146,11 +146,9 @@ inline auto getFuncForWidth(Func_t<T> fSSE2, Func_t<T> fAVX2, Func_t<T> fAVX512F
      throw std::logic_error("Unknown 'width' value = " + std::to_string(width));
 }
 
-template<typename T>
-inline void call_sin(span<const T> inputs, span<T> outputs)
+template<typename T, typename TFunc>
+inline void call_(span<const T> inputs, span<T> outputs, TFunc f)
 {
-    static const auto f = [](const auto& v) { return sin(v); };
-
     // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
     static const auto fSSE2 = [&](span<const T> inputs, span<T> outputs) {
         return call_Func<Elements_per_vector<T,  sys::SIMDInstructionSet::SSE2>()>(inputs, outputs,  f);
@@ -167,71 +165,36 @@ inline void call_sin(span<const T> inputs, span<T> outputs)
     static const auto func = getFuncForWidth<T>(fSSE2, fAVX2, fAVX512F);
     func(inputs, outputs);
 }
+
 void simd::Sin(span<const float> inputs, span<float> outputs)
 {
-    call_sin(inputs, outputs);
+    static const auto f = [](const auto& v) { return sin(v); };
+    call_(inputs, outputs, f);
 }
 void simd::Sin(span<const double> inputs, span<double> outputs)
 {
-    call_sin(inputs, outputs);
+    static const auto f = [](const auto& v) { return sin(v); };
+    call_(inputs, outputs, f);
 }
 
-template<typename T>
-inline void call_cos(span<const T> inputs, span<T> outputs)
-{
-    static const auto f = [](const auto& v) { return cos(v); };
-
-    // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
-    static const auto fSSE2 = [](span<const T> inputs, span<T> outputs) {
-        return call_Func<Elements_per_vector<T, sys::SIMDInstructionSet::SSE2>()>(inputs, outputs,  f);
-    };
-    static const auto fAVX2 = [](span<const T> inputs, span<T> outputs) {
-        return call_Func<Elements_per_vector<T, sys::SIMDInstructionSet::AVX2>()>(inputs, outputs, f);
-    };
-    static const auto fAVX512F = [](span<const T> inputs, span<T> outputs) {
-        return  call_Func<Elements_per_vector<T, sys::SIMDInstructionSet::AVX512F>()>(inputs, outputs, f);
-    };
-
-    // During runtime, these functions don't need to change
-    // since SSE/AVX/AVX512 won't change.
-    static const auto func = getFuncForWidth<T>(fSSE2, fAVX2, fAVX512F);
-    func(inputs, outputs);
-}
 void simd::Cos(span<const float> inputs, span<float> outputs)
 {
-    call_cos(inputs, outputs);
+    static const auto f = [](const auto& v) { return cos(v); };
+    call_(inputs, outputs, f);
 }
 void simd::Cos(span<const double> inputs, span<double> outputs)
 {
-    call_cos(inputs, outputs);
+    static const auto f = [](const auto& v) { return cos(v); };
+    call_(inputs, outputs, f);
 }
 
-template<typename T>
-inline void call_tan(span<const T> inputs, span<T> outputs)
-{
-    static const auto f = [](const auto& v) { return tan(v); };
-
-    // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
-    static const auto fSSE2 = [](span<const T> inputs, span<T> outputs) {
-        return call_Func<Elements_per_vector<T, sys::SIMDInstructionSet::SSE2>()>(inputs, outputs,  f);
-    };
-    static const auto fAVX2 = [](span<const T> inputs, span<T> outputs) {
-        return call_Func<Elements_per_vector<T, sys::SIMDInstructionSet::AVX2>()>(inputs, outputs, f);
-    };
-    static const auto fAVX512F = [](span<const T> inputs, span<T> outputs) {
-        return  call_Func<Elements_per_vector<T, sys::SIMDInstructionSet::AVX512F>()>(inputs, outputs, f);
-    };
-
-    // During runtime, these functions don't need to change
-    // since SSE/AVX/AVX512 won't change.
-    static const auto func = getFuncForWidth<T>(fSSE2, fAVX2, fAVX512F);
-    func(inputs, outputs);
-}
 void simd::Tan(span<const float> inputs, span<float> outputs)
 {
-    call_tan(inputs, outputs);
+    static const auto f = [](const auto& v) { return tan(v); };
+    call_(inputs, outputs, f);
 }
 void simd::Tan(span<const double> inputs, span<double> outputs)
 {
-    call_tan(inputs, outputs);
+    static const auto f = [](const auto& v) { return tan(v); };
+    call_(inputs, outputs, f);
 }
