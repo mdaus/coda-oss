@@ -46,6 +46,16 @@
  */
 namespace sys
 {
+
+// List of available SIMD instruction sets; we require at least SSE2
+// which is from 2000 ... 23 years ago.
+enum class SIMDInstructionSet
+{
+    SSE2, //  https://en.wikipedia.org/wiki/SSE2
+    AVX2,  // https://en.wikipedia.org/wiki/Advanced_Vector_Extensions
+    AVX512F, // https://en.wikipedia.org/wiki/AVX-512
+};
+
 /*!
  *  \class AbstractOS
  *  \brief Interface for system independent function calls
@@ -282,6 +292,13 @@ struct CODA_OSS_API AbstractOS
      */
     virtual void getAvailableCPUs(std::vector<int>& physicalCPUs,
                                   std::vector<int>& htCPUs) const = 0;
+
+
+    /*!
+     * Figure out what SIMD instrunctions are available.  Keep in mind these
+     * are RUN-TIME, not compile-time, checks.
+     */
+    virtual SIMDInstructionSet getSIMDInstructionSet() const = 0;
 
     /*!
      *  Create a symlink, pathnames can be either absolute or relative
