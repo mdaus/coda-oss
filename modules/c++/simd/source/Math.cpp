@@ -33,6 +33,9 @@
 
 #include "Vec.h"
 
+template<typename T>
+using span = simd::span<T>;
+
 inline auto get_instruction_set()
 {
     static const sys::OS os;
@@ -71,7 +74,7 @@ inline size_t Elements_per_vector()
 }
 
 template <size_t width, typename T, typename TFunc>
-inline void vec_Func(coda_oss::span<const T> inputs, coda_oss::span<T> outputs,
+inline void vec_Func(span<const T> inputs, span<T> outputs,
     TFunc f)
 {
     simd::Vec<T, width> vec;  // i.e., vcl::Vec8f
@@ -98,7 +101,7 @@ inline void vec_Func(coda_oss::span<const T> inputs, coda_oss::span<T> outputs,
 }
 
 template <size_t width, typename T, typename TFunc>
-inline void call_Func(coda_oss::span<const T> inputs, coda_oss::span<T> outputs, TFunc f)
+inline void call_Func(span<const T> inputs, span<T> outputs, TFunc f)
 {
     if (outputs.size() < inputs.size())
     {
@@ -126,7 +129,7 @@ inline void call_Func(coda_oss::span<const T> inputs, coda_oss::span<T> outputs,
 // The fix is to use an actual function pointer instead of lambda which is
 // ever so slightly slower.
 template<typename T>
-using Func_t = std::function<void(coda_oss::span<const T>, coda_oss::span<T>)>;
+using Func_t = std::function<void(span<const T>, span<T>)>;
 template <typename T>
 inline auto getFuncForWidth(Func_t<T> fSSE2, Func_t<T> fAVX2, Func_t<T> fAVX512F)
 {
@@ -144,18 +147,18 @@ inline auto getFuncForWidth(Func_t<T> fSSE2, Func_t<T> fAVX2, Func_t<T> fAVX512F
 }
 
 template<typename T>
-inline void call_sin(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
+inline void call_sin(span<const T> inputs, span<T> outputs)
 {
     static const auto f = [](const auto& v) { return sin(v); };
 
     // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
-    static const auto fSSE2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+    static const auto fSSE2 = [&](span<const T> inputs, span<T> outputs) {
         return call_Func<Elements_per_vector<T,  sys::SIMDInstructionSet::SSE2>()>(inputs, outputs,  f);
     };
-    static const auto fAVX2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+    static const auto fAVX2 = [&](span<const T> inputs, span<T> outputs) {
         return call_Func<Elements_per_vector<T, sys::SIMDInstructionSet::AVX2>()>(inputs, outputs, f);
     };
-    static const auto fAVX512F = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+    static const auto fAVX512F = [&](span<const T> inputs, span<T> outputs) {
         return  call_Func<Elements_per_vector<T, sys::SIMDInstructionSet::AVX512F>()>(inputs, outputs, f);
     };
 
@@ -164,28 +167,28 @@ inline void call_sin(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
     static const auto func = getFuncForWidth<T>(fSSE2, fAVX2, fAVX512F);
     func(inputs, outputs);
 }
-void simd::Sin(coda_oss::span<const float> inputs, coda_oss::span<float> outputs)
+void simd::Sin(span<const float> inputs, span<float> outputs)
 {
     call_sin(inputs, outputs);
 }
-void simd::Sin(coda_oss::span<const double> inputs, coda_oss::span<double> outputs)
+void simd::Sin(span<const double> inputs, span<double> outputs)
 {
     call_sin(inputs, outputs);
 }
 
 template<typename T>
-inline void call_cos(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
+inline void call_cos(span<const T> inputs, span<T> outputs)
 {
     static const auto f = [](const auto& v) { return cos(v); };
 
     // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
-    static const auto fSSE2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+    static const auto fSSE2 = [](span<const T> inputs, span<T> outputs) {
         return call_Func<Elements_per_vector<T, sys::SIMDInstructionSet::SSE2>()>(inputs, outputs,  f);
     };
-    static const auto fAVX2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+    static const auto fAVX2 = [](span<const T> inputs, span<T> outputs) {
         return call_Func<Elements_per_vector<T, sys::SIMDInstructionSet::AVX2>()>(inputs, outputs, f);
     };
-    static const auto fAVX512F = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+    static const auto fAVX512F = [](span<const T> inputs, span<T> outputs) {
         return  call_Func<Elements_per_vector<T, sys::SIMDInstructionSet::AVX512F>()>(inputs, outputs, f);
     };
 
@@ -194,28 +197,28 @@ inline void call_cos(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
     static const auto func = getFuncForWidth<T>(fSSE2, fAVX2, fAVX512F);
     func(inputs, outputs);
 }
-void simd::Cos(coda_oss::span<const float> inputs, coda_oss::span<float> outputs)
+void simd::Cos(span<const float> inputs, span<float> outputs)
 {
     call_cos(inputs, outputs);
 }
-void simd::Cos(coda_oss::span<const double> inputs, coda_oss::span<double> outputs)
+void simd::Cos(span<const double> inputs, span<double> outputs)
 {
     call_cos(inputs, outputs);
 }
 
 template<typename T>
-inline void call_tan(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
+inline void call_tan(span<const T> inputs, span<T> outputs)
 {
     static const auto f = [](const auto& v) { return tan(v); };
 
     // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
-    static const auto fSSE2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+    static const auto fSSE2 = [](span<const T> inputs, span<T> outputs) {
         return call_Func<Elements_per_vector<T, sys::SIMDInstructionSet::SSE2>()>(inputs, outputs,  f);
     };
-    static const auto fAVX2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+    static const auto fAVX2 = [](span<const T> inputs, span<T> outputs) {
         return call_Func<Elements_per_vector<T, sys::SIMDInstructionSet::AVX2>()>(inputs, outputs, f);
     };
-    static const auto fAVX512F = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+    static const auto fAVX512F = [](span<const T> inputs, span<T> outputs) {
         return  call_Func<Elements_per_vector<T, sys::SIMDInstructionSet::AVX512F>()>(inputs, outputs, f);
     };
 
@@ -224,11 +227,11 @@ inline void call_tan(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
     static const auto func = getFuncForWidth<T>(fSSE2, fAVX2, fAVX512F);
     func(inputs, outputs);
 }
-void simd::Tan(coda_oss::span<const float> inputs, coda_oss::span<float> outputs)
+void simd::Tan(span<const float> inputs, span<float> outputs)
 {
     call_tan(inputs, outputs);
 }
-void simd::Tan(coda_oss::span<const double> inputs, coda_oss::span<double> outputs)
+void simd::Tan(span<const double> inputs, span<double> outputs)
 {
     call_tan(inputs, outputs);
 }

@@ -756,6 +756,9 @@
     <ClInclude Include="simd\source\Vec.h">
       <Filter>simd</Filter>
     </ClInclude>
+    <ClInclude Include="simd\include\simd\Span.h">
+      <Filter>simd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />

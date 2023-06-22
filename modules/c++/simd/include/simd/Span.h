@@ -22,35 +22,15 @@
  */
 
 #pragma once
-#ifndef CODA_OSS_simd_Math_h_INCLUDED_
-#define CODA_OSS_simd_Math_h_INCLUDED_
+#ifndef CODA_OSS_simd_Span_h_INCLUDED_
+#define CODA_OSS_simd_Span_h_INCLUDED_
 
-#ifndef _USE_MATH_DEFINES
-#define _USE_MATH_DEFINES // get M_PI, etc.
-#endif
-#include <math.h>
-#include <stdint.h>
-
-#include "coda_oss/CPlusPlus.h"
 #include "coda_oss/span.h"
-#include "config/Exports.h"
-
-#include "Span.h"
 
 namespace simd
 {
-
-// "Overloads" for common routines in <math.h> to support SIMD processing,
-// although clients aren't (too) aware of the implementation.
-CODA_OSS_API void Sin(span<const float>, span<float>);
-CODA_OSS_API void Sin(span<const double>, span<double>);
-
-CODA_OSS_API void Cos(span<const float>, span<float>);
-CODA_OSS_API void Cos(span<const double>, span<double>);
-
-CODA_OSS_API void Tan(span<const float>, span<float>);
-CODA_OSS_API void Tan(span<const double>, span<double>);
-
+	template<typename T>
+	using span = coda_oss::span<T>;
 }
 
-#endif  // CODA_OSS_simd_Math_h_INCLUDED_
+#endif  // CODA_OSS_simd_Span_h_INCLUDED_
