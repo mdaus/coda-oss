@@ -96,22 +96,22 @@ TEST_CASE(testXmlCreateNested)
     TEST_ASSERT_EQ(expected1, actual);
 }
 
-TEST_CASE(testXmlCreateWhitespace)
+TEST_CASE(testXmlCreateEmpty)
 {
     using namespace xml::lite::literals;  // _q and _u for QName and Uri
 
     xml::lite::MinidomParser xmlParser;
     auto& document = getDocument(xmlParser);
 
-    auto documents_ = document.createElement(xml::lite::QName(""_u, "text"), "text");
+    auto documents_ = document.createElement(xml::lite::QName(""_u, "empty"), "");
     auto& documents = *documents_;
     auto actual = print(documents);
-    TEST_ASSERT_EQ("<text>text</text>", actual);
+    TEST_ASSERT_EQ("<empty/>", actual);
 }
 
 int main(int, char**)
 {
     TEST_CHECK(testXmlCreateRoot);
     TEST_CHECK(testXmlCreateNested);
-    TEST_CHECK(testXmlCreateWhitespace);
+    TEST_CHECK(testXmlCreateEmpty);
 }
