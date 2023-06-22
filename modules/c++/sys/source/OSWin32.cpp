@@ -28,6 +28,8 @@
 
 #ifdef _WIN32
 
+#include <windows.h>
+
 #include "sys/OSWin32.h"
 #include "sys/File.h"
 

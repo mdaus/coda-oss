@@ -90,7 +90,6 @@ inline void vec_Func(coda_oss::span<const T> inputs, coda_oss::span<T> outputs,
 
     // Do the last few an element at a time; using the same `f`
     // as above helps keep results consistent.
-    const auto current_index = i;
     const int remaining = inputs.size() - i;
     vec.load_partial(remaining, &(inputs[i]));
     const auto results = f(vec);
