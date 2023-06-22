@@ -353,10 +353,6 @@ sys::SIMDInstructionSet sys::OSWin32::getSIMDInstructionSet() const
     {
         return SIMDInstructionSet::AVX2;
     }
-    if (IsProcessorFeaturePresent(PF_AVX_INSTRUCTIONS_AVAILABLE))
-    {
-        return SIMDInstructionSet::AVX;
-    }
     if (IsProcessorFeaturePresent(PF_XMMI64_INSTRUCTIONS_AVAILABLE))
     {
         return SIMDInstructionSet::SSE2;

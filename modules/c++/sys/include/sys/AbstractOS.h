@@ -52,8 +52,7 @@ namespace sys
 enum class SIMDInstructionSet
 {
     SSE2, //  https://en.wikipedia.org/wiki/SSE2
-    AVX, // https://en.wikipedia.org/wiki/Advanced_Vector_Extensions
-    AVX2,
+    AVX2,  // https://en.wikipedia.org/wiki/Advanced_Vector_Extensions
     AVX512F, // https://en.wikipedia.org/wiki/AVX-512
 };
 

@@ -434,10 +434,6 @@ sys::SIMDInstructionSet sys::OSUnix::getSIMDInstructionSet() const
     {
         return SIMDInstructionSet::AVX2;
     }
-    if (__builtin_cpu_supports("avx"))
-    {
-        return SIMDInstructionSet::AVX;
-    }
     if (__builtin_cpu_supports("sse2"))
     {
         return SIMDInstructionSet::SSE2;
