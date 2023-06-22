@@ -68,7 +68,7 @@ template <> constexpr size_t Elements_per_vector<float, sys::SIMDInstructionSet:
 template <> constexpr size_t Elements_per_vector<double, sys::SIMDInstructionSet::AVX512F>() { return 8; }
 
 template<typename T>
-inline size_t Elements_per_vector()
+inline size_t getWidth()
 {
     switch (get_instruction_set())
     {
@@ -125,13 +125,6 @@ inline auto bind(TFunc f)
 template<typename T, typename TFunc>
 inline void invoke(span<const T> inputs, span<T> outputs, TFunc f)
 {
-    constexpr auto sse2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::SSE2>();
-    constexpr auto avx2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX2>();
-    constexpr auto avx512f_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX512F>();
-
-    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
-    static const auto width = Elements_per_vector<T>();
-
     // For the given type and width, return the right function.
     //
     // Each TFunc is a different type even though they have the same signature;
@@ -141,7 +134,13 @@ inline void invoke(span<const T> inputs, span<T> outputs, TFunc f)
     //
     // The fix is to use an actual function pointer instead of lambda.
     using retval_t = std::function<void(span<const T>, span<T>)>;
-    static const auto get_simd_func = [&]() ->  retval_t {
+    static const auto get_simd_func = [&f]() ->  retval_t {
+        constexpr auto sse2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::SSE2>();
+        constexpr auto avx2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX2>();
+        constexpr auto avx512f_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX512F>();
+
+        // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
+        static const auto width = getWidth<T>();
         switch (width)
         {
         case sse2_width: return bind<sse2_width, T>(f);
