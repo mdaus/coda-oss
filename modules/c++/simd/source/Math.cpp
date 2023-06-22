@@ -29,6 +29,7 @@
 #include <functional>
 
 #include "sys/OS.h"
+#include "gsl/gsl.h"
 
 #include "Vec.h"
 
@@ -90,7 +91,7 @@ inline void vec_Func(coda_oss::span<const T> inputs, coda_oss::span<T> outputs,
 
     // Do the last few an element at a time; using the same `f`
     // as above helps keep results consistent.
-    const int remaining = inputs.size() - i;
+    const auto remaining = gsl::narrow<int>(inputs.size() - i);
     vec.load_partial(remaining, &(inputs[i]));
     const auto results = f(vec);
     results.store_partial(remaining, &(outputs[i]));
