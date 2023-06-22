@@ -32,6 +32,13 @@
 #include "xml/lite/Element.h"
 #include "xml/lite/QName.h"
 
+static std::string print(const xml::lite::Element& element)
+{
+    io::StringStream output;
+    element.print(output);
+    return output.stream().str();
+}
+
 TEST_CASE(testXmlCreateRoot)
 {
     using namespace xml::lite::literals;  // _q and _u for QName and Uri
@@ -41,17 +48,12 @@ TEST_CASE(testXmlCreateRoot)
 
     auto documents_ = document.createElement(xml::lite::QName(""_u, "abc"), "abc");
     auto& documents = *documents_;
-    io::StringStream output;
-    documents.print(output);
-    auto actual = output.stream().str();
+    auto actual = print(documents);
     TEST_ASSERT_EQ("<abc>abc</abc>", actual);
 
     documents = "test"; // setCharacterData()
     documents = xml::lite::QName(""_u, "documents"); // setChild()
-
-    output.reset();
-    documents.print(output);
-    actual = output.stream().str();
+    actual = print(documents);
     TEST_ASSERT_EQ("<documents>test</documents>", actual);
 }
 
@@ -65,9 +67,7 @@ TEST_CASE(testXmlCreateNested)
     auto documents_ = document.createElement(xml::lite::QName(""_u, "documents"), "");
     auto& documents = *documents_;
     std::ignore = addChild(documents, "html");
-    io::StringStream output;
-    documents.print(output);
-    auto actual = output.stream().str();
+    auto actual = print(documents);
     const auto expected0 = "<documents><html/></documents>";
     TEST_ASSERT_EQ(expected0, actual);
 
@@ -81,9 +81,7 @@ TEST_CASE(testXmlCreateNested)
     std::ignore = addAttribute(p, "a"_q, "abc");
     body += "br"; // addChild()
 
-    output.reset();
-    documents.print(output);
-    actual = output.stream().str();
+    actual = print(documents);
     const auto expected1 = // can't use a "raw" string because a string comparision is done, not a "XML comparision"
         "<documents count=\"1\">"
             "<html>"
@@ -98,8 +96,22 @@ TEST_CASE(testXmlCreateNested)
     TEST_ASSERT_EQ(expected1, actual);
 }
 
+TEST_CASE(testXmlCreateWhitespace)
+{
+    using namespace xml::lite::literals;  // _q and _u for QName and Uri
+
+    xml::lite::MinidomParser xmlParser;
+    auto& document = getDocument(xmlParser);
+
+    auto documents_ = document.createElement(xml::lite::QName(""_u, "text"), "text");
+    auto& documents = *documents_;
+    auto actual = print(documents);
+    TEST_ASSERT_EQ("<text>text</text>", actual);
+}
+
 int main(int, char**)
 {
     TEST_CHECK(testXmlCreateRoot);
     TEST_CHECK(testXmlCreateNested);
+    TEST_CHECK(testXmlCreateWhitespace);
 }
