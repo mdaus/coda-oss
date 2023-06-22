@@ -116,29 +116,33 @@ TEST_CASE(testXmlCreateWhitespace)
     xml::lite::MinidomParser xmlParser;
     auto& document = getDocument(xmlParser);
 
-    const std::string text = "    ";
+    const auto text = str::EncodedStringView("     ").u8string();
     auto documents_ = document.createElement(xml::lite::QName(""_u, "text"), text);
     auto& documents = *documents_;
-    auto strXml = print(documents);
-    TEST_ASSERT_EQ("<text>" + text + "</text>", strXml);
+    auto strXml = str::EncodedStringView(print(documents)).u8string();
+    const auto expected = str::EncodedStringView("<text>").u8string() + text + str::EncodedStringView("</text>").u8string();
+    TEST_ASSERT(strXml == expected);
 
     {
-        io::StringStream input;
+        io::U8StringStream input;
         input.stream() << strXml;
         xmlParser.preserveCharacterData(false);
         xmlParser.parse(input);
         const auto& root = getRootElement(getDocument(xmlParser));
-        const auto actual = root.getCharacterData();
-        TEST_ASSERT_EQ(actual, ""); // preserveCharacterData == false
+        std::u8string actual;
+        root.getCharacterData(actual);
+        static const auto blank = str::EncodedStringView("").u8string();
+        TEST_ASSERT(actual == blank); // preserveCharacterData == false
     }
     {
-        io::StringStream input;
+        io::U8StringStream input;
         input.stream() << strXml;
         xmlParser.preserveCharacterData(true);
         xmlParser.parse(input);
         const auto& root = getRootElement(getDocument(xmlParser));
-        const auto actual = root.getCharacterData();
-        TEST_ASSERT_EQ(actual, text); // preserveCharacterData == true
+        std::u8string actual;
+        root.getCharacterData(actual);
+        TEST_ASSERT(actual == text); // preserveCharacterData == true
     }
 }
 
