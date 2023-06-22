@@ -31,6 +31,8 @@
 #include <math.h>
 #include <stdint.h>
 
+#include <complex>
+
 #include "coda_oss/CPlusPlus.h"
 #include "coda_oss/span.h"
 #include "config/Exports.h"
@@ -50,6 +52,12 @@ CODA_OSS_API void Cos(span<const double>, span<double>);
 
 CODA_OSS_API void Tan(span<const float>, span<float>);
 CODA_OSS_API void Tan(span<const double>, span<double>);
+
+CODA_OSS_API void ATan2(span<const float>, span<const float>, span<float>);
+CODA_OSS_API void ATan2(span<const double>, span<const double>, span<double>);
+
+// https://en.cppreference.com/w/cpp/numeric/complex/arg
+CODA_OSS_API void Arg(span<const std::complex<float>>, span<float>);
 
 }
 
