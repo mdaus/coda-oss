@@ -105,31 +105,6 @@ inline void vec_Func(span<const T> inputs, span<T> outputs,
     results.store_partial(remaining, &(outputs[i]));
 }
 
-// For the given type and width, return the right function.
-//
-// Each TFunc is a different type even though they have the same signature;
-// this is because they were generated from lambdas (below) and the type of
-// each lambda is unique.  Because of that, `auto` doesn't work since
-// the inferred types are different and incompatible.
-//
-// The fix is to use an actual function pointer instead of lambda.
-template<typename T>
-using Func_t = std::function<void(span<const T>, span<T>)>;
-template <typename T>
-inline auto getFuncForWidth(Func_t<T> f_sse2, Func_t<T> f_avx2, Func_t<T> f_avx512f)
-{
-    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
-    static const auto width = Elements_per_vector<T>();
-    switch (width)
-    {
-    case Elements_per_vector<T, sys::SIMDInstructionSet::SSE2>(): return f_sse2;
-    case Elements_per_vector<T, sys::SIMDInstructionSet::AVX2>(): return f_avx2;
-    case Elements_per_vector<T, sys::SIMDInstructionSet::AVX512F>(): return f_avx512f;
-    default: break;
-    }
-    throw std::logic_error("Unknown 'width' value = " + std::to_string(width));
-}
-
 template<typename T, typename TFunc>
 inline void invoke(span<const T> inputs, span<T> outputs, TFunc f)
 {
@@ -148,8 +123,31 @@ inline void invoke(span<const T> inputs, span<T> outputs, TFunc f)
         return vec_Func<avx512f_width>(inputs, outputs, f);
     };
 
+    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
+    static const auto width = Elements_per_vector<T>();
+
+    // For the given type and width, return the right function.
+    //
+    // Each TFunc is a different type even though they have the same signature;
+    // this is because they were generated from lambdas (below) and the type of
+    // each lambda is unique.  Because of that, `auto` doesn't work since
+    // the inferred types are different and incompatible.
+    //
+    // The fix is to use an actual function pointer instead of lambda.
+    using retval_t = std::function<void(span<const T>, span<T>)>;
+    static const auto get_simd_func = [&]() ->  retval_t {
+        switch (width)
+        {
+        case sse2_width: return f_sse2;
+        case avx2_width: return f_avx2;
+        case avx512f_width: return f_avx512f;
+        default:  break;
+        }
+        throw std::logic_error("Unknown 'width' value = " + std::to_string(width));
+    };
+
     // Only need to get the actual function once because the width won't change.
-    static const auto func = getFuncForWidth<T>(f_sse2, f_avx2, f_avx512f);
+    static const auto func = get_simd_func();
     func(inputs, outputs);
 }
 
