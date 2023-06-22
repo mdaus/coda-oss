@@ -25,6 +25,7 @@
 #include <types/Complex.h>
 #include <config/compiler_extensions.h>
 #include <import/str.h>
+#include <str/EncodedStringView.h>
 
 #include "TestCase.h"
 
@@ -36,8 +37,18 @@ inline std::string to_string(const std::string& value)
 TEST_CASE(testTrim)
 {
     std::string s = "  test   ";
-    str::trim( s);
+    str::trim(s);
     TEST_ASSERT_EQ(s, "test");
+
+}
+
+TEST_CASE(testTrimToNBSP)
+{
+    auto s = str::EncodedStringView("  test   ").u8string();
+    str::trimToNBSP(s);
+
+    const auto expected = str::EncodedStringView("&#xA0;&#xA0;test&#xA0;&#xA0;&#xA0;").u8string();
+    TEST_ASSERT(s == expected);
 }
 
 TEST_CASE(testData)
@@ -311,6 +322,7 @@ TEST_CASE(test_toTypeComplexShort)
 
 TEST_MAIN(
     TEST_CHECK(testTrim);
+    TEST_CHECK(testTrimToNBSP);
     TEST_CHECK(testData);
     TEST_CHECK(testUpper);
     TEST_CHECK(testLower);
