@@ -116,7 +116,7 @@ inline void vec_Func(span<const T> inputs, span<T> outputs,
 template<typename T>
 using Func_t = std::function<void(span<const T>, span<T>)>;
 template <typename T>
-inline auto getFuncForWidth(Func_t<T> f_sse2, Func_t<T> f_avx2, Func_t<T> f_avx512)
+inline auto getFuncForWidth(Func_t<T> f_sse2, Func_t<T> f_avx2, Func_t<T> f_avx512f)
 {
     // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
     static const auto width = Elements_per_vector<T>();
@@ -124,7 +124,7 @@ inline auto getFuncForWidth(Func_t<T> f_sse2, Func_t<T> f_avx2, Func_t<T> f_avx5
     {
     case Elements_per_vector<T, sys::SIMDInstructionSet::SSE2>(): return f_sse2;
     case Elements_per_vector<T, sys::SIMDInstructionSet::AVX2>(): return f_avx2;
-    case Elements_per_vector<T, sys::SIMDInstructionSet::AVX512F>(): return f_avx512;
+    case Elements_per_vector<T, sys::SIMDInstructionSet::AVX512F>(): return f_avx512f;
     default: break;
     }
     throw std::logic_error("Unknown 'width' value = " + std::to_string(width));
@@ -133,24 +133,23 @@ inline auto getFuncForWidth(Func_t<T> f_sse2, Func_t<T> f_avx2, Func_t<T> f_avx5
 template<typename T, typename TFunc>
 inline void invoke(span<const T> inputs, span<T> outputs, TFunc f)
 {
+    constexpr auto sse2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::SSE2>();
+    constexpr auto avx2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX2>();
+    constexpr auto avx512f_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX512F>();
 
     // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
     static const auto f_sse2 = [&](span<const T> inputs, span<T> outputs) {
-        constexpr auto width = Elements_per_vector<T,  sys::SIMDInstructionSet::SSE2>();
-        return vec_Func<width>(inputs, outputs, f);
+        return vec_Func<sse2_width>(inputs, outputs, f);
     };
     static const auto f_avx2 = [&](span<const T> inputs, span<T> outputs) {
-        constexpr auto width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX2>();
-        return vec_Func<width>(inputs, outputs, f);
+        return vec_Func<avx2_width>(inputs, outputs, f);
     };
-    static const auto f_avx512 = [&](span<const T> inputs, span<T> outputs) {
-        constexpr auto width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX512F>();
-        return vec_Func<width>(inputs, outputs, f);
+    static const auto f_avx512f = [&](span<const T> inputs, span<T> outputs) {
+        return vec_Func<avx512f_width>(inputs, outputs, f);
     };
 
-    // During runtime, these functions don't need to change
-    // since SSE/AVX/AVX512 won't change.
-    static const auto func = getFuncForWidth<T>(f_sse2, f_avx2, f_avx512);
+    // Only need to get the actual function once because the width won't change.
+    static const auto func = getFuncForWidth<T>(f_sse2, f_avx2, f_avx512f);
     func(inputs, outputs);
 }
 
