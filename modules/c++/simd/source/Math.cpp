@@ -31,6 +31,13 @@
 #include "sys/OS.h"
 #include "gsl/gsl.h"
 
+// We'll sort this out a runtime, not compile-time; see instrset.h:
+//     The following values of INSTRSET are currently defined:
+//     [...]
+//     9:  AVX512F
+#ifndef INSTRSET
+#define INSTRSET 9 // defined(__AVX512F__ ) || defined ( __AVX512__ )
+#endif
 #include "Vec.h"
 
 template<typename T>
