@@ -28,19 +28,14 @@
 #include <limits>
 #include <functional>
 
+#include "sys/AbstractOS.h"
+
 #include "Vec.h"
 
-inline bool isSSE2()
+inline auto get_instruction_set()
 {
-    return true;  // TODO
-}
-inline bool isAVX()
-{
-    return true;  // TODO
-}
-inline bool isAVX512()
-{
-    return false;  // TODO
+    static const sys::OS os;
+    return os.getSIMDInstructionSet();
 }
 
 /*
@@ -53,52 +48,29 @@ Vec4d           double          4 			256 		AVX
 Vec16f          single          16 			512 		AVX512
 Vec8d           double          8 			512 		AVX512
 */
-enum class instruction_set
-{
-    SSE2,
-    AVX,
-    AVX512,
-};
-inline instruction_set get_instruction_set()
-{
-    if (isAVX512())
-    {
-        return instruction_set::AVX512;
-    }
-    if (isAVX())
-    {
-        return instruction_set::AVX;
-    }
-    if (isSSE2())
-    {
-        return instruction_set::SSE2;
-    }
-    throw std::runtime_error("Must have at least SSE2.");
-}
-
 template <typename T, instruction_set> constexpr size_t Elements_per_vector();
-template <> constexpr size_t Elements_per_vector<float, instruction_set::SSE2>() { return 4; }
-template <> constexpr size_t Elements_per_vector<double, instruction_set::SSE2>() { return 2; }
-template <> constexpr size_t Elements_per_vector<float, instruction_set::AVX>() { return 8; }
-template <> constexpr size_t Elements_per_vector<double, instruction_set::AVX>() { return 4; }
-template <> constexpr size_t Elements_per_vector<float, instruction_set::AVX512>() { return 16; }
-template <> constexpr size_t Elements_per_vector<double, instruction_set::AVX512>() { return 8; }
+template <> constexpr size_t Elements_per_vector<float, sys::SIMDInstructionSet::SSE2>() { return 4; }
+template <> constexpr size_t Elements_per_vector<double, sys::SIMDInstructionSet::SSE2>() { return 2; }
+template <> constexpr size_t Elements_per_vector<float, sys::SIMDInstructionSet::AVX2>() { return 8; }
+template <> constexpr size_t Elements_per_vector<double, sys::SIMDInstructionSet::AVX2>() { return 4; }
+template <> constexpr size_t Elements_per_vector<float, sys::SIMDInstructionSet::AVX512F>() { return 16; }
+template <> constexpr size_t Elements_per_vector<double, sys::SIMDInstructionSet::AVX512F>() { return 8; }
 
 template<typename T>
 inline size_t Elements_per_vector()
 {
     switch (get_instruction_set())
     {
-    case instruction_set::SSE2: return Elements_per_vector<T, instruction_set::SSE2>();
-    case instruction_set::AVX: return Elements_per_vector<T, instruction_set::AVX>();
-    case instruction_set::AVX512: return Elements_per_vector<T, instruction_set::AVX512>();
+    case sys::SIMDInstructionSet::SSE2: return Elements_per_vector<T, sys::SIMDInstructionSet::SSE2>();
+    case sys::SIMDInstructionSet::AVX2: return Elements_per_vector<T, sys::SIMDInstructionSet::AVX2>();
+    case sys::SIMDInstructionSet::AVX512F: return Elements_per_vector<T, sys::SIMDInstructionSet::AVX512F>();
     default: break;
     }
-    throw std::logic_error("Unexpected instruction_set value.");
+    throw std::logic_error("Unexpected sys::SIMDInstructionSet value.");
 }
 
 template <size_t width, typename T, typename TFunc>
-inline size_t simd_Func(coda_oss::span<const T> inputs, coda_oss::span<T> outputs,
+inline void vec_Func(coda_oss::span<const T> inputs, coda_oss::span<T> outputs,
     TFunc f)
 {
     simd::Vec<T, width> vec;  // i.e., vcl::Vec8f
@@ -115,23 +87,24 @@ inline size_t simd_Func(coda_oss::span<const T> inputs, coda_oss::span<T> output
         auto const pOutputs = &(outputs[i]);
         results.store(pOutputs);  // store_a() requires very strict alignment
     }
-    return i;
-}
 
-template <typename T, typename TFunc>
-inline void slow_Func(size_t i, coda_oss::span<const T> inputs, coda_oss::span<T> outputs,
-    TFunc f)
-{
-    // Finish any remaining one at a time
-    for (; i < inputs.size(); i++)
+    // Do the last few an element at a time; using the same `f`
+    // as above helps keep results consistent.
+    const auto current_index = i;
+    for (size_t vec_i = 0; i < inputs.size(); i++, vec_i++)
     {
-        outputs[i] = f(inputs[i]);
+        vec[vec_i] = inputs[i];
+    }
+    const auto results = f(vec);
+    i = current_index;
+    for (size_t res_i = 0; i < inputs.size(); i++, res_i++)
+    {
+        outputs[i] = results[res_i];
     }
 }
 
-template <size_t width, typename T, typename TFuncSimd, typename TFunc>
-inline void call_Funcs(coda_oss::span<const T> inputs, coda_oss::span<T> outputs,
-    TFuncSimd func_simd, TFunc func)
+template <size_t width, typename T, typename TFunc>
+inline void call_Func(coda_oss::span<const T> inputs, coda_oss::span<T> outputs, TFunc func)
 {
     if (outputs.size() < inputs.size())
     {
@@ -146,8 +119,7 @@ inline void call_Funcs(coda_oss::span<const T> inputs, coda_oss::span<T> outputs
     }
     #endif
 
-    size_t i = simd_Func<width>(inputs, outputs, func_simd);
-    slow_Func(i, inputs, outputs, func);
+    vec_Func<width>(inputs, outputs, func);
 }
 
 // For the given type and width, return the right function.
@@ -162,15 +134,15 @@ inline void call_Funcs(coda_oss::span<const T> inputs, coda_oss::span<T> outputs
 template<typename T>
 using Func_t = std::function<void(coda_oss::span<const T>, coda_oss::span<T>)>;
 template <typename T>
-inline auto getFuncForWidth(Func_t<T> fSSE2, Func_t<T> fAVX, Func_t<T> fAVX512)
+inline auto getFuncForWidth(Func_t<T> fSSE2, Func_t<T> fAVX2, Func_t<T> fAVX512F)
 {
     // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
     static const auto width = Elements_per_vector<T>();
     switch (width)
     {
-    case Elements_per_vector<T, instruction_set::SSE2>(): return fSSE2;
-    case Elements_per_vector<T, instruction_set::AVX>(): return fAVX;
-    case Elements_per_vector<T, instruction_set::AVX512>(): return fAVX512;
+    case Elements_per_vector<T, sys::SIMDInstructionSet::SSE2>(): return fSSE2;
+    case Elements_per_vector<T, sys::SIMDInstructionSet::AVX2>(): return fAVX2;
+    case Elements_per_vector<T, sys::SIMDInstructionSet::AVX512F>(): return fAVX512F;
     default: break;
     }
 
@@ -185,18 +157,18 @@ inline void call_sin(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
 
     // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
     static const auto fSSE2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
-        return call_Funcs<Elements_per_vector<T, instruction_set::SSE2>()>(inputs, outputs,  simd_f, std_f);
+        return call_Funcs<Elements_per_vector<T,  sys::SIMDInstructionSet::SSE2>()>(inputs, outputs,  simd_f, std_f);
     };
-    static const auto fAVX = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
-        return call_Funcs<Elements_per_vector<T, instruction_set::AVX>()>(inputs, outputs, simd_f, std_f);
+    static const auto fAVX2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return call_Funcs<Elements_per_vector<T, sys::SIMDInstructionSet::AVX2>()>(inputs, outputs, simd_f, std_f);
     };
-    static const auto fAVX512 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
-        return  call_Funcs<Elements_per_vector<T, instruction_set::AVX512>()>(inputs, outputs, simd_f, std_f);
+    static const auto fAVX512F = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return  call_Funcs<Elements_per_vector<T, sys::SIMDInstructionSet::AVX512F>()>(inputs, outputs, simd_f, std_f);
     };
 
     // During runtime, these functions don't need to change
     // since SSE/AVX/AVX512 won't change.
-    static const auto f = getFuncForWidth<T>(fSSE2, fAVX, fAVX512);
+    static const auto f = getFuncForWidth<T>(fSSE2, fAVX2, fAVX512F);
     f(inputs, outputs);
 }
 void simd::Sin(coda_oss::span<const float> inputs, coda_oss::span<float> outputs)
@@ -216,18 +188,18 @@ inline void call_cos(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
 
     // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
     static const auto fSSE2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
-        return call_Funcs<Elements_per_vector<T, instruction_set::SSE2>()>(inputs, outputs,  simd_f, std_f);
+        return call_Funcs<Elements_per_vector<T, sys::SIMDInstructionSet::SSE2>()>(inputs, outputs,  simd_f, std_f);
     };
-    static const auto fAVX = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
-        return call_Funcs<Elements_per_vector<T, instruction_set::AVX>()>(inputs, outputs, simd_f, std_f);
+    static const auto fAVX2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return call_Funcs<Elements_per_vector<T, sys::SIMDInstructionSet::AVX2>()>(inputs, outputs, simd_f, std_f);
     };
-    static const auto fAVX512 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
-        return  call_Funcs<Elements_per_vector<T, instruction_set::AVX512>()>(inputs, outputs, simd_f, std_f);
+    static const auto fAVX512F = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return  call_Funcs<Elements_per_vector<T, sys::SIMDInstructionSet::AVX512F>()>(inputs, outputs, simd_f, std_f);
     };
 
     // During runtime, these functions don't need to change
     // since SSE/AVX/AVX512 won't change.
-    static const auto f = getFuncForWidth<T>(fSSE2, fAVX, fAVX512);
+    static const auto f = getFuncForWidth<T>(fSSE2, fAVX2, fAVX512F);
     f(inputs, outputs);
 }
 void simd::Cos(coda_oss::span<const float> inputs, coda_oss::span<float> outputs)
@@ -247,18 +219,18 @@ inline void call_tan(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
 
     // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
     static const auto fSSE2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
-        return call_Funcs<Elements_per_vector<T, instruction_set::SSE2>()>(inputs, outputs,  simd_f, std_f);
+        return call_Funcs<Elements_per_vector<T, sys::SIMDInstructionSet::SSE2>()>(inputs, outputs,  simd_f, std_f);
     };
-    static const auto fAVX = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
-        return call_Funcs<Elements_per_vector<T, instruction_set::AVX>()>(inputs, outputs, simd_f, std_f);
+    static const auto fAVX2 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return call_Funcs<Elements_per_vector<T, sys::SIMDInstructionSet::AVX2>()>(inputs, outputs, simd_f, std_f);
     };
-    static const auto fAVX512 = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
-        return  call_Funcs<Elements_per_vector<T, instruction_set::AVX512>()>(inputs, outputs, simd_f, std_f);
+    static const auto fAVX512F = [](coda_oss::span<const T> inputs, coda_oss::span<T> outputs) {
+        return  call_Funcs<Elements_per_vector<T, sys::SIMDInstructionSet::AVX512F>()>(inputs, outputs, simd_f, std_f);
     };
 
     // During runtime, these functions don't need to change
     // since SSE/AVX/AVX512 won't change.
-    static const auto f = getFuncForWidth<T>(fSSE2, fAVX, fAVX512);
+    static const auto f = getFuncForWidth<T>(fSSE2, fAVX2, fAVX512F);
     f(inputs, outputs);
 }
 void simd::Tan(coda_oss::span<const float> inputs, coda_oss::span<float> outputs)

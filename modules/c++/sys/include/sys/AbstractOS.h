@@ -295,7 +295,7 @@ struct CODA_OSS_API AbstractOS
 
 
     /*!
-     * Figure out what SIMD instrunctions are available.  Keep in mind these
+     * Figure out what SIMD instructions are available.  Keep in mind these
      * are RUN-TIME, not compile-time, checks.
      */
     virtual SIMDInstructionSet getSIMDInstructionSet() const = 0;
