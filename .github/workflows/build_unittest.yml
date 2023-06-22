@@ -6,7 +6,7 @@ jobs:
   build-cmake-windows:
     strategy:
       matrix:
-        os: [windows-2019]
+        os: [windows-latest]
         python-version: ['3.7']
     name: ${{ matrix.os }}-${{ matrix.python-version }}-CMake
     runs-on: ${{ matrix.os }}
@@ -79,8 +79,8 @@ jobs:
     - name: build
       run: |
         cd target
-        # using the default number of threads (-j) causes G++ to crash
-        cmake --build . -j 3
+        # "-j" spawns too many processes causing GCC to crash
+        cmake --build . -j 6
     - name: install
       run: |
         cd target
@@ -113,7 +113,7 @@ jobs:
         export CXX=g++-10
         python waf configure --prefix="$PWD/install${{ matrix.os }}Waf-Github" --enable-swig ${{ matrix.debugging }}
     - name: configure_without_swig
-      if: ${{ matrix.os == 'windows-2019' }}
+      if: ${{ matrix.os == 'windows-latest' }}
       run: |
         pip install numpy
         mkdir install${{ matrix.os }}Waf-Github
@@ -127,4 +127,3 @@ jobs:
     - name: test
       run: |
         python waf install --alltests
-
