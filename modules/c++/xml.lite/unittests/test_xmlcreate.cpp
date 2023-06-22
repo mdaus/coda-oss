@@ -109,9 +109,43 @@ TEST_CASE(testXmlCreateEmpty)
     TEST_ASSERT_EQ("<empty/>", actual);
 }
 
+TEST_CASE(testXmlCreateWhitespace)
+{
+    using namespace xml::lite::literals;  // _q and _u for QName and Uri
+
+    xml::lite::MinidomParser xmlParser;
+    auto& document = getDocument(xmlParser);
+
+    const std::string text = "    ";
+    auto documents_ = document.createElement(xml::lite::QName(""_u, "text"), text);
+    auto& documents = *documents_;
+    auto strXml = print(documents);
+    TEST_ASSERT_EQ("<text>" + text + "</text>", strXml);
+
+    {
+        io::StringStream input;
+        input.stream() << strXml;
+        xmlParser.preserveCharacterData(false);
+        xmlParser.parse(input);
+        const auto& root = getRootElement(getDocument(xmlParser));
+        const auto actual = root.getCharacterData();
+        TEST_ASSERT_EQ(actual, ""); // preserveCharacterData == false
+    }
+    {
+        io::StringStream input;
+        input.stream() << strXml;
+        xmlParser.preserveCharacterData(true);
+        xmlParser.parse(input);
+        const auto& root = getRootElement(getDocument(xmlParser));
+        const auto actual = root.getCharacterData();
+        TEST_ASSERT_EQ(actual, text); // preserveCharacterData == true
+    }
+}
+
 int main(int, char**)
 {
     TEST_CHECK(testXmlCreateRoot);
     TEST_CHECK(testXmlCreateNested);
     TEST_CHECK(testXmlCreateEmpty);
+    TEST_CHECK(testXmlCreateWhitespace);
 }
