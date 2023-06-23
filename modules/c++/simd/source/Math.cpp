@@ -82,8 +82,8 @@ inline size_t getWidth()
     throw std::logic_error("Unexpected sys::SIMDInstructionSet value.");
 }
 
-template <typename T>
-static void validate_inputs(span<const T> x_values, span<const T> y_values, span<T> outputs)
+template <typename T1, typename U, typename T2 = T1>
+static void validate_inputs(span<const T1> x_values, span<const T2> y_values, span<U> outputs)
 {
     if (!y_values.empty() && (x_values.size() != y_values.size()))
     {
@@ -101,20 +101,21 @@ static void validate_inputs(span<const T> x_values, span<const T> y_values, span
 // 
 // This the actual workhorse function where most of the "interesting" stuff
 // happens; much of the other code is "just" type manipulation.
-template <size_t width, typename T, typename TFunc>
-inline void vec_Func(span<const T> x_values, span<const T> y_values, span<T> outputs,
+template <size_t width, typename T1, typename TFunc, typename U = T1, typename T2 = T1>
+inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs,
     TFunc f)
 {
     validate_inputs(x_values, y_values, outputs);
 
-    using Vec_t = simd::Vec<T, width>; // e.g., vcl::Vec8f
-    Vec_t x{}, y{};
+    simd::Vec<T1, width> x{}; // e.g., vcl::Vec8f
+    simd::Vec<T2, width> y{};  // e.g., vcl::Vec8f
 
-    const std::function<Vec_t(size_t)> invoke_f = [&](size_t) {
+    using results_t = simd::Vec<U, width>;  // e.g., vcl::Vec8f
+    const std::function<results_t(size_t)> invoke_f = [&](size_t) {
         assert(y_values.empty());
         return f(x, y);
     };
-    const std::function<Vec_t(size_t)> load_x_y = [&](size_t i) {
+    const std::function<results_t(size_t)> load_x_y = [&](size_t i) {
         y.load(&(y_values[i]));  // load_a() requires very strict alignment
         return f(x, y);
     };
@@ -143,17 +144,17 @@ inline void vec_Func(span<const T> x_values, span<const T> y_values, span<T> out
 }
 
 // "bind" the compile-time `width` to a particular instantiation for the given type `T`.
-template <size_t width, typename T, typename TFunc>
+template <size_t width, typename T1, typename T2, typename U, typename TFunc>
 inline auto bind(TFunc f)
 {
     // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
-    return [&](span<const T> x_values, span<const T> y_values, span<T> outputs) {
+    return [&](span<const T1> x_values, span<const T2> y_values, span<U> outputs) {
         return vec_Func<width>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
 }
 
-template<typename T, typename TFunc>
-inline void invoke(span<const T> x_values, span<const T> y_values, span<T> outputs, TFunc f)
+template<typename T1, typename TFunc, typename U = T, typename T2 = T1>
+inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
 {
     // For the given type and width, return the right function.
     //
@@ -163,19 +164,19 @@ inline void invoke(span<const T> x_values, span<const T> y_values, span<T> outpu
     // the inferred types are different and incompatible.
     //
     // The fix is to use an actual function pointer instead of lambda.
-    using retval_t = std::function<void(span<const T>, span<const T>, span<T>)>;
+    using retval_t = std::function<void(span<const T1>, span<const T2>, span<U>)>;
     static const auto get_simd_func = [&f]() ->  retval_t {
-        constexpr auto sse2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::SSE2>();
-        constexpr auto avx2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX2>();
-        constexpr auto avx512f_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX512F>();
+        constexpr auto sse2_width = Elements_per_vector<T1,  sys::SIMDInstructionSet::SSE2>();
+        constexpr auto avx2_width = Elements_per_vector<T1,  sys::SIMDInstructionSet::AVX2>();
+        constexpr auto avx512f_width = Elements_per_vector<T1,  sys::SIMDInstructionSet::AVX512F>();
 
         // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
-        static const auto width = getWidth<T>();
+        static const auto width = getWidth<T1>();
         switch (width)
         {
-        case sse2_width: return bind<sse2_width, T>(f);
-        case avx2_width: return bind<avx2_width, T>(f);
-        case avx512f_width: return bind<avx512f_width, T>(f);
+        case sse2_width: return bind<sse2_width, T1, T2, U>(f);
+        case avx2_width: return bind<avx2_width, T1, T2, U>(f);
+        case avx512f_width: return bind<avx512f_width, T1, T2, U>(f);
         default:  break;
         }
         throw std::logic_error("Unknown 'width' value = " + std::to_string(width));
@@ -185,8 +186,8 @@ inline void invoke(span<const T> x_values, span<const T> y_values, span<T> outpu
     static const auto func = get_simd_func();
     func(x_values, y_values, outputs);
 }
-template<typename T, typename TFunc>
-inline void invoke(span<const T> inputs, span<T> outputs, TFunc f)
+template<typename T, typename TFunc, typename U = T>
+inline void invoke(span<const T> inputs, span<U> outputs, TFunc f)
 {
     static const span<const T> empty;
     invoke(inputs, empty, outputs, f);
