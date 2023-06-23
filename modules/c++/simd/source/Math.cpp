@@ -45,12 +45,6 @@
 template<typename T>
 using span = simd::span<T>;
 
-inline auto get_instruction_set()
-{
-    static const sys::OS os;
-    return os.getSIMDInstructionSet();
-}
-
 /*
 * Table 2.2 from https://github.com/vectorclass/manual/raw/master/vcl_manual.pdf
 Vector class    Precision   Elements per vector     Total bits      Minimum recommended instruction set
@@ -69,10 +63,14 @@ template <> constexpr size_t Elements_per_vector<double, sys::SIMDInstructionSet
 template <> constexpr size_t Elements_per_vector<float, sys::SIMDInstructionSet::AVX512F>() { return 16; }
 template <> constexpr size_t Elements_per_vector<double, sys::SIMDInstructionSet::AVX512F>() { return 8; }
 
+// Gets the RUNTIME width for the given type and instruction-set; see table, above.
 template<typename T>
 inline size_t getWidth()
 {
-    switch (get_instruction_set())
+    static const sys::OS os;
+    static const auto instruction_set = os.getSIMDInstructionSet();
+
+    switch (instruction_set)
     {
     case sys::SIMDInstructionSet::SSE2: return Elements_per_vector<T, sys::SIMDInstructionSet::SSE2>();
     case sys::SIMDInstructionSet::AVX2: return Elements_per_vector<T, sys::SIMDInstructionSet::AVX2>();
@@ -82,7 +80,7 @@ inline size_t getWidth()
     throw std::logic_error("Unexpected sys::SIMDInstructionSet value.");
 }
 
-template <typename T1, typename U, typename T2 = T1>
+template <typename T1, typename U = T1, typename T2 = T1>
 static void validate_inputs(span<const T1> x_values, span<const T2> y_values, span<U> outputs)
 {
     if (!y_values.empty() && (x_values.size() != y_values.size()))
@@ -110,29 +108,28 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
     simd::Vec<T1, width> x{}; // e.g., vcl::Vec8f
     simd::Vec<T2, width> y{};  // e.g., vcl::Vec8f
 
-    using results_t = simd::Vec<U, width>;  // e.g., vcl::Vec8f
-    const std::function<results_t(size_t)> invoke_f = [&](size_t) {
+    // Do the check for an empty `y_values` just once--outside the loop.
+    const std::function<void(size_t)> do_nothing = [&](size_t) {
         assert(y_values.empty());
-        return f(x, y);
     };
-    const std::function<results_t(size_t)> load_x_y = [&](size_t i) {
+    const std::function<void(size_t)> load_y = [&](size_t i) {
         y.load(&(y_values[i]));  // load_a() requires very strict alignment
-        return f(x, y);
     };
-    const auto load_and_invoke_f = y_values.empty() ? invoke_f : load_x_y;
+    const auto maybe_load_y = y_values.empty() ? do_nothing : load_y;
 
-    const auto x_values_size = x_values.size() < width ? 0 : x_values.size() - width;  // don't walk off end with `+= width`
     size_t i = 0;
-    for (; i < x_values_size; i += width)
+    const auto size = x_values.size() <= width ? 0 : x_values.size() - width;  // don't walk off end with `+= width`
+    for (; i < size; i += width)
     {
         x.load(&(x_values[i]));  // load_a() requires very strict alignment
+        maybe_load_y(i);
 
-        const auto results = load_and_invoke_f(i);
+        const auto results = f(x, y);
+
         results.store(&(outputs[i]));  // store_a() requires very strict alignment
     }
 
-    // Do the last few an element at a time; using the same `f`
-    // as above helps keep results consistent.
+    // Finish whatever is left with load_partial() and store_partial()
     const auto remaining = gsl::narrow<int>(x_values.size() - i);
     x.load_partial(remaining, &(x_values[i]));
     if (!y_values.empty())
@@ -147,7 +144,6 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
 template <size_t width, typename T1, typename T2, typename U, typename TFunc>
 inline auto bind(TFunc f)
 {
-    // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
     return [&](span<const T1> x_values, span<const T2> y_values, span<U> outputs) {
         return vec_Func<width>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
@@ -156,14 +152,11 @@ inline auto bind(TFunc f)
 template<typename T1, typename TFunc, typename U = T1, typename T2 = T1>
 inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
 {
-    // For the given type and width, return the right function.
+    // For the given type and width, return the right instantiation of vec_Func.
     //
-    // Each TFunc is a different type even though they have the same signature;
-    // this is because they were generated from lambdas (below) and the type of
-    // each lambda is unique.  Because of that, `auto` doesn't work since
-    // the inferred types are different and incompatible.
-    //
-    // The fix is to use an actual function pointer instead of lambda.
+    // Each lambda is a different type even though they have the same signature.
+    // Because of that, `auto` doesn't work since the inferred types are different.
+    // The fix is to explicitly use std::function.
     using retval_t = std::function<void(span<const T1>, span<const T2>, span<U>)>;
     static const auto get_simd_func = [&f]() ->  retval_t {
         constexpr auto sse2_width = Elements_per_vector<T1,  sys::SIMDInstructionSet::SSE2>();
