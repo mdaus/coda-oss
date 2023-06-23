@@ -43,36 +43,45 @@ public:
 
 namespace
 {
-TEST_CASE(PriorityEnqueue)
+TEST_CASE(DefaultComparatorEnqueue)
 {
+    // This uses the default comparator, which sorts
+    // all values to the same value, so the queue onl
+    // attains size of one
+
     mt::OrderedRequestQueue<int> testSubject;
     testSubject.enqueue(1);
+    TEST_ASSERT_EQ(testSubject.length(), 1);
     testSubject.enqueue(2);
+    TEST_ASSERT_EQ(testSubject.length(), 1);
     testSubject.enqueue(3);
+    TEST_ASSERT_EQ(testSubject.length(), 1);
     testSubject.enqueue(4);
+    TEST_ASSERT_EQ(testSubject.length(), 1);
     testSubject.enqueue(5);
+    TEST_ASSERT_EQ(testSubject.length(), 1);
     testSubject.enqueue(6);
+    TEST_ASSERT_EQ(testSubject.length(), 1);
 
     int request = -1;
     testSubject.dequeue(request);
     TEST_ASSERT_EQ(request, 1);
-    testSubject.dequeue(request);
-    TEST_ASSERT_EQ(request, 2);
-    testSubject.dequeue(request);
-    TEST_ASSERT_EQ(request, 3);
+
+    TEST_ASSERT_EQ(testSubject.length(), 0);
 
     testSubject.enqueue(10);
 
     testSubject.dequeue(request);
-    TEST_ASSERT_EQ(request, 4);
-    testSubject.dequeue(request);
-    TEST_ASSERT_EQ(request, 5);
-    
+    TEST_ASSERT_EQ(request, 10);
+
     testSubject.enqueue(1);
 
     testSubject.dequeue(request);
     TEST_ASSERT_EQ(request, 1);
+}
 
+TEST_CASE(PriorityEnqueue)
+{
     mt::OrderedRequestQueue<int, EvenFirst> test2;
     test2.enqueue(1);
     test2.enqueue(2);
@@ -81,6 +90,7 @@ TEST_CASE(PriorityEnqueue)
     test2.enqueue(5);
     test2.enqueue(6);
 
+    int request = -1;
     test2.dequeue(request);
     TEST_ASSERT_EQ(request, 2);
     test2.dequeue(request);
@@ -93,14 +103,13 @@ TEST_CASE(PriorityEnqueue)
     TEST_ASSERT_EQ(request, 3);
     test2.dequeue(request);
     TEST_ASSERT_EQ(request, 5);
-
-
 }
 
 }
 
 int main(int, char**)
 {
+    TEST_CHECK(DefaultComparatorEnqueue);
     TEST_CHECK(PriorityEnqueue);
 
     return 0;
