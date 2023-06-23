@@ -82,42 +82,10 @@ inline size_t getWidth()
     throw std::logic_error("Unexpected sys::SIMDInstructionSet value.");
 }
 
-template <size_t width, typename T, typename TFunc>
-inline void vec_Func(span<const T> inputs, span<T> outputs,
-    TFunc f)
+template <typename T>
+static void validate_inputs(span<const T> x_values, span<const T> y_values, span<T> outputs)
 {
-    if (outputs.size() < inputs.size())
-    {
-        throw std::invalid_argument("'outputs' is smaller than 'inputs'");
-    }
-
-    simd::Vec<T, width> vec{};  // i.e., vcl::Vec8f
-
-    const auto inputs_size = inputs.size() < width ? 0 : inputs.size() - width;  // don't walk off end with `+= width`
-    size_t i = 0;
-    for (; i < inputs_size; i += width)
-    {
-        auto const pInputs = &(inputs[i]);
-        vec.load(pInputs);  // load_a() requires very strict alignment
-
-        const auto results = f(vec);
-
-        auto const pOutputs = &(outputs[i]);
-        results.store(pOutputs);  // store_a() requires very strict alignment
-    }
-
-    // Do the last few an element at a time; using the same `f`
-    // as above helps keep results consistent.
-    const auto remaining = gsl::narrow<int>(inputs.size() - i);
-    vec.load_partial(remaining, &(inputs[i]));
-    const auto results = f(vec);
-    results.store_partial(remaining, &(outputs[i]));
-}
-template <size_t width, typename T, typename TFunc>
-inline void vec_Func(span<const T> x_values, span<const T> y_values, span<T> outputs,
-    TFunc f)
-{
-    if (x_values.size() != y_values.size())
+    if (!y_values.empty() && (x_values.size() != y_values.size()))
     {
         throw std::invalid_argument("inputs aren't the same size");
     }
@@ -125,94 +93,63 @@ inline void vec_Func(span<const T> x_values, span<const T> y_values, span<T> out
     {
         throw std::invalid_argument("'outputs' is smaller than 'x_values'");
     }
+}
 
-    simd::Vec<T, width> x{};  // i.e., vcl::Vec8f
-    simd::Vec<T, width> y{};  // i.e., vcl::Vec8f
+// Repeatedly load the appropriate `Vec`s with the inputs (`y_values` may
+// be empty) and call the given function `f` (which will end up in SIMD code!).
+// The results are stored in `outputs`.
+// 
+// This the actual workhorse function where most of the "interesting" stuff
+// happens; much of the other code is "just" type manipulation.
+template <size_t width, typename T, typename TFunc>
+inline void vec_Func(span<const T> x_values, span<const T> y_values, span<T> outputs,
+    TFunc f)
+{
+    validate_inputs(x_values, y_values, outputs);
+
+    using Vec_t = simd::Vec<T, width>; // e.g., vcl::Vec8f
+    Vec_t x{}, y{};
+
+    const std::function<Vec_t(size_t)> invoke_f = [&](size_t) {
+        assert(y_values.empty());
+        return f(x, y);
+    };
+    const std::function<Vec_t(size_t)> load_x_y = [&](size_t i) {
+        y.load(&(y_values[i]));  // load_a() requires very strict alignment
+        return f(x, y);
+    };
+    const auto load_and_invoke_f = y_values.empty() ? invoke_f : load_x_y;
 
     const auto x_values_size = x_values.size() < width ? 0 : x_values.size() - width;  // don't walk off end with `+= width`
     size_t i = 0;
     for (; i < x_values_size; i += width)
     {
         x.load(&(x_values[i]));  // load_a() requires very strict alignment
-        y.load(&(y_values[i]));  // load_a() requires very strict alignment
 
-        const auto results = f(x, y);
-
-        auto const pOutputs = &(outputs[i]);
-        results.store(pOutputs);  // store_a() requires very strict alignment
+        const auto results = load_and_invoke_f(i);
+        results.store(&(outputs[i]));  // store_a() requires very strict alignment
     }
 
     // Do the last few an element at a time; using the same `f`
     // as above helps keep results consistent.
     const auto remaining = gsl::narrow<int>(x_values.size() - i);
     x.load_partial(remaining, &(x_values[i]));
-    y.load_partial(remaining, &(y_values[i]));
+    if (!y_values.empty())
+    {
+        y.load_partial(remaining, &(y_values[i]));
+    }
     const auto results = f(x, y);
     results.store_partial(remaining, &(outputs[i]));
 }
 
-
-// "bind" the compile-time `width` to a particular insantiation for the given type `T`.
+// "bind" the compile-time `width` to a particular instantiation for the given type `T`.
 template <size_t width, typename T, typename TFunc>
 inline auto bind(TFunc f)
-{
-    // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
-    return [&](span<const T> inputs, span<T> outputs) {
-        return vec_Func<width>(inputs, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
-    };
-}
-// "bind" the compile-time `width` to a particular insantiation for the given type `T`.
-template <size_t width, typename T, typename TFunc2>
-inline auto bind2(TFunc2 f)
 {
     // Be sure inputs/outputs are always passed to the lambda, don't want them captured!
     return [&](span<const T> x_values, span<const T> y_values, span<T> outputs) {
         return vec_Func<width>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
-}
-
-template<typename T>
-struct simd_widths final
-{
-    static constexpr auto sse2 = Elements_per_vector<T,  sys::SIMDInstructionSet::SSE2>();
-    static constexpr auto avx2 = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX2>();
-    static constexpr auto avx512f = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX512F>();
-
-    static size_t size()
-    {
-        // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
-        static const auto width = getWidth<T>();
-        return width;
-    }
-};
-
-template<typename T, typename TFunc>
-inline void invoke(span<const T> inputs, span<T> outputs, TFunc f)
-{
-    // For the given type and width, return the right function.
-    //
-    // Each TFunc is a different type even though they have the same signature;
-    // this is because they were generated from lambdas (below) and the type of
-    // each lambda is unique.  Because of that, `auto` doesn't work since
-    // the inferred types are different and incompatible.
-    //
-    // The fix is to use an actual function pointer instead of lambda.
-    using retval_t = std::function<void(span<const T>, span<T>)>;
-    static const auto get_simd_func = [&f]() ->  retval_t {
-        static const simd_widths<T> widths;
-        switch (widths.size())
-        {
-        case widths.sse2: return bind<widths.sse2, T>(f);
-        case widths.avx2: return bind<widths.avx2, T>(f);
-        case widths.avx512f: return bind<widths.avx512f, T>(f);
-        default:  break;
-        }
-        throw std::logic_error("Unknown 'width' value = " + std::to_string(widths.size()));
-    };
-
-    // Only need to get the actual function once because the width won't change.
-    static const auto func = get_simd_func();
-    func(inputs, outputs);
 }
 
 template<typename T, typename TFunc>
@@ -228,53 +165,63 @@ inline void invoke(span<const T> x_values, span<const T> y_values, span<T> outpu
     // The fix is to use an actual function pointer instead of lambda.
     using retval_t = std::function<void(span<const T>, span<const T>, span<T>)>;
     static const auto get_simd_func = [&f]() ->  retval_t {
-        static const simd_widths<T> widths;
-        switch (widths.size())
+        constexpr auto sse2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::SSE2>();
+        constexpr auto avx2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX2>();
+        constexpr auto avx512f_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX512F>();
+
+        // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
+        static const auto width = getWidth<T>();
+        switch (width)
         {
-        case widths.sse2: return bind2<widths.sse2, T>(f);
-        case widths.avx2: return bind2<widths.avx2, T>(f);
-        case widths.avx512f: return bind2<widths.avx512f, T>(f);
+        case sse2_width: return bind<sse2_width, T>(f);
+        case avx2_width: return bind<avx2_width, T>(f);
+        case avx512f_width: return bind<avx512f_width, T>(f);
         default:  break;
         }
-        throw std::logic_error("Unknown 'width' value = " + std::to_string(widths.size()));
+        throw std::logic_error("Unknown 'width' value = " + std::to_string(width));
     };
 
     // Only need to get the actual function once because the width won't change.
     static const auto func = get_simd_func();
     func(x_values, y_values, outputs);
 }
-
+template<typename T, typename TFunc>
+inline void invoke(span<const T> inputs, span<T> outputs, TFunc f)
+{
+    static const span<const T> empty;
+    invoke(inputs, empty, outputs, f);
+}
 
 void simd::Sin(span<const float> inputs, span<float> outputs)
 {
-    static const auto f = [](const auto& v) { return sin(v); };
+    static const auto f = [](const auto& v, const auto&) { return sin(v); };
     invoke(inputs, outputs, f);
 }
 void simd::Sin(span<const double> inputs, span<double> outputs)
 {
-    static const auto f = [](const auto& v) { return sin(v); };
+    static const auto f = [](const auto& v, const auto&) { return sin(v); };
     invoke(inputs, outputs, f);
 }
 
 void simd::Cos(span<const float> inputs, span<float> outputs)
 {
-    static const auto f = [](const auto& v) { return cos(v); };
+    static const auto f = [](const auto& v, const auto&) { return cos(v); };
     invoke(inputs, outputs, f);
 }
 void simd::Cos(span<const double> inputs, span<double> outputs)
 {
-    static const auto f = [](const auto& v) { return cos(v); };
+    static const auto f = [](const auto& v, const auto&) { return cos(v); };
     invoke(inputs, outputs, f);
 }
 
 void simd::Tan(span<const float> inputs, span<float> outputs)
 {
-    static const auto f = [](const auto& v) { return tan(v); };
+    static const auto f = [](const auto& v, const auto&) { return tan(v); };
     invoke(inputs, outputs, f);
 }
 void simd::Tan(span<const double> inputs, span<double> outputs)
 {
-    static const auto f = [](const auto& v) { return tan(v); };
+    static const auto f = [](const auto& v, const auto&) { return tan(v); };
     invoke(inputs, outputs, f);
 }
 
