@@ -153,7 +153,7 @@ inline auto bind(TFunc f)
     };
 }
 
-template<typename T1, typename TFunc, typename U = T, typename T2 = T1>
+template<typename T1, typename TFunc, typename U = T1, typename T2 = T1>
 inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
 {
     // For the given type and width, return the right function.
