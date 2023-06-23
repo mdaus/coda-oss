@@ -513,9 +513,7 @@ TEST_CASE(test_make_ifstream)
 
 TEST_CASE(test_SIMD_Instructions)
 {
-    const sys::OS os;
-    const auto simdInstructionSet = os.getSIMDInstructionSet();
-
+    static const auto simdInstructionSet = sys::OS().getSIMDInstructionSet();
     const auto isSSE2 = simdInstructionSet == sys::SIMDInstructionSet::SSE2;
     const auto isAVX2 = simdInstructionSet == sys::SIMDInstructionSet::AVX2;
     const auto isAVX512F = simdInstructionSet == sys::SIMDInstructionSet::AVX512F;
