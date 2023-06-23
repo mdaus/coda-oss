@@ -171,6 +171,21 @@ inline auto bind2(TFunc2 f)
     };
 }
 
+template<typename T>
+struct simd_widths final
+{
+    static constexpr auto sse2 = Elements_per_vector<T,  sys::SIMDInstructionSet::SSE2>();
+    static constexpr auto avx2 = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX2>();
+    static constexpr auto avx512f = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX512F>();
+
+    static size_t size()
+    {
+        // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
+        static const auto width = getWidth<T>();
+        return width;
+    }
+};
+
 template<typename T, typename TFunc>
 inline void invoke(span<const T> inputs, span<T> outputs, TFunc f)
 {
@@ -184,20 +199,15 @@ inline void invoke(span<const T> inputs, span<T> outputs, TFunc f)
     // The fix is to use an actual function pointer instead of lambda.
     using retval_t = std::function<void(span<const T>, span<T>)>;
     static const auto get_simd_func = [&f]() ->  retval_t {
-        constexpr auto sse2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::SSE2>();
-        constexpr auto avx2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX2>();
-        constexpr auto avx512f_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX512F>();
-
-        // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
-        static const auto width = getWidth<T>();
-        switch (width)
+        static const simd_widths<T> widths;
+        switch (widths.size())
         {
-        case sse2_width: return bind<sse2_width, T>(f);
-        case avx2_width: return bind<avx2_width, T>(f);
-        case avx512f_width: return bind<avx512f_width, T>(f);
+        case widths.sse2: return bind<widths.sse2, T>(f);
+        case widths.avx2: return bind<widths.avx2, T>(f);
+        case widths.avx512f: return bind<widths.avx512f, T>(f);
         default:  break;
         }
-        throw std::logic_error("Unknown 'width' value = " + std::to_string(width));
+        throw std::logic_error("Unknown 'width' value = " + std::to_string(widths.size()));
     };
 
     // Only need to get the actual function once because the width won't change.
@@ -218,20 +228,15 @@ inline void invoke(span<const T> x_values, span<const T> y_values, span<T> outpu
     // The fix is to use an actual function pointer instead of lambda.
     using retval_t = std::function<void(span<const T>, span<const T>, span<T>)>;
     static const auto get_simd_func = [&f]() ->  retval_t {
-        constexpr auto sse2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::SSE2>();
-        constexpr auto avx2_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX2>();
-        constexpr auto avx512f_width = Elements_per_vector<T,  sys::SIMDInstructionSet::AVX512F>();
-
-        // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
-        static const auto width = getWidth<T>();
-        switch (width)
+        static const simd_widths<T> widths;
+        switch (widths.size())
         {
-        case sse2_width: return bind2<sse2_width, T>(f);
-        case avx2_width: return bind2<avx2_width, T>(f);
-        case avx512f_width: return bind2<avx512f_width, T>(f);
+        case widths.sse2: return bind2<widths.sse2, T>(f);
+        case widths.avx2: return bind2<widths.avx2, T>(f);
+        case widths.avx512f: return bind2<widths.avx512f, T>(f);
         default:  break;
         }
-        throw std::logic_error("Unknown 'width' value = " + std::to_string(width));
+        throw std::logic_error("Unknown 'width' value = " + std::to_string(widths.size()));
     };
 
     // Only need to get the actual function once because the width won't change.
