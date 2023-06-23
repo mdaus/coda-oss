@@ -35,7 +35,7 @@ template <typename T>
 class AbstractComparator
 {
  public:
-    virtual bool operator()(const T& lhs, const T& rhs) const
+    virtual bool operator()(const T&, const T&) const
     {
         return false;
     }
