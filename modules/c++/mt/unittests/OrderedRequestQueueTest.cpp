@@ -26,7 +26,7 @@
 class EvenFirst
 {
 public:
-    bool operator()(int lhs, int rhs)
+    bool operator()(int lhs, int rhs) const
     {
         bool result;
         if ((lhs % 2 && rhs % 2) || (!(lhs%2) && !(rhs%2)) )
