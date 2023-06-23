@@ -47,8 +47,15 @@
 namespace sys
 {
 
-// List of available SIMD instruction sets; we require at least SSE2
-// which is from 2000 ... 23 years ago.
+/*!
+ *  \class SIMDInstructionSet
+ *  \brief  List of available SIMD instruction sets.
+ *
+ *  We require at least SSE2 which is from 2000 ... 23 years ago.
+ *  Also see https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
+ *  "... For the x86-64 compiler, these extensions [ -msse2 ] are enabled by default."
+*   We're 64-bit only.
+ */
 enum class SIMDInstructionSet
 {
     SSE2, //  https://en.wikipedia.org/wiki/SSE2
