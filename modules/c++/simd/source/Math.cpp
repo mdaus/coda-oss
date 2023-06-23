@@ -42,6 +42,7 @@
 #endif
 #include "Vec.h"
 
+// No "using namespace simd", do this instead to reduce a bit of noise.
 template<typename T>
 using span = simd::span<T>;
 
@@ -67,9 +68,7 @@ template <> constexpr size_t Elements_per_vector<double, sys::SIMDInstructionSet
 template<typename T>
 inline size_t getWidth()
 {
-    static const sys::OS os;
-    static const auto instruction_set = os.getSIMDInstructionSet();
-
+    static const auto instruction_set = sys::OS().getSIMDInstructionSet();
     switch (instruction_set)
     {
     case sys::SIMDInstructionSet::SSE2: return Elements_per_vector<T, sys::SIMDInstructionSet::SSE2>();
