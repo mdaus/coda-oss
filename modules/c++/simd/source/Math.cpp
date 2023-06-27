@@ -113,29 +113,72 @@ static void validate_inputs(span<const T1> x_values, span<const T2> y_values, sp
     }
 }
 
-template <size_t width, typename T>
-using simdType = std::conditional_t<std::is_arithmetic<T>::value, simd::Vec<width, T> /*vcl::Vec8f*/, simd::Complex<width, T> /*vcl::Complex2f*/>;
 
+//template <size_t width, typename T>
+//using simdType = std::conditional_t<std::is_arithmetic<T>::value, simd::Vec_t<width, T> /*vcl::Vec8f*/, simd::Complex_t<width, T> /*vcl::Complex2f*/>;
+template <size_t width, typename T>
+struct simdType final
+{
+    using type =  simd::Vec_t<width, T> /*vcl::Vec8f*/;
+};
+template <size_t width, typename T>
+struct simdType<width, std::complex<T>> final
+{
+    using type = simd::Complex_t<width, T> /*vcl::Complex2f*/;
+};
+template <size_t width, typename T>
+using simdType_t = typename simdType<width, T>::type;
 
 template <size_t width, typename T>
-inline void load(simd::Vec<width, T>& vec, span<const T> values, size_t i)
+inline void load(simd::Vec_t<width, T>& vec, span<const T> values, size_t i)
 {
     vec.load(&(values[i]));  // load_a() requires very strict alignment
 }
 template <size_t width, typename T>
-inline void load_partial(simd::Vec<width, T>& vec, int n, span<const T> values, size_t i)
+inline void load_partial(simd::Vec_t<width, T>& vec, int n, span<const T> values, size_t i)
 {
     vec.load_partial(n, &(values[i]));
 }
 template <size_t width, typename T>
-inline void store(const simd::Vec<width, T>& vec, span<T> results, size_t i)
+inline void store(const simd::Vec_t<width, T>& vec, span<T> results, size_t i)
 {
     vec.store(&(results[i]));  // store_a() requires very strict alignment
 }
 template <size_t width, typename T>
-inline void store_partial(const simd::Vec<width, T>& vec, int n, span<T> results, size_t i)
+inline void store_partial(const simd::Vec_t<width, T>& vec, int n, span<T> results, size_t i)
 {
     vec.store_partial(n, &(results[i]));
+}
+
+template <size_t width, typename T, typename TValue = typename T::value_type>
+inline void load(simd::Complex_t<width, TValue>& cx, span<const T> values, size_t i)
+{
+    const void* const pValues = &(values[i]);
+    cx.load(static_cast<const TValue*>(pValues));
+}
+template <size_t width, typename T, typename TValue = typename T::value_type>
+inline void load_partial(simd::Complex_t<width, TValue>& cx, int n, span<const T> values, size_t i)
+{
+    for (int j = 0; j < n; j++)
+    {
+        auto&& value = values[i + j];
+        cx.insert(j, simd::Complex_t<1, TValue>(value.real(), value.imag()));    
+    }
+}
+template <size_t width, typename T, typename TValue = typename T::value_type>
+inline void store(const simd::Complex_t<width, TValue>& cx, span<T> results, size_t i)
+{
+    void* const pResults = &(results[i]);
+    cx.store(static_cast<TValue*>(pResults));
+}
+template <size_t width, typename T, typename TValue = typename T::value_type>
+inline void store_partial(const simd::Complex_t<width, TValue>& cx, int n, span<T> results_, size_t i)
+{
+    for (int j = 0; j < n; j++)
+    {
+        auto results = sys::make_span(results_.data() + j, 1);
+        store(cx.extract(j), results, 0);
+    }
 }
 
 // Repeatedly load the appropriate `Vec`s with the inputs (`y_values` may
@@ -150,8 +193,8 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
 {
     validate_inputs(x_values, y_values, outputs);
 
-    simdType<width, T1> x{};  // e.g., vcl::Vec8f
-    simdType<width, T2> y{};  // e.g., vcl::Vec8f
+    simdType_t<width, T1> x{};  // e.g., vcl::Vec8f
+    simdType_t<width, T2> y{};  // e.g., vcl::Vec8f
 
     // Do the check for an empty `y_values` just once: outside the loop.
     const std::function<void(size_t)> do_nothing = [&](size_t) {
@@ -275,8 +318,15 @@ void simd::ATan2(span<const double> xValues, span<const double> yValues, span<do
     invoke(xValues, yValues, outputs, f);
 }
 
-void simd::Arg(span<const std::complex<float>> /*zValues*/, span<float> /*outputs*/)
-{
-    // https://en.cppreference.com/w/cpp/numeric/complex/arg
-    // "... as if the function is implemented as std::atan2(std::imag(z), std::real(z))."
-}
+//void simd::Arg(span<const std::complex<float>> zValues, span<float> outputs)
+//{
+//    static const auto f = [](const auto& zvec, const auto&) {
+//        const auto real = zvec.real();
+//        const auto imag = zvec.imag();
+//
+//        // https://en.cppreference.com/w/cpp/numeric/complex/arg
+//        // "... as if the function is implemented as std::atan2(std::imag(z), std::real(z))."
+//        return atan2(imag, real);
+//    };
+//    invoke(zValues, outputs, f);
+//}

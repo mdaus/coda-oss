@@ -81,10 +81,10 @@ struct Vec<8, double> final
     using type = vcl::Vec8d;
 };
 
-}
+} // namespace "details"
 
 template <size_t elements_per_vector, typename T>
-using Vec = typename details::Vec<elements_per_vector, T>::type;
+using Vec_t = typename details::Vec<elements_per_vector, T>::type;
 
 }
 

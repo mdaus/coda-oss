@@ -80,10 +80,10 @@ struct Complex<4, double> final
     using type = vcl::Complex4d;
 };
 
-}
+} // namespace "details"
 
 template <size_t elements_per_complex, typename T>
-using Complex = typename details::Complex<elements_per_complex, T>::type;
+using Complex_t = typename details::Complex<elements_per_complex, T>::type;
 
 }
 
