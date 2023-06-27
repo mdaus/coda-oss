@@ -41,6 +41,7 @@
 //#define INSTRSET 9 // defined(__AVX512F__ ) || defined ( __AVX512__ )
 #endif
 #include "Vec.h"
+#include "Complex.h"
 
 // No "using namespace simd", do this instead to reduce a bit of noise.
 template<typename T>
@@ -56,13 +57,32 @@ Vec4d           double          4 			256 		AVX
 Vec16f          single          16 			512 		AVX512
 Vec8d           double          8 			512 		AVX512
 */
-template <typename T, sys::SIMDInstructionSet> constexpr size_t Elements_per_vector();
-template <> constexpr size_t Elements_per_vector<float, sys::SIMDInstructionSet::SSE2>() { return 4; }
-template <> constexpr size_t Elements_per_vector<double, sys::SIMDInstructionSet::SSE2>() { return 2; }
-template <> constexpr size_t Elements_per_vector<float, sys::SIMDInstructionSet::AVX2>() { return 8; }
-template <> constexpr size_t Elements_per_vector<double, sys::SIMDInstructionSet::AVX2>() { return 4; }
-template <> constexpr size_t Elements_per_vector<float, sys::SIMDInstructionSet::AVX512F>() { return 16; }
-template <> constexpr size_t Elements_per_vector<double, sys::SIMDInstructionSet::AVX512F>() { return 8; }
+template <typename T, sys::SIMDInstructionSet> constexpr size_t Elements_per_type();
+template <> constexpr size_t Elements_per_type<float, sys::SIMDInstructionSet::SSE2>() { return 4; }
+template <> constexpr size_t Elements_per_type<double, sys::SIMDInstructionSet::SSE2>() { return 2; }
+template <> constexpr size_t Elements_per_type<float, sys::SIMDInstructionSet::AVX2>() { return 8; }
+template <> constexpr size_t Elements_per_type<double, sys::SIMDInstructionSet::AVX2>() { return 4; }
+template <> constexpr size_t Elements_per_type<float, sys::SIMDInstructionSet::AVX512F>() { return 16; }
+template <> constexpr size_t Elements_per_type<double, sys::SIMDInstructionSet::AVX512F>() { return 8; }
+
+/*
+* Table 1.1 from https://github.com/vectorclass/manual/raw/master/vcl_manual.pdf
+CxVector class    Precision   Elements per vector     Total bits      Minimum recommended instruction set
+Complex1f	single          1 (2) 			128 		SSE2
+Complex2f	single       	2 (4) 			128 		SSE2
+Complex4f	single          4 (8) 			256 		AVX
+Complex8f	single          8 (16) 			512 		AVX512
+Complex1d	double          1 (2) 			128 		SSE2
+Complex2d	double          2 (4) 			256 		AVX
+Complex4d	double          4 (8) 			512 		AVX512
+*/
+//template <> constexpr size_t Elements_per_type<std::complex<float>, sys::SIMDInstructionSet::SSE2>() { return 1; }
+template <> constexpr size_t Elements_per_type<std::complex<float>, sys::SIMDInstructionSet::SSE2>() { return 2; }
+template <> constexpr size_t Elements_per_type<std::complex<float>, sys::SIMDInstructionSet::AVX2>() { return 4; }
+template <> constexpr size_t Elements_per_type<std::complex<float>, sys::SIMDInstructionSet::AVX512F>() { return 8; }
+template <> constexpr size_t Elements_per_type<std::complex<double>, sys::SIMDInstructionSet::SSE2>() { return 1; }
+template <> constexpr size_t Elements_per_type<std::complex<double>, sys::SIMDInstructionSet::AVX2>() { return 2; }
+template <> constexpr size_t Elements_per_type<std::complex<double>, sys::SIMDInstructionSet::AVX512F>() { return 4; }
 
 // Gets the RUNTIME width for the given type and instruction-set; see table, above.
 template<typename T>
@@ -71,9 +91,9 @@ inline size_t getWidth()
     static const auto instruction_set = sys::OS().getSIMDInstructionSet();
     switch (instruction_set)
     {
-    case sys::SIMDInstructionSet::SSE2: return Elements_per_vector<T, sys::SIMDInstructionSet::SSE2>();
-    case sys::SIMDInstructionSet::AVX2: return Elements_per_vector<T, sys::SIMDInstructionSet::AVX2>();
-    case sys::SIMDInstructionSet::AVX512F: return Elements_per_vector<T, sys::SIMDInstructionSet::AVX512F>();
+    case sys::SIMDInstructionSet::SSE2: return Elements_per_type<T, sys::SIMDInstructionSet::SSE2>();
+    case sys::SIMDInstructionSet::AVX2: return Elements_per_type<T, sys::SIMDInstructionSet::AVX2>();
+    case sys::SIMDInstructionSet::AVX512F: return Elements_per_type<T, sys::SIMDInstructionSet::AVX512F>();
     default: break;
     }
     throw std::logic_error("Unexpected sys::SIMDInstructionSet value.");
@@ -158,9 +178,9 @@ inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> out
     // The fix is to explicitly use std::function.
     using retval_t = std::function<void(span<const T1>, span<const T2>, span<U>)>;
     static const auto get_simd_func = [&f]() ->  retval_t {
-        constexpr auto sse2_width = Elements_per_vector<T1,  sys::SIMDInstructionSet::SSE2>();
-        constexpr auto avx2_width = Elements_per_vector<T1,  sys::SIMDInstructionSet::AVX2>();
-        constexpr auto avx512f_width = Elements_per_vector<T1,  sys::SIMDInstructionSet::AVX512F>();
+        constexpr auto sse2_width = Elements_per_type<T1,  sys::SIMDInstructionSet::SSE2>();
+        constexpr auto avx2_width = Elements_per_type<T1,  sys::SIMDInstructionSet::AVX2>();
+        constexpr auto avx512f_width = Elements_per_type<T1,  sys::SIMDInstructionSet::AVX512F>();
 
         // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
         static const auto width = getWidth<T1>();
@@ -231,4 +251,6 @@ void simd::ATan2(span<const double> xValues, span<const double> yValues, span<do
 
 void simd::Arg(span<const std::complex<float>> /*zValues*/, span<float> /*outputs*/)
 {
+    // https://en.cppreference.com/w/cpp/numeric/complex/arg
+    // "... as if the function is implemented as std::atan2(std::imag(z), std::real(z))."
 }

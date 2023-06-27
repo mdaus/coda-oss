@@ -167,6 +167,7 @@
     <ClInclude Include="re\include\re\RegexPredicate.h" />
     <ClInclude Include="simd\include\simd\Math.h" />
     <ClInclude Include="simd\include\simd\Span.h" />
+    <ClInclude Include="simd\source\Complex.h" />
     <ClInclude Include="simd\source\Vec.h" />
     <ClInclude Include="sio.lite\include\sio\lite\ElementType.h" />
     <ClInclude Include="sio.lite\include\sio\lite\FileHeader.h" />
