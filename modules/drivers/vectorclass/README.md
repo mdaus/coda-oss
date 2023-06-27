@@ -1,1 +1,1 @@
-[vectorclass](https://github.com/vectorclass)
+[vectorclass](https://github.com/vectorclass) and [add-on](https://github.com/vectorclass/add-on).

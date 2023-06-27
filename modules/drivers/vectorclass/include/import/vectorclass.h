@@ -42,8 +42,10 @@ CODA_OSS_disable_warning(-Wzero-as-null-pointer-constant)
 #include "vectorclass/version2/vectormath_trig.h"
 #else
 #include "vectorclass/version1/vectorclass.h"
-#include "vectorclass/version2/vectormath_trig.h"
+#include "vectorclass/version1/vectormath_trig.h"
 #endif
+
+#include "vectorclass/complex/complexvec1.h"
 CODA_OSS_disable_warning_pop
 
 #endif // CODA_OSS_import_vectorclass_h_INCLUDED_

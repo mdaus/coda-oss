@@ -107,7 +107,7 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
     simd::Vec<T1, width> x{}; // e.g., vcl::Vec8f
     simd::Vec<T2, width> y{};  // e.g., vcl::Vec8f
 
-    // Do the check for an empty `y_values` just once--outside the loop.
+    // Do the check for an empty `y_values` just once: outside the loop.
     const std::function<void(size_t)> do_nothing = [&](size_t) {
         assert(y_values.empty());
     };
@@ -139,7 +139,7 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
     results.store_partial(remaining, &(outputs[i]));
 }
 
-// "bind" the compile-time `width` to a particular instantiation for the given type `T`.
+// "bind" the compile-time `width` to an instantiation of vec_Func().
 template <size_t width, typename T1, typename T2, typename U, typename TFunc>
 inline auto bind(TFunc f)
 {
@@ -231,6 +231,4 @@ void simd::ATan2(span<const double> xValues, span<const double> yValues, span<do
 
 void simd::Arg(span<const std::complex<float>> /*zValues*/, span<float> /*outputs*/)
 {
-    // https://en.cppreference.com/w/cpp/numeric/complex/arg
-    // "... as if the function is implemented as std::atan2(std::imag(z), std::real(z))."
 }
