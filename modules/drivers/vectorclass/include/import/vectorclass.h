@@ -34,6 +34,7 @@
 CODA_OSS_disable_warning_system_header_push
 #if !defined(_MSC_VER)
 CODA_OSS_disable_warning(-Wunused-but-set-variable)
+CODA_OSS_disable_warning(-Wunused-parameter)
 CODA_OSS_disable_warning(-Wunused-but-set-parameter)
 CODA_OSS_disable_warning(-Wzero-as-null-pointer-constant)
 #endif

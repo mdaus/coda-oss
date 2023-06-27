@@ -31,7 +31,9 @@
 #ifndef COMPLEXVEC_H
 #define COMPLEXVEC_H  200
 
+#ifndef VECTORCLASS_H
 #include "vectorclass.h"
+#endif
 #include <cmath>
 
 #ifdef VCL_NAMESPACE
