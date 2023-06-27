@@ -37,51 +37,51 @@ namespace simd
 // https://github.com/vectorclass/manual/raw/master/vcl_manual.pdf
 namespace details
 {
-template <typename T, size_t elements_per_vector>
+template <size_t elements_per_vector, typename T>
 struct Vec;
 
 template <>
-struct Vec<int8_t, 16> final
+struct Vec<16, int8_t> final
 {
     using type = vcl::Vec16c;
 };
 
 template <>
-struct Vec<float, 4> final
+struct Vec<4, float> final
 {
     using type = vcl::Vec4f;
 };
 template <>
-struct Vec<float, 8> final
+struct Vec<8, float> final
 {
     using type = vcl::Vec8f;
 };
 template <>
-struct Vec<float, 16> final
+struct Vec<16, float> final
 {
     using type = vcl::Vec16f;
 };
 
 template <>
-struct Vec<double, 2> final
+struct Vec<2, double> final
 {
     using type = vcl::Vec2d;
 };
 template <>
-struct Vec<double, 4> final
+struct Vec<4, double> final
 {
     using type = vcl::Vec4d;
 };
 template <>
-struct Vec<double, 8> final
+struct Vec<8, double> final
 {
     using type = vcl::Vec8d;
 };
 
 }
 
-template <typename T, size_t elements_per_vector>
-using Vec = typename details::Vec<T, elements_per_vector>::type;
+template <size_t elements_per_vector, typename T>
+using Vec = typename details::Vec<elements_per_vector, T>::type;
 
 }
 
