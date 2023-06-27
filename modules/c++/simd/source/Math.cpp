@@ -85,21 +85,6 @@ template <> constexpr size_t Elements_per_type<std::complex<double>, sys::SIMDIn
 template <> constexpr size_t Elements_per_type<std::complex<double>, sys::SIMDInstructionSet::AVX2>() { return 2; }
 template <> constexpr size_t Elements_per_type<std::complex<double>, sys::SIMDInstructionSet::AVX512F>() { return 4; }
 
-// Gets the RUNTIME width for the given type and instruction-set; see table, above.
-template<typename T>
-inline size_t getWidth()
-{
-    static const auto instruction_set = sys::OS().getSIMDInstructionSet();
-    switch (instruction_set)
-    {
-    case sys::SIMDInstructionSet::SSE2: return Elements_per_type<T, sys::SIMDInstructionSet::SSE2>();
-    case sys::SIMDInstructionSet::AVX2: return Elements_per_type<T, sys::SIMDInstructionSet::AVX2>();
-    case sys::SIMDInstructionSet::AVX512F: return Elements_per_type<T, sys::SIMDInstructionSet::AVX512F>();
-    default: break;
-    }
-    throw std::logic_error("Unexpected sys::SIMDInstructionSet value.");
-}
-
 template <typename T1, typename U = T1, typename T2 = T1>
 static void validate_inputs(span<const T1> x_values, span<const T2> y_values, span<U> outputs)
 {
@@ -113,9 +98,6 @@ static void validate_inputs(span<const T1> x_values, span<const T2> y_values, sp
     }
 }
 
-
-//template <size_t width, typename T>
-//using simdType = std::conditional_t<std::is_arithmetic<T>::value, simd::Vec_t<width, T> /*vcl::Vec8f*/, simd::Complex_t<width, T> /*vcl::Complex2f*/>;
 template <size_t width, typename T>
 struct simdType final
 {
@@ -187,59 +169,66 @@ inline void store_partial(const simd::Complex_t<width, TValue>& cx, int n, span<
 // 
 // This the actual workhorse function where most of the "interesting" stuff
 // happens; much of the other code is "just" type manipulation.
-template <size_t width, typename T1, typename TFunc, typename U = T1, typename T2 = T1>
+template <sys::SIMDInstructionSet instruction_set,
+    typename T1, typename TFunc, typename U = T1, typename T2 = T1>
 inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs,
     TFunc f)
 {
     validate_inputs(x_values, y_values, outputs);
 
-    simdType_t<width, T1> x{};  // e.g., vcl::Vec8f
-    simdType_t<width, T2> y{};  // e.g., vcl::Vec8f
+    constexpr auto x_width = Elements_per_type<T1, instruction_set>();
+    simdType_t<x_width, T1> x{};  // e.g., vcl::Vec8f
+    constexpr auto y_width = Elements_per_type<T2, instruction_set>();
+    simdType_t<y_width, T2> y{};  // e.g., vcl::Vec8f
+    constexpr auto out_width = Elements_per_type<U, instruction_set>();
 
     // Do the check for an empty `y_values` just once: outside the loop.
     const std::function<void(size_t)> do_nothing = [&](size_t) {
         assert(y_values.empty());
     };
     const std::function<void(size_t)> load_y = [&](size_t i) {
-        load<width>(y, y_values, i);  // load_a() requires very strict alignment
+        load<y_width>(y, y_values, i);  // load_a() requires very strict alignment
     };
     const auto maybe_load_y = y_values.empty() ? do_nothing : load_y;
 
     size_t i = 0;
-    const auto size = x_values.size() <= width ? 0 : x_values.size() - width;  // don't walk off end with `+= width`
-    for (; i < size; i += width)
+    const auto size = x_values.size() <= x_width ? 0 : x_values.size() - x_width;  // don't walk off end with `+= x_width`
+    for (; i < size; i += x_width)
     {
-        load<width>(x, x_values, i);
+        load<x_width>(x, x_values, i);
         maybe_load_y(i);
 
         const auto results = f(x, y);
 
-        store<width>(results, outputs, i);
+        store<out_width>(results, outputs, i);
     }
 
     // Finish whatever is left with load_partial() and store_partial()
     const auto remaining = gsl::narrow<int>(x_values.size() - i);
-    load_partial<width>(x, remaining, x_values, i);
+    load_partial<x_width>(x, remaining, x_values, i);
     if (!y_values.empty())
     {
-        load_partial<width>(y, remaining, y_values, i);
+        load_partial<y_width>(y, remaining, y_values, i);
     }
     const auto results = f(x, y);
-    store_partial<width>(results, remaining, outputs, i);
+    store_partial<out_width>(results, remaining, outputs, i);
 }
 
-// "bind" the compile-time `width` to an instantiation of vec_Func().
-template <size_t width, typename T1, typename T2, typename U, typename TFunc>
+// "bind" the compile-time `instruction_set` to an instantiation of vec_Func().
+template <sys::SIMDInstructionSet instruction_set, typename T1, typename T2, typename U, typename TFunc>
 inline auto bind(TFunc f)
 {
     return [&](span<const T1> x_values, span<const T2> y_values, span<U> outputs) {
-        return vec_Func<width>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
+        return vec_Func<instruction_set>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
 }
 
 template<typename T1, typename TFunc, typename U = T1, typename T2 = T1>
 inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
 {
+    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
+    static const auto instruction_set = sys::OS().getSIMDInstructionSet();
+
     // For the given type and width, return the right instantiation of vec_Func.
     //
     // Each lambda is a different type even though they have the same signature.
@@ -247,20 +236,14 @@ inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> out
     // The fix is to explicitly use std::function.
     using retval_t = std::function<void(span<const T1>, span<const T2>, span<U>)>;
     static const auto get_simd_func = [&f]() ->  retval_t {
-        constexpr auto sse2_width = Elements_per_type<T1,  sys::SIMDInstructionSet::SSE2>();
-        constexpr auto avx2_width = Elements_per_type<T1,  sys::SIMDInstructionSet::AVX2>();
-        constexpr auto avx512f_width = Elements_per_type<T1,  sys::SIMDInstructionSet::AVX512F>();
-
-        // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
-        static const auto width = getWidth<T1>();
-        switch (width)
+        switch (instruction_set)
         {
-        case sse2_width: return bind<sse2_width, T1, T2, U>(f);
-        case avx2_width: return bind<avx2_width, T1, T2, U>(f);
-        case avx512f_width: return bind<avx512f_width, T1, T2, U>(f);
+        case sys::SIMDInstructionSet::SSE2: return bind<sys::SIMDInstructionSet::SSE2, T1, T2, U>(f);
+        case sys::SIMDInstructionSet::AVX2: return bind<sys::SIMDInstructionSet::AVX2, T1, T2, U>(f);
+        case sys::SIMDInstructionSet::AVX512F: return bind<sys::SIMDInstructionSet::AVX512F, T1, T2, U>(f);
         default:  break;
         }
-        throw std::logic_error("Unknown 'width' value = " + std::to_string(width));
+        throw std::logic_error("Unknown 'instruction_set' value.");
     };
 
     // Only need to get the actual function once because the width won't change.
