@@ -27,6 +27,7 @@
 #include <stdexcept>
 #include <limits>
 #include <functional>
+#include <type_traits>
 
 #include "sys/OS.h"
 #include "gsl/gsl.h"
@@ -112,6 +113,9 @@ static void validate_inputs(span<const T1> x_values, span<const T2> y_values, sp
     }
 }
 
+template <typename T, size_t width>
+using simdType = simd::Vec<T, width>; // e.g., vcl::Vec8f
+
 // Repeatedly load the appropriate `Vec`s with the inputs (`y_values` may
 // be empty) and call the given function `f` (which will end up in SIMD code!).
 // The results are stored in `outputs`.
@@ -124,8 +128,8 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
 {
     validate_inputs(x_values, y_values, outputs);
 
-    simd::Vec<T1, width> x{}; // e.g., vcl::Vec8f
-    simd::Vec<T2, width> y{};  // e.g., vcl::Vec8f
+    simdType<T1, width> x{};  // e.g., vcl::Vec8f
+    simdType<T2, width> y{};  // e.g., vcl::Vec8f
 
     // Do the check for an empty `y_values` just once: outside the loop.
     const std::function<void(size_t)> do_nothing = [&](size_t) {
