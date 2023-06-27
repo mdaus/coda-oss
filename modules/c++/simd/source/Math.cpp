@@ -114,7 +114,29 @@ static void validate_inputs(span<const T1> x_values, span<const T2> y_values, sp
 }
 
 template <size_t width, typename T>
-using simdType = simd::Vec<width, T>; // e.g., vcl::Vec8f
+using simdType = std::conditional_t<std::is_arithmetic<T>::value, simd::Vec<width, T> /*vcl::Vec8f*/, simd::Complex<width, T> /*vcl::Complex2f*/>;
+
+
+template <size_t width, typename T>
+inline void load(simd::Vec<width, T>& vec, span<const T> values, size_t i)
+{
+    vec.load(&(values[i]));  // load_a() requires very strict alignment
+}
+template <size_t width, typename T>
+inline void load_partial(simd::Vec<width, T>& vec, int n, span<const T> values, size_t i)
+{
+    vec.load_partial(n, &(values[i]));
+}
+template <size_t width, typename T>
+inline void store(const simd::Vec<width, T>& vec, span<T> results, size_t i)
+{
+    vec.store(&(results[i]));  // store_a() requires very strict alignment
+}
+template <size_t width, typename T>
+inline void store_partial(const simd::Vec<width, T>& vec, int n, span<T> results, size_t i)
+{
+    vec.store_partial(n, &(results[i]));
+}
 
 // Repeatedly load the appropriate `Vec`s with the inputs (`y_values` may
 // be empty) and call the given function `f` (which will end up in SIMD code!).
@@ -136,7 +158,7 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
         assert(y_values.empty());
     };
     const std::function<void(size_t)> load_y = [&](size_t i) {
-        y.load(&(y_values[i]));  // load_a() requires very strict alignment
+        load<width>(y, y_values, i);  // load_a() requires very strict alignment
     };
     const auto maybe_load_y = y_values.empty() ? do_nothing : load_y;
 
@@ -144,23 +166,23 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
     const auto size = x_values.size() <= width ? 0 : x_values.size() - width;  // don't walk off end with `+= width`
     for (; i < size; i += width)
     {
-        x.load(&(x_values[i]));  // load_a() requires very strict alignment
+        load<width>(x, x_values, i);
         maybe_load_y(i);
 
         const auto results = f(x, y);
 
-        results.store(&(outputs[i]));  // store_a() requires very strict alignment
+        store<width>(results, outputs, i);
     }
 
     // Finish whatever is left with load_partial() and store_partial()
     const auto remaining = gsl::narrow<int>(x_values.size() - i);
-    x.load_partial(remaining, &(x_values[i]));
+    load_partial<width>(x, remaining, x_values, i);
     if (!y_values.empty())
     {
-        y.load_partial(remaining, &(y_values[i]));
+        load_partial<width>(y, remaining, y_values, i);
     }
     const auto results = f(x, y);
-    results.store_partial(remaining, &(outputs[i]));
+    store_partial<width>(results, remaining, outputs, i);
 }
 
 // "bind" the compile-time `width` to an instantiation of vec_Func().

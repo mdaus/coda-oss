@@ -37,8 +37,11 @@ namespace simd
 // https://github.com/vectorclass/manual/raw/master/vcl_manual.pdf
 namespace details
 {
-template <size_t elements_per_vector, typename T>
-struct Complex;
+template <size_t elements_per_complex, typename T>
+struct Complex final
+{
+    using type = void;
+};
 
 template <>
 struct Complex<1, float> final
@@ -79,8 +82,8 @@ struct Complex<4, double> final
 
 }
 
-template <size_t elements_per_vector, typename T>
-using Complex = typename details::Complex<elements_per_vector, T>::type;
+template <size_t elements_per_complex, typename T>
+using Complex = typename details::Complex<elements_per_complex, T>::type;
 
 }
 
