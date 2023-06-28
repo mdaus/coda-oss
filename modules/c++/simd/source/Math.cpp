@@ -187,7 +187,7 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
         assert(y_values.empty());
     };
     const std::function<void(size_t)> load_y = [&](size_t i) {
-        load<y_width>(y, y_values, i);  // load_a() requires very strict alignment
+        load<Elements_per_type<T2, instruction_set>()>(y, y_values, i);  // load_a() requires very strict alignment
     };
     const auto maybe_load_y = y_values.empty() ? do_nothing : load_y;
 

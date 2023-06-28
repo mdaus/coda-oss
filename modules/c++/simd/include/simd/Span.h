@@ -27,7 +27,7 @@
 
 #include "coda_oss/span.h"
 
-// This lets us use just `span` inside of the "simd" namepsace; see Math.h
+// This lets us use just `span` inside of the "simd" namespace; see Math.h
 namespace simd
 {
 	template<typename T>

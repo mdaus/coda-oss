@@ -38,10 +38,7 @@ namespace simd
 namespace details
 {
 template <size_t elements_per_vector, typename T>
-struct Vec final
-{
-    using type = void;
-};
+struct Vec;
 
 template <>
 struct Vec<16, int8_t> final
