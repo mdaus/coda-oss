@@ -49,6 +49,12 @@ template<typename T>
 using span = simd::span<T>;
 
 using InstructionSet = sys::SIMDInstructionSet;
+static inline auto instruction_set()
+{
+    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
+    static const auto retval = sys::OS().getSIMDInstructionSet();
+    return retval;
+}
 
 /*
 * Table 2.2 from https://github.com/vectorclass/manual/raw/master/vcl_manual.pdf
@@ -235,12 +241,9 @@ inline auto bind_vec2(TFunc f)
         return vec_Func<width>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
 }
-template<typename T1, typename TFunc, typename U = T1, typename T2 = T1>
-inline void invoke_vec2(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
+template<typename T1, typename T2, typename U, typename TFunc>
+inline auto get_vec2_func(TFunc f)
 {
-    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
-    static const auto instruction_set = sys::OS().getSIMDInstructionSet();
-
     // For the given type and width, return the right instantiation of vec_Func.
     //
     // Each lambda is a different type even though they have the same signature.
@@ -248,7 +251,7 @@ inline void invoke_vec2(span<const T1> x_values, span<const T2> y_values, span<U
     // The fix is to explicitly use std::function.
     using retval_t = std::function<void(span<const T1>, span<const T2>, span<U>)>;
     static const auto get_simd_func = [&f]() ->  retval_t {
-        switch (instruction_set)
+        switch (instruction_set())
         {
         case InstructionSet::SSE2: return bind_vec2<InstructionSet::SSE2, T1, T2, U>(f);
         case InstructionSet::AVX2: return bind_vec2<InstructionSet::AVX2, T1, T2, U>(f);
@@ -257,9 +260,15 @@ inline void invoke_vec2(span<const T1> x_values, span<const T2> y_values, span<U
         }
         throw std::logic_error("Unknown 'instruction_set' value.");
     };
-
     // Only need to get the actual function once because the width won't change.
     static const auto func = get_simd_func();
+    return func;
+}
+template<typename T1, typename TFunc, typename U = T1, typename T2 = T1>
+inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
+{
+    // Only need to get the actual function once because the width won't change.
+    static const auto func = get_vec2_func<T1, T2, U>(f);
     func(x_values, y_values, outputs);
 }
 
@@ -274,12 +283,9 @@ inline auto bind_vec(TFunc f)
         return vec_Func<width>(inputs, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
 }
-template<typename T, typename TFunc, typename U = T>
-inline void invoke_vec(span<const T> inputs, span<U> outputs, TFunc f)
+template<typename T, typename U, typename TFunc>
+inline auto get_vec_func(TFunc f)
 {
-    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
-    static const auto instruction_set = sys::OS().getSIMDInstructionSet();
-
     // For the given type and width, return the right instantiation of vec_Func.
     //
     // Each lambda is a different type even though they have the same signature.
@@ -287,7 +293,7 @@ inline void invoke_vec(span<const T> inputs, span<U> outputs, TFunc f)
     // The fix is to explicitly use std::function.
     using retval_t = std::function<void(span<const T>, span<U>)>;
     static const auto get_simd_func = [&f]() ->  retval_t {
-        switch (instruction_set)
+        switch (instruction_set())
         {
         case InstructionSet::SSE2: return bind_vec<InstructionSet::SSE2, T, U>(f);
         case InstructionSet::AVX2: return bind_vec<InstructionSet::AVX2, T, U>(f);
@@ -296,9 +302,15 @@ inline void invoke_vec(span<const T> inputs, span<U> outputs, TFunc f)
         }
         throw std::logic_error("Unknown 'instruction_set' value.");
     };
-
     // Only need to get the actual function once because the width won't change.
     static const auto func = get_simd_func();
+    return func;
+}
+template<typename T, typename TFunc, typename U = T>
+inline void invoke(span<const T> inputs, span<U> outputs, TFunc f)
+{
+    // Only need to get the actual function once because the width won't change.
+    static const auto func = get_vec_func<T, U>(f);
     func(inputs, outputs);
 }
 
@@ -313,12 +325,9 @@ inline auto bind_complex(TFunc f)
         return complex_Func<width>(x_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
 }
-template<typename T, typename TFunc, typename U = T>
-inline void invoke_complex(span<const std::complex<T>> x_values, span<U> outputs, TFunc f)
+template<typename T, typename U, typename TFunc>
+inline auto get_complex_func(TFunc f)
 {
-    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
-    static const auto instruction_set = sys::OS().getSIMDInstructionSet();
-
     // For the given type and width, return the right instantiation of vec_Func.
     //
     // Each lambda is a different type even though they have the same signature.
@@ -326,7 +335,7 @@ inline void invoke_complex(span<const std::complex<T>> x_values, span<U> outputs
     // The fix is to explicitly use std::function.
     using retval_t = std::function<void(span<const std::complex<T>>, span<U>)>;
     static const auto get_simd_func = [&f]() ->  retval_t {
-        switch (instruction_set)
+        switch (instruction_set())
         {
         case InstructionSet::SSE2: return bind_complex<InstructionSet::SSE2, T, U>(f);
         case InstructionSet::AVX2: return bind_complex<InstructionSet::AVX2, T, U>(f);
@@ -335,29 +344,19 @@ inline void invoke_complex(span<const std::complex<T>> x_values, span<U> outputs
         }
         throw std::logic_error("Unknown 'instruction_set' value.");
     };
-
     // Only need to get the actual function once because the width won't change.
     static const auto func = get_simd_func();
-    func(x_values, outputs);
+    return func;
 }
-
-template<typename T1, typename TFunc, typename U = T1, typename T2 = T1>
-inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
-{
-    invoke_vec2(x_values, y_values, outputs, f);
-}
-template <typename T, typename TFunc, typename U = T>
-inline void invoke(span<const T> inputs, span<U> outputs, TFunc f)
-{
-    invoke_vec(inputs, outputs, f);
-}
-
-template <typename T, typename TFunc, typename U = T>
+template<typename T, typename TFunc, typename U = T>
 inline void invoke(span<const std::complex<T>> inputs, span<U> outputs, TFunc f)
 {
-    invoke_complex(inputs, outputs, f);
+    // Only need to get the actual function once because the width won't change.
+    static const auto func = get_complex_func<T, U>(f);
+    func(inputs, outputs);
 }
 
+/***************************************************************************************************/
 
 void simd::Sin(span<const float> inputs, span<float> outputs)
 {
