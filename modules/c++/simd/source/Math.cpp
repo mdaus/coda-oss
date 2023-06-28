@@ -87,17 +87,22 @@ template <> constexpr size_t Elements_per_type<std::complex<double>, Instruction
 template <> constexpr size_t Elements_per_type<std::complex<double>, InstructionSet::AVX2>() { return 2; }
 template <> constexpr size_t Elements_per_type<std::complex<double>, InstructionSet::AVX512F>() { return 4; }
 
-template <typename T1, typename U = T1, typename T2 = T1>
+template <typename T, typename U>
+static void validate_inputs(span<const T> inputs, span<U> outputs)
+{
+    if (outputs.size() < inputs.size())
+    {
+        throw std::invalid_argument("'outputs' is smaller than 'inputs'");
+    }
+}
+template <typename T1, typename U, typename T2>
 static void validate_inputs(span<const T1> x_values, span<const T2> y_values, span<U> outputs)
 {
     if (!y_values.empty() && (x_values.size() != y_values.size()))
     {
         throw std::invalid_argument("inputs aren't the same size");
     }
-    if (outputs.size() < x_values.size())
-    {
-        throw std::invalid_argument("'outputs' is smaller than 'x_values'");
-    }
+    validate_inputs(x_values, outputs);
 }
 
 // Convert `instruction_set` to a width for `simd::Vec_t`.
@@ -128,14 +133,14 @@ using simdType_t = typename simdType<instruction_set, T>::type;
 // 
 // This the actual workhorse function where most of the "interesting" stuff
 // happens; much of the other code is "just" type manipulation.
-template <size_t width, typename TFunc,
-    typename T1, typename U = T1, typename T2 = T1>
-inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
+template <typename TFunc,
+    typename TXValues, typename TSimdX,
+    typename TYValues, typename TSimdY, typename TOutputs>
+inline void simd_Func(const TXValues& x_values, TSimdX& x,
+    const TYValues& y_values, TSimdY& y,
+    TOutputs& outputs, TFunc f)
 {
     validate_inputs(x_values, y_values, outputs);
-
-    simd::Vec_t<width, T1> x{};  // e.g., vcl::Vec8f
-    simd::Vec_t<width, T2> y{};  // e.g., vcl::Vec8f
 
     // Do the check for an empty `y_values` just once: outside the loop.
     const std::function<void(size_t)> do_nothing = [&](size_t) {
@@ -147,6 +152,7 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
     const auto maybe_load_y = y_values.empty() ? do_nothing : load_y;
 
     size_t i = 0;
+    constexpr auto width = x.size();
     const auto size = x_values.size() <= width ? 0 : x_values.size() - width;  // don't walk off end with `+= width`
     for (; i < size; i += width)
     {
@@ -168,30 +174,54 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
     const auto results = f(x, y);
     simd::store_partial(results, remaining, outputs, i);
 }
-template <size_t width, typename TFunc,
-    typename T, typename U = T>
-inline void complex_Func(span<const std::complex<T>> x_values, span<U> outputs, TFunc f)
-{
-    //validate_inputs(x_values, y_values, outputs);
 
-    simd::Complex_t<width, T> x{};  // e.g., vcl::Complex8f
+template <typename TFunc,
+    typename TInputs, typename TSimd, typename TOutputs>
+inline void simd_Func(const TInputs& inputs, TSimd& v, TOutputs& outputs, TFunc f)
+{
+    validate_inputs(inputs, outputs);
 
     size_t i = 0;
-    const auto size = x_values.size() <= width ? 0 : x_values.size() - width;  // don't walk off end with `+= width`
+    constexpr auto width = v.size();
+    const auto size = inputs.size() <= width ? 0 : inputs.size() - width;  // don't walk off end with `+= width`
     for (; i < size; i += width)
     {
-        simd::load(x, x_values, i);
+        simd::load(v, inputs, i);
 
-        const auto results = f(x);
+        const auto results = f(v);
 
         simd::store(results, outputs, i);
     }
 
     // Finish whatever is left with load_partial() and store_partial()
-    const auto remaining = gsl::narrow<int>(x_values.size() - i);
-    simd::load_partial(x, remaining, x_values, i);
-    const auto results = f(x);
+    const auto remaining = gsl::narrow<int>(inputs.size() - i);
+    simd::load_partial(v, remaining, inputs, i);
+    const auto results = f(v);
     simd::store_partial(results, remaining, outputs, i);
+}
+
+template <size_t width, typename TFunc,
+    typename T1, typename U = T1, typename T2 = T1>
+inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
+{
+    simd::Vec_t<width, T1> x{};  // e.g., vcl::Vec8f
+    simd::Vec_t<width, T2> y{};  // e.g., vcl::Vec8f
+    simd_Func(x_values, x, y_values, y, outputs, f);
+}
+template <size_t width, typename TFunc,
+    typename T1, typename U = T1>
+inline void vec_Func(span<const T1> inputs, span<U> outputs, TFunc f)
+{
+    simd::Vec_t<width, T1> v{};  // e.g., vcl::Vec8f
+    simd_Func(inputs, v, outputs, f);
+}
+
+template <size_t width, typename TFunc,
+    typename T, typename U = T>
+inline void complex_Func(span<const std::complex<T>> inputs, span<U> outputs, TFunc f)
+{
+    simd::Complex_t<width, T> v{};  // e.g., vcl::Complex8f
+    simd_Func(inputs, v, outputs, f);
 }
 
 // "bind" the compile-time `width` to an instantiation of vec_Func().
