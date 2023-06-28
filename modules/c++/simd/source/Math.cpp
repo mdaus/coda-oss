@@ -169,31 +169,20 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
     simd::store_partial(results, remaining, outputs, i);
 }
 template <size_t width, typename TFunc,
-    typename T1, typename U = T1, typename T2 = T1>
-inline void complex_Func(span<const std::complex<T1>> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
+    typename T, typename U = T>
+inline void complex_Func(span<const std::complex<T>> x_values, span<U> outputs, TFunc f)
 {
-    validate_inputs(x_values, y_values, outputs);
+    //validate_inputs(x_values, y_values, outputs);
 
-    simd::Complex_t<width, T1> x{};  // e.g., vcl::Complex8f
-    simd::Vec_t<width, T2> y{};  // e.g., vcl::Vec8f
-
-    // Do the check for an empty `y_values` just once: outside the loop.
-    const std::function<void(size_t)> do_nothing = [&](size_t) {
-        assert(y_values.empty());
-    };
-    const std::function<void(size_t)> load_y = [&](size_t i) {
-        simd::load(y, y_values, i);  // load_a() requires very strict alignment
-    };
-    const auto maybe_load_y = y_values.empty() ? do_nothing : load_y;
+    simd::Complex_t<width, T> x{};  // e.g., vcl::Complex8f
 
     size_t i = 0;
     const auto size = x_values.size() <= width ? 0 : x_values.size() - width;  // don't walk off end with `+= width`
     for (; i < size; i += width)
     {
         simd::load(x, x_values, i);
-        maybe_load_y(i);
 
-        const auto results = f(x, y);
+        const auto results = f(x);
 
         simd::store(results, outputs, i);
     }
@@ -201,11 +190,7 @@ inline void complex_Func(span<const std::complex<T1>> x_values, span<const T2> y
     // Finish whatever is left with load_partial() and store_partial()
     const auto remaining = gsl::narrow<int>(x_values.size() - i);
     simd::load_partial(x, remaining, x_values, i);
-    if (!y_values.empty())
-    {
-        simd::load_partial(y, remaining, y_values, i);
-    }
-    const auto results = f(x, y);
+    const auto results = f(x);
     simd::store_partial(results, remaining, outputs, i);
 }
 
@@ -249,18 +234,18 @@ inline void invoke_vec(span<const T1> x_values, span<const T2> y_values, span<U>
 }
 
 // "bind" the compile-time `width` to an instantiation of vec_Func().
-template <InstructionSet instruction_set, typename T1, typename T2, typename U, typename TFunc>
+template <InstructionSet instruction_set, typename T, typename U, typename TFunc>
 inline auto bind_complex(TFunc f)
 {
-    return [&](span<const std::complex<T1>> x_values, span<const T2> y_values, span<U> outputs) {
+    return [&](span<const std::complex<T>> x_values, span<U> outputs) {
         // For vector operations, the widths of all elements must be the same;
         // otherwise, it's not possible to walk through the `span`s.
-        constexpr auto width = Elements_per_type<std::complex<T1>, instruction_set>();
-        return complex_Func<width>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
+        constexpr auto width = Elements_per_type<std::complex<T>, instruction_set>();
+        return complex_Func<width>(x_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
 }
-template<typename T1, typename TFunc, typename U = T1, typename T2 = T1>
-inline void invoke_complex(span<const std::complex<T1>> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
+template<typename T, typename TFunc, typename U = T>
+inline void invoke_complex(span<const std::complex<T>> x_values, span<U> outputs, TFunc f)
 {
     // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
     static const auto instruction_set = sys::OS().getSIMDInstructionSet();
@@ -270,13 +255,13 @@ inline void invoke_complex(span<const std::complex<T1>> x_values, span<const T2>
     // Each lambda is a different type even though they have the same signature.
     // Because of that, `auto` doesn't work since the inferred types are different.
     // The fix is to explicitly use std::function.
-    using retval_t = std::function<void(span<const std::complex<T1>>, span<const T2>, span<U>)>;
+    using retval_t = std::function<void(span<const std::complex<T>>, span<U>)>;
     static const auto get_simd_func = [&f]() ->  retval_t {
         switch (instruction_set)
         {
-        case InstructionSet::SSE2: return bind_complex<InstructionSet::SSE2, T1, T2, U>(f);
-        case InstructionSet::AVX2: return bind_complex<InstructionSet::AVX2, T1, T2, U>(f);
-        case InstructionSet::AVX512F: return bind_complex<InstructionSet::AVX512F, T1, T2, U>(f);
+        case InstructionSet::SSE2: return bind_complex<InstructionSet::SSE2, T, U>(f);
+        case InstructionSet::AVX2: return bind_complex<InstructionSet::AVX2, T, U>(f);
+        case InstructionSet::AVX512F: return bind_complex<InstructionSet::AVX512F, T, U>(f);
         default:  break;
         }
         throw std::logic_error("Unknown 'instruction_set' value.");
@@ -284,7 +269,7 @@ inline void invoke_complex(span<const std::complex<T1>> x_values, span<const T2>
 
     // Only need to get the actual function once because the width won't change.
     static const auto func = get_simd_func();
-    func(x_values, y_values, outputs);
+    func(x_values, outputs);
 }
 
 template<typename T1, typename TFunc, typename U = T1, typename T2 = T1>
@@ -298,6 +283,13 @@ inline void invoke(span<const T> inputs, span<U> outputs, TFunc f)
     static const span<const T> empty;
     invoke_vec(inputs, empty, outputs, f);
 }
+
+template <typename T, typename TFunc, typename U = T>
+inline void invoke(span<const std::complex<T>> inputs, span<U> outputs, TFunc f)
+{
+    invoke_complex(inputs, outputs, f);
+}
+
 
 void simd::Sin(span<const float> inputs, span<float> outputs)
 {
@@ -343,15 +335,12 @@ void simd::ATan2(span<const double> xValues, span<const double> yValues, span<do
     invoke(xValues, yValues, outputs, f);
 }
 
-//void simd::Arg(span<const std::complex<float>> zValues, span<float> outputs)
-//{
-//    static const auto f = [](const auto& zvec, const auto&) {
-//        const auto real = zvec.real();
-//        const auto imag = zvec.imag();
-//
-//        // https://en.cppreference.com/w/cpp/numeric/complex/arg
-//        // "... as if the function is implemented as std::atan2(std::imag(z), std::real(z))."
-//        return atan2(imag, real);
-//    };
-//    invoke(zValues, outputs, f);
-//}
+void simd::Arg(span<const std::complex<float>> zValues, span<float> outputs)
+{
+    static const auto f = [](const auto& zvec) {
+        // https://en.cppreference.com/w/cpp/numeric/complex/arg
+        // "... as if the function is implemented as std::atan2(std::imag(z), std::real(z))."
+        return atan2(zvec.imag(), zvec.real());
+    };
+    invoke(zValues, outputs, f);
+}
