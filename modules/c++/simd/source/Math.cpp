@@ -186,6 +186,19 @@ inline void simd_Func(span<const T> inputs, span<U> outputs, TFunc f)
 
 /***************************************************************************************************/
 
+template<typename TRetval, typename TFuncSSE2, typename TFuncAVX2, typename TFuncAVX512F>
+inline TRetval get_simd_func_(TFuncSSE2 fSSE2, TFuncAVX2 fAVX2, TFuncAVX512F fAFX512f)
+{
+    switch (instruction_set())
+    {
+    case InstructionSet::SSE2: return fSSE2;
+    case InstructionSet::AVX2: return fAVX2;
+    case InstructionSet::AVX512F: return fAFX512f;
+    default:  break;
+    }
+    throw std::logic_error("Unknown 'instruction_set' value.");
+}
+
 // "bind" the compile-time `width` to an instantiation of simd_Func().
 template <InstructionSet instruction_set, typename T1, typename T2, typename U, typename TFunc>
 inline auto bind_simd2(TFunc f)
@@ -206,18 +219,12 @@ inline auto get_simd2_func(TFunc f)
     // Because of that, `auto` doesn't work since the inferred types are different.
     // The fix is to explicitly use std::function.
     using retval_t = std::function<void(span<const T1>, span<const T2>, span<U>)>;
-    static const auto get_simd_func = [&f]() ->  retval_t {
-        switch (instruction_set())
-        {
-        case InstructionSet::SSE2: return bind_simd2<InstructionSet::SSE2, T1, T2, U>(f);
-        case InstructionSet::AVX2: return bind_simd2<InstructionSet::AVX2, T1, T2, U>(f);
-        case InstructionSet::AVX512F: return bind_simd2<InstructionSet::AVX512F, T1, T2, U>(f);
-        default:  break;
-        }
-        throw std::logic_error("Unknown 'instruction_set' value.");
-    };
+
     // Only need to get the actual function once because the width won't change.
-    static const auto func = get_simd_func();
+    static const auto func = get_simd_func_<retval_t>(
+            bind_simd2<InstructionSet::SSE2, T1, T2, U>(f), 
+            bind_simd2<InstructionSet::AVX2, T1, T2, U>(f),
+            bind_simd2<InstructionSet::AVX512F, T1, T2, U>(f));
     return func;
 }
 
@@ -241,18 +248,12 @@ inline auto get_simd_func(TFunc f)
     // Because of that, `auto` doesn't work since the inferred types are different.
     // The fix is to explicitly use std::function.
     using retval_t = std::function<void(span<const T>, span<U>)>;
-    static const auto get_simd_func = [&f]() ->  retval_t {
-        switch (instruction_set())
-        {
-        case InstructionSet::SSE2: return bind_simd<InstructionSet::SSE2, T, U>(f);
-        case InstructionSet::AVX2: return bind_simd<InstructionSet::AVX2, T, U>(f);
-        case InstructionSet::AVX512F: return bind_simd<InstructionSet::AVX512F, T, U>(f);
-        default:  break;
-        }
-        throw std::logic_error("Unknown 'instruction_set' value.");
-    };
+
     // Only need to get the actual function once because the width won't change.
-    static const auto func = get_simd_func();
+    static const auto func = get_simd_func_<retval_t>(
+            bind_simd<InstructionSet::SSE2, T, U>(f), 
+            bind_simd<InstructionSet::AVX2, T, U>(f),
+            bind_simd<InstructionSet::AVX512F, T, U>(f));
     return func;
 }
 
