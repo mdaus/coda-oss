@@ -122,61 +122,6 @@ struct simdType<instruction_set, std::complex<T>> final
 template <InstructionSet instruction_set, typename T>
 using simdType_t = typename simdType<instruction_set, T>::type;
 
-
-// load() and store() overloads so the same code works for both
-// `simdVec` and `simdComplex`.
-template <InstructionSet instruction_set, typename T>
-inline void load(simdVec<instruction_set, T>& vec, span<const T> values, size_t i)
-{
-    vec.load(&(values[i]));  // load_a() requires very strict alignment
-}
-template <InstructionSet instruction_set, typename T>
-inline void load_partial(simdVec<instruction_set, T>& vec, int n, span<const T> values, size_t i)
-{
-    vec.load_partial(n, &(values[i]));
-}
-template <InstructionSet instruction_set, typename T>
-inline void store(const simdVec<instruction_set, T>& vec, span<T> results, size_t i)
-{
-    vec.store(&(results[i]));  // store_a() requires very strict alignment
-}
-template <InstructionSet instruction_set, typename T>
-inline void store_partial(const simdVec<instruction_set, T>& vec, int n, span<T> results, size_t i)
-{
-    vec.store_partial(n, &(results[i]));
-}
-
-template <InstructionSet instruction_set, typename T, typename TValue = typename T::value_type>
-inline void load(simdComplex<instruction_set, TValue>& cx, span<const T> values, size_t i)
-{
-    const void* const pValues = &(values[i]);
-    cx.load(static_cast<const TValue*>(pValues));
-}
-template <InstructionSet instruction_set, typename T, typename TValue = typename T::value_type>
-inline void load_partial(simdComplex<instruction_set, TValue>& cx, int n, span<const T> values, size_t i)
-{
-    for (int j = 0; j < n; j++)
-    {
-        auto&& value = values[i + j];
-        cx.insert(j, simd::Complex_t<1, TValue>(value.real(), value.imag()));    
-    }
-}
-template <InstructionSet instruction_set, typename T, typename TValue = typename T::value_type>
-inline void store(const simdComplex<instruction_set, TValue>& cx, span<T> results, size_t i)
-{
-    void* const pResults = &(results[i]);
-    cx.store(static_cast<TValue*>(pResults));
-}
-template <InstructionSet instruction_set, typename T, typename TValue = typename T::value_type>
-inline void store_partial(const simdComplex<instruction_set, TValue>& cx, int n, span<T> results_, size_t i)
-{
-    for (int j = 0; j < n; j++)
-    {
-        auto results = sys::make_span(results_.data() + j, 1);
-        store(cx.extract(j), results, 0);
-    }
-}
-
 // Repeatedly load the appropriate `Vec`s with the inputs (`y_values` may
 // be empty) and call the given function `f` (which will end up in SIMD code!).
 // The results are stored in `outputs`.
@@ -191,6 +136,7 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
     validate_inputs(x_values, y_values, outputs);
 
     simdType_t<instruction_set, T1> x{};  // e.g., vcl::Vec8f
+    constexpr auto y_width = Elements_per_type<T2, instruction_set>();
     simdType_t<instruction_set, T2> y{};  // e.g., vcl::Vec8f
 
     // Do the check for an empty `y_values` just once: outside the loop.
@@ -198,32 +144,33 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
         assert(y_values.empty());
     };
     const std::function<void(size_t)> load_y = [&](size_t i) {
-        load<instruction_set>(y, y_values, i);  // load_a() requires very strict alignment
+        simd::load<y_width>(y, y_values, i);  // load_a() requires very strict alignment
     };
     const auto maybe_load_y = y_values.empty() ? do_nothing : load_y;
 
     constexpr auto x_width = Elements_per_type<T1, instruction_set>();
+    constexpr auto out_width = Elements_per_type<U, instruction_set>();
     size_t i = 0;
     const auto size = x_values.size() <= x_width ? 0 : x_values.size() - x_width;  // don't walk off end with `+= x_width`
     for (; i < size; i += x_width)
     {
-        load<instruction_set>(x, x_values, i);
+        simd::load<x_width>(x, x_values, i);
         maybe_load_y(i);
 
         const auto results = f(x, y);
 
-        store<instruction_set>(results, outputs, i);
+        simd::store<out_width>(results, outputs, i);
     }
 
     // Finish whatever is left with load_partial() and store_partial()
     const auto remaining = gsl::narrow<int>(x_values.size() - i);
-    load_partial<instruction_set>(x, remaining, x_values, i);
+    simd::load_partial<x_width>(x, remaining, x_values, i);
     if (!y_values.empty())
     {
-        load_partial<instruction_set>(y, remaining, y_values, i);
+        simd::load_partial<y_width>(y, remaining, y_values, i);
     }
     const auto results = f(x, y);
-    store_partial<instruction_set>(results, remaining, outputs, i);
+    simd::store_partial<out_width>(results, remaining, outputs, i);
 }
 
 // "bind" the compile-time `instruction_set` to an instantiation of vec_Func().

@@ -83,6 +83,28 @@ struct Vec<8, double> final
 template <size_t elements_per_vector, typename T>
 using Vec_t = typename details::Vec<elements_per_vector, T>::type;
 
+// load() and store() overloads for meta-programming.
+template <size_t width, typename T>
+inline void load(simd::Vec_t<width, T>& vec, span<const T> values, size_t i)
+{
+    vec.load(&(values[i]));  // load_a() requires very strict alignment
+}
+template <size_t width, typename T>
+inline void load_partial(simd::Vec_t<width, T>& vec, int n, span<const T> values, size_t i)
+{
+    vec.load_partial(n, &(values[i]));
+}
+template <size_t width, typename T>
+inline void store(const simd::Vec_t<width, T>& vec, span<T> results, size_t i)
+{
+    vec.store(&(results[i]));  // store_a() requires very strict alignment
+}
+template <size_t width, typename T>
+inline void store_partial(const simd::Vec_t<width, T>& vec, int n, span<T> results, size_t i)
+{
+    vec.store_partial(n, &(results[i]));
+}
+
 }
 
 #endif  // CODA_OSS_simd_Vec_h_INCLUDED_
