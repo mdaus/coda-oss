@@ -82,30 +82,31 @@ struct Complex<4, double> final
 template <size_t elements_per_complex, typename T>
 using Complex_t = typename details::Complex<elements_per_complex, T>::type;
 
+/*
 // load() and store() overloads for meta-programming.
-template <size_t width, typename T, typename TValue = typename T::value_type>
-inline void load(simd::Complex_t<width, TValue>& cx, span<const T> values, size_t i)
+template <size_t width, typename T>
+inline void load(simd::Complex_t<width, T>& cx, span<const std::complex<T>> values, size_t i)
 {
     const void* const pValues = &(values[i]);
-    cx.load(static_cast<const TValue*>(pValues));
+    cx.load(static_cast<const T*>(pValues));
 }
-template <size_t width, typename T, typename TValue = typename T::value_type>
-inline void load_partial(simd::Complex_t<width, TValue>& cx, int n, span<const T> values, size_t i)
+template <size_t width, typename T>
+inline void load_partial(simd::Complex_t<width, T>& cx, int n, span<const std::complex<T>> values, size_t i)
 {
     for (int j = 0; j < n; j++)
     {
         auto&& value = values[i + j];
-        cx.insert(j, simd::Complex_t<1, TValue>(value.real(), value.imag()));    
+        cx.insert(j, simd::Complex_t<1, T>(value.real(), value.imag()));    
     }
 }
-template <size_t width, typename T, typename TValue = typename T::value_type>
-inline void store(const simd::Complex_t<width, TValue>& cx, span<T> results, size_t i)
+template <size_t width, typename T>
+inline void store(const simd::Complex_t<width, T>& cx, span<std::complex<T>> results, size_t i)
 {
     void* const pResults = &(results[i]);
-    cx.store(static_cast<TValue*>(pResults));
+    cx.store(static_cast<T*>(pResults));
 }
-template <size_t width, typename T, typename TValue = typename T::value_type>
-inline void store_partial(const simd::Complex_t<width, TValue>& cx, int n, span<T> results_, size_t i)
+template <size_t width, typename T>
+inline void store_partial(const simd::Complex_t<width, T>& cx, int n, span<std::complex<T>> results_, size_t i)
 {
     for (int j = 0; j < n; j++)
     {
@@ -113,6 +114,7 @@ inline void store_partial(const simd::Complex_t<width, TValue>& cx, int n, span<
         store(cx.extract(j), results, 0);
     }
 }
+*/
 
 }
 

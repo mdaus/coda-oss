@@ -135,42 +135,42 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
 {
     validate_inputs(x_values, y_values, outputs);
 
-    simdType_t<instruction_set, T1> x{};  // e.g., vcl::Vec8f
+    constexpr auto x_width = Elements_per_type<T1, instruction_set>();
+    simd::Vec_t<x_width, T1> x{};  // e.g., vcl::Vec8f
     constexpr auto y_width = Elements_per_type<T2, instruction_set>();
-    simdType_t<instruction_set, T2> y{};  // e.g., vcl::Vec8f
+    simd::Vec_t<y_width, T2> y{};  // e.g., vcl::Vec8f
 
     // Do the check for an empty `y_values` just once: outside the loop.
     const std::function<void(size_t)> do_nothing = [&](size_t) {
         assert(y_values.empty());
     };
     const std::function<void(size_t)> load_y = [&](size_t i) {
-        simd::load<y_width>(y, y_values, i);  // load_a() requires very strict alignment
+        simd::load(y, y_values, i);  // load_a() requires very strict alignment
     };
     const auto maybe_load_y = y_values.empty() ? do_nothing : load_y;
 
-    constexpr auto x_width = Elements_per_type<T1, instruction_set>();
     constexpr auto out_width = Elements_per_type<U, instruction_set>();
     size_t i = 0;
     const auto size = x_values.size() <= x_width ? 0 : x_values.size() - x_width;  // don't walk off end with `+= x_width`
     for (; i < size; i += x_width)
     {
-        simd::load<x_width>(x, x_values, i);
+        simd::load(x, x_values, i);
         maybe_load_y(i);
 
         const auto results = f(x, y);
 
-        simd::store<out_width>(results, outputs, i);
+        simd::store(results, outputs, i);
     }
 
     // Finish whatever is left with load_partial() and store_partial()
     const auto remaining = gsl::narrow<int>(x_values.size() - i);
-    simd::load_partial<x_width>(x, remaining, x_values, i);
+    simd::load_partial(x, remaining, x_values, i);
     if (!y_values.empty())
     {
-        simd::load_partial<y_width>(y, remaining, y_values, i);
+        simd::load_partial(y, remaining, y_values, i);
     }
     const auto results = f(x, y);
-    simd::store_partial<out_width>(results, remaining, outputs, i);
+    simd::store_partial(results, remaining, outputs, i);
 }
 
 // "bind" the compile-time `instruction_set` to an instantiation of vec_Func().

@@ -62,6 +62,9 @@ struct Vec<16, float> final
     using type = vcl::Vec16f;
 };
 
+template <size_t elements_per_vector>
+using Vecf = typename Vec<elements_per_vector, float>::type;
+
 template <>
 struct Vec<2, double> final
 {
@@ -77,6 +80,19 @@ struct Vec<8, double> final
 {
     using type = vcl::Vec8d;
 };
+template <size_t elements_per_vector>
+using Vecd = typename Vec<elements_per_vector, double>::type;
+
+template<typename T>
+using Vec1 =  typename Vec<1, T>::type;
+template<typename T>
+using Vec2 =  typename Vec<2, T>::type;
+template<typename T>
+using Vec4 =  typename Vec<4, T>::type;
+template<typename T>
+using Vec8 =  typename Vec<8, T>::type;
+template<typename T>
+using Vec16 =  typename Vec<16, T>::type;
 
 } // namespace "details"
 
@@ -84,23 +100,23 @@ template <size_t elements_per_vector, typename T>
 using Vec_t = typename details::Vec<elements_per_vector, T>::type;
 
 // load() and store() overloads for meta-programming.
-template <size_t width, typename T>
-inline void load(simd::Vec_t<width, T>& vec, span<const T> values, size_t i)
+template <typename TVec, typename T>
+inline void load(TVec& vec, span<const T> values, size_t i)
 {
     vec.load(&(values[i]));  // load_a() requires very strict alignment
 }
-template <size_t width, typename T>
-inline void load_partial(simd::Vec_t<width, T>& vec, int n, span<const T> values, size_t i)
+template <typename TVec, typename T>
+inline void load_partial(TVec& vec, int n, span<const T> values, size_t i)
 {
     vec.load_partial(n, &(values[i]));
 }
-template <size_t width, typename T>
-inline void store(const simd::Vec_t<width, T>& vec, span<T> results, size_t i)
+template <typename TVec, typename T>
+inline void store(const TVec& vec, span<T> results, size_t i)
 {
     vec.store(&(results[i]));  // store_a() requires very strict alignment
 }
-template <size_t width, typename T>
-inline void store_partial(const simd::Vec_t<width, T>& vec, int n, span<T> results, size_t i)
+template <typename TVec, typename T>
+inline void store_partial(const TVec& vec, int n, span<T> results, size_t i)
 {
     vec.store_partial(n, &(results[i]));
 }
