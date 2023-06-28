@@ -115,12 +115,12 @@ static void validate_inputs(span<const T1> x_values, span<const T2> y_values, sp
 template <size_t width, typename T>
 struct simdType final
 {
-    using type =  simd::Vec_t<width, T> /*vcl::Vec8f*/;
+    using type = simd::Vec_t<width, T> /*vcl::Vec8f*/;
 };
 template <size_t width, typename T>
 struct simdType<width, std::complex<T>> final
 {
-    using type =  simd::Complex_t<width, T> /*vcl::Complex2f*/;
+    using type = simd::Complex_t<width, T> /*vcl::Complex2f*/;
 };
 template <size_t width, typename T>
 using simdType_t = typename simdType<width, T>::type;
@@ -184,6 +184,8 @@ inline void simd_Func(span<const T> inputs, span<U> outputs, TFunc f)
     simd::store_partial(results, remaining, outputs, i);
 }
 
+/***************************************************************************************************/
+
 // "bind" the compile-time `width` to an instantiation of simd_Func().
 template <InstructionSet instruction_set, typename T1, typename T2, typename U, typename TFunc>
 inline auto bind_simd2(TFunc f)
@@ -217,13 +219,6 @@ inline auto get_simd2_func(TFunc f)
     // Only need to get the actual function once because the width won't change.
     static const auto func = get_simd_func();
     return func;
-}
-template<typename T1, typename TFunc, typename U = T1, typename T2 = T1>
-inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
-{
-    // Only need to get the actual function once because the width won't change.
-    static const auto func = get_simd2_func<T1, T2, U>(f);
-    func(x_values, y_values, outputs);
 }
 
 // "bind" the compile-time `width` to an instantiation of simd_Func().
@@ -261,19 +256,23 @@ inline auto get_simd_func(TFunc f)
     return func;
 }
 
-template<typename T, typename TFunc, typename U = T>
-inline void invoke(span<const T> inputs, span<U> outputs, TFunc f)
+/***************************************************************************************************/
+
+template<typename T1, typename T2, typename U, typename TFunc>
+inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
 {
     // Only need to get the actual function once because the width won't change.
-    static const auto func = get_simd_func<T, U>(f);
-    func(inputs, outputs);
+    static const auto func = get_simd2_func<T1, T2, U>(f);
+    func(x_values, y_values, outputs);
 }
 
-template<typename T, typename TFunc, typename U = T>
-inline void invoke(span<const std::complex<T>> inputs, span<U> outputs, TFunc f)
+template<typename T, typename U, typename TFunc>
+inline void invoke(span<const T> inputs, span<U> outputs, TFunc f)
 {
+    using value_type = typename decltype(inputs)::value_type; // T or std::complex<T>
+
     // Only need to get the actual function once because the width won't change.
-    static const auto func = get_simd_func<std::complex<T>, U>(f);
+    static const auto func = get_simd_func<value_type, U>(f);
     func(inputs, outputs);
 }
 
