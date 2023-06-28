@@ -60,13 +60,13 @@ Vec4d           double          4 			256 		AVX
 Vec16f          single          16 			512 		AVX512
 Vec8d           double          8 			512 		AVX512
 */
-template <typename T, sys::SIMDInstructionSet> constexpr size_t Elements_per_type();
-template <> constexpr size_t Elements_per_type<float, sys::SIMDInstructionSet::SSE2>() { return 4; }
-template <> constexpr size_t Elements_per_type<double, sys::SIMDInstructionSet::SSE2>() { return 2; }
-template <> constexpr size_t Elements_per_type<float, sys::SIMDInstructionSet::AVX2>() { return 8; }
-template <> constexpr size_t Elements_per_type<double, sys::SIMDInstructionSet::AVX2>() { return 4; }
-template <> constexpr size_t Elements_per_type<float, sys::SIMDInstructionSet::AVX512F>() { return 16; }
-template <> constexpr size_t Elements_per_type<double, sys::SIMDInstructionSet::AVX512F>() { return 8; }
+template <typename T, InstructionSet> constexpr size_t Elements_per_type();
+template <> constexpr size_t Elements_per_type<float, InstructionSet::SSE2>() { return 4; }
+template <> constexpr size_t Elements_per_type<double, InstructionSet::SSE2>() { return 2; }
+template <> constexpr size_t Elements_per_type<float, InstructionSet::AVX2>() { return 8; }
+template <> constexpr size_t Elements_per_type<double, InstructionSet::AVX2>() { return 4; }
+template <> constexpr size_t Elements_per_type<float, InstructionSet::AVX512F>() { return 16; }
+template <> constexpr size_t Elements_per_type<double, InstructionSet::AVX512F>() { return 8; }
 
 /*
 * Table 1.1 from https://github.com/vectorclass/manual/raw/master/vcl_manual.pdf
@@ -79,13 +79,13 @@ Complex1d	double          1 (2) 			128 		SSE2
 Complex2d	double          2 (4) 			256 		AVX
 Complex4d	double          4 (8) 			512 		AVX512
 */
-//template <> constexpr size_t Elements_per_type<std::complex<float>, sys::SIMDInstructionSet::SSE2>() { return 1; }
-template <> constexpr size_t Elements_per_type<std::complex<float>, sys::SIMDInstructionSet::SSE2>() { return 2; }
-template <> constexpr size_t Elements_per_type<std::complex<float>, sys::SIMDInstructionSet::AVX2>() { return 4; }
-template <> constexpr size_t Elements_per_type<std::complex<float>, sys::SIMDInstructionSet::AVX512F>() { return 8; }
-template <> constexpr size_t Elements_per_type<std::complex<double>, sys::SIMDInstructionSet::SSE2>() { return 1; }
-template <> constexpr size_t Elements_per_type<std::complex<double>, sys::SIMDInstructionSet::AVX2>() { return 2; }
-template <> constexpr size_t Elements_per_type<std::complex<double>, sys::SIMDInstructionSet::AVX512F>() { return 4; }
+//template <> constexpr size_t Elements_per_type<std::complex<float>, InstructionSet::SSE2>() { return 1; }
+template <> constexpr size_t Elements_per_type<std::complex<float>, InstructionSet::SSE2>() { return 2; }
+template <> constexpr size_t Elements_per_type<std::complex<float>, InstructionSet::AVX2>() { return 4; }
+template <> constexpr size_t Elements_per_type<std::complex<float>, InstructionSet::AVX512F>() { return 8; }
+template <> constexpr size_t Elements_per_type<std::complex<double>, InstructionSet::SSE2>() { return 1; }
+template <> constexpr size_t Elements_per_type<std::complex<double>, InstructionSet::AVX2>() { return 2; }
+template <> constexpr size_t Elements_per_type<std::complex<double>, InstructionSet::AVX512F>() { return 4; }
 
 template <typename T1, typename U = T1, typename T2 = T1>
 static void validate_inputs(span<const T1> x_values, span<const T2> y_values, span<U> outputs)
@@ -101,36 +101,36 @@ static void validate_inputs(span<const T1> x_values, span<const T2> y_values, sp
 }
 
 // Convert `instruction_set` to a width for `simd::Vec_t`.
-template <sys::SIMDInstructionSet instruction_set, typename T>
+template <InstructionSet instruction_set, typename T>
 using simdVec = simd::Vec_t<Elements_per_type<T, instruction_set>(), T>; // e.g., vcl::Vec8f
 // Convert `instruction_set` to a width for `simd::Complex_t`.
-template <sys::SIMDInstructionSet instruction_set, typename T>
+template <InstructionSet instruction_set, typename T>
 using simdComplex = simd::Complex_t<Elements_per_type<std::complex<T>, instruction_set>(), T>; // e.g., vcl::Complex2f
 
 
 // Decide between `simdVec` and `simdComplex`
-template <sys::SIMDInstructionSet instruction_set, typename T>
+template <InstructionSet instruction_set, typename T>
 struct simdType final
 {
     using type =  simdVec<instruction_set, T> /*vcl::Vec8f*/;
 };
-template <sys::SIMDInstructionSet instruction_set, typename T>
+template <InstructionSet instruction_set, typename T>
 struct simdType<instruction_set, std::complex<T>> final
 {
     using type = simdComplex<instruction_set, T> /*vcl::Complex2f*/;
 };
-template <sys::SIMDInstructionSet instruction_set, typename T>
+template <InstructionSet instruction_set, typename T>
 using simdType_t = typename simdType<instruction_set, T>::type;
 
 
 // load() and store() overloads so the same code works for both
 // `simdVec` and `simdComplex`.
-template <sys::SIMDInstructionSet instruction_set, typename T>
+template <InstructionSet instruction_set, typename T>
 inline void load(simdVec<instruction_set, T>& vec, span<const T> values, size_t i)
 {
     vec.load(&(values[i]));  // load_a() requires very strict alignment
 }
-template <sys::SIMDInstructionSet instruction_set, typename T>
+template <InstructionSet instruction_set, typename T>
 inline void load_partial(simdVec<instruction_set, T>& vec, int n, span<const T> values, size_t i)
 {
     vec.load_partial(n, &(values[i]));
@@ -146,13 +146,13 @@ inline void store_partial(const simd::Vec_t<width, T>& vec, int n, span<T> resul
     vec.store_partial(n, &(results[i]));
 }
 
-template <sys::SIMDInstructionSet instruction_set, typename T, typename TValue = typename T::value_type>
+template <InstructionSet instruction_set, typename T, typename TValue = typename T::value_type>
 inline void load(simdComplex<instruction_set, TValue>& cx, span<const T> values, size_t i)
 {
     const void* const pValues = &(values[i]);
     cx.load(static_cast<const TValue*>(pValues));
 }
-template <sys::SIMDInstructionSet instruction_set, typename T, typename TValue = typename T::value_type>
+template <InstructionSet instruction_set, typename T, typename TValue = typename T::value_type>
 inline void load_partial(simdComplex<instruction_set, TValue>& cx, int n, span<const T> values, size_t i)
 {
     for (int j = 0; j < n; j++)
@@ -183,7 +183,7 @@ inline void store_partial(const simd::Complex_t<width, TValue>& cx, int n, span<
 // 
 // This the actual workhorse function where most of the "interesting" stuff
 // happens; much of the other code is "just" type manipulation.
-template <sys::SIMDInstructionSet instruction_set,
+template <InstructionSet instruction_set,
     typename T1, typename TFunc, typename U = T1, typename T2 = T1>
 inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs,
     TFunc f)
@@ -229,7 +229,7 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
 }
 
 // "bind" the compile-time `instruction_set` to an instantiation of vec_Func().
-template <sys::SIMDInstructionSet instruction_set, typename T1, typename T2, typename U, typename TFunc>
+template <InstructionSet instruction_set, typename T1, typename T2, typename U, typename TFunc>
 inline auto bind(TFunc f)
 {
     return [&](span<const T1> x_values, span<const T2> y_values, span<U> outputs) {
@@ -252,9 +252,9 @@ inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> out
     static const auto get_simd_func = [&f]() ->  retval_t {
         switch (instruction_set)
         {
-        case sys::SIMDInstructionSet::SSE2: return bind<sys::SIMDInstructionSet::SSE2, T1, T2, U>(f);
-        case sys::SIMDInstructionSet::AVX2: return bind<sys::SIMDInstructionSet::AVX2, T1, T2, U>(f);
-        case sys::SIMDInstructionSet::AVX512F: return bind<sys::SIMDInstructionSet::AVX512F, T1, T2, U>(f);
+        case InstructionSet::SSE2: return bind<InstructionSet::SSE2, T1, T2, U>(f);
+        case InstructionSet::AVX2: return bind<InstructionSet::AVX2, T1, T2, U>(f);
+        case InstructionSet::AVX512F: return bind<InstructionSet::AVX512F, T1, T2, U>(f);
         default:  break;
         }
         throw std::logic_error("Unknown 'instruction_set' value.");
