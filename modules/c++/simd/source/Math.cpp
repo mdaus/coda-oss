@@ -142,7 +142,7 @@ using simdType_t = typename simdType<instruction_set, T>::type;
 template <typename TFunc,
     typename TXValues, typename TSimdX,
     typename TYValues, typename TSimdY, typename TOutputs>
-inline void simd_Func(const TXValues& x_values, TSimdX& x,
+inline void simd_Func_(const TXValues& x_values, TSimdX& x,
     const TYValues& y_values, TSimdY& y,
     TOutputs& outputs, TFunc f)
 {
@@ -183,7 +183,7 @@ inline void simd_Func(const TXValues& x_values, TSimdX& x,
 
 template <typename TFunc,
     typename TInputs, typename TSimd, typename TOutputs>
-inline void simd_Func(const TInputs& inputs, TSimd& v, TOutputs& outputs, TFunc f)
+inline void simd_Func_(const TInputs& inputs, TSimd& v, TOutputs& outputs, TFunc f)
 {
     validate_inputs(inputs, outputs);
 
@@ -208,39 +208,41 @@ inline void simd_Func(const TInputs& inputs, TSimd& v, TOutputs& outputs, TFunc 
 
 template <size_t width, typename TFunc,
     typename T1, typename U = T1, typename T2 = T1>
-inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
+inline void simd_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
 {
     simd::Vec_t<width, T1> x{};  // e.g., vcl::Vec8f
     simd::Vec_t<width, T2> y{};  // e.g., vcl::Vec8f
-    simd_Func(x_values, x, y_values, y, outputs, f);
+    simd_Func_(x_values, x, y_values, y, outputs, f);
 }
 template <size_t width, typename TFunc,
     typename T1, typename U = T1>
-inline void vec_Func(span<const T1> inputs, span<U> outputs, TFunc f)
+inline void simd_Func(span<const T1> inputs, span<U> outputs, TFunc f)
 {
     simd::Vec_t<width, T1> v{};  // e.g., vcl::Vec8f
-    simd_Func(inputs, v, outputs, f);
+    simd_Func_(inputs, v, outputs, f);
 }
 
 template <size_t width, typename TFunc,
     typename T, typename U = T>
-inline void complex_Func(span<const std::complex<T>> inputs, span<U> outputs, TFunc f)
+inline void simd_Func(span<const std::complex<T>> inputs, span<U> outputs, TFunc f)
 {
     simd::Complex_t<width, T> v{};  // e.g., vcl::Complex8f
-    simd_Func(inputs, v, outputs, f);
+    simd_Func_(inputs, v, outputs, f);
 }
+
 
 // "bind" the compile-time `width` to an instantiation of simd_Func().
 template <InstructionSet instruction_set, typename T1, typename T2, typename U, typename TFunc>
-inline auto bind_vec2(TFunc f)
+inline auto bind_simd2(TFunc f)
 {
     return [&](span<const T1> x_values, span<const T2> y_values, span<U> outputs) {
         // For vector operations, the widths of all elements must be the same;
         // otherwise, it's not possible to walk through the `span`s.
         constexpr auto width = Elements_per_type<T1, instruction_set>();
-        return vec_Func<width>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
+        return simd_Func<width>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
 }
+
 template<typename T1, typename T2, typename U, typename TFunc>
 inline auto get_vec2_func(TFunc f)
 {
@@ -253,9 +255,9 @@ inline auto get_vec2_func(TFunc f)
     static const auto get_simd_func = [&f]() ->  retval_t {
         switch (instruction_set())
         {
-        case InstructionSet::SSE2: return bind_vec2<InstructionSet::SSE2, T1, T2, U>(f);
-        case InstructionSet::AVX2: return bind_vec2<InstructionSet::AVX2, T1, T2, U>(f);
-        case InstructionSet::AVX512F: return bind_vec2<InstructionSet::AVX512F, T1, T2, U>(f);
+        case InstructionSet::SSE2: return bind_simd2<InstructionSet::SSE2, T1, T2, U>(f);
+        case InstructionSet::AVX2: return bind_simd2<InstructionSet::AVX2, T1, T2, U>(f);
+        case InstructionSet::AVX512F: return bind_simd2<InstructionSet::AVX512F, T1, T2, U>(f);
         default:  break;
         }
         throw std::logic_error("Unknown 'instruction_set' value.");
@@ -274,15 +276,16 @@ inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> out
 
 // "bind" the compile-time `width` to an instantiation of simd_Func().
 template <InstructionSet instruction_set, typename T, typename U, typename TFunc>
-inline auto bind_vec(TFunc f)
+inline auto bind_simd(TFunc f)
 {
     return [&](span<const T> inputs, span<U> outputs) {
         // For vector operations, the widths of all elements must be the same;
         // otherwise, it's not possible to walk through the `span`s.
         constexpr auto width = Elements_per_type<T, instruction_set>();
-        return vec_Func<width>(inputs, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
+        return simd_Func<width>(inputs, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
 }
+
 template<typename T, typename U, typename TFunc>
 inline auto get_vec_func(TFunc f)
 {
@@ -295,9 +298,9 @@ inline auto get_vec_func(TFunc f)
     static const auto get_simd_func = [&f]() ->  retval_t {
         switch (instruction_set())
         {
-        case InstructionSet::SSE2: return bind_vec<InstructionSet::SSE2, T, U>(f);
-        case InstructionSet::AVX2: return bind_vec<InstructionSet::AVX2, T, U>(f);
-        case InstructionSet::AVX512F: return bind_vec<InstructionSet::AVX512F, T, U>(f);
+        case InstructionSet::SSE2: return bind_simd<InstructionSet::SSE2, T, U>(f);
+        case InstructionSet::AVX2: return bind_simd<InstructionSet::AVX2, T, U>(f);
+        case InstructionSet::AVX512F: return bind_simd<InstructionSet::AVX512F, T, U>(f);
         default:  break;
         }
         throw std::logic_error("Unknown 'instruction_set' value.");
@@ -314,17 +317,6 @@ inline void invoke(span<const T> inputs, span<U> outputs, TFunc f)
     func(inputs, outputs);
 }
 
-// "bind" the compile-time `width` to an instantiation of vec_Func().
-template <InstructionSet instruction_set, typename T, typename U, typename TFunc>
-inline auto bind_complex(TFunc f)
-{
-    return [&](span<const std::complex<T>> x_values, span<U> outputs) {
-        // For vector operations, the widths of all elements must be the same;
-        // otherwise, it's not possible to walk through the `span`s.
-        constexpr auto width = Elements_per_type<std::complex<T>, instruction_set>();
-        return complex_Func<width>(x_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
-    };
-}
 template<typename T, typename U, typename TFunc>
 inline auto get_complex_func(TFunc f)
 {
@@ -337,9 +329,9 @@ inline auto get_complex_func(TFunc f)
     static const auto get_simd_func = [&f]() ->  retval_t {
         switch (instruction_set())
         {
-        case InstructionSet::SSE2: return bind_complex<InstructionSet::SSE2, T, U>(f);
-        case InstructionSet::AVX2: return bind_complex<InstructionSet::AVX2, T, U>(f);
-        case InstructionSet::AVX512F: return bind_complex<InstructionSet::AVX512F, T, U>(f);
+        case InstructionSet::SSE2: return bind_simd<InstructionSet::SSE2, std::complex<T>, U>(f);
+        case InstructionSet::AVX2: return bind_simd<InstructionSet::AVX2, std::complex<T>, U>(f);
+        case InstructionSet::AVX512F: return bind_simd<InstructionSet::AVX512F, std::complex<T>, U>(f);
         default:  break;
         }
         throw std::logic_error("Unknown 'instruction_set' value.");
