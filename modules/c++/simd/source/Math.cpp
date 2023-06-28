@@ -49,12 +49,6 @@ template<typename T>
 using span = simd::span<T>;
 
 using InstructionSet = sys::SIMDInstructionSet;
-static inline auto instruction_set()
-{
-    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
-    static const auto retval = sys::OS().getSIMDInstructionSet();
-    return retval;
-}
 
 /*
 * Table 2.2 from https://github.com/vectorclass/manual/raw/master/vcl_manual.pdf
@@ -189,7 +183,9 @@ inline void simd_Func(span<const T> inputs, span<U> outputs, TFunc f)
 template<typename TRetval, typename TFuncSSE2, typename TFuncAVX2, typename TFuncAVX512F>
 inline TRetval get_simd_func(TFuncSSE2 fSSE2, TFuncAVX2 fAVX2, TFuncAVX512F fAFX512f)
 {
-    switch (instruction_set())
+    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
+    static const auto instruction_set = sys::OS().getSIMDInstructionSet();
+    switch (instruction_set)
     {
     case InstructionSet::SSE2: return fSSE2;
     case InstructionSet::AVX2: return fAVX2;
