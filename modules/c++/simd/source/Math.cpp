@@ -111,51 +111,16 @@ static void validate_inputs(span<const T1> x_values, span<const T2> y_values, sp
     validate_inputs(x_values, outputs);
 }
 
-// Convert `instruction_set` to a width for `simd::Vec_t`.
-template <InstructionSet instruction_set, typename T>
-using simdVec = simd::Vec_t<Elements_per_type<T, instruction_set>(), T>; // e.g., vcl::Vec8f
-// Convert `instruction_set` to a width for `simd::Complex_t`.
-template <InstructionSet instruction_set, typename T>
-using simdComplex = simd::Complex_t<Elements_per_type<std::complex<T>, instruction_set>(), T>; // e.g., vcl::Complex2f
-
-
-// Decide between `simdVec` and `simdComplex`
-template <InstructionSet instruction_set, typename T>
-struct simdType final
-{
-    using type =  simdVec<instruction_set, T> /*vcl::Vec8f*/;
-};
-template <InstructionSet instruction_set, typename T>
-struct simdType<instruction_set, std::complex<T>> final
-{
-    using type = simdComplex<instruction_set, T> /*vcl::Complex2f*/;
-};
-template <InstructionSet instruction_set, typename T>
-using simdType_t = typename simdType<instruction_set, T>::type;
-
 // Repeatedly load the appropriate `Vec`s with the inputs (`y_values` may
 // be empty) and call the given function `f` (which will end up in SIMD code!).
 // The results are stored in `outputs`.
 // 
 // This the actual workhorse function where most of the "interesting" stuff
 // happens; much of the other code is "just" type manipulation.
-template <typename TFunc,
-    typename TXValues, typename TSimdX,
-    typename TYValues, typename TSimdY, typename TOutputs>
-inline void simd_Func_(const TXValues& x_values, TSimdX& x,
-    const TYValues& y_values, TSimdY& y,
-    TOutputs& outputs, TFunc f)
+template <typename TXValues, typename TSimdX, typename TYValues, typename TSimdY, typename TOutputs, typename TFunc>
+inline void simd_Func_(const TXValues& x_values, TSimdX& x, const TYValues& y_values, TSimdY& y, TOutputs& outputs, TFunc f)
 {
     validate_inputs(x_values, y_values, outputs);
-
-    // Do the check for an empty `y_values` just once: outside the loop.
-    const std::function<void(size_t)> do_nothing = [&](size_t) {
-        assert(y_values.empty());
-    };
-    const std::function<void(size_t)> load_y = [&](size_t i) {
-        simd::load(y, y_values, i);  // load_a() requires very strict alignment
-    };
-    const auto maybe_load_y = y_values.empty() ? do_nothing : load_y;
 
     size_t i = 0;
     constexpr auto width = x.size();
@@ -163,26 +128,28 @@ inline void simd_Func_(const TXValues& x_values, TSimdX& x,
     for (; i < size; i += width)
     {
         simd::load(x, x_values, i);
-        maybe_load_y(i);
+        simd::load(y, y_values, i);
 
         const auto results = f(x, y);
-
         simd::store(results, outputs, i);
     }
 
     // Finish whatever is left with load_partial() and store_partial()
     const auto remaining = gsl::narrow<int>(x_values.size() - i);
     simd::load_partial(x, remaining, x_values, i);
-    if (!y_values.empty())
-    {
-        simd::load_partial(y, remaining, y_values, i);
-    }
+    simd::load_partial(y, remaining, y_values, i);
     const auto results = f(x, y);
     simd::store_partial(results, remaining, outputs, i);
 }
+template <size_t width, typename T1, typename T2, typename U, typename TFunc>
+inline void simd_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
+{
+    simd::Vec_t<width, T1> x{};  // e.g., vcl::Vec8f
+    simd::Vec_t<width, T2> y{};  // e.g., vcl::Vec8f
+    simd_Func_(x_values, x, y_values, y, outputs, f);
+}
 
-template <typename TFunc,
-    typename TInputs, typename TSimd, typename TOutputs>
+template <typename TInputs, typename TSimd, typename TOutputs, typename TFunc>
 inline void simd_Func_(const TInputs& inputs, TSimd& v, TOutputs& outputs, TFunc f)
 {
     validate_inputs(inputs, outputs);
@@ -193,9 +160,7 @@ inline void simd_Func_(const TInputs& inputs, TSimd& v, TOutputs& outputs, TFunc
     for (; i < size; i += width)
     {
         simd::load(v, inputs, i);
-
         const auto results = f(v);
-
         simd::store(results, outputs, i);
     }
 
@@ -205,31 +170,18 @@ inline void simd_Func_(const TInputs& inputs, TSimd& v, TOutputs& outputs, TFunc
     const auto results = f(v);
     simd::store_partial(results, remaining, outputs, i);
 }
-
-template <size_t width, typename TFunc,
-    typename T1, typename U = T1, typename T2 = T1>
-inline void simd_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
+template <size_t width, typename T, typename U, typename TFunc>
+inline void simd_Func(span<const T> inputs, span<U> outputs, TFunc f)
 {
-    simd::Vec_t<width, T1> x{};  // e.g., vcl::Vec8f
-    simd::Vec_t<width, T2> y{};  // e.g., vcl::Vec8f
-    simd_Func_(x_values, x, y_values, y, outputs, f);
-}
-template <size_t width, typename TFunc,
-    typename T1, typename U = T1>
-inline void simd_Func(span<const T1> inputs, span<U> outputs, TFunc f)
-{
-    simd::Vec_t<width, T1> v{};  // e.g., vcl::Vec8f
+    simd::Vec_t<width, T> v{};  // e.g., vcl::Vec8f
     simd_Func_(inputs, v, outputs, f);
 }
-
-template <size_t width, typename TFunc,
-    typename T, typename U = T>
+template <size_t width, typename T, typename U, typename TFunc>
 inline void simd_Func(span<const std::complex<T>> inputs, span<U> outputs, TFunc f)
 {
     simd::Complex_t<width, T> v{};  // e.g., vcl::Complex8f
     simd_Func_(inputs, v, outputs, f);
 }
-
 
 // "bind" the compile-time `width` to an instantiation of simd_Func().
 template <InstructionSet instruction_set, typename T1, typename T2, typename U, typename TFunc>
@@ -242,9 +194,8 @@ inline auto bind_simd2(TFunc f)
         return simd_Func<width>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
 }
-
 template<typename T1, typename T2, typename U, typename TFunc>
-inline auto get_vec2_func(TFunc f)
+inline auto get_simd2_func(TFunc f)
 {
     // For the given type and width, return the right instantiation of vec_Func.
     //
@@ -270,7 +221,7 @@ template<typename T1, typename TFunc, typename U = T1, typename T2 = T1>
 inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
 {
     // Only need to get the actual function once because the width won't change.
-    static const auto func = get_vec2_func<T1, T2, U>(f);
+    static const auto func = get_simd2_func<T1, T2, U>(f);
     func(x_values, y_values, outputs);
 }
 
@@ -285,9 +236,8 @@ inline auto bind_simd(TFunc f)
         return simd_Func<width>(inputs, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
 }
-
 template<typename T, typename U, typename TFunc>
-inline auto get_vec_func(TFunc f)
+inline auto get_simd_func(TFunc f)
 {
     // For the given type and width, return the right instantiation of vec_Func.
     //
@@ -309,42 +259,20 @@ inline auto get_vec_func(TFunc f)
     static const auto func = get_simd_func();
     return func;
 }
+
 template<typename T, typename TFunc, typename U = T>
 inline void invoke(span<const T> inputs, span<U> outputs, TFunc f)
 {
     // Only need to get the actual function once because the width won't change.
-    static const auto func = get_vec_func<T, U>(f);
+    static const auto func = get_simd_func<T, U>(f);
     func(inputs, outputs);
 }
 
-template<typename T, typename U, typename TFunc>
-inline auto get_complex_func(TFunc f)
-{
-    // For the given type and width, return the right instantiation of vec_Func.
-    //
-    // Each lambda is a different type even though they have the same signature.
-    // Because of that, `auto` doesn't work since the inferred types are different.
-    // The fix is to explicitly use std::function.
-    using retval_t = std::function<void(span<const std::complex<T>>, span<U>)>;
-    static const auto get_simd_func = [&f]() ->  retval_t {
-        switch (instruction_set())
-        {
-        case InstructionSet::SSE2: return bind_simd<InstructionSet::SSE2, std::complex<T>, U>(f);
-        case InstructionSet::AVX2: return bind_simd<InstructionSet::AVX2, std::complex<T>, U>(f);
-        case InstructionSet::AVX512F: return bind_simd<InstructionSet::AVX512F, std::complex<T>, U>(f);
-        default:  break;
-        }
-        throw std::logic_error("Unknown 'instruction_set' value.");
-    };
-    // Only need to get the actual function once because the width won't change.
-    static const auto func = get_simd_func();
-    return func;
-}
 template<typename T, typename TFunc, typename U = T>
 inline void invoke(span<const std::complex<T>> inputs, span<U> outputs, TFunc f)
 {
     // Only need to get the actual function once because the width won't change.
-    static const auto func = get_complex_func<T, U>(f);
+    static const auto func = get_simd_func<std::complex<T>, U>(f);
     func(inputs, outputs);
 }
 
