@@ -111,19 +111,37 @@ static void validate_inputs(span<const T1> x_values, span<const T2> y_values, sp
     validate_inputs(x_values, outputs);
 }
 
+// Decide between ` simd::Vec_t` and ` simd::Complex_t`
+template <size_t width, typename T>
+struct simdType final
+{
+    using type =  simd::Vec_t<width, T> /*vcl::Vec8f*/;
+};
+template <size_t width, typename T>
+struct simdType<width, std::complex<T>> final
+{
+    using type =  simd::Complex_t<width, T> /*vcl::Complex2f*/;
+};
+template <size_t width, typename T>
+using simdType_t = typename simdType<width, T>::type;
+
 // Repeatedly load the appropriate `Vec`s with the inputs (`y_values` may
 // be empty) and call the given function `f` (which will end up in SIMD code!).
 // The results are stored in `outputs`.
 // 
 // This the actual workhorse function where most of the "interesting" stuff
 // happens; much of the other code is "just" type manipulation.
-template <typename TXValues, typename TSimdX, typename TYValues, typename TSimdY, typename TOutputs, typename TFunc>
-inline void simd_Func_(const TXValues& x_values, TSimdX& x, const TYValues& y_values, TSimdY& y, TOutputs& outputs, TFunc f)
+template <size_t width, typename T1, typename T2, typename U, typename TFunc>
+inline void simd_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
 {
     validate_inputs(x_values, y_values, outputs);
 
+    using t1_t = typename decltype(x_values)::value_type; // T or std::complex<T>
+    simdType_t<width, t1_t> x{};  // e.g., vcl::Vec8f
+    using t2_t = typename decltype(y_values)::value_type; // T or std::complex<T>
+    simdType_t<width, t2_t> y{};  // e.g., vcl::Vec8f
+
     size_t i = 0;
-    constexpr auto width = x.size();
     const auto size = x_values.size() <= width ? 0 : x_values.size() - width;  // don't walk off end with `+= width`
     for (; i < size; i += width)
     {
@@ -141,21 +159,16 @@ inline void simd_Func_(const TXValues& x_values, TSimdX& x, const TYValues& y_va
     const auto results = f(x, y);
     simd::store_partial(results, remaining, outputs, i);
 }
-template <size_t width, typename T1, typename T2, typename U, typename TFunc>
-inline void simd_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
-{
-    simd::Vec_t<width, T1> x{};  // e.g., vcl::Vec8f
-    simd::Vec_t<width, T2> y{};  // e.g., vcl::Vec8f
-    simd_Func_(x_values, x, y_values, y, outputs, f);
-}
 
-template <typename TInputs, typename TSimd, typename TOutputs, typename TFunc>
-inline void simd_Func_(const TInputs& inputs, TSimd& v, TOutputs& outputs, TFunc f)
+template <size_t width, typename T, typename U, typename TFunc>
+inline void simd_Func(span<const T> inputs, span<U> outputs, TFunc f)
 {
     validate_inputs(inputs, outputs);
 
+    using value_type = typename decltype(inputs)::value_type; // T or std::complex<T>
+    simdType_t<width, value_type> v{};  // e.g., vcl::Vec8f
+
     size_t i = 0;
-    constexpr auto width = v.size();
     const auto size = inputs.size() <= width ? 0 : inputs.size() - width;  // don't walk off end with `+= width`
     for (; i < size; i += width)
     {
@@ -169,18 +182,6 @@ inline void simd_Func_(const TInputs& inputs, TSimd& v, TOutputs& outputs, TFunc
     simd::load_partial(v, remaining, inputs, i);
     const auto results = f(v);
     simd::store_partial(results, remaining, outputs, i);
-}
-template <size_t width, typename T, typename U, typename TFunc>
-inline void simd_Func(span<const T> inputs, span<U> outputs, TFunc f)
-{
-    simd::Vec_t<width, T> v{};  // e.g., vcl::Vec8f
-    simd_Func_(inputs, v, outputs, f);
-}
-template <size_t width, typename T, typename U, typename TFunc>
-inline void simd_Func(span<const std::complex<T>> inputs, span<U> outputs, TFunc f)
-{
-    simd::Complex_t<width, T> v{};  // e.g., vcl::Complex8f
-    simd_Func_(inputs, v, outputs, f);
 }
 
 // "bind" the compile-time `width` to an instantiation of simd_Func().
