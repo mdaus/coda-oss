@@ -187,7 +187,7 @@ inline void simd_Func(span<const T> inputs, span<U> outputs, TFunc f)
 /***************************************************************************************************/
 
 template<typename TRetval, typename TFuncSSE2, typename TFuncAVX2, typename TFuncAVX512F>
-inline TRetval get_simd_func_(TFuncSSE2 fSSE2, TFuncAVX2 fAVX2, TFuncAVX512F fAFX512f)
+inline TRetval get_simd_func(TFuncSSE2 fSSE2, TFuncAVX2 fAVX2, TFuncAVX512F fAFX512f)
 {
     switch (instruction_set())
     {
@@ -197,35 +197,6 @@ inline TRetval get_simd_func_(TFuncSSE2 fSSE2, TFuncAVX2 fAVX2, TFuncAVX512F fAF
     default:  break;
     }
     throw std::logic_error("Unknown 'instruction_set' value.");
-}
-
-// "bind" the compile-time `width` to an instantiation of simd_Func().
-template <InstructionSet instruction_set, typename T1, typename T2, typename U, typename TFunc>
-inline auto bind_simd2(TFunc f)
-{
-    return [&](span<const T1> x_values, span<const T2> y_values, span<U> outputs) {
-        // For vector operations, the widths of all elements must be the same;
-        // otherwise, it's not possible to walk through the `span`s.
-        constexpr auto width = Elements_per_type<T1, instruction_set>();
-        return simd_Func<width>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
-    };
-}
-template<typename T1, typename T2, typename U, typename TFunc>
-inline auto get_simd2_func(TFunc f)
-{
-    // For the given type and width, return the right instantiation of vec_Func.
-    //
-    // Each lambda is a different type even though they have the same signature.
-    // Because of that, `auto` doesn't work since the inferred types are different.
-    // The fix is to explicitly use std::function.
-    using retval_t = std::function<void(span<const T1>, span<const T2>, span<U>)>;
-
-    // Only need to get the actual function once because the width won't change.
-    static const auto func = get_simd_func_<retval_t>(
-            bind_simd2<InstructionSet::SSE2, T1, T2, U>(f), 
-            bind_simd2<InstructionSet::AVX2, T1, T2, U>(f),
-            bind_simd2<InstructionSet::AVX512F, T1, T2, U>(f));
-    return func;
 }
 
 // "bind" the compile-time `width` to an instantiation of simd_Func().
@@ -239,22 +210,17 @@ inline auto bind_simd(TFunc f)
         return simd_Func<width>(inputs, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
 }
-template<typename T, typename U, typename TFunc>
-inline auto get_simd_func(TFunc f)
-{
-    // For the given type and width, return the right instantiation of vec_Func.
-    //
-    // Each lambda is a different type even though they have the same signature.
-    // Because of that, `auto` doesn't work since the inferred types are different.
-    // The fix is to explicitly use std::function.
-    using retval_t = std::function<void(span<const T>, span<U>)>;
 
-    // Only need to get the actual function once because the width won't change.
-    static const auto func = get_simd_func_<retval_t>(
-            bind_simd<InstructionSet::SSE2, T, U>(f), 
-            bind_simd<InstructionSet::AVX2, T, U>(f),
-            bind_simd<InstructionSet::AVX512F, T, U>(f));
-    return func;
+// "bind" the compile-time `width` to an instantiation of simd_Func().
+template <InstructionSet instruction_set, typename T1, typename T2, typename U, typename TFunc>
+inline auto bind_simd2(TFunc f)
+{
+    return [&](span<const T1> x_values, span<const T2> y_values, span<U> outputs) {
+        // For vector operations, the widths of all elements must be the same;
+        // otherwise, it's not possible to walk through the `span`s.
+        constexpr auto width = Elements_per_type<T1, instruction_set>();
+        return simd_Func<width>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
+    };
 }
 
 /***************************************************************************************************/
@@ -262,8 +228,18 @@ inline auto get_simd_func(TFunc f)
 template<typename T1, typename T2, typename U, typename TFunc>
 inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
 {
+    // For the given type and width, return the right instantiation of vec_Func.
+    //
+    // Each lambda is a different type even though they have the same signature.
+    // Because of that, `auto` doesn't work since the inferred types are different.
+    // The fix is to explicitly use std::function.
+    using retval_t = std::function<void(span<const T1>, span<const T2>, span<U>)>;
+
     // Only need to get the actual function once because the width won't change.
-    static const auto func = get_simd2_func<T1, T2, U>(f);
+    static const auto func = get_simd_func<retval_t>(
+            bind_simd2<InstructionSet::SSE2, T1, T2, U>(f), 
+            bind_simd2<InstructionSet::AVX2, T1, T2, U>(f),
+            bind_simd2<InstructionSet::AVX512F, T1, T2, U>(f));
     func(x_values, y_values, outputs);
 }
 
@@ -272,8 +248,18 @@ inline void invoke(span<const T> inputs, span<U> outputs, TFunc f)
 {
     using value_type = typename decltype(inputs)::value_type; // T or std::complex<T>
 
-    // Only need to get the actual function once because the width won't change.
-    static const auto func = get_simd_func<value_type, U>(f);
+    // For the given type and width, return the right instantiation of vec_Func.
+    //
+    // Each lambda is a different type even though they have the same signature.
+    // Because of that, `auto` doesn't work since the inferred types are
+    // different. The fix is to explicitly use std::function.
+    using retval_t = std::function<void(span<const value_type>, span<U>)>;
+
+     // Only need to get the actual function once because the width won't change.
+    static const auto func = get_simd_func<retval_t>(
+            bind_simd<InstructionSet::SSE2, value_type, U>(f),
+            bind_simd<InstructionSet::AVX2, value_type, U>(f),
+            bind_simd<InstructionSet::AVX512F, value_type, U>(f));
     func(inputs, outputs);
 }
 
