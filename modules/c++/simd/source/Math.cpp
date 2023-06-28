@@ -128,17 +128,14 @@ using simdType_t = typename simdType<instruction_set, T>::type;
 // 
 // This the actual workhorse function where most of the "interesting" stuff
 // happens; much of the other code is "just" type manipulation.
-template <InstructionSet instruction_set,
-    typename T1, typename TFunc, typename U = T1, typename T2 = T1>
-inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs,
-    TFunc f)
+template <size_t width, typename TFunc,
+    typename T1, typename U = T1, typename T2 = T1>
+inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
 {
     validate_inputs(x_values, y_values, outputs);
 
-    constexpr auto x_width = Elements_per_type<T1, instruction_set>();
-    simd::Vec_t<x_width, T1> x{};  // e.g., vcl::Vec8f
-    constexpr auto y_width = Elements_per_type<T2, instruction_set>();
-    simd::Vec_t<y_width, T2> y{};  // e.g., vcl::Vec8f
+    simd::Vec_t<width, T1> x{};  // e.g., vcl::Vec8f
+    simd::Vec_t<width, T2> y{};  // e.g., vcl::Vec8f
 
     // Do the check for an empty `y_values` just once: outside the loop.
     const std::function<void(size_t)> do_nothing = [&](size_t) {
@@ -149,10 +146,9 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
     };
     const auto maybe_load_y = y_values.empty() ? do_nothing : load_y;
 
-    constexpr auto out_width = Elements_per_type<U, instruction_set>();
     size_t i = 0;
-    const auto size = x_values.size() <= x_width ? 0 : x_values.size() - x_width;  // don't walk off end with `+= x_width`
-    for (; i < size; i += x_width)
+    const auto size = x_values.size() <= width ? 0 : x_values.size() - width;  // don't walk off end with `+= width`
+    for (; i < size; i += width)
     {
         simd::load(x, x_values, i);
         maybe_load_y(i);
@@ -173,12 +169,13 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
     simd::store_partial(results, remaining, outputs, i);
 }
 
-// "bind" the compile-time `instruction_set` to an instantiation of vec_Func().
+// "bind" the compile-time `width` to an instantiation of vec_Func().
 template <InstructionSet instruction_set, typename T1, typename T2, typename U, typename TFunc>
 inline auto bind(TFunc f)
 {
     return [&](span<const T1> x_values, span<const T2> y_values, span<U> outputs) {
-        return vec_Func<instruction_set>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
+        constexpr auto width = Elements_per_type<T1, instruction_set>();
+        return vec_Func<width>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
 }
 
