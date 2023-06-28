@@ -48,6 +48,8 @@
 template<typename T>
 using span = simd::span<T>;
 
+using InstructionSet = sys::SIMDInstructionSet;
+
 /*
 * Table 2.2 from https://github.com/vectorclass/manual/raw/master/vcl_manual.pdf
 Vector class    Precision   Elements per vector     Total bits      Minimum recommended instruction set
@@ -120,13 +122,16 @@ struct simdType<instruction_set, std::complex<T>> final
 template <sys::SIMDInstructionSet instruction_set, typename T>
 using simdType_t = typename simdType<instruction_set, T>::type;
 
-template <size_t width, typename T>
-inline void load(simd::Vec_t<width, T>& vec, span<const T> values, size_t i)
+
+// load() and store() overloads so the same code works for both
+// `simdVec` and `simdComplex`.
+template <sys::SIMDInstructionSet instruction_set, typename T>
+inline void load(simdVec<instruction_set, T>& vec, span<const T> values, size_t i)
 {
     vec.load(&(values[i]));  // load_a() requires very strict alignment
 }
-template <size_t width, typename T>
-inline void load_partial(simd::Vec_t<width, T>& vec, int n, span<const T> values, size_t i)
+template <sys::SIMDInstructionSet instruction_set, typename T>
+inline void load_partial(simdVec<instruction_set, T>& vec, int n, span<const T> values, size_t i)
 {
     vec.load_partial(n, &(values[i]));
 }
@@ -141,14 +146,14 @@ inline void store_partial(const simd::Vec_t<width, T>& vec, int n, span<T> resul
     vec.store_partial(n, &(results[i]));
 }
 
-template <size_t width, typename T, typename TValue = typename T::value_type>
-inline void load(simd::Complex_t<width, TValue>& cx, span<const T> values, size_t i)
+template <sys::SIMDInstructionSet instruction_set, typename T, typename TValue = typename T::value_type>
+inline void load(simdComplex<instruction_set, TValue>& cx, span<const T> values, size_t i)
 {
     const void* const pValues = &(values[i]);
     cx.load(static_cast<const TValue*>(pValues));
 }
-template <size_t width, typename T, typename TValue = typename T::value_type>
-inline void load_partial(simd::Complex_t<width, TValue>& cx, int n, span<const T> values, size_t i)
+template <sys::SIMDInstructionSet instruction_set, typename T, typename TValue = typename T::value_type>
+inline void load_partial(simdComplex<instruction_set, TValue>& cx, int n, span<const T> values, size_t i)
 {
     for (int j = 0; j < n; j++)
     {
@@ -185,26 +190,26 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
 {
     validate_inputs(x_values, y_values, outputs);
 
-    constexpr auto x_width = Elements_per_type<T1, instruction_set>();
     simdType_t<instruction_set, T1> x{};  // e.g., vcl::Vec8f
-    constexpr auto y_width = Elements_per_type<T2, instruction_set>();
     simdType_t<instruction_set, T2> y{};  // e.g., vcl::Vec8f
-    constexpr auto out_width = Elements_per_type<U, instruction_set>();
 
     // Do the check for an empty `y_values` just once: outside the loop.
     const std::function<void(size_t)> do_nothing = [&](size_t) {
         assert(y_values.empty());
     };
     const std::function<void(size_t)> load_y = [&](size_t i) {
-        load<Elements_per_type<T2, instruction_set>()>(y, y_values, i);  // load_a() requires very strict alignment
+        load<instruction_set>(y, y_values, i);  // load_a() requires very strict alignment
     };
     const auto maybe_load_y = y_values.empty() ? do_nothing : load_y;
+
+    constexpr auto x_width = Elements_per_type<T1, instruction_set>();
+    constexpr auto out_width = Elements_per_type<U, instruction_set>();
 
     size_t i = 0;
     const auto size = x_values.size() <= x_width ? 0 : x_values.size() - x_width;  // don't walk off end with `+= x_width`
     for (; i < size; i += x_width)
     {
-        load<x_width>(x, x_values, i);
+        load<instruction_set>(x, x_values, i);
         maybe_load_y(i);
 
         const auto results = f(x, y);
@@ -214,10 +219,10 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
 
     // Finish whatever is left with load_partial() and store_partial()
     const auto remaining = gsl::narrow<int>(x_values.size() - i);
-    load_partial<x_width>(x, remaining, x_values, i);
+    load_partial<instruction_set>(x, remaining, x_values, i);
     if (!y_values.empty())
     {
-        load_partial<y_width>(y, remaining, y_values, i);
+        load_partial<instruction_set>(y, remaining, y_values, i);
     }
     const auto results = f(x, y);
     store_partial<out_width>(results, remaining, outputs, i);
