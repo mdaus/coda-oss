@@ -62,9 +62,6 @@ struct Vec<16, float> final
     using type = vcl::Vec16f;
 };
 
-template <size_t elements_per_vector>
-using Vecf = typename Vec<elements_per_vector, float>::type;
-
 template <>
 struct Vec<2, double> final
 {
@@ -80,19 +77,6 @@ struct Vec<8, double> final
 {
     using type = vcl::Vec8d;
 };
-template <size_t elements_per_vector>
-using Vecd = typename Vec<elements_per_vector, double>::type;
-
-template<typename T>
-using Vec1 =  typename Vec<1, T>::type;
-template<typename T>
-using Vec2 =  typename Vec<2, T>::type;
-template<typename T>
-using Vec4 =  typename Vec<4, T>::type;
-template<typename T>
-using Vec8 =  typename Vec<8, T>::type;
-template<typename T>
-using Vec16 =  typename Vec<16, T>::type;
 
 } // namespace "details"
 
