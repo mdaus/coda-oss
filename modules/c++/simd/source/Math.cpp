@@ -98,7 +98,7 @@ static void validate_inputs(span<const T> inputs, span<U> outputs)
 template <typename T1, typename U, typename T2>
 static void validate_inputs(span<const T1> x_values, span<const T2> y_values, span<U> outputs)
 {
-    if (!y_values.empty() && (x_values.size() != y_values.size()))
+    if (x_values.size() != y_values.size())
     {
         throw std::invalid_argument("inputs aren't the same size");
     }
@@ -224,9 +224,9 @@ inline void complex_Func(span<const std::complex<T>> inputs, span<U> outputs, TF
     simd_Func(inputs, v, outputs, f);
 }
 
-// "bind" the compile-time `width` to an instantiation of vec_Func().
+// "bind" the compile-time `width` to an instantiation of simd_Func().
 template <InstructionSet instruction_set, typename T1, typename T2, typename U, typename TFunc>
-inline auto bind_vec(TFunc f)
+inline auto bind_vec2(TFunc f)
 {
     return [&](span<const T1> x_values, span<const T2> y_values, span<U> outputs) {
         // For vector operations, the widths of all elements must be the same;
@@ -236,7 +236,7 @@ inline auto bind_vec(TFunc f)
     };
 }
 template<typename T1, typename TFunc, typename U = T1, typename T2 = T1>
-inline void invoke_vec(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
+inline void invoke_vec2(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
 {
     // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
     static const auto instruction_set = sys::OS().getSIMDInstructionSet();
@@ -250,9 +250,9 @@ inline void invoke_vec(span<const T1> x_values, span<const T2> y_values, span<U>
     static const auto get_simd_func = [&f]() ->  retval_t {
         switch (instruction_set)
         {
-        case InstructionSet::SSE2: return bind_vec<InstructionSet::SSE2, T1, T2, U>(f);
-        case InstructionSet::AVX2: return bind_vec<InstructionSet::AVX2, T1, T2, U>(f);
-        case InstructionSet::AVX512F: return bind_vec<InstructionSet::AVX512F, T1, T2, U>(f);
+        case InstructionSet::SSE2: return bind_vec2<InstructionSet::SSE2, T1, T2, U>(f);
+        case InstructionSet::AVX2: return bind_vec2<InstructionSet::AVX2, T1, T2, U>(f);
+        case InstructionSet::AVX512F: return bind_vec2<InstructionSet::AVX512F, T1, T2, U>(f);
         default:  break;
         }
         throw std::logic_error("Unknown 'instruction_set' value.");
@@ -261,6 +261,45 @@ inline void invoke_vec(span<const T1> x_values, span<const T2> y_values, span<U>
     // Only need to get the actual function once because the width won't change.
     static const auto func = get_simd_func();
     func(x_values, y_values, outputs);
+}
+
+// "bind" the compile-time `width` to an instantiation of simd_Func().
+template <InstructionSet instruction_set, typename T, typename U, typename TFunc>
+inline auto bind_vec(TFunc f)
+{
+    return [&](span<const T> inputs, span<U> outputs) {
+        // For vector operations, the widths of all elements must be the same;
+        // otherwise, it's not possible to walk through the `span`s.
+        constexpr auto width = Elements_per_type<T, instruction_set>();
+        return vec_Func<width>(inputs, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
+    };
+}
+template<typename T, typename TFunc, typename U = T>
+inline void invoke_vec(span<const T> inputs, span<U> outputs, TFunc f)
+{
+    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
+    static const auto instruction_set = sys::OS().getSIMDInstructionSet();
+
+    // For the given type and width, return the right instantiation of vec_Func.
+    //
+    // Each lambda is a different type even though they have the same signature.
+    // Because of that, `auto` doesn't work since the inferred types are different.
+    // The fix is to explicitly use std::function.
+    using retval_t = std::function<void(span<const T>, span<U>)>;
+    static const auto get_simd_func = [&f]() ->  retval_t {
+        switch (instruction_set)
+        {
+        case InstructionSet::SSE2: return bind_vec<InstructionSet::SSE2, T, U>(f);
+        case InstructionSet::AVX2: return bind_vec<InstructionSet::AVX2, T, U>(f);
+        case InstructionSet::AVX512F: return bind_vec<InstructionSet::AVX512F, T, U>(f);
+        default:  break;
+        }
+        throw std::logic_error("Unknown 'instruction_set' value.");
+    };
+
+    // Only need to get the actual function once because the width won't change.
+    static const auto func = get_simd_func();
+    func(inputs, outputs);
 }
 
 // "bind" the compile-time `width` to an instantiation of vec_Func().
@@ -305,13 +344,12 @@ inline void invoke_complex(span<const std::complex<T>> x_values, span<U> outputs
 template<typename T1, typename TFunc, typename U = T1, typename T2 = T1>
 inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
 {
-    invoke_vec(x_values, y_values, outputs, f);
+    invoke_vec2(x_values, y_values, outputs, f);
 }
 template <typename T, typename TFunc, typename U = T>
 inline void invoke(span<const T> inputs, span<U> outputs, TFunc f)
 {
-    static const span<const T> empty;
-    invoke_vec(inputs, empty, outputs, f);
+    invoke_vec(inputs, outputs, f);
 }
 
 template <typename T, typename TFunc, typename U = T>
@@ -323,34 +361,34 @@ inline void invoke(span<const std::complex<T>> inputs, span<U> outputs, TFunc f)
 
 void simd::Sin(span<const float> inputs, span<float> outputs)
 {
-    static const auto f = [](const auto& v, const auto&) { return sin(v); };
+    static const auto f = [](const auto& v) { return sin(v); };
     invoke(inputs, outputs, f);
 }
 void simd::Sin(span<const double> inputs, span<double> outputs)
 {
-    static const auto f = [](const auto& v, const auto&) { return sin(v); };
+    static const auto f = [](const auto& v) { return sin(v); };
     invoke(inputs, outputs, f);
 }
 
 void simd::Cos(span<const float> inputs, span<float> outputs)
 {
-    static const auto f = [](const auto& v, const auto&) { return cos(v); };
+    static const auto f = [](const auto& v) { return cos(v); };
     invoke(inputs, outputs, f);
 }
 void simd::Cos(span<const double> inputs, span<double> outputs)
 {
-    static const auto f = [](const auto& v, const auto&) { return cos(v); };
+    static const auto f = [](const auto& v) { return cos(v); };
     invoke(inputs, outputs, f);
 }
 
 void simd::Tan(span<const float> inputs, span<float> outputs)
 {
-    static const auto f = [](const auto& v, const auto&) { return tan(v); };
+    static const auto f = [](const auto& v) { return tan(v); };
     invoke(inputs, outputs, f);
 }
 void simd::Tan(span<const double> inputs, span<double> outputs)
 {
-    static const auto f = [](const auto& v, const auto&) { return tan(v); };
+    static const auto f = [](const auto& v) { return tan(v); };
     invoke(inputs, outputs, f);
 }
 
