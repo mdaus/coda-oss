@@ -98,18 +98,27 @@ static void validate_inputs(span<const T1> x_values, span<const T2> y_values, sp
     }
 }
 
-template <size_t width, typename T>
+// Convert `instruction_set` to a width for `simd::Vec_t`.
+template <sys::SIMDInstructionSet instruction_set, typename T>
+using simdVec = simd::Vec_t<Elements_per_type<T, instruction_set>(), T>; // e.g., vcl::Vec8f
+// Convert `instruction_set` to a width for `simd::Complex_t`.
+template <sys::SIMDInstructionSet instruction_set, typename T>
+using simdComplex = simd::Complex_t<Elements_per_type<std::complex<T>, instruction_set>(), T>; // e.g., vcl::Complex2f
+
+
+// Decide between `simdVec` and `simdComplex`
+template <sys::SIMDInstructionSet instruction_set, typename T>
 struct simdType final
 {
-    using type =  simd::Vec_t<width, T> /*vcl::Vec8f*/;
+    using type =  simdVec<instruction_set, T> /*vcl::Vec8f*/;
 };
-template <size_t width, typename T>
-struct simdType<width, std::complex<T>> final
+template <sys::SIMDInstructionSet instruction_set, typename T>
+struct simdType<instruction_set, std::complex<T>> final
 {
-    using type = simd::Complex_t<width, T> /*vcl::Complex2f*/;
+    using type = simdComplex<instruction_set, T> /*vcl::Complex2f*/;
 };
-template <size_t width, typename T>
-using simdType_t = typename simdType<width, T>::type;
+template <sys::SIMDInstructionSet instruction_set, typename T>
+using simdType_t = typename simdType<instruction_set, T>::type;
 
 template <size_t width, typename T>
 inline void load(simd::Vec_t<width, T>& vec, span<const T> values, size_t i)
@@ -177,9 +186,9 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
     validate_inputs(x_values, y_values, outputs);
 
     constexpr auto x_width = Elements_per_type<T1, instruction_set>();
-    simdType_t<x_width, T1> x{};  // e.g., vcl::Vec8f
+    simdType_t<instruction_set, T1> x{};  // e.g., vcl::Vec8f
     constexpr auto y_width = Elements_per_type<T2, instruction_set>();
-    simdType_t<y_width, T2> y{};  // e.g., vcl::Vec8f
+    simdType_t<instruction_set, T2> y{};  // e.g., vcl::Vec8f
     constexpr auto out_width = Elements_per_type<U, instruction_set>();
 
     // Do the check for an empty `y_values` just once: outside the loop.
