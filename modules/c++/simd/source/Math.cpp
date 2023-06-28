@@ -135,13 +135,13 @@ inline void load_partial(simdVec<instruction_set, T>& vec, int n, span<const T> 
 {
     vec.load_partial(n, &(values[i]));
 }
-template <size_t width, typename T>
-inline void store(const simd::Vec_t<width, T>& vec, span<T> results, size_t i)
+template <InstructionSet instruction_set, typename T>
+inline void store(const simdVec<instruction_set, T>& vec, span<T> results, size_t i)
 {
     vec.store(&(results[i]));  // store_a() requires very strict alignment
 }
-template <size_t width, typename T>
-inline void store_partial(const simd::Vec_t<width, T>& vec, int n, span<T> results, size_t i)
+template <InstructionSet instruction_set, typename T>
+inline void store_partial(const simdVec<instruction_set, T>& vec, int n, span<T> results, size_t i)
 {
     vec.store_partial(n, &(results[i]));
 }
@@ -161,14 +161,14 @@ inline void load_partial(simdComplex<instruction_set, TValue>& cx, int n, span<c
         cx.insert(j, simd::Complex_t<1, TValue>(value.real(), value.imag()));    
     }
 }
-template <size_t width, typename T, typename TValue = typename T::value_type>
-inline void store(const simd::Complex_t<width, TValue>& cx, span<T> results, size_t i)
+template <InstructionSet instruction_set, typename T, typename TValue = typename T::value_type>
+inline void store(const simdComplex<instruction_set, TValue>& cx, span<T> results, size_t i)
 {
     void* const pResults = &(results[i]);
     cx.store(static_cast<TValue*>(pResults));
 }
-template <size_t width, typename T, typename TValue = typename T::value_type>
-inline void store_partial(const simd::Complex_t<width, TValue>& cx, int n, span<T> results_, size_t i)
+template <InstructionSet instruction_set, typename T, typename TValue = typename T::value_type>
+inline void store_partial(const simdComplex<instruction_set, TValue>& cx, int n, span<T> results_, size_t i)
 {
     for (int j = 0; j < n; j++)
     {
@@ -203,8 +203,6 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
     const auto maybe_load_y = y_values.empty() ? do_nothing : load_y;
 
     constexpr auto x_width = Elements_per_type<T1, instruction_set>();
-    constexpr auto out_width = Elements_per_type<U, instruction_set>();
-
     size_t i = 0;
     const auto size = x_values.size() <= x_width ? 0 : x_values.size() - x_width;  // don't walk off end with `+= x_width`
     for (; i < size; i += x_width)
@@ -214,7 +212,7 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
 
         const auto results = f(x, y);
 
-        store<out_width>(results, outputs, i);
+        store<instruction_set>(results, outputs, i);
     }
 
     // Finish whatever is left with load_partial() and store_partial()
@@ -225,7 +223,7 @@ inline void vec_Func(span<const T1> x_values, span<const T2> y_values, span<U> o
         load_partial<instruction_set>(y, remaining, y_values, i);
     }
     const auto results = f(x, y);
-    store_partial<out_width>(results, remaining, outputs, i);
+    store_partial<instruction_set>(results, remaining, outputs, i);
 }
 
 // "bind" the compile-time `instruction_set` to an instantiation of vec_Func().
