@@ -44,11 +44,75 @@
 #include "Vec.h"
 #include "Complex.h"
 
+#include "vectorclass/version2/instrset_detect.cpp" // TODO
+
 // No "using namespace simd", do this instead to reduce a bit of noise.
 template<typename T>
 using span = simd::span<T>;
 
 using InstructionSet = sys::SIMDInstructionSet;
+
+// From instrset_detect(); see the table in Section 9.9 of the documentation.
+// https://github.com/vectorclass/manual/raw/master/vcl_manual.pdf
+enum class instrset
+{
+    x86 = 0, //  80386 instruction set
+    SSE = 1,
+    SSE2 = 2,
+    SSE3 = 3,
+    SSSE3 = 4, // Supplementary SSE3
+    SSE4_1 = 5,
+    SSE4_2 = 6,
+    AVX = 7,
+    AVX2 = 8,
+    AVX512F = 9,
+    AVX512VL = 10,
+    AVX512BW = 10,
+    AVX512DQ = 10,
+};
+static auto instrset_detect()
+{
+    const auto result = vcl::instrset_detect();
+    return static_cast<instrset>(result);
+}
+
+static auto instruction_set_()
+{
+    const auto instructionSet = sys::OS().getSIMDInstructionSet();
+    const auto instrset = instrset_detect();
+    switch (instructionSet)
+    {
+    case InstructionSet::SSE2:
+        if (instrset < instrset::SSE2)
+        {
+            throw std::runtime_error("instruction set mismatch.");
+        }
+        return instructionSet;
+
+    case InstructionSet::AVX2:
+        if (instrset < instrset::AVX2)
+        {
+            throw std::runtime_error("instruction set mismatch.");
+        }
+        return instructionSet;
+
+    case InstructionSet::AVX512F:
+        if (instrset < instrset::AVX512F)
+        {
+            throw std::runtime_error("instruction set mismatch.");
+        }
+        return instructionSet;
+
+    default: break;
+    }
+    throw std::logic_error("Unknown 'instruction_set' value.");
+}
+static auto instruction_set()
+{
+    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
+    static const auto retval = instruction_set_();
+    return retval;
+}
 
 /*
 * Table 2.2 from https://github.com/vectorclass/manual/raw/master/vcl_manual.pdf
@@ -222,9 +286,7 @@ inline void simd_Func(span<const T> inputs, span<U> outputs, TFunc f)
 template<typename TRetval, typename TFuncSSE2, typename TFuncAVX2, typename TFuncAVX512F>
 inline TRetval get_simd_func(TFuncSSE2 fSSE2, TFuncAVX2 fAVX2, TFuncAVX512F fAFX512f)
 {
-    // At runtime, once we know we have SSE2/AVX/AVX512, that won't change.
-    static const auto instruction_set = sys::OS().getSIMDInstructionSet();
-    switch (instruction_set)
+    switch (instruction_set())
     {
     case InstructionSet::SSE2: return fSSE2;
     case InstructionSet::AVX2: return fAVX2;
