@@ -166,6 +166,31 @@ TEST_CASE(Test_simd_Sin_Cos)
     TEST_ASSERT_TRUE(true);
 }
 
+TEST_CASE(Test_simd_SinCos)
+{
+    constexpr size_t iterations = sys::release ? 2000000 : 200;
+
+    const auto inputs = make_values<float>(iterations);
+
+    std::vector<float> sines(inputs.size());
+    simd::Sin(sys::make_span(inputs), sys::make_span(sines));
+
+    std::vector<float> cosines(inputs.size());
+    simd::Cos(sys::make_span(inputs), sys::make_span(cosines));
+
+    std::vector<float> sines2(inputs.size());
+    std::vector<float> cosines2(inputs.size());
+    simd::SinCos(sys::make_span(inputs), sys::make_span(sines2), sys::make_span(cosines2));
+
+    for (size_t i = 0; i < sines.size(); i++)
+    {
+        TEST_ASSERT_ALMOST_EQ(sines[i], sines2[i]);
+    }
+    for (size_t i = 0; i < cosines.size(); i++)
+    {
+        TEST_ASSERT_ALMOST_EQ(cosines[i], cosines2[i]);
+    }
+}
 
 template<typename T>
 static void slow_Arg(coda_oss::span<const std::complex<T>> inputs, coda_oss::span<T> outputs)
@@ -223,6 +248,7 @@ TEST_MAIN(
     TEST_CHECK(Test_simd_Sin_small);
 
     TEST_CHECK(Test_simd_Sin_Cos);
+    TEST_CHECK(Test_simd_SinCos);
     
     TEST_CHECK(Test_simd_Arg);
 )

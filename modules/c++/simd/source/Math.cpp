@@ -95,7 +95,7 @@ static void validate_inputs(span<const T> inputs, span<U> outputs)
         throw std::invalid_argument("'outputs' is smaller than 'inputs'");
     }
 }
-template <typename T1, typename U, typename T2>
+template <typename T1, typename T2, typename U>
 static void validate_inputs(span<const T1> x_values, span<const T2> y_values, span<U> outputs)
 {
     if (x_values.size() != y_values.size())
@@ -103,6 +103,15 @@ static void validate_inputs(span<const T1> x_values, span<const T2> y_values, sp
         throw std::invalid_argument("inputs aren't the same size");
     }
     validate_inputs(x_values, outputs);
+}
+template <typename T, typename U1,  typename U2>
+static void validate_inputs(span<const T> inputs, span<U1> outputs1, span<U2> outputs2)
+{
+    if (outputs1.size() != outputs2.size())
+    {
+        throw std::invalid_argument("outputs aren't the same size");
+    }
+    validate_inputs(inputs, outputs1);
 }
 
 // Decide between ` simd::Vec_t` and ` simd::Complex_t`
@@ -152,6 +161,36 @@ inline void simd_Func(span<const T1> x_values, span<const T2> y_values, span<U> 
     simd::load_partial(y, remaining, y_values, i);
     const auto results = f(x, y);
     simd::store_partial(results, remaining, outputs, i);
+}
+
+template <size_t width, typename T, typename U1, typename U2, typename TFunc>
+inline void simd_Func(span<const T> inputs, span<U1> outputs1, span<U2> outputs2, TFunc f)
+{
+    validate_inputs(inputs, outputs1, outputs2);
+
+    using t_t = typename decltype(inputs)::value_type; // T or std::complex<T>
+    simdType_t<width, t_t> v{};  // e.g., vcl::Vec8f
+    using u2_t = typename decltype(outputs2)::value_type; // T or std::complex<T>
+    simdType_t<width, u2_t> o2{};  // e.g., vcl::Vec8f
+
+    size_t i = 0;
+    const auto size = inputs.size() <= width ? 0 : inputs.size() - width;  // don't walk off end with `+= width`
+    for (; i < size; i += width)
+    {
+        simd::load(v, inputs, i);
+        const auto o1 = f(o2, v);
+
+        simd::store(o1, outputs1, i);
+        simd::store(o2, outputs2, i);
+    }
+
+    // Finish whatever is left with load_partial() and store_partial()
+    const auto remaining = gsl::narrow<int>(inputs.size() - i);
+    simd::load_partial(v, remaining, inputs, i);    
+    const auto o1 = f(o2, v);
+
+    simd::store_partial(o1, remaining, outputs1, i);
+    simd::store_partial(o2, remaining, outputs2, i);
 }
 
 template <size_t width, typename T, typename U, typename TFunc>
@@ -209,13 +248,25 @@ inline auto bind_simd(TFunc f)
 
 // "bind" the compile-time `width` to an instantiation of simd_Func().
 template <InstructionSet instruction_set, typename T1, typename T2, typename U, typename TFunc>
-inline auto bind_simd2(TFunc f)
+inline auto bind_simd_iio(TFunc f)
 {
     return [&](span<const T1> x_values, span<const T2> y_values, span<U> outputs) {
         // For vector operations, the widths of all elements must be the same;
         // otherwise, it's not possible to walk through the `span`s.
         constexpr auto width = Elements_per_type<T1, instruction_set>();
         return simd_Func<width>(x_values, y_values, outputs, f); // e.g., vec_Func<4>(inputs, outputs, f)
+    };
+}
+
+// "bind" the compile-time `width` to an instantiation of simd_Func().
+template <InstructionSet instruction_set, typename T, typename U1, typename U2, typename TFunc>
+inline auto bind_simd_ioo(TFunc f)
+{
+    return [&](span<const T> inputs, span<U1> outputs1, span<U2> outputs2) {
+        // For vector operations, the widths of all elements must be the same;
+        // otherwise, it's not possible to walk through the `span`s.
+        constexpr auto width = Elements_per_type<T, instruction_set>();
+        return simd_Func<width>(inputs, outputs1, outputs2, f); // e.g., vec_Func<4>(inputs, outputs, f)
     };
 }
 
@@ -233,10 +284,28 @@ inline void invoke(span<const T1> x_values, span<const T2> y_values, span<U> out
 
     // Only need to get the actual function once because the width won't change.
     static const auto func = get_simd_func<retval_t>(
-            bind_simd2<InstructionSet::SSE2, T1, T2, U>(f), 
-            bind_simd2<InstructionSet::AVX2, T1, T2, U>(f),
-            bind_simd2<InstructionSet::AVX512F, T1, T2, U>(f));
+            bind_simd_iio<InstructionSet::SSE2, T1, T2, U>(f), 
+            bind_simd_iio<InstructionSet::AVX2, T1, T2, U>(f),
+            bind_simd_iio<InstructionSet::AVX512F, T1, T2, U>(f));
     func(x_values, y_values, outputs);
+}
+
+template<typename T, typename U1, typename U2, typename TFunc>
+inline void invoke(span<const T> values, span<U1> outputs1, span<U2> outputs2, TFunc f)
+{
+    // For the given type and width, return the right instantiation of vec_Func.
+    //
+    // Each lambda is a different type even though they have the same signature.
+    // Because of that, `auto` doesn't work since the inferred types are different.
+    // The fix is to explicitly use std::function.
+    using retval_t = std::function<void(span<const T>, span<U1>, span<U2>)>;
+
+    // Only need to get the actual function once because the width won't change.
+    static const auto func = get_simd_func<retval_t>(
+            bind_simd_ioo<InstructionSet::SSE2, T, U1, U2>(f), 
+            bind_simd_ioo<InstructionSet::AVX2, T, U1, U2>(f),
+            bind_simd_ioo<InstructionSet::AVX512F, T, U1, U2>(f));
+    func(values, outputs1, outputs2);
 }
 
 template<typename T, typename U, typename TFunc>
@@ -281,6 +350,17 @@ void simd::Cos(span<const double> inputs, span<double> outputs)
 {
     static const auto f = [](const auto& v) { return cos(v); };
     invoke(inputs, outputs, f);
+}
+
+void simd::SinCos(span<const float> inputs, span<float> sines, span<float> cosines)
+{
+    static const auto f = [](auto& v_cosines, const auto& v) { return sincos(&v_cosines, v); };
+    invoke(inputs, sines, cosines, f);
+}
+void simd::SinCos(span<const double> inputs, span<double> sines, span<double> cosines)
+{
+    static const auto f = [](auto& v_cosines, const auto& v) { return sincos(&v_cosines, v); };
+    invoke(inputs, sines, cosines, f);
 }
 
 void simd::Tan(span<const float> inputs, span<float> outputs)

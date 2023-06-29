@@ -50,6 +50,9 @@ CODA_OSS_API void Sin(span<const double>, span<double>);
 CODA_OSS_API void Cos(span<const float>, span<float>);
 CODA_OSS_API void Cos(span<const double>, span<double>);
 
+CODA_OSS_API void SinCos(span<const float>, span<float> sines, span<float> cosines);
+CODA_OSS_API void SinCos(span<const double>, span<double> sines, span<double> cosines);
+
 CODA_OSS_API void Tan(span<const float>, span<float>);
 CODA_OSS_API void Tan(span<const double>, span<double>);
 
