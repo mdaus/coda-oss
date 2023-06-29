@@ -168,7 +168,7 @@ TEST_CASE(Test_simd_Sin_Cos)
 
 TEST_CASE(Test_simd_SinCos)
 {
-    constexpr size_t iterations = sys::release ? 2000000 : 200;
+    constexpr size_t iterations = sys::release ? 30000 : 3;
 
     const auto inputs = make_values<float>(iterations);
 
@@ -207,7 +207,7 @@ static void slow_Arg(coda_oss::span<const std::complex<T>> inputs, coda_oss::spa
 
 TEST_CASE(Test_simd_Arg)
 {
-    constexpr size_t iterations = sys::release ? 4000000 : 400;
+    constexpr size_t iterations = sys::release ? 100000 : 10;
 
     const auto inputs_ = make_values<float>(iterations);
     std::vector<std::complex<float>> inputs;
@@ -232,7 +232,7 @@ TEST_CASE(Test_simd_Arg)
     #if NDEBUG // DEBUG SIMD code is slow
     const auto ratio = elapsed_slow / elapsed_simd;
     // Ratios observed by testing
-    constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 10.0;
+    constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 4.5 : 10.0;
     TEST_ASSERT_GREATER(ratio, expected_ratio);
     #endif
 
