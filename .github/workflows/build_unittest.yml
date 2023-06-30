@@ -91,7 +91,7 @@ jobs:
   build-waf:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-2019]
         python-version: ['3.7']
         debugging: ['--enable-debugging', '']
     name: ${{ matrix.os }}-${{ matrix.python-version }}-waf
@@ -109,7 +109,7 @@ jobs:
         mkdir install${{ matrix.os }}Waf-Github
         python waf configure --prefix="$PWD/install${{ matrix.os }}Waf-Github" --enable-swig ${{ matrix.debugging }}
     - name: configure_without_swig
-      if: ${{ matrix.os == 'windows-latest' }}
+      if: ${{ matrix.os == 'windows-2019' }}
       run: |
         pip install numpy
         mkdir install${{ matrix.os }}Waf-Github
