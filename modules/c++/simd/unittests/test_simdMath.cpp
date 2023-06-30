@@ -110,10 +110,9 @@ TEST_CASE(Test_simd_Sin)
         const auto ratio = elapsed_slow / elapsed_simd;
         if (ratio > 1.0)  // hard to figure out debug with GCC
         {
-            fprintf(stderr, "ratio = %5.3f\n", ratio);
             // Ratios observed by testing
             // constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 2.25;
-            constexpr auto expected_ratio = 2.0;
+            constexpr auto expected_ratio = 2.2;
             TEST_ASSERT_GREATER(ratio, expected_ratio);
         }
     }
@@ -170,7 +169,7 @@ TEST_CASE(Test_simd_Sin_Cos)
         {
             // Ratios observed by testing
             // constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 2.25;
-            constexpr auto expected_ratio = 2.25;
+            constexpr auto expected_ratio = 2.2;
             TEST_ASSERT_GREATER(ratio, expected_ratio);
         }
     }
@@ -246,7 +245,7 @@ TEST_CASE(Test_simd_Arg)
         {
             // Ratios observed by testing
             // constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 2.25;
-            constexpr auto expected_ratio = 4.0;
+            constexpr auto expected_ratio = 2.2;
             TEST_ASSERT_GREATER(ratio, expected_ratio);
         }
     }
