@@ -105,12 +105,13 @@ TEST_CASE(Test_simd_Sin)
     test_simd_Sin_almost_equal(testName, &(results[0]));
     const std::chrono::duration<double> elapsed_slow = end - start;
 
-    #if NDEBUG // DEBUG SIMD code is slow
-    const auto ratio = elapsed_slow / elapsed_simd;
-    // Ratios observed by testing
-    constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 10.0;
-    TEST_ASSERT_GREATER(ratio, expected_ratio);
-    #endif
+    if constexpr (sys::release) // DEBUG SIMD code is slow
+    {
+        const auto ratio = elapsed_slow / elapsed_simd;
+        // Ratios observed by testing
+        constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 10.0;
+        TEST_ASSERT_GREATER(ratio, expected_ratio);
+    }
 }
 
 TEST_CASE(Test_simd_Sin_small)
