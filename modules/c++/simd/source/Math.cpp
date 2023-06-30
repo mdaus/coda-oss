@@ -209,8 +209,7 @@ inline void simd_Func(span<const T1> x_values, span<const T2> y_values, span<U> 
     simdType_t<width, t2_t> y{};  // e.g., vcl::Vec8f
 
     size_t i = 0;
-    const auto size = x_values.size() <= width ? 0 : x_values.size() - width;  // don't walk off end with `+= width`
-    for (; i < size; i += width)
+    for (; i < x_values.size(); i += width)
     {
         simd::load(x, x_values, i);
         simd::load(y, y_values, i);
@@ -238,8 +237,7 @@ inline void simd_Func(span<const T> inputs, span<U1> outputs1, span<U2> outputs2
     simdType_t<width, u2_t> o2{};  // e.g., vcl::Vec8f
 
     size_t i = 0;
-    const auto size = inputs.size() <= width ? 0 : inputs.size() - width;  // don't walk off end with `+= width`
-    for (; i < size; i += width)
+    for (; i < inputs.size(); i += width)
     {
         simd::load(v, inputs, i);
         const auto o1 = f(o2, v);
@@ -266,8 +264,7 @@ inline void simd_Func(span<const T> inputs, span<U> outputs, TFunc f)
     simdType_t<width, value_type> v{};  // e.g., vcl::Vec8f
 
     size_t i = 0;
-    const auto size = inputs.size() <= width ? 0 : inputs.size() - width;  // don't walk off end with `+= width`
-    for (; i < size; i += width)
+    for (; i < inputs.size(); i += width)
     {
         simd::load(v, inputs, i);
         const auto results = f(v);
