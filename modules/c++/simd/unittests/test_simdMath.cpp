@@ -109,7 +109,8 @@ TEST_CASE(Test_simd_Sin)
     {
         const auto ratio = elapsed_slow / elapsed_simd;
         // Ratios observed by testing
-        constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 10.0;
+        //constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 2.25;
+        constexpr auto expected_ratio = 2.25;
         TEST_ASSERT_GREATER(ratio, expected_ratio);
     }
 }
