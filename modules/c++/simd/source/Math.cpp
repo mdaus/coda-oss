@@ -198,8 +198,8 @@ using simdType_t = typename simdType<width, T>::type;
 // 
 // This the actual workhorse function where most of the "interesting" stuff
 // happens; much of the other code is "just" type manipulation.
-template <size_t width, typename T1, typename T2, typename U, typename TFunc>
-inline void simd_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
+template <size_t width, typename T1, typename TSpan2, typename U, typename TFunc>
+inline void simd_Func_(span<const T1> x_values, TSpan2 y_values, span<U> outputs, TFunc f)
 {
     validate_inputs(x_values, y_values, outputs);
 
@@ -208,51 +208,52 @@ inline void simd_Func(span<const T1> x_values, span<const T2> y_values, span<U> 
     using t2_t = typename decltype(y_values)::value_type; // T or std::complex<T>
     simdType_t<width, t2_t> y{};  // e.g., vcl::Vec8f
 
+    using y_element_type = typename decltype(y_values)::element_type;
+    constexpr auto y_is_input = std::is_const_v<y_element_type>;
+    constexpr auto y_is_output = !y_is_input;
+
     size_t i = 0;
     for (; i < x_values.size(); i += width)
     {
         simd::load(x, x_values, i);
-        simd::load(y, y_values, i);
+        if constexpr (y_is_input)
+        {
+            simd::load(y, y_values, i);
+        }
 
         const auto results = f(x, y);
+
         simd::store(results, outputs, i);
+        if constexpr (y_is_output)
+        {
+            simd::store(y, y_values, i);        
+        }
     }
 
     // Finish whatever is left with load_partial() and store_partial()
     const auto remaining = gsl::narrow<int>(x_values.size() - i);
     simd::load_partial(x, remaining, x_values, i);
-    simd::load_partial(y, remaining, y_values, i);
+    if constexpr (y_is_input)
+    {
+        simd::load_partial(y, remaining, y_values, i);
+    }
     const auto results = f(x, y);
     simd::store_partial(results, remaining, outputs, i);
+    if constexpr (y_is_output)
+    {
+        simd::store_partial(y, remaining, y_values, i);
+    }
+}
+template <size_t width, typename T1, typename T2, typename U, typename TFunc>
+inline void simd_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
+{
+    simd_Func_<width>(x_values, y_values, outputs, f);
 }
 
 template <size_t width, typename T, typename U1, typename U2, typename TFunc>
 inline void simd_Func(span<const T> inputs, span<U1> outputs1, span<U2> outputs2, TFunc f)
 {
-    validate_inputs(inputs, outputs1, outputs2);
-
-    using t_t = typename decltype(inputs)::value_type; // T or std::complex<T>
-    simdType_t<width, t_t> v{};  // e.g., vcl::Vec8f
-    using u2_t = typename decltype(outputs2)::value_type; // T or std::complex<T>
-    simdType_t<width, u2_t> o2{};  // e.g., vcl::Vec8f
-
-    size_t i = 0;
-    for (; i < inputs.size(); i += width)
-    {
-        simd::load(v, inputs, i);
-        const auto o1 = f(o2, v);
-
-        simd::store(o1, outputs1, i);
-        simd::store(o2, outputs2, i);
-    }
-
-    // Finish whatever is left with load_partial() and store_partial()
-    const auto remaining = gsl::narrow<int>(inputs.size() - i);
-    simd::load_partial(v, remaining, inputs, i);    
-    const auto o1 = f(o2, v);
-
-    simd::store_partial(o1, remaining, outputs1, i);
-    simd::store_partial(o2, remaining, outputs2, i);
+    simd_Func_<width>(inputs, outputs1, outputs2, f);
 }
 
 template <size_t width, typename T, typename U, typename TFunc>
@@ -413,12 +414,12 @@ void simd::Cos(span<const double> inputs, span<double> outputs)
 
 void simd::SinCos(span<const float> inputs, span<float> sines, span<float> cosines)
 {
-    static const auto f = [](auto& v_cosines, const auto& v) { return sincos(&v_cosines, v); };
+    static const auto f = [](const auto& v, auto& v_cosines) { return sincos(&v_cosines, v); };
     invoke(inputs, sines, cosines, f);
 }
 void simd::SinCos(span<const double> inputs, span<double> sines, span<double> cosines)
 {
-    static const auto f = [](auto& v_cosines, const auto& v) { return sincos(&v_cosines, v); };
+    static const auto f = [](const auto& v, auto& v_cosines) { return sincos(&v_cosines, v); };
     invoke(inputs, sines, cosines, f);
 }
 
