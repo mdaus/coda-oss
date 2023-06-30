@@ -201,19 +201,21 @@ using simdType_t = typename simdType<width, T>::type;
 template <size_t width, typename T1, typename TSpan2, typename U, typename TFunc>
 inline void simd_Func_(span<const T1> x_values, TSpan2 y_values, span<U> outputs, TFunc f)
 {
-    validate_inputs(x_values, y_values, outputs);
-
     using t1_t = typename decltype(x_values)::value_type; // T or std::complex<T>
     simdType_t<width, t1_t> x{};  // e.g., vcl::Vec8f
-    using t2_t = typename decltype(y_values)::value_type; // T or std::complex<T>
+
+    using y_value_type= typename decltype(y_values)::value_type; // no `const`
+    constexpr auto y_is_nullptr_t = std::is_same_v<nullptr_t, y_value_type>;
+    using t2_t = std::conditional_t<y_is_nullptr_t, t1_t, y_value_type>; // need something other than `nullptr_t` for Vec<>
     simdType_t<width, t2_t> y{};  // e.g., vcl::Vec8f
 
-    using y_element_type = typename decltype(y_values)::element_type;
-    constexpr auto y_is_input = std::is_const_v<y_element_type>;
-    constexpr auto y_is_output = !y_is_input;
+    using y_element_type = typename decltype(y_values)::element_type; // value_type removes `const`
+    constexpr auto y_is_input = y_is_nullptr_t ? false : std::is_const_v<y_element_type>;
+    constexpr auto y_is_output = y_is_nullptr_t ? false : !y_is_input;
 
+    const auto size = x_values.size() <= width ? 0 : x_values.size() - width;  // don't increment past `.size()` with `+= width`
     size_t i = 0;
-    for (; i < x_values.size(); i += width)
+    for (; i < size; i += width)
     {
         simd::load(x, x_values, i);
         if constexpr (y_is_input)
@@ -232,27 +234,32 @@ inline void simd_Func_(span<const T1> x_values, TSpan2 y_values, span<U> outputs
 
     // Finish whatever is left with load_partial() and store_partial()
     const auto remaining = gsl::narrow<int>(x_values.size() - i);
-    simd::load_partial(x, remaining, x_values, i);
-    if constexpr (y_is_input)
+    if (remaining > 0)
     {
-        simd::load_partial(y, remaining, y_values, i);
-    }
-    const auto results = f(x, y);
-    simd::store_partial(results, remaining, outputs, i);
-    if constexpr (y_is_output)
-    {
-        simd::store_partial(y, remaining, y_values, i);
+        simd::load_partial(x, remaining, x_values, i);
+        if constexpr (y_is_input)
+        {
+            simd::load_partial(y, remaining, y_values, i);
+        }
+        const auto results = f(x, y);
+        simd::store_partial(results, remaining, outputs, i);
+        if constexpr (y_is_output)
+        {
+            simd::store_partial(y, remaining, y_values, i);
+        }
     }
 }
 template <size_t width, typename T1, typename T2, typename U, typename TFunc>
 inline void simd_Func(span<const T1> x_values, span<const T2> y_values, span<U> outputs, TFunc f)
 {
+    validate_inputs(x_values, y_values, outputs);
     simd_Func_<width>(x_values, y_values, outputs, f);
 }
 
 template <size_t width, typename T, typename U1, typename U2, typename TFunc>
 inline void simd_Func(span<const T> inputs, span<U1> outputs1, span<U2> outputs2, TFunc f)
 {
+    validate_inputs(inputs, outputs1, outputs2);
     simd_Func_<width>(inputs, outputs1, outputs2, f);
 }
 
@@ -261,22 +268,8 @@ inline void simd_Func(span<const T> inputs, span<U> outputs, TFunc f)
 {
     validate_inputs(inputs, outputs);
 
-    using value_type = typename decltype(inputs)::value_type; // T or std::complex<T>
-    simdType_t<width, value_type> v{};  // e.g., vcl::Vec8f
-
-    size_t i = 0;
-    for (; i < inputs.size(); i += width)
-    {
-        simd::load(v, inputs, i);
-        const auto results = f(v);
-        simd::store(results, outputs, i);
-    }
-
-    // Finish whatever is left with load_partial() and store_partial()
-    const auto remaining = gsl::narrow<int>(inputs.size() - i);
-    simd::load_partial(v, remaining, inputs, i);
-    const auto results = f(v);
-    simd::store_partial(results, remaining, outputs, i);
+    static const span<const nullptr_t> empty;
+    simd_Func_<width>(inputs, empty, outputs, f);
 }
 
 /***************************************************************************************************/
@@ -392,45 +385,45 @@ inline void invoke(span<const T> inputs, span<U> outputs, TFunc f)
 
 void simd::Sin(span<const float> inputs, span<float> outputs)
 {
-    static const auto f = [](const auto& v) { return sin(v); };
+    static const auto f = [](const auto& v, const auto&) { return sin(v); };
     invoke(inputs, outputs, f);
 }
 void simd::Sin(span<const double> inputs, span<double> outputs)
 {
-    static const auto f = [](const auto& v) { return sin(v); };
+    static const auto f = [](const auto& v, const auto&) { return sin(v); };
     invoke(inputs, outputs, f);
 }
 
 void simd::Cos(span<const float> inputs, span<float> outputs)
 {
-    static const auto f = [](const auto& v) { return cos(v); };
+    static const auto f = [](const auto& v, const auto&) { return cos(v); };
     invoke(inputs, outputs, f);
 }
 void simd::Cos(span<const double> inputs, span<double> outputs)
 {
-    static const auto f = [](const auto& v) { return cos(v); };
+    static const auto f = [](const auto& v, const auto&) { return cos(v); };
     invoke(inputs, outputs, f);
 }
 
 void simd::SinCos(span<const float> inputs, span<float> sines, span<float> cosines)
 {
     static const auto f = [](const auto& v, auto& v_cosines) { return sincos(&v_cosines, v); };
-    invoke(inputs, sines, cosines, f);
+    invoke(inputs, cosines, sines, f);
 }
 void simd::SinCos(span<const double> inputs, span<double> sines, span<double> cosines)
 {
     static const auto f = [](const auto& v, auto& v_cosines) { return sincos(&v_cosines, v); };
-    invoke(inputs, sines, cosines, f);
+    invoke(inputs, cosines, sines, f);
 }
 
 void simd::Tan(span<const float> inputs, span<float> outputs)
 {
-    static const auto f = [](const auto& v) { return tan(v); };
+    static const auto f = [](const auto& v, const auto&) { return tan(v); };
     invoke(inputs, outputs, f);
 }
 void simd::Tan(span<const double> inputs, span<double> outputs)
 {
-    static const auto f = [](const auto& v) { return tan(v); };
+    static const auto f = [](const auto& v, const auto&) { return tan(v); };
     invoke(inputs, outputs, f);
 }
 
@@ -447,7 +440,7 @@ void simd::ATan2(span<const double> xValues, span<const double> yValues, span<do
 
 void simd::Arg(span<const std::complex<float>> zValues, span<float> outputs)
 {
-    static const auto f = [](const auto& zvec) {
+    static const auto f = [](const auto& zvec, const auto&) {
         // https://en.cppreference.com/w/cpp/numeric/complex/arg
         // "... as if the function is implemented as std::atan2(std::imag(z), std::real(z))."
         return atan2(zvec.imag(), zvec.real());
