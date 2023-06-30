@@ -25,15 +25,9 @@
 #ifndef CODA_OSS_sys_Dbg_h_INCLUDED_
 #define CODA_OSS_sys_Dbg_h_INCLUDED_
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-#include <cstdarg>
-
-#include "config/Exports.h"
-#include "config/disable_compiler_warnings.h"
-
+//
+// The macros below may #define NDEBUG, do them before #including <assert.h>
+//
 // A "debug" build has debugging symbols, detailed call stacks, minimal optimization, STL validation, etc.
 // A "release" build is likely to "run fast" and be "shipped;" it might lack much of what is in a "debug" build.
 #ifndef CODA_OSS_DEBUG
@@ -96,6 +90,25 @@
 #ifndef CODA_OSS_DEBUG
     #error CODA_OSS_DEBUG is not set.
 #endif
+
+// #define NDEBUG if not already done
+#if CODA_OSS_DEBUG && defined(NDEBUG)
+    #error "NDEBUG and CODA_OSS_DEBUG=1"
+#endif
+#if !defined(NDEBUG) && !CODA_OSS_DEBUG
+    #define NDEBUG
+#endif
+
+#include <assert.h> // *after* NDEBUG, above
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <cassert>
+#include <iostream>
+#include <cstdarg>
+
+#include "config/Exports.h"
+#include "config/disable_compiler_warnings.h"
 
 namespace sys
 {
