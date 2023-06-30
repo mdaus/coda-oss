@@ -21,10 +21,15 @@
  *
  */
 
-
+#pragma once 
 #ifndef CODA_OSS_sys_Dbg_h_INCLUDED_
 #define CODA_OSS_sys_Dbg_h_INCLUDED_
-#pragma once
+
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <cstdarg>
 
 #include "config/Exports.h"
 #include "config/disable_compiler_warnings.h"
@@ -44,8 +49,8 @@
         #endif
     #endif // _MSC_VER
 
-    // GCC has a "neither" mode with no flags; no -O (optimization) and no -g (debugging);
-    // that doesn't seem very useful, so try to figure out something that makes sense.
+    // GCC has a "neither" mode with no flags: no `-O` (optimization) and no `-g` (debugging).
+    // That doesn't seem very useful, so try to figure out something that makes sense.
     #if defined(__GNUC__)
         // https://gcc.gnu.org/onlinedocs/cpp/Common-Predefined-Macros.html#Common-Predefined-Macros
         // https://gcc.gnu.org/onlinedocs/libstdc++/manual/debug_mode_using.html#debug_mode.using.mode
@@ -71,7 +76,7 @@
             #ifndef NDEBUG
                 //#error "NDEBUG should be #define'd with __OPTIMIZE__"
             #endif
-            #define CODA_OSS_DEBUG 0
+            #define CODA_OSS_DEBUG 0 // i.e., release
         #else
             #error "Can't #define CODA_OSS_DEBUG for __GNUC__."
         #endif
@@ -91,12 +96,6 @@
 #ifndef CODA_OSS_DEBUG
     #error CODA_OSS_DEBUG is not set.
 #endif
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <iostream>
-#include <cstdarg>
 
 namespace sys
 {
