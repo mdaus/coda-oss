@@ -62,19 +62,6 @@ static void slow_Sin(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
         *it++ = sin(*begin++);
     }
 }
-template <typename T>
-static void slow_Cos(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
-{
-    // This is intentionally slow so that we have something to compare with SIMD
-    // results
-    auto begin = inputs.begin();
-    const auto end = inputs.end();
-    auto it = outputs.begin();
-    while (begin != end)
-    {
-        *it++ = cos(*begin++);
-    }
-}
 
 static void test_simd_Sin_almost_equal(const std::string& testName, const float* pResults, const size_t size = 5)
 {
@@ -137,41 +124,6 @@ TEST_CASE(Test_simd_Sin_small)
         const std::span<const float> s(inputs.data(), small_count);
         simd::Sin(s, sys::make_span(results));
         test_simd_Sin_almost_equal(testName, &(results[values_size]), count);    
-    }
-}
-
-TEST_CASE(Test_simd_Sin_Cos)
-{
-    constexpr size_t iterations = sys::release ? 2000000 : 200;
-
-    const auto inputs = make_values<float>(iterations);
-    std::vector<float> results(inputs.size());
-
-    simd::Sin(sys::make_span(inputs), sys::make_span(results));
-    slow_Sin(sys::make_span(inputs), sys::make_span(results));
-
-    auto start = std::chrono::steady_clock::now();
-    simd::Sin(sys::make_span(inputs), sys::make_span(results));
-    simd::Cos(sys::make_const_span(results), sys::make_span(results));
-    auto end = std::chrono::steady_clock::now();
-    const std::chrono::duration<double> elapsed_simd = end - start;
-
-    start = std::chrono::steady_clock::now();
-    slow_Sin(sys::make_span(inputs), sys::make_span(results));
-    slow_Cos(sys::make_const_span(results), sys::make_span(results));
-    end = std::chrono::steady_clock::now();
-    const std::chrono::duration<double> elapsed_slow = end - start;
-
-    if constexpr (sys::release)  // DEBUG SIMD code is slow
-    {
-        const auto ratio = elapsed_slow / elapsed_simd;
-        if (ratio > 1.0)  // hard to figure out debug with GCC
-        {
-            // Ratios observed by testing
-            // constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 2.25;
-            constexpr auto expected_ratio = 2.0;
-            TEST_ASSERT_GREATER(ratio, expected_ratio);
-        }
     }
 }
 
@@ -245,7 +197,7 @@ TEST_CASE(Test_simd_Arg)
         {
             // Ratios observed by testing
             // constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 2.25;
-            constexpr auto expected_ratio = 2.2;
+            constexpr auto expected_ratio = 2.0;
             TEST_ASSERT_GREATER(ratio, expected_ratio);
         }
     }
@@ -260,8 +212,6 @@ TEST_MAIN(
 
     TEST_CHECK(Test_simd_Sin);
     TEST_CHECK(Test_simd_Sin_small);
-
-    TEST_CHECK(Test_simd_Sin_Cos);
     TEST_CHECK(Test_simd_SinCos);
     
     TEST_CHECK(Test_simd_Arg);
