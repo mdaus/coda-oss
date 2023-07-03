@@ -225,6 +225,18 @@
     <ClCompile Include="..\modules\c++\types\unittests\test_complex.cpp">
       <Filter>types</Filter>
     </ClCompile>
+    <ClCompile Include="hdf5.lite.cpp">
+      <Filter>hdf5.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\hdf5.lite\unittests\test_hdf5info.cpp">
+      <Filter>hdf5.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\hdf5.lite\unittests\test_hdf5read.cpp">
+      <Filter>hdf5.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\hdf5.lite\unittests\test_hdf5write.cpp">
+      <Filter>hdf5.lite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
