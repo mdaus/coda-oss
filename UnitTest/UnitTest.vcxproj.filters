@@ -276,5 +276,8 @@
     <Filter Include="re">
       <UniqueIdentifier>{d205c017-7e98-456f-923f-2f78870a3d7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="hdf5.lite">
+      <UniqueIdentifier>{5997a3de-0dc5-4439-b068-b351c5f395e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

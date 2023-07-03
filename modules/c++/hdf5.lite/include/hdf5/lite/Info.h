@@ -106,4 +106,8 @@ CODA_OSS_API DataSetInfo dataSetInfo(const coda_oss::filesystem::path&, const st
 }
 }
 
+#if _MSC_VER
+#pragma comment(lib, "hdf5-c++.lib")
+#endif
+
 #endif // CODA_OSS_hdf5_lite_Info_h_INCLUDED_

@@ -43,6 +43,14 @@
     <ClInclude Include="gsl\include\gsl\Gsl_.h" />
     <ClInclude Include="gsl\include\gsl\Gsl_narrow.h" />
     <ClInclude Include="gsl\include\gsl\use_gsl.h" />
+    <ClInclude Include="hdf5.lite\include\hdf5\lite\HDF5Exception.h" />
+    <ClInclude Include="hdf5.lite\include\hdf5\lite\highfive.h" />
+    <ClInclude Include="hdf5.lite\include\hdf5\lite\Info.h" />
+    <ClInclude Include="hdf5.lite\include\hdf5\lite\Read.h" />
+    <ClInclude Include="hdf5.lite\include\hdf5\lite\SpanRC.h" />
+    <ClInclude Include="hdf5.lite\include\hdf5\lite\Write.h" />
+    <ClInclude Include="hdf5.lite\source\H5.h" />
+    <ClInclude Include="hdf5.lite\source\hdf5.lite.h" />
     <ClInclude Include="include\TestCase.h" />
     <ClInclude Include="io\include\io\BidirectionalStream.h" />
     <ClInclude Include="io\include\io\BufferViewStream.h" />
@@ -274,6 +282,11 @@
     <ClCompile Include="except\source\Context.cpp" />
     <ClCompile Include="except\source\Throwable.cpp" />
     <ClCompile Include="except\source\Trace.cpp" />
+    <ClCompile Include="hdf5.lite\source\H5.cpp" />
+    <ClCompile Include="hdf5.lite\source\hdf5.lite.cpp" />
+    <ClCompile Include="hdf5.lite\source\Info.cpp" />
+    <ClCompile Include="hdf5.lite\source\Read.cpp" />
+    <ClCompile Include="hdf5.lite\source\Write.cpp" />
     <ClCompile Include="io\source\ByteStream.cpp" />
     <ClCompile Include="io\source\FileInputStreamIOS.cpp" />
     <ClCompile Include="io\source\FileInputStreamOS.cpp" />
@@ -461,7 +474,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL;MT_DEFAULT_PINNING=0;RE_ENABLE_STD_REGEX=1</PreprocessorDefinitions>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;plugin\include\;polygon\include\;re\include\;sio.lite\include\;std\include\;str\include\;sys\include\;tiff\include;types\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;hdf5.lite\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;plugin\include\;polygon\include\;re\include\;sio.lite\include\;std\include\;str\include\;sys\include\;tiff\include;types\include\;units\include\;$(SolutionDir)out\install\$(Platform)-$(Configuration)\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -480,6 +493,7 @@
       <SubSystem>
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\out\install\$(Platform)-$(Configuration)\lib\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -490,7 +504,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL;MT_DEFAULT_PINNING=0;RE_ENABLE_STD_REGEX=1</PreprocessorDefinitions>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;plugin\include\;polygon\include\;re\include\;sio.lite\include\;std\include\;str\include\;sys\include\;tiff\include;types\include\;units\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include\;coda_oss\include;config\include\;except\include\;gsl\include\;hdf5.lite\include\;io\include\;logging\include\;math\include\;math.linear\include\;math.poly\include\;mem\include\;mt\include\;plugin\include\;polygon\include\;re\include\;sio.lite\include\;std\include\;str\include\;sys\include\;tiff\include;types\include\;units\include\;$(SolutionDir)out\install\$(Platform)-$(Configuration)\include\</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -509,6 +523,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\out\install\$(Platform)-$(Configuration)\lib\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

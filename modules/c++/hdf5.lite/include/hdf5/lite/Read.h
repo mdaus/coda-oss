@@ -52,4 +52,8 @@ CODA_OSS_API SpanRC<float> readFile(const coda_oss::filesystem::path&, const std
 }
 }
 
+#if _MSC_VER
+#pragma comment(lib, "hdf5-c++.lib")
+#endif
+
 #endif // CODA_OSS_hdf5_lite_Read_h_INCLUDED_

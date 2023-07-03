@@ -52,4 +52,9 @@ CODA_OSS_DECLARE_EXTENDED_EXCEPTION(DataType, hdf5::lite::HDF5Exception);
 
 }
 }
+
+#if _MSC_VER
+#pragma comment(lib, "hdf5-c++.lib")
+#endif
+
 #endif  // CODA_OSS_hdf5_lite_HDF5Exception_h_INCLUDED_

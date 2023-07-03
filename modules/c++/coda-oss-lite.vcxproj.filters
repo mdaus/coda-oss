@@ -753,6 +753,30 @@
     <ClInclude Include="coda_oss\include\coda_oss\numbers.h">
       <Filter>coda_oss</Filter>
     </ClInclude>
+    <ClInclude Include="hdf5.lite\source\H5.h">
+      <Filter>hdf5.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="hdf5.lite\source\hdf5.lite.h">
+      <Filter>hdf5.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="hdf5.lite\include\hdf5\lite\HDF5Exception.h">
+      <Filter>hdf5.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="hdf5.lite\include\hdf5\lite\highfive.h">
+      <Filter>hdf5.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="hdf5.lite\include\hdf5\lite\Info.h">
+      <Filter>hdf5.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="hdf5.lite\include\hdf5\lite\Read.h">
+      <Filter>hdf5.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="hdf5.lite\include\hdf5\lite\SpanRC.h">
+      <Filter>hdf5.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="hdf5.lite\include\hdf5\lite\Write.h">
+      <Filter>hdf5.lite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1095,6 +1119,21 @@
     <ClCompile Include="sys\source\File.cpp">
       <Filter>sys</Filter>
     </ClCompile>
+    <ClCompile Include="hdf5.lite\source\H5.cpp">
+      <Filter>hdf5.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="hdf5.lite\source\hdf5.lite.cpp">
+      <Filter>hdf5.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="hdf5.lite\source\Info.cpp">
+      <Filter>hdf5.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="hdf5.lite\source\Read.cpp">
+      <Filter>hdf5.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="hdf5.lite\source\Write.cpp">
+      <Filter>hdf5.lite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -1168,6 +1207,9 @@
     </Filter>
     <Filter Include="plugin">
       <UniqueIdentifier>{387bc6cb-323a-42b3-8502-4fac72586d12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hdf5.lite">
+      <UniqueIdentifier>{e4db8b19-0870-4cb2-af64-14b928c68725}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
