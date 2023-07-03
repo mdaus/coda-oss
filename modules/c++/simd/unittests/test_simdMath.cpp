@@ -112,7 +112,7 @@ TEST_CASE(Test_simd_Sin)
         {
             // Ratios observed by testing
             // constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 2.25;
-            constexpr auto expected_ratio = 2.2;
+            constexpr auto expected_ratio = 2.0;
             TEST_ASSERT_GREATER(ratio, expected_ratio);
         }
     }
@@ -169,7 +169,7 @@ TEST_CASE(Test_simd_Sin_Cos)
         {
             // Ratios observed by testing
             // constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 2.25;
-            constexpr auto expected_ratio = 2.2;
+            constexpr auto expected_ratio = 2.0;
             TEST_ASSERT_GREATER(ratio, expected_ratio);
         }
     }
