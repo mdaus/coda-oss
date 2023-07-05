@@ -20,9 +20,9 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_xml_lite_Element_h_INCLUDED_
 #define CODA_OSS_xml_lite_Element_h_INCLUDED_
-#pragma once
 
 #include <memory>
 #include <string>
@@ -30,15 +30,17 @@
 #include <coda_oss/string.h>
 #include <tuple>
 
+#include <config/Exports.h>
 #include <io/InputStream.h>
 #include <io/OutputStream.h>
 #include <str/Convert.h>
 #include <str/EncodedString.h>
+#include "sys/Conf.h"
+#include "mem/SharedPtr.h"
+
 #include "xml/lite/XMLException.h"
 #include "xml/lite/Attributes.h"
 #include "xml/lite/QName.h"
-#include "sys/Conf.h"
-#include "mem/SharedPtr.h"
 
 /*!
  * \file  Element.h
@@ -63,7 +65,7 @@ struct AttributeNode;
  * This class stores all of the element information about an XML
  * document.
  */
-struct Element // SOAPElement derives :-(
+struct CODA_OSS_API Element  // SOAPElement derives :-(
 {
     Element() = default;
 
