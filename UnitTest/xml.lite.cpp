@@ -18,9 +18,9 @@ TEST_CLASS(test_xmlattribute){ public:
 #include "xml.lite/unittests/test_xmlattribute.cpp"
 };
 
-//TEST_CLASS(test_xmlcreate){ public:
-//#include "xml.lite/unittests/test_xmlcreate.cpp"
-//};
+TEST_CLASS(test_xmlcreate){ public:
+#include "xml.lite/unittests/test_xmlcreate.cpp"
+};
 
 TEST_CLASS(test_xmlelement){ public:
 #include "xml.lite/unittests/test_xmlelement.cpp"

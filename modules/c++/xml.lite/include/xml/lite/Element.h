@@ -599,28 +599,28 @@ inline Element* addNewOptionalElement(const xml::lite::QName& name, const coda_o
 #endif // SWIG
 
 
-Element& setChild(Element&, std::unique_ptr<Element>&&);  // destroyChildren() + addChild()
+CODA_OSS_API Element& setChild(Element&, std::unique_ptr<Element>&&);  // destroyChildren() + addChild()
 
-void operator+=(Element&, std::unique_ptr<Element>&&);  // addChild()
+CODA_OSS_API void operator+=(Element&, std::unique_ptr<Element>&&);  // addChild()
 
-Element& addChild(Element&, const std::string& qname);
-void operator+=(Element&, const std::string& qname);  // addChild()
-Element& addChild(Element&, const xml::lite::QName&); // there is also a QName in the xerces namespace
-void operator+=(Element&, const xml::lite::QName&);  // addChild()
-Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& characterData);
+CODA_OSS_API Element& addChild(Element&, const std::string& qname);
+CODA_OSS_API void operator+=(Element&, const std::string& qname);  // addChild()
+CODA_OSS_API Element& addChild(Element&, const xml::lite::QName&); // there is also a QName in the xerces namespace
+CODA_OSS_API void operator+=(Element&, const xml::lite::QName&);  // addChild()
+CODA_OSS_API Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& characterData);
 Element& addChild(Element&, const std::string&, const std::string&) = delete; // NO, order matters!
-Element& addChild(Element&, const xml::lite::QName&, const coda_oss::u8string& characterData);
-Element& addChild(Element&, const xml::lite::QName&, const std::string& characterData);
-Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&);
-Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&, const coda_oss::u8string& characterData);
+CODA_OSS_API Element& addChild(Element&, const xml::lite::QName&, const coda_oss::u8string& characterData);
+CODA_OSS_API Element& addChild(Element&, const xml::lite::QName&, const std::string& characterData);
+CODA_OSS_API Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&);
+CODA_OSS_API Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&, const coda_oss::u8string& characterData);
 
 CODA_OSS_API coda_oss::u8string getCharacterData(const Element&);
 
-xml::lite::AttributeNode& addAttribute(Element&, const xml::lite::AttributeNode&);
-void operator+=(Element&, const xml::lite::AttributeNode&);  // addAttribute()
-xml::lite::AttributeNode& addAttribute(Element&, const std::string& qname);
-xml::lite::AttributeNode& addAttribute(Element&, const xml::lite::QName&);
-xml::lite::AttributeNode& addAttribute(Element&, const xml::lite::QName&, const std::string& value);
+CODA_OSS_API xml::lite::AttributeNode& addAttribute(Element&, const xml::lite::AttributeNode&);
+CODA_OSS_API void operator+=(Element&, const xml::lite::AttributeNode&);  // addAttribute()
+CODA_OSS_API xml::lite::AttributeNode& addAttribute(Element&, const std::string& qname);
+CODA_OSS_API xml::lite::AttributeNode& addAttribute(Element&, const xml::lite::QName&);
+CODA_OSS_API xml::lite::AttributeNode& addAttribute(Element&, const xml::lite::QName&, const std::string& value);
 xml::lite::AttributeNode& addAttribute(Element&, const std::string&, const std::string&) = delete; // NO, order matters!
 
 }
