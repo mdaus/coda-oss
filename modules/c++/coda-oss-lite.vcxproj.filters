@@ -777,6 +777,24 @@
     <ClInclude Include="hdf5.lite\include\hdf5\lite\Write.h">
       <Filter>hdf5.lite</Filter>
     </ClInclude>
+    <ClInclude Include="zip\include\zip\GZipInputStream.h">
+      <Filter>zip</Filter>
+    </ClInclude>
+    <ClInclude Include="zip\include\zip\GZipOutputStream.h">
+      <Filter>zip</Filter>
+    </ClInclude>
+    <ClInclude Include="zip\include\zip\Types.h">
+      <Filter>zip</Filter>
+    </ClInclude>
+    <ClInclude Include="zip\include\zip\ZipEntry.h">
+      <Filter>zip</Filter>
+    </ClInclude>
+    <ClInclude Include="zip\include\zip\ZipFile.h">
+      <Filter>zip</Filter>
+    </ClInclude>
+    <ClInclude Include="zip\include\zip\ZipOutputStream.h">
+      <Filter>zip</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1134,6 +1152,21 @@
     <ClCompile Include="hdf5.lite\source\Write.cpp">
       <Filter>hdf5.lite</Filter>
     </ClCompile>
+    <ClCompile Include="zip\source\GZipInputStream.cpp">
+      <Filter>zip</Filter>
+    </ClCompile>
+    <ClCompile Include="zip\source\GZipOutputStream.cpp">
+      <Filter>zip</Filter>
+    </ClCompile>
+    <ClCompile Include="zip\source\ZipEntry.cpp">
+      <Filter>zip</Filter>
+    </ClCompile>
+    <ClCompile Include="zip\source\ZipFile.cpp">
+      <Filter>zip</Filter>
+    </ClCompile>
+    <ClCompile Include="zip\source\ZipOutputStream.cpp">
+      <Filter>zip</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -1210,6 +1243,9 @@
     </Filter>
     <Filter Include="hdf5.lite">
       <UniqueIdentifier>{e4db8b19-0870-4cb2-af64-14b928c68725}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zip">
+      <UniqueIdentifier>{a2682912-3963-489a-9cf0-c5224b27eb84}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
