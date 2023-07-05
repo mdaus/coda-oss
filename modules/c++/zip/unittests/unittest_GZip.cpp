@@ -54,7 +54,8 @@ TEST_CASE(gzip)
     const std::filesystem::path outputName_(txt_to_gz(inputPath));
     const auto outputName = "TEST_" + outputName_.stem().string() + "_TMP" + outputName_.extension().string(); // see .gitignore
     const auto outputDir = inputPath.parent_path();
-    auto outputPath = outputDir / outputName;
+    const auto origOutputPath = outputDir / outputName;
+    auto outputPath = origOutputPath;
 
     {
         io::FileInputStream input(inputPath.string());
@@ -80,6 +81,9 @@ TEST_CASE(gzip)
         const auto str = io::readFileContents(outputPath.string());
         TEST_ASSERT_EQ("Hello World!", str);
     }
+
+    remove(origOutputPath);
+    remove(outputPath);
 }
 
 TEST_CASE(gunzip)
@@ -99,6 +103,8 @@ TEST_CASE(gunzip)
 
     const auto str = io::readFileContents(outputPath.string());
     TEST_ASSERT_EQ("Hello World!", str);
+    
+    remove(outputPath);
 }
 
 TEST_MAIN(
