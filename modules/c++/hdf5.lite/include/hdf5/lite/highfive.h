@@ -20,9 +20,9 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_hdf5_lite_highfive_h_INCLUDED_
 #define CODA_OSS_hdf5_lite_highfive_h_INCLUDED_
-#pragma once
 
 /*!
  * \file  highfive.h
@@ -140,9 +140,5 @@ inline std::string read(const HighFive::Attribute& a)
 
 }
 }
-
-#if _MSC_VER
-#pragma comment(lib, "hdf5-c++.lib")
-#endif
 
 #endif // CODA_OSS_hdf5_lite_highfive_h_INCLUDED_

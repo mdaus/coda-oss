@@ -20,11 +20,11 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_hdf5_lite_Write_h_INCLUDED_
 #define CODA_OSS_hdf5_lite_Write_h_INCLUDED_
-#pragma once
 
-/*!
+ /*!
  * \file  Write.h
  * \brief HDF File-writing API
  *
@@ -79,9 +79,5 @@ inline void writeFile(const coda_oss::filesystem::path& path, const std::string&
 
 }
 }
-
-#if _MSC_VER
-#pragma comment(lib, "hdf5-c++.lib")
-#endif
 
 #endif // CODA_OSS_hdf5_lite_Write_h_INCLUDED_
