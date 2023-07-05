@@ -98,11 +98,7 @@
 #include <import/re.h>
 #include "io/StringStream.h"
 #include <sys/FileFinder.h>
-#include <import/hdf5/lite.h>
-#include <hdf5/lite/HDF5Exception.h>
-#include <hdf5/lite/Info.h>
-#include <hdf5/lite/Read.h>
-#include <hdf5/lite/Write.h>
+#include <io/ReadUtils.h>
 
 #include "TestCase.h"
 
