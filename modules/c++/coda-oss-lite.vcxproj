@@ -274,6 +274,23 @@
     <ClInclude Include="units\include\units\Angles.h" />
     <ClInclude Include="units\include\units\Lengths.h" />
     <ClInclude Include="units\include\units\Unit.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\Attributes.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\ContentHandler.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\Document.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\Element.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\MinidomHandler.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\MinidomParser.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\NamespaceStack.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\QName.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\Serializable.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\UtilitiesXerces.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\Validator.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\ValidatorInterface.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\ValidatorXerces.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\XMLException.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\XMLReader.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\XMLReaderInterface.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\XMLReaderXerces.h" />
     <ClInclude Include="zip\include\zip\GZipInputStream.h" />
     <ClInclude Include="zip\include\zip\GZipOutputStream.h" />
     <ClInclude Include="zip\include\zip\Types.h" />
@@ -411,6 +428,18 @@
     <ClCompile Include="tiff\source\Utils.cpp" />
     <ClCompile Include="types\source\Range.cpp" />
     <ClCompile Include="types\source\RangeList.cpp" />
+    <ClCompile Include="xml.lite\source\Attributes.cpp" />
+    <ClCompile Include="xml.lite\source\Document.cpp" />
+    <ClCompile Include="xml.lite\source\Element.cpp" />
+    <ClCompile Include="xml.lite\source\MinidomHandler.cpp" />
+    <ClCompile Include="xml.lite\source\MinidomParser.cpp" />
+    <ClCompile Include="xml.lite\source\NamespaceStack.cpp" />
+    <ClCompile Include="xml.lite\source\QName.cpp" />
+    <ClCompile Include="xml.lite\source\Serializable.cpp" />
+    <ClCompile Include="xml.lite\source\UtilitiesXerces.cpp" />
+    <ClCompile Include="xml.lite\source\ValidatorInterface.cpp" />
+    <ClCompile Include="xml.lite\source\ValidatorXerces.cpp" />
+    <ClCompile Include="xml.lite\source\XMLReaderXerces.cpp" />
     <ClCompile Include="zip\source\GZipInputStream.cpp" />
     <ClCompile Include="zip\source\GZipOutputStream.cpp" />
     <ClCompile Include="zip\source\ZipEntry.cpp" />
@@ -505,7 +534,7 @@
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)\out\install\$(Platform)-$(Configuration)\lib\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>hdf5-c++.lib;z.lib;minizip.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>hdf5-c++.lib;z.lib;minizip.lib;xerces-c.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -536,7 +565,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)\out\install\$(Platform)-$(Configuration)\lib\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>hdf5-c++.lib;z.lib;minizip.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>hdf5-c++.lib;z.lib;minizip.lib;xerces-c.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

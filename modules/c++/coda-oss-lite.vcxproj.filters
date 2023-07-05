@@ -795,6 +795,57 @@
     <ClInclude Include="zip\include\zip\ZipOutputStream.h">
       <Filter>zip</Filter>
     </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\Attributes.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\ContentHandler.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\Document.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\Element.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\MinidomHandler.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\MinidomParser.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\NamespaceStack.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\QName.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\Serializable.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\UtilitiesXerces.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\Validator.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\ValidatorInterface.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\ValidatorXerces.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\XMLException.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\XMLReader.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\XMLReaderInterface.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\XMLReaderXerces.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1167,6 +1218,42 @@
     <ClCompile Include="zip\source\ZipOutputStream.cpp">
       <Filter>zip</Filter>
     </ClCompile>
+    <ClCompile Include="xml.lite\source\Attributes.cpp">
+      <Filter>xml.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="xml.lite\source\Document.cpp">
+      <Filter>xml.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="xml.lite\source\Element.cpp">
+      <Filter>xml.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="xml.lite\source\MinidomHandler.cpp">
+      <Filter>xml.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="xml.lite\source\MinidomParser.cpp">
+      <Filter>xml.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="xml.lite\source\NamespaceStack.cpp">
+      <Filter>xml.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="xml.lite\source\QName.cpp">
+      <Filter>xml.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="xml.lite\source\Serializable.cpp">
+      <Filter>xml.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="xml.lite\source\UtilitiesXerces.cpp">
+      <Filter>xml.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="xml.lite\source\ValidatorInterface.cpp">
+      <Filter>xml.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="xml.lite\source\ValidatorXerces.cpp">
+      <Filter>xml.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="xml.lite\source\XMLReaderXerces.cpp">
+      <Filter>xml.lite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -1246,6 +1333,9 @@
     </Filter>
     <Filter Include="zip">
       <UniqueIdentifier>{a2682912-3963-489a-9cf0-c5224b27eb84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xml.lite">
+      <UniqueIdentifier>{1bb6daf3-40dd-44d8-8680-0e77e2c3bd17}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
