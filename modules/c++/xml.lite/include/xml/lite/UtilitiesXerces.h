@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_xml_lite_UtilitiesXerces_h_INCLUDED_
 #define CODA_OSS_xml_lite_UtilitiesXerces_h_INCLUDED_
 
@@ -33,6 +34,7 @@
 #include "xml/lite/xml_lite_config.h"
 
 #if defined(USE_XERCES)
+#include "config/Exports.h"
 
 CODA_OSS_disable_warning_system_header_push
 #include <xercesc/util/TransService.hpp>
@@ -429,7 +431,7 @@ struct XercesErrorHandler final : public XercesErrorHandlerInterface_T
  *  \class XercesContext
  *  \brief This class safely creates and destroys Xerces
  */
-struct XercesContext final
+struct CODA_OSS_API XercesContext final
 {
     //! Constructor
     XercesContext();
