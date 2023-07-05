@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_xml_lite_ValidatorXerces_h_INCLUDED_
 #define CODA_OSS_xml_lite_ValidatorXerces_h_INCLUDED_
 
@@ -30,6 +31,8 @@
 #include <memory>
 #include <vector>
 #include <coda_oss/string.h>
+
+#include "config/Exports.h"
 
 #include <xml/lite/UtilitiesXerces.h>
 #include <xml/lite/ValidatorInterface.h>
@@ -97,7 +100,7 @@ private:
  *
  * This class is the Xercesc schema validator
  */
-class ValidatorXerces : public ValidatorInterface
+class CODA_OSS_API ValidatorXerces : public ValidatorInterface
 {
     XercesContext mCtxt;    //! this must be the first member listed
 

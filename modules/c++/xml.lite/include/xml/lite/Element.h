@@ -614,7 +614,7 @@ Element& addChild(Element&, const xml::lite::QName&, const std::string& characte
 Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&);
 Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&, const coda_oss::u8string& characterData);
 
-coda_oss::u8string getCharacterData(const Element&);
+CODA_OSS_API coda_oss::u8string getCharacterData(const Element&);
 
 xml::lite::AttributeNode& addAttribute(Element&, const xml::lite::AttributeNode&);
 void operator+=(Element&, const xml::lite::AttributeNode&);  // addAttribute()

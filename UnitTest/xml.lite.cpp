@@ -25,9 +25,9 @@ TEST_CLASS(test_xmlattribute){ public:
 //TEST_CLASS(test_xmlelement){ public:
 //#include "xml.lite/unittests/test_xmlelement.cpp"
 //};
-//
-//TEST_CLASS(test_xmlparser){ public:
-//#include "xml.lite/unittests/test_xmlparser.cpp"
-//};
+
+TEST_CLASS(test_xmlparser){ public:
+#include "xml.lite/unittests/test_xmlparser.cpp"
+};
 
 }
