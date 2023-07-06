@@ -19,6 +19,7 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
+#include "xml/lite/Element.h"
 
 #include <assert.h>
 
@@ -26,7 +27,6 @@
 #include <tuple>
 #include <std/string>
 
-#include "xml/lite/Element.h"
 #include <import/str.h>
 #include <import/mem.h>
 #include <sys/OS.h>
