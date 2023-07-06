@@ -4,6 +4,7 @@
 // However, files listed here are ALL re-compiled if any one of them is updated between builds.
 // Do not add files here that you will be updating frequently as this negates the performance advantage.
 
+#pragma once
 #ifndef CODA_OSS_pch_h_INCLUDED_
 #define CODA_OSS_pch_h_INCLUDED_
 
@@ -38,17 +39,59 @@
 #include <time.h>
 
 #include "import/std.h"
-#include <std/span>
-#include <std/string>
-#include <std/filesystem>
-#include <std/memory>
-#include <std/cstddef>
-#include <std/optional>
-#include <std/type_traits>
 
 #pragma warning(pop)
 
+CODA_OSS_disable_warning_system_header_push
+
+#if defined(USE_XERCES)
+#include <xercesc/util/TransService.hpp>
+#include <xercesc/sax2/XMLReaderFactory.hpp>
+#include <xercesc/sax2/Attributes.hpp>
+#include <xercesc/sax2/ContentHandler.hpp>
+#include <xercesc/sax2/SAX2XMLReader.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+
+#include <xercesc/framework/MemBufInputSource.hpp>
+#include <xercesc/framework/StdOutFormatTarget.hpp>
+
+#include <xercesc/util/XMLUni.hpp>
+
+#include <xercesc/sax/SAXParseException.hpp>
+#include <xercesc/framework/XMLValidator.hpp>
+#include <xercesc/parsers/SAXParser.hpp>
+#include <xercesc/validators/schema/SchemaValidator.hpp>
+#include <xercesc/validators/common/ContentSpecNode.hpp>
+#include <xercesc/validators/schema/SchemaSymbols.hpp>
+
+#include <xercesc/util/XercesDefs.hpp>
+#include <xercesc/sax/ErrorHandler.hpp>
+
+#endif // USE_XERCES
+
+// see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
+#include <H5Cpp.h>
+
+#include "highfive/H5Easy.hpp"
+#include "highfive/H5DataSet.hpp"
+
+CODA_OSS_disable_warning_pop
+
+#include <net/net_config.h>
+#include <zlib.h>
+#include <xml/lite/xml_lite_config.h>
+
 #pragma warning(disable: 4251) // '...': class '...' needs to have dll-interface to be used by clients of class '...'
 #pragma warning(disable: 5105) // macro expansion producing '...' has undefined behavior
+
+
+// Yes, these are our files ... but they don't change very often, and if they do change we want
+// to rebuild everything anyway.
+#include "gsl/gsl.h"
+#include "config/Exports.h"
+#include "except/Throwable.h"
+#include "sys/Conf.h"
+#include "sys/filesystem.h"
+#include "mem/SharedPtr.h"
 
 #endif //CODA_OSS_pch_h_INCLUDED_
