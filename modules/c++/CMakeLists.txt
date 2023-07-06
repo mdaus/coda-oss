@@ -24,12 +24,12 @@ elseif (UNIX)
     add_compile_options(-Wduplicated-branches)
     add_compile_options(-Wduplicated-cond)
     add_compile_options(-Wtrampolines)
+    add_compile_options(-Wshadow)
 
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wold-style-cast")
     #add_compile_options(-Wdouble-promotion)
     #add_compile_options(-Wfloat-equal)
     #add_compile_options(-Wconversion)
-    #add_compile_options(-Wshadow)
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weffc++")
 
     # Need a newer compiler than GCC 9

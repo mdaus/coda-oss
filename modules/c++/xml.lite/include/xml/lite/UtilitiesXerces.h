@@ -37,6 +37,10 @@
 #include "config/Exports.h"
 
 CODA_OSS_disable_warning_system_header_push
+#ifndef _MSC_VER
+CODA_OSS_disable_warning(-Wshadow)
+#endif
+
 #include <xercesc/util/TransService.hpp>
 #include <xercesc/sax2/XMLReaderFactory.hpp>
 #include <xercesc/sax2/Attributes.hpp>
@@ -48,6 +52,7 @@ CODA_OSS_disable_warning_system_header_push
 #include <xercesc/framework/StdOutFormatTarget.hpp>
 
 #include <xercesc/util/XMLUni.hpp>
+#include <xercesc/util/regx/Token.hpp>
 
 #include <xercesc/sax/SAXParseException.hpp>
 #include <xercesc/framework/XMLValidator.hpp>
@@ -58,7 +63,6 @@ CODA_OSS_disable_warning_system_header_push
 
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>
-
 CODA_OSS_disable_warning_pop
 
 #include <sys/Mutex.h>

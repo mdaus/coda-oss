@@ -25,20 +25,15 @@
 
 namespace mem
 {
-ScratchMemory::ScratchMemory() :
-    mNumBytesNeeded(0),
-    mOffset(0)
-{
-}
 
-ScratchMemory::Segment::Segment(size_t numBytes,
-                                size_t numBuffers,
-                                size_t alignment,
-                                size_t offset) :
-    numBytes(numBytes),
-    numBuffers(numBuffers),
-    alignment(alignment),
-    offset(offset)
+ScratchMemory::Segment::Segment(size_t numBytes_,
+                                size_t numBuffers_,
+                                size_t alignment_,
+                                size_t offset_) :
+    numBytes(numBytes_),
+    numBuffers(numBuffers_),
+    alignment(alignment_),
+    offset(offset_)
 {
 }
 

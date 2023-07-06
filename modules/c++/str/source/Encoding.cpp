@@ -34,11 +34,20 @@
 #include <iterator>
 
 #include "gsl/gsl.h"
+#include "config/compiler_extensions.h"
+
 #include "str/Encoding.h"
 #include "str/Manip.h"
 #include "str/Convert.h"
-#include "str/utf8.h"
 #include "str/EncodedStringView.h"
+
+
+CODA_OSS_disable_warning_push
+#ifndef _MSC_VER
+CODA_OSS_disable_warning(-Wshadow)
+#endif
+#include "str/utf8.h"
+CODA_OSS_disable_warning_pop
 
 // Need to look up characters from \x80 (EURO SIGN) to \x9F (LATIN CAPITAL LETTER Y WITH DIAERESIS)
 // in a map: http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
