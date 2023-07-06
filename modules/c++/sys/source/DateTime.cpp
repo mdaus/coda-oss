@@ -349,7 +349,7 @@ char* strptime(const char *buf, const char *fmt, struct tm& tm, double& millis)
     }
 
     // LINTED functional specification
-    return ((char *) bp);
+    return const_cast<char*>(bp);
 }
 }
 
@@ -371,8 +371,8 @@ void sys::DateTime::fromMillis(const tm& t)
     mHour = t.tm_hour;
     mMinute = t.tm_min;
 
-    const size_t timeInSeconds = (size_t)(mTimeInMillis / 1000);
-    const double timediff = ((double)mTimeInMillis / 1000.0) - timeInSeconds;
+    const auto timeInSeconds = static_cast<size_t>(mTimeInMillis / 1000);
+    const double timediff = (static_cast<double>(mTimeInMillis) / 1000.0) - timeInSeconds;
     mSecond = t.tm_sec + timediff;
 }
 
