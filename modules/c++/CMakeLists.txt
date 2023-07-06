@@ -16,7 +16,7 @@ elseif (UNIX)
     add_compile_options(-Werror) # Make all warnings into errors
     add_compile_options(-Wall -Wextra -Wpedantic -pedantic-errors -Wunused)
 
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wzero-as-null-pointer-constant")
+    add_compile_options(-Wzero-as-null-pointer-constant)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-final-types -Wsuggest-final-methods")
     add_compile_options(-Wsuggest-override)
     add_compile_options(-Woverloaded-virtual)

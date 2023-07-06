@@ -133,7 +133,7 @@ ValidatorXerces::ValidatorXerces(
         xercesc::DOMImplementationRegistry::
             getDOMImplementation (ls_id)->createLSParser(
                 xercesc::DOMImplementationLS::MODE_SYNCHRONOUS,
-                0, 
+                nullptr, 
                 xercesc::XMLPlatformUtils::fgMemoryManager,
                 mSchemaPool.get()));
 
