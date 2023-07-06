@@ -20,15 +20,17 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_xml_lite_ContentHandler_h_INCLUDED_
 #define CODA_OSS_xml_lite_ContentHandler_h_INCLUDED_
-#pragma once
 
 #include <stdint.h>
 #include <stddef.h>
 
 #include <string>
 #include <stdexcept>
+
+#include <config/Exports.h>
 
 #include "xml/lite/QName.h" // Uri
 #include "xml/lite/Attributes.h"
@@ -68,7 +70,7 @@ namespace lite
  *  which should increase performance and efficiency.
  */
 
-class ContentHandler
+class CODA_OSS_API ContentHandler
 {
 protected:
     //! Constructor
