@@ -69,7 +69,20 @@ CODA_OSS_disable_warning_system_header_push
 CODA_OSS_disable_warning_pop
 #endif // USE_XERCES
 
+#include <net/net_config.h>
+#include <zlib.h>
+#include <xml/lite/xml_lite_config.h>
+
 #pragma warning(disable: 4251) // '...': class '...' needs to have dll-interface to be used by clients of class '...'
 #pragma warning(disable: 5105) // macro expansion producing '...' has undefined behavior
+
+
+// Yes, these are our files ... but they don't change very often, and if they do change we want
+// to rebuild everything anyway.
+#include "gsl/gsl.h"
+#include "config/Exports.h"
+#include "except/Throwable.h"
+#include "sys/Conf.h"
+#include "sys/filesystem.h"
 
 #endif //CODA_OSS_pch_h_INCLUDED_

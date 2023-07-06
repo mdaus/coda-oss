@@ -44,6 +44,15 @@ CODA_OSS_disable_warning_push
 #pragma warning(disable: 5264)  // '...': '...' variable is not used
 #endif // _MSC_VER
 
+#include <cerrno>
+#include <cstdlib>
+#include <cstdio>
+#include <cmath>
+#include <cinttypes>
+#include <cfloat>
+#include <climits>
+#include <cassert>
+
 #include <limits>
 #include <memory>
 #include <new>
@@ -51,22 +60,33 @@ CODA_OSS_disable_warning_push
 #include <complex>
 #include <utility>
 #include <tuple>
-#include <future>
 #include <typeinfo>
 #include <type_traits>
+#include <exception>
 #include <stdexcept>
 #include <locale>
 
+#include <mutex>
+#include <atomic>
+#include <thread>
+#include <future>
+
+#include <ios>
 #include <iomanip>
 #include <iostream>
 #include <ostream>
 #include <sstream>
+#include <fstream>
+#include <streambuf>
 
 #include <array>
 #include <string>
 #include <vector>
 #include <map>
 #include <set>
+#include <list>
+#include <deque>
+#include <stack>
 
 #include <numeric>
 #include <functional>
