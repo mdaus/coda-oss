@@ -957,6 +957,12 @@
     <ClInclude Include="net.ssl\include\import\net\ssl.h">
       <Filter>net.ssl</Filter>
     </ClInclude>
+    <ClInclude Include="unique\include\unique\UUID.hpp">
+      <Filter>unique</Filter>
+    </ClInclude>
+    <ClInclude Include="unique\include\import\unique.h">
+      <Filter>unique</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1419,6 +1425,9 @@
     <ClCompile Include="net.ssl\source\SSLConnectionClientFactory.cpp">
       <Filter>net.ssl</Filter>
     </ClCompile>
+    <ClCompile Include="unique\source\UUID.cpp">
+      <Filter>unique</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -1510,6 +1519,9 @@
     </Filter>
     <Filter Include="net.ssl">
       <UniqueIdentifier>{21ddb4b6-54a2-4618-81ed-4fbbf37b30de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="unique">
+      <UniqueIdentifier>{79aa73a7-ed0d-4826-b7ed-c8d91d96998a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
