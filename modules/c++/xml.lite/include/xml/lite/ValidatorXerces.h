@@ -37,6 +37,12 @@
 #include <xml/lite/UtilitiesXerces.h>
 #include <xml/lite/ValidatorInterface.h>
 
+CODA_OSS_disable_warning_system_header_push
+#ifndef _MSC_VER
+CODA_OSS_disable_warning(-Wshadow)
+CODA_OSS_disable_warning(-Wsuggest-override)
+#endif
+
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/parsers/DOMLSParserImpl.hpp>
 #include <xercesc/framework/XMLGrammarPool.hpp>
@@ -47,6 +53,7 @@
 #include <xercesc/framework/MemBufInputSource.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/util/XMLString.hpp>
+CODA_OSS_disable_warning_pop
 
 namespace xml
 {

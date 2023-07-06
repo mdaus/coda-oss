@@ -18,7 +18,7 @@ elseif (UNIX)
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wzero-as-null-pointer-constant")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-final-types -Wsuggest-final-methods")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-override")
+    add_compile_options(-Wsuggest-override)
     add_compile_options(-Woverloaded-virtual)
     add_compile_options(-Warray-bounds)
     add_compile_options(-Wduplicated-branches)

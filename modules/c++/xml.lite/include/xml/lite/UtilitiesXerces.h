@@ -39,6 +39,7 @@
 CODA_OSS_disable_warning_system_header_push
 #ifndef _MSC_VER
 CODA_OSS_disable_warning(-Wshadow)
+CODA_OSS_disable_warning(-Wsuggest-override)
 #endif
 
 #include <xercesc/util/TransService.hpp>
