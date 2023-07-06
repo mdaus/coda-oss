@@ -147,9 +147,9 @@ double besselIOrderN(size_t order, double x)
     double bi = 1.0;
 
     //Downward recurrence from even n
-    for (size_t jj = 2 * (order + int(std::sqrt(ACC * order))); jj > 0; jj--)
+    for (size_t jj = 2 * (order + int(std::sqrt(ACC * static_cast<double>(order)))); jj > 0; jj--)
     {
-        double bim = bip + (jj * tox * bi);
+        double bim = bip + (static_cast<double>(jj) * tox * bi);
         bip = bi;
         bi = bim;
         std::frexp(bi, &k);

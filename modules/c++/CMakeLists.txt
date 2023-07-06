@@ -29,6 +29,8 @@ elseif (UNIX)
     #add_compile_options(-Wconversion)
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weffc++")
 
+    add_compile_options(-Wno-double-promotion) # implicit conversion of `float` to `double` is fine
+
     # Need a newer compiler than GCC 9
     #add_compile_options(-Wnrvo)
 endif()
