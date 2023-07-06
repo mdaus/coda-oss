@@ -12,25 +12,28 @@ if (MSVC)
 elseif (UNIX)
     add_compile_options(-std=c++14)
 
-    add_compile_options(-Wall -Wextra -Wpedantic)
+    # https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
+    add_compile_options(-Werror) # Make all warnings into errors
+    add_compile_options(-Wall -Wextra -Wpedantic -pedantic-errors -Wunused)
 
-    add_compile_options(-Wregister)
-    #add_compile_options(-Wvolatile) # not avilable with older GCC on build server
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wzero-as-null-pointer-constant")
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wold-style-cast")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-final-types -Wsuggest-final-methods")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-override")
     add_compile_options(-Woverloaded-virtual)
+    add_compile_options(-Warray-bounds)
+    add_compile_options(-Wduplicated-branches)
+    add_compile_options(-Wduplicated-cond)
+    add_compile_options(-Wtrampolines)
 
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-sign-compare")
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable -Wno-unused-result -Wno-unused-but-set-variable")
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-cast-function-type") # not avilable with older GCC on build server
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-copy") # not avilable with older GCC on build server
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-implicit-fallthrough")
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-type-limits")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wold-style-cast")
+    #add_compile_options(-Wdouble-promotion)
+    #add_compile_options(-Wfloat-equal)
+    #add_compile_options(-Wconversion)
+    #add_compile_options(-Wshadow)
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weffc++")
 
+    # Need a newer compiler than GCC 9
+    #add_compile_options(-Wnrvo)
 endif()
 
 # add an interface library for unittests
