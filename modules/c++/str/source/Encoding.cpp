@@ -33,6 +33,7 @@
 #include <vector>
 #include <iterator>
 
+#include "gsl/gsl.h"
 #include "str/Encoding.h"
 #include "str/Manip.h"
 #include "str/Convert.h"
@@ -41,11 +42,12 @@
 
 // Need to look up characters from \x80 (EURO SIGN) to \x9F (LATIN CAPITAL LETTER Y WITH DIAERESIS)
 // in a map: http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
-inline coda_oss::u8string utf8_(std::u32string::value_type ch)
+inline coda_oss::u8string utf8_(uint32_t i)
 {
+    const auto ch = gsl::narrow<std::u32string::value_type>(i);
     return str::to_u8string(std::u32string{ch});
 }
-static const std::map<std::u32string::value_type, coda_oss::u8string> Windows1252_x80_x9F_to_u8string{
+static const std::map<uint32_t, coda_oss::u8string> Windows1252_x80_x9F_to_u8string{
     {0x80, utf8_(0x20AC) } // EURO SIGN
     // , {0x81, replacement_character } // UNDEFINED
     , {0x82, utf8_(0x201A) } // SINGLE LOW-9 QUOTATION MARK
@@ -80,7 +82,7 @@ static const std::map<std::u32string::value_type, coda_oss::u8string> Windows125
     , {0x9F, utf8_(0x0178)  } // LATIN CAPITAL LETTER Y WITH DIAERESIS
 };
 
-static std::map<std::u32string::value_type, coda_oss::u8string> Windows1252_to_u8string()
+static auto Windows1252_to_u8string()
 {
     auto retval = Windows1252_x80_x9F_to_u8string;
 
