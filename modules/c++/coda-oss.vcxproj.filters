@@ -219,9 +219,6 @@
     <ClInclude Include="sys\include\sys\StopWatch.h">
       <Filter>sys</Filter>
     </ClInclude>
-    <ClInclude Include="sys\include\sys\String.h">
-      <Filter>sys</Filter>
-    </ClInclude>
     <ClInclude Include="sys\include\sys\sys_filesystem.h">
       <Filter>sys</Filter>
     </ClInclude>

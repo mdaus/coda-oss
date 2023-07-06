@@ -42,8 +42,9 @@
 
 #pragma warning(pop)
 
-#if defined(USE_XERCES)
 CODA_OSS_disable_warning_system_header_push
+
+#if defined(USE_XERCES)
 #include <xercesc/util/TransService.hpp>
 #include <xercesc/sax2/XMLReaderFactory.hpp>
 #include <xercesc/sax2/Attributes.hpp>
@@ -66,8 +67,15 @@ CODA_OSS_disable_warning_system_header_push
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>
 
-CODA_OSS_disable_warning_pop
 #endif // USE_XERCES
+
+// see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
+#include <H5Cpp.h>
+
+#include "highfive/H5Easy.hpp"
+#include "highfive/H5DataSet.hpp"
+
+CODA_OSS_disable_warning_pop
 
 #include <net/net_config.h>
 #include <zlib.h>
@@ -84,5 +92,6 @@ CODA_OSS_disable_warning_pop
 #include "except/Throwable.h"
 #include "sys/Conf.h"
 #include "sys/filesystem.h"
+#include "mem/SharedPtr.h"
 
 #endif //CODA_OSS_pch_h_INCLUDED_
