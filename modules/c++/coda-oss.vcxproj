@@ -532,7 +532,7 @@
     <ProjectGuid>{9997e895-5161-4ddf-8f3f-099894cb2f21}</ProjectGuid>
     <RootNamespace>codaoss</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>coda-oss-lite</ProjectName>
+    <ProjectName>coda-oss</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
