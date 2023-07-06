@@ -14,14 +14,13 @@ elseif (UNIX)
 
     add_compile_options(-Wall -Wextra -Wpedantic)
 
-    add_compile_options(-Wregister -Wvolatile)
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weffc++")
-    #add_compile_options(-Wzero-as-null-pointer-constant)
-    add_compile_options(-Woverloaded-virtual)
+    add_compile_options(-Wregister)
+    #add_compile_options(-Wvolatile) # not avilable with older GCC on build server
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wzero-as-null-pointer-constant")
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wold-style-cast")
-    #add_compile_options(-Wsuggest-final-types -Wsuggest-final-methods)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-final-types -Wsuggest-final-methods")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-override")
+    add_compile_options(-Woverloaded-virtual)
 
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-sign-compare")
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable -Wno-unused-result -Wno-unused-but-set-variable")
@@ -30,13 +29,7 @@ elseif (UNIX)
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-copy") # not avilable with older GCC on build server
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-implicit-fallthrough")
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-type-limits")
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wregister") # -Wvolatile
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weffc++")
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wzero-as-null-pointer-constant")
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Woverloaded-virtual")
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wold-style-cast")
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-final-types -Wsuggest-final-methods")
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsuggest-override")
 
 endif()
 
