@@ -846,6 +846,24 @@
     <ClInclude Include="xml.lite\include\xml\lite\XMLReaderXerces.h">
       <Filter>xml.lite</Filter>
     </ClInclude>
+    <ClInclude Include="dbi\include\dbi\DatabaseClientFactory.h">
+      <Filter>dbi</Filter>
+    </ClInclude>
+    <ClInclude Include="dbi\include\dbi\DatabaseConnection.h">
+      <Filter>dbi</Filter>
+    </ClInclude>
+    <ClInclude Include="dbi\include\dbi\MySQLConnection.h">
+      <Filter>dbi</Filter>
+    </ClInclude>
+    <ClInclude Include="dbi\include\dbi\OracleConnection.h">
+      <Filter>dbi</Filter>
+    </ClInclude>
+    <ClInclude Include="dbi\include\dbi\PgSQLConnection.h">
+      <Filter>dbi</Filter>
+    </ClInclude>
+    <ClInclude Include="dbi\include\import\dbi.h">
+      <Filter>dbi</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1254,6 +1272,18 @@
     <ClCompile Include="xml.lite\source\XMLReaderXerces.cpp">
       <Filter>xml.lite</Filter>
     </ClCompile>
+    <ClCompile Include="dbi\source\DatabaseClientFactory.cpp">
+      <Filter>dbi</Filter>
+    </ClCompile>
+    <ClCompile Include="dbi\source\MySQLConnection.cpp">
+      <Filter>dbi</Filter>
+    </ClCompile>
+    <ClCompile Include="dbi\source\OracleConnection.cpp">
+      <Filter>dbi</Filter>
+    </ClCompile>
+    <ClCompile Include="dbi\source\PgSQLConnection.cpp">
+      <Filter>dbi</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -1336,6 +1366,9 @@
     </Filter>
     <Filter Include="xml.lite">
       <UniqueIdentifier>{1bb6daf3-40dd-44d8-8680-0e77e2c3bd17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dbi">
+      <UniqueIdentifier>{13c98009-f1f9-4297-a2b3-bde23f3bea55}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
