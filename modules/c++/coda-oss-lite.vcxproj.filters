@@ -945,6 +945,18 @@
     <ClInclude Include="net\include\import\net.h">
       <Filter>net</Filter>
     </ClInclude>
+    <ClInclude Include="net.ssl\include\net\ssl\SSLConnection.h">
+      <Filter>net.ssl</Filter>
+    </ClInclude>
+    <ClInclude Include="net.ssl\include\net\ssl\SSLConnectionClientFactory.h">
+      <Filter>net.ssl</Filter>
+    </ClInclude>
+    <ClInclude Include="net.ssl\include\net\ssl\SSLExceptions.h">
+      <Filter>net.ssl</Filter>
+    </ClInclude>
+    <ClInclude Include="net.ssl\include\import\net\ssl.h">
+      <Filter>net.ssl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1401,6 +1413,12 @@
     <ClCompile Include="net\source\URL.cpp">
       <Filter>net</Filter>
     </ClCompile>
+    <ClCompile Include="net.ssl\source\SSLConnection.cpp">
+      <Filter>net.ssl</Filter>
+    </ClCompile>
+    <ClCompile Include="net.ssl\source\SSLConnectionClientFactory.cpp">
+      <Filter>net.ssl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -1489,6 +1507,9 @@
     </Filter>
     <Filter Include="net">
       <UniqueIdentifier>{6575592b-9b28-49eb-be76-27f40825475e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net.ssl">
+      <UniqueIdentifier>{21ddb4b6-54a2-4618-81ed-4fbbf37b30de}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
