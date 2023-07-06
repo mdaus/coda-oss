@@ -864,6 +864,87 @@
     <ClInclude Include="dbi\include\import\dbi.h">
       <Filter>dbi</Filter>
     </ClInclude>
+    <ClInclude Include="net\include\net\AllocStrategy.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\ClientSocketFactory.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\CurlHandle.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\CurlInit.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\Daemon.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\DaemonInterface.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\DaemonUnix.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\DaemonWin32.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\NetConnection.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\NetConnectionClientFactory.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\NetConnectionServer.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\NetExceptions.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\NetUtils.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\PerRequestThreadAllocStrategy.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\RequestHandler.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\SerializableConnection.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\ServerSocketFactory.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\SingleThreadedAllocStrategy.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\Socket.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\SocketAddress.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\Sockets.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\SocketsUnix.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\SocketsWin32.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\ThreadPoolAllocStrategy.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\URL.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\net\URLBuilder.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\include\import\net.h">
+      <Filter>net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1284,6 +1365,42 @@
     <ClCompile Include="dbi\source\PgSQLConnection.cpp">
       <Filter>dbi</Filter>
     </ClCompile>
+    <ClCompile Include="net\source\CurlHandle.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\source\CurlInit.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\source\DaemonUnix.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\source\NetConnection.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\source\NetConnectionClientFactory.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\source\NetConnectionServer.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\source\NetUtils.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\source\PerRequestThreadAllocStrategy.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\source\Socket.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\source\SocketAddress.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\source\ThreadPoolAllocStrategy.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\source\URL.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -1369,6 +1486,9 @@
     </Filter>
     <Filter Include="dbi">
       <UniqueIdentifier>{13c98009-f1f9-4297-a2b3-bde23f3bea55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net">
+      <UniqueIdentifier>{6575592b-9b28-49eb-be76-27f40825475e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

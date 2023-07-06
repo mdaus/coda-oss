@@ -20,19 +20,26 @@
  *
  */
 
-#ifndef __NET_SOCKETS_WIN32_H__
-#define __NET_SOCKETS_WIN32_H__
 #pragma once
+#ifndef CODA_OSS_net_SocketsWin32_h_INCLUDED_
+#define CODA_OSS_net_SocketsWin32_h_INCLUDED_
 
 #include <mutex>
 
+#ifndef _WINSOCK2API_ // <winsock2.h> already #include'd
+
 #undef BIGENDIAN // #define'd in <winsock2.h>
+#define _WINSOCK_DEPRECATED_NO_WARNINGS // '...': Use getaddrinfo() or GetAddrInfoW() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <import/sys.h>
+
+#endif // _WINSOCK2API_
 #ifndef BIGENDIAN
 #error BIGENDIAN should be #defined!
 #endif
+
+#include <import/sys.h>
+
 
 /*!
  *  \file
@@ -109,5 +116,4 @@ inline void Win32SocketInit()
 
 }
 
-
-#endif
+#endif  // CODA_OSS_net_SocketsWin32_h_INCLUDED_
