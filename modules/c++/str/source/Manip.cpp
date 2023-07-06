@@ -83,7 +83,7 @@ inline void trim_(std::basic_string<TChar> & s)
     }
     s.erase(0, i);
 
-    for (i = s.length() - 1; i >= 0; i--)
+    for (i = s.length() - 1; static_cast<int>(i) >= 0; i--)
     {
         if (!iswspace(static_cast<wint_t>(s[i])))
             break;
