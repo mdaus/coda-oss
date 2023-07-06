@@ -44,12 +44,43 @@ CODA_OSS_disable_warning_push
 #pragma warning(disable: 5264)  // '...': '...' variable is not used
 #endif // _MSC_VER
 
-// Common C++14 headers
-#include "cpp14.h"
+#include <limits>
+#include <memory>
+#include <new>
 
-#if CODA_OSS_cpp17
-#include "cpp17.h"
-#endif
+#include <complex>
+#include <utility>
+#include <tuple>
+#include <future>
+#include <typeinfo>
+#include <type_traits>
+#include <stdexcept>
+#include <locale>
+
+#include <iomanip>
+#include <iostream>
+#include <ostream>
+#include <sstream>
+
+#include <array>
+#include <string>
+#include <vector>
+#include <map>
+#include <set>
+
+#include <numeric>
+#include <functional>
+#include <algorithm>
+#include <iterator>
+
+//#include <coda_oss/filesystem.h>
+#include <coda_oss/bit.h>
+#include <coda_oss/cstddef.h>
+#include <coda_oss/numbers.h>
+#include <coda_oss/optional.h>
+#include <coda_oss/span.h>
+#include <coda_oss/string.h>
+#include <coda_oss/type_traits.h>
 
 CODA_OSS_disable_warning_pop
 

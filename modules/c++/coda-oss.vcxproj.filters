@@ -720,12 +720,6 @@
     <ClInclude Include="mem\include\mem\ComplexView.h">
       <Filter>mem</Filter>
     </ClInclude>
-    <ClInclude Include="std\include\import\cpp14.h">
-      <Filter>std</Filter>
-    </ClInclude>
-    <ClInclude Include="std\include\import\cpp17.h">
-      <Filter>std</Filter>
-    </ClInclude>
     <ClInclude Include="std\include\import\std.h">
       <Filter>std</Filter>
     </ClInclude>
@@ -962,6 +956,9 @@
     </ClInclude>
     <ClInclude Include="unique\include\import\unique.h">
       <Filter>unique</Filter>
+    </ClInclude>
+    <ClInclude Include="hdf5.lite\include\import\hdf5\lite.h">
+      <Filter>hdf5.lite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
