@@ -38,6 +38,12 @@ CODA_OSS_disable_warning_system_header_push
 #pragma warning(disable: 26440)  // Function '...' can be declared '...' (f.6).
 #pragma warning(disable: 26496) // The variable '...' does not change after construction, mark it as const (con.4).
 #pragma warning(disable: 26462) // The value pointed to by '...' is assigned only once, mark it as a pointer to const (con.4).
+#pragma warning(disable: 26435) // Function '...' should specify exactly one of '...', '...', or '...' (c.128).
+#pragma warning(disable: 26433) // Function '...' should be marked with '...' (c.128).
+#pragma warning(disable: 26497) // You can attempt to make '...' constexpr unless it contains any undefined behavior (f.4).
+#pragma warning(disable: 26433) // Function '...' should be marked with '...' (c.128).
+#pragma warning(disable: 26456) // Operator '...' hides a non-virtual operator '...' (c.128).
+#pragma warning(disable: 26446) // Prefer to use gsl::at() instead of unchecked subscript operator (bounds.4).
 
 #include <xercesc/util/TransService.hpp>
 #include <xercesc/sax2/XMLReaderFactory.hpp>
@@ -65,8 +71,14 @@ CODA_OSS_disable_warning_system_header_push
 // see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
 #include <H5Cpp.h>
 
-#include "highfive/H5Easy.hpp"
-#include "highfive/H5DataSet.hpp"
+#include <highfive/H5Easy.hpp>
+#include <highfive/H5DataSet.hpp>
+#include <highfive/H5DataType.hpp>
+#include <highfive/H5DataSpace.hpp>
+#include <highfive/H5Attribute.hpp>
+#include <highfive/H5Exception.hpp>
+#include <highfive/H5Reference.hpp>
+#include <highfive/H5PropertyList.hpp>
 
 CODA_OSS_disable_warning_pop
 
@@ -102,6 +114,7 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 26814) // The const variable '...' can be computed at compile-time. Consider using constexpr (con.5).
 #pragma warning(disable: 26826) // Don't use C-style variable arguments (f.55).
 #pragma warning(disable: 26426) // Global initializer calls a non-constexpr function '...' (i.22).
+#pragma warning(disable: 26435) // Function '...' should specify exactly one of '...', '...', or '...' (c.128).
 
 // Yes, these are our files ... but they don't change very often, and if they do
 // change we want to rebuild everything anyway.

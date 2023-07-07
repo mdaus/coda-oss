@@ -371,14 +371,14 @@ void sys::DateTime::fromMillis(const tm& t)
     mHour = t.tm_hour;
     mMinute = t.tm_min;
 
-    const auto timeInSeconds = static_cast<size_t>(mTimeInMillis / 1000);
-    const double timediff = (static_cast<double>(mTimeInMillis) / 1000.0) - timeInSeconds;
+    const auto timeInSeconds = gsl::narrow_cast<size_t>(mTimeInMillis / 1000);
+    const auto timediff = (gsl::narrow_cast<double>(mTimeInMillis) / 1000.0) - gsl::narrow_cast<double>(timeInSeconds);
     mSecond = t.tm_sec + timediff;
 }
 
 double sys::DateTime::toMillis(tm t) const
 {
-    time_t timeInSeconds = mktime(&t);
+    const auto timeInSeconds = gsl::narrow_cast<double>(mktime(&t));
     double timediff = mSecond - t.tm_sec;
     return (timeInSeconds + timediff) * 1000.0;
 }
