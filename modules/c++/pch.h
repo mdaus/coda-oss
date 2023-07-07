@@ -38,7 +38,6 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 4626) // '...': assignment operator was implicitly defined as deleted
 #pragma warning(disable: 4625) // '...': copy constructor was implicitly defined as deleted
 #pragma warning(disable: 4251) // '...': class '...' needs to have dll-interface to be used by clients of class '...'
-#pragma warning(disable: 5105) // macro expansion producing '...' has undefined behavior
 #pragma warning(disable: 4365) // '...': conversion from '...' to '...', signed/unsigned mismatch
 #pragma warning(disable: 5039) // '...': pointer or reference to potentially throwing function passed to '...' function under -EHc. Undefined behavior may occur if this function throws an exception.
 #pragma warning(disable: 6326) // Potential comparison of a constant with another constant.

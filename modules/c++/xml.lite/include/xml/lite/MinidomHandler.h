@@ -78,7 +78,7 @@ struct CODA_OSS_API MinidomHandler final : public ContentHandler
     }
 
     //! Destructor
-    ~ MinidomHandler()
+    ~MinidomHandler() noexcept(false)
     {
         setDocument(nullptr, true);
     }
