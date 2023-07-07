@@ -325,7 +325,7 @@
     <ClInclude Include="xml.lite\include\xml\lite\Validator.h" />
     <ClInclude Include="xml.lite\include\xml\lite\ValidatorInterface.h" />
     <ClInclude Include="xml.lite\include\xml\lite\ValidatorXerces.h" />
-    <ClInclude Include="xml.lite\include\xml\lite\xerces.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\xerces_.h" />
     <ClInclude Include="xml.lite\include\xml\lite\XMLException.h" />
     <ClInclude Include="xml.lite\include\xml\lite\XMLReader.h" />
     <ClInclude Include="xml.lite\include\xml\lite\XMLReaderInterface.h" />

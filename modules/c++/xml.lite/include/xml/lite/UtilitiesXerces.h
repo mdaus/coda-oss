@@ -31,12 +31,7 @@
 #include <type_traits>
 
 #include "config/compiler_extensions.h"
-#include "xml/lite/xml_lite_config.h"
-
-#if defined(USE_XERCES)
 #include "config/Exports.h"
-
-#include "xerces.h"
 
 #include <sys/Mutex.h>
 #include <mt/CriticalSection.h>
@@ -44,6 +39,10 @@
 #include <io/StringStream.h>
 #include <io/OutputStream.h>
 #include <io/InputStream.h>
+
+#include <xml/lite/xml_lite_config.h>
+#if defined(USE_XERCES)
+#include "xerces_.h"
 
 #include "xml/lite/XMLException.h"
 #include "xml/lite/ContentHandler.h"

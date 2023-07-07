@@ -24,20 +24,18 @@
 #ifndef CODA_OSS_xml_lite_ValidatorXerces_h_INCLUDED_
 #define CODA_OSS_xml_lite_ValidatorXerces_h_INCLUDED_
 
-#include <xml/lite/xml_lite_config.h>
-
-#ifdef USE_XERCES
-
 #include <memory>
 #include <vector>
 #include <coda_oss/string.h>
 
 #include "config/Exports.h"
 
+#include <xml/lite/xml_lite_config.h>
+#ifdef USE_XERCES
+#include "xerces_.h"
+
 #include <xml/lite/UtilitiesXerces.h>
 #include <xml/lite/ValidatorInterface.h>
-
-#include "xerces.h"
 
 namespace xml
 {

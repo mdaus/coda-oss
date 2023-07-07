@@ -74,7 +74,7 @@ CODA_OSS_disable_warning_pop
 #include "sys/Conf.h"
 #include "sys/filesystem.h"
 #include "mem/SharedPtr.h"
-#include "xml/lite/xerces.h"
+#include "xml/lite/xerces_.h"
 #include "hdf5/lite/H5_.h"
 
 #endif //CODA_OSS_pch_h_INCLUDED_
