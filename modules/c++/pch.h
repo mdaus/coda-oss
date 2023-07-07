@@ -8,23 +8,10 @@
 #ifndef CODA_OSS_pch_h_INCLUDED_
 #define CODA_OSS_pch_h_INCLUDED_
 
-#pragma warning(disable: 4619) // #pragma warning: there is no warning number '...'
+#include "coda_oss/CPlusPlus.h"
+#include "config/disable_compiler_warnings.h"
 
-#pragma warning(disable: 4820) // '...': '...' bytes padding added after data member '...'
-#pragma warning(disable: 4668) // '...' is not defined as a preprocessor macro, replacing with '...' for '...'
-#pragma warning(disable: 5045) // Compiler will insert Spectre mitigation for memory load if / Qspectre switch specified
-#pragma warning(disable: 4514) //	'...': unreferenced inline function has been removed
-
-#pragma warning(push)
-#pragma warning(disable: 4710) // '...': function not inlined
-#pragma warning(disable: 5027) // '...': move assignment operator was implicitly defined as deleted
-#pragma warning(disable: 5026) // '...': move constructor was implicitly defined as deleted
-#pragma warning(disable: 4626) // '...': assignment operator was implicitly defined as deleted
-#pragma warning(disable: 4625) // '...': copy constructor was implicitly defined as deleted
-#pragma warning(disable: 4355) // '...': used in base member initializer list
-#pragma warning(disable: 5220) // '...': a non-static data member with a volatile qualified type no longer implies that compiler generated copy/move constructors and copy/move assignment operators are not trivial
-#pragma warning(disable: 5204) // '...': class has virtual functions, but its trivial destructor is not virtual; instances of objects derived from this class may not be destructed correctly
-#pragma warning(disable: 5264)  // '...': '...' variable is not used
+CODA_OSS_disable_warning_system_header_push
 
 // add headers that you want to pre-compile here
 #include "framework.h"
@@ -40,11 +27,18 @@
 
 #include "import/std.h"
 
-#pragma warning(pop)
-
-CODA_OSS_disable_warning_system_header_push
-
 #if defined(USE_XERCES)
+
+#pragma warning(disable: 26493) // Don't use C-style casts (type.4).
+#pragma warning(disable: 26494) // Variable '...' is uninitialized. Always initialize an object (type.5).
+#pragma warning(disable: 26451) // Arithmetic overflow: Using operator '...' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '...' to avoid overflow (io.2).
+#pragma warning(disable: 26814) // The const variable '...' can be computed at compile-time. Consider using constexpr (con.5).
+#pragma warning(disable: 26447) // The function is declared '...' but calls function '...' which may throw exceptions (f.6).
+#pragma warning(disable: 26455) // Default constructor should not throw. Declare it '...' (f.6).
+#pragma warning(disable: 26440)  // Function '...' can be declared '...' (f.6).
+#pragma warning(disable: 26496) // The variable '...' does not change after construction, mark it as const (con.4).
+#pragma warning(disable: 26462) // The value pointed to by '...' is assigned only once, mark it as a pointer to const (con.4).
+
 #include <xercesc/util/TransService.hpp>
 #include <xercesc/sax2/XMLReaderFactory.hpp>
 #include <xercesc/sax2/Attributes.hpp>
@@ -66,7 +60,6 @@ CODA_OSS_disable_warning_system_header_push
 
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>
-
 #endif // USE_XERCES
 
 // see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
@@ -77,16 +70,41 @@ CODA_OSS_disable_warning_system_header_push
 
 CODA_OSS_disable_warning_pop
 
+
 #include <net/net_config.h>
 #include <zlib.h>
 #include <xml/lite/xml_lite_config.h>
 
+#pragma warning(disable: 4626) // '...': assignment operator was implicitly defined as deleted
+#pragma warning(disable: 4625) // '...': copy constructor was implicitly defined as deleted
 #pragma warning(disable: 4251) // '...': class '...' needs to have dll-interface to be used by clients of class '...'
 #pragma warning(disable: 5105) // macro expansion producing '...' has undefined behavior
+#pragma warning(disable: 4365) // '...': conversion from '...' to '...', signed/unsigned mismatch
+#pragma warning(disable: 5039) // '...': pointer or reference to potentially throwing function passed to '...' function under -EHc. Undefined behavior may occur if this function throws an exception.
 
+#pragma warning(disable: 26432) // If you define or delete any default operation in the type '...', define or delete them all (c.21).
+#pragma warning(disable: 26429) // Symbol '...' is never tested for nullness, it can be marked as not_null (f.23).
+#pragma warning(disable: 26455) // Default constructor should not throw. Declare it '...' (f.6).
+#pragma warning(disable: 26440) // Function '...' can be declared '...' (f.6).
+#pragma warning(disable: 26447) // The function is declared '...' but calls function '...' which may throw exceptions (f.6).
+#pragma warning(disable: 26446) // Prefer to use gsl::at() instead of unchecked subscript operator (bounds.4).
+#pragma warning(disable: 26481) // Don't use pointer arithmetic. Use span instead (bounds.1).
+#pragma warning(disable: 26496) // The variable '...' does not change after construction, mark it as const (con.4).
+#pragma warning(disable: 26462) // The value pointed to by '...' is assigned only once, mark it as a pointer to const (con.4).
+#pragma warning(disable: 26409) // Avoid calling new and delete explicitly, use std::make_unique<T> instead (r.11).
+#pragma warning(disable: 26401) // Do not delete a raw pointer that is not an owner<T> (i.11).
+#pragma warning(disable: 26482) // Only index into arrays using constant expressions (bounds.2).
+#pragma warning(disable: 26472) // Don't use a static_cast for arithmetic conversions. Use brace initialization, gsl::narrow_cast or gsl::narrow (type.1).
+#pragma warning(disable: 26485) // Expression '...': No array to pointer decay (bounds.3).
+#pragma warning(disable: 26493) // Don't use C-style casts (type.4).
+#pragma warning(disable: 26451) // Arithmetic overflow: Using operator '...' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '...' to avoid overflow (io.2).
+#pragma warning(disable: 26494) // Variable '...' is uninitialized. Always initialize an object (type.5).
+#pragma warning(disable: 26814) // The const variable '...' can be computed at compile-time. Consider using constexpr (con.5).
+#pragma warning(disable: 26826) // Don't use C-style variable arguments (f.55).
+#pragma warning(disable: 26426) // Global initializer calls a non-constexpr function '...' (i.22).
 
-// Yes, these are our files ... but they don't change very often, and if they do change we want
-// to rebuild everything anyway.
+// Yes, these are our files ... but they don't change very often, and if they do
+// change we want to rebuild everything anyway.
 #include "gsl/gsl.h"
 #include "config/Exports.h"
 #include "except/Throwable.h"

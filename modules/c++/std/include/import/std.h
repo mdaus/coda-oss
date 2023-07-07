@@ -29,11 +29,10 @@
 #include "coda_oss/CPlusPlus.h"
 #include "config/disable_compiler_warnings.h"
 
-CODA_OSS_disable_warning_push
+CODA_OSS_disable_warning_system_header_push
 #if _MSC_VER
 #pragma warning(disable: 4619) // #pragma warning: there is no warning number '...'
 
-#pragma warning(disable: 4710) // '...': function not inlined
 #pragma warning(disable: 5027) // '...': move assignment operator was implicitly defined as deleted
 #pragma warning(disable: 5026) // '...': move constructor was implicitly defined as deleted
 #pragma warning(disable: 4626) // '...': assignment operator was implicitly defined as deleted
