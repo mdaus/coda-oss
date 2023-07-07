@@ -37,9 +37,9 @@ jobs:
         cd target-Debug
         cmake --build . --config Debug -j
     - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
-        with:
-           msbuild-architecture: x64
+      uses: microsoft/setup-msbuild@v1.1
+      with:
+        msbuild-architecture: x64
     - name: install
       run: |
         cd target-Release
