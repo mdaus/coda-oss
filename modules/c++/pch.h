@@ -88,7 +88,6 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 28159) // Consider using '...' instead of '...'. Reason: Deprecated. Use VerifyVersionInfo* or IsWindows* macros from VersionHelpers.
 #pragma warning(disable: 26439) // This kind of function should not throw. Declare it '...' (f.6).
 #pragma warning(disable: 26454) // Arithmetic overflow: '...' operation produces a negative unsigned result at compile time (io.5).
-#pragma warning(disable: 26818) // Switch statement does not cover all cases. Consider adding a '...' label (es.79).
 #pragma warning(disable: 26492) // Don't use const_cast to cast away const or volatile (type.3).
 #pragma warning(disable: 26110) // Caller failing to hold lock '...' before calling function '...'.
 #pragma warning(disable: 26497) // You can attempt to make '...' constexpr unless it contains any undefined behavior (f.4).

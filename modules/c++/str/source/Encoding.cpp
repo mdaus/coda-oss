@@ -43,7 +43,9 @@
 
 
 CODA_OSS_disable_warning_push
-#ifndef _MSC_VER
+#if _MSC_VER
+#pragma warning(disable: 26818) // Switch statement does not cover all cases. Consider adding a '...' label (es.79).
+#else
 CODA_OSS_disable_warning(-Wshadow)
 #endif
 #include "str/utf8.h"
