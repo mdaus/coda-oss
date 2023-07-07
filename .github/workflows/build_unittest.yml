@@ -45,11 +45,13 @@ jobs:
         cd target-Release
         cmake --build . --config Release --target install
         cd ..
-        msbuild coda-oss.sln /p:configuration=Release
         cd target-Debug
         cmake --build . --config Debug --target install
         cd ..
-        #msbuild coda-oss.sln /p:configuration=Debug
+    - name: msbuild
+      run: |
+        msbuild coda-oss.sln /p:configuration=Release
+        msbuild coda-oss.sln /p:configuration=Debug
     - name: test
       run: |
         cd target-Release
