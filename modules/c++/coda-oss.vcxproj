@@ -49,6 +49,7 @@
     <ClInclude Include="gsl\include\gsl\Gsl_.h" />
     <ClInclude Include="gsl\include\gsl\Gsl_narrow.h" />
     <ClInclude Include="gsl\include\gsl\use_gsl.h" />
+    <ClInclude Include="hdf5.lite\include\hdf5\lite\H5_.h" />
     <ClInclude Include="hdf5.lite\include\hdf5\lite\HDF5Exception.h" />
     <ClInclude Include="hdf5.lite\include\hdf5\lite\highfive.h" />
     <ClInclude Include="hdf5.lite\include\hdf5\lite\Info.h" />
