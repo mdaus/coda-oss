@@ -957,6 +957,9 @@
     <ClInclude Include="hdf5.lite\include\import\hdf5\lite.h">
       <Filter>hdf5.lite</Filter>
     </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\xerces.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />

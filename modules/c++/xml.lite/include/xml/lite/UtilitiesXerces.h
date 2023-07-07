@@ -36,36 +36,7 @@
 #if defined(USE_XERCES)
 #include "config/Exports.h"
 
-CODA_OSS_disable_warning_system_header_push
-#ifndef _MSC_VER
-CODA_OSS_disable_warning(-Wshadow)
-CODA_OSS_disable_warning(-Wsuggest-override)
-CODA_OSS_disable_warning(-Wzero-as-null-pointer-constant)
-#endif
-
-#include <xercesc/util/TransService.hpp>
-#include <xercesc/sax2/XMLReaderFactory.hpp>
-#include <xercesc/sax2/Attributes.hpp>
-#include <xercesc/sax2/ContentHandler.hpp>
-#include <xercesc/sax2/SAX2XMLReader.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-
-#include <xercesc/framework/MemBufInputSource.hpp>
-#include <xercesc/framework/StdOutFormatTarget.hpp>
-
-#include <xercesc/util/XMLUni.hpp>
-#include <xercesc/util/regx/Token.hpp>
-
-#include <xercesc/sax/SAXParseException.hpp>
-#include <xercesc/framework/XMLValidator.hpp>
-#include <xercesc/parsers/SAXParser.hpp>
-#include <xercesc/validators/schema/SchemaValidator.hpp>
-#include <xercesc/validators/common/ContentSpecNode.hpp>
-#include <xercesc/validators/schema/SchemaSymbols.hpp>
-
-#include <xercesc/util/XercesDefs.hpp>
-#include <xercesc/sax/ErrorHandler.hpp>
-CODA_OSS_disable_warning_pop
+#include "xerces.h"
 
 #include <sys/Mutex.h>
 #include <mt/CriticalSection.h>

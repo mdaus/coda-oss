@@ -27,8 +27,6 @@ CODA_OSS_disable_warning_system_header_push
 
 #include "import/std.h"
 
-#if defined(USE_XERCES)
-
 #pragma warning(disable: 26493) // Don't use C-style casts (type.4).
 #pragma warning(disable: 26494) // Variable '...' is uninitialized. Always initialize an object (type.5).
 #pragma warning(disable: 26451) // Arithmetic overflow: Using operator '...' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '...' to avoid overflow (io.2).
@@ -44,29 +42,6 @@ CODA_OSS_disable_warning_system_header_push
 #pragma warning(disable: 26433) // Function '...' should be marked with '...' (c.128).
 #pragma warning(disable: 26456) // Operator '...' hides a non-virtual operator '...' (c.128).
 #pragma warning(disable: 26446) // Prefer to use gsl::at() instead of unchecked subscript operator (bounds.4).
-
-#include <xercesc/util/TransService.hpp>
-#include <xercesc/sax2/XMLReaderFactory.hpp>
-#include <xercesc/sax2/Attributes.hpp>
-#include <xercesc/sax2/ContentHandler.hpp>
-#include <xercesc/sax2/SAX2XMLReader.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-
-#include <xercesc/framework/MemBufInputSource.hpp>
-#include <xercesc/framework/StdOutFormatTarget.hpp>
-
-#include <xercesc/util/XMLUni.hpp>
-
-#include <xercesc/sax/SAXParseException.hpp>
-#include <xercesc/framework/XMLValidator.hpp>
-#include <xercesc/parsers/SAXParser.hpp>
-#include <xercesc/validators/schema/SchemaValidator.hpp>
-#include <xercesc/validators/common/ContentSpecNode.hpp>
-#include <xercesc/validators/schema/SchemaSymbols.hpp>
-
-#include <xercesc/util/XercesDefs.hpp>
-#include <xercesc/sax/ErrorHandler.hpp>
-#endif // USE_XERCES
 
 // see https://docs.hdfgroup.org/archive/support/HDF5/doc1.8/cpplus_RM/readdata_8cpp-example.html
 #include <H5Cpp.h>
@@ -115,6 +90,9 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 26826) // Don't use C-style variable arguments (f.55).
 #pragma warning(disable: 26426) // Global initializer calls a non-constexpr function '...' (i.22).
 #pragma warning(disable: 26435) // Function '...' should specify exactly one of '...', '...', or '...' (c.128).
+#pragma warning(disable: 26434) // Function '...' hides a non-virtual function '...'.
+#pragma warning(disable: 26400) // Do not assign the result of an allocation or a function call with an owner<T> return value to a raw pointer, use owner<T> instead (i.11).
+#pragma warning(disable: 26433) // Function '...' should be marked with '...' (c.128).
 
 // Yes, these are our files ... but they don't change very often, and if they do
 // change we want to rebuild everything anyway.
@@ -124,5 +102,6 @@ CODA_OSS_disable_warning_pop
 #include "sys/Conf.h"
 #include "sys/filesystem.h"
 #include "mem/SharedPtr.h"
+#include "xml/lite/xerces.h"
 
 #endif //CODA_OSS_pch_h_INCLUDED_
