@@ -46,6 +46,7 @@ CODA_OSS_disable_warning_system_header_push
 #pragma warning(disable: 26433) // Function '...' should be marked with '...' (c.128).
 #pragma warning(disable: 26456) // Operator '...' hides a non-virtual operator '...' (c.128).
 #pragma warning(disable: 26446) // Prefer to use gsl::at() instead of unchecked subscript operator (bounds.4).
+#pragma warning(disable: 26488) // Do not dereference a potentially null pointer: '...'. '...' was null at line 133 (lifetime.1).
 #else
 CODA_OSS_disable_warning(-Wshadow)
 CODA_OSS_disable_warning(-Wsuggest-override)

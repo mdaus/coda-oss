@@ -49,6 +49,7 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 6031)  // Return value ignored: '...'.
 #pragma warning(disable: 6001)  // Using uninitialized memory '...'.
 #pragma warning(disable: 6313) // Incorrect operator.  Use an equality test to check for zero-valued flags.
+#pragma warning(disable: 6389) // Move '...' to anonymous namespace or put a forward declaration in a common header included in this file.
 
 #pragma warning(disable: 26432) // If you define or delete any default operation in the type '...', define or delete them all (c.21).
 #pragma warning(disable: 26429) // Symbol '...' is never tested for nullness, it can be marked as not_null (f.23).
@@ -69,7 +70,6 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 26494) // Variable '...' is uninitialized. Always initialize an object (type.5).
 #pragma warning(disable: 26814) // The const variable '...' can be computed at compile-time. Consider using constexpr (con.5).
 #pragma warning(disable: 26826) // Don't use C-style variable arguments (f.55).
-#pragma warning(disable: 26426) // Global initializer calls a non-constexpr function '...' (i.22).
 #pragma warning(disable: 26435) // Function '...' should specify exactly one of '...', '...', or '...' (c.128).
 #pragma warning(disable: 26434) // Function '...' hides a non-virtual function '...'.
 #pragma warning(disable: 26400) // Do not assign the result of an allocation or a function call with an owner<T> return value to a raw pointer, use owner<T> instead (i.11).
@@ -100,6 +100,14 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 26405) // Do not assign to an owner<T> which may be in valid state (r.3).
 #pragma warning(disable: 26403) // Reset or explicitly delete an owner<T> pointer '...' (r.3).
 #pragma warning(disable: 26498) // The function '...' is constexpr, mark variable '...' constexpr if compile-time evaluation is desired (con.5).
+#pragma warning(disable: 26477) // Use '...' rather than 0 or NULL(es .47).
+#pragma warning(disable: 26489) // Don't dereference a pointer that may be invalid: '...'. '...' may have been invalidated at line 132 (lifetime.1).
+#pragma warning(disable: 26486) // Don't pass a pointer that may be invalid to a function. Parameter 0 '...' in call to '...' may be invalid (lifetime.3).
+#pragma warning(disable: 26823) // Dereferencing a possibly null pointer '...' (lifetime.1).
+#pragma warning(disable: 26487) // Don't return a pointer '...' that may be invalid (lifetime.4).
+#pragma warning(disable: 26812) // The enum type '...' is unscoped. Prefer '...' over '...' (Enum.3).
+#pragma warning(disable: 26822) // Dereferencing a null pointer '...' (lifetime.1).
+#pragma warning(disable: 26458) // Prefer to use gsl::at() instead of unchecked subscript operator (bounds.4).
 
 // Yes, these are our files ... but they don't change very often, and if they do
 // change we want to rebuild everything anyway.

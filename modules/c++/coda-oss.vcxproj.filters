@@ -1585,5 +1585,6 @@
     <None Include="std\include\std\numbers">
       <Filter>std</Filter>
     </None>
+    <None Include="coda-oss.ruleset" />
   </ItemGroup>
 </Project>

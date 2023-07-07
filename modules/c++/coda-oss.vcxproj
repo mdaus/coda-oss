@@ -505,6 +505,7 @@
     <ClCompile Include="zip\source\ZipOutputStream.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="coda-oss.ruleset" />
     <None Include="gsl\include\gsl\algorithm" />
     <None Include="gsl\include\gsl\assert" />
     <None Include="gsl\include\gsl\byte" />
@@ -561,10 +562,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>coda-oss.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <CodeAnalysisRuleSet>coda-oss.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -578,7 +580,6 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ControlFlowGuard>Guard</ControlFlowGuard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <TranslateIncludes>true</TranslateIncludes>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
