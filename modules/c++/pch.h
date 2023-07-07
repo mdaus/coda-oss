@@ -93,7 +93,6 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 26497) // You can attempt to make '...' constexpr unless it contains any undefined behavior (f.4).
 #pragma warning(disable: 26459) // You called an STL function '...' with a raw pointer parameter at position '...' that may be unsafe - this relies on the caller to check that the passed values are correct. Consider wrapping your range in a gsl::span and pass as a span iterator (stl.1).
 #pragma warning(disable: 26473) // Don't cast between pointer types where the source type and the target type are the same (type.1).
-#pragma warning(disable: 26475) // Do not use function style casts (es.49). Prefer '...' over '...'..
 #pragma warning(disable: 26491) // Don't use static_cast downcasts (type.2).
 #pragma warning(disable: 26405) // Do not assign to an owner<T> which may be in valid state (r.3).
 #pragma warning(disable: 26403) // Reset or explicitly delete an owner<T> pointer '...' (r.3).

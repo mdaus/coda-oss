@@ -49,6 +49,7 @@ CODA_OSS_disable_warning_system_header_push
 #pragma warning(disable: 26488) // Do not dereference a potentially null pointer: '...'. '...' was null at line 133 (lifetime.1).
 #pragma warning(disable : 26477)  // Use '...' rather than 0 or NULL(es .47).
 #pragma warning(disable: 26457) // (void) should not be used to ignore return values, use '...' instead (es.48).
+#pragma warning(disable: 26475) // Do not use function style casts (es.49). Prefer '...' over '...'..
 #else
 CODA_OSS_disable_warning(-Wshadow)
 CODA_OSS_disable_warning(-Wsuggest-override)
