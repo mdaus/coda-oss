@@ -40,6 +40,15 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 5105) // macro expansion producing '...' has undefined behavior
 #pragma warning(disable: 4365) // '...': conversion from '...' to '...', signed/unsigned mismatch
 #pragma warning(disable: 5039) // '...': pointer or reference to potentially throwing function passed to '...' function under -EHc. Undefined behavior may occur if this function throws an exception.
+#pragma warning(disable: 6326) // Potential comparison of a constant with another constant.
+#pragma warning(disable: 6054) // String '...' might not be zero-terminated.
+#pragma warning(disable: 6387) // '...' could be '...'.
+#pragma warning(disable: 6305) // Potential mismatch between sizeof and countof quantities. Use sizeof() to scale byte sizes.
+#pragma warning(disable: 6288) // Incorrect operator.  Did you intend to use || instead?
+#pragma warning(disable: 6011) // Dereferencing NULL pointer '...'. 
+#pragma warning(disable: 6031)  // Return value ignored: '...'.
+#pragma warning(disable: 6001)  // Using uninitialized memory '...'.
+#pragma warning(disable: 6313) // Incorrect operator.  Use an equality test to check for zero-valued flags.
 
 #pragma warning(disable: 26432) // If you define or delete any default operation in the type '...', define or delete them all (c.21).
 #pragma warning(disable: 26429) // Symbol '...' is never tested for nullness, it can be marked as not_null (f.23).
@@ -65,6 +74,32 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 26434) // Function '...' hides a non-virtual function '...'.
 #pragma warning(disable: 26400) // Do not assign the result of an allocation or a function call with an owner<T> return value to a raw pointer, use owner<T> instead (i.11).
 #pragma warning(disable: 26433) // Function '...' should be marked with '...' (c.128).
+#pragma warning(disable: 26456) // Operator '...' hides a non-virtual operator '...' (c.128).
+#pragma warning(disable: 26465) // Don't use const_cast to cast away const or volatile. const_cast is not required; constness or volatility is not being removed by this conversion (type.3).
+#pragma warning(disable: 26408) // Avoid malloc() and free(), prefer the nothrow version of new with delete (r.10).
+#pragma warning(disable: 26471) // Don't use reinterpret_cast. A cast from void* can use static_cast (type.1).
+#pragma warning(disable: 26490) // Don't use reinterpret_cast (type.1).
+#pragma warning(disable: 26460) // The reference argument '...' for function '...' can be marked as const (con.3).
+#pragma warning(disable: 26495) // Variable '...' is uninitialized. Always initialize a member variable (type.6).
+#pragma warning(disable: 26461) // The pointer argument '...' for function '...' can be marked as a pointer to const (con.3).
+#pragma warning(disable: 26436) // The type '...' with a virtual function needs either public virtual or protected non-virtual destructor (c.35).
+#pragma warning(disable: 26467) // Converting from floating point to unsigned integral types results in non-portable code if the double/float has a negative value. Use gsl::narrow_cast or gsl::narrow instead to guard against undefined behavior and potential data loss (es.46).
+#pragma warning(disable: 26457) // (void) should not be used to ignore return values, use '...' instead (es.48).
+#pragma warning(disable: 26135) // Missing annotation _Acquires_lock_(this->mNative) at function '...'.
+#pragma warning(disable: 28159) // Consider using '...' instead of '...'. Reason: Deprecated. Use VerifyVersionInfo* or IsWindows* macros from VersionHelpers.
+#pragma warning(disable: 26439) // This kind of function should not throw. Declare it '...' (f.6).
+#pragma warning(disable: 26454) // Arithmetic overflow: '...' operation produces a negative unsigned result at compile time (io.5).
+#pragma warning(disable: 26818) // Switch statement does not cover all cases. Consider adding a '...' label (es.79).
+#pragma warning(disable: 26492) // Don't use const_cast to cast away const or volatile (type.3).
+#pragma warning(disable: 26110) // Caller failing to hold lock '...' before calling function '...'.
+#pragma warning(disable: 26497) // You can attempt to make '...' constexpr unless it contains any undefined behavior (f.4).
+#pragma warning(disable: 26459) // You called an STL function '...' with a raw pointer parameter at position '...' that may be unsafe - this relies on the caller to check that the passed values are correct. Consider wrapping your range in a gsl::span and pass as a span iterator (stl.1).
+#pragma warning(disable: 26473) // Don't cast between pointer types where the source type and the target type are the same (type.1).
+#pragma warning(disable: 26475) // Do not use function style casts (es.49). Prefer '...' over '...'..
+#pragma warning(disable: 26491) // Don't use static_cast downcasts (type.2).
+#pragma warning(disable: 26405) // Do not assign to an owner<T> which may be in valid state (r.3).
+#pragma warning(disable: 26403) // Reset or explicitly delete an owner<T> pointer '...' (r.3).
+#pragma warning(disable: 26498) // The function '...' is constexpr, mark variable '...' constexpr if compile-time evaluation is desired (con.5).
 
 // Yes, these are our files ... but they don't change very often, and if they do
 // change we want to rebuild everything anyway.
