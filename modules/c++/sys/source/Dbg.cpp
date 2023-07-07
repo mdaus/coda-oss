@@ -24,6 +24,22 @@
 
 #include "sys/Dbg.h"
 
+#include <stdarg.h>
+
+#include <config/compiler_extensions.h>
+
+inline void va_end_(va_list& args)
+{
+    CODA_OSS_disable_warning_push
+    #if _MSC_VER
+    #pragma warning(disable : 26477)  // Use '...' rather than 0 or NULL(es .47).
+    #endif
+
+    va_end(args);
+
+    CODA_OSS_disable_warning_pop
+}
+
 void sys::dbgPrintf(const char *format, ...)
 {
     if (sys::debugging)
@@ -32,7 +48,7 @@ void sys::dbgPrintf(const char *format, ...)
         va_start(args, format);
         fprintf(DEBUG_STREAM, "<DBG> ");
         vfprintf(DEBUG_STREAM, format, args);
-        va_end(args);
+        va_end_(args);
     }
 }
 
@@ -41,7 +57,7 @@ void sys::diePrintf(const char *format, ...)
     va_list args;
     va_start(args, format);
     vfprintf(DEBUG_STREAM, format, args);
-    va_end(args);
+    va_end_(args);
     exit(EXIT_FAILURE);
 }
 

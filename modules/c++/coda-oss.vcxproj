@@ -49,6 +49,7 @@
     <ClInclude Include="gsl\include\gsl\Gsl_.h" />
     <ClInclude Include="gsl\include\gsl\Gsl_narrow.h" />
     <ClInclude Include="gsl\include\gsl\use_gsl.h" />
+    <ClInclude Include="hdf5.lite\include\hdf5\lite\H5_.h" />
     <ClInclude Include="hdf5.lite\include\hdf5\lite\HDF5Exception.h" />
     <ClInclude Include="hdf5.lite\include\hdf5\lite\highfive.h" />
     <ClInclude Include="hdf5.lite\include\hdf5\lite\Info.h" />
@@ -324,6 +325,7 @@
     <ClInclude Include="xml.lite\include\xml\lite\Validator.h" />
     <ClInclude Include="xml.lite\include\xml\lite\ValidatorInterface.h" />
     <ClInclude Include="xml.lite\include\xml\lite\ValidatorXerces.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\xerces_.h" />
     <ClInclude Include="xml.lite\include\xml\lite\XMLException.h" />
     <ClInclude Include="xml.lite\include\xml\lite\XMLReader.h" />
     <ClInclude Include="xml.lite\include\xml\lite\XMLReaderInterface.h" />
@@ -503,6 +505,7 @@
     <ClCompile Include="zip\source\ZipOutputStream.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="coda-oss.ruleset" />
     <None Include="gsl\include\gsl\algorithm" />
     <None Include="gsl\include\gsl\assert" />
     <None Include="gsl\include\gsl\byte" />
@@ -559,10 +562,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>coda-oss.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <CodeAnalysisRuleSet>coda-oss.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -576,7 +580,6 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ControlFlowGuard>Guard</ControlFlowGuard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <TranslateIncludes>true</TranslateIncludes>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -584,6 +587,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnablePREfast>true</EnablePREfast>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>
