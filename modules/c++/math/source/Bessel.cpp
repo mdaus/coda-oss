@@ -22,6 +22,7 @@
 
 #include <cmath>
 #include <limits>
+#include <tuple>
 
 #include <math/Bessel.h>
 
@@ -152,7 +153,7 @@ double besselIOrderN(size_t order, double x)
         double bim = bip + (static_cast<double>(jj) * tox * bi);
         bip = bi;
         bi = bim;
-        std::frexp(bi, &k);
+        std::ignore = std::frexp(bi, &k);
 
         //Renormalize to prevent overflow
         if (k > IEXP)

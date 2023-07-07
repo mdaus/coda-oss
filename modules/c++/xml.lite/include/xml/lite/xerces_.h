@@ -48,6 +48,7 @@ CODA_OSS_disable_warning_system_header_push
 #pragma warning(disable: 26446) // Prefer to use gsl::at() instead of unchecked subscript operator (bounds.4).
 #pragma warning(disable: 26488) // Do not dereference a potentially null pointer: '...'. '...' was null at line 133 (lifetime.1).
 #pragma warning(disable : 26477)  // Use '...' rather than 0 or NULL(es .47).
+#pragma warning(disable: 26457) // (void) should not be used to ignore return values, use '...' instead (es.48).
 #else
 CODA_OSS_disable_warning(-Wshadow)
 CODA_OSS_disable_warning(-Wsuggest-override)

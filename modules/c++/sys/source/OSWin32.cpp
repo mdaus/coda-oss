@@ -283,8 +283,14 @@ static void setEnv(const std::string& var,
         throw sys::SystemException(Ctxt(
             "Unable to set windows environment variable " + var));
     }
+
     const auto s = var + "=" + val;
-    _putenv(s.c_str());
+    const auto result = _putenv(s.c_str());
+    if (result != 0) // "The functions return 0 if successful, or -1 if there's an error."
+    {
+        throw sys::SystemException(Ctxt("Unable to set windows environment variable " + var));
+    }
+
 }
 void sys::OSWin32::setEnv(const std::string& var,
                           const std::string& val,
@@ -303,8 +309,13 @@ void sys::OSWin32::unsetEnv(const std::string& var)
     {
         throw sys::SystemException(Ctxt("Unable to unset windows environment variable " + var));
     }
+
     const auto s = var + "=";
-    _putenv(s.c_str());
+    const auto result = _putenv(s.c_str());
+    if (result != 0) // "The functions return 0 if successful, or -1 if there's an error."
+    {
+        throw sys::SystemException(Ctxt("Unable to unset windows environment variable " + var));
+    }
 }
 
 size_t sys::OSWin32::getNumCPUs() const

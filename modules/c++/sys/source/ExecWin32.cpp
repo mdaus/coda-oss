@@ -20,6 +20,7 @@
  *
  */
 
+#include <tuple>
 
 #ifdef _WIN32
 
@@ -124,7 +125,7 @@ int ExecPipe::closePipe()
     mOutStream = nullptr;
 
     DWORD dwMillisec = INFINITE;
-    (void) WaitForSingleObject(mProcessInfo.hProcess, dwMillisec);
+    std::ignore = WaitForSingleObject(mProcessInfo.hProcess, dwMillisec);
 
     //! get the exit code
     DWORD exitCode = 0;

@@ -47,7 +47,6 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 6305) // Potential mismatch between sizeof and countof quantities. Use sizeof() to scale byte sizes.
 #pragma warning(disable: 6288) // Incorrect operator.  Did you intend to use || instead?
 #pragma warning(disable: 6011) // Dereferencing NULL pointer '...'. 
-#pragma warning(disable: 6031)  // Return value ignored: '...'.
 #pragma warning(disable: 6001)  // Using uninitialized memory '...'.
 #pragma warning(disable: 6313) // Incorrect operator.  Use an equality test to check for zero-valued flags.
 #pragma warning(disable: 6389) // Move '...' to anonymous namespace or put a forward declaration in a common header included in this file.
@@ -85,7 +84,6 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 26461) // The pointer argument '...' for function '...' can be marked as a pointer to const (con.3).
 #pragma warning(disable: 26436) // The type '...' with a virtual function needs either public virtual or protected non-virtual destructor (c.35).
 #pragma warning(disable: 26467) // Converting from floating point to unsigned integral types results in non-portable code if the double/float has a negative value. Use gsl::narrow_cast or gsl::narrow instead to guard against undefined behavior and potential data loss (es.46).
-#pragma warning(disable: 26457) // (void) should not be used to ignore return values, use '...' instead (es.48).
 #pragma warning(disable: 26135) // Missing annotation _Acquires_lock_(this->mNative) at function '...'.
 #pragma warning(disable: 28159) // Consider using '...' instead of '...'. Reason: Deprecated. Use VerifyVersionInfo* or IsWindows* macros from VersionHelpers.
 #pragma warning(disable: 26439) // This kind of function should not throw. Declare it '...' (f.6).
