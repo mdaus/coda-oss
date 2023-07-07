@@ -404,9 +404,9 @@ static double getNowInMillis()
     // does not need millisecond accuracy
     SYSTEMTIME now;
     GetLocalTime(&now);
-    return (double)time(NULL) * 1000 + now.wMilliseconds;
+    return (double)time(nullptr) * 1000 + now.wMilliseconds;
 #else
-    return (double)time(NULL) * 1000;
+    return (double)time(nullptr) * 1000;
 #endif
 }
 void sys::DateTime::setNow()
@@ -634,7 +634,7 @@ void sys::DateTime::localtime(time_t numSecondsSinceEpoch, tm& t)
     // our fingers and hope the regular function actually is reentrant
     // (supposedly this is the case on Windows).
 #if CODA_OSS_POSIX_SOURCE
-    if (::localtime_r(&numSecondsSinceEpoch, &t) == NULL)
+    if (::localtime_r(&numSecondsSinceEpoch, &t) == nullptr)
     {
         int const errnum = errno;
         throw except::Exception(Ctxt("localtime_r() failed (" +
@@ -664,7 +664,7 @@ void sys::DateTime::gmtime(time_t numSecondsSinceEpoch, tm& t)
     // our fingers and hope the regular function actually is reentrant
     // (supposedly this is the case on Windows).
 #if CODA_OSS_POSIX_SOURCE
-    if (::gmtime_r(&numSecondsSinceEpoch, &t) == NULL)
+    if (::gmtime_r(&numSecondsSinceEpoch, &t) == nullptr)
     {
         int const errnum = errno;
         throw except::Exception(Ctxt("gmtime_r() failed (" +

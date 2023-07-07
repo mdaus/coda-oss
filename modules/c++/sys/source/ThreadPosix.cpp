@@ -81,7 +81,7 @@ void *sys::ThreadPosix::__start(void *v)
     */
 
     pthread_exit(NULL);
-    return NULL;
+    return nullptr;
 }
 
 void sys::ThreadPosix::kill()

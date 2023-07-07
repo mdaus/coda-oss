@@ -52,7 +52,7 @@ void ScopedCPUMaskUnix::initialize(int numCPUs)
     mSize = CPU_ALLOC_SIZE(numCPUs);
     mMask = CPU_ALLOC(numCPUs);
 
-    if (mMask == NULL)
+    if (mMask == nullptr)
     {
         std::ostringstream msg;
         msg << "Failed to allocate CPU mask for " << numCPUs << "CPUs";

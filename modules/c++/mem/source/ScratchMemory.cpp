@@ -180,7 +180,7 @@ void ScratchMemory::setup(const BufferView<sys::ubyte>& scratchBuffer)
             throw except::Exception(Ctxt(
                     "Buffer has insufficient space for scratch memory"));
         }
-        if (scratchBuffer.data == NULL)
+        if (scratchBuffer.data == nullptr)
         {
             throw except::Exception(Ctxt(
                     "Invalid external buffer was provided"));
@@ -209,7 +209,7 @@ const ScratchMemory::Segment& ScratchMemory::lookupSegment(
         const std::string& key,
         size_t indexBuffer) const
 {
-    if (mBuffer.data == NULL)
+    if (mBuffer.data == nullptr)
     {
         std::ostringstream oss;
         oss << "Tried to get scratch memory for \"" << key
