@@ -36,10 +36,6 @@ jobs:
         cd ..
         cd target-Debug
         cmake --build . --config Debug -j
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
-      with:
-        msbuild-architecture: x64
     - name: install
       run: |
         cd target-Release
@@ -48,10 +44,6 @@ jobs:
         cd target-Debug
         cmake --build . --config Debug --target install
         cd ..
-    - name: msbuild
-      run: |
-        msbuild coda-oss.sln /p:configuration=Release
-        msbuild coda-oss.sln /p:configuration=Debug
     - name: test
       run: |
         cd target-Release
@@ -59,6 +51,48 @@ jobs:
         cd ..
         cd target-Debug
         ctest -C Debug --output-on-failure
+
+  msbuild-windows:
+    strategy:
+      matrix:
+        os: [windows-latest]
+    name: ${{ matrix.os }}-CMake
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: configure
+      run: |
+        ls env:
+        mkdir target-Release
+        cd target-Release
+        cmake .. -DCMAKE_INSTALL_PREFIX=install -DCODA_OSS_BUILD_ONLY_DRIVERS=ON
+        cd ..
+        mkdir target-Debug
+        cd target-Debug
+        cmake .. -DCMAKE_INSTALL_PREFIX=install -DCODA_OSS_BUILD_ONLY_DRIVERS=ON
+    - name: build
+      run: |
+        cd target-Release
+        cmake --build . --config Release -j
+        cd ..
+        cd target-Debug
+        cmake --build . --config Debug -j
+    - name: install
+      run: |
+        cd target-Release
+        cmake --build . --config Release --target install
+        cd ..
+        cd target-Debug
+        cmake --build . --config Debug --target install
+        cd ..
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+      with:
+        msbuild-architecture: x64
+    - name: msbuild
+      run: |
+        msbuild coda-oss.sln /p:configuration=Release
+        msbuild coda-oss.sln /p:configuration=Debug
 
   build-linux-cmake:
     strategy:
