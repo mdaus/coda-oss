@@ -3,12 +3,12 @@ name: build_unittest
 on: [push]
 
 jobs:
-  build-cmake-Release-windows:
+  build-cmake-windows:
     strategy:
       matrix:
         os: [windows-latest]
         python-version: ['3.7']
-    name: ${{ matrix.os }}-${{ matrix.python-version }}-CMake-Release
+    name: ${{ matrix.os }}-${{ matrix.python-version }}-CMake
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
@@ -25,14 +25,24 @@ jobs:
         mkdir target-Release
         cd target-Release
         cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DPYTHON_VERSION=${{ matrix.python-version }} -DENABLE_SWIG=ON
+        cd ..
+        mkdir target-Debug
+        cd target-Debug
+        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DENABLE_PYTHON=OFF
     - name: build
       run: |
         cd target-Release
         cmake --build . --config Release -j
+        cd ..
+        cd target-Debug
+        cmake --build . --config Debug -j
     - name: install
       run: |
         cd target-Release
         cmake --build . --config Release --target install
+        cd ..
+        cd target-Debug
+        cmake --build . --config Debug --target install
         cd ..
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.1
@@ -41,10 +51,15 @@ jobs:
     - name: msbuild
       run: |
         msbuild coda-oss.sln /p:configuration=Release
+        msbuild coda-oss.sln /p:configuration=Debug
     - name: test
       run: |
         cd target-Release
         ctest -C Release --output-on-failure
+        cd ..
+        cd target-Debug
+        ctest -C Debug --output-on-failure
+        # mstest /testcontainer:${RUNNER_WORKSPACE}\coda-oss\x64\Debug\UnitTest.dll
 
   build-cmake-Debug-windows:
     strategy:
@@ -81,13 +96,7 @@ jobs:
       run: |
         cd target-Debug
         ctest -C Debug --output-on-failure
-    # mstest /testcontainer:${RUNNER_WORKSPACE}\coda-oss\x64\Debug\UnitTest.dll
-    - name: Run VStests
-      uses: microsoft/vstest-action@v1.0.0
-      with:
-        testAssembly: UnitTest.dll
-        searchFolder: ${RUNNER_WORKSPACE}\coda-oss\x64\Debug\
-        runInParallel: true
+        # mstest /testcontainer:${RUNNER_WORKSPACE}\coda-oss\x64\Debug\UnitTest.dll
 
   build-linux-cmake:
     strategy:
