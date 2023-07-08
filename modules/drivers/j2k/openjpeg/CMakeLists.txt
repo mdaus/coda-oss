@@ -59,7 +59,7 @@ else()
 
     set(SOURCE_DIR "${${CMAKE_PROJECT_NAME}_${TARGET_NAME}_SOURCE_DIR}")
 
-    check_include_file("stdint.h" OPJ_HAVE_STDINT_H)
+    set(OPJ_HAVE_STDINT_H true)
     set(OPENJPEG_VERSION_MAJOR 2)
     set(OPENJPEG_VERSION_MINOR 3)
     set(OPENJPEG_VERSION_BUILD 1)
