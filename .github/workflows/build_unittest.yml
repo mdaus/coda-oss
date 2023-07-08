@@ -81,7 +81,13 @@ jobs:
       run: |
         cd target-Debug
         ctest -C Debug --output-on-failure
-        mstest /testcontainer:${RUNNER_WORKSPACE}\coda-oss\x64\Debug\UnitTest.dll
+    # mstest /testcontainer:${RUNNER_WORKSPACE}\coda-oss\x64\Debug\UnitTest.dll
+    - name: Run VStests
+      uses: microsoft/vstest-action@v1.0.0
+      with:
+        testAssembly: UnitTest.dll
+        searchFolder: ${RUNNER_WORKSPACE}\coda-oss\x64\Debug\
+        runInParallel: true
 
   build-linux-cmake:
     strategy:
