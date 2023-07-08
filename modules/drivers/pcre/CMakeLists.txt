@@ -54,7 +54,7 @@ else()
     )
 
     check_symbol_exists("bcopy" "strings.h" HAVE_BCOPY)
-    check_include_file("inttypes.h" HAVE_INTTYPES_H)
+    set(HAVE_INTTYPES_H true)
     set(HAVE_MEMMOVE true)
     set(HAVE_STDINT_H true)
     set(HAVE_STRERROR true)
