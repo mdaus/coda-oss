@@ -43,8 +43,9 @@ CODA_OSS_disable_warning_system_header_push
 #pragma warning(disable: 26433) // Function '...' should be marked with '...' (c.128).
 #pragma warning(disable: 26456) // Operator '...' hides a non-virtual operator '...' (c.128).
 #pragma warning(disable: 26446) // Prefer to use gsl::at() instead of unchecked subscript operator (bounds.4).
-#pragma warning(disable : 26477)  // Use '...' rather than 0 or NULL(es .47).
+#pragma warning(disable: 26477)  // Use '...' rather than 0 or NULL(es .47).
 #pragma warning(disable: 26457) // (void) should not be used to ignore return values, use '...' instead (es.48).
+#pragma warning(disable: 26813) // Use '...' to check if a flag is set.
 #else
 CODA_OSS_disable_warning(-Wshadow)
 CODA_OSS_disable_warning(-Wsuggest-override)
