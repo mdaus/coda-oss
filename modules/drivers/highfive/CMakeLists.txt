@@ -10,12 +10,10 @@ if(CODA_ENABLE_HDF5)
         VERSION 2.6.2
         DEPS ${MODULE_DEPS})
 
-    if (NOT CODA_OSS_BUILD_ONLY_DRIVERS)
-        coda_add_tests(
-            MODULE_NAME ${MODULE_NAME}
-            DIRECTORY "unittests"
-            UNITTEST)
-    endif()
+    coda_add_tests(
+        MODULE_NAME ${MODULE_NAME}
+        DIRECTORY "unittests"
+        UNITTEST)
 else()
     message("${MODULE_NAME} will not be built since HDF5 is not enabled")
 endif()
