@@ -88,6 +88,7 @@ jobs:
       run: |
         cd target-Debug
         ctest -C Debug --output-on-failure
+        mstest /testcontainer:${RUNNER_WORKSPACE}\coda-oss\x64\Debug\UnitTest.dll
 
   build-linux-cmake:
     strategy:
@@ -132,7 +133,7 @@ jobs:
         os: [ubuntu-latest, windows-2019]
         python-version: ['3.7']
         debugging: ['--enable-debugging', '']
-    name: ${{ matrix.os }}-${{ matrix.python-version }}-waf
+    name: ${{ matrix.os }}-${{ matrix.python-version }}-waf${{ matrix.debugging }}
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
