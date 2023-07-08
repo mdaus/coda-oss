@@ -56,7 +56,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest]
-    name: ${{ matrix.os }}-CMake
+    name: ${{ matrix.os }}-msbuild
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
@@ -65,11 +65,11 @@ jobs:
         ls env:
         mkdir target-Release
         cd target-Release
-        cmake .. -DCMAKE_INSTALL_PREFIX=install -DCODA_OSS_BUILD_ONLY_DRIVERS=ON
+        cmake .. -DCMAKE_INSTALL_PREFIX=install -DCODA_OSS_BUILD_ONLY_DRIVERS=ON -DENABLE_PYTHON=OFF
         cd ..
         mkdir target-Debug
         cd target-Debug
-        cmake .. -DCMAKE_INSTALL_PREFIX=install -DCODA_OSS_BUILD_ONLY_DRIVERS=ON
+        cmake .. -DCMAKE_INSTALL_PREFIX=install -DCODA_OSS_BUILD_ONLY_DRIVERS=ON -DENABLE_PYTHON=OFF
     - name: build
       run: |
         cd target-Release
