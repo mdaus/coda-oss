@@ -593,7 +593,7 @@
       <SubSystem>
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\out\install\$(Platform)-$(Configuration)\lib\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\out\install\$(Platform)-$(Configuration)\lib\;$(SolutionDir)\target-$(Configuration)\installwindows-latestCMake-Github\lib\</AdditionalLibraryDirectories>
       <AdditionalDependencies>hdf5-c++.lib;z.lib;minizip.lib;xerces-c.lib;rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -623,7 +623,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\out\install\$(Platform)-$(Configuration)\lib\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\out\install\$(Platform)-$(Configuration)\lib\;$(SolutionDir)\target-$(Configuration)\installwindows-latestCMake-Github\lib\</AdditionalLibraryDirectories>
       <AdditionalDependencies>hdf5-c++.lib;z.lib;minizip.lib;xerces-c.lib;rpcrt4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
