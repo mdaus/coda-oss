@@ -58,7 +58,7 @@ struct Serializable : public io::Serializable
     }
 
     //! Destructor
-    virtual ~Serializable() {}
+    virtual ~Serializable() noexcept(false) {}
 
     Serializable(const Serializable&) = delete;
     Serializable& operator=(const Serializable&) = delete;
