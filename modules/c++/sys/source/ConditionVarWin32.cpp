@@ -41,6 +41,11 @@ namespace
             LeaveCriticalSection(&mCriticalSection);
         }
 
+        ScopedCriticalSection(const ScopedCriticalSection&) = delete;
+        ScopedCriticalSection& operator=(const ScopedCriticalSection&) = delete;
+        ScopedCriticalSection(ScopedCriticalSection&&) = delete;
+        ScopedCriticalSection& operator=(ScopedCriticalSection&&) = delete;
+
     private:
         CRITICAL_SECTION& mCriticalSection;
     };
