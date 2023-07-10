@@ -46,6 +46,7 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 6011) // Dereferencing NULL pointer '...'. 
 #pragma warning(disable: 6313) // Incorrect operator.  Use an equality test to check for zero-valued flags.
 #pragma warning(disable: 6389) // Move '...' to anonymous namespace or put a forward declaration in a common header included in this file.
+#pragma warning(disable: 4866) // compiler may not enforce left-to-right evaluation order for call to '...'
 
 #pragma warning(disable: 26432) // If you define or delete any default operation in the type '...', define or delete them all (c.21).
 #pragma warning(disable: 26429) // Symbol '...' is never tested for nullness, it can be marked as not_null (f.23).
