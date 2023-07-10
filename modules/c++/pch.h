@@ -26,19 +26,16 @@ CODA_OSS_disable_warning_system_header_push
 #include <time.h>
 #include <stdarg.h>
 
-#include "import/std.h"
-
 CODA_OSS_disable_warning_pop
+
+#include "import/std.h"
 
 
 #include <net/net_config.h>
 #include <zlib.h>
 #include <xml/lite/xml_lite_config.h>
 
-#pragma warning(disable: 4626) // '...': assignment operator was implicitly defined as deleted
-#pragma warning(disable: 4625) // '...': copy constructor was implicitly defined as deleted
 #pragma warning(disable: 4251) // '...': class '...' needs to have dll-interface to be used by clients of class '...'
-#pragma warning(disable: 5105) // macro expansion producing '...' has undefined behavior
 #pragma warning(disable: 4365) // '...': conversion from '...' to '...', signed/unsigned mismatch
 #pragma warning(disable: 5039) // '...': pointer or reference to potentially throwing function passed to '...' function under -EHc. Undefined behavior may occur if this function throws an exception.
 #pragma warning(disable: 6326) // Potential comparison of a constant with another constant.
@@ -47,7 +44,6 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 6305) // Potential mismatch between sizeof and countof quantities. Use sizeof() to scale byte sizes.
 #pragma warning(disable: 6288) // Incorrect operator.  Did you intend to use || instead?
 #pragma warning(disable: 6011) // Dereferencing NULL pointer '...'. 
-#pragma warning(disable: 6001)  // Using uninitialized memory '...'.
 #pragma warning(disable: 6313) // Incorrect operator.  Use an equality test to check for zero-valued flags.
 #pragma warning(disable: 6389) // Move '...' to anonymous namespace or put a forward declaration in a common header included in this file.
 
@@ -88,17 +84,13 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 28159) // Consider using '...' instead of '...'. Reason: Deprecated. Use VerifyVersionInfo* or IsWindows* macros from VersionHelpers.
 #pragma warning(disable: 26439) // This kind of function should not throw. Declare it '...' (f.6).
 #pragma warning(disable: 26454) // Arithmetic overflow: '...' operation produces a negative unsigned result at compile time (io.5).
-#pragma warning(disable: 26818) // Switch statement does not cover all cases. Consider adding a '...' label (es.79).
 #pragma warning(disable: 26492) // Don't use const_cast to cast away const or volatile (type.3).
 #pragma warning(disable: 26110) // Caller failing to hold lock '...' before calling function '...'.
-#pragma warning(disable: 26497) // You can attempt to make '...' constexpr unless it contains any undefined behavior (f.4).
 #pragma warning(disable: 26459) // You called an STL function '...' with a raw pointer parameter at position '...' that may be unsafe - this relies on the caller to check that the passed values are correct. Consider wrapping your range in a gsl::span and pass as a span iterator (stl.1).
 #pragma warning(disable: 26473) // Don't cast between pointer types where the source type and the target type are the same (type.1).
-#pragma warning(disable: 26475) // Do not use function style casts (es.49). Prefer '...' over '...'..
 #pragma warning(disable: 26491) // Don't use static_cast downcasts (type.2).
 #pragma warning(disable: 26405) // Do not assign to an owner<T> which may be in valid state (r.3).
 #pragma warning(disable: 26403) // Reset or explicitly delete an owner<T> pointer '...' (r.3).
-#pragma warning(disable: 26498) // The function '...' is constexpr, mark variable '...' constexpr if compile-time evaluation is desired (con.5).
 #pragma warning(disable: 26489) // Don't dereference a pointer that may be invalid: '...'. '...' may have been invalidated at line 132 (lifetime.1).
 #pragma warning(disable: 26486) // Don't pass a pointer that may be invalid to a function. Parameter 0 '...' in call to '...' may be invalid (lifetime.3).
 #pragma warning(disable: 26823) // Dereferencing a possibly null pointer '...' (lifetime.1).

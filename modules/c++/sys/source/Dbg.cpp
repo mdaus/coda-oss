@@ -28,7 +28,7 @@
 
 #include <config/compiler_extensions.h>
 
-inline void va_end_(va_list& args)
+inline void va_end_(va_list& args) noexcept
 {
     CODA_OSS_disable_warning_push
     #if _MSC_VER
@@ -40,7 +40,7 @@ inline void va_end_(va_list& args)
     CODA_OSS_disable_warning_pop
 }
 
-void sys::dbgPrintf(const char *format, ...)
+void sys::dbgPrintf(const char *format, ...) noexcept
 {
     if (sys::debugging)
     {
@@ -52,7 +52,7 @@ void sys::dbgPrintf(const char *format, ...)
     }
 }
 
-void sys::diePrintf(const char *format, ...)
+void sys::diePrintf(const char* format, ...) noexcept
 {
     va_list args;
     va_start(args, format);
