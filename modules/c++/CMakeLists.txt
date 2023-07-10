@@ -1,9 +1,9 @@
 set(TARGET_LANGUAGE c++)
 
-# turn on maximum warnings
 if (MSVC)
     add_compile_options(/std:c++17)
 
+    # turn on maximum warnings
     # By default, there is a /W3 on the command-line from somewhere (?); adding
     # /Wn results in a compiler warning.
     #add_compile_options(/W4) # /Wall
