@@ -36,6 +36,14 @@ jobs:
         cd ..
         cd target-Debug
         cmake --build . --config Debug -j
+    - name: test
+    # should run w/o install
+      run: |
+        cd target-Release
+        ctest -C Release --output-on-failure
+        cd ..
+        cd target-Debug
+        ctest -C Debug --output-on-failure
     - name: install
       run: |
         cd target-Release
@@ -52,50 +60,8 @@ jobs:
       run: |
         msbuild coda-oss.sln /p:configuration=Release
         msbuild coda-oss.sln /p:configuration=Debug
-    - name: test
-      run: |
-        cd target-Release
-        ctest -C Release --output-on-failure
-        cd ..
-        cd target-Debug
-        ctest -C Debug --output-on-failure
-        # mstest /testcontainer:${RUNNER_WORKSPACE}\coda-oss\x64\Debug\UnitTest.dll
-
-  build-cmake-Debug-windows:
-    strategy:
-      matrix:
-        os: [windows-latest]
-        python-version: ['3.7']
-    name: ${{ matrix.os }}-${{ matrix.python-version }}-CMake-Debug
-    runs-on: ${{ matrix.os }}
-    steps:
-    - uses: actions/checkout@v3
-    - name: configure
-      run: |
-        ls env:
-        mkdir target-Debug
-        cd target-Debug
-        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DENABLE_PYTHON=OFF
-    - name: build
-      run: |
-        cd target-Debug
-        cmake --build . --config Debug -j
-    - name: install
-      run: |
-        cd target-Debug
-        cmake --build . --config Debug --target install
-        cd ..
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
-      with:
-        msbuild-architecture: x64
-    - name: msbuild
-      run: |
-        msbuild coda-oss.sln /p:configuration=Debug
-    - name: test
-      run: |
-        cd target-Debug
-        ctest -C Debug --output-on-failure
+    #- name: mstest
+    #  run: |
         # mstest /testcontainer:${RUNNER_WORKSPACE}\coda-oss\x64\Debug\UnitTest.dll
 
   build-linux-cmake:
@@ -126,14 +92,15 @@ jobs:
         cd target
         # "-j" spawns too many processes causing GCC to crash
         cmake --build . -j 12
+    - name: test
+    # should run w/o install
+      run: |
+        cd target
+        ctest --output-on-failure
     - name: install
       run: |
         cd target
         cmake --build . --target install
-    - name: test
-      run: |
-        cd target
-        ctest --output-on-failure
 
   build-waf:
     strategy:
