@@ -88,7 +88,6 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 26454) // Arithmetic overflow: '...' operation produces a negative unsigned result at compile time (io.5).
 #pragma warning(disable: 26492) // Don't use const_cast to cast away const or volatile (type.3).
 #pragma warning(disable: 26110) // Caller failing to hold lock '...' before calling function '...'.
-#pragma warning(disable: 26497) // You can attempt to make '...' constexpr unless it contains any undefined behavior (f.4).
 #pragma warning(disable: 26459) // You called an STL function '...' with a raw pointer parameter at position '...' that may be unsafe - this relies on the caller to check that the passed values are correct. Consider wrapping your range in a gsl::span and pass as a span iterator (stl.1).
 #pragma warning(disable: 26473) // Don't cast between pointer types where the source type and the target type are the same (type.1).
 #pragma warning(disable: 26491) // Don't use static_cast downcasts (type.2).
