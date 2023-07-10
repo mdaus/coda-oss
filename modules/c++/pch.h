@@ -26,9 +26,9 @@ CODA_OSS_disable_warning_system_header_push
 #include <time.h>
 #include <stdarg.h>
 
-#include "import/std.h"
-
 CODA_OSS_disable_warning_pop
+
+#include "import/std.h"
 
 
 #include <net/net_config.h>
@@ -94,7 +94,6 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 26491) // Don't use static_cast downcasts (type.2).
 #pragma warning(disable: 26405) // Do not assign to an owner<T> which may be in valid state (r.3).
 #pragma warning(disable: 26403) // Reset or explicitly delete an owner<T> pointer '...' (r.3).
-#pragma warning(disable: 26498) // The function '...' is constexpr, mark variable '...' constexpr if compile-time evaluation is desired (con.5).
 #pragma warning(disable: 26489) // Don't dereference a pointer that may be invalid: '...'. '...' may have been invalidated at line 132 (lifetime.1).
 #pragma warning(disable: 26486) // Don't pass a pointer that may be invalid to a function. Parameter 0 '...' in call to '...' may be invalid (lifetime.3).
 #pragma warning(disable: 26823) // Dereferencing a possibly null pointer '...' (lifetime.1).
