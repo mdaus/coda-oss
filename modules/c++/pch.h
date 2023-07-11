@@ -44,7 +44,6 @@ CODA_OSS_disable_warning_pop
 #pragma warning(disable: 6305) // Potential mismatch between sizeof and countof quantities. Use sizeof() to scale byte sizes.
 #pragma warning(disable: 6288) // Incorrect operator.  Did you intend to use || instead?
 #pragma warning(disable: 6011) // Dereferencing NULL pointer '...'. 
-#pragma warning(disable: 6313) // Incorrect operator.  Use an equality test to check for zero-valued flags.
 #pragma warning(disable: 6389) // Move '...' to anonymous namespace or put a forward declaration in a common header included in this file.
 
 #pragma warning(disable: 26822) // Dereferencing a null pointer '...' (lifetime.1).
