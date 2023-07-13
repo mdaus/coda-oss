@@ -966,6 +966,9 @@
     <ClInclude Include="mt\include\import\mt.h">
       <Filter>mt</Filter>
     </ClInclude>
+    <ClInclude Include="include\UnitTest.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />

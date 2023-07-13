@@ -60,6 +60,7 @@
     <ClInclude Include="hdf5.lite\source\H5.h" />
     <ClInclude Include="hdf5.lite\source\hdf5.lite.h" />
     <ClInclude Include="include\TestCase.h" />
+    <ClInclude Include="include\UnitTest.h" />
     <ClInclude Include="io\include\io\BidirectionalStream.h" />
     <ClInclude Include="io\include\io\BufferViewStream.h" />
     <ClInclude Include="io\include\io\ByteStream.h" />
