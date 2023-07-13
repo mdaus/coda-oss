@@ -1592,5 +1592,8 @@
       <Filter>std</Filter>
     </None>
     <None Include="coda-oss.ruleset" />
+    <None Include="sys\source\CppUnitTestAssert_.cpp_">
+      <Filter>sys</Filter>
+    </None>
   </ItemGroup>
 </Project>
