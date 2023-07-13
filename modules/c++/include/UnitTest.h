@@ -11,7 +11,7 @@
 #endif
 
 // Use our various TEST macros with a Visual Studio "UnitTest" project.
-#include "CppUnitTest.h"
+#include <CppUnitTest.h>
 
 #undef TEST_CHECK
 #undef TEST_ASSERT
