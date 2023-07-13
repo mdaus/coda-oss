@@ -146,6 +146,7 @@
     <ClInclude Include="mem\include\mem\Span.h" />
     <ClInclude Include="mem\include\mem\SwapBuffer.h" />
     <ClInclude Include="mem\include\mem\VectorOfPointers.h" />
+    <ClInclude Include="mt\include\import\mt.h" />
     <ClInclude Include="mt\include\mt\AbstractCPUAffinityInitializer.h" />
     <ClInclude Include="mt\include\mt\AbstractCPUAffinityThreadInitializer.h" />
     <ClInclude Include="mt\include\mt\AbstractThreadPool.h" />
@@ -580,7 +581,6 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ControlFlowGuard>Guard</ControlFlowGuard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <ConformanceMode>true</ConformanceMode>
@@ -610,7 +610,6 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ControlFlowGuard>Guard</ControlFlowGuard>
-      <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <ConformanceMode>true</ConformanceMode>
