@@ -75,7 +75,7 @@ class CODA_OSS_API ContentHandler
 protected:
     //! Constructor
     ContentHandler() = default;
-    virtual ~ContentHandler() = default;
+    virtual ~ContentHandler() noexcept(false) {}
 
 public:
     //! Receive notification of the beginning of a document.

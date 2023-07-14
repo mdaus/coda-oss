@@ -25,6 +25,7 @@
 #define CODA_OSS_net_SocketsWin32_h_INCLUDED_
 
 #include <mutex>
+#include <tuple>
 
 #ifndef _WINSOCK2API_ // <winsock2.h> already #include'd
 
@@ -104,7 +105,7 @@ inline void Win32SocketInit()
             inited = true;
             WORD versionRequested = MAKEWORD(1, 1);
             WSADATA wsaData;
-            WSAStartup(versionRequested, &wsaData);
+            std::ignore = WSAStartup(versionRequested, &wsaData);
             atexit( net::Win32SocketDestroy );
         }
     }
