@@ -38,7 +38,7 @@ void tiff::IFDEntry::serialize(io::OutputStream& output)
 {
     io::Seekable *seekable =
             dynamic_cast<io::Seekable *>(&output);
-    if (seekable == NULL)
+    if (seekable == nullptr)
         throw except::Exception(Ctxt("Can only serialize IFDEntry to seekable stream"));
 
     output.write((sys::byte *)&mTag, sizeof(mTag));
@@ -88,7 +88,7 @@ void tiff::IFDEntry::deserialize(io::InputStream& input, const bool reverseBytes
 {
     io::Seekable *seekable =
             dynamic_cast<io::Seekable*>(&input);
-    if (seekable == NULL)
+    if (seekable == nullptr)
         throw except::Exception(Ctxt("Can only deserialize IFDEntry from seekable stream"));
 
     input.read((char *)&mTag, sizeof(mTag));
@@ -127,7 +127,7 @@ void tiff::IFDEntry::deserialize(io::InputStream& input, const bool reverseBytes
                 numElements = mCount * 2;
             }
             if (elementSize > 1)
-                sys::byteSwap(buffer, static_cast<unsigned short>(elementSize), numElements);
+                sys::byteSwap(buffer, elementSize, numElements);
         }
 
         parseValues((const unsigned char *)buffer);
