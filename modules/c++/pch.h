@@ -33,6 +33,9 @@ CODA_OSS_disable_warning_pop
 
 #include <net/net_config.h>
 #include <zlib.h>
+#pragma comment(lib, "z.lib")
+#pragma comment(lib, "minizip.lib")
+
 #include <xml/lite/xml_lite_config.h>
 
 #pragma warning(disable: 4251) // '...': class '...' needs to have dll-interface to be used by clients of class '...'
@@ -103,7 +106,11 @@ CODA_OSS_disable_warning_pop
 #include "sys/Conf.h"
 #include "sys/filesystem.h"
 #include "mem/SharedPtr.h"
+
 #include "xml/lite/xerces_.h"
+#pragma comment(lib, "xerces-c")
+
 #include "hdf5/lite/H5_.h"
+#pragma comment(lib, "hdf5-c++.lib")
 
 #endif //CODA_OSS_pch_h_INCLUDED_
