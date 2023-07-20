@@ -306,7 +306,7 @@ inline auto byteSwapCxValue(TComplex z)
     // C++ mandates that `std::complex<T>` be the same as `T cx[2]`; that is
     // the structure is contiguous. https://en.cppreference.com/w/cpp/numeric/complex
     const auto& z_ = reinterpret_cast<value_type(&)[2]>(z);    
-    return byteSwap(make_span(z_));
+    return byteSwap(sys::make_span(z_));
 }
 }
 template <typename T>
