@@ -266,7 +266,7 @@ TEST_CASE(testByteSwapCxValue)
 
         // .real() and .imag() are swapped individually
         const void* const pSwap_ = &swap;
-        auto const pSwapBytes = static_cast<const std::byte*>(pSwap_);
+        auto pSwapBytes = static_cast<const std::byte*>(pSwap_);
         TEST_ASSERT(four_bytes[0] == pSwapBytes[1]);
         TEST_ASSERT(four_bytes[1] == pSwapBytes[0]);
         TEST_ASSERT(four_bytes[2] == pSwapBytes[3]);
@@ -274,6 +274,13 @@ TEST_CASE(testByteSwapCxValue)
             
         swap = sys::byteSwap(swap);  // swap back
         TEST_ASSERT_EQ(*pValue, swap);
+
+        auto buffer = std::as_writable_bytes(sys::make_span(&swap, 1));
+        sys::byteSwap(sys::make_span(pValue, 1), buffer);
+        TEST_ASSERT(four_bytes[0] == buffer[1]);
+        TEST_ASSERT(four_bytes[1] == buffer[0]);
+        TEST_ASSERT(four_bytes[2] == buffer[3]);
+        TEST_ASSERT(four_bytes[3] == buffer[2]);
     }
 }
 
