@@ -21,6 +21,12 @@ from dumpconfig import dumpconfig
 from makewheel import makewheel
 from package import package
 
+try:
+    import hashlib
+    hashlib.md5()
+except ValueError:
+    Logs.error('MD5 error - you are likely trying to use an old python on a new machine to run waf. '
+               'If you run into a fatal FIPS error try finding a newer version of python.')
 
 COMMON_EXCLUDES = '.bzr .bzrignore .git .gitignore .svn CVS .cvsignore .arch-ids {arch} SCCS BitKeeper .hg _MTN _darcs Makefile Makefile.in config.log'.split()
 COMMON_EXCLUDES_EXT ='~ .rej .orig .pyc .pyo .bak .tar.bz2 tar.gz .zip .swp'.split()
@@ -29,8 +35,8 @@ COMMON_EXCLUDES_EXT ='~ .rej .orig .pyc .pyo .bak .tar.bz2 tar.gz .zip .swp'.spl
 for ext in COMMON_EXCLUDES_EXT:
     TaskGen.extension(ext)(Utils.nada)
 
-if sys.version_info < (2,6,0):
-    raise Errors.WafError('Build system requires at least Python 2.6')
+if sys.version_info < (3,6,0):
+    raise Errors.WafError('Build system requires at least Python 3.6')
 
 # provide a partial function if we don't have one
 try:
@@ -846,7 +852,7 @@ def configureCompilerOptions(self):
         config['cxx']['optz_fast']      = '-O2'
         config['cxx']['optz_faster']   = '-O3'
         config['cxx']['optz_fastest']   = config['cxx']['optz_faster']
-        config['cxx']['optz_fastest-possible']   = config['cxx']['optz_fastest'] # TODO: -march=native ?
+        config['cxx']['optz_fastest-possible']   = config['cxx']['optz_fastest']
 
         #self.env.append_value('LINKFLAGS', '-fPIC -dynamiclib'.split())
         self.env.append_value('LINKFLAGS', '-fPIC'.split())
@@ -891,12 +897,6 @@ def configureCompilerOptions(self):
         #       If you want the plugins to not depend on Intel libraries,
         #       configure with:
         #       --with-cflags=-static-intel --with-cxxflags=-static-intel --with-linkflags=-static-intel
-        if cxxCompiler == 'gcc':
-            config['cxx']['debug']          = '-ggdb3'
-            config['cxx']['optz_debug']     = '-Og'
-        elif cxxCompiler == 'icpc':
-            config['cxx']['debug']          = '-g'
-            config['cxx']['optz_debug']     = ''
         if cxxCompiler == 'g++' or cxxCompiler == 'icpc':
             config['cxx']['warn']           = warningFlags.split()
             config['cxx']['verbose']        = '-v'
@@ -907,10 +907,11 @@ def configureCompilerOptions(self):
             # https://gcc.gnu.org/onlinedocs/gcc-12.2.0/gcc/x86-Options.html#x86-Options
             # "Using -march=native enables all instruction subsets supported by the local machine ..."
             config['cxx']['optz_faster']      = '-O3' # no -march=native
-            config['cxx']['optz_fastest']   =  config['cxx']['optz_faster'] # TODO: add -march=native ?
+            # Haswell is from 2013 ... 10 years ago: https://en.wikipedia.org/wiki/Haswell_%28microarchitecture%29
+            config['cxx']['optz_fastest']   =  [ config['cxx']['optz_faster'], '-march=haswell' ]
             # This "should" be part of fastest, but that could cause unexpected floating point differences.
             # The "fastest-possible" option is new; see comments above.
-            config['cxx']['optz_fastest-possible']   =  [ config['cxx']['optz_fastest'], '-march=native' ]
+            config['cxx']['optz_fastest-possible']   =  [ config['cxx']['optz_faster'], '-march=native' ]  # -march=native instead of haswell
 
             self.env.append_value('CXXFLAGS', '-fPIC'.split())
             if not Options.options.enablecpp17:
@@ -931,12 +932,21 @@ def configureCompilerOptions(self):
 
             self.env.append_value('LINKFLAGS', linkFlags.split())
 
-        if ccCompiler == 'gcc':
-            config['cc']['debug']          = '-ggdb3'
-            config['cc']['optz_debug']     = '-Og'
-        elif ccCompiler == 'icc':
-            config['cc']['debug']          = '-g'
-            config['cc']['optz_debug']     = ''
+        if Options.options.debugging:
+            if cxxCompiler == 'g++':
+                config['cxx']['debug'] = '-ggdb3'
+                config['cxx']['optz_debug'] = '-Og'
+            elif cxxCompiler == 'icpc':
+                config['cxx']['debug'] = '-g'
+                config['cxx']['optz_debug'] = ''
+
+            if ccCompiler == 'gcc':
+                config['cc']['debug'] = '-ggdb3'
+                config['cc']['optz_debug'] = '-Og'
+            elif ccCompiler == 'icc':
+                config['cc']['debug'] = '-g'
+                config['cc']['optz_debug'] = ''
+
         if ccCompiler == 'gcc' or ccCompiler == 'icc':
             config['cc']['warn']           = warningFlags.split()
             config['cc']['verbose']        = '-v'
@@ -947,10 +957,11 @@ def configureCompilerOptions(self):
             # https://gcc.gnu.org/onlinedocs/gcc-12.2.0/gcc/x86-Options.html#x86-Options
             # "Using -march=native enables all instruction subsets supported by the local machine ..."
             config['cc']['optz_faster']      = '-O3' # no -march=native
-            config['cc']['optz_fastest']   =  config['cc']['optz_faster'] # TODO: add -march=native ?
+            # Haswell is from 2013 ... 10 years ago: https://en.wikipedia.org/wiki/Haswell_%28microarchitecture%29
+            config['cc']['optz_fastest']   =  [ config['cc']['optz_faster'], '-march=haswell' ]
             # This "should" be part of fastest, but that could cause unexpected floating point differences.
             # The "fastest-possible" option is new; see comments above.
-            config['cc']['optz_fastest-possible']   =  [ config['cc']['optz_fastest'], '-march=native' ]
+            config['cc']['optz_fastest-possible']   =  [ config['cc']['optz_faster'], '-march=native' ] # -march=native instead of haswell
 
             self.env.append_value('CFLAGS', '-fPIC'.split())
             # "gnu99" enables POSIX and BSD

@@ -20,9 +20,9 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_xml_lite_Doocument_h_INCLUDED_
 #define CODA_OSS_xml_lite_Doocument_h_INCLUDED_
-#pragma once
 
 /*!
  * \file  Document.h
@@ -39,9 +39,10 @@
 #include <assert.h>
 
 #include <utility>
-#include <std/memory>
+#include <memory>
 #include "coda_oss/string.h"
-#include "coda_oss/memory.h"
+
+#include <config/Exports.h>
 
 #include "xml/lite/Element.h"
 #include "xml/lite/QName.h"
@@ -57,7 +58,7 @@ namespace lite
  * Use the Document to access the Element nodes contained within.
  * The DocumentParser will build a tree that you can use.
  */
-struct Document // SOAPDocument derives :-(
+struct CODA_OSS_API Document  // SOAPDocument derives :-(
 {
     //! Constructor
     Document(Element* rootNode = nullptr, bool own = true) :
@@ -104,7 +105,7 @@ struct Document // SOAPDocument derives :-(
      * \param characterData The character data (if any)
      * \return A new element
      */
-    Element *createElement(const std::string & qname, const std::string & uri, std::string characterData = "");
+    virtual Element *createElement(const std::string & qname, const std::string & uri, std::string characterData = "");
     #ifndef SWIG // SWIG doesn't like std::unique_ptr
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const std::string& characterData) const;
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const coda_oss::u8string& characterData) const;

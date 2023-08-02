@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_xml_lite_XMLReaderXerces_h_INCLUDED_
 #define CODA_OSS_xml_lite_XMLReaderXerces_h_INCLUDED_
 
@@ -28,6 +29,8 @@
 #if defined(USE_XERCES)
 
 #include <string>
+
+#include <config/Exports.h>
 
 #include <sys/Mutex.h>
 #include <mt/CriticalSection.h>
@@ -56,7 +59,7 @@ namespace lite
  *  the Expat C Parser underneath, and wiring it to
  *  generic event calls, via the content handler.
  */
-class XMLReaderXerces final : public XMLReaderInterface
+class CODA_OSS_API XMLReaderXerces final : public XMLReaderInterface
 {
     XercesContext mCtxt;    //! this must be the first member listed
     std::unique_ptr<SAX2XMLReader>        mNative;
@@ -82,7 +85,7 @@ public:
      *  This method returns a reference to the content handler.
      *  \return content handler
      */
-    xml::lite::ContentHandler *getContentHandler()
+    xml::lite::ContentHandler *getContentHandler() override
     {
         return mDriverContentHandler->retrieveXMLLiteContentHandler();
     }
@@ -92,7 +95,7 @@ public:
      *  It will set this internally.
      *  \param handler  The content handler to pass
      */
-    void setContentHandler(xml::lite::ContentHandler* handler)
+    void setContentHandler(xml::lite::ContentHandler* handler) override
     {
         mDriverContentHandler->setXMLLiteContentHandler(handler);
     }
@@ -104,12 +107,12 @@ public:
         int size = io::InputStream::IS_END);
     
     //! Method to create an xml reader
-    void create();
+    void create() override;
 
     //! Method to destroy an xml reader
-    void destroy();
+    void destroy() override;
 
-    std::string getDriverName() const { return "xerces"; }
+    std::string getDriverName() const override { return "xerces"; }
 
     static const void* getWindows1252Encoding();
 

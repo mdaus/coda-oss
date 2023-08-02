@@ -34,6 +34,7 @@
 #include <str/EncodedString.h>
 #include <str/EncodedStringView.h>
 #include <str/Encoding.h>
+#include <gsl/gsl.h>
 
 #include "TestCase.h"
 
@@ -44,14 +45,14 @@ inline static void test_assert_eq(const std::string& testName, const std::u8stri
 
 TEST_CASE(testConvert)
 {
-    TEST_ASSERT_EQ(str::toType<long long>("0x3BC7", 16), (long long) 0x3BC7);
-    TEST_ASSERT_EQ(str::toType<long long>("1101", 2), (long long) 13);
-    TEST_ASSERT_EQ(str::toType<long long>("231", 5), (long long) 66);
+    TEST_ASSERT_EQ(str::toType<long long>("0x3BC7", 16), gsl::narrow<long long>(0x3BC7));
+    TEST_ASSERT_EQ(str::toType<long long>("1101", 2), gsl::narrow<long long>(13));
+    TEST_ASSERT_EQ(str::toType<long long>("231", 5), gsl::narrow<long long>(66));
     TEST_ASSERT_EQ(str::toType<unsigned long long>("0xFFFFFFFFFFFFFFFF", 16),
-                   (unsigned long long) 0xFFFFFFFFFFFFFFFF);
+                   gsl::narrow<unsigned long long>(0xFFFFFFFFFFFFFFFF));
     TEST_ASSERT_EQ(str::toType<unsigned long long>("-10", 10),
-                   (unsigned long long) -10);
-    TEST_ASSERT_EQ(str::toType<short>("13", 4), (short) 7);
+                   gsl::narrow_cast<unsigned long long>(-10));
+    TEST_ASSERT_EQ(str::toType<short>("13", 4), gsl::narrow<short>(7));
 }
 
 TEST_CASE(testBadConvert)
@@ -362,6 +363,8 @@ static void test_wide_(const std::string& testName, const char* pStr, std::u16st
     const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
     TEST_ASSERT_EQ(encoded.native(), std_str);
     TEST_ASSERT_EQ(std_str, pStr);
+    #else
+    pUtf16 = pUtf16; // avoid unused-parameter warning
     #endif
 }
 
@@ -436,6 +439,8 @@ TEST_CASE(test_Windows1252_WIN32)
     constexpr auto w1252_unassigned = "\x81\x8d\x8f\x90\x9d";
     constexpr auto u16_w1252_unassigned = u"\x81\x8d\x8f\x90\x9d";
     test_Windows1252_(testName, w1252_unassigned, u16_w1252_unassigned);
+    #else
+    TEST_ASSERT_TRUE(true); // need to use hidden "testName" parameter
     #endif
 }
 
