@@ -23,8 +23,6 @@
 #define CODA_OSS_coda_oss_optional_h_INCLUDED_
 
 #include "coda_oss/CPlusPlus.h"
-#include "coda_oss/namespace_.h"
-#include "coda_oss/optional_.h"
 
 // This logic needs to be here rather than <std/optional> so that `coda_oss::optional` will
 // be the same as `std::optional`.
@@ -38,6 +36,10 @@
         #define CODA_OSS_HAVE_std_optional_ 1  // provided by the implementation, probably C++17
     #endif
 #endif // CODA_OSS_cpp17
+
+#if !CODA_OSS_HAVE_std_optional_
+#include "coda_oss/optional_.h"
+#endif
 
 namespace coda_oss
 {
