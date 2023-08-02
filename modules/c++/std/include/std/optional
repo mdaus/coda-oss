@@ -39,6 +39,10 @@ namespace std // This is slightly uncouth: we're not supposed to augment "std".
     using coda_oss::optional;
     using coda_oss::make_optional;
 }
+#ifndef __cpp_lib_optional
+#define __cpp_lib_optional 201606L // https://en.cppreference.com/w/cpp/feature_test
+#endif
+
 #endif // !CODA_OSS_NO_std_optional
 
 #endif  // CODA_OSS_std_optional_INCLUDED_

@@ -40,7 +40,7 @@
     #define CODA_OSS_HAVE_std_span_ 0  // assume no <span>
 #endif
 #if CODA_OSS_cpp17 // C++17 for `__has_include()`
-    #if __has_include(<span>) // Some versions of G++ say they're C++20 but don't have <span>
+    #if __has_include(<span>) && __cpp_lib_span // Some versions of G++ say they're C++20 but don't have <span>
         #include <span>
         #undef CODA_OSS_HAVE_std_span_
         #define CODA_OSS_HAVE_std_span_ 1  // provided by the implementation, probably C++20

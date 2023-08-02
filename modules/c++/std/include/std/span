@@ -41,6 +41,10 @@ namespace std // This is slightly uncouth: we're not supposed to augment "std".
     using coda_oss::as_bytes;
     using coda_oss::as_writable_bytes;
 }
-#endif  // CODA_OSS_DEFINE_std_span_
+#ifndef __cpp_lib_span
+#define __cpp_lib_span 202002L // https://en.cppreference.com/w/cpp/feature_test
+#endif
+
+#endif  // CODA_OSS_NO_std_span
 
 #endif  // CODA_OSS_std_span_INCLUDED_
