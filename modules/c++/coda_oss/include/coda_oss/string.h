@@ -53,7 +53,7 @@ namespace coda_oss
     #if !defined(__cpp_char8_t) // https://en.cppreference.com/w/cpp/feature_test
         enum class char8_t : unsigned char { }; // https://en.cppreference.com/w/cpp/language/types
     #elif CODA_OSS_HAVE_std_u8string_
-        using char8_t = std::char8_t;
+       // `char8_t` is a keyword in C++20
     #endif
     #if CODA_OSS_HAVE_std_u8string_
         using u8string = std::u8string;
