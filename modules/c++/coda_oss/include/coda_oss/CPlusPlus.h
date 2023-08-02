@@ -83,4 +83,17 @@
 #error "Must compile with C++14 or greater."
 #endif
 
+// Get feature-testing macros: https://en.cppreference.com/w/cpp/feature_test
+#if CODA_OSS_cpp17 // C++17 for __has_include
+    // https://en.cppreference.com/w/cpp/header/version
+    // "Prior to C++20, including <ciso646> is sometimes used for this purpose."
+    #if __has_include(<ciso646>)
+        #include <ciso646>
+    #endif
+
+    #if __has_include(<version>)
+        #include <version>
+    #endif
+#endif // CODA_OSS_cpp17
+
 #endif // CODA_OSS_coda_oss_CPlusPlus_h_INCLUDED_
