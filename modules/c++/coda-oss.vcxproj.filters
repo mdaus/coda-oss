@@ -966,6 +966,9 @@
     <ClInclude Include="include\UnitTest.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="coda_oss\include\coda_oss\optional_.h">
+      <Filter>coda_oss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
