@@ -109,26 +109,26 @@ TEST_CASE(test_sys_Optional)
     }
 }
 
-TEST_CASE(test_std_optional)
+TEST_CASE(test_coda_oss_optional)
 {
     TEST_ASSERT(!testName.empty());
 
-    const std::optional<int> null;
+    const coda_oss::optional<int> null;
     TEST_ASSERT_FALSE(null.has_value());
 
     {
-        std::optional<int> opt;
+        coda_oss::optional<int> opt;
         TEST_ASSERT_FALSE(opt.has_value());
         TEST_ASSERT_EQ(null, opt);
         opt = 314;
         testOptional_(testName, opt);
     }
     {
-        std::optional<int> opt = 314;
+        coda_oss::optional<int> opt = 314;
         testOptional_(testName, opt);
     }
     {
-        auto opt = std::make_optional<int>(314);
+        auto opt = coda_oss::make_optional<int>(314);
         testOptional_(testName, opt);
     }
 }
@@ -137,6 +137,6 @@ TEST_CASE(test_std_optional)
 int main(int /*argc*/, char** /*argv*/)
 {
     TEST_CHECK(test_sys_Optional);
-    TEST_CHECK(test_std_optional);
+    TEST_CHECK(test_coda_oss_optional);
     return 0;
 }
