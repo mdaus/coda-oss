@@ -31,6 +31,7 @@
 #include <iterator>
 #include <algorithm>
 
+#include <config/compiler_extensions.h>
 #include <import/str.h>
 #include <sys/Path.h>
 #include <sys/DirectoryEntry.h>
@@ -364,6 +365,10 @@ static std::string getSpecialEnv_Platform(const AbstractOS&, const std::string& 
 static std::string getSpecialEnv_PlatformToolset(const AbstractOS&, const std::string& envVar)
 {
     assert(envVar == "PlatformToolset");
+    #if _MSC_VER
+    UNREFERENCED_PARAMETER(envVar);
+    #endif
+
 #ifdef _WIN32
 	// https://docs.microsoft.com/en-us/cpp/build/how-to-modify-the-target-framework-and-platform-toolset?view=msvc-160
 	// https://learn.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=msvc-170
@@ -401,7 +406,13 @@ static std::string getSpecialEnv_SECONDS(const AbstractOS&, const std::string& e
     #endif
     return getSpecialEnv_SECONDS_();
 }
+
+CODA_OSS_disable_warning_push
+#if _MSC_VER
+#pragma warning(disable: 26426) // Global initializer calls a non-constexpr function '...' (i.22).
+#endif
 static std::string strUnusedSeconds = getSpecialEnv_SECONDS_(); // "start" the "shell"
+CODA_OSS_disable_warning_pop
 
 // See https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
 // and https://wiki.bash-hackers.org/syntax/shellvars
@@ -469,14 +480,7 @@ std::string AbstractOS::getSpecialEnv(const std::string& envVar) const
 
     if (envVar == "OSTYPE")
     {
-        // TODO: Mac
-        return sys::Platform == sys::PlatformType::Linux ? " linux-gnu" : "Windows";
-    }
-
-    if (envVar == "OSTYPE")
-    {
-        // TODO: Mac
-        return sys::Platform == sys::PlatformType::Linux ? " linux-gnu" : "Windows";
+        return sys::platformName<sys::Platform>();
     }
     
     // should explicitly handle all env. vars in some way    
