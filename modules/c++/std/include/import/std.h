@@ -22,9 +22,9 @@
  */
 
 
+#pragma once
 #ifndef CODA_OSS_import_std_h_INCLUDED_
 #define CODA_OSS_import_std_h_INCLUDED_
-#pragma once
 
 #include "coda_oss/CPlusPlus.h"
 #include "config/disable_compiler_warnings.h"
