@@ -1,7 +1,6 @@
 NAME            = 'numpyutils'
-MAINTAINER      = 'anuraag.pakanati@mdaus.com'
 VERSION         = '1.0'
-MODULE_DEPS     = 'types except sys'
+MODULE_DEPS     = 'types except sys mem std coda_oss'
 USELIB          = 'NUMPY PYEXT PYEMBED'
 
 from waflib import Options

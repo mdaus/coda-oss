@@ -1,7 +1,7 @@
 set(MODULE_NAME numpyutils)
 
 if(Python_Development_FOUND AND Python_NumPy_FOUND)
-    set(MODULE_DEPS types-c++ except-c++ sys-c++ ${Python_LIBRARIES})
+    set(MODULE_DEPS types-c++ except-c++ sys-c++ mem-c++ std-c++ coda_oss-c++ ${Python_LIBRARIES})
     if (UNIX)
         list(APPEND MODULE_DEPS util)
     endif()
