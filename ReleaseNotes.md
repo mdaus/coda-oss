@@ -16,6 +16,7 @@
 * `types::ComplexInteger` to work-around `std::complex<short>` no longer being [valid C++](https://en.cppreference.com/w/cpp/numeric/complex).
 * Another round of reducing various compiler warnings (of note: `NULL` -> `nullptr`).
 * Some suport for [`std::numbers`](https://en.cppreference.com/w/cpp/header/numbers) from C++20.
+* Update to [HighFive 2.7.1](https://github.com/BlueBrain/HighFive/releases/tag/v2.7.1).
 
 ## [Release 2023-06-05](https://github.com/mdaus/coda-oss/releases/tag/2023-06-05)
 * *zlib* updated to [1.2.13](https://github.com/madler/zlib/releases/tag/v1.2.13).
