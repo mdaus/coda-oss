@@ -25,7 +25,12 @@
 #include "xml/lite/Document.h"
 #include "xml/lite/Element.h"
 #include "xml/lite/QName.h"
-static const std::string test_text = "SOAP Test";
+
+static const std::string& test_text()
+{
+    static const std::string retval = "SOAP Test";
+    return retval;
+}
 
 struct SOAPBody final : public xml::lite::Element
 { 
@@ -44,7 +49,7 @@ struct SOAP final : public xml::lite::Document
         const xml::lite::QName asQName(uri, qname);
         xml::lite::Element*  elem = new SOAPBody(asQName);
         elem->setCharacterData(characterData); // avoid unused parameter warning
-        elem->setCharacterData(test_text);
+        elem->setCharacterData(test_text());
         return elem;
     }
 };
@@ -52,11 +57,11 @@ struct SOAP final : public xml::lite::Document
 TEST_CASE(test_overrideCreateElement)
 {
     SOAP soap_test;
-    auto a = soap_test.createElement("a","b","Not SOAP Test");
-    auto b = dynamic_cast<const SOAPBody*>(a);
+    std::unique_ptr<xml::lite::Element> a(soap_test.createElement("a","b","Not SOAP Test"));
+    auto b = dynamic_cast<const SOAPBody*>(a.get());
     TEST_ASSERT_NOT_NULL(b);
-    TEST_ASSERT_EQ(a->getCharacterData(), test_text);
-    TEST_ASSERT_EQ(b->getCharacterData(), test_text);
+    TEST_ASSERT_EQ(a->getCharacterData(), test_text());
+    TEST_ASSERT_EQ(b->getCharacterData(), test_text());
 }
 
 TEST_MAIN
