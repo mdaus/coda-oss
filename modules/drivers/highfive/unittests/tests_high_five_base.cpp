@@ -54,7 +54,7 @@ inline bool Equals_(const std::vector<T>& lhs, const std::vector<T>& rhs)
 
 
 #include "TestCase.h"
-#define CHECK(...) TEST_ASSERT_TRUE(__VA_ARGS__)
+#define CHECK(...) TEST_ASSERT_TRUE((__VA_ARGS__))
 #define CHECK_THROWS_AS(f, e) TEST_SPECIFIC_EXCEPTION(f, e)
 #define CHECK_THROWS(f) TEST_EXCEPTION(f)
 #define CHECK_NOTHROW(f) (f); TEST_SUCCESS
@@ -1145,6 +1145,7 @@ TEST_CASE(selectionByElementMultiDim) {
 template <typename T>
 void columnSelectionTest() {
     using namespace HighFive;
+    static const std::string testName("columnSelectionTest");
 
     std::ostringstream filename;
     filename << "h5_rw_select_column_test_" << typeNameHelper<T>() << "_test.h5";
@@ -1318,6 +1319,9 @@ template <class T, size_t x_size, size_t y_size>
 HighFive::File setupHyperSlabFile(T (&values)[x_size][y_size],
                         const std::string& filename,
                         const std::string& dataset_name) {
+    using namespace HighFive;
+    static const std::string testName("setupHyperSlabFile");
+
     ContentGenerate<T> generator;
     generate2D(values, x_size, y_size, generator);
 
@@ -1340,6 +1344,7 @@ HighFive::File setupHyperSlabFile(T (&values)[x_size][y_size],
 template <typename T>
 void regularHyperSlabSelectionTest() {
     using namespace HighFive;
+    static const std::string testName("regularHyperSlabSelectionTest");
 
     std::ostringstream filename;
     filename << "h5_rw_select_regular_hyperslab_test_" << typeNameHelper<T>() << "_test.h5";
@@ -1459,6 +1464,7 @@ std::vector<IrregularHyperSlabTestData> make_irregular_hyperslab_test_data() {
 template <typename T>
 void irregularHyperSlabSelectionReadTest() {
     using namespace HighFive;
+    static const std::string testName("irregularHyperSlabSelectionReadTest");
 
     std::ostringstream filename;
     filename << "h5_write_select_irregular_hyperslab_test_" << typeNameHelper<T>() << "_test.h5";
@@ -1496,6 +1502,7 @@ void irregularHyperSlabSelectionReadTest() {
 template <typename T>
 void irregularHyperSlabSelectionWriteTest() {
     using namespace HighFive;
+    static const std::string testName("irregularHyperSlabSelectionWriteTest");
 
     std::ostringstream filename;
     filename << "h5_write_select_irregular_hyperslab_test_" << typeNameHelper<T>() << "_test.h5";
@@ -1625,6 +1632,7 @@ TEST_CASE(HighFiveOutofDimension) {
 template <typename T>
 void readWriteShuffleDeflateTest() {
     using namespace HighFive;
+    static const std::string testName("readWriteShuffleDeflateTest");
 
     std::ostringstream filename;
     filename << "h5_rw_deflate_" << typeNameHelper<T>() << "_test.h5";
@@ -1692,6 +1700,7 @@ void readWriteShuffleDeflateTest() {
 template <typename T>
 void readWriteSzipTest() {
     using namespace HighFive;
+    static const std::string testName("readWriteSzipTest");
     
     std::ostringstream filename;
     filename << "h5_rw_szip_" << typeNameHelper<T>() << "_test.h5";
@@ -2427,9 +2436,11 @@ TEST_CASE(HighFiveLinkCreationOrderProperty) {
         file.createGroup("2");
         file.createGroup("10");
 
-        CHECK(file.listObjectNames(IndexType::CRT_ORDER) ==
-              std::vector<std::string>{"1", "2", "10"});
-        CHECK(file.listObjectNames(IndexType::NAME) == std::vector<std::string>{"1", "10", "2"});
+	static const std::vector<std::string> expectedCrtOrder {"1", "2", "10"};
+        CHECK(file.listObjectNames(IndexType::CRT_ORDER) == expectedCrtOrder);
+
+	static const std::vector<std::string> expectedName{"1", "10", "2"};
+        CHECK(file.listObjectNames(IndexType::NAME) == expectedName);
 
         auto fcpl = file.getCreatePropertyList();
         LinkCreationOrder linkCreationOrder(fcpl);
