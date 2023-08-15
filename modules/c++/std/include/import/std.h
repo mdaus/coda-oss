@@ -51,6 +51,7 @@ CODA_OSS_disable_warning_system_header_push
 #include <cfloat>
 #include <climits>
 #include <cassert>
+#include <ctime>
 
 #include <limits>
 #include <memory>
@@ -91,6 +92,7 @@ CODA_OSS_disable_warning_system_header_push
 #include <functional>
 #include <algorithm>
 #include <iterator>
+#include <random>
 
 //#include <coda_oss/filesystem.h>
 #include <coda_oss/bit.h>

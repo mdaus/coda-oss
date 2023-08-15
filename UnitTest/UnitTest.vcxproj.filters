@@ -255,6 +255,9 @@
     <ClCompile Include="..\modules\c++\hdf5.lite\unittests\test_highfive.cpp">
       <Filter>hdf5.lite</Filter>
     </ClCompile>
+    <ClCompile Include="..\modules\drivers\highfive\unittests\tests_high_five_base.cpp">
+      <Filter>hdf5.lite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
