@@ -61,9 +61,9 @@ inline bool Equals_(const std::vector<T>& lhs, const std::vector<T>& rhs)
 
 #include "tests_high_five.hpp"
 
-using namespace HighFive;
-
 TEST_CASE(Basic_HighFive_tests) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5tutr_dset.h5");
     const std::string DATASET_NAME("dset");
 
@@ -102,6 +102,8 @@ TEST_CASE(Basic_HighFive_tests) {
 }
 
 TEST_CASE(Test_silent_HighFive) {
+    using namespace HighFive;
+
     // Setting up a buffer for stderr so we can detect if the stack trace
     // was disabled
     fflush(stderr);
@@ -123,6 +125,8 @@ TEST_CASE(Test_silent_HighFive) {
 }
 
 TEST_CASE(Test_open_modes_in_HighFive) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("openmodes.h5");
 
     std::remove(FILE_NAME.c_str());
@@ -161,6 +165,8 @@ TEST_CASE(Test_open_modes_in_HighFive) {
 }
 
 TEST_CASE(Test_file_version_bounds) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5_version_bounds.h5");
 
     std::remove(FILE_NAME.c_str());
@@ -186,6 +192,8 @@ TEST_CASE(Test_file_version_bounds) {
 
 #if H5_VERSION_GE(1, 10, 1)
 TEST_CASE(Test_file_space_strategy) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5_file_space_strategy.h5");
     auto strategies = std::vector<H5F_fspace_strategy_t>{H5F_FSPACE_STRATEGY_FSM_AGGR,
                                                          H5F_FSPACE_STRATEGY_AGGR,
@@ -208,6 +216,8 @@ TEST_CASE(Test_file_space_strategy) {
 }
 
 TEST_CASE(Test_file_space_page_size) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5_file_space_page_size.h5");
     hsize_t page_size = 1024;
     {
@@ -226,6 +236,8 @@ TEST_CASE(Test_file_space_page_size) {
 
 #ifndef H5_HAVE_PARALLEL
 TEST_CASE(Test_page_buffer_size) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5_page_buffer_size.h5");
     hsize_t page_size = 1024;
     {
@@ -287,6 +299,8 @@ TEST_CASE(Test_page_buffer_size) {
 #endif
 
 TEST_CASE(Test_metadata_block_size_assignment) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5_meta_block_size.h5");
 
     std::remove(FILE_NAME.c_str());
@@ -308,6 +322,8 @@ TEST_CASE(Test_metadata_block_size_assignment) {
 }
 
 TEST_CASE(Test_group_properties) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5_group_properties.h5");
     FileAccessProps fapl;
     // When using hdf5 1.10.2 and later, the lower bound may be set to
@@ -325,6 +341,8 @@ TEST_CASE(Test_group_properties) {
 }
 
 TEST_CASE(Test_allocation_time) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5_dataset_alloc_time.h5");
     File file(FILE_NAME, File::Truncate);
 
@@ -343,6 +361,8 @@ TEST_CASE(Test_allocation_time) {
 }
 
 TEST_CASE(Test_default_constructors) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5_group_test.h5");
     const std::string DATASET_NAME("dset");
     File file(FILE_NAME, File::Truncate);
@@ -356,6 +376,8 @@ TEST_CASE(Test_default_constructors) {
 }
 
 TEST_CASE(Test_groups_and_datasets) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5_group_test.h5");
     const std::string DATASET_NAME("dset");
     const std::string CHUNKED_DATASET_NAME("chunked_dset");
@@ -452,6 +474,8 @@ TEST_CASE(Test_groups_and_datasets) {
 }
 
 TEST_CASE(Test_extensible_datasets) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("create_extensible_dataset_example.h5");
     const std::string DATASET_NAME("dset");
     constexpr long double t1[3][1] = {{2.0l}, {2.0l}, {4.0l}};
@@ -513,6 +537,8 @@ TEST_CASE(Test_extensible_datasets) {
 }
 
 TEST_CASE(Test_reference_count) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5_ref_count_test.h5");
     const std::string DATASET_NAME("dset");
     const std::string GROUP_NAME1("/group1");
@@ -578,6 +604,8 @@ TEST_CASE(Test_reference_count) {
 }
 
 TEST_CASE(Test_simple_listings) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5_list_test.h5");
     const std::string GROUP_NAME_CORE("group_name");
     const std::string GROUP_NESTED_NAME("/group_nested");
@@ -640,6 +668,8 @@ TEST_CASE(Test_simple_listings) {
 }
 
 TEST_CASE(Simple_test_for_type_equality) {
+    using namespace HighFive;
+
     AtomicType<double> d_var;
     AtomicType<size_t> size_var;
     AtomicType<double> d_var_test;
@@ -659,6 +689,8 @@ TEST_CASE(Simple_test_for_type_equality) {
 }
 
 TEST_CASE(DataTypeEqualTakeBack) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5tutr_dset.h5");
     const std::string DATASET_NAME("dset");
 
@@ -685,6 +717,8 @@ TEST_CASE(DataTypeEqualTakeBack) {
 }
 
 TEST_CASE(DataSpaceTest) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5tutr_space.h5");
     const std::string DATASET_NAME("dset");
 
@@ -710,6 +744,8 @@ TEST_CASE(DataSpaceTest) {
 }
 
 TEST_CASE(DataSpaceVectorTest) {
+    using namespace HighFive;
+
     // Create 1D shortcut dataspace
     DataSpace space(7);
 
@@ -734,6 +770,8 @@ TEST_CASE(DataSpaceVectorTest) {
 }
 
 TEST_CASE(DataSpaceVariadicTest) {
+    using namespace HighFive;
+
     // Create 1D shortcut dataspace
     DataSpace space1{7};
 
@@ -768,6 +806,8 @@ TEST_CASE(DataSpaceVariadicTest) {
 }
 
 TEST_CASE(ChunkingConstructorsTest) {
+    using namespace HighFive;
+
     Chunking first(1, 2, 3);
 
     auto first_res = first.getDimensions();
@@ -791,6 +831,8 @@ TEST_CASE(ChunkingConstructorsTest) {
 }
 
 TEST_CASE(HighFiveReadWriteShortcut) {
+    using namespace HighFive;
+
     std::ostringstream filename;
     filename << "h5_rw_vec_shortcut_test.h5";
 
@@ -864,6 +906,8 @@ TEST_CASE(HighFiveReadWriteShortcut) {
 
 template <typename T>
 void readWriteAttributeVectorTest(const std::string& testName) {
+    using namespace HighFive;
+
     std::ostringstream filename;
     filename << "h5_rw_attribute_vec_" << typeNameHelper<T>() << "_test.h5";
 
@@ -960,6 +1004,8 @@ TEST_CASE(ReadWriteAttributeVectorString) {
 //}
 
 TEST_CASE(datasetOffset) {
+    using namespace HighFive;
+
     std::string filename = "datasetOffset.h5";
     std::string dsetname = "dset";
     const size_t size_dataset = 20;
@@ -974,6 +1020,8 @@ TEST_CASE(datasetOffset) {
 
 template <typename T>
 void selectionArraySimpleTest(const std::string& testName) {
+    using namespace HighFive;
+
     typedef typename std::vector<T> Vector;
 
     std::ostringstream filename;
@@ -1050,6 +1098,8 @@ TEST_CASE(selectionArraySimpleString) {
 //}
 
 TEST_CASE(selectionByElementMultiDim) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5_test_selection_multi_dim.h5");
     // Create a 2-dim dataset
     File file(FILE_NAME, File::ReadWrite | File::Create | File::Truncate);
@@ -1087,6 +1137,8 @@ TEST_CASE(selectionByElementMultiDim) {
 
 template <typename T>
 void columnSelectionTest(const std::string& testName) {
+    using namespace HighFive;
+
     std::ostringstream filename;
     filename << "h5_rw_select_column_test_" << typeNameHelper<T>() << "_test.h5";
 
@@ -1132,7 +1184,7 @@ void columnSelectionTest(const std::string& testName) {
 //    columnSelectionTest<TestType>();
 //}
 
-std::vector<std::array<size_t, 2>> global_indices_2d(const std::vector<size_t>& offset,
+static std::vector<std::array<size_t, 2>> global_indices_2d(const std::vector<size_t>& offset,
                                                      const std::vector<size_t>& count) {
     std::vector<std::array<size_t, 2>> indices;
     indices.reserve(count[0] * count[1]);
@@ -1146,11 +1198,11 @@ std::vector<std::array<size_t, 2>> global_indices_2d(const std::vector<size_t>& 
     return indices;
 }
 
-std::vector<std::array<size_t, 2>> local_indices_2d(const std::vector<size_t>& count) {
+static std::vector<std::array<size_t, 2>> local_indices_2d(const std::vector<size_t>& count) {
     return global_indices_2d({0ul, 0ul}, count);
 }
 
-std::vector<std::array<size_t, 1>> local_indices_1d(const std::vector<size_t>& count) {
+static std::vector<std::array<size_t, 1>> local_indices_1d(const std::vector<size_t>& count) {
     std::vector<std::array<size_t, 1>> local_indices;
     for (size_t i = 0; i < count[0]; ++i) {
         local_indices.push_back({i});
@@ -1177,11 +1229,13 @@ struct RegularHyperSlabAnswer {
 
 struct RegularHyperSlabTestData {
     std::string desc;
-    HyperSlab slab;
+    HighFive::HyperSlab slab;
     RegularHyperSlabAnswer answer;
 };
 
 std::vector<RegularHyperSlabTestData> make_regular_hyperslab_test_data() {
+    using namespace HighFive;
+
     std::vector<RegularHyperSlabTestData> test_data;
 
     // The dataset is 10x8, we define the following regular
@@ -1254,9 +1308,11 @@ std::vector<RegularHyperSlabTestData> make_regular_hyperslab_test_data() {
 }
 
 template <class T, size_t x_size, size_t y_size>
-File setupHyperSlabFile(T (&values)[x_size][y_size],
+HighFive::File setupHyperSlabFile(T (&values)[x_size][y_size],
                         const std::string& filename,
                         const std::string& dataset_name) {
+    using namespace HighFive;
+
     ContentGenerate<T> generator;
     generate2D(values, x_size, y_size, generator);
 
@@ -1320,11 +1376,13 @@ struct IrregularHyperSlabAnswer {
 
 struct IrregularHyperSlabTestData {
     std::string desc;
-    HyperSlab slab;
+    HighFive::HyperSlab slab;
     IrregularHyperSlabAnswer answer;
 };
 
 std::vector<IrregularHyperSlabTestData> make_irregular_hyperslab_test_data() {
+    using namespace HighFive;
+
     // The dataset is 10x8, with two regular hyperslabs:
     //  x----------------x
     //  |                |
@@ -1486,6 +1544,8 @@ TEMPLATE_LIST_TEST_CASE("irregularHyperSlabSelectionWrite", "[template]", std::t
 
 template <typename T>
 void attribute_scalar_rw(const std::string& testName) {
+    using namespace HighFive;
+
     std::ostringstream filename;
     filename << "h5_rw_attribute_scalar_rw" << typeNameHelper<T>() << "_test.h5";
 
@@ -1530,6 +1590,8 @@ TEST_CASE(attribute_scalar_rw_string) {
 
 // regression test https://github.com/BlueBrain/HighFive/issues/98
 TEST_CASE(HighFiveOutofDimension) {
+    using namespace HighFive;
+
     std::string filename("h5_rw_reg_zero_dim_test.h5");
 
     const std::string DATASET_NAME("dset");
@@ -1556,6 +1618,8 @@ TEST_CASE(HighFiveOutofDimension) {
 
 template <typename T>
 void readWriteShuffleDeflateTest(const std::string& testName) {
+    using namespace HighFive;
+
     std::ostringstream filename;
     filename << "h5_rw_deflate_" << typeNameHelper<T>() << "_test.h5";
     const std::string DATASET_NAME("dset");
@@ -1621,6 +1685,8 @@ void readWriteShuffleDeflateTest(const std::string& testName) {
 
 template <typename T>
 void readWriteSzipTest(const std::string& testName) {
+    using namespace HighFive;
+
     std::ostringstream filename;
     filename << "h5_rw_szip_" << typeNameHelper<T>() << "_test.h5";
     const std::string DATASET_NAME("dset");
@@ -1688,6 +1754,8 @@ void readWriteSzipTest(const std::string& testName) {
 //}
 
 TEST_CASE(HighFiveRecursiveGroups) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5_ds_exist.h5");
     const std::string GROUP_1("group1"), GROUP_2("group2");
     const std::string DS_PATH = GROUP_1 + "/" + GROUP_2;
@@ -1736,6 +1804,8 @@ TEST_CASE(HighFiveRecursiveGroups) {
 }
 
 TEST_CASE(HighFiveInspect) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("group_info.h5");
     const std::string GROUP_1("group1");
     const std::string DS_NAME = "ds";
@@ -1776,6 +1846,8 @@ TEST_CASE(HighFiveInspect) {
 }
 
 TEST_CASE(HighFiveGetPath) {
+    using namespace HighFive;
+
     File file("getpath.h5", File::ReadWrite | File::Create | File::Truncate);
 
     int number = 100;
@@ -1804,6 +1876,8 @@ TEST_CASE(HighFiveGetPath) {
 }
 
 TEST_CASE(HighFiveSoftLinks) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("softlinks.h5");
     const std::string DS_PATH("/hard_link/dataset");
     const std::string LINK_PATH("/soft_link/to_ds");
@@ -1834,6 +1908,8 @@ TEST_CASE(HighFiveSoftLinks) {
 }
 
 TEST_CASE(HighFiveRename) {
+    using namespace HighFive;
+
     File file("move.h5", File::ReadWrite | File::Create | File::Truncate);
 
     int number = 100;
@@ -1859,6 +1935,8 @@ TEST_CASE(HighFiveRename) {
 }
 
 TEST_CASE(HighFiveRenameRelative) {
+    using namespace HighFive;
+
     File file("move.h5", File::ReadWrite | File::Create | File::Truncate);
     Group group = file.createGroup("group");
 
@@ -1882,6 +1960,8 @@ TEST_CASE(HighFiveRenameRelative) {
 }
 
 TEST_CASE(HighFivePropertyObjects) {
+    using namespace HighFive;
+
     const auto& plist1 = FileCreateProps::Default();  // get const-ref, otherwise copies
     CHECK(plist1.getId() == H5P_DEFAULT);
     CHECK(!plist1.isValid());  // not valid -> no inc_ref
@@ -1912,14 +1992,18 @@ struct CSL2 {
     CSL1 csl1;
 };
 
-CompoundType create_compound_csl1() {
+HighFive::CompoundType create_compound_csl1() {
+    using namespace HighFive;
+
     auto t2 = AtomicType<int>();
     CompoundType t1({{"m1", AtomicType<int>{}}, {"m2", AtomicType<int>{}}, {"m3", t2}});
 
     return t1;
 }
 
-CompoundType create_compound_csl2() {
+HighFive::CompoundType create_compound_csl2() {
+        using namespace HighFive;
+
     CompoundType t1 = create_compound_csl1();
 
     CompoundType t2({{"csl1", t1}});
@@ -1931,6 +2015,8 @@ HIGHFIVE_REGISTER_TYPE(CSL1, create_compound_csl1)
 HIGHFIVE_REGISTER_TYPE(CSL2, create_compound_csl2)
 
 TEST_CASE(HighFiveCompounds) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("compounds_test.h5");
     const std::string DATASET_NAME1("/a");
     const std::string DATASET_NAME2("/b");
@@ -2007,7 +2093,9 @@ struct Parent {
     Child child;
 };
 
-CompoundType create_compound_GrandChild() {
+HighFive::CompoundType create_compound_GrandChild() {
+    using namespace HighFive;
+
     auto t2 = AtomicType<uint32_t>();
     CompoundType t1({{"gcm1", AtomicType<uint32_t>{}},
                      {"gcm2", AtomicType<uint32_t>{}},
@@ -2018,7 +2106,9 @@ CompoundType create_compound_GrandChild() {
     return t1;
 }
 
-CompoundType create_compound_Child() {
+HighFive::CompoundType create_compound_Child() {
+    using namespace HighFive;
+
     auto nestedType = create_compound_GrandChild();
     return CompoundType{{{
                              "grandChild",
@@ -2027,7 +2117,9 @@ CompoundType create_compound_Child() {
                          {"cm1", AtomicType<uint32_t>{}}}};
 }
 
-CompoundType create_compound_Parent() {
+HighFive::CompoundType create_compound_Parent() {
+    using namespace HighFive;
+
     auto nestedType = create_compound_Child();
     return CompoundType{{{"pm1", AtomicType<uint32_t>{}},
                          {
@@ -2041,6 +2133,8 @@ HIGHFIVE_REGISTER_TYPE(Child, create_compound_Child)
 HIGHFIVE_REGISTER_TYPE(Parent, create_compound_Parent)
 
 TEST_CASE(HighFiveCompoundsNested) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("nested_compounds_test.h5");
     const std::string DATASET_NAME("/a");
 
@@ -2092,7 +2186,9 @@ void fill(Record<N>& r) {
 }
 
 template <size_t N>
-CompoundType rec_t() {
+HighFive::CompoundType rec_t() {
+    using namespace HighFive;
+
     using RecN = Record<N>;
     return {{"d", create_datatype<decltype(RecN::d)>()},
             {"i", create_datatype<decltype(RecN::i)>()},
@@ -2104,7 +2200,9 @@ HIGHFIVE_REGISTER_TYPE(Record<8>, rec_t<8>)
 HIGHFIVE_REGISTER_TYPE(Record<9>, rec_t<9>)
 
 template <size_t N>
-void save(File& f) {
+void save(HighFive::File& f) {
+    using namespace HighFive;
+
     const size_t numRec = 2;
     std::vector<Record<N>> recs(numRec);
     fill<N>(recs[0]);
@@ -2114,7 +2212,9 @@ void save(File& f) {
 }
 
 template <size_t N>
-std::string check(File& f) {
+std::string check(HighFive::File& f) {
+    using namespace HighFive;
+
     const size_t numRec = 2;
     std::vector<Record<N>> recs(numRec);
     f.getDataSet("records" + std::to_string(N)).read(recs);
@@ -2122,6 +2222,8 @@ std::string check(File& f) {
 }
 
 TEST_CASE(HighFiveCompoundsSeveralPadding) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("padded_compounds_test.h5");
 
     File file(FILE_NAME, File::ReadWrite | File::Create | File::Truncate);
@@ -2178,7 +2280,7 @@ std::ostream& operator<<(std::ostream& ost, const Direction& dir) {
     return ost;
 }
 
-EnumType<Position> create_enum_position() {
+HighFive::EnumType<Position> create_enum_position() {
     return {{"FIRST", Position::FIRST},
             {"SECOND", Position::SECOND},
             {"THIRD", Position::THIRD},
@@ -2186,7 +2288,7 @@ EnumType<Position> create_enum_position() {
 }
 HIGHFIVE_REGISTER_TYPE(Position, create_enum_position)
 
-EnumType<Direction> create_enum_direction() {
+HighFive::EnumType<Direction> create_enum_direction() {
     return {{"FORWARD", Direction::FORWARD},
             {"BACKWARD", Direction::BACKWARD},
             {"LEFT", Direction::LEFT},
@@ -2195,6 +2297,8 @@ EnumType<Direction> create_enum_direction() {
 HIGHFIVE_REGISTER_TYPE(Direction, create_enum_direction)
 
 TEST_CASE(HighFiveEnum) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("enum_test.h5");
     const std::string DATASET_NAME1("/a");
     const std::string DATASET_NAME2("/b");
@@ -2242,6 +2346,8 @@ TEST_CASE(HighFiveEnum) {
 }
 
 TEST_CASE(HighFiveFixedString) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("array_atomic_types.h5");
     const std::string GROUP_1("group1");
 
@@ -2321,6 +2427,8 @@ TEST_CASE(HighFiveFixedString) {
 }
 
 TEST_CASE(HighFiveFixedLenStringArrayStructure) {
+    using namespace HighFive;
+
     using fixed_array_t = FixedLenStringArray<10>;
     // increment the characters of a string written in a std::array
     auto increment_string = [](const fixed_array_t::value_type arr) {
@@ -2384,6 +2492,8 @@ TEST_CASE(HighFiveFixedLenStringArrayStructure) {
 }
 
 TEST_CASE(HighFiveFixedLenStringArrayAttribute) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("fixed_array_attr.h5");
     // Create a new file using the default property lists.
     {
@@ -2403,6 +2513,8 @@ TEST_CASE(HighFiveFixedLenStringArrayAttribute) {
 }
 
 TEST_CASE(HighFiveReference) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("h5_ref_test.h5");
     const std::string DATASET1_NAME("dset1");
     const std::string DATASET2_NAME("dset2");
@@ -2461,6 +2573,8 @@ TEST_CASE(HighFiveReference) {
 }
 
 TEST_CASE(HighFiveReadWriteConsts) {
+    using namespace HighFive;
+
     const std::string FILE_NAME("3d_dataset_from_flat.h5");
     const std::string DATASET_NAME("dset");
     const std::array<std::size_t, 3> DIMS{3, 3, 3};
@@ -2484,6 +2598,8 @@ TEST_CASE(HighFiveReadWriteConsts) {
 }
 
 TEST_CASE(HighFiveDataTypeClass) {
+    using namespace HighFive;
+
     auto Float = DataTypeClass::Float;
     auto String = DataTypeClass::String;
     auto Invalid = DataTypeClass::Invalid;
