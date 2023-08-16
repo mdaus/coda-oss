@@ -42,7 +42,7 @@ else()
         coda_fetch_driver(
             NAME ${TARGET_NAME}
             ARCHIVE "e2fsprogs-1.47.0.tar.gz"
-            HASH "SHA256=3507c7e9f226656b3903651c038e9c4907a31282cc4ba86aed8a588e6cc4cec2"
+            HASH "SHA256=0b4fe723d779b0927fb83c9ae709bc7b40f66d7df36433bef143e41c54257084"
         )
 
         set(SOURCE_DIR "${${CMAKE_PROJECT_NAME}_${TARGET_NAME}_SOURCE_DIR}")
