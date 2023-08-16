@@ -41,7 +41,7 @@ else()
 
         coda_fetch_driver(
             NAME ${TARGET_NAME}
-            ARCHIVE "e2fsprogs-1.40-uuid.tar"
+            ARCHIVE "e2fsprogs-1.47.0.tar.gz"
             HASH "SHA256=3507c7e9f226656b3903651c038e9c4907a31282cc4ba86aed8a588e6cc4cec2"
         )
 
