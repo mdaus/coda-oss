@@ -12,7 +12,7 @@ def options(opt):
                        default=True, help='will build the uuid library if not found on the system (default)')
         opt.add_option('--build-uuid', action='store_true', dest='build_uuid',
                        help='force building libuuid from scratch',
-                       default=os.path.exists(os.path.join(opt.path.abspath(), 'e2fsprogs-1.47.0.tar.gz')))
+                       default=os.path.exists(os.path.join(opt.path.abspath(), 'e2fsprogs-1.47.0.tar')))
         opt.add_option('--nobuild-uuid', action='store_false', dest='build_uuid',
                        help='force not building libuuid from scratch')
         opt.add_option('--with-uuid-home', action='store', dest='uuid_home',
@@ -35,7 +35,7 @@ def configure(conf):
 
         elif Options.options.build_uuid:
             # Build is off by default when tarfile not found, fail if forced on
-            if not os.path.exists(os.path.join(conf.path.abspath(), 'e2fsprogs-1.47.0.tar.gz')):
+            if not os.path.exists(os.path.join(conf.path.abspath(), 'e2fsprogs-1.47.0.tar')):
                 conf.fatal('Missing uuid tarfile')
             
             def uuid_callback(conf):
@@ -74,7 +74,7 @@ def configure(conf):
             conf.env['MAKE_UUID'] = True
             conf.msg('Building local lib', 'uuid')
            
-            untarFile(path=conf.path, fname='e2fsprogs-1.47.0.tar.gz')
+            untarFile(path=conf.path, fname='e2fsprogs-1.47.0.tar')
             
             fname='e2fsprogs-1.47.0'
             driverNode = conf.path.make_node(join(fname, 'lib', 'uuid'))
@@ -137,7 +137,7 @@ def build(bld):
             uuid.targets_to_add = ['UUID_HEADERS_INSTALL']
 
         if env['install_source']:
-            sourceFiles += [fname + '.tar.gz']
+            sourceFiles += [fname + '.tar']
             uuid.targets_to_add += ['UUID_SOURCE_INSTALL']
 
     if env['install_source']:
