@@ -6,7 +6,9 @@ CMakeLists.txt text eol=lf
 *.in text eol=lf
 
 # Modern tools on Windows can handle Linux LF
+# See https://stackoverflow.com/a/13154031/8877 for details
 * text=auto eol=lf
+.git?*	    text
 
 # Leave known Windows-only text files as CR/LF
 *.sln text eol=crlf
