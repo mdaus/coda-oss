@@ -20,8 +20,7 @@ CMakeLists.txt text eol=lf
 *.txt	text eol=lf
 *.md	text eol=lf
 *.tex	text eol=lf
-*.xml	text eol=lf
-*.kml	text eol=lf
+*.?ml	text eol=lf
 *.kmz	  binary
 
 # Programming languages
