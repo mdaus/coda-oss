@@ -19,6 +19,7 @@
 * Update to [HighFive 2.7.1](https://github.com/BlueBrain/HighFive/releases/tag/v2.7.1).
 * Update to [e2fsprogs 1.47.0](https://e2fsprogs.sourceforge.net/e2fsprogs-release.html#1.47.0).
 * Update to [xerces-c 3.2.4](https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12350542&styleName=Text&projectId=10510).
+* Update to [HDF5](https://www.hdfgroup.org/) [1.14.2](https://github.com/HDFGroup/hdf5/releases/tag/hdf5-1_14_2).
 
 ## [Release 2023-06-05](https://github.com/mdaus/coda-oss/releases/tag/2023-06-05)
 * *zlib* updated to [1.2.13](https://github.com/madler/zlib/releases/tag/v1.2.13).
