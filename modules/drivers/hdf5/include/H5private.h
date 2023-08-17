@@ -114,7 +114,9 @@
 #ifdef H5_HAVE_WIN32_API
 
 /* The following two defines must be before any windows headers are included */
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN /* Exclude rarely-used stuff from Windows headers */
+#endif
 #define NOGDI               /* Exclude Graphic Display Interface macros */
 
 #include <windows.h>
@@ -123,6 +125,7 @@
 #include <io.h>       /* POSIX I/O */
 #include <winsock2.h> /* For GetUserName() */
 #include <shlwapi.h>  /* For StrStrIA */
+#pragma comment(lib, "shlwapi")
 
 #ifdef H5_HAVE_THREADSAFE
 #include <process.h> /* For _beginthread() */
