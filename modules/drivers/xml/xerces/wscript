@@ -17,6 +17,7 @@ def configure(conf):
 
         xercesUselibs = XERCES_USELIBS
         if sys.platform == 'win32':
+            conf.define('WIN32', 1)
             # Xerces requires this standard Windows library
             conf.check_cc(lib='advapi32', uselib_store='ADVAPI32')
             xercesUselibs += ' ADVAPI32'
@@ -253,6 +254,7 @@ def build(bld):
         xercesUselibs = XERCES_USELIBS
         if sys.platform == 'win32':
             # Xerces requires this standard Windows library
+            bld.define('WIN32', 1)
             xercesUselibs += ' ADVAPI32'
 
         # setup some known excludes per platform --
