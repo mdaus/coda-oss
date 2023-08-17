@@ -11,8 +11,8 @@ CMakeLists.txt text eol=lf
 # Leave known Windows-only text files as CR/LF
 *.sln text eol=crlf
 *.vcxproj text eol=crlf
-*.vcxproj.filters text eol-crlf
-*.ruleset text eol-crlf
+*.vcxproj.filters text eol=crlf
+*.ruleset text eol=crlf
 
 # Known binary files
 *.bin binary
