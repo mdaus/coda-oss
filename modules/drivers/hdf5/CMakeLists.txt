@@ -8,7 +8,7 @@ if(CODA_ENABLE_HDF5)
         add_compile_options(/Zc:preprocessor-)
     endif()
 
-    coda_add_module(${MODULE_NAME} VERSION 1.13.2)
+    coda_add_module(${MODULE_NAME} VERSION 1.14.2)
 else()
     message("${MODULE_NAME} will not be built since HDF5 is not enabled")
 endif()
