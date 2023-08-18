@@ -33,6 +33,7 @@
 
 #include "io/SeekableStreams.h"
 #include "sys/File.h"
+#include "sys/filesystem.h"
 
 /*!
  *  \file FileOutputStream.h
@@ -59,14 +60,14 @@ protected:
 public:
     FileOutputStreamOS() = default;
 
-    using path = std::filesystem::path; // still used in SWIG bindings
+    using path = coda_oss::filesystem::path; // still used in SWIG bindings
 
     /*!
      *  Alternate Constructor.  Takes an output file and a mode
      *  \param outputFile The file name
      *  \param creationFlags  see sys::File
      */
-    FileOutputStreamOS(const std::filesystem::path& outputFile,
+    FileOutputStreamOS(const path& outputFile,
                        int creationFlags = sys::File::CREATE | sys::File::TRUNCATE);
 
     //! Destructor, closes the file stream.
