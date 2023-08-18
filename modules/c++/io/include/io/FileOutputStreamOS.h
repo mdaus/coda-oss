@@ -25,7 +25,6 @@
 #pragma once
 
 #include <string>
-#include <std/filesystem>
 
 #include "config/Exports.h"
 
@@ -93,7 +92,7 @@ public:
      *  \param file The file to open
      *  \param creationFlags see sys::File
      */
-    virtual void create(const std::filesystem::path& str,
+    virtual void create(const path& str,
                         int creationFlags = sys::File::CREATE | sys::File::TRUNCATE);
 
     //!  Close the file
