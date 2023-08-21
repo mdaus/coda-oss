@@ -49,18 +49,31 @@ namespace str
 class EncodedString; // forward
 class CODA_OSS_API EncodedStringView final
 {
-    // Since we only support two encodings--UTF-8 (native on Linux) and Windows-1252
-    // (native on Windows)--both of which are 8-bits, a simple "bool" flag will do.
+    enum class Encoding
+    {
+        Utf8, // native on Linux
+        Windows1252, // native for std::string on Windows
+        Utf16, // std::u16string, native on Windows (Win32 API)
+        Utf32, // std::u32string, native on Linux (not widely used)
+    };
+
+    const void* data_ = nullptr;
+    size_t size_ = 0; // strlen()
     coda_oss::span<const char> mString;
+
     explicit EncodedStringView(coda_oss::span<const coda_oss::u8string::value_type>);
+    explicit EncodedStringView(coda_oss::span<const std::u16string::value_type>);
+    explicit EncodedStringView(coda_oss::span<const std::u32string::value_type>);
+    explicit EncodedStringView(coda_oss::span<const std::string::value_type>);
     explicit EncodedStringView(coda_oss::span<const str::W1252string::value_type>);
 
     #ifdef _WIN32
-    static constexpr bool mNativeIsUtf8 = false; // Windows-1252
+    static constexpr Encoding mStringNative = Encoding::Windows1252;
     #else
-    static constexpr bool mNativeIsUtf8 = true;  // !_WIN32, assume Linux
+    static constexpr Encoding mStringNative = Encoding::Utf8;  // !_WIN32, assume Linux
     #endif
-    bool mIsUtf8 = mNativeIsUtf8;
+    Encoding mEncoding = mStringNative;
+    bool mIsUtf8 = true;
 
     // Want to create an EncodedString from EncodedStringView.  The public interface
     // doesn't expose "mIsUtf8" so there's (intentinally) no way for clients to know the encoding.
@@ -83,6 +96,14 @@ public:
     explicit EncodedStringView(coda_oss::u8string::const_pointer);
     explicit EncodedStringView(const coda_oss::u8string&);
 
+    EncodedStringView(std::u16string::const_pointer, std::u16string::size_type);
+    explicit EncodedStringView(std::u16string::const_pointer);
+    explicit EncodedStringView(const std::u16string&); 
+
+    EncodedStringView(std::u32string::const_pointer, std::u32string::size_type);
+    explicit EncodedStringView(std::u32string::const_pointer);
+    explicit EncodedStringView(const std::u32string&); 
+
     EncodedStringView(str::W1252string::const_pointer, str::W1252string::size_type);
     explicit EncodedStringView(str::W1252string::const_pointer);
     explicit EncodedStringView(const str::W1252string&);
@@ -90,9 +111,6 @@ public:
     EncodedStringView(std::string::const_pointer, std::string::size_type);
     explicit EncodedStringView(std::string::const_pointer);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
     explicit EncodedStringView(const std::string&);  // Assume platform native encoding: UTF-8 on Linux, Windows-1252 on Windows
-
-    // Can't "view" UTF-16 or UTF-32 data; we assume we're looking at an 8-bit encoding,
-    // either UTF-8 or Windows-1252.
 
     // Regardless of what string we're looking at, return a string in platform
     // native encoding: UTF-8 on Linux, Windows-1252 on Windows; this
@@ -112,19 +130,28 @@ public:
     // These are for "advanced" use, most "normal" code should use the routines above.
     std::string::const_pointer c_str() const noexcept
     {
-        return mString.data();
+        return (mEncoding == Encoding::Utf8) ||  (mEncoding == Encoding::Windows1252) ?
+            static_cast<std::string::const_pointer>(data_) : nullptr;
     }
     coda_oss::u8string::const_pointer c_u8str() const
     {
-        return mIsUtf8 ? cast<coda_oss::u8string::const_pointer>(c_str()) : nullptr;
+        return (mEncoding == Encoding::Utf8) ? static_cast<coda_oss::u8string::const_pointer>(data_) : nullptr;
+    }
+    std::u16string::const_pointer c_u16str() const
+    {
+        return (mEncoding == Encoding::Utf16) ? static_cast<std::u16string::const_pointer>(data_) : nullptr;
+    }
+    std::u32string::const_pointer c_u32str() const
+    {
+        return (mEncoding == Encoding::Utf32) ? static_cast<std::u32string::const_pointer>(data_) : nullptr;
     }
     str::W1252string::const_pointer c_w1252str() const
     {
-        return mIsUtf8 ? nullptr : cast<str::W1252string::const_pointer>(c_str());
+        return (mEncoding == Encoding::Windows1252) ? static_cast<str::W1252string::const_pointer>(data_) : nullptr;
     }
     size_t size() const noexcept
     {
-        return mString.size();
+        return size_;
     }
 
     // Input is encoded as specified on all platforms.
