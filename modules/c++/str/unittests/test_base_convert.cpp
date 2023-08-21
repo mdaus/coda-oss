@@ -166,7 +166,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
             const std::u8string expected8{cast8('|'), cast8(194), cast8(ch), cast8('|')};
             TEST_ASSERT_EQ(actual, expected8);
             //const std::u32string expected{U"|\ufffd|"};  // UTF-32,  "|<REPLACEMENT CHARACTER>|"
-            const auto expected = str::EncodedString(expected8).u32string();
+            const auto expected = str::EncodedStringView(expected8).u32string();
             test_assert_eq(testName, actual, expected);
         }    
     }
@@ -287,27 +287,40 @@ static const str::EncodedString& classificationText_utf_8()
     static const str::EncodedString retval(str::cast<std::u8string::const_pointer>("A\xc3\x89IOU")); // UTF-8 "AÉIOU"
     return retval;
  }
+static str::EncodedStringView classificationView_utf_8()
+{
+    static const std::u8string str = str::cast<std::u8string::const_pointer>("A\xc3\x89IOU"); // UTF-8 "AÉIOU"
+    return str::EncodedStringView(str);
+ }
+
+
 static const str::EncodedString& classificationText_iso8859_1()
 {
     static const str::EncodedString retval(str::cast<str::W1252string::const_pointer>("A\xc9IOU"));  // ISO8859-1 "AÉIOU"    
     return retval;
  }
+static str::EncodedStringView classificationView_iso8859_1()
+{
+    static const str::W1252string str = str::cast<str::W1252string::const_pointer>("A\xc9IOU");  // ISO8859-1 "AÉIOU"
+    return str::EncodedStringView(str);
+ }
+
 // UTF-16 on Windows, UTF-32 on Linux
 static const wchar_t* classificationText_wide_() { return L"A\xc9IOU"; } // UTF-8 "AÉIOU"
 static str::EncodedString classificationText_wide() { return str::EncodedString(classificationText_wide_()); }
 static std::string classificationText_platform() { return 
-    sys::Platform == sys::PlatformType::Linux ? classificationText_utf_8().native() : classificationText_iso8859_1().native(); }
+    sys::Platform == sys::PlatformType::Linux ? classificationView_utf_8().native() : classificationView_iso8859_1().native(); }
 
 TEST_CASE(test_u8string_to_string)
 {
     {
-        const auto utf8 = classificationText_utf_8().u8string();
+        const auto utf8 = classificationView_utf_8().u8string();
         const str::EncodedStringView utf8View(utf8);
         const auto actual = utf8View.native();
         TEST_ASSERT_EQ(classificationText_platform(), actual);
     }
     {
-        const auto utf8 = classificationText_iso8859_1().u8string();
+        const auto utf8 = classificationView_iso8859_1().u8string();
         const str::EncodedStringView utf8View(utf8);
         const auto actual = utf8View.native();
         TEST_ASSERT_EQ(classificationText_platform(), actual);
@@ -521,13 +534,13 @@ static void test_EncodedStringView_(const std::string& testName,
     TEST_ASSERT_EQ(iso8859_1_view.native(), native);
     TEST_ASSERT_EQ(utf_8_view.native(), native);
 
-    TEST_ASSERT(utf_8_view == classificationText_utf_8());
-    TEST_ASSERT_EQ(utf_8_view, classificationText_utf_8());
-    TEST_ASSERT(iso8859_1_view == classificationText_utf_8());
-    TEST_ASSERT_EQ(iso8859_1_view, classificationText_utf_8());
+    TEST_ASSERT(utf_8_view == classificationView_utf_8());
+    TEST_ASSERT_EQ(utf_8_view, classificationView_utf_8());
+    TEST_ASSERT(iso8859_1_view == classificationView_utf_8());
+    TEST_ASSERT_EQ(iso8859_1_view, classificationView_utf_8());
     TEST_ASSERT(iso8859_1_view.u8string() == utf_8_view.u8string());
 
-    const auto expected = str::EncodedString::details::string(classificationText_utf_8());
+    const auto expected = str::EncodedString::details::string(classificationView_utf_8());
     {
         const auto actual = utf_8_view.asUtf8();
         TEST_ASSERT_EQ(actual, expected);
@@ -544,62 +557,30 @@ TEST_CASE(test_EncodedStringView)
     copy = esv; // assignment
 
     {
-        auto utf_8_view(classificationText_utf_8().view());
-        auto iso8859_1_view(classificationText_iso8859_1().view());
+        auto utf_8_view(classificationView_utf_8());
+        auto iso8859_1_view(classificationView_iso8859_1());
         test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
         
-        utf_8_view = classificationText_iso8859_1().view();
+        utf_8_view = classificationView_iso8859_1();
         iso8859_1_view = classificationText_utf_8().view();
         test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
     }
     {
-        auto utf_8_view = classificationText_utf_8().view();
-        auto iso8859_1_view = classificationText_iso8859_1().view();
+        auto utf_8_view = classificationView_utf_8();
+        auto iso8859_1_view = classificationView_iso8859_1();
         test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
 
-        utf_8_view = classificationText_iso8859_1().view();
-        iso8859_1_view = classificationText_utf_8().view();
+        utf_8_view = classificationView_iso8859_1();
+        iso8859_1_view = classificationView_utf_8();
         test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
     }
     {
         str::EncodedStringView utf_8_view;
-        utf_8_view = classificationText_iso8859_1().view();
+        utf_8_view = classificationView_iso8859_1();
         str::EncodedStringView iso8859_1_view;
-        iso8859_1_view = classificationText_utf_8().view();
+        iso8859_1_view = classificationView_utf_8();
         test_EncodedStringView_(testName, utf_8_view, iso8859_1_view);
     }
-}
-
-TEST_CASE(test_EncodedString)
-{
-    str::EncodedString es;
-    TEST_ASSERT_TRUE(es.empty());
-    TEST_ASSERT_TRUE(es.native().empty());
-    {
-        str::EncodedString es_copy(es);  // copy
-        TEST_ASSERT_TRUE(es_copy.empty());
-        TEST_ASSERT_TRUE(es_copy.native().empty());
-    }
-    es = str::EncodedString("abc"); // assignment
-    TEST_ASSERT_EQ(es.native(), "abc");
-    {
-        str::EncodedString es_copy(es);  // copy, again; this time w/o default content
-        TEST_ASSERT_EQ(es_copy.native(), "abc");
-    }
-
-    str::EncodedString abc(es); // copy, for use below
-    TEST_ASSERT_EQ(abc.native(), "abc");
-    
-    str::EncodedString es2;
-    es = std::move(es2);  // move assignment
-    TEST_ASSERT_TRUE(es.empty());
-    TEST_ASSERT_TRUE(es.native().empty());
-    str::EncodedString abc_(abc);  // copy
-    es = std::move(abc_); // move assignment, w/o default content
-    TEST_ASSERT_EQ(es.native(), "abc");
-
-    str::EncodedString es3(std::move(abc)); // move constructor
-    TEST_ASSERT_EQ(es3.native(), "abc");
 }
 
 TEST_MAIN(
@@ -618,5 +599,4 @@ TEST_MAIN(
     TEST_CHECK(test_Windows1252_WIN32);
     TEST_CHECK(test_Windows1252);
     TEST_CHECK(test_EncodedStringView);
-    TEST_CHECK(test_EncodedString);
     )

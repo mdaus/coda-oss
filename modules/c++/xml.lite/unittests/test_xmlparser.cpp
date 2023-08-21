@@ -29,6 +29,7 @@
 #include "str/Convert.h"
 #include "str/Encoding.h"
 #include "str/EncodedString.h"
+#include "str/EncodedStringView.h"
 #include "coda_oss/CPlusPlus.h"
 #include "sys/OS.h"
 #include "sys/FileFinder.h"
@@ -59,14 +60,9 @@ static const std::u8string& text8()
     return retval;
 }
 
-static const str::EncodedString& iso88591Text()
-{
-    static const str::EncodedString retval(str::cast<str::W1252string::const_pointer>("T\xc9XT"));  // ISO8859-1, "TÉXT"
-    return retval;
-}
 static const auto& iso88591Text1252()
 {
-    static const auto retval = str::EncodedStringView::details::w1252string(iso88591Text().view());
+    static const str::W1252string retval = str::cast<str::W1252string::const_pointer>("T\xc9XT");  // ISO8859-1, "TÉXT"
     return retval;
 }
 static auto pIso88591Text_()
@@ -75,15 +71,9 @@ static auto pIso88591Text_()
     return retval;
 }
 
-static const str::EncodedString& utf8Text()
-{
-    static const str::EncodedString retval(str::cast<coda_oss::u8string::const_pointer>("T\xc3\x89XT"));  // UTF-8,  "TÉXT"
-    return retval;
-}
-
 static const auto& utf8Text8()
 {
-    static const auto retval = utf8Text().u8string();
+    static const coda_oss::u8string retval = str::cast<coda_oss::u8string::const_pointer>("T\xc3\x89XT"); // UTF-8,  "TÉXT"
     return retval;
 } 
 static const auto pUtf8Text_()

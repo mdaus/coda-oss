@@ -50,6 +50,8 @@
 #include <import/zip.h>
 #include <import/xml/lite.h>
 #include <import/hdf5/lite.h>
+#include <str/EncodedString.h>
+#include <str/EncodedStringView.h>
 
 #include <io/ReadUtils.h>
 #include <hdf5/lite/highfive.h>

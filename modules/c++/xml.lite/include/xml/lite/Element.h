@@ -34,7 +34,7 @@
 #include <io/InputStream.h>
 #include <io/OutputStream.h>
 #include <str/Convert.h>
-#include <str/EncodedString.h>
+#include <str/EncodedStringView.h>
 #include "sys/Conf.h"
 #include "mem/SharedPtr.h"
 
