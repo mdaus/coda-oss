@@ -219,12 +219,25 @@ coda_oss::u8string str::to_u8string(std::string::const_pointer p, size_t sz)
 {
     return EncodedStringView(p, sz).u8string();
 }
+coda_oss::u8string str::to_u8string(std::wstring::const_pointer p, size_t sz)
+{
+    return EncodedString(std::wstring(p, sz)).u8string();
+}
+
+str::W1252string str::to_w1252string(const std::wstring& s)
+{
+    return EncodedStringView::details::w1252string(EncodedString(s).view());
+}
 
 std::string str::to_string(const coda_oss::u8string& s)
 {
     return str::EncodedStringView(s).native();
 }
 std::string str::to_string(const std::wstring& s)
+{
+    return str::EncodedString(s).native();
+}
+std::string str::to_string(const std::u16string& s)
 {
     return str::EncodedString(s).native();
 }
@@ -236,6 +249,14 @@ std::wstring str::to_wstring(const std::string& s)
 std::wstring str::to_wstring(const coda_oss::u8string& s)
 {
     return str::EncodedStringView(s).wstring();
+}
+std::wstring str::to_wstring(const std::u16string& s)
+{
+    return str::EncodedString(s).wstring();
+}
+std::wstring str::to_wstring(const str::W1252string& s)
+{
+    return str::EncodedString(s).wstring();
 }
 
 coda_oss::u8string str::from_utf8(const std::string& utf8)
@@ -251,4 +272,12 @@ coda_oss::u8string str::from_windows1252(const std::string& w1252)
 {
     return str::EncodedStringView::fromWindows1252(w1252).u8string();
 }
-//std::string str::as_windows1252(const str::W1252string&); // output encoding is *always* Windows-1252
+std::string str::as_windows1252(const coda_oss::u8string& s)
+{
+    return str::EncodedStringView(s).asWindows1252();
+}
+
+std::u16string str::to_u16string(const std::string& s)
+{
+    return str::EncodedStringView(s).u16string();
+}
