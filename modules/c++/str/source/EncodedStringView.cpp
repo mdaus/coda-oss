@@ -233,6 +233,10 @@ std::wstring str::to_wstring(const std::string& s)
 {
     return str::EncodedStringView(s).wstring();
 }
+std::wstring str::to_wstring(const coda_oss::u8string& s)
+{
+    return str::EncodedStringView(s).wstring();
+}
 
 coda_oss::u8string str::from_utf8(const std::string& utf8)
 {
