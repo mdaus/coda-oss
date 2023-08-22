@@ -202,6 +202,11 @@ str::W1252string str::to_w1252string(const std::wstring& s)
 {
     return EncodedStringView::details::w1252string(EncodedString(s).view());
 }
+str::W1252string str::to_w1252string(const std::u16string& s)
+{
+    const str::EncodedString wide_encoded(s);
+    return str::EncodedStringView::details::w1252string(wide_encoded.view());
+}
 
 std::string str::to_string(const coda_oss::u8string& s)
 {
@@ -254,4 +259,13 @@ std::string str::as_windows1252(const coda_oss::u8string& s)
 std::u16string str::to_u16string(const std::string& s)
 {
     return str::EncodedStringView(s).u16string();
+}
+std::u16string str::to_u16string(const std::wstring& s)
+{
+    return str::EncodedString(s).u16string();
+}
+
+std::u32string str::to_u32string(const std::wstring& s)
+{
+    return str::EncodedString(s).u32string();
 }

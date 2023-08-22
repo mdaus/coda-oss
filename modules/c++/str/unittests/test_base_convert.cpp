@@ -266,45 +266,71 @@ static const coda_oss::u8string& classificationText_u8()
     static const coda_oss::u8string retval(str::cast<std::u8string::const_pointer>("A\xc3\x89IOU")); // UTF-8 "AÉIOU"
     return retval;
  }
-static str::EncodedStringView classificationView_utf_8()
-{
-    return str::EncodedStringView(classificationText_u8());
-}
 
 static const str::W1252string& classificationText_w1252()
  {
     static const str::W1252string retval(str::cast<str::W1252string::const_pointer>("A\xc9IOU"));  // ISO8859-1 "AÉIOU"    
     return retval;
  }
-static str::EncodedStringView classificationView_iso8859_1()
+
+// Windows-1262 on Windows, UTF-8 on Linux
+static auto native(const str::EncodedStringView& v)
 {
-    return str::EncodedStringView(classificationText_w1252());
- }
+    return v.native();
+}
+
+// "Explicit specializaton can't have storage class"
+#ifdef _MSC_VER
+#define CODA_OSS_test_base_convert_STATIC static
+#else
+#define CODA_OSS_test_base_convert_STATIC
+#endif
+
+template <sys::PlatformType>
+CODA_OSS_test_base_convert_STATIC std::string native_(const coda_oss::u8string& s);
+template<>
+CODA_OSS_test_base_convert_STATIC std::string native_<sys::PlatformType::Linux>(const coda_oss::u8string& s)
+{
+    return str::c_str<std::string>(s);
+}
+template <>
+CODA_OSS_test_base_convert_STATIC std::string native_<sys::PlatformType::Windows>(const coda_oss::u8string& s)
+{
+    std::string retval;
+    str::details::utf8to1252(s.c_str(), s.length(), retval);
+    return retval;
+}
+static auto native(const coda_oss::u8string& s)
+{
+    return native_<sys::Platform>(s);
+}
+
+static auto native(const str::W1252string& s)
+{
+    return native(str::EncodedStringView(s));
+}
+static auto native(const std::u16string& s)
+{
+    return native(str::EncodedString(s).view());
+}
+
 
 // UTF-16 on Windows, UTF-32 on Linux
-static auto to_u16string(const wchar_t* pStr)
-{
-return str::EncodedString(pStr).u16string();
-}
-static auto to_u32string(const wchar_t* pStr)
-{
-    return str::EncodedString(pStr).u32string();
-}
 static const wchar_t* classificationText_wide_() { return L"A\xc9IOU"; } // UTF-8 "AÉIOU"
-static std::u16string classificationText_u16() { return to_u16string(classificationText_wide_()); }
-static std::u32string classificationText_u32() { return to_u32string(classificationText_wide_()); }
+static std::u16string classificationText_u16() { return str::to_u16string(classificationText_wide_()); }
+static std::u32string classificationText_u32() { return str::to_u32string(classificationText_wide_()); }
 
 static std::string classificationText_platform() { return 
-    sys::Platform == sys::PlatformType::Linux ? classificationView_utf_8().native() : classificationView_iso8859_1().native(); }
+    sys::Platform == sys::PlatformType::Linux ? native(classificationText_u8()) : native(classificationText_w1252()); }
 
 TEST_CASE(test_u8string_to_string)
 {
     {
-        const auto actual = classificationView_utf_8().native();
+        const auto actual = native(classificationText_u8());
         TEST_ASSERT_EQ(classificationText_platform(), actual);
     }
     {
-        const auto actual = classificationView_iso8859_1().native();
+        const auto actual = native(classificationText_w1252()); 
         TEST_ASSERT_EQ(classificationText_platform(), actual);
     }
 }
@@ -322,7 +348,7 @@ TEST_CASE(test_u8string_to_u16string)
     TEST_ASSERT(str::to_u8string(wide) == u8);
     TEST_ASSERT(wide == str::to_wstring(u8));
     
-    const auto w1252 = str::EncodedStringView::details::w1252string(classificationView_iso8859_1());
+    const auto w1252 = str::c_str<str::W1252string>(classificationText_w1252());
     TEST_ASSERT(str::to_w1252string(wide) == w1252);
     TEST_ASSERT(wide == str::to_wstring(w1252));
 
@@ -343,7 +369,7 @@ TEST_CASE(test_u8string_to_u32string)
     TEST_ASSERT(str::to_u8string(wide) == u8);
     TEST_ASSERT(wide == str::to_wstring(u8));
 
-    const auto w1252 = str::EncodedStringView::details::w1252string(classificationView_iso8859_1());
+    const auto w1252 = str::c_str<str::W1252string>(classificationText_w1252());
     TEST_ASSERT(str::to_w1252string(wide) == w1252);
     TEST_ASSERT(wide == str::to_wstring(w1252));
 
@@ -424,16 +450,14 @@ static void test_Windows1252_(const std::string& testName, const char* pStr, std
     const auto u16 = str::to_u16string(str::from_windows1252(pStr));
     TEST_ASSERT(u16 == pUtf16);
     auto wstring = str::to_wstring(str::from_windows1252(pStr));
-    const auto view = str::EncodedStringView::fromWindows1252(pStr);
-    auto native = view.native();
+    auto s = native(str::from_windows1252(pStr));
     str::W1252string w1252 = str::cast<str::W1252string::const_pointer>(pStr);
-    test_wide_(testName, pStr, pUtf16, wstring, native, w1252);
+    test_wide_(testName, pStr, pUtf16, wstring, s, w1252);
 
-    const str::EncodedString wide_encoded(pUtf16);
     wstring = str::to_wstring(pUtf16);
-    native = wide_encoded.native();
-    w1252 = str::EncodedStringView::details::w1252string(wide_encoded.view());
-    test_wide_(testName, pStr, pUtf16, wstring, native, w1252);
+    s = native(pUtf16);
+    w1252 = str::to_w1252string(pUtf16);
+    test_wide_(testName, pStr, pUtf16, wstring, s, w1252);
 }
 TEST_CASE(test_Windows1252_WIN32)
 {
@@ -523,39 +547,39 @@ TEST_CASE(test_Windows1252)
     }
 }
 
-static void test_EncodedStringView_(const std::string& testName,
-    const str::EncodedStringView& utf_8_view, const str::EncodedStringView& iso8859_1_view)
+static void test_Encodeding_(const std::string& testName, const coda_oss::u8string& classificationText_u8,
+    const std::string& utf_8, const std::string& iso8859_1,
+    const coda_oss::u8string& utf_8_u8, const coda_oss::u8string& iso8859_1_u8,
+    const std::string& utf_8_view, const std::string& iso8859_1_view)
 {
-    (void)testName;
-
-    const auto iso8859_1 = iso8859_1_view.native();
-    const auto utf_8 = utf_8_view.native();
     TEST_ASSERT_EQ(iso8859_1, utf_8);
-    static const auto native = classificationText_platform();
-    TEST_ASSERT_EQ(iso8859_1, native);
-    TEST_ASSERT_EQ(utf_8, native);
+    static const auto s = classificationText_platform();
+    TEST_ASSERT_EQ(iso8859_1, s);
+    TEST_ASSERT_EQ(utf_8, s);
 
-    const auto iso8859_1_u8 = iso8859_1_view.u8string();
-    const auto utf_8_u8 = utf_8_view.u8string();
     TEST_ASSERT(iso8859_1_u8 == utf_8_u8);
 
-    const auto expected = str::EncodedString::details::string(classificationView_utf_8());
-    {
-        const auto actual = utf_8_view.asUtf8();
-        TEST_ASSERT_EQ(actual, expected);
-    }
-    {
-        const auto actual = iso8859_1_view.asUtf8();
-        TEST_ASSERT_EQ(actual, expected);
-    }
+    const auto expected = str::c_str<std::string>(classificationText_u8);
+    TEST_ASSERT_EQ(utf_8_view, expected);
+    TEST_ASSERT_EQ(iso8859_1_view, expected);
 }
-TEST_CASE(test_EncodedStringView)
+TEST_CASE(test_Encodeding)
 {
-    const str::EncodedStringView classificationView_utf_8(classificationText_u8());
-    const str::EncodedStringView classificationView_iso8859_1(classificationText_w1252());
+    const auto utf_8 = native(classificationText_u8());
+    const auto iso8859_1 = native(classificationText_w1252());
+    const auto utf_8_u8 = classificationText_u8();
+    const auto iso8859_1_u8 = str::to_u8string(classificationText_w1252());
+    const auto utf_8_view = str::as_utf8(classificationText_u8());
+    const auto iso8859_1_view = str::as_utf8(str::from_windows1252(str::c_str<std::string>(classificationText_w1252())));
 
-    test_EncodedStringView_(testName, classificationView_utf_8, classificationView_iso8859_1);
-    test_EncodedStringView_(testName, classificationView_iso8859_1, classificationView_utf_8);
+    test_Encodeding_(testName, classificationText_u8(),
+        utf_8, iso8859_1,
+        utf_8_u8, iso8859_1_u8,
+        utf_8_view, iso8859_1_view);
+    test_Encodeding_(testName, classificationText_u8(),
+        iso8859_1, utf_8,
+        iso8859_1_u8, utf_8_u8,
+        iso8859_1_view, utf_8_view);
 }
 
 TEST_MAIN(
@@ -573,5 +597,5 @@ TEST_MAIN(
     TEST_CHECK(test_ASCII);
     TEST_CHECK(test_Windows1252_WIN32);
     TEST_CHECK(test_Windows1252);
-    TEST_CHECK(test_EncodedStringView);
+    TEST_CHECK(test_Encodeding);
     )
