@@ -138,24 +138,6 @@ public:
     };
 };
 
-inline bool operator==(const EncodedString& lhs, const EncodedStringView& rhs)
-{
-    return lhs.view() == rhs;
-}
-inline bool operator!=(const EncodedString& lhs, const EncodedStringView& rhs)
-{
-    return !(lhs == rhs);
-}
-
-inline bool operator==(const EncodedString& lhs, const EncodedString& rhs)
-{
-    return lhs == rhs.view();
-}
-inline bool operator!=(const EncodedString& lhs, const EncodedString& rhs)
-{
-    return !(lhs == rhs);
-}
-
 inline std::string toString(const EncodedString& es)
 {
     return es.native();

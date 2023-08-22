@@ -430,7 +430,6 @@ static void test_Windows1252_(const std::string& testName, const char* pStr, std
     test_wide_(testName, pStr, pUtf16, wstring, native, w1252);
 
     const str::EncodedString wide_encoded(pUtf16);
-    TEST_ASSERT_EQ(view, wide_encoded);
     wstring = str::to_wstring(pUtf16);
     native = wide_encoded.native();
     w1252 = str::EncodedStringView::details::w1252string(wide_encoded.view());
@@ -528,10 +527,6 @@ static void test_EncodedStringView_(const std::string& testName,
     const str::EncodedStringView& utf_8_view, const str::EncodedStringView& iso8859_1_view)
 {
     (void)testName;
-    TEST_ASSERT_EQ(iso8859_1_view, iso8859_1_view);
-    TEST_ASSERT_EQ(utf_8_view, utf_8_view);
-    TEST_ASSERT_EQ(iso8859_1_view, utf_8_view);
-    TEST_ASSERT_EQ(utf_8_view, iso8859_1_view);
 
     const auto iso8859_1 = iso8859_1_view.native();
     const auto utf_8 = utf_8_view.native();

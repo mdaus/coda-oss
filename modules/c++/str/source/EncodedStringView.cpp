@@ -189,32 +189,6 @@ std::string str::EncodedStringView::asWindows1252() const
     return str::c_str<std::string>(result); // cast & copy
 }
 
-bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
-{
-    auto& lhs = *this;
-   
-    // if encoding is the same, strcmp() will work
-    if (lhs.mIsUtf8 == rhs.mIsUtf8) // both are UTF-8 or both are Windows-1252
-    {
-        // But we can avoid that call if the pointers are the same
-        const auto pLhs = lhs.mString.data();
-        const auto pRhs = rhs.mString.data();
-        if ((pLhs == pRhs) && (rhs.mString.size() == rhs.mString.size()))
-        {
-            return true;
-        }
-        return strcmp(pLhs, pRhs) == 0;
-    }
-
-    // LHS and RHS have different encodings, but one must be UTF-8
-    assert((lhs.mIsUtf8 && !rhs.mIsUtf8) || (!lhs.mIsUtf8 && rhs.mIsUtf8)); // should have used strcmp(), above
-    auto& utf8 = lhs.mIsUtf8 ? lhs : rhs;
-    auto& w1252 = !lhs.mIsUtf8 ? lhs : rhs;
-
-    // If UTF-8 is native on this platform, convert to UTF-8; otherwise do a native comparision
-    return mNativeIsUtf8 ? utf8.c_u8str() == w1252.u8string() : utf8.native() == w1252.mString.data();
-}
-
 coda_oss::u8string str::to_u8string(std::string::const_pointer p, size_t sz)
 {
     return EncodedStringView(p, sz).u8string();

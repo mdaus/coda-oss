@@ -148,8 +148,6 @@ public:
     std::string asUtf8() const;
     std::string asWindows1252() const;
 
-    bool operator_eq(const EncodedStringView&) const;
-
     struct details final
     {
         // Convert (perhaps) whatever we're looking at to Windows-1252
@@ -160,34 +158,6 @@ public:
         }
     };
 };
-
-inline bool operator==(const EncodedStringView& lhs, const EncodedStringView& rhs)
-{
-    return lhs.operator_eq(rhs);
-}
-inline bool operator!=(const EncodedStringView& lhs, const EncodedStringView& rhs)
-{
-    return !(lhs == rhs);
-}
-
-// Since we'd really like to "traffic" in UTF-8 strings (at least when encoding is a consideration)
-// make that comparision easy.
-inline bool operator==(const EncodedStringView& lhs, const coda_oss::u8string& rhs)
-{
-    return lhs == EncodedStringView(rhs);
-}
-inline bool operator!=(const EncodedStringView& lhs, const coda_oss::u8string& rhs)
-{
-    return !(lhs == rhs);
-}
-inline bool operator==(const coda_oss::u8string& lhs, const EncodedStringView& rhs)
-{
-    return rhs == lhs;
-}
-inline bool operator!=(const coda_oss::u8string& lhs, const EncodedStringView& rhs)
-{
-    return !(lhs == rhs);
-}
 
 inline std::string toString(const EncodedStringView& esv) 
 {
