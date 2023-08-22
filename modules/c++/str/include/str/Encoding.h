@@ -86,6 +86,10 @@ CODA_OSS_API coda_oss::u8string to_u8string(std::string::const_pointer, size_t);
 CODA_OSS_API coda_oss::u8string to_u8string(std::u16string::const_pointer, size_t);
 
 CODA_OSS_API std::u16string to_u16string(coda_oss::u8string::const_pointer, size_t);
+inline auto to_u16string(const coda_oss::u8string& s)
+{
+    return to_u16string(s.c_str(), s.length());
+}
 std::u16string to_u16string(str::W1252string::const_pointer, size_t);
 
 // UTF-32 is convenient because each code-point is a single 32-bit integer.
@@ -118,6 +122,12 @@ inline std::string to_string(const std::string& s)
 }
 CODA_OSS_API std::string to_string(const std::wstring&);
 CODA_OSS_API std::wstring to_wstring(const std::string&); // platform determines Windows-1252 or UTF-8 input
+
+CODA_OSS_API coda_oss::u8string from_utf8(const std::string&); // input encoding is *always* UTF-8
+CODA_OSS_API std::string as_utf8(const coda_oss::u8string&); // output encoding is *always* UTF-8
+
+CODA_OSS_API coda_oss::u8string from_windows1252(const std::string&); // input encoding is *always* Windows-1252
+//CODA_OSS_API std::string as_windows1252(const str::W1252string&); // output encoding is *always* Windows-1252
 
 namespace details // YOU should use EncodedStringView
 {

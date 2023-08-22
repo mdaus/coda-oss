@@ -25,7 +25,6 @@
 #include <std/filesystem>
 
 #include "io/StringStream.h"
-#include "str/EncodedStringView.h"
 #include <TestCase.h>
 
 #include "xml/lite/MinidomParser.h"

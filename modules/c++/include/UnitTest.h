@@ -4,7 +4,6 @@
 #include <string>
 
 #include "TestCase.h"
-#include "str/EncodedStringView.h"
 
 #if !_MSC_VER
 #error "This file is for use with a Visual Studio 'UnitTest' project."

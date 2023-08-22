@@ -28,8 +28,6 @@
 #include "io/FileInputStream.h"
 #include "str/Convert.h"
 #include "str/Encoding.h"
-#include "str/EncodedString.h"
-#include "str/EncodedStringView.h"
 #include "coda_oss/CPlusPlus.h"
 #include "sys/OS.h"
 #include "sys/FileFinder.h"
@@ -38,11 +36,6 @@
 #include "xml/lite/MinidomParser.h"
 #include "xml/lite/Validator.h"
 #include "xml/lite/QName.h"
-
-static inline std::u8string fromUtf8(const std::string& utf8)
-{
-    return str::EncodedStringView::fromUtf8(utf8).u8string();
-}
 
 static const std::string& text()
 {
@@ -56,7 +49,7 @@ static const std::string& strXml()
 }
 static const std::u8string& text8()
 {
-    static const auto retval = fromUtf8(text());
+    static const auto retval = str::from_utf8(text());
     return retval;
 }
 
@@ -84,7 +77,7 @@ static const auto pUtf8Text_()
 
 static const auto& strUtf8Xml8()
 {
-    static const auto retval = fromUtf8("<root><doc><a>") + utf8Text8() + fromUtf8("</a></doc></root>");
+    static const auto retval = str::from_utf8("<root><doc><a>") + utf8Text8() + str::from_utf8("</a></doc></root>");
     return retval;
 } 
 static const std::string& strUtf8Xml()
@@ -206,12 +199,6 @@ TEST_CASE(testXmlPrintSimple)
     TEST_ASSERT_EQ(actual, expected);
 }
 
-static std::u8string fromWindows1252(const std::string& s)
-{
-    // s is Windows-1252 on ALL platforms
-    return str::EncodedStringView::fromWindows1252(s).u8string();
-}
-
 TEST_CASE(testXmlPrintUtf8)
 {
     static const xml::lite::QName root(xml::lite::Uri(), "root");
@@ -221,7 +208,7 @@ TEST_CASE(testXmlPrintUtf8)
         xml::lite::MinidomParser xmlParser;
         auto& document = getDocument(xmlParser);
 
-        const auto s8_w1252 = fromWindows1252(pIso88591Text_());
+        const auto s8_w1252 = str::from_windows1252(pIso88591Text_());
         const auto pRootElement = document.createElement(root, s8_w1252);
 
         io::StringStream output;
@@ -262,7 +249,7 @@ TEST_CASE(testXmlConsoleOutput)
         xml::lite::MinidomParser xmlParser;
         auto& document = getDocument(xmlParser);
 
-        const auto s8_w1252 = fromWindows1252(pIso88591Text_());
+        const auto s8_w1252 = str::from_windows1252(pIso88591Text_());
         const auto pRootElement = document.createElement(root, s8_w1252);
 
         io::StringStream output;
@@ -447,11 +434,11 @@ TEST_CASE(testReadEmbeddedXml)
     const auto characterData = classificationXML.getCharacterData();
     TEST_ASSERT_EQ(characterData, classificationText_platform);
 
-    const str::EncodedStringView expectedCharDataView(str::c_str<std::u8string>(classificationText_utf_8), classificationText_utf_8.length());
+    const auto expected = str::from_utf8(classificationText_utf_8);
     std::u8string u8_characterData;
     classificationXML.getCharacterData(u8_characterData);
-    TEST_ASSERT_EQ(u8_characterData, expectedCharDataView);
-    const auto u8_characterData_ = str::EncodedStringView(u8_characterData).asUtf8();
+    TEST_ASSERT_EQ(u8_characterData, expected);
+    const auto u8_characterData_ = str::as_utf8(u8_characterData);
     TEST_ASSERT_EQ(classificationText_utf_8, u8_characterData_);
 }
 

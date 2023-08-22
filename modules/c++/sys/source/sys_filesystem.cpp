@@ -16,7 +16,6 @@
 
 #include "sys/Path.h"
 #include "gsl/gsl.h"
-#include "str/EncodedString.h"
 
 namespace fs = sys::filesystem;
 

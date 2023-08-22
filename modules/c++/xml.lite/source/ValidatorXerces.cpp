@@ -313,8 +313,7 @@ bool ValidatorXerces::validate(const str::W1252string& xml,
                                const std::string& xmlID,
                                std::vector<ValidationInfo>& errors) const
 {
-    const str::EncodedStringView xmlView(xml);
-    return validate(xmlView.u8string(), xmlID, errors);
+    return validate(str::to_u8string(xml), xmlID, errors);
 }
 
 }

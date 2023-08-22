@@ -76,12 +76,6 @@ TEST_CASE(testCharToString)
     TEST_ASSERT_EQ(str::toString(static_cast<char>(65)), "A");
 }
 
-static std::u8string fromWindows1252(const std::string& s)
-{
-    // s is Windows-1252 on ALL platforms
-    return str::EncodedStringView::fromWindows1252(s).u8string();
-}
-
 template<typename T>
 static constexpr std::u8string::value_type cast8(T ch)
 {
@@ -98,7 +92,7 @@ TEST_CASE(test_string_to_u8string_ascii)
 {
     {
         const std::string input = "|\x00";  //  ASCII, "|<NULL>"
-        const auto actual = fromWindows1252(input);
+        const auto actual = str::from_windows1252(input);
         const std::u8string expected{cast8('|')}; // '\x00' is the end of the string in C/C++
         TEST_ASSERT_EQ(actual, expected);
     }
@@ -107,7 +101,7 @@ TEST_CASE(test_string_to_u8string_ascii)
     for (uint8_t ch = start_of_heading; ch <= delete_character; ch++)  // ASCII
     {
         const std::string input { '|', static_cast<std::string::value_type>(ch), '|'};
-        const auto actual = fromWindows1252(input);
+        const auto actual = str::from_windows1252(input);
         const std::u8string expected8{cast8('|'), cast8(ch), cast8('|')}; 
         TEST_ASSERT_EQ(actual, expected8);
         const std::u32string expected{U'|', U(ch), U'|'};
@@ -141,7 +135,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
     // Windows-1252 only characters must be mapped to UTF-8
     {
         const std::string input = "|\x80|";  // Windows-1252, "|€|"
-        const auto actual = fromWindows1252(input);
+        const auto actual = str::from_windows1252(input);
         const std::u8string expected8{cast8('|'), cast8('\xE2'), cast8('\x82'), cast8('\xAC'), cast8('|')};  // UTF-8,  "|€|"
         TEST_ASSERT_EQ(actual, expected8);
         const std::u32string expected{U"|\u20AC|"};  // UTF-32,  "|€|"
@@ -149,7 +143,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
     }
     {
         const std::string input = "|\x9F|";  // Windows-1252, "|Ÿ|"
-        const auto actual = fromWindows1252(input);
+        const auto actual = str::from_windows1252(input);
         const std::u8string expected8{cast8('|'), cast8('\xC5'), cast8('\xB8'), cast8('|')};  // UTF-8,  "|Ÿ|"
         TEST_ASSERT_EQ(actual, expected8);
         const std::u32string expected{U"|\u0178|"};  // UTF-32,  "|Ÿ|"
@@ -160,7 +154,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
         for (const auto& ch : undefined)
         {
             const std::string input{'|', ch, '|'};
-            const auto actual = fromWindows1252(input);
+            const auto actual = str::from_windows1252(input);
             TEST_ASSERT_TRUE(!actual.empty());
             //const std::u8string expected8{cast8('|'), cast8('\xEF'), cast8('\xBF'), cast8('\xBD'), cast8('|')};  // UTF-8,  "|<REPLACEMENT CHARACTER>|"
             const std::u8string expected8{cast8('|'), cast8(194), cast8(ch), cast8('|')};
@@ -272,10 +266,10 @@ TEST_CASE(test_change_case)
 
     //// Yes, this can really come up, "non classifié" is French (Canadian) for "unclassified".
     //const std::string DEF_1252{'D', '\xc9', 'F'}; // "DÉF" Windows-1252
-    //const auto DEF8 = fromWindows1252(DEF_1252);
+    //const auto DEF8 = str::from_windows1252(DEF_1252);
 
     //const std::string def_1252{'d', '\xe9', 'f'};  // "déf" Windows-1252
-    //const auto def8 = fromWindows1252(def_1252);
+    //const auto def8 = str::from_windows1252(def_1252);
 
     ////test_change_case_(testName, def, DEF);
     //test_change_case_(testName, def_1252, DEF_1252);
@@ -425,7 +419,8 @@ static void test_Windows1252_(const std::string& testName, const char* pStr, std
     const auto view = str::EncodedStringView::fromWindows1252(pStr);
 
     const str::EncodedString encoded(view);
-    TEST_ASSERT(view.u16string() == pUtf16);
+    const auto u16 = str::to_u16string(str::from_windows1252(pStr));
+    TEST_ASSERT(u16 == pUtf16);
     test_wide_(testName, pStr, pUtf16, encoded);
 
     const str::EncodedString wide_encoded(pUtf16);

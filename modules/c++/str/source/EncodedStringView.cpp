@@ -233,3 +233,18 @@ std::wstring str::to_wstring(const std::string& s)
 {
     return str::EncodedStringView(s).wstring();
 }
+
+coda_oss::u8string str::from_utf8(const std::string& utf8)
+{
+    return str::EncodedStringView::fromUtf8(utf8).u8string();
+}
+std::string str::as_utf8(const coda_oss::u8string& s)
+{
+    return str::EncodedStringView(s).asUtf8();
+}
+
+coda_oss::u8string str::from_windows1252(const std::string& w1252)
+{
+    return str::EncodedStringView::fromWindows1252(w1252).u8string();
+}
+//std::string str::as_windows1252(const str::W1252string&); // output encoding is *always* Windows-1252
