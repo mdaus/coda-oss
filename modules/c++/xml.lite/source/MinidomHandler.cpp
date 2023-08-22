@@ -28,7 +28,6 @@
 #include "str/Convert.h"
 #include "str/Encoding.h"
 #include "sys/OS.h"
-#include "str/EncodedString.h"
 #include "str/EncodedStringView.h"
 
 #include "xml/lite/MinidomHandler.h"
@@ -93,7 +92,7 @@ bool xml::lite::MinidomHandler::vcharacters(const void /*XMLCh*/* chars_, size_t
     static_assert(sizeof(XMLCh) == sizeof(char16_t), "XMLCh should be 16-bits.");
     auto pChars16 = static_cast<const char16_t*>(chars_);
 
-    characters(str::EncodedString(std::u16string(pChars16, length)).u8string());
+    characters(str::to_u8string(pChars16, length));
     return true; // vcharacters() processed
 }
 
