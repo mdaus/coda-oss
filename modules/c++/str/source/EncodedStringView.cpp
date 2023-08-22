@@ -215,4 +215,21 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
     return mNativeIsUtf8 ? utf8.c_u8str() == w1252.u8string() : utf8.native() == w1252.mString.data();
 }
 
+coda_oss::u8string str::to_u8string(std::string::const_pointer p, size_t sz)
+{
+    return EncodedStringView(p, sz).u8string();
+}
 
+std::string str::to_string(const coda_oss::u8string& s)
+{
+    return str::EncodedStringView(s).native();
+}
+std::string str::to_string(const std::wstring& s)
+{
+    return str::EncodedString(s).native();
+}
+
+std::wstring str::to_wstring(const std::string& s)
+{
+    return str::EncodedStringView(s).wstring();
+}

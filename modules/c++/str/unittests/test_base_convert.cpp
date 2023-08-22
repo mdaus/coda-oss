@@ -166,7 +166,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
             const std::u8string expected8{cast8('|'), cast8(194), cast8(ch), cast8('|')};
             TEST_ASSERT_EQ(actual, expected8);
             //const std::u32string expected{U"|\ufffd|"};  // UTF-32,  "|<REPLACEMENT CHARACTER>|"
-            const auto expected = str::EncodedStringView(expected8).u32string();
+            const auto expected = str::to_u32string(expected8);
             test_assert_eq(testName, actual, expected);
         }    
     }
