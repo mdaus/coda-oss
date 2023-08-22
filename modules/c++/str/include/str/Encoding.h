@@ -107,7 +107,11 @@ inline auto to_u32string(const coda_oss::u8string& s)
 {
     return to_u32string(s.c_str(), s.length());
 }
-std::u32string to_u32string(str::W1252string::const_pointer, size_t);
+CODA_OSS_API std::u32string to_u32string(str::W1252string::const_pointer, size_t);
+inline auto to_u32string(const str::W1252string& s)
+{
+    return to_u32string(s.c_str(), s.length());
+}
 
 template <typename TChar>
 inline coda_oss::u8string to_u8string(const std::basic_string<TChar>& s)
