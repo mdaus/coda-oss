@@ -111,29 +111,16 @@ inline auto make_span(coda_oss::span<const Char8T> s)
     return coda_oss::span<const char>(s_, s.size());
 }
 
-str::EncodedStringView::EncodedStringView(coda_oss::span<const std::string::value_type> s) :
-    data_(s.data()), size_(s.size()), mString(s), mEncoding(mStringNative)
-{
-    mIsUtf8 = mEncoding == Encoding::Utf8;
-}
-str::EncodedStringView::EncodedStringView(std::string::const_pointer p, std::string::size_type c) : EncodedStringView(make_span(p, c)) { }
-str::EncodedStringView::EncodedStringView(std::string::const_pointer p) : EncodedStringView(make_span(p)) { }
-str::EncodedStringView::EncodedStringView(const std::string& s) : EncodedStringView(make_span(s)){ }
+str::EncodedStringView::EncodedStringView(std::string::const_pointer p, std::string::size_type c) : mString(make_span(p, c)) { }
+str::EncodedStringView::EncodedStringView(std::string::const_pointer p) : mString(make_span(p)) { }
+str::EncodedStringView::EncodedStringView(const std::string& s) : mString(make_span(s)){ }
 
-str::EncodedStringView::EncodedStringView(coda_oss::span<const coda_oss::u8string::value_type> s) :
-    data_(s.data()), size_(s.size()), mString(make_span(s)), mEncoding(Encoding::Utf8)
-{
-    mIsUtf8 = mEncoding == Encoding::Utf8;
-}
+str::EncodedStringView::EncodedStringView(coda_oss::span<const coda_oss::u8string::value_type> s) : mString(make_span(s)), mIsUtf8(true) {}
 str::EncodedStringView::EncodedStringView(coda_oss::u8string::const_pointer p, coda_oss::u8string::size_type c) : EncodedStringView(make_span(p, c)) { }
 str::EncodedStringView::EncodedStringView(coda_oss::u8string::const_pointer p) : EncodedStringView(make_span(p)) { }
 str::EncodedStringView::EncodedStringView(const coda_oss::u8string& s) : EncodedStringView(make_span(s)) { }
 
-str::EncodedStringView::EncodedStringView(coda_oss::span<const str::W1252string::value_type> s) :
-    data_(s.data()), size_(s.size()), mString(make_span(s)), mEncoding(Encoding::Windows1252)
-{
-    mIsUtf8 = mEncoding == Encoding::Utf8;
-}
+str::EncodedStringView::EncodedStringView(coda_oss::span<const str::W1252string::value_type> s) : mString(make_span(s)), mIsUtf8(false) {}
 str::EncodedStringView::EncodedStringView(str::W1252string::const_pointer p, str::W1252string::size_type c) : EncodedStringView(make_span(p, c)) { }
 str::EncodedStringView::EncodedStringView(str::W1252string::const_pointer p) :  EncodedStringView(make_span(p)) { }
 str::EncodedStringView::EncodedStringView(const str::W1252string& s) : EncodedStringView(make_span(s)) { }
@@ -141,16 +128,16 @@ str::EncodedStringView::EncodedStringView(const str::W1252string& s) : EncodedSt
 std::string str::EncodedStringView::native() const
 {
     const auto s = mString.data();
-    const auto sz = size();
-    return (mEncoding == Encoding::Utf8) ? to_native(str::cast<coda_oss::u8string::const_pointer>(s), sz)
+    const auto sz = mString.size();
+    return mIsUtf8 ? to_native(str::cast<coda_oss::u8string::const_pointer>(s), sz)
                    : to_native(str::cast<str::W1252string::const_pointer>(s), sz);
 }
 
 coda_oss::u8string str::EncodedStringView::u8string() const
 {
-    return (mEncoding == Encoding::Utf8) ?
+    return mIsUtf8 ?
         str::cast<coda_oss::u8string::const_pointer>(mString.data()) :  // copy
-        str::to_u8string(str::cast<str::W1252string::const_pointer>(mString.data()), size());
+        str::to_u8string(str::cast<str::W1252string::const_pointer>(mString.data()), mString.size());
 }
 std::string str::EncodedStringView::asUtf8() const
 {
@@ -160,7 +147,7 @@ std::string str::EncodedStringView::asUtf8() const
 
 std::u16string str::EncodedStringView::u16string() const
 {
-    return ::to_u16string(mString.data(), size(), (mEncoding == Encoding::Utf8));
+    return ::to_u16string(mString.data(), mString.size(), mIsUtf8);
 }
 
 inline std::u32string to_u32string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
@@ -173,17 +160,17 @@ inline std::u32string to_u32string(std::string::const_pointer s, size_t sz, bool
 }
 std::u32string str::EncodedStringView::u32string() const
 {
-    return ::to_u32string(mString.data(), size(), (mEncoding == Encoding::Utf8));
+    return ::to_u32string(mString.data(), mString.size(), mIsUtf8);
 }
 
 std::wstring str::EncodedStringView::wstring() const  // UTF-16 on Windows, UTF-32 on Linux
 {
     const auto p = mString.data();
-    const auto sz = size();
+    const auto sz = mString.size();
     const auto s =
     // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
     #ifdef _WIN32
-    ::to_u16string(p, sz, (mEncoding == Encoding::Utf8));  // std::wstring is UTF-16 on Windows
+    ::to_u16string(p, sz, mIsUtf8);  // std::wstring is UTF-16 on Windows
     #else
     ::to_u32string(p, sz, mIsUtf8);  // std::wstring is UTF-32 on Linux
     #endif    
@@ -192,8 +179,8 @@ std::wstring str::EncodedStringView::wstring() const  // UTF-16 on Windows, UTF-
 
 str::W1252string str::EncodedStringView::w1252string() const
 {
-    return (mEncoding == Encoding::Utf8) ?
-        str::to_w1252string(str::cast<coda_oss::u8string ::const_pointer>(mString.data()), size()) :
+    return mIsUtf8 ?
+        str::to_w1252string(str::cast<coda_oss::u8string ::const_pointer>(mString.data()), mString.size()) :
         str::cast<str::W1252string ::const_pointer>(mString.data());  // copy
 }
 std::string str::EncodedStringView::asWindows1252() const
@@ -207,12 +194,12 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
     auto& lhs = *this;
    
     // if encoding is the same, strcmp() will work
-    if (lhs.mEncoding == rhs.mEncoding) // both are UTF-8 or both are Windows-1252
+    if (lhs.mIsUtf8 == rhs.mIsUtf8) // both are UTF-8 or both are Windows-1252
     {
         // But we can avoid that call if the pointers are the same
         const auto pLhs = lhs.mString.data();
         const auto pRhs = rhs.mString.data();
-        if ((pLhs == pRhs) && (rhs.size() == rhs.size()))
+        if ((pLhs == pRhs) && (rhs.mString.size() == rhs.mString.size()))
         {
             return true;
         }
@@ -220,12 +207,12 @@ bool str::EncodedStringView::operator_eq(const EncodedStringView& rhs) const
     }
 
     // LHS and RHS have different encodings, but one must be UTF-8
-    //assert((lhs.mIsUtf8 && !rhs.mIsUtf8) || (!lhs.mIsUtf8 && rhs.mIsUtf8)); // should have used strcmp(), above
-    auto& utf8 = lhs.mEncoding == Encoding::Utf8 ? lhs : rhs;
-    auto& w1252 = lhs.mEncoding != Encoding::Utf8 ? lhs : rhs;
+    assert((lhs.mIsUtf8 && !rhs.mIsUtf8) || (!lhs.mIsUtf8 && rhs.mIsUtf8)); // should have used strcmp(), above
+    auto& utf8 = lhs.mIsUtf8 ? lhs : rhs;
+    auto& w1252 = !lhs.mIsUtf8 ? lhs : rhs;
 
     // If UTF-8 is native on this platform, convert to UTF-8; otherwise do a native comparision
-    return (mEncoding == Encoding::Utf8) ? utf8.c_u8str() == w1252.u8string() : utf8.native() == w1252.mString.data();
+    return mNativeIsUtf8 ? utf8.c_u8str() == w1252.u8string() : utf8.native() == w1252.mString.data();
 }
 
 
