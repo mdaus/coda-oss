@@ -20,6 +20,7 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
+#include "str/Encoding.h"
 
 #include <assert.h>
 #include <string.h>
@@ -36,13 +37,8 @@
 #include "gsl/gsl.h"
 #include "config/compiler_extensions.h"
 
-#include "str/Encoding.h"
 #include "str/Manip.h"
 #include "str/Convert.h"
-#include "str/EncodedStringView.h"
-#include "str/EncodedString.h"
-
-
 CODA_OSS_disable_warning_push
 #if _MSC_VER
 #pragma warning(disable: 26818) // Switch statement does not cover all cases. Consider adding a '...' label (es.79).
@@ -51,6 +47,21 @@ CODA_OSS_disable_warning(-Wshadow)
 #endif
 #include "str/utf8.h"
 CODA_OSS_disable_warning_pop
+
+// "sys" depends on "str" so can't use sys::PlatformType
+enum class PlatformType
+{
+    Windows,
+    Linux,
+    // MacOS
+};
+#if defined(_WIN32)
+static constexpr auto Platform = PlatformType::Windows;
+#elif defined(_POSIX_C_SOURCE)
+static constexpr auto Platform = PlatformType::Linux;
+#else
+#error "Unknown platform"
+#endif
 
 // Need to look up characters from \x80 (EURO SIGN) to \x9F (LATIN CAPITAL LETTER Y WITH DIAERESIS)
 // in a map: http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
@@ -390,40 +401,119 @@ coda_oss::u8string str::to_u8string(W1252string::const_pointer p, size_t sz)
     return retval;
 }
 
+template <PlatformType>
+std::string toString_(const coda_oss::u8string& s);
+template<>
+inline std::string toString_<PlatformType::Linux>(const coda_oss::u8string& s)
+{
+    return str::c_str<std::string>(s);
+}
+template <>
+inline std::string toString_<PlatformType::Windows>(const coda_oss::u8string& s)
+{
+    std::string retval;
+    str::details::utf8to1252(s.c_str(), s.length(), retval);
+    return retval;
+}
 std::string str::toString(const coda_oss::u8string& s)
 {
-    return str::EncodedStringView(s).native();
+    return toString_<Platform>(s);
+}
+
+template <PlatformType>
+std::string toString_(const str::W1252string& s);
+template<>
+inline std::string toString_<PlatformType::Linux>(const str::W1252string& s)
+{
+    std::string retval;
+    str::details::w1252to8(s.c_str(), s.length(), retval);
+    return retval;
+}
+template <>
+inline std::string toString_<PlatformType::Windows>(const str::W1252string& s)
+{
+    return str::c_str<std::string>(s);
 }
 std::string str::toString(const str::W1252string& s)
 {
-    return str::EncodedStringView(s).native();
+    return toString_<Platform>(s);
 }
+
 std::string str::toString(const std::u16string& s)
 {
-    return str::EncodedString(s).native();
+    return toString(to_u8string(s)); // TODO: more efficient?
 }
 std::string str::toString(const std::u32string& s)
 {
-    return str::EncodedString(s).native();
+    return toString(to_u8string(s));  // TODO: more efficient?
+}
+
+static inline coda_oss::u8string to_u8string_(std::wstring::const_pointer p_, size_t sz)  // std::wstring is UTF-16 or UTF-32  depending on platform
+{
+    const auto p =
+    // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
+    #if _WIN32
+    str::cast<std::u16string::const_pointer>(p_); // std::wstring is UTF-16 on Windows
+    #endif
+    #if !_WIN32
+    str::cast<std::u32string::const_pointer>(p_); // assume std::wstring is UTF-32 on any non-Windows platform
+    #endif    
+    return str::to_u8string(p, sz);
 }
 std::string str::toString(const std::wstring& s)
 {
-    return str::EncodedString(s).native();
+    return toString(to_u8string_(s.c_str(), s.length()));  // TODO: more efficient?
+}
+
+inline std::u16string to_u16string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
+{
+    if (is_utf8)
+    {
+        return str::to_u16string(str::cast<coda_oss::u8string::const_pointer>(s), sz);
+    }
+    return str::to_u16string(str::cast<str::W1252string::const_pointer>(s), sz);
+}
+inline std::u32string to_u32string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
+{
+    if (is_utf8)
+    {
+        return str::to_u32string(str::cast<coda_oss::u8string::const_pointer>(s), sz);
+    }
+    return str::to_u32string(str::cast<str::W1252string::const_pointer>(s), sz);
 }
 
 std::wstring str::toWString(const std::string& s)
 {
-    return str::EncodedStringView(s).wstring();
+    const auto p = s.c_str();
+    const auto sz = s.size();
+    const auto result =
+    // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
+    #ifdef _WIN32
+    ::to_u16string(p, sz, false /*is_utf8*/);  // std::wstring is UTF-16 on Windows
+    #else
+    ::to_u32string(p, sz,  true /*is_utf8*/);  // std::wstring is UTF-32 on Linux
+    #endif    
+    return str::c_str<std::wstring>(result);  // copy
 }
+
 std::wstring str::toWString(const coda_oss::u8string& s)
 {
-    return str::EncodedStringView(s).wstring();
+    const auto p = str::c_str<std::string>(s);
+    const auto sz = s.size();
+    const auto result =
+    // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
+    #ifdef _WIN32
+    ::to_u16string(p, sz, true /*is_utf8*/);  // std::wstring is UTF-16 on Windows
+    #else
+    ::to_u32string(p, sz,  true /*is_utf8*/);  // std::wstring is UTF-32 on Linux
+    #endif    
+    return str::c_str<std::wstring>(result);  // copy
 }
 std::wstring str::toWString(const std::u16string& s)
 {
-    return str::EncodedString(s).wstring();
+    return toWString(to_u8string(s)); // TODO: more efficient?
 }
 std::wstring str::toWString(const str::W1252string& s)
 {
-    return str::EncodedString(s).wstring();
+    return toWString(to_u8string(s)); // TODO: more efficient?
 }
