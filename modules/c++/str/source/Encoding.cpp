@@ -547,22 +547,3 @@ coda_oss::u8string str::to_u8string(std::wstring::const_pointer p, size_t sz)
     return to_u8string_(p, sz);
 }
 
-coda_oss::u8string str::from_utf8(const std::string& utf8)
-{
-    return coda_oss::u8string(str::c_str<coda_oss::u8string>(utf8), utf8.length());
-}
-std::string str::as_utf8(const coda_oss::u8string& s)
-{
-    return std::string(str::c_str<std::string>(s), s.length());
-}
-
-coda_oss::u8string str::from_windows1252(const std::string& w1252)
-{
-    const str::W1252string s(str::c_str<str::W1252string>(w1252), w1252.length());
-    return to_u8string(s); // TODO: more efficient?
-}
-std::string str::as_windows1252(const coda_oss::u8string& s)
-{
-    const auto w1252 = str::to_w1252string(s.c_str(), s.length());
-    return toString(w1252);  // TODO: more efficient?
-}

@@ -273,14 +273,16 @@ static coda_oss::u8string encodeXml(const std::string& xml)
     std::cmatch m;
     if (std::regex_search(xml.c_str(), m, reUtf8))
     {
-        return str::from_utf8(xml);
+        coda_oss::u8string retval(str::c_str<coda_oss::u8string>(xml), xml.length());
+        return retval;
     }
 
     // Maybe this is poor XML with Windows-1252 encoding :-(
     const std::regex reWindows1252("<\?.*encoding=.*['\"]?.*windows-1252.*['\"]?.*\?>", std::regex::icase);
     if (std::regex_search(xml.c_str(), m, reWindows1252))
     {
-        return str::from_windows1252(xml);
+        const str::W1252string s(str::c_str<str::W1252string>(xml), xml.length());
+        return to_u8string(s); // TODO: more efficient?
     }
 
     // No "... encoding= ..."; let to_u8string() deal with it   

@@ -129,12 +129,6 @@ inline str::W1252string to_w1252string(const coda_oss::u8string& s)
 }
 CODA_OSS_API str::W1252string to_w1252string(const std::u16string&);
 
-CODA_OSS_API coda_oss::u8string from_utf8(const std::string&); // input encoding is *always* UTF-8
-CODA_OSS_API std::string as_utf8(const coda_oss::u8string&); // output encoding is *always* UTF-8
-
-CODA_OSS_API coda_oss::u8string from_windows1252(const std::string&); // input encoding is *always* Windows-1252
-CODA_OSS_API std::string as_windows1252(const coda_oss::u8string&); // output encoding is *always* Windows-1252
-
 namespace details // YOU should use a to_Xstring() call
 {
 void w1252to8(str::W1252string::const_pointer p, size_t sz, std::string&); // encoding is lost
