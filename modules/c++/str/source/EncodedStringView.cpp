@@ -220,6 +220,11 @@ std::string str::to_string(const std::u16string& s)
 {
     return str::EncodedString(s).native();
 }
+std::string str::to_string(const str::W1252string& s)
+{
+    return str::EncodedStringView(s).native();
+}
+
 
 std::wstring str::to_wstring(const std::string& s)
 {
