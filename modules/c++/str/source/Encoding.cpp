@@ -327,19 +327,25 @@ static void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::basi
 static auto u16_to_Windows1252()
 {
     // These are all the "interesting" values.
-    static const auto u8string_to_utf32 = kv_to_vk(Windows1252_to_u8string());
+    static const auto utf32_to_u8string = Windows1252_to_u8string();
 
     std::map<std::u16string::value_type, std::string::value_type> retval;
-    for (auto&& kv : u8string_to_utf32)
+    for (auto&& kv : utf32_to_u8string)
     {
-        auto&& key = kv.first;
+        auto&& key = kv.second;
         std::string result;
         utf8to1252(key.c_str(), key.length(), result, true /*strict*/);
-        assert(result.length() == 1);
-
-        const auto u16 = str::to_u16string(key);
-        assert(u16.length() == 1);
-        retval[u16[0]] = result[0];
+        if (result.length() == 1) // UTF-8 conversion could be multiple bytes
+        {
+            const auto u16 = str::to_u16string(key);
+            assert(u16.length() == 1);
+            //assert(gsl::narrow<uint32_t>(u16[0]) == kv.first);
+            retval[u16[0]] = result[0];        
+        }
+        else
+        {
+            assert(!result.empty());
+        }
     }
 
     return retval;

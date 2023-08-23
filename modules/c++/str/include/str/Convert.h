@@ -191,7 +191,7 @@ inline std::string toString(std::string::const_pointer pStr)
 // on the platform: UTF-8 on Linux and Windows-1252 on Windows.
 CODA_OSS_API std::string toString(const coda_oss::u8string&);
 CODA_OSS_API std::string toString(const str::W1252string&);
-std::string toString(const std::wstring&); // input is UTF-16 or UTF-32 depending on the platform
+CODA_OSS_API std::string toString(const std::wstring&); // input is UTF-16 or UTF-32 depending on the platform
 // can't be a template; `bool` overload above is a better match
 std::string toString(std::wstring::const_pointer) = delete; // only used in unittests
 std::string toString(std::u16string::const_pointer) = delete; // only used in unittests
