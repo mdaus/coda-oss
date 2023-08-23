@@ -97,9 +97,6 @@ inline auto to_u16string(const str::W1252string& s)
     return to_u16string(s.c_str(), s.length());
 }
 
-CODA_OSS_API std::u16string to_u16string(const std::string&); // platform determines Windows-1252 or UTF-8 input
-CODA_OSS_API std::u16string to_u16string(const std::wstring&); // platform determines UTF16 or UTF-32 input
-
 // UTF-32 is convenient because each code-point is a single 32-bit integer.
 // It's typically std::wstring::value_type on Linux, but NOT Windows.
 CODA_OSS_API coda_oss::u8string to_u8string(std::u32string::const_pointer, size_t);
@@ -113,7 +110,6 @@ inline auto to_u32string(const str::W1252string& s)
 {
     return to_u32string(s.c_str(), s.length());
 }
-CODA_OSS_API std::u32string to_u32string(const std::wstring&); // platform determines UTF16 or UTF-32 input
 
 template <typename TChar>
 inline coda_oss::u8string to_u8string(const std::basic_string<TChar>& s)
@@ -131,7 +127,6 @@ inline str::W1252string to_w1252string(const coda_oss::u8string& s)
 {
     return to_w1252string(s.c_str(), s.length());
 }
-CODA_OSS_API str::W1252string to_w1252string(const std::wstring&);
 CODA_OSS_API str::W1252string to_w1252string(const std::u16string&);
 
 CODA_OSS_API coda_oss::u8string from_utf8(const std::string&); // input encoding is *always* UTF-8

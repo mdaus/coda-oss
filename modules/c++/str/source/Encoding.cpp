@@ -517,3 +517,52 @@ std::wstring str::toWString(const str::W1252string& s)
 {
     return toWString(to_u8string(s)); // TODO: more efficient?
 }
+
+str::W1252string str::to_w1252string(const std::u16string& s)
+{
+    return to_w1252string(to_u8string(s));  // TODO: more efficient?
+}
+
+static inline coda_oss::u8string to_u8string_(std::string::const_pointer p_, size_t sz)  // std::string is UTF-8 or Windows-1252  depending on platform
+{
+    // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
+    #if _WIN32
+    // assume std::string is Windows-1252 on Windows
+    auto p = str::cast<str::W1252string::const_pointer>(p_);
+    return str::to_u8string(p, sz);
+    #endif
+
+    #if !_WIN32
+    // assume std::string is UTF-8 on any non-Windows platform
+    auto p = str::cast<coda_oss::u8string::const_pointer>(p_);
+    return coda_oss::u8string(p, sz);
+    #endif    
+}
+coda_oss::u8string str::to_u8string(std::string::const_pointer p, size_t sz)
+{
+    return to_u8string_(p, sz);
+}
+coda_oss::u8string str::to_u8string(std::wstring::const_pointer p, size_t sz)
+{
+    return to_u8string_(p, sz);
+}
+
+coda_oss::u8string str::from_utf8(const std::string& utf8)
+{
+    return coda_oss::u8string(str::c_str<coda_oss::u8string>(utf8), utf8.length());
+}
+std::string str::as_utf8(const coda_oss::u8string& s)
+{
+    return std::string(str::c_str<std::string>(s), s.length());
+}
+
+coda_oss::u8string str::from_windows1252(const std::string& w1252)
+{
+    const str::W1252string s(str::c_str<str::W1252string>(w1252), w1252.length());
+    return to_u8string(s); // TODO: more efficient?
+}
+std::string str::as_windows1252(const coda_oss::u8string& s)
+{
+    const auto w1252 = str::to_w1252string(s.c_str(), s.length());
+    return toString(w1252);  // TODO: more efficient?
+}
