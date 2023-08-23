@@ -523,25 +523,27 @@ str::W1252string str::to_w1252string(const std::u16string& s)
     return to_w1252string(to_u8string(s));  // TODO: more efficient?
 }
 
-static inline coda_oss::u8string to_u8string_(std::string::const_pointer p_, size_t sz)  // std::string is UTF-8 or Windows-1252  depending on platform
+template<PlatformType>
+coda_oss::u8string to_u8string_(std::string::const_pointer p_, size_t sz);
+template<>
+inline coda_oss::u8string to_u8string_<PlatformType::Linux>(std::string::const_pointer p_, size_t sz)
 {
-    // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
-    #if _WIN32
+    // assume std::string is UTF-8 on Linux
+    auto p = str::cast<coda_oss::u8string::const_pointer>(p_);
+    return str::to_u8string(p, sz);
+}
+template <>
+inline coda_oss::u8string to_u8string_<PlatformType::Windows>(std::string::const_pointer p_, size_t sz)
+{
     // assume std::string is Windows-1252 on Windows
     auto p = str::cast<str::W1252string::const_pointer>(p_);
     return str::to_u8string(p, sz);
-    #endif
-
-    #if !_WIN32
-    // assume std::string is UTF-8 on any non-Windows platform
-    auto p = str::cast<coda_oss::u8string::const_pointer>(p_);
-    return str::to_u8string(p, sz);
-    #endif    
 }
 coda_oss::u8string str::to_u8string(std::string::const_pointer p, size_t sz)
 {
-    return to_u8string_(p, sz);
+    return to_u8string_<Platform>(p, sz);
 }
+
 coda_oss::u8string str::to_u8string(std::wstring::const_pointer p, size_t sz)
 {
     return to_u8string_(p, sz);
