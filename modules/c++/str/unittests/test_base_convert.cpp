@@ -32,8 +32,6 @@
 
 #include <config/compiler_extensions.h>
 #include <import/str.h>
-#include <str/EncodedString.h>
-#include <str/EncodedStringView.h>
 #include <str/Encoding.h>
 #include <gsl/gsl.h>
 #include <sys/OS.h>

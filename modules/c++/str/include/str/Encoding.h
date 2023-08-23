@@ -155,8 +155,8 @@ CODA_OSS_API std::string as_windows1252(const coda_oss::u8string&); // output en
 
 namespace details // YOU should use EncodedStringView
 {
-CODA_OSS_API void w1252to8(str::W1252string::const_pointer p, size_t sz, std::string&); // encoding is lost
-CODA_OSS_API void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::string&); // encoding is lost
+void w1252to8(str::W1252string::const_pointer p, size_t sz, std::string&); // encoding is lost
+void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::string&); // encoding is lost
 }
 }
 
