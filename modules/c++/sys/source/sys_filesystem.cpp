@@ -103,7 +103,7 @@ fs::path::operator string_type() const
 
 std::string fs::path::string() const
 {
-    return str::to_string(p_);
+    return str::toString(p_);
 }
 
 fs::path fs::path::root_path() const

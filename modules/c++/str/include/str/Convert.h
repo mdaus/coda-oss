@@ -41,6 +41,8 @@
 #include "coda_oss/cstddef.h"
 #include "types/Complex.h"
 #include "import/except.h"
+#include "gsl/gsl.h"
+#include "str/Encoding.h"
 
 namespace str
 {
@@ -158,15 +160,15 @@ inline std::string toString(bool value)
 }
 inline std::string toString(uint8_t value)
 {
-    return toString(static_cast<unsigned int>(value));
+    return toString(gsl::narrow<unsigned int>(value));
 }
 inline std::string toString(int8_t value)
 {
-    return toString(static_cast<int>(value));
+    return toString(gsl::narrow<int>(value));
 }
 inline std::string toString(coda_oss::byte value)
 {
-    return toString(static_cast<uint8_t>(value));
+    return toString(gsl::narrow<uint8_t>(value));
 }
 
 inline std::string toString(std::nullptr_t)
@@ -174,11 +176,23 @@ inline std::string toString(std::nullptr_t)
     return "<nullptr>";
 }
 
-CODA_OSS_API std::string toString(const coda_oss::u8string&);
 inline std::string toString(const std::string& value)
 {
     return value;
 }
+
+// The resultant `std::string`s have "native" encoding (which is lost) depending
+// on the platform: UTF-8 on Linux and Windows-1252 on Windows.
+CODA_OSS_API std::string toString(const coda_oss::u8string&);
+CODA_OSS_API std::string toString(const str::W1252string&);
+CODA_OSS_API std::string toString(const std::u16string&);
+inline std::string toString(std::u16string::const_pointer p)
+{
+    return toString(std::u16string(p));
+}
+CODA_OSS_API std::string toString(const std::u32string&);
+std::string toString(const std::wstring&); // input is UTF-16 or UTF-32 depending on the platform
+
 inline std::string toString(char value)
 {
     return std::string(1, value);

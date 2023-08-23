@@ -40,6 +40,7 @@
 #include "str/Manip.h"
 #include "str/Convert.h"
 #include "str/EncodedStringView.h"
+#include "str/EncodedString.h"
 
 
 CODA_OSS_disable_warning_push
@@ -389,7 +390,23 @@ coda_oss::u8string str::to_u8string(W1252string::const_pointer p, size_t sz)
     return retval;
 }
 
-std::string str::toString(const coda_oss::u8string& utf8)
+std::string str::toString(const coda_oss::u8string& s)
 {
-    return str::to_string(utf8);
+    return str::EncodedStringView(s).native();
+}
+std::string str::toString(const str::W1252string& s)
+{
+    return str::EncodedStringView(s).native();
+}
+std::string str::toString(const std::u16string& s)
+{
+    return str::EncodedString(s).native();
+}
+std::string str::toString(const std::u32string& s)
+{
+    return str::EncodedString(s).native();
+}
+std::string str::toString(const std::wstring& s)
+{
+    return str::EncodedString(s).native();
 }

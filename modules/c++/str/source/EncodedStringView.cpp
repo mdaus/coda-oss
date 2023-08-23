@@ -208,24 +208,6 @@ str::W1252string str::to_w1252string(const std::u16string& s)
     return str::EncodedStringView::details::w1252string(wide_encoded.view());
 }
 
-std::string str::to_string(const coda_oss::u8string& s)
-{
-    return str::EncodedStringView(s).native();
-}
-std::string str::to_string(const std::wstring& s)
-{
-    return str::EncodedString(s).native();
-}
-std::string str::to_string(const std::u16string& s)
-{
-    return str::EncodedString(s).native();
-}
-std::string str::to_string(const str::W1252string& s)
-{
-    return str::EncodedStringView(s).native();
-}
-
-
 std::wstring str::to_wstring(const std::string& s)
 {
     return str::EncodedStringView(s).wstring();
