@@ -373,6 +373,14 @@ static auto as_utf8(const coda_oss::u8string& s)
 {
     return std::string(str::c_str<std::string>(s), s.length());
 }
+static auto toWString(const std::u16string& s)
+{
+    return str::toWString(str::to_u8string(s));
+}
+static auto toString(const std::u16string& s)
+{
+    return str::toString(str::to_u8string(s));
+}
 
 static void test_wide_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16,
     const std::wstring& wstring, const std::string& native, const str::W1252string& w1252)
@@ -417,9 +425,9 @@ static void test_Windows1252_ascii(const std::string& testName, const char* pStr
     auto w1252 = str::cast<str::W1252string::const_pointer>(pStr);
     test_wide_(testName, pStr, pUtf16, wstring, native, w1252);
 
-    native = str::toString(pUtf16);
+    native = toString(pUtf16);
     TEST_ASSERT_EQ(native, pStr); // native() is the same on all platforms/encodings for ASCII
-    wstring = str::toWString(pUtf16);
+    wstring = toWString(pUtf16);
     test_wide_(testName, pStr, pUtf16, wstring, native, w1252);
 }
 TEST_CASE(test_ASCII)
@@ -442,6 +450,11 @@ TEST_CASE(test_ASCII)
     test_Windows1252_ascii(testName, ascii, u16_ascii);
 }
 
+static auto to_w1252string(const std::u16string& s)
+{
+    return str::to_w1252string(str::to_u8string(s));
+}
+
 static void test_Windows1252_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16)
 {
     const auto u16 = str::to_u16string(from_windows1252(pStr));
@@ -451,9 +464,9 @@ static void test_Windows1252_(const std::string& testName, const char* pStr, std
     str::W1252string w1252 = str::cast<str::W1252string::const_pointer>(pStr);
     test_wide_(testName, pStr, pUtf16, wstring, s, w1252);
 
-    wstring = str::toWString(pUtf16);
-    s = str::toString(pUtf16);
-    w1252 = str::to_w1252string(pUtf16);
+    wstring = toWString(pUtf16);
+    s = toString(pUtf16);
+    w1252 = to_w1252string(pUtf16);
     test_wide_(testName, pStr, pUtf16, wstring, s, w1252);
 }
 TEST_CASE(test_Windows1252_WIN32)

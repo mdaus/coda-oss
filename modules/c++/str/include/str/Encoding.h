@@ -94,7 +94,6 @@ inline auto to_w1252string(const coda_oss::u8string& s)
 {
     return to_w1252string(s.c_str(), s.length());
 }
-CODA_OSS_API str::W1252string to_w1252string(const std::u16string&);
 
 CODA_OSS_API coda_oss::u8string to_u8string(std::string::const_pointer, size_t); // platform determines Windows-1252 or UTF-8 input
 CODA_OSS_API coda_oss::u8string to_u8string(std::wstring::const_pointer, size_t); // platform determines UTF16 or UTF-32 input
