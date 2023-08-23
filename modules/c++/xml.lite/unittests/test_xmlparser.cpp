@@ -205,8 +205,7 @@ TEST_CASE(testXmlPrintSimple)
 
 static auto from_windows1252(const std::string& w1252)
 {
-    const str::W1252string s(str::c_str<str::W1252string>(w1252), w1252.length());
-    return to_u8string(s);
+    return to_u8string(str::c_str<str::W1252string>(w1252), w1252.length());
 }
 
 TEST_CASE(testXmlPrintUtf8)

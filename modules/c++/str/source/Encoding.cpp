@@ -535,7 +535,7 @@ static inline coda_oss::u8string to_u8string_(std::string::const_pointer p_, siz
     #if !_WIN32
     // assume std::string is UTF-8 on any non-Windows platform
     auto p = str::cast<coda_oss::u8string::const_pointer>(p_);
-    return coda_oss::u8string(p, sz);
+    return str::to_u8string(p, sz);
     #endif    
 }
 coda_oss::u8string str::to_u8string(std::string::const_pointer p, size_t sz)
