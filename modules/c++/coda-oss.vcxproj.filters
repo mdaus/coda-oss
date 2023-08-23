@@ -75,12 +75,6 @@
     <ClInclude Include="str\include\str\Convert.h">
       <Filter>str</Filter>
     </ClInclude>
-    <ClInclude Include="str\include\str\EncodedString.h">
-      <Filter>str</Filter>
-    </ClInclude>
-    <ClInclude Include="str\include\str\EncodedStringView.h">
-      <Filter>str</Filter>
-    </ClInclude>
     <ClInclude Include="str\include\str\Encoding.h">
       <Filter>str</Filter>
     </ClInclude>
@@ -970,12 +964,6 @@
       <Filter>except</Filter>
     </ClCompile>
     <ClCompile Include="str\source\Convert.cpp">
-      <Filter>str</Filter>
-    </ClCompile>
-    <ClCompile Include="str\source\EncodedString.cpp">
-      <Filter>str</Filter>
-    </ClCompile>
-    <ClCompile Include="str\source\EncodedStringView.cpp">
       <Filter>str</Filter>
     </ClCompile>
     <ClCompile Include="str\source\Encoding.cpp">
