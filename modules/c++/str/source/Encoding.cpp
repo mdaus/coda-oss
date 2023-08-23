@@ -220,7 +220,7 @@ inline void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, 
 {
     windows1252_to_string_(p, sz, result);
 }
-void str::details::w1252to8(str::W1252string::const_pointer p, size_t sz, std::string& result)
+static void w1252to8(str::W1252string::const_pointer p, size_t sz, std::string& result)
 {
     result = to_Tstring<std::string>(p, sz);
 }
@@ -323,10 +323,7 @@ static void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::basi
         }
     }
 }
-void str::details::utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::string& result)
-{
-    ::utf8to1252(p, sz, result);
-}
+
 str::W1252string str::to_w1252string(coda_oss::u8string::const_pointer p, size_t sz)
 {
     str::W1252string retval;
@@ -412,7 +409,7 @@ template <>
 inline std::string toString_<PlatformType::Windows>(const coda_oss::u8string& s)
 {
     std::string retval;
-    str::details::utf8to1252(s.c_str(), s.length(), retval);
+    ::utf8to1252(s.c_str(), s.length(), retval);
     return retval;
 }
 std::string str::toString(const coda_oss::u8string& s)
@@ -426,7 +423,7 @@ template<>
 inline std::string toString_<PlatformType::Linux>(const str::W1252string& s)
 {
     std::string retval;
-    str::details::w1252to8(s.c_str(), s.length(), retval);
+    ::w1252to8(s.c_str(), s.length(), retval);
     return retval;
 }
 template <>
@@ -441,11 +438,11 @@ std::string str::toString(const str::W1252string& s)
 
 std::string str::toString(const std::u16string& s)
 {
-    return toString(to_u8string(s)); // TODO: more efficient?
+    return toString(str::to_u8string(s)); // TODO: more efficient?
 }
 std::string str::toString(const std::u32string& s)
 {
-    return toString(to_u8string(s));  // TODO: more efficient?
+    return toString(str::to_u8string(s));  // TODO: more efficient?
 }
 
 static inline coda_oss::u8string to_u8string_(std::wstring::const_pointer p_, size_t sz)  // std::wstring is UTF-16 or UTF-32  depending on platform
@@ -511,16 +508,16 @@ std::wstring str::toWString(const coda_oss::u8string& s)
 }
 std::wstring str::toWString(const std::u16string& s)
 {
-    return toWString(to_u8string(s)); // TODO: more efficient?
+    return toWString(str::to_u8string(s)); // TODO: more efficient?
 }
 std::wstring str::toWString(const str::W1252string& s)
 {
-    return toWString(to_u8string(s)); // TODO: more efficient?
+    return toWString(str::to_u8string(s)); // TODO: more efficient?
 }
 
 str::W1252string str::to_w1252string(const std::u16string& s)
 {
-    return to_w1252string(to_u8string(s));  // TODO: more efficient?
+    return to_w1252string(str::to_u8string(s));  // TODO: more efficient?
 }
 
 template<PlatformType>
@@ -530,7 +527,7 @@ inline coda_oss::u8string to_u8string_<PlatformType::Linux>(std::string::const_p
 {
     // assume std::string is UTF-8 on Linux
     auto p = str::cast<coda_oss::u8string::const_pointer>(p_);
-    return str::to_u8string(p, sz);
+    return coda_oss::u8string(p, sz);
 }
 template <>
 inline coda_oss::u8string to_u8string_<PlatformType::Windows>(std::string::const_pointer p_, size_t sz)

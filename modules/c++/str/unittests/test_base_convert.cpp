@@ -116,7 +116,7 @@ TEST_CASE(test_string_to_u8string_ascii)
 static void test_string_to_u8string_windows_1252_(const std::string& testName, const std::string& input_)
 {
     const str::W1252string input(str::c_str<str::W1252string>(input_));
-    const auto actual = to_u8string(input);
+    const auto actual = str::to_u8string(input);
 
     // No "expected" to test against as the UTF-8 values for these Windows-1252 characters
     // are mapped one-by-one.  However, we can test that UTF-8 to Windows-1252
@@ -305,9 +305,17 @@ static inline coda_oss::u8string to_u8string_(std::wstring::const_pointer p_, si
     #endif    
     return str::to_u8string(p, sz);
 }
-static str::W1252string to_w1252string(const std::wstring& s)
+static auto to_w1252string(const std::wstring& s)
 {
     return str::to_w1252string(to_u8string_(s.c_str(), s.length()));
+}
+static auto to_u16string(const str::W1252string& s)
+{
+    return str::to_u16string(s.c_str(), s.length());
+}
+static auto to_u32string(const str::W1252string& s)
+{
+    return str::to_u32string(s.c_str(), s.length());
 }
 
 TEST_CASE(test_u8string_to_u16string)
@@ -328,7 +336,7 @@ TEST_CASE(test_u8string_to_u16string)
     TEST_ASSERT(wide == str::toWString(w1252));
 
     TEST_ASSERT(classificationText_u16() == actual);  // _EQ wants to do toString()
-    TEST_ASSERT(classificationText_u16() == str::to_u16string(w1252)); // _EQ wants to do toString()
+    TEST_ASSERT(classificationText_u16() == to_u16string(w1252)); // _EQ wants to do toString()
 }
 
 TEST_CASE(test_u8string_to_u32string)
@@ -349,7 +357,7 @@ TEST_CASE(test_u8string_to_u32string)
     TEST_ASSERT(wide == str::toWString(w1252));
 
     TEST_ASSERT(classificationText_u32() == actual);  // _EQ wants to do toString()
-    TEST_ASSERT(classificationText_u32() == str::to_u32string(w1252)); // _EQ wants to do toString()
+    TEST_ASSERT(classificationText_u32() == to_u32string(w1252)); // _EQ wants to do toString()
 }
 
 static auto as_windows1252(const coda_oss::u8string& s)
