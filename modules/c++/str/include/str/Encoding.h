@@ -134,11 +134,6 @@ inline str::W1252string to_w1252string(const coda_oss::u8string& s)
 CODA_OSS_API str::W1252string to_w1252string(const std::wstring&);
 CODA_OSS_API str::W1252string to_w1252string(const std::u16string&);
 
-CODA_OSS_API std::wstring to_wstring(const std::string&); // platform determines Windows-1252 or UTF-8 input and output encoding
-CODA_OSS_API std::wstring to_wstring(const coda_oss::u8string&); // platform determines UTF-16 or UTF-32 output encoding
-CODA_OSS_API std::wstring to_wstring(const std::u16string&); // platform determines UTF-16 or UTF-32 output encoding
-CODA_OSS_API std::wstring to_wstring(const str::W1252string&);
-
 CODA_OSS_API coda_oss::u8string from_utf8(const std::string&); // input encoding is *always* UTF-8
 CODA_OSS_API std::string as_utf8(const coda_oss::u8string&); // output encoding is *always* UTF-8
 

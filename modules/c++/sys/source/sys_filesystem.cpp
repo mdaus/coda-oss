@@ -48,7 +48,7 @@ fs::path::string_type fs::path::to_native(const std::string& s_)
 {
    
 #ifdef _WIN32
-    return str::to_wstring(s_);
+    return str::toWString(s_);
 #else
     return s_;
 #endif

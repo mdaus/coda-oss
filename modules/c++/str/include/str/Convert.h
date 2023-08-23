@@ -221,6 +221,14 @@ inline std::string toString(const T* ptr)
     return details::default_toString(ptr);
 }
 
+
+CODA_OSS_API std::wstring toWString(const std::string&); // platform determines Windows-1252 or UTF-8 input and output encoding
+CODA_OSS_API std::wstring toWString(const coda_oss::u8string&); // platform determines UTF-16 or UTF-32 output encoding
+CODA_OSS_API std::wstring toWString(const std::u16string&); // platform determines UTF-16 or UTF-32 output encoding
+CODA_OSS_API std::wstring toWString(const str::W1252string&); // platform determines UTF-16 or UTF-32 output encoding
+
+
+
 template <typename T>
 T toType(const std::string& s)
 {

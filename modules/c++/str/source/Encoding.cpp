@@ -410,3 +410,20 @@ std::string str::toString(const std::wstring& s)
 {
     return str::EncodedString(s).native();
 }
+
+std::wstring str::toWString(const std::string& s)
+{
+    return str::EncodedStringView(s).wstring();
+}
+std::wstring str::toWString(const coda_oss::u8string& s)
+{
+    return str::EncodedStringView(s).wstring();
+}
+std::wstring str::toWString(const std::u16string& s)
+{
+    return str::EncodedString(s).wstring();
+}
+std::wstring str::toWString(const str::W1252string& s)
+{
+    return str::EncodedString(s).wstring();
+}
