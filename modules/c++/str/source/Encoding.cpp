@@ -48,20 +48,20 @@ CODA_OSS_disable_warning(-Wshadow)
 #include "str/utf8.h"
 CODA_OSS_disable_warning_pop
 
-// "sys" depends on "str" so can't use sys::PlatformType
-enum class PlatformType
-{
-    Windows,
-    Linux,
-    // MacOS
-};
-#if defined(_WIN32)
-static constexpr auto Platform = PlatformType::Windows;
-#elif defined(_POSIX_C_SOURCE)
-static constexpr auto Platform = PlatformType::Linux;
-#else
-#error "Unknown platform"
-#endif
+//// "sys" depends on "str" so can't use sys::PlatformType
+//enum class PlatformType
+//{
+//    Windows,
+//    Linux,
+//    // MacOS
+//};
+//#if defined(_WIN32)
+//static constexpr auto Platform = PlatformType::Windows;
+//#elif defined(_POSIX_C_SOURCE)
+//static constexpr auto Platform = PlatformType::Linux;
+//#else
+//#error "Unknown platform"
+//#endif
 
 // Need to look up characters from \x80 (EURO SIGN) to \x9F (LATIN CAPITAL LETTER Y WITH DIAERESIS)
 // in a map: http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
