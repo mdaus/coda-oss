@@ -228,6 +228,7 @@
     <ClInclude Include="str\include\str\Manip.h" />
     <ClInclude Include="str\include\str\Tokenizer.h" />
     <ClInclude Include="str\include\str\utf8.h" />
+    <ClInclude Include="str\include\str\W1252string.h" />
     <ClInclude Include="sys\include\sys\AbstractOS.h" />
     <ClInclude Include="sys\include\sys\AtomicCounter.h" />
     <ClInclude Include="sys\include\sys\AtomicCounterCpp11.h" />

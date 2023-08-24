@@ -21,9 +21,9 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_str_Encoding_h_INCLUDED_
 #define CODA_OSS_str_Encoding_h_INCLUDED_
-#pragma once
 
 #include <string.h>
 #include <wchar.h>
@@ -36,6 +36,7 @@
 #include "coda_oss/string.h"
 #include "gsl/gsl.h"
 #include "config/Exports.h"
+#include "str/W1252string.h"
 
 namespace str
 {
@@ -56,22 +57,6 @@ inline typename TBasicStringT::const_pointer c_str(const std::basic_string<TChar
     using return_t = typename TBasicStringT::const_pointer;
     return cast<return_t>(s.c_str());
 }
-
-// This is to make it difficult to get encodings mixed up; it's here (in a .h
-// file) as we want to unit-test it. Windows1252_T for Windows-1252 characters
-enum class Windows1252_T : unsigned char { };  // https://en.cppreference.com/w/cpp/language/types
-using W1252string = std::basic_string<Windows1252_T>;  // https://en.cppreference.com/w/cpp/string
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-// We'll get strange errors, possibibly at link-time, if wchar_t is not a wchar_t type.
-// MSVC has an option to control this: https://docs.microsoft.com/en-us/cpp/build/reference/zc-wchar-t-wchar-t-is-native-type
-// https://en.cppreference.com/w/cpp/language/types
-// "It has the same size, signedness, and alignment as one of the integer types, but is a distinct type."
-static_assert(!std::is_same<wchar_t, uint16_t>::value, "wchar_t should not be the same as uint16_t");
-static_assert(!std::is_same<wchar_t, int16_t>::value, "wchar_t should not be the same as int16_t");
-static_assert(!std::is_same<wchar_t, uint32_t>::value, "wchar_t should not be the same as uint32_t");
-static_assert(!std::is_same<wchar_t, int32_t>::value, "wchar_t should not be the same as int32_t");
 
 // When the encoding is important, we want to "traffic" in coda_oss::u8string (UTF-8), not
 // str::W1252string (Windows-1252) or std::string (unknown).  Make it easy to get those from other encodings.
