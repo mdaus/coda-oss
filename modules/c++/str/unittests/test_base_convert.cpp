@@ -556,12 +556,16 @@ TEST_CASE(test_Windows1252)
         test_Windows1252_(testName, running_w1252.c_str(), running_utf16.c_str());
     }
 
+    #if _WIN32
+    // This only works on Windows because the "assume encoding" APIs are used.
     for (auto&& ch : w1252_to_utf16)
     {
         const std::string expected(1, ch.first);
-        const auto actual = str::toString(std::wstring(1, ch.second));
+        const std::wstring input(1, ch.second); // `std::wstring` is UTF-16 on Windows
+        const auto actual = str::toString(input);
         TEST_ASSERT_EQ(expected, actual);
     }
+    #endif
 }
 
 static void test_Encodeding_(const std::string& testName, const coda_oss::u8string& classificationText_u8,
