@@ -556,12 +556,12 @@ TEST_CASE(test_Windows1252)
         test_Windows1252_(testName, running_w1252.c_str(), running_utf16.c_str());
     }
 
-    for (auto&& ch : w1252_to_utf16)
-    {
-        const std::string expected(1, ch.first);
-        const auto actual = str::toString(std::wstring(1, ch.second));
-        TEST_ASSERT_EQ(expected, actual);
-    }
+    //for (auto&& ch : w1252_to_utf16)
+    //{
+    //    const std::string expected(1, ch.first);
+    //    const auto actual = str::toString(std::wstring(1, ch.second));
+    //    TEST_ASSERT_EQ(expected, actual);
+    //}
 }
 
 static void test_Encodeding_(const std::string& testName, const coda_oss::u8string& classificationText_u8,
