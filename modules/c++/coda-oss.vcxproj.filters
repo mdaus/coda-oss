@@ -22,34 +22,34 @@
       <Filter>gsl</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\bit.h">
-      <Filter>math\coda_oss</Filter>
+      <Filter>coda_oss</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\CPlusPlus.h">
-      <Filter>math\coda_oss</Filter>
+      <Filter>coda_oss</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\cstddef.h">
-      <Filter>math\coda_oss</Filter>
+      <Filter>coda_oss</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\namespace_.h">
-      <Filter>math\coda_oss</Filter>
+      <Filter>coda_oss</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\optional.h">
-      <Filter>math\coda_oss</Filter>
+      <Filter>coda_oss</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\optional_.h">
-      <Filter>math\coda_oss</Filter>
+      <Filter>coda_oss</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\span.h">
-      <Filter>math\coda_oss</Filter>
+      <Filter>coda_oss</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\span_.h">
-      <Filter>math\coda_oss</Filter>
+      <Filter>coda_oss</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\string.h">
-      <Filter>math\coda_oss</Filter>
+      <Filter>coda_oss</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\type_traits.h">
-      <Filter>math\coda_oss</Filter>
+      <Filter>coda_oss</Filter>
     </ClInclude>
     <ClInclude Include="except\include\except\Backtrace.h">
       <Filter>except</Filter>
@@ -733,7 +733,7 @@
       <Filter>types</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\numbers.h">
-      <Filter>math\coda_oss</Filter>
+      <Filter>coda_oss</Filter>
     </ClInclude>
     <ClInclude Include="hdf5.lite\source\hdf5.lite.h">
       <Filter>hdf5.lite</Filter>
@@ -1490,7 +1490,7 @@
     <Filter Include="unique">
       <UniqueIdentifier>{79aa73a7-ed0d-4826-b7ed-c8d91d96998a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="math\coda_oss">
+    <Filter Include="coda_oss">
       <UniqueIdentifier>{59f3d9a1-06d3-4779-aef2-cc55223c3017}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
