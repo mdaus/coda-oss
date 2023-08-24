@@ -332,7 +332,7 @@ static auto u16_to_Windows1252()
     std::map<std::u16string::value_type, str::W1252string::value_type> retval;
     for (uint16_t i = 0x0080; i <= 0x00ff; i++)  // **not** `uint8_t` to avoid wrap-around
     {
-        const auto ch = gsl::narrow<str::W1252string::value_type>(i);
+        const auto ch = static_cast<str::W1252string::value_type>(i);
         const auto u16 = str::to_u16string(&ch, 1);
         assert(u16.length() == 1);
         retval[u16[0]] = ch;
