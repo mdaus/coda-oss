@@ -487,16 +487,18 @@ std::string str::toString(const str::W1252string& s)
     return toString_<Platform>(s);
 }
 
-std::string str::toString(const std::wstring& s)
+inline auto c_str(const std::wstring& s)
 {
-    const auto p =
     // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
     #if _WIN32
-    str::cast<std::u16string::const_pointer>(s.c_str()); // std::wstring is UTF-16 on Windows
-    #endif
-    #if !_WIN32
-    str::cast<std::u32string::const_pointer>(s.c_str()); // assume std::wstring is UTF-32 on any non-Windows platform
-    #endif    
+    return str::c_str<std::u16string>(s); // std::wstring is UTF-16 on Windows
+    #elif defined(_POSIX_C_SOURCE)
+    return str::c_str<std::u32string>(s); // assume std::wstring is UTF-32 on any non-Windows platform
+    #endif   
+}
+std::string str::toString(const std::wstring& s)
+{
+    const auto p = ::c_str(s);
 
     std::string retval;
    #if _WIN32
@@ -586,16 +588,17 @@ coda_oss::u8string str::to_u8string(std::string::const_pointer p, size_t sz)
     return to_u8string_<Platform>(p, sz);
 }
 
-coda_oss::u8string str::to_u8string(std::wstring::const_pointer p_, size_t sz)
+inline auto cast(std::wstring::const_pointer p)
 {
-    const auto p =
     // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
     #if _WIN32
-    str::cast<std::u16string::const_pointer>(p_); // std::wstring is UTF-16 on Windows
-    #endif
-    #if !_WIN32
-    str::cast<std::u32string::const_pointer>(p_); // assume std::wstring is UTF-32 on any non-Windows platform
-    #endif    
-    return str::to_u8string(p, sz);
+    return str::cast<std::u16string::const_pointer>(p); // std::wstring is UTF-16 on Windows
+    #else
+    return str::cast<std::u32string::const_pointer>(p); // assume std::wstring is UTF-32 on any non-Windows platform
+    #endif   
+}
+coda_oss::u8string str::to_u8string(std::wstring::const_pointer p_, size_t sz)
+{
+    return str::to_u8string(::cast(p_), sz);
 }
 
