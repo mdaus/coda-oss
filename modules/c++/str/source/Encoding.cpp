@@ -326,51 +326,38 @@ static void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::basi
 
 static auto u16_to_Windows1252()
 {
-    // These are all the "interesting" values.
-    static const auto utf32_to_u8string = Windows1252_to_u8string();
-
-    std::map<std::u16string::value_type, std::string::value_type> retval;
-    for (auto&& kv : utf32_to_u8string)
+    // Find the corresponding UTF-16 value for every Windows-1252 input.
+    // Skip the first half as they're the same for ASCII.
+    std::map<std::u16string::value_type, str::W1252string::value_type> retval;
+    for (uint16_t i = 0x0080; i <= 0x00ff; i++)  // **not** `uint8_t` to avoid wrap-around
     {
-        auto&& key = kv.second;
-        std::string result;
-        utf8to1252(key.c_str(), key.length(), result, true /*strict*/);
-        if (result.length() == 1) // UTF-8 conversion could be multiple bytes
-        {
-            const auto u16 = str::to_u16string(key);
-            assert(u16.length() == 1);
-            //assert(gsl::narrow<uint32_t>(u16[0]) == kv.first);
-            retval[u16[0]] = result[0];        
-        }
-        else
-        {
-            assert(!result.empty());
-        }
-    }
+        const auto ch = gsl::narrow<str::W1252string::value_type>(i);
+        const auto u16 = str::to_u16string(&ch, 1);
+        assert(u16.length() == 1);
 
+        retval[u16[0]] = ch;
+    }
     return retval;
 }
-
 static inline void utf16to1252(std::u16string::const_pointer p, size_t sz, std::string& result, bool strict=false)
 {
-    static const auto map = u16_to_Windows1252();
-
     using value_type = std::string::value_type;
 
+    static const auto map = u16_to_Windows1252();
     for (size_t i = 0; i < sz; i++)
     {
         const auto ch = p[i];
 
-        if (ch < 0x0080)
+        if (ch < 0x0080) // ASCII
         {
-            result += gsl::narrow<value_type>(ch);  // ASCII
+            result += gsl::narrow<value_type>(ch);  
             continue;
         }
 
         const auto it = map.find(ch);
         if (it != map.end())
         {
-            result += it->second;
+            result += static_cast<value_type>(it->second);
         }
         else if (strict)
         {
@@ -379,7 +366,7 @@ static inline void utf16to1252(std::u16string::const_pointer p, size_t sz, std::
         else
         {
             assert("UTF-16 sequence can't be converted to Windows-1252." && 0);
-            result += gsl::narrow<value_type>(0x7F);  // <DEL>
+            result += static_cast<value_type>(0x7F);  // <DEL>
         }
     }
 }
