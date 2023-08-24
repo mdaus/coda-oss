@@ -362,35 +362,22 @@ struct back_inserter final
     back_inserter operator++(int) noexcept { return *this; }
 };
 
-inline std::u16string to_u16string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
+template <typename TBasicStringT, typename CharT>
+inline auto to_uXXstring(const std::basic_string<CharT>& s)
 {
-    if (is_utf8)
-    {
-        return str::to_u16string(str::cast<coda_oss::u8string::const_pointer>(s), sz);
-    }
-    return str::to_u16string(str::cast<str::W1252string::const_pointer>(s), sz);
+    const auto p = str::c_str<TBasicStringT>(s);
+    #ifdef _WIN32
+    return str::to_u16string(p, s.length()); // std::wstring is UTF-16 on Windows
+    #else
+    return str::to_u32string(p, s.length()); // assume std::wstring is UTF-32 everywhere except Windows
+    #endif
 }
-inline std::u32string to_u32string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
-{
-    if (is_utf8)
-    {
-        return str::to_u32string(str::cast<coda_oss::u8string::const_pointer>(s), sz);
-    }
-    return str::to_u32string(str::cast<str::W1252string::const_pointer>(s), sz);
-}
-
 template<typename CharT>
 static std::wstring toWString_(const std::basic_string<CharT>& s, bool is_utf8)
 {
-    const auto p = str::c_str<std::string>(s);
-    const auto sz = s.size();
-    const auto result =
-    // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
-    #ifdef _WIN32
-    ::to_u16string(p, sz, is_utf8);  // std::wstring is UTF-16 on Windows
-    #else
-    ::to_u32string(p, sz,  is_utf8);  // std::wstring is UTF-32 on Linux
-    #endif    
+   
+    const auto result = is_utf8 ? to_uXXstring<coda_oss::u8string>(s)
+                                : to_uXXstring<str::W1252string>(s);
     return str::c_str<std::wstring>(result);  // copy
 }
 
@@ -434,11 +421,9 @@ std::string str::toString(const std::wstring& s)
 std::wstring str::toWString(const std::string& s)
 {
      #if _WIN32
-    // Input is Windows-1252 on Windows
-    return toWString_(s, false /*is_utf8*/);
+    return toWString_(s, false /*is_utf8*/); // Input is Windows-1252 on Windows
     #else
-    // Input is UTF-8 everywhere except Windows
-    return toWString_(s, true /*is_utf8*/);
+    return toWString_(s, true /*is_utf8*/);  // Input is UTF-8 everywhere except Windows
     #endif
 }
 std::wstring str::toWString(const coda_oss::u8string& s)
@@ -526,7 +511,5 @@ coda_oss::u8string str::to_u8string(std::u32string::const_pointer p, size_t sz)
 
 coda_oss::u8string str::to_u8string(W1252string::const_pointer p, size_t sz)
 {
-    coda_oss::u8string retval;
-    w1252_to_string(p, sz, retval);
-    return retval;
+    return to_Tstring<coda_oss::u8string>(p, sz);
 }
