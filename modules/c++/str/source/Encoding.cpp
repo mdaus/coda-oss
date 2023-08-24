@@ -471,6 +471,19 @@ std::string str::toString(const str::W1252string& s)
     #endif
 }
 
+inline auto as_w1252string(std::u16string::const_pointer p, size_t sz)
+{
+    std::string retval;
+    utf16to1252(p, sz, retval);
+    return retval;
+}
+inline auto as_u8string(std::u32string::const_pointer p, size_t sz)
+{
+    std::string retval;
+    utf32to8(p, sz, retval);
+    return retval;
+}
+
 inline auto c_str(const std::wstring& s)
 {
     // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
@@ -482,15 +495,11 @@ inline auto c_str(const std::wstring& s)
 }
 std::string str::toString(const std::wstring& s)
 {
-    const auto p = ::c_str(s);
-
-    std::string retval;
-   #if _WIN32
-    utf16to1252(p, s.length(), retval); // Windows-1252 encoding on Windows.
+    #if _WIN32
+    return as_w1252string(::c_str(s), s.length()); // Windows-1252 encoding on Windows.
     #else
-    utf32to8(p, s.length(), retval); // UTF-8 encoding everywhere else.
+    return  as_u8string(::c_str(s), s.length()); // UTF-8 encoding everywhere else.
     #endif   
-    return retval;
 }
 
 inline std::u16string to_u16string(std::string::const_pointer s, size_t sz, bool is_utf8 /* is 's' UTF-8? */)
