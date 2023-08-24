@@ -220,7 +220,7 @@ inline void windows1252_to_string(str::W1252string::const_pointer p, size_t sz, 
 {
     windows1252_to_string_(p, sz, result);
 }
-static void w1252to8(str::W1252string::const_pointer p, size_t sz, std::string& result)
+inline void w1252to8(str::W1252string::const_pointer p, size_t sz, std::string& result)
 {
     result = to_Tstring<std::string>(p, sz);
 }
@@ -449,42 +449,26 @@ coda_oss::u8string str::to_u8string(W1252string::const_pointer p, size_t sz)
     return retval;
 }
 
-template <PlatformType>
-std::string toString_(const coda_oss::u8string& s);
-template<>
-inline std::string toString_<PlatformType::Linux>(const coda_oss::u8string& s)
-{
-    return str::c_str<std::string>(s);
-}
-template <>
-inline std::string toString_<PlatformType::Windows>(const coda_oss::u8string& s)
-{
-    std::string retval;
-    ::utf8to1252(s.c_str(), s.length(), retval);
-    return retval;
-}
 std::string str::toString(const coda_oss::u8string& s)
 {
-    return toString_<Platform>(s);
+    #if _WIN32
+    std::string retval;
+    utf8to1252(s.c_str(), s.length(), retval);
+    return retval;
+    #else
+    return str::c_str<std::string>(s);
+    #endif
 }
 
-template <PlatformType>
-std::string toString_(const str::W1252string& s);
-template<>
-inline std::string toString_<PlatformType::Linux>(const str::W1252string& s)
-{
-    std::string retval;
-    ::w1252to8(s.c_str(), s.length(), retval);
-    return retval;
-}
-template <>
-inline std::string toString_<PlatformType::Windows>(const str::W1252string& s)
-{
-    return str::c_str<std::string>(s);
-}
 std::string str::toString(const str::W1252string& s)
 {
-    return toString_<Platform>(s);
+    #if _WIN32
+    return str::c_str<std::string>(s);
+    #else
+    std::string retval;
+    w1252to8(s.c_str(), s.length(), retval);
+    return retval;
+    #endif
 }
 
 inline auto c_str(const std::wstring& s)
@@ -492,7 +476,7 @@ inline auto c_str(const std::wstring& s)
     // Need to use #ifdef's because str::cast() checks to be sure the sizes are correct.
     #if _WIN32
     return str::c_str<std::u16string>(s); // std::wstring is UTF-16 on Windows
-    #elif defined(_POSIX_C_SOURCE)
+    #else
     return str::c_str<std::u32string>(s); // assume std::wstring is UTF-32 on any non-Windows platform
     #endif   
 }
@@ -540,23 +524,15 @@ static std::wstring toWString_(const std::basic_string<CharT>& s, bool is_utf8)
     #endif    
     return str::c_str<std::wstring>(result);  // copy
 }
-template <PlatformType>
-std::wstring toWString_(const std::string& s);
-template<>
-inline std::wstring toWString_<PlatformType::Linux>(const std::string& s)
-{
-    // Input is UTF-8 on Linux
-    return toWString_(s, true /*is_utf8*/);
-}
-template <>
-inline std::wstring toWString_<PlatformType::Windows>(const std::string& s)
-{
-    // Input is Windows-1252 on Windows
-    return toWString_(s, false /*is_utf8*/);
-}
 std::wstring str::toWString(const std::string& s)
 {
-    return toWString_<Platform>(s); // input encoding depends on platform
+     #if _WIN32
+    // Input is Windows-1252 on Windows
+    return toWString_(s, false /*is_utf8*/);
+    #else
+    // Input is UTF-8 everywhere except Windows
+    return toWString_(s, true /*is_utf8*/);
+    #endif
 }
 std::wstring str::toWString(const coda_oss::u8string& s)
 {
@@ -567,25 +543,16 @@ std::wstring str::toWString(const str::W1252string& s)
     return toWString_(s, false /*is_utf8*/);
 }
 
-template<PlatformType>
-coda_oss::u8string to_u8string_(std::string::const_pointer p_, size_t sz);
-template<>
-inline coda_oss::u8string to_u8string_<PlatformType::Linux>(std::string::const_pointer p_, size_t sz)
+coda_oss::u8string str::to_u8string(std::string::const_pointer p_, size_t sz)
 {
-    // assume std::string is UTF-8 on Linux
-    auto p = str::cast<coda_oss::u8string::const_pointer>(p_);
-    return coda_oss::u8string(p, sz);
-}
-template <>
-inline coda_oss::u8string to_u8string_<PlatformType::Windows>(std::string::const_pointer p_, size_t sz)
-{
+    #if _WIN32
     // assume std::string is Windows-1252 on Windows
     auto p = str::cast<str::W1252string::const_pointer>(p_);
+    #else
+    // assume std::string is UTF-8 everywhere except Windows
+    auto p = str::cast<coda_oss::u8string::const_pointer>(p_);
+    #endif
     return str::to_u8string(p, sz);
-}
-coda_oss::u8string str::to_u8string(std::string::const_pointer p, size_t sz)
-{
-    return to_u8string_<Platform>(p, sz);
 }
 
 inline auto cast(std::wstring::const_pointer p)

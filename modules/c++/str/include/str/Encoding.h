@@ -78,6 +78,10 @@ static_assert(!std::is_same<wchar_t, int32_t>::value, "wchar_t should not be the
 CODA_OSS_API coda_oss::u8string to_u8string(str::W1252string::const_pointer, size_t);
 CODA_OSS_API coda_oss::u8string to_u8string(std::u16string::const_pointer, size_t);
 CODA_OSS_API coda_oss::u8string to_u8string(std::u32string::const_pointer, size_t);
+inline coda_oss::u8string to_u8string(coda_oss::u8string::const_pointer p, size_t sz)
+{
+    return coda_oss::u8string(p, sz);
+}
 
 // UTF-16 is the default on Windows.
 CODA_OSS_API std::u16string to_u16string(coda_oss::u8string::const_pointer, size_t);
