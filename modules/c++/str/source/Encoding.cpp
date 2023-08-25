@@ -411,7 +411,7 @@ std::string str::toString(const str::W1252string& s)
     #if _WIN32
     return str::str<std::string>(s);
     #else
-    std::sting retval;
+    std::string retval;
     w1252to8(s.c_str(), s.length(), retval);
     return retval;
     #endif
