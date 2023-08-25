@@ -103,7 +103,6 @@ namespace details
         return details::toString_imp(obj, priority<2>{});
     }
 }
-
 template <typename T>
 inline std::string toString(const T& value) // no dectype() noise here, leave that in details::toString_()
 {
@@ -197,6 +196,8 @@ std::string toString(std::wstring::const_pointer) = delete; // only used in unit
 std::string toString(std::u16string::const_pointer) = delete; // only used in unittests
 std::string toString(std::u32string::const_pointer) = delete; // only used in unittests
 
+CODA_OSS_API coda_oss::u8string u8FromString(const std::string&); // platform determines Windows-1252 or UTF-8 input
+
 inline std::ostream& operator<<(std::ostream& os, const coda_oss::u8string& s)
 {
     os << toString(s);
@@ -216,26 +217,22 @@ inline std::string toString(const coda_oss::optional<T>& value)
 }
 
 template <typename T>
-inline std::string toString(const types::ComplexInteger<T>& z)
-{
-    return details::default_toString(z);
-}
-template <typename T>
-inline std::string toString(const std::complex<T>& z)
-{
-    return details::default_toString(z);
-}
-template <typename T>
 inline std::string toString(const T& real, const T& imag)
 {
-    return toString(std::complex<T>(real, imag));
+    return details::default_toString(std::complex<T>(real, imag));
+}
+
+template <typename T>
+inline std::string toString(const T* ptr)
+{
+    return details::default_toString(ptr);
 }
 
 CODA_OSS_API std::wstring toWString(const std::string&); // platform determines Windows-1252 or UTF-8 input and output encoding
 CODA_OSS_API std::wstring toWString(const coda_oss::u8string&); // platform determines UTF-16 or UTF-32 output encoding
 CODA_OSS_API std::wstring toWString(const str::W1252string&); // platform determines UTF-16 or UTF-32 output encoding
 
-
+CODA_OSS_API coda_oss::u8string u8FromWString(const std::wstring&); // platform determines UTF16 or UTF-32 input
 
 template <typename T>
 T toType(const std::string& s)
