@@ -390,7 +390,7 @@ std::string str::toString(const coda_oss::u8string& s)
     utf8to1252(s.c_str(), s.length(), retval);
     return retval;
     #else
-    return str::str<std::string>(s)
+    return str::str<std::string>(s);
     #endif
 }
 
