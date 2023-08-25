@@ -55,13 +55,13 @@ CODA_OSS_disable_warning_pop
 //    Linux,
 //    // MacOS
 //};
-//#if defined(_WIN32)
+#if _WIN32
 //static constexpr auto Platform = PlatformType::Windows;
-//#elif defined(_POSIX_C_SOURCE)
+#elif defined(_POSIX_C_SOURCE)
 //static constexpr auto Platform = PlatformType::Linux;
-//#else
-//#error "Unknown platform"
-//#endif
+#else
+#error "Unknown platform"
+#endif
 
 // Need to look up characters from \x80 (EURO SIGN) to \x9F (LATIN CAPITAL LETTER Y WITH DIAERESIS)
 // in a map: http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
@@ -378,7 +378,7 @@ template <typename TBasicStringT, typename CharT>
 inline auto to_uXXstring(const std::basic_string<CharT>& s)
 {
     const auto p = str::c_str<TBasicStringT>(s);
-    #ifdef _WIN32
+    #if _WIN32
     return str::to_u16string(p, s.length()); // std::wstring is UTF-16 on Windows
     #else
     return str::to_u32string(p, s.length()); // assume std::wstring is UTF-32 everywhere except Windows
