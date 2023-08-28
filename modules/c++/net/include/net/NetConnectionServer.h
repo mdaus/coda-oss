@@ -56,9 +56,12 @@ public:
     NetConnectionServer();
 
     //! Destructor.
-    virtual ~NetConnectionServer() 
-    {
-    }
+    virtual ~NetConnectionServer() = default;
+
+    NetConnectionServer(const NetConnectionServer&) = delete;
+    NetConnectionServer& operator=(const NetConnectionServer&) = delete;
+    NetConnectionServer(NetConnectionServer&&) = default;
+    NetConnectionServer& operator=(NetConnectionServer&&) = default;
 
     /*!
      *  Create a server on the port, with a backlog queue given in the
@@ -104,9 +107,9 @@ protected:
     //! The amount of backlog
     int mBacklog;
     //! The socket we are listening on
-    mem::auto_ptr<net::Socket> mSocket;
+    std::unique_ptr<net::Socket> mSocket;
 
-    mem::auto_ptr<net::AllocStrategy> mAllocStrategy;
+    std::unique_ptr<net::AllocStrategy> mAllocStrategy;
 };
 }
 

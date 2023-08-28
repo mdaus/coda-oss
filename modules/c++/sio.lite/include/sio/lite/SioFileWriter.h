@@ -78,6 +78,11 @@ struct FileWriter
         if (!mAdopt) mStream.release();
     }
 
+    FileWriter(const FileWriter&) = delete;
+    FileWriter& operator=(const FileWriter&) = delete;
+    FileWriter(FileWriter&&) = default;
+    FileWriter& operator=(FileWriter&&) = default;
+
     /*!
      * Writes the SIO given the FileHeader and InputStreams.
      */
@@ -105,7 +110,7 @@ struct FileWriter
 
 protected:
     std::string mFileName;
-    mem::auto_ptr<io::OutputStream> mStream;
+    std::unique_ptr<io::OutputStream> mStream;
     bool mAdopt;
 };
 

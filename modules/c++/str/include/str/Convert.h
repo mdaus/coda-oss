@@ -20,12 +20,11 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_str_Convert_h_INCLUDED_
 #define CODA_OSS_str_Convert_h_INCLUDED_
-#pragma once
 
 #include <cerrno>
-#include <complex>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
@@ -34,20 +33,24 @@
 #include <sstream>
 #include <string>
 #include <typeinfo>
+#include <type_traits>
 
 #include "config/Exports.h"
 #include "coda_oss/string.h"
 #include "coda_oss/optional.h"
 #include "coda_oss/cstddef.h"
+#include "types/Complex.h"
 #include "import/except.h"
+#include "gsl/gsl.h"
+#include "str/Encoding.h"
 
 namespace str
 {
-template <typename T>
-int getPrecision(const T& type);
-
-template <typename T>
-int getPrecision(const std::complex<T>& type);
+template <typename T> int getPrecision(const T& type);
+template <typename T> int getPrecision(const std::complex<T>&);
+#if CODA_OSS_types_unique_ComplexInteger
+template <typename T> int getPrecision(const types::ComplexInteger<T>&);
+#endif
 
 namespace details
 {
@@ -103,7 +106,11 @@ namespace details
 template <typename T>
 inline std::string toString(const T& value) // no dectype() noise here, leave that in details::toString_()
 {
-    return details::toString_(value);
+    // This breaks the Windows-CMake build on GitHub (when building as an "external" in NITRO)
+    // ... different compilers or compile-options?
+    //return details::toString_(value);
+
+    return details::default_toString(value);
 }
 
 // C++11 has a bunch of overloads, do the same.
@@ -140,7 +147,7 @@ inline std::string toString(double value)
 {
     return details::default_toString(value);
 }
-inline std::string oString(long double value)
+inline std::string toString(long double value)
 {
     return details::default_toString(value);
 }
@@ -153,15 +160,15 @@ inline std::string toString(bool value)
 }
 inline std::string toString(uint8_t value)
 {
-    return toString(static_cast<unsigned int>(value));
+    return toString(gsl::narrow<unsigned int>(value));
 }
 inline std::string toString(int8_t value)
 {
-    return toString(static_cast<int>(value));
+    return toString(gsl::narrow<int>(value));
 }
 inline std::string toString(coda_oss::byte value)
 {
-    return toString(static_cast<uint8_t>(value));
+    return toString(gsl::narrow<uint8_t>(value));
 }
 
 inline std::string toString(std::nullptr_t)
@@ -169,18 +176,37 @@ inline std::string toString(std::nullptr_t)
     return "<nullptr>";
 }
 
-CODA_OSS_API std::string toString(const coda_oss::u8string&);
 inline std::string toString(const std::string& value)
 {
     return value;
 }
+// can't be a template; `bool` overload above is a better match
+inline std::string toString(std::string::const_pointer pStr)
+{
+    return toString(std::string(pStr));
+}
+
+// The resultant `std::string`s have "native" encoding (which is lost) depending
+// on the platform: UTF-8 on Linux and Windows-1252 on Windows.
+CODA_OSS_API std::string toString(const coda_oss::u8string&);
+CODA_OSS_API std::string toString(const str::W1252string&);
+CODA_OSS_API std::string toString(const std::wstring&); // input is UTF-16 or UTF-32 depending on the platform
+// can't be a template; `bool` overload above is a better match
+std::string toString(std::wstring::const_pointer) = delete; // only used in unittests
+std::string toString(std::u16string::const_pointer) = delete; // only used in unittests
+std::string toString(std::u32string::const_pointer) = delete; // only used in unittests
+
+CODA_OSS_API coda_oss::u8string u8FromString(const std::string&); // platform determines Windows-1252 or UTF-8 input
+
+inline std::ostream& operator<<(std::ostream& os, const coda_oss::u8string& s)
+{
+    os << toString(s);
+    return os;
+}
+
 inline std::string toString(char value)
 {
     return std::string(1, value);
-}
-inline std::string toString(const char* pStr)
-{
-    return std::string(pStr);
 }
 
 template <typename T>
@@ -201,6 +227,12 @@ inline std::string toString(const T* ptr)
 {
     return details::default_toString(ptr);
 }
+
+CODA_OSS_API std::wstring toWString(const std::string&); // platform determines Windows-1252 or UTF-8 input and output encoding
+CODA_OSS_API std::wstring toWString(const coda_oss::u8string&); // platform determines UTF-16 or UTF-32 output encoding
+CODA_OSS_API std::wstring toWString(const str::W1252string&); // platform determines UTF-16 or UTF-32 output encoding
+
+CODA_OSS_API coda_oss::u8string u8FromWString(const std::wstring&); // platform determines UTF16 or UTF-32 input
 
 template <typename T>
 T toType(const std::string& s)
@@ -330,6 +362,13 @@ int getPrecision(const std::complex<T>& type)
 {
     return getPrecision(type.real());
 }
+#if CODA_OSS_types_unique_ComplexInteger
+template <typename T>
+int getPrecision(const types::ComplexInteger<T>& type)
+{
+    return getPrecision(type.real());
+}
+#endif
 
 template <>
 int getPrecision(const float& type);

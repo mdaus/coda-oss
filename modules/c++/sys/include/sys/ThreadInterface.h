@@ -47,7 +47,7 @@ namespace sys
  *   {
  *     // declare this function. 
  *     STANDARD_START_CALL(Win32Thread, v);
- *     return NULL;
+ *     return nullptr;
  *   }
  *  \endcode
  */
@@ -212,7 +212,7 @@ struct CODA_OSS_API ThreadInterface : public Runnable
      *  This function is called by start if no target is defined,
      *  allowing the implementor to inherit this class directly
      */
-    virtual void run()
+    virtual void run() override
     {}
 
     /*!

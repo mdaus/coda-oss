@@ -51,10 +51,15 @@ struct ReadWriteMutex
     }
 
     //!  Destructor
-    virtual ~ReadWriteMutex()
+    virtual ~ReadWriteMutex() 
     {
         dbg_printf("Destroying a read/write mutex\n");
     }
+
+    ReadWriteMutex(const ReadWriteMutex&) = delete;
+    ReadWriteMutex& operator=(const ReadWriteMutex&) = delete;
+    ReadWriteMutex(ReadWriteMutex&&) = delete;
+    ReadWriteMutex& operator=(ReadWriteMutex&&) = delete;
 
     /*!
      *  Lock for reading (no writes allowed)

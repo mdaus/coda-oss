@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_xml_lite_UtilitiesXerces_h_INCLUDED_
 #define CODA_OSS_xml_lite_UtilitiesXerces_h_INCLUDED_
 
@@ -29,33 +30,8 @@
 #include <mutex>
 #include <type_traits>
 
-#include "xml/lite/xml_lite_config.h"
-
-#if defined(USE_XERCES)
-
-#include <xercesc/util/TransService.hpp>
-#include <xercesc/sax2/XMLReaderFactory.hpp>
-#include <xercesc/sax2/Attributes.hpp>
-#include <xercesc/sax2/ContentHandler.hpp>
-#include <xercesc/sax2/SAX2XMLReader.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-
-#include <xercesc/framework/MemBufInputSource.hpp>
-#include <xercesc/framework/StdOutFormatTarget.hpp>
-
-#include <xercesc/util/XMLUni.hpp>
-
-#include <xercesc/sax/SAXParseException.hpp>
-#include <xercesc/framework/XMLValidator.hpp>
-#include <xercesc/parsers/SAXParser.hpp>
-#include <xercesc/validators/schema/SchemaValidator.hpp>
-#include <xercesc/validators/common/ContentSpecNode.hpp>
-#include <xercesc/validators/schema/SchemaSymbols.hpp>
-
-#include <string>
-
-#include <xercesc/util/XercesDefs.hpp>
-#include <xercesc/sax/ErrorHandler.hpp>
+#include "config/compiler_extensions.h"
+#include "config/Exports.h"
 
 #include <sys/Mutex.h>
 #include <mt/CriticalSection.h>
@@ -63,6 +39,10 @@
 #include <io/StringStream.h>
 #include <io/OutputStream.h>
 #include <io/InputStream.h>
+
+#include <xml/lite/xml_lite_config.h>
+#if defined(USE_XERCES)
+#include "xerces_.h"
 
 #include "xml/lite/XMLException.h"
 #include "xml/lite/ContentHandler.h"
@@ -301,12 +281,12 @@ struct XercesContentHandler : public XercesContentHandlerInterface_T
     XercesContentHandler& operator=(const XercesContentHandler&) = delete;
 
     virtual void ignorableWhitespace(const XMLCh* const /*chars*/,
-                                     const XercesSize_T /*length*/)
+                                     const XercesSize_T /*length*/) override
     {}
     virtual void  processingInstruction(const XMLCh* const /*target*/,
-                                        const XMLCh* const /*data*/)
+                                        const XMLCh* const /*data*/) override
     {}
-    virtual void  setDocumentLocator(const Locator* const /*locator*/)
+    virtual void  setDocumentLocator(const Locator* const /*locator*/) override
     {}
 
     /*!
@@ -317,12 +297,12 @@ struct XercesContentHandler : public XercesContentHandlerInterface_T
      *  \param length   The length
      */
     virtual void characters(const XMLCh* const chars,
-                            const XercesSize_T length);
+                            const XercesSize_T length) override;
 
     /*!
      *  Fire off the end document notification
      */
-    virtual void endDocument();
+    virtual void endDocument() override;
 
     /*!
      *  Map input string types to output string types
@@ -333,13 +313,13 @@ struct XercesContentHandler : public XercesContentHandlerInterface_T
      */
     virtual void endElement(const XMLCh* const uri,
                             const XMLCh* const localName,
-                            const XMLCh* const qname);
+                            const XMLCh* const qname) override;
 
-    virtual void skippedEntity (const XMLCh* const /*name*/)
+    virtual void skippedEntity (const XMLCh* const /*name*/) override
     {}
 
     //! Fire off the start document notification
-    virtual void startDocument();
+    virtual void startDocument() override;
 
     /*!
      *  Map input string types to output string types
@@ -353,7 +333,7 @@ struct XercesContentHandler : public XercesContentHandlerInterface_T
     virtual void startElement(const XMLCh* const uri,
                               const XMLCh* const localName,
                               const XMLCh* const qname,
-                              const XercesAttributesInterface_T &attrs);
+                              const XercesAttributesInterface_T &attrs) override;
 
     /*!
      *  Begin prefix mapping.  Transfer string types
@@ -361,7 +341,7 @@ struct XercesContentHandler : public XercesContentHandlerInterface_T
      *  \param uri The corresponding uri
      */
     virtual void startPrefixMapping (const XMLCh* const /*prefix*/,
-                                     const XMLCh* const /*uri*/)
+                                     const XMLCh* const /*uri*/) override
     {
     }
 
@@ -369,7 +349,7 @@ struct XercesContentHandler : public XercesContentHandlerInterface_T
      *  End prefix mapping.  Transfer string types
      *  \param prefix The prefix to stop mapping
      */
-    virtual void endPrefixMapping (const XMLCh* const /*prefix*/)
+    virtual void endPrefixMapping (const XMLCh* const /*prefix*/) override
     {
     }
 
@@ -427,7 +407,7 @@ struct XercesErrorHandler final : public XercesErrorHandlerInterface_T
  *  \class XercesContext
  *  \brief This class safely creates and destroys Xerces
  */
-struct XercesContext final
+struct CODA_OSS_API XercesContext final
 {
     //! Constructor
     XercesContext();

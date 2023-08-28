@@ -20,18 +20,21 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_xml_lite_Attributes_h_INCLUDED_
 #define CODA_OSS_xml_lite_Attributes_h_INCLUDED_
-#pragma once
 
 #include <string>
 #include <vector>
 
+#include <config/Exports.h>
+
 #include "sys/Conf.h"
 #include "except/Exception.h"
-#include "xml/lite/QName.h"
 #include "str/Convert.h"
+#include "gsl/gsl.h"
 
+#include "xml/lite/QName.h"
 /*!
  *  \file Attributes.h
  *  \brief Implementation of SAX 2.0 Attributes
@@ -54,7 +57,7 @@ namespace lite
  *  internal organs.  We have a URI, a QName, and a local part
  *  as well.  We also need a value, of course.
  */
-struct AttributeNode final
+struct CODA_OSS_API AttributeNode final
 {
     AttributeNode() = default;
 
@@ -82,6 +85,10 @@ struct AttributeNode final
      */
     void setQName(const std::string& qname);
     void setQName(const xml::lite::QName& qname);
+    explicit AttributeNode(const xml::lite::QName& qname)
+    {
+        setQName(qname);
+    }
 
     /*!
      *  Set the local (unqualified portion) of the name
@@ -111,6 +118,10 @@ struct AttributeNode final
      *  \param value The attribute value
      */
     void setValue(const std::string& value);
+    AttributeNode(const xml::lite::QName& qname, const std::string& value) : AttributeNode(qname)
+    {
+        setValue(value);
+    }
 
     /*!
      *  Get the URI associated with the QName.  Blank string
@@ -149,7 +160,7 @@ protected:
  *  this data structure everywhere.  That also allows us to
  *  simplify future dom classes
  */
-struct Attributes final
+struct CODA_OSS_API Attributes final
 {
     typedef std::vector<AttributeNode> Attributes_T;
     //! Default constructor
@@ -207,6 +218,10 @@ struct Attributes final
     int getLength() const
     {
         return static_cast<int>(size());
+    }
+    bool empty() const
+    {
+        return mAttributes.empty();
     }
 
     /*!
@@ -310,6 +325,22 @@ struct Attributes final
         return getNode(i);
     }
 
+    std::string& operator[](const xml::lite::QName& name)
+    {
+        int idx = getIndex(name);
+        if (idx < 0)
+        {
+            mAttributes.emplace_back(name);
+            idx = (int)(mAttributes.size() - 1);
+        }
+        return mAttributes[(size_t)idx].getValue();
+    }
+    std::string operator[](const xml::lite::QName& name) const
+    {
+        const auto idx = gsl::narrow<size_t>(getIndex(name));
+        return mAttributes[idx].getValue();
+    }
+
     std::string& operator[](const std::string& s)
     {
         int idx = getIndex(s);
@@ -321,6 +352,11 @@ struct Attributes final
             idx = (int)(mAttributes.size() - 1);
         }
         return mAttributes[(size_t)idx].getValue();
+    }
+    std::string operator[](const std::string& s) const
+    {
+        const auto idx = gsl::narrow<size_t>(getIndex(s));
+        return mAttributes[idx].getValue();
     }
 
     /*!
@@ -366,6 +402,16 @@ struct Attributes final
     {
         mAttributes.clear();
     }
+
+    auto begin() const
+    {
+        return mAttributes.begin();
+    }
+    auto end() const
+    {
+        return mAttributes.end();
+    }
+
 private:
     //! Underlying representation
     Attributes_T mAttributes;

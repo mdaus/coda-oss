@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once
 #ifndef __LOGGING_ENUMS_H__
 #define __LOGGING_ENUMS_H__
 
@@ -40,7 +41,7 @@ namespace logging
  *
  *  Enumeration used to represent LogLevels
  */
-struct LogLevel
+struct LogLevel final
 {
     //! The enumerations allowed
     enum
@@ -124,7 +125,7 @@ struct LogLevel
     }
 
     //! destructor
-    ~LogLevel(){}
+    ~LogLevel() = default;
 
     //! Returns string representation of the value
     std::string toString() const
@@ -149,14 +150,10 @@ struct LogLevel
     }
 
     //! assignment operator
-    LogLevel& operator=(const LogLevel& o)
-    {
-        if (&o != this)
-        {
-            value = o.value;
-        }
-        return *this;
-    }
+    LogLevel& operator=(const LogLevel&) = default;
+    LogLevel(const LogLevel&) = default;
+    LogLevel& operator=(LogLevel&&) = default;
+    LogLevel(LogLevel&&) = default;
 
     bool operator==(const LogLevel& o) const { return value == o.value; }
     bool operator!=(const LogLevel& o) const { return value != o.value; }

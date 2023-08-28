@@ -21,7 +21,7 @@
  */
 
 
-#if !(defined(WIN32) || defined(_WIN32))
+#ifndef _WIN32
 
 #include <sys/wait.h>
 #include <str/Manip.h>
@@ -39,13 +39,13 @@ namespace sys
 FILE* ExecPipe::openPipe(const std::string& command,
                          const std::string& type)
 {
-    FILE* ioFile = NULL;
+    FILE* ioFile = nullptr;
     int pIO[2];
 
     //! create the IO pipes for stdin/out
     if (pipe(pIO) < 0)
     {
-        return NULL;
+        return nullptr;
     }
 
     //! fork a subprocess for running our command --
@@ -58,7 +58,7 @@ FILE* ExecPipe::openPipe(const std::string& command,
             // there was an error while forking
             close(pIO[READ_PIPE]);
             close(pIO[WRITE_PIPE]);
-            return NULL;
+            return nullptr;
         case 0:
         {
             // we are now in the forked process --
@@ -104,7 +104,7 @@ FILE* ExecPipe::openPipe(const std::string& command,
             //  command the user specified
             execl("/bin/sh", "sh", "-c",
                   command.c_str(),
-                  static_cast<char*>(NULL));
+                  static_cast<char*>(nullptr));
 
             //! exit the subprocess once it has completed
             exit(127);
@@ -144,7 +144,7 @@ int ExecPipe::closePipe()
     if (mOutStream)
     {
         fclose(mOutStream);
-        mOutStream = NULL;
+        mOutStream = nullptr;
     }
 
     int exitStatus = 0;
@@ -166,14 +166,14 @@ int ExecPipe::closePipe()
             throw except::IOException(
                 Ctxt("The child process was terminated by " \
                         "an uncaught signal: " +
-                        str::toString<int>(WTERMSIG(encodedStatus))));
+                        str::toString(WTERMSIG(encodedStatus))));
         }
         // due to unplanned stoppage
         if (WIFSTOPPED(encodedStatus))
         {
             throw except::IOException(
                 Ctxt("The child process was unexpectedly stopped: " +
-                        str::toString<int>(WSTOPSIG(encodedStatus))));
+                        str::toString(WSTOPSIG(encodedStatus))));
         }
 
         // all other errors

@@ -2,8 +2,8 @@
 *~
 *.pyc
 __pycache__/
-# Build artifacts
 
+# Build artifacts
 install/
 install-*/
 target/
@@ -14,13 +14,13 @@ test_package/build/
 
 # CMake
 _deps/
-*.cmake
 CMakeCache.txt
 CMakeFiles/
 *_config.h
 Makefile
 modules/**/Makefile
 out/
+CMakeSettings.json
 
 # Waf
 .waf-*
@@ -40,7 +40,7 @@ modules/drivers/jpeg/jpeg-9/
 modules/drivers/jpeg/jpeg-9d/
 modules/drivers/j2k/openjpeg/openjpeg-2.3.*_mod/
 modules/drivers/pcre/pcre2-10.*/
-modules/drivers/uuid/e2fsprogs-1.*-uuid/
+modules/drivers/uuid/e2fsprogs-1.*.*/
 modules/drivers/xml/xerces/xerces-c-*/
 modules/drivers/zlib/zlib-1.2.*/
 
@@ -52,4 +52,5 @@ project.sln
 **/x64/
 *.vcxproj.user
 
-CMakeSettings.json
+# Unit-tests
+TEST_*_TMP*.*

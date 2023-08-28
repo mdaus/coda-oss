@@ -20,7 +20,11 @@
  *
  */
 
-#include <import/sys.h>
+#include <vector>
+#include <ostream>
+
+#include <except/Exception.h>
+#include <sys/Thread.h>
 using namespace sys;
 using namespace std;
 
@@ -39,7 +43,7 @@ public:
         delete mVal;
     }
 
-    void run()
+    void run() override
     {
         cout << "mVal: " << *mVal << endl;
     }
@@ -76,7 +80,7 @@ int main()
         }
 
     }
-    catch (except::Exception& e)
+    catch (const except::Exception& e)
     {
         cout << e.toString() << endl;
     }
@@ -85,4 +89,4 @@ int main()
         cout << "Unknown exception" << endl;
     }
     return 0;
-};
+}

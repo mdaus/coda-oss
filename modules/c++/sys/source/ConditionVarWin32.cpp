@@ -21,10 +21,7 @@
  */
 
 
-#if defined(WIN32) || defined(_WIN32)
-
-#if !defined(USE_NSPR_THREADS)
-
+#if defined(_WIN32)
 #include "sys/ConditionVarWin32.h"
 
 namespace
@@ -44,6 +41,11 @@ namespace
             LeaveCriticalSection(&mCriticalSection);
         }
 
+        ScopedCriticalSection(const ScopedCriticalSection&) = delete;
+        ScopedCriticalSection& operator=(const ScopedCriticalSection&) = delete;
+        ScopedCriticalSection(ScopedCriticalSection&&) = delete;
+        ScopedCriticalSection& operator=(ScopedCriticalSection&&) = delete;
+
     private:
         CRITICAL_SECTION& mCriticalSection;
     };
@@ -51,12 +53,12 @@ namespace
 
 sys::ConditionVarDataWin32::ConditionVarDataWin32():
     mNumWaiters(0),
-    mSemaphore(CreateSemaphore(NULL, 0, 0x7FFFFFFF, NULL)),
-    mWaitersAreDone(CreateEvent(NULL, FALSE, FALSE, NULL)),
+    mSemaphore(CreateSemaphore(nullptr, 0, 0x7FFFFFFF, nullptr)),
+    mWaitersAreDone(CreateEvent(nullptr, FALSE, FALSE, nullptr)),
     mWasBroadcast(false)
 {
     InitializeCriticalSection(&mNumWaitersCS);
-    if (mSemaphore == NULL || mWaitersAreDone == NULL)
+    if (mSemaphore == nullptr || mWaitersAreDone == nullptr)
     {
         throw sys::SystemException(
             "ConditionVarDataWin32 Initializer failed");
@@ -166,7 +168,7 @@ void sys::ConditionVarDataWin32::signal()
     // If there are waiters, increment the semaphore by 1 to wake one up
     if (haveWaiters)
     {
-        ReleaseSemaphore(mSemaphore, 1, NULL);
+        ReleaseSemaphore(mSemaphore, 1, nullptr);
     }
 }
 
@@ -182,7 +184,7 @@ void sys::ConditionVarDataWin32::broadcast()
         {
             mWasBroadcast = true;
             haveWaiters = true;
-            ReleaseSemaphore(mSemaphore, static_cast<LONG>(mNumWaiters), 0);
+            ReleaseSemaphore(mSemaphore, static_cast<LONG>(mNumWaiters), nullptr);
         }
         else
         {
@@ -202,18 +204,22 @@ void sys::ConditionVarDataWin32::broadcast()
 }
 
 sys::ConditionVarWin32::ConditionVarWin32() :
-    mMutexOwned(new sys::MutexWin32()),
+    mMutexOwned(std::make_unique<sys::MutexWin32>()),
     mMutex(mMutexOwned.get())
 {}
 
-sys::ConditionVarWin32::ConditionVarWin32(sys::MutexWin32 *theLock, bool isOwner) :
-    mMutex(theLock)
+sys::ConditionVarWin32::ConditionVarWin32(MutexWin32* theLock, bool isOwner, std::nullptr_t) : mMutex(theLock)
+{
+    if (isOwner)
+        mMutexOwned.reset(theLock);
+}
+sys::ConditionVarWin32::ConditionVarWin32(MutexWin32 *theLock, bool isOwner) : ConditionVarWin32(theLock, isOwner, nullptr)
 {
     if (!theLock)
         throw SystemException("ConditionVar received NULL mutex");
-
-    if (isOwner)
-        mMutexOwned.reset(theLock);
+}
+sys::ConditionVarWin32::ConditionVarWin32(MutexWin32& theLock) : ConditionVarWin32(&theLock, false /*isOwner*/, nullptr)
+{
 }
 
 void sys::ConditionVarWin32::acquireLock()
@@ -241,7 +247,7 @@ void sys::ConditionVarWin32::wait()
 
 void sys::ConditionVarWin32::signal()
 {
-    dbg_printf("Signalling condition\n");
+    dbg_printf("Signaling condition\n");
     mNative.signal();
 }
 
@@ -255,8 +261,6 @@ sys::ConditionVarDataWin32& sys::ConditionVarWin32::getNative()
 {
     return mNative;
 }
-
-#endif // No other thread package
 
 #endif // Windows
 

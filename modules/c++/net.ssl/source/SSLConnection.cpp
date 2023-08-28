@@ -30,35 +30,26 @@ net::ssl::SSLConnection::SSLConnection(std::unique_ptr<net::Socket>&& socket,
                                        const std::string& host) :
     NetConnection(std::move(socket)), mServerAuthentication(serverAuth)
 {
-    mSSL = NULL;
+    mSSL = nullptr;
 
     mBioErr = BIO_new_fp(stderr, BIO_NOCLOSE);
 
     mSSL = SSL_new(ctx);
-    if (mSSL == NULL)
+    if (mSSL == nullptr)
     {
         throw net::ssl::SSLException(Ctxt(FmtX("SSL_new failed")));
     }
 
     setupSocket(host);
 }
-#if CODA_OSS_autoptr_is_std // std::auto_ptr removed in C++17
-net::ssl::SSLConnection::SSLConnection(mem::auto_ptr<net::Socket> socket, 
-                                       SSL_CTX * ctx,
-                                       bool serverAuth,
-                                       const std::string& host) :
-    SSLConnection(std::unique_ptr<net::Socket>(socket.release()), ctx, serverAuth, host)
-{
-}
-#endif
 
 net::ssl::SSLConnection::~SSLConnection()
 {
-    if(mSSL != NULL)
+    if(mSSL != nullptr)
     {
         SSL_shutdown(mSSL);
     }
-    if(mSSL != NULL)
+    if(mSSL != nullptr)
     {
         SSL_free(mSSL);
     }
