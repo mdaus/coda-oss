@@ -87,16 +87,11 @@ static inline constexpr std::u32string::value_type U(TChar ch)
     return static_cast<std::u32string::value_type>(ch);
 }
 
-static auto from_windows1252(const std::string& w1252)
-{
-    return to_u8string(str::c_str<str::W1252string>(w1252), w1252.length());
-}
-
 TEST_CASE(test_string_to_u8string_ascii)
 {
     {
         const std::string input = "|\x00";  //  ASCII, "|<NULL>"
-        const auto actual = from_windows1252(input);
+        const auto actual = str::to_u8string<str::W1252string>(input);
         const std::u8string expected{cast8('|')}; // '\x00' is the end of the string in C/C++
         TEST_ASSERT_EQ(actual, expected);
     }
@@ -105,7 +100,7 @@ TEST_CASE(test_string_to_u8string_ascii)
     for (uint8_t ch = start_of_heading; ch <= delete_character; ch++)  // ASCII
     {
         const std::string input { '|', static_cast<std::string::value_type>(ch), '|'};
-        const auto actual = from_windows1252(input);
+        const auto actual = str::to_u8string<str::W1252string>(input);
         const std::u8string expected8{cast8('|'), cast8(ch), cast8('|')}; 
         TEST_ASSERT_EQ(actual, expected8);
         const std::u32string expected{U'|', U(ch), U'|'};
@@ -130,7 +125,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
     // Windows-1252 only characters must be mapped to UTF-8
     {
         const std::string input = "|\x80|";  // Windows-1252, "|€|"
-        const auto actual = from_windows1252(input);
+        const auto actual = str::to_u8string<str::W1252string>(input);
         const std::u8string expected8{cast8('|'), cast8('\xE2'), cast8('\x82'), cast8('\xAC'), cast8('|')};  // UTF-8,  "|€|"
         TEST_ASSERT_EQ(actual, expected8);
         const std::u32string expected{U"|\u20AC|"};  // UTF-32,  "|€|"
@@ -138,7 +133,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
     }
     {
         const std::string input = "|\x9F|";  // Windows-1252, "|Ÿ|"
-        const auto actual = from_windows1252(input);
+        const auto actual = str::to_u8string<str::W1252string>(input);
         const std::u8string expected8{cast8('|'), cast8('\xC5'), cast8('\xB8'), cast8('|')};  // UTF-8,  "|Ÿ|"
         TEST_ASSERT_EQ(actual, expected8);
         const std::u32string expected{U"|\u0178|"};  // UTF-32,  "|Ÿ|"
@@ -149,7 +144,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
         for (const auto& ch : undefined)
         {
             const std::string input{'|', ch, '|'};
-            const auto actual = from_windows1252(input);
+            const auto actual = str::to_u8string<str::W1252string>(input);
             TEST_ASSERT_TRUE(!actual.empty());
             //const std::u8string expected8{cast8('|'), cast8('\xEF'), cast8('\xBF'), cast8('\xBD'), cast8('|')};  // UTF-8,  "|<REPLACEMENT CHARACTER>|"
             const std::u8string expected8{cast8('|'), cast8(194), cast8(ch), cast8('|')};
@@ -297,14 +292,6 @@ static auto to_w1252string(const std::wstring& s)
 {
     return str::to_w1252string(str::u8FromWString(s));
 }
-static auto to_u16string(const str::W1252string& s)
-{
-    return str::to_u16string(s.c_str(), s.length());
-}
-static auto to_u32string(const str::W1252string& s)
-{
-    return str::to_u32string(s.c_str(), s.length());
-}
 
 TEST_CASE(test_u8string_to_u16string)
 {
@@ -353,14 +340,6 @@ static auto as_windows1252(const coda_oss::u8string& s)
     const auto w1252 = str::to_w1252string(s.c_str(), s.length());
     return str::toString(w1252);
 }
-static auto from_utf8(const std::string& utf8)
-{
-    return str::str<coda_oss::u8string>(utf8);
-}
-static auto as_utf8(const coda_oss::u8string& s)
-{
-    return str::str<std::string>(s);
-}
 static auto toWString(const std::u16string& s)
 {
     return str::toWString(str::to_u8string(s));
@@ -399,10 +378,10 @@ static void test_wide_(const std::string& testName, const char* pStr, std::u16st
 static void test_Windows1252_ascii(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16)
 {
     // For both UTF-8 and Windows-1252, ASCII is the same (they only differ for 0x80-0xff).
-    const auto u8 = as_utf8(from_utf8(pStr));
+    const auto u8 =  str::str<std::string>(str::to_u8string<coda_oss::u8string>(pStr));
     TEST_ASSERT_EQ(pStr, u8); // native() is the same on all platforms/encodings for ASCII
     {
-        const auto w1252 = as_windows1252(from_windows1252(pStr));
+        const auto w1252 = as_windows1252(str::to_u8string<str::W1252string>(pStr));
         TEST_ASSERT_EQ(pStr, w1252);  // native() is the same on all platforms/encodings for ASCII
     }
 
@@ -445,10 +424,10 @@ static auto to_w1252string(const std::u16string& s)
 
 static void test_Windows1252_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16)
 {
-    const auto u16 = str::to_u16string(from_windows1252(pStr));
+    const auto u16 = str::to_u16string(str::to_u8string<str::W1252string>(pStr));
     TEST_ASSERT(u16 == pUtf16);
-    auto wstring = str::toWString(from_windows1252(pStr));
-    auto s = str::toString(from_windows1252(pStr));
+    auto wstring = str::toWString(str::to_u8string<str::W1252string>(pStr));
+    auto s = str::toString(str::to_u8string<str::W1252string>(pStr));
     auto w1252 = str::make_string<str::W1252string>(pStr);
     test_wide_(testName, pStr, pUtf16, wstring, s, w1252);
 
@@ -578,8 +557,8 @@ TEST_CASE(test_Encodeding)
     const auto iso8859_1 = str::toString(classificationText_w1252());
     const auto utf_8_u8 = classificationText_u8();
     const auto iso8859_1_u8 = str::to_u8string(classificationText_w1252());
-    const auto utf_8_view = as_utf8(classificationText_u8());
-    const auto iso8859_1_view = as_utf8(from_windows1252(str::c_str<std::string>(classificationText_w1252())));
+    const auto utf_8_view = str::str<std::string>(classificationText_u8());
+    const auto iso8859_1_view =  str::str<std::string>(str::to_u8string(classificationText_w1252()));
 
     test_Encodeding_(testName, classificationText_u8(),
         utf_8, iso8859_1,

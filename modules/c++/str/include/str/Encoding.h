@@ -102,21 +102,52 @@ inline auto to_w1252string(const coda_oss::u8string& s)
 coda_oss::u8string to_u8string(std::string::const_pointer, size_t) = delete;
 coda_oss::u8string to_u8string(std::wstring::const_pointer, size_t) = delete;
 
-template<typename CharT>
-inline auto to_u8string(const std::basic_string<CharT>& s)
+// Explicit overloads so template can be used for a different purpose.
+inline auto to_u8string(const coda_oss::u8string& s)
 {
     return to_u8string(s.c_str(), s.length());
 }
-template <typename CharT>
-inline auto to_u16string(const std::basic_string<CharT>& s)
+inline auto to_u8string(const str::W1252string& s)
+{
+    return to_u8string(s.c_str(), s.length());
+}
+inline auto to_u8string(const std::u16string& s)
+{
+    return to_u8string(s.c_str(), s.length());
+}
+inline auto to_u8string(const std::u32string& s)
+{
+    return to_u8string(s.c_str(), s.length());
+}
+inline auto to_u16string(const coda_oss::u8string& s)
 {
     return to_u16string(s.c_str(), s.length());
 }
-template <typename CharT>
-inline auto to_u32string(const std::basic_string<CharT>& s)
+inline auto to_u16string(const str::W1252string& s)
+{
+    return to_u16string(s.c_str(), s.length());
+}
+inline auto to_u32string(const coda_oss::u8string& s)
 {
     return to_u32string(s.c_str(), s.length());
 }
+inline auto to_u32string(const str::W1252string& s)
+{
+    return to_u32string(s.c_str(), s.length());
+}
+
+// Template parameter specifies how `std::string` is encoded.
+template<typename TBasicString>
+inline auto to_u8string(const std::string& s) // UTF-8 or Windows-1252
+{
+    return to_u8string(str::c_str<TBasicString>(s), s.length());
+}
+template <typename TBasicString>
+inline auto to_u8string(const std::wstring& s) // UTF-16 or UTF-32
+{
+    return to_u8string(str::c_str<TBasicString>(s), s.length());
+}
+
 
 }
 
