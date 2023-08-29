@@ -56,7 +56,7 @@ public:
     NetConnectionServer();
 
     //! Destructor.
-    virtual ~NetConnectionServer() = default;
+    virtual ~NetConnectionServer() noexcept(false) {};
 
     NetConnectionServer(const NetConnectionServer&) = delete;
     NetConnectionServer& operator=(const NetConnectionServer&) = delete;
