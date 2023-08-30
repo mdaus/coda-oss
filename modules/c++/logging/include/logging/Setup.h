@@ -29,10 +29,11 @@
 
 #include "mem/SharedPtr.h"
 #include "logging/Logger.h"
+#include "sys/filesystem.h"
 
 namespace logging
 {
-using path = std::filesystem::path; // still used in SWIG bindings
+using path = coda_oss::filesystem::path; // still used in SWIG bindings
 
 /*!
  *  \fn setupLogger

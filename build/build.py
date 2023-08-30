@@ -1020,8 +1020,8 @@ def configureCompilerOptions(self):
         config['cxx'].update(vars)
         config['cc'].update(vars)
 
-        defines = '_FILE_OFFSET_BITS=64 ' \
-                  '_LARGEFILE_SOURCE WIN32 _USE_MATH_DEFINES NOMINMAX WIN32_LEAN_AND_MEAN'.split()
+        defines = '_FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE' \
+                  'WIN32 _USE_MATH_DEFINES NOMINMAX _CRT_SECURE_NO_WARNINGS WIN32_LEAN_AND_MEAN'.split()
         flags = '/UUNICODE /U_UNICODE /EHs /GR'.split()
 
         flags.append('/std:c++17')
