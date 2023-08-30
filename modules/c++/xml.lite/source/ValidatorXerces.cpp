@@ -283,8 +283,8 @@ static coda_oss::u8string encodeXml(const std::string& xml)
         return to_u8string(str::str<str::W1252string>(xml));
     }
 
-    // No "... encoding= ..."; let u8FromString() deal with it   
-    return str::u8FromString(xml);
+    // No "... encoding= ..."; let u8FromNative() deal with it   
+    return str::u8FromNative(xml);
 }
 
 bool ValidatorXerces::validate(const std::string& xml,

@@ -465,12 +465,12 @@ inline auto c_str_(const std::string& s)
     return str::c_str<coda_oss::u8string>(s); // assume std::string is UTF-8 on any non-Windows platform
     #endif   
 }
-coda_oss::u8string str::u8FromString(const std::string& s)
+coda_oss::u8string str::u8FromNative(const std::string& s)
 {
     return str::to_u8string(c_str_(s), s.length());
 }
 
-coda_oss::u8string str::u8FromWString(const std::wstring& s)
+coda_oss::u8string str::u8FromNative(const std::wstring& s)
 {
     return str::to_u8string(c_str_(s), s.length());
 }

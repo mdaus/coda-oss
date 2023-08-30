@@ -465,7 +465,7 @@ void xml::lite::Element::setNamespaceURI(
 
 void xml::lite::Element::setCharacterData(const std::string& characters)
 {
-    mCharacterData = str::u8FromString(characters);
+    mCharacterData = str::u8FromNative(characters);
 }
 xml::lite::Element& xml::lite::Element::operator=(const std::string& characterData)
 {
@@ -506,7 +506,7 @@ xml::lite::Element& xml::lite::addChild(Element& e, const QName& qname, const co
 }
 xml::lite::Element& xml::lite::addChild(Element& e, const QName& qname, const std::string& characterData)
 {
-    return addChild(e, qname, str::u8FromString(characterData));
+    return addChild(e, qname, str::u8FromNative(characterData));
 }
 xml::lite::Element& xml::lite::addChild(Element& e, const QName& qname)
 {

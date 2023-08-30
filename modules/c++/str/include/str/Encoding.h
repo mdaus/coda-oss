@@ -99,7 +99,7 @@ inline auto to_u8string(const std::u32string& s)
 }
 // These two routines are "dangerous" as they make it easy to convert
 // a `char*` **already** in UTF-8 encoding to UTF-8; the result is garbage.
-// Use u8FromString() or u8FromWString() which is a bit more explicit.
+// Use u8FromNative() or u8FromNative() which is a bit more explicit.
 coda_oss::u8string to_u8string(std::string::const_pointer, size_t) = delete;
 coda_oss::u8string to_u8string(std::wstring::const_pointer, size_t) = delete;
 
