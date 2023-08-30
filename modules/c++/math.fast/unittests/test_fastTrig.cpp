@@ -26,6 +26,7 @@
 #include <chrono>
 #include <std/span>
 
+#include <coda_oss/CPlusPlus.h>
 #include <math/fast/Trig.h>
 #include <sys/Span.h>
 #include <sys/Dbg.h>
@@ -54,7 +55,8 @@ static std::vector<T> make_values(size_t iterations)
 template<typename T>
 static void slow_Sin(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
 {
-    // This is intentionally slow so that we have something to compare with SIMD results
+    // This is intentionally slow so that we have something with which to compare.
+    // Note that no effort is made to **prevent** auto-vectorization by the compiler.
     auto begin = inputs.begin();
     const auto end = inputs.end();
     auto it = outputs.begin();
@@ -72,64 +74,56 @@ static void test_simd_Sin_almost_equal(const std::string& testName, const float*
     if (size >= 4) TEST_ASSERT_ALMOST_EQ(pResults[3], 0.0f);
     if (size >= 5) TEST_ASSERT_ALMOST_EQ(pResults[4], -0.0f);
 }
-TEST_CASE(Test_fast_Sin)
+static void test_Sin(const std::string& testName, math::fast::execution_policy policy,
+    double expected_ratio)
 {
     constexpr size_t iterations = sys::release ? 4000000 : 400;
 
-    const auto inputs = make_values<float>(iterations);
-    std::vector<float> results(inputs.size());
+    const auto inputs_ = make_values<float>(iterations);
+    const auto inputs = sys::make_span(inputs_);
+    std::vector<float> results_(inputs.size());
+    const auto results = sys::make_span(results_);
 
-    math::fast::Sin(math::fast::execution_policy::par_unseq, sys::make_span(inputs), sys::make_span(results));
+    math::fast::Sin(policy, inputs, results);
     auto start = std::chrono::steady_clock::now();
-    math::fast::Sin(math::fast::execution_policy::par_unseq, sys::make_span(inputs), sys::make_span(results));
+    math::fast::Sin(policy, inputs, results);
     auto end = std::chrono::steady_clock::now();
+    const std::chrono::duration<double> elapsed_fast = end - start;
+
     test_simd_Sin_almost_equal(testName, &(results[0]));
-    const std::chrono::duration<double> elapsed_simd = end - start;
     
-    slow_Sin(sys::make_span(inputs), sys::make_span(results));
+    slow_Sin(inputs, results);
     start = std::chrono::steady_clock::now();
-    slow_Sin(sys::make_span(inputs), sys::make_span(results));
+    slow_Sin(inputs, results);
     end = std::chrono::steady_clock::now();
-    test_simd_Sin_almost_equal(testName, &(results[0]));
     const std::chrono::duration<double> elapsed_slow = end - start;
 
-    if constexpr (sys::release) // DEBUG SIMD code is slow
+    test_simd_Sin_almost_equal(testName, &(results[0]));
+
+    const auto ratio = elapsed_slow / elapsed_fast;
+    if constexpr (sys::release) // DEBUG code is slow
     {
-        const auto ratio = elapsed_slow / elapsed_simd;
-        if (ratio > 1.0)  // hard to figure out debug with GCC
-        {
-            // Ratios observed by testing
-            // constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 2.25;
-            constexpr auto expected_ratio = 2.0;
-            TEST_ASSERT_GREATER(ratio, expected_ratio);
-        }
+        TEST_ASSERT(ratio >= expected_ratio);
+    }
+    else
+    {
+        TEST_ASSERT(ratio > 0.0);    
     }
 }
-
-TEST_CASE(Test_fast_Sin_small)
+TEST_CASE(Test_Sin)
 {
-    constexpr size_t iterations = 2;
-    const auto inputs = make_values<float>(iterations);
-    std::vector<float> results(inputs.size());
-    
-    math::fast::Sin(math::fast::execution_policy::par_unseq, sys::make_span(inputs), sys::make_span(results));
-    test_simd_Sin_almost_equal(testName, &(results[0]));
-    const size_t values_size = inputs.size() / iterations;
-    test_simd_Sin_almost_equal(testName, &(results[values_size]));
-    
-    // Be sure the end of the array is calculated correctly.
-    for (size_t count = 0; count < values_size; count++)
-    {
-        const size_t small_count = (values_size * (iterations - 1)) + count;
+    // Ratios observed by testing
+    // constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 2.25;
+    test_Sin(testName, math::fast::execution_policy::par_unseq, 8.0);
 
-        const std::span<const float> s(inputs.data(), small_count);
-        math::fast::Sin(math::fast::execution_policy::par_unseq, s, sys::make_span(results));
-        test_simd_Sin_almost_equal(testName, &(results[values_size]), count);    
-    }
+    test_Sin(testName, math::fast::execution_policy::par, 8.0);
+
+    #if CODA_OSS_cpp20
+    test_Sin(testName, math::fast::execution_policy::unseq, 9.0);
+    #endif
 }
 
 TEST_MAIN(
 
-    TEST_CHECK(Test_fast_Sin);
-    TEST_CHECK(Test_fast_Sin_small);
+    TEST_CHECK(Test_Sin);
 )
