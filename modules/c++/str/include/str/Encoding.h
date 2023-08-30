@@ -103,7 +103,8 @@ inline auto to_u8string(const std::u32string& s)
 coda_oss::u8string to_u8string(std::string::const_pointer, size_t) = delete;
 coda_oss::u8string to_u8string(std::wstring::const_pointer, size_t) = delete;
 
-// Template parameter specifies how `std::string` is encoded.
+// Template parameter specifies how `std::string` is encoded.  As opposed
+// to figuring it out a run-time based on the platform.
 template <typename TBasicString>
 inline auto to_u8string(const std::string& s)  // UTF-8 or Windows-1252
 {
