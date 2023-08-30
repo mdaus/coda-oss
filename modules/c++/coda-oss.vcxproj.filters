@@ -948,6 +948,16 @@
     <ClInclude Include="str\include\str\W1252string.h">
       <Filter>str</Filter>
     </ClInclude>
+    <ClInclude Include="coda_oss\include\coda_oss\optional_.h" />
+    <ClInclude Include="math.fast\include\import\math\fast.h">
+      <Filter>math.fast</Filter>
+    </ClInclude>
+    <ClInclude Include="math.fast\include\math\fast\Span.h">
+      <Filter>math.fast</Filter>
+    </ClInclude>
+    <ClInclude Include="math.fast\include\math\fast\Math.h">
+      <Filter>math.fast</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1395,6 +1405,9 @@
     <ClCompile Include="unique\source\UUID.cpp">
       <Filter>unique</Filter>
     </ClCompile>
+    <ClCompile Include="math.fast\source\Math.cpp">
+      <Filter>math.fast</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -1489,6 +1502,9 @@
     </Filter>
     <Filter Include="coda_oss">
       <UniqueIdentifier>{59f3d9a1-06d3-4779-aef2-cc55223c3017}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math.fast">
+      <UniqueIdentifier>{f7a81553-8c63-4a34-8ffb-779c3928b775}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
