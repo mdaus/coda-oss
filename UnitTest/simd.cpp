@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 
+#include <simd/Math.h>
+
 namespace simd
 {
 

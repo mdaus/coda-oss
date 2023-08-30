@@ -166,47 +166,47 @@ static void slow_Arg(coda_oss::span<const std::complex<T>> inputs, coda_oss::spa
     }
 }
 
-TEST_CASE(Test_simd_Arg)
-{
-    constexpr size_t iterations = sys::release ? 100000 : 10;
-
-    const auto inputs_ = make_values<float>(iterations);
-    std::vector<std::complex<float>> inputs;
-    inputs.reserve(inputs_.size());
-    for (auto&& v : inputs_)
-    {
-        inputs.emplace_back(v, -v);
-    }
-
-    std::vector<float> results(inputs.size());
-    auto start = std::chrono::steady_clock::now();
-    simd::Arg(sys::make_const_span(inputs), sys::make_span(results));
-    auto end = std::chrono::steady_clock::now();
-    const std::chrono::duration<double> elapsed_simd = end - start;
-
-    std::vector<float> slow_results(inputs.size());
-    start = std::chrono::steady_clock::now();
-    slow_Arg(sys::make_const_span(inputs), sys::make_span(slow_results));
-    end = std::chrono::steady_clock::now();
-    const std::chrono::duration<double> elapsed_slow = end - start;
-
-    if constexpr (sys::release) // DEBUG SIMD code is slow
-    {
-        const auto ratio = elapsed_slow / elapsed_simd;
-        if (ratio > 1.0)  // hard to figure out debug with GCC
-        {
-            // Ratios observed by testing
-            // constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 2.25;
-            constexpr auto expected_ratio = 2.0;
-            TEST_ASSERT_GREATER(ratio, expected_ratio);
-        }
-    }
-
-    for (size_t i = 0; i < results.size(); i++)
-    {
-        TEST_ASSERT_ALMOST_EQ(results[i], slow_results[i]);
-    }
-}
+//TEST_CASE(Test_simd_Arg)
+//{
+//    constexpr size_t iterations = sys::release ? 100000 : 10;
+//
+//    const auto inputs_ = make_values<float>(iterations);
+//    std::vector<std::complex<float>> inputs;
+//    inputs.reserve(inputs_.size());
+//    for (auto&& v : inputs_)
+//    {
+//        inputs.emplace_back(v, -v);
+//    }
+//
+//    std::vector<float> results(inputs.size());
+//    auto start = std::chrono::steady_clock::now();
+//    simd::Arg(sys::make_const_span(inputs), sys::make_span(results));
+//    auto end = std::chrono::steady_clock::now();
+//    const std::chrono::duration<double> elapsed_simd = end - start;
+//
+//    std::vector<float> slow_results(inputs.size());
+//    start = std::chrono::steady_clock::now();
+//    slow_Arg(sys::make_const_span(inputs), sys::make_span(slow_results));
+//    end = std::chrono::steady_clock::now();
+//    const std::chrono::duration<double> elapsed_slow = end - start;
+//
+//    if constexpr (sys::release) // DEBUG SIMD code is slow
+//    {
+//        const auto ratio = elapsed_slow / elapsed_simd;
+//        if (ratio > 1.0)  // hard to figure out debug with GCC
+//        {
+//            // Ratios observed by testing
+//            // constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 2.25;
+//            constexpr auto expected_ratio = 2.0;
+//            TEST_ASSERT_GREATER(ratio, expected_ratio);
+//        }
+//    }
+//
+//    for (size_t i = 0; i < results.size(); i++)
+//    {
+//        TEST_ASSERT_ALMOST_EQ(results[i], slow_results[i]);
+//    }
+//}
 
 TEST_MAIN(
 
@@ -214,5 +214,5 @@ TEST_MAIN(
     TEST_CHECK(Test_simd_Sin_small);
     TEST_CHECK(Test_simd_SinCos);
     
-    TEST_CHECK(Test_simd_Arg);
+    //TEST_CHECK(Test_simd_Arg);
 )

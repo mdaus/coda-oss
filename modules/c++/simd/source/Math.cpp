@@ -32,6 +32,21 @@
 #include "sys/OS.h"
 #include "gsl/gsl.h"
 
+#if _MSC_VER
+// TODO: get rid of #pragmas
+#pragma warning(disable: 4866) // compiler may not enforce left-to-right evaluation order for call to '...'
+#pragma warning(disable: 6323) // Use of arithmetic operator on Boolean type(s).
+#pragma warning(disable: 26818) // Switch statement does not cover all cases. Consider adding a '...' label (es.79).
+#pragma warning(disable: 26475) // Do not use function style casts (es.49). Prefer '...' over '...'..
+#pragma warning(disable: 26497) // You can attempt to make '...' constexpr unless it contains any undefined behavior (f.4).
+#pragma warning(disable: 26477) // Use '...' rather than 0 or NULL (es.47).
+#pragma warning(disable: 6001) // Using uninitialized memory '...'.
+#pragma warning(disable: 6297) // Arithmetic overflow.  Results might not be an expected value.
+#pragma warning(disable: 6316) // Incorrect operator.  Use bitwise-and to determine whether bits are set.
+#pragma warning(disable: 26444) // Don't try to declare a local variable with no name (es.84).
+#pragma warning(disable: 6201) // Index '...' is out of valid index range '...' to '...' for possibly stack allocated buffer '...'.
+#endif
+
 // We'll sort this out a runtime, not compile-time; see instrset.h:
 //     The following values of INSTRSET are currently defined:
 //     [...]
@@ -42,7 +57,6 @@
 //#define INSTRSET 9 // defined(__AVX512F__ ) || defined ( __AVX512__ )
 #endif
 #include "Vec.h"
-#include "Complex.h"
 
 #include "vectorclass/version2/instrset_detect.cpp" // TODO
 
@@ -185,10 +199,10 @@ struct simdType final
     using type = simd::Vec_t<width, T> /*vcl::Vec8f*/;
 };
 template <size_t width, typename T>
-struct simdType<width, std::complex<T>> final
-{
-    using type = simd::Complex_t<width, T> /*vcl::Complex2f*/;
-};
+//struct simdType<width, std::complex<T>> final
+//{
+//    using type = simd::Complex_t<width, T> /*vcl::Complex2f*/;
+//};
 template <size_t width, typename T>
 using simdType_t = typename simdType<width, T>::type;
 
@@ -438,12 +452,12 @@ void simd::ATan2(span<const double> xValues, span<const double> yValues, span<do
     invoke(xValues, yValues, outputs, f);
 }
 
-void simd::Arg(span<const std::complex<float>> zValues, span<float> outputs)
-{
-    static const auto f = [](const auto& zvec, const auto&) {
-        // https://en.cppreference.com/w/cpp/numeric/complex/arg
-        // "... as if the function is implemented as std::atan2(std::imag(z), std::real(z))."
-        return atan2(zvec.imag(), zvec.real());
-    };
-    invoke(zValues, outputs, f);
-}
+//void simd::Arg(span<const std::complex<float>> zValues, span<float> outputs)
+//{
+//    static const auto f = [](const auto& zvec, const auto&) {
+//        // https://en.cppreference.com/w/cpp/numeric/complex/arg
+//        // "... as if the function is implemented as std::atan2(std::imag(z), std::real(z))."
+//        return atan2(zvec.imag(), zvec.real());
+//    };
+//    invoke(zValues, outputs, f);
+//}

@@ -258,6 +258,12 @@
     <ClCompile Include="..\modules\drivers\highfive\unittests\tests_high_five_base.cpp">
       <Filter>hdf5.lite</Filter>
     </ClCompile>
+    <ClCompile Include="simd.cpp">
+      <Filter>simd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\simd\unittests\test_simdMath.cpp">
+      <Filter>simd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -317,6 +323,9 @@
     </Filter>
     <Filter Include="xml.lite">
       <UniqueIdentifier>{f4dfc761-e468-4305-84dc-f3579e46107e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="simd">
+      <UniqueIdentifier>{2e1a00ee-79a0-4394-badb-4ceb2f1372cf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

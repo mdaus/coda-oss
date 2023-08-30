@@ -948,6 +948,16 @@
     <ClInclude Include="str\include\str\W1252string.h">
       <Filter>str</Filter>
     </ClInclude>
+    <ClInclude Include="coda_oss\include\coda_oss\optional_.h" />
+    <ClInclude Include="simd\source\Vec.h">
+      <Filter>simd</Filter>
+    </ClInclude>
+    <ClInclude Include="simd\include\simd\Math.h">
+      <Filter>simd</Filter>
+    </ClInclude>
+    <ClInclude Include="simd\include\simd\Span.h">
+      <Filter>simd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1395,6 +1405,9 @@
     <ClCompile Include="unique\source\UUID.cpp">
       <Filter>unique</Filter>
     </ClCompile>
+    <ClCompile Include="simd\source\Math.cpp">
+      <Filter>simd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config">
@@ -1489,6 +1502,9 @@
     </Filter>
     <Filter Include="coda_oss">
       <UniqueIdentifier>{59f3d9a1-06d3-4779-aef2-cc55223c3017}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="simd">
+      <UniqueIdentifier>{e8e621b2-f81c-4653-9e6f-f37c2762c1a8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

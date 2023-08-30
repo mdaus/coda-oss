@@ -210,6 +210,9 @@
     <ClInclude Include="re\include\re\Regex.h" />
     <ClInclude Include="re\include\re\RegexException.h" />
     <ClInclude Include="re\include\re\RegexPredicate.h" />
+    <ClInclude Include="simd\include\simd\Math.h" />
+    <ClInclude Include="simd\include\simd\Span.h" />
+    <ClInclude Include="simd\source\Vec.h" />
     <ClInclude Include="sio.lite\include\sio\lite\ElementType.h" />
     <ClInclude Include="sio.lite\include\sio\lite\FileHeader.h" />
     <ClInclude Include="sio.lite\include\sio\lite\FileReader.h" />
@@ -416,6 +419,7 @@
     <ClCompile Include="polygon\source\PolygonMask.cpp" />
     <ClCompile Include="re\source\Regex.cpp" />
     <ClCompile Include="re\source\RegexSTL.cpp" />
+    <ClCompile Include="simd\source\Math.cpp" />
     <ClCompile Include="sio.lite\source\FileHeader.cpp" />
     <ClCompile Include="sio.lite\source\SioFileReader.cpp" />
     <ClCompile Include="sio.lite\source\SioFileWriter.cpp" />

@@ -59,9 +59,6 @@ CODA_OSS_API void Tan(span<const double>, span<double>);
 CODA_OSS_API void ATan2(span<const float>, span<const float>, span<float>);
 CODA_OSS_API void ATan2(span<const double>, span<const double>, span<double>);
 
-// https://en.cppreference.com/w/cpp/numeric/complex/arg
-CODA_OSS_API void Arg(span<const std::complex<float>>, span<float>);
-
 }
 
 #endif  // CODA_OSS_simd_Math_h_INCLUDED_
