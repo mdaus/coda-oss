@@ -150,6 +150,34 @@ inline auto to_w1252string(const coda_oss::u8string& s)
     return to_w1252string(s.c_str(), s.length());
 }
 
+/************************************************************************/
+
+inline auto u8FromNative(const std::string& s)  // platform determines Windows-1252 or UTF-8 input
+{
+    #if _WIN32
+    const auto p = str::c_str<str::W1252string>(s); // std::string is Windows-1252 on Windows
+    #else
+    const auto p = str::c_str<coda_oss::u8string>(s); // assume std::string is UTF-8 on any non-Windows platform
+    #endif   
+    return str::to_u8string(p, s.length());
+}
+
+namespace details
+{
+inline auto c_str(const std::wstring& s)
+{
+    #if _WIN32
+    return str::c_str<std::u16string>(s); // std::wstring is UTF-16 on Windows
+    #else
+    return str::c_str<std::u32string>(s); // assume std::wstring is UTF-32 on any non-Windows platform
+    #endif   
+}
+}
+inline auto u8FromNative(const std::wstring& s) // platform determines UTF16 or UTF-32 input
+{
+    return str::to_u8string(details::c_str(s), s.length());
+}
+
 }
 
 #endif // CODA_OSS_str_Encoding_h_INCLUDED_
