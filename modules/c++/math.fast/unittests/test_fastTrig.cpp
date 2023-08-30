@@ -77,7 +77,7 @@ static void test_simd_Sin_almost_equal(const std::string& testName, const float*
 static void test_Sin(const std::string& testName, math::fast::execution_policy policy,
     double expected_ratio)
 {
-    constexpr size_t iterations = sys::release ? 4000000 : 400;
+    constexpr size_t iterations = sys::release ? 7500000 : 400;
 
     const auto inputs_ = make_values<float>(iterations);
     const auto inputs = sys::make_span(inputs_);
@@ -101,6 +101,7 @@ static void test_Sin(const std::string& testName, math::fast::execution_policy p
     test_simd_Sin_almost_equal(testName, &(results[0]));
 
     const auto ratio = elapsed_slow / elapsed_fast;
+    //fprintf(stderr, "%10.4f\n", ratio);
     if constexpr (sys::release) // DEBUG code is slow
     {
         TEST_ASSERT(ratio >= expected_ratio);
@@ -113,13 +114,14 @@ static void test_Sin(const std::string& testName, math::fast::execution_policy p
 TEST_CASE(Test_Sin)
 {
     // Ratios observed by testing
-    // constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 2.25;
-    test_Sin(testName, math::fast::execution_policy::par_unseq, 8.0);
+    constexpr auto expected_par_unseq = sys::Platform == sys::PlatformType::Windows ? 10.0 : 0.9;
+    test_Sin(testName, math::fast::execution_policy::par_unseq, expected_par_unseq);
 
-    test_Sin(testName, math::fast::execution_policy::par, 8.0);
+    constexpr auto expected_par= sys::Platform == sys::PlatformType::Windows ? 10.0 : 1.15;
+    test_Sin(testName, math::fast::execution_policy::par, expected_par);
 
     #if CODA_OSS_cpp20
-    test_Sin(testName, math::fast::execution_policy::unseq, 9.0);
+    test_Sin(testName, math::fast::execution_policy::unseq, 1000.0);
     #endif
 }
 
