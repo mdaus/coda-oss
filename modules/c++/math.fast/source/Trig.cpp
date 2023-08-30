@@ -23,11 +23,17 @@
 
 #include "math/fast/Trig.h"
 
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES // get M_PI, etc.
+#endif
+#include <math.h>
+
 #include <stdexcept>
 #include <functional>
 #include <algorithm>
 #include <execution>
 #include <tuple> // std::ignore
+#include <cmath>
 
 template<typename T>
 using span = math::fast::span<T>;
@@ -65,13 +71,35 @@ inline void transform(math::fast::execution_policy policy,
     }
 }
 
-void math::fast::Sin(execution_policy policy, span<const float> values, span<float> sines)
+void math::fast::Sin(execution_policy policy, span<const float> values, span<float> results)
 {
-    static const auto sin = [](auto&& v) { return std::sin(v); };
-    transform(policy, values, sines, sin);
+    static const auto f = [](auto&& v) { return std::sin(v); };
+    transform(policy, values, results, f);
 }
-void math::fast::Sin(execution_policy policy, span<const double> values, span<double> sines)
+void math::fast::Sin(execution_policy policy, span<const double> values, span<double> results)
 {
-    static const auto sin = [](auto&& v) { return std::sin(v); };
-    transform(policy, values, sines, sin);
+    static const auto f = [](auto&& v) { return std::sin(v); };
+    transform(policy, values, results, f);
+}
+
+void math::fast::Cos(execution_policy policy, span<const float> values, span<float> results)
+{
+    static const auto f = [](auto&& v) { return std::cos(v); };
+    transform(policy, values, results, f);
+}
+void math::fast::Cos(execution_policy policy, span<const double> values, span<double> results)
+{
+    static const auto f = [](auto&& v) { return std::cos(v); };
+    transform(policy, values, results, f);
+}
+
+void math::fast::Tan(execution_policy policy, span<const float> values, span<float> results)
+{
+    static const auto f = [](auto&& v) { return std::tan(v); };
+    transform(policy, values, results, f);
+}
+void math::fast::Tan(execution_policy policy, span<const double> values, span<double> results)
+{
+    static const auto f = [](auto&& v) { return std::tan(v); };
+    transform(policy, values, results, f);
 }

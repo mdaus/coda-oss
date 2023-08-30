@@ -25,14 +25,6 @@
 #ifndef CODA_OSS_math_fast_Trig_h_INCLUDED_
 #define CODA_OSS_math_fast_Trig_h_INCLUDED_
 
-#ifndef _USE_MATH_DEFINES
-#define _USE_MATH_DEFINES // get M_PI, etc.
-#endif
-#include <math.h>
-
-#include <execution>
-
-#include "coda_oss/span.h"
 #include "config/Exports.h"
 
 #include "Span.h"
@@ -51,14 +43,14 @@ CODA_OSS_API void Sin(execution_policy, span<const double>, span<double>);
 CODA_OSS_API void Cos(execution_policy, span<const float>, span<float>);
 CODA_OSS_API void Cos(execution_policy, span<const double>, span<double>);
 
-CODA_OSS_API void SinCos(execution_policy, span<const float>, span<float> sines, span<float> cosines);
-CODA_OSS_API void SinCos(execution_policy, span<const double>, span<double> sines, span<double> cosines);
+//CODA_OSS_API void SinCos(execution_policy, span<const float>, span<float> sines, span<float> cosines);
+//CODA_OSS_API void SinCos(execution_policy, span<const double>, span<double> sines, span<double> cosines);
 
 CODA_OSS_API void Tan(execution_policy, span<const float>, span<float>);
 CODA_OSS_API void Tan(execution_policy, span<const double>, span<double>);
 
-CODA_OSS_API void ATan2(execution_policy, span<const float>, span<const float>, span<float>);
-CODA_OSS_API void ATan2(execution_policy, span<const double>, span<const double>, span<double>);
+//CODA_OSS_API void ATan2(execution_policy, span<const float>, span<const float>, span<float>);
+//CODA_OSS_API void ATan2(execution_policy, span<const double>, span<const double>, span<double>);
 
 }
 }
