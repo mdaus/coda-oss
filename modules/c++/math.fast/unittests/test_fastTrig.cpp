@@ -1,0 +1,135 @@
+/* =========================================================================
+ * This file is part of math.fast-c++
+ * =========================================================================
+ *
+ * (C) Copyright 2004 - 2017, MDA Information Systems LLC
+ * © Copyright 2023, Maxar Technologies, Inc. 
+ *
+ * math.fast-c++ is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
+ * see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#include <vector>
+#include <std/numbers>
+#include <chrono>
+#include <std/span>
+
+#include <math/fast/Trig.h>
+#include <sys/Span.h>
+#include <sys/Dbg.h>
+#include <sys/OS.h>
+
+#include "TestCase.h"
+
+template<typename T>
+static std::vector<T> make_values(size_t iterations)
+{
+    constexpr auto pi = std::numbers::pi;
+
+    // https://en.cppreference.com/w/cpp/numeric/math/sin
+    static const std::vector<T> angles{static_cast<T>(pi / 6), static_cast<T>(pi / 2), static_cast<T>(-3 * pi / 4),
+        static_cast<T>(0.0), static_cast<T>(-0.0)};
+
+    std::vector<T> retval;
+    retval.reserve(angles.size() * iterations);
+    for (size_t i = 0; i<iterations; i++)
+    {
+        retval.insert(retval.end(), angles.begin(), angles.end());
+    }
+    return retval;
+}
+
+template<typename T>
+static void slow_Sin(coda_oss::span<const T> inputs, coda_oss::span<T> outputs)
+{
+    // This is intentionally slow so that we have something to compare with SIMD results
+    auto begin = inputs.begin();
+    const auto end = inputs.end();
+    auto it = outputs.begin();
+    while (begin != end)
+    {
+        *it++ = sin(*begin++);
+    }
+}
+
+static void test_simd_Sin_almost_equal(const std::string& testName, const float* pResults, const size_t size = 5)
+{
+    if (size >= 1) TEST_ASSERT_ALMOST_EQ(pResults[0], 0.5f);
+    if (size >= 2) TEST_ASSERT_ALMOST_EQ(pResults[1], 1.0f);
+    if (size >= 3) TEST_ASSERT_ALMOST_EQ(pResults[2], -0.7071067812f);
+    if (size >= 4) TEST_ASSERT_ALMOST_EQ(pResults[3], 0.0f);
+    if (size >= 5) TEST_ASSERT_ALMOST_EQ(pResults[4], -0.0f);
+}
+TEST_CASE(Test_fast_Sin)
+{
+    constexpr size_t iterations = sys::release ? 4000000 : 400;
+
+    const auto inputs = make_values<float>(iterations);
+    std::vector<float> results(inputs.size());
+
+    math::fast::Sin(math::fast::execution_policy::par_unseq, sys::make_span(inputs), sys::make_span(results));
+    auto start = std::chrono::steady_clock::now();
+    math::fast::Sin(math::fast::execution_policy::par_unseq, sys::make_span(inputs), sys::make_span(results));
+    auto end = std::chrono::steady_clock::now();
+    test_simd_Sin_almost_equal(testName, &(results[0]));
+    const std::chrono::duration<double> elapsed_simd = end - start;
+    
+    slow_Sin(sys::make_span(inputs), sys::make_span(results));
+    start = std::chrono::steady_clock::now();
+    slow_Sin(sys::make_span(inputs), sys::make_span(results));
+    end = std::chrono::steady_clock::now();
+    test_simd_Sin_almost_equal(testName, &(results[0]));
+    const std::chrono::duration<double> elapsed_slow = end - start;
+
+    if constexpr (sys::release) // DEBUG SIMD code is slow
+    {
+        const auto ratio = elapsed_slow / elapsed_simd;
+        if (ratio > 1.0)  // hard to figure out debug with GCC
+        {
+            // Ratios observed by testing
+            // constexpr auto expected_ratio = sys::Platform == sys::PlatformType::Windows ? 2.5 : 2.25;
+            constexpr auto expected_ratio = 2.0;
+            TEST_ASSERT_GREATER(ratio, expected_ratio);
+        }
+    }
+}
+
+TEST_CASE(Test_fast_Sin_small)
+{
+    constexpr size_t iterations = 2;
+    const auto inputs = make_values<float>(iterations);
+    std::vector<float> results(inputs.size());
+    
+    math::fast::Sin(math::fast::execution_policy::par_unseq, sys::make_span(inputs), sys::make_span(results));
+    test_simd_Sin_almost_equal(testName, &(results[0]));
+    const size_t values_size = inputs.size() / iterations;
+    test_simd_Sin_almost_equal(testName, &(results[values_size]));
+    
+    // Be sure the end of the array is calculated correctly.
+    for (size_t count = 0; count < values_size; count++)
+    {
+        const size_t small_count = (values_size * (iterations - 1)) + count;
+
+        const std::span<const float> s(inputs.data(), small_count);
+        math::fast::Sin(math::fast::execution_policy::par_unseq, s, sys::make_span(results));
+        test_simd_Sin_almost_equal(testName, &(results[values_size]), count);    
+    }
+}
+
+TEST_MAIN(
+
+    TEST_CHECK(Test_fast_Sin);
+    TEST_CHECK(Test_fast_Sin_small);
+)

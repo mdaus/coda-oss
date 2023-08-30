@@ -258,6 +258,12 @@
     <ClCompile Include="..\modules\drivers\highfive\unittests\tests_high_five_base.cpp">
       <Filter>hdf5.lite</Filter>
     </ClCompile>
+    <ClCompile Include="math.fast.cpp">
+      <Filter>math.fast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\math.fast\unittests\test_fastTrig.cpp">
+      <Filter>math.fast</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -317,6 +323,9 @@
     </Filter>
     <Filter Include="xml.lite">
       <UniqueIdentifier>{f4dfc761-e468-4305-84dc-f3579e46107e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math.fast">
+      <UniqueIdentifier>{7ef55515-9d4a-4bb8-8925-21011f998986}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -24,5 +24,7 @@
 #ifndef CODA_OSS_math_fast_import_fast_h_INCLUDED_
 #define CODA_OSS_math_fast_import_fast_h_INCLUDED_
 
+#include <math/fast/Trig.h>
+
 #endif  // CODA_OSS_math_fast_import_fast_h_INCLUDED_
 
