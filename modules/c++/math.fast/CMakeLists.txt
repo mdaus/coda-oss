@@ -1,6 +1,5 @@
 set(MODULE_NAME math.fast)
 
-
 coda_add_module(
     ${MODULE_NAME}
     VERSION 0.2
