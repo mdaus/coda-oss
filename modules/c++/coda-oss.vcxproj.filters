@@ -955,7 +955,10 @@
     <ClInclude Include="math.fast\include\math\fast\Span.h">
       <Filter>math.fast</Filter>
     </ClInclude>
-    <ClInclude Include="math.fast\include\math\fast\Math.h">
+    <ClInclude Include="math.fast\include\math\fast\Trig.h">
+      <Filter>math.fast</Filter>
+    </ClInclude>
+    <ClInclude Include="math.fast\include\math\fast\execution_policy.h">
       <Filter>math.fast</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1405,7 +1408,7 @@
     <ClCompile Include="unique\source\UUID.cpp">
       <Filter>unique</Filter>
     </ClCompile>
-    <ClCompile Include="math.fast\source\Math.cpp">
+    <ClCompile Include="math.fast\source\Trig.cpp">
       <Filter>math.fast</Filter>
     </ClCompile>
   </ItemGroup>

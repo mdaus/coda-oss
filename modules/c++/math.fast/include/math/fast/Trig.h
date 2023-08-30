@@ -22,22 +22,21 @@
  */
 
 #pragma once
-#ifndef CODA_OSS_math_fast_Math_h_INCLUDED_
-#define CODA_OSS_math_fast_Math_h_INCLUDED_
+#ifndef CODA_OSS_math_fast_Trig_h_INCLUDED_
+#define CODA_OSS_math_fast_Trig_h_INCLUDED_
 
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES // get M_PI, etc.
 #endif
 #include <math.h>
-#include <stdint.h>
 
-#include <complex>
+#include <execution>
 
-#include "coda_oss/CPlusPlus.h"
 #include "coda_oss/span.h"
 #include "config/Exports.h"
 
 #include "Span.h"
+#include "execution_policy.h"
 
 namespace math
 {
@@ -46,22 +45,22 @@ namespace fast
 
 // "Overloads" for common routines in <math.h>
 
-CODA_OSS_API void Sin(span<const float>, span<float>);
-CODA_OSS_API void Sin(span<const double>, span<double>);
+CODA_OSS_API void Sin(execution_policy, span<const float>, span<float>);
+CODA_OSS_API void Sin(execution_policy, span<const double>, span<double>);
 
-CODA_OSS_API void Cos(span<const float>, span<float>);
-CODA_OSS_API void Cos(span<const double>, span<double>);
+CODA_OSS_API void Cos(execution_policy, span<const float>, span<float>);
+CODA_OSS_API void Cos(execution_policy, span<const double>, span<double>);
 
-CODA_OSS_API void SinCos(span<const float>, span<float> sines, span<float> cosines);
-CODA_OSS_API void SinCos(span<const double>, span<double> sines, span<double> cosines);
+CODA_OSS_API void SinCos(execution_policy, span<const float>, span<float> sines, span<float> cosines);
+CODA_OSS_API void SinCos(execution_policy, span<const double>, span<double> sines, span<double> cosines);
 
-CODA_OSS_API void Tan(span<const float>, span<float>);
-CODA_OSS_API void Tan(span<const double>, span<double>);
+CODA_OSS_API void Tan(execution_policy, span<const float>, span<float>);
+CODA_OSS_API void Tan(execution_policy, span<const double>, span<double>);
 
-CODA_OSS_API void ATan2(span<const float>, span<const float>, span<float>);
-CODA_OSS_API void ATan2(span<const double>, span<const double>, span<double>);
+CODA_OSS_API void ATan2(execution_policy, span<const float>, span<const float>, span<float>);
+CODA_OSS_API void ATan2(execution_policy, span<const double>, span<const double>, span<double>);
 
 }
 }
 
-#endif  // CODA_OSS_math_fast_Math_h_INCLUDED_
+#endif  // CODA_OSS_math_fast_Trig_h_INCLUDED_

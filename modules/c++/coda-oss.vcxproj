@@ -108,7 +108,8 @@
     <ClInclude Include="logging\include\logging\StreamHandler.h" />
     <ClInclude Include="logging\include\logging\XMLFormatter.h" />
     <ClInclude Include="math.fast\include\import\math\fast.h" />
-    <ClInclude Include="math.fast\include\math\fast\Math.h" />
+    <ClInclude Include="math.fast\include\math\fast\execution_policy.h" />
+    <ClInclude Include="math.fast\include\math\fast\Trig.h" />
     <ClInclude Include="math.fast\include\math\fast\Span.h" />
     <ClInclude Include="math.linear\include\math\linear\Eigenvalue.h" />
     <ClInclude Include="math.linear\include\math\linear\Line2D.h" />
@@ -381,7 +382,7 @@
     <ClCompile Include="logging\source\StandardFormatter.cpp" />
     <ClCompile Include="logging\source\StreamHandler.cpp" />
     <ClCompile Include="logging\source\XMLFormatter.cpp" />
-    <ClCompile Include="math.fast\source\Math.cpp" />
+    <ClCompile Include="math.fast\source\Trig.cpp" />
     <ClCompile Include="math.linear\source\Line2D.cpp" />
     <ClCompile Include="math\source\Bessel.cpp" />
     <ClCompile Include="math\source\Round.cpp" />
