@@ -46,7 +46,7 @@ inline void Sin(TExecutionPolicy&& policy, span<const T> values, span<T> results
 template <typename T>
 inline void Sin(span<const T> values, span<T> results)
 {
-    Sin(ExecutionPolicy::None, values, results);
+    Sin(ExecutionPolicy::Unknown, values, results);
 }
 
 //CODA_OSS_API void Cos(ExecutionPolicy, span<const float>, span<float>);

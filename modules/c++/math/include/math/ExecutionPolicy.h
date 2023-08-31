@@ -25,9 +25,20 @@
 #ifndef CODA_OSS_math_ExecutionPolicy_h_INCLUDED_
 #define CODA_OSS_math_ExecutionPolicy_h_INCLUDED_
 
-#include <execution>
-
 #include "coda_oss/CPlusPlus.h"
+
+#ifndef CODA_OSS_math_HAS_execution_
+    #if CODA_OSS_cpp17
+        #if __has_include(<execution>)
+            #include <execution>
+            #define CODA_OSS_math_HAS_execution_ 1
+        #else
+            #define CODA_OSS_math_HAS_execution_ 0
+        #endif
+    #else
+        #define CODA_OSS_math_HAS_execution_ 0
+    #endif
+#endif
 
 namespace math
 {
@@ -58,22 +69,25 @@ enum class ExecutionPolicy
 {
     None, // no policy specified, easier than passing a `NULL` pointer
     Unknown, // implementation figures out what to do
-	Seq, Par, ParUnseq,
+
+	Seq, Par, ParUnseq, // these are C++17
     Unseq, // n.b., std::execution::unseq is C++20
 };
 
 template<typename TExecutionPolicy>
-auto to_ExecutionPolicy(TExecutionPolicy&& policy)
+inline auto to_ExecutionPolicy(TExecutionPolicy&& policy)
 {
     const void* pPolicy = &policy;
     if (pPolicy == &execution::none) return ExecutionPolicy::None;
     if (pPolicy == &execution::unknown) return ExecutionPolicy::Unknown;
 
-    if (pPolicy == &std::execution::seq) return ExecutionPolicy::Seq;
-    if (pPolicy == &std::execution::par) return ExecutionPolicy::Par;
-    if (pPolicy == &std::execution::par_unseq) return ExecutionPolicy::ParUnseq;
-    #if CODA_OSS_cpp20
-    if (pPolicy == &std::execution::unseq) return ExecutionPolicy::Unseq;
+    #if CODA_OSS_math_HAS_execution_
+        if (pPolicy == &std::execution::seq) return ExecutionPolicy::Seq;
+        if (pPolicy == &std::execution::par) return ExecutionPolicy::Par;
+        if (pPolicy == &std::execution::par_unseq) return ExecutionPolicy::ParUnseq;
+        #if CODA_OSS_cpp20
+        if (pPolicy == &std::execution::unseq) return ExecutionPolicy::Unseq;
+        #endif
     #endif
     throw std::logic_error("Unknown execution policy in to_ExecutionPolicy().");
 }

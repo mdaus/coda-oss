@@ -80,19 +80,31 @@ inline void transform(math::ExecutionPolicy policy,
     switch (policy)
     {
     case math::ExecutionPolicy::Seq:
+        #if CODA_OSS_math_HAS_execution_
         std::ignore = transform(std::execution::seq, values, results, binary_op);
+        #else
+        throw std::logic_error("C++17 needed for `Seq`.");
+        #endif
         break;
     
     case math::ExecutionPolicy::Par:
+        #if CODA_OSS_math_HAS_execution_
         std::ignore = transform(std::execution::par, values, results, binary_op);
+        #else
+        throw std::logic_error("C++17 needed for `Par`.");
+        #endif
         break;
     
     case math::ExecutionPolicy::ParUnseq:
+        #if CODA_OSS_math_HAS_execution_
         std::ignore = transform(std::execution::par_unseq, values, results, binary_op);
+        #else
+        throw std::logic_error("C++17 needed for `ParUnseq`.");
+        #endif
         break;
 
     case math::ExecutionPolicy::Unseq:
-        #if CODA_OSS_cpp20
+        #if CODA_OSS_math_HAS_execution_ && CODA_OSS_cpp20
         std::ignore = transform(std::execution::unseq, values, results, binary_op);
         #else
         throw std::logic_error("C++20 needed for `Unseq`.");
