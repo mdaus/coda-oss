@@ -21,6 +21,8 @@
 
 #if _MSC_VER
 #pragma warning(disable : 4127)  // conditional expression is constant
+
+#pragma comment(lib, "shlwapi")  // StrStrI()
 #endif
 
 #include <highfive/H5DataSet.hpp>
