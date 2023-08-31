@@ -949,17 +949,17 @@
       <Filter>str</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\optional_.h" />
-    <ClInclude Include="math.fast\include\import\math\fast.h">
-      <Filter>math.fast</Filter>
+    <ClInclude Include="math.span\include\math\span\execution_policy.h">
+      <Filter>math.span</Filter>
     </ClInclude>
-    <ClInclude Include="math.fast\include\math\fast\Span.h">
-      <Filter>math.fast</Filter>
+    <ClInclude Include="math.span\include\math\span\Span.h">
+      <Filter>math.span</Filter>
     </ClInclude>
-    <ClInclude Include="math.fast\include\math\fast\Trig.h">
-      <Filter>math.fast</Filter>
+    <ClInclude Include="math.span\include\math\span\Trig.h">
+      <Filter>math.span</Filter>
     </ClInclude>
-    <ClInclude Include="math.fast\include\math\fast\execution_policy.h">
-      <Filter>math.fast</Filter>
+    <ClInclude Include="math.span\include\import\math\span.h">
+      <Filter>math.span</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1408,8 +1408,8 @@
     <ClCompile Include="unique\source\UUID.cpp">
       <Filter>unique</Filter>
     </ClCompile>
-    <ClCompile Include="math.fast\source\Trig.cpp">
-      <Filter>math.fast</Filter>
+    <ClCompile Include="math.span\source\Trig.cpp">
+      <Filter>math.span</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1506,7 +1506,7 @@
     <Filter Include="coda_oss">
       <UniqueIdentifier>{59f3d9a1-06d3-4779-aef2-cc55223c3017}</UniqueIdentifier>
     </Filter>
-    <Filter Include="math.fast">
+    <Filter Include="math.span">
       <UniqueIdentifier>{f7a81553-8c63-4a34-8ffb-779c3928b775}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

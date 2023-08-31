@@ -107,10 +107,10 @@
     <ClInclude Include="logging\include\logging\StandardFormatter.h" />
     <ClInclude Include="logging\include\logging\StreamHandler.h" />
     <ClInclude Include="logging\include\logging\XMLFormatter.h" />
-    <ClInclude Include="math.fast\include\import\math\fast.h" />
-    <ClInclude Include="math.fast\include\math\fast\execution_policy.h" />
-    <ClInclude Include="math.fast\include\math\fast\Trig.h" />
-    <ClInclude Include="math.fast\include\math\fast\Span.h" />
+    <ClInclude Include="math.span\include\import\math\span.h" />
+    <ClInclude Include="math.span\include\math\span\execution_policy.h" />
+    <ClInclude Include="math.span\include\math\span\Trig.h" />
+    <ClInclude Include="math.span\include\math\span\Span.h" />
     <ClInclude Include="math.linear\include\math\linear\Eigenvalue.h" />
     <ClInclude Include="math.linear\include\math\linear\Line2D.h" />
     <ClInclude Include="math.linear\include\math\linear\Matrix2D.h" />
@@ -382,7 +382,7 @@
     <ClCompile Include="logging\source\StandardFormatter.cpp" />
     <ClCompile Include="logging\source\StreamHandler.cpp" />
     <ClCompile Include="logging\source\XMLFormatter.cpp" />
-    <ClCompile Include="math.fast\source\Trig.cpp" />
+    <ClCompile Include="math.span\source\Trig.cpp" />
     <ClCompile Include="math.linear\source\Line2D.cpp" />
     <ClCompile Include="math\source\Bessel.cpp" />
     <ClCompile Include="math\source\Round.cpp" />
@@ -573,7 +573,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL;MT_DEFAULT_PINNING=0;RE_ENABLE_STD_REGEX=1</PreprocessorDefinitions>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include;coda_oss\include;config\include;dbi\include;except\include;gsl\include;hdf5.lite\include;io\include;logging\include;math\include;math.fast\include;math.linear\include;math.poly\include;mem\include;mt\include;net\include;net.ssl\include;plugin\include;polygon\include;re\include;sio.lite\include;std\include;str\include;sys\include;tiff\include;types\include;unique\include;units\include;xml.lite\include;zip\include;$(ProjectDir)include;$(SolutionDir)out\install\$(Platform)-$(Configuration)\include;$(SolutionDir)externals\$(ProjectName)\out\install\$(Platform)-$(Configuration)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include;coda_oss\include;config\include;dbi\include;except\include;gsl\include;hdf5.lite\include;io\include;logging\include;math\include;math.span\include;math.linear\include;math.poly\include;mem\include;mt\include;net\include;net.ssl\include;plugin\include;polygon\include;re\include;sio.lite\include;std\include;str\include;sys\include;tiff\include;types\include;unique\include;units\include;xml.lite\include;zip\include;$(ProjectDir)include;$(SolutionDir)out\install\$(Platform)-$(Configuration)\include;$(SolutionDir)externals\$(ProjectName)\out\install\$(Platform)-$(Configuration)\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -607,7 +607,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);CODA_OSS_EXPORTS;CODA_OSS_DLL;MT_DEFAULT_PINNING=0;RE_ENABLE_STD_REGEX=1</PreprocessorDefinitions>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>cli\include;coda_oss\include;config\include;dbi\include;except\include;gsl\include;hdf5.lite\include;io\include;logging\include;math\include;math.fast\include;math.linear\include;math.poly\include;mem\include;mt\include;net\include;net.ssl\include;plugin\include;polygon\include;re\include;sio.lite\include;std\include;str\include;sys\include;tiff\include;types\include;unique\include;units\include;xml.lite\include;zip\include;$(ProjectDir)include;$(SolutionDir)out\install\$(Platform)-$(Configuration)\include;$(SolutionDir)externals\$(ProjectName)\out\install\$(Platform)-$(Configuration)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cli\include;coda_oss\include;config\include;dbi\include;except\include;gsl\include;hdf5.lite\include;io\include;logging\include;math\include;math.span\include;math.linear\include;math.poly\include;mem\include;mt\include;net\include;net.ssl\include;plugin\include;polygon\include;re\include;sio.lite\include;std\include;str\include;sys\include;tiff\include;types\include;unique\include;units\include;xml.lite\include;zip\include;$(ProjectDir)include;$(SolutionDir)out\install\$(Platform)-$(Configuration)\include;$(SolutionDir)externals\$(ProjectName)\out\install\$(Platform)-$(Configuration)\include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
