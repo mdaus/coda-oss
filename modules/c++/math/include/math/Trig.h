@@ -27,28 +27,29 @@
 
 #include "config/Exports.h"
 
+#include <execution>
+
 #include "Span.h"
-#include "execution_policy.h"
+#include "ExecutionPolicy.h"
 
 namespace math
 {
 
-// "Overloads" for common routines in <math.h>
+// "Overloads" for common math routines
+CODA_OSS_API void Sin(ExecutionPolicy, span<const float>, span<float>);
+CODA_OSS_API void Sin(ExecutionPolicy, span<const double>, span<double>);
 
-CODA_OSS_API void Sin(execution_policy, span<const float>, span<float>);
-CODA_OSS_API void Sin(execution_policy, span<const double>, span<double>);
+CODA_OSS_API void Cos(ExecutionPolicy, span<const float>, span<float>);
+CODA_OSS_API void Cos(ExecutionPolicy, span<const double>, span<double>);
 
-CODA_OSS_API void Cos(execution_policy, span<const float>, span<float>);
-CODA_OSS_API void Cos(execution_policy, span<const double>, span<double>);
+//CODA_OSS_API void SinCos(ExecutionPolicy, span<const float>, span<float> sines, span<float> cosines);
+//CODA_OSS_API void SinCos(ExecutionPolicy, span<const double>, span<double> sines, span<double> cosines);
 
-//CODA_OSS_API void SinCos(execution_policy, span<const float>, span<float> sines, span<float> cosines);
-//CODA_OSS_API void SinCos(execution_policy, span<const double>, span<double> sines, span<double> cosines);
+CODA_OSS_API void Tan(ExecutionPolicy, span<const float>, span<float>);
+CODA_OSS_API void Tan(ExecutionPolicy, span<const double>, span<double>);
 
-CODA_OSS_API void Tan(execution_policy, span<const float>, span<float>);
-CODA_OSS_API void Tan(execution_policy, span<const double>, span<double>);
-
-//CODA_OSS_API void ATan2(execution_policy, span<const float>, span<const float>, span<float>);
-//CODA_OSS_API void ATan2(execution_policy, span<const double>, span<const double>, span<double>);
+//CODA_OSS_API void ATan2(ExecutionPolicy, span<const float>, span<const float>, span<float>);
+//CODA_OSS_API void ATan2(ExecutionPolicy, span<const double>, span<const double>, span<double>);
 
 }
 

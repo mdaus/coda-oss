@@ -124,7 +124,7 @@
     <ClInclude Include="math\include\math\Bessel.h" />
     <ClInclude Include="math\include\math\Constants.h" />
     <ClInclude Include="math\include\math\ConvexHull.h" />
-    <ClInclude Include="math\include\math\execution_policy.h" />
+    <ClInclude Include="math\include\math\ExecutionPolicy.h" />
     <ClInclude Include="math\include\math\Round.h" />
     <ClInclude Include="math\include\math\Span.h" />
     <ClInclude Include="math\include\math\Trig.h" />

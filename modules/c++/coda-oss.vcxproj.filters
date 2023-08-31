@@ -949,7 +949,7 @@
       <Filter>str</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\optional_.h" />
-    <ClInclude Include="math\include\math\execution_policy.h">
+    <ClInclude Include="math\include\math\ExecutionPolicy.h">
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="math\include\math\Span.h">
