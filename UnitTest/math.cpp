@@ -2,6 +2,7 @@
 #include "CppUnitTest.h"
 
 #include <import/math.h>
+#include <math/Trig.h>
 
 namespace math
 {
@@ -28,4 +29,9 @@ TEST_CLASS(test_round){ public:
 TEST_CLASS(test_sign){ public:
 #include "math/unittests/test_sign.cpp"
 };
+
+TEST_CLASS(test_trig){ public:
+#include "math/unittests/test_trig.cpp"
+};
+
 }

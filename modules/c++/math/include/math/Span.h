@@ -1,11 +1,11 @@
 /* =========================================================================
- * This file is part of math.span-c++
+ * This file is part of math-c++
  * =========================================================================
  *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  * © Copyright 2023, Maxar Technologies, Inc.
  *
- * math.span-c++ is free software; you can redistribute it and/or modify
+ * math-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -22,19 +22,16 @@
  */
 
 #pragma once
-#ifndef CODA_OSS_math_span_Span_h_INCLUDED_
-#define CODA_OSS_math_span_Span_h_INCLUDED_
+#ifndef CODA_OSS_math_Span_h_INCLUDED_
+#define CODA_OSS_math_Span_h_INCLUDED_
 
 #include "coda_oss/span.h"
 
-// This lets us use just `span` inside of the *math::span* namespace.
+// This lets us use just `span` inside of the *math* namespace.
 namespace math
-{
-namespace span
 {
 template <typename T>
 using span = coda_oss::span<T>;
 }
-}
 
-#endif  // CODA_OSS_math_span_Span_h_INCLUDED_
+#endif  // CODA_OSS_math_Span_h_INCLUDED_

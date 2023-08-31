@@ -258,11 +258,8 @@
     <ClCompile Include="..\modules\drivers\highfive\unittests\tests_high_five_base.cpp">
       <Filter>hdf5.lite</Filter>
     </ClCompile>
-    <ClCompile Include="math.span.cpp">
-      <Filter>math.span</Filter>
-    </ClCompile>
-    <ClCompile Include="..\modules\c++\math.span\unittests\test_spanTrig.cpp">
-      <Filter>math.span</Filter>
+    <ClCompile Include="..\modules\c++\math\unittests\test_trig.cpp">
+      <Filter>math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -323,9 +320,6 @@
     </Filter>
     <Filter Include="xml.lite">
       <UniqueIdentifier>{f4dfc761-e468-4305-84dc-f3579e46107e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="math.span">
-      <UniqueIdentifier>{7ef55515-9d4a-4bb8-8925-21011f998986}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,11 +1,11 @@
 /* =========================================================================
- * This file is part of math.span-c++
+ * This file is part of math-c++
  * =========================================================================
  *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  * © Copyright 2023, Maxar Technologies, Inc.
  *
- * math.span-c++ is free software; you can redistribute it and/or modify
+ * math-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -21,7 +21,7 @@
  *
  */
 
-#include "math/span/Trig.h"
+#include "math/Trig.h"
 
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES // get M_PI, etc.
@@ -36,7 +36,7 @@
 #include <cmath>
 
 template<typename T>
-using span = math::span::span<T>;
+using span = math::span<T>;
 
 // https://en.cppreference.com/w/cpp/algorithm/transform
 template <typename ExecutionPolicy, typename T, typename BinaryOperation>
@@ -47,21 +47,21 @@ inline auto transform(ExecutionPolicy&& policy,  span<const T> values, span<T> r
 }
 
 template <typename T, typename BinaryOperation>
-inline void transform(math::span::execution_policy policy, 
+inline void transform(math::execution_policy policy, 
     span<const T> values, span<T> results, BinaryOperation binary_op)
 {
     switch (policy)
     {
-    case math::span::execution_policy::seq:
+    case math::execution_policy::seq:
         std::ignore = transform(std::execution::seq, values, results, binary_op);
         break;
-    case math::span::execution_policy::par:
+    case math::execution_policy::par:
         std::ignore = transform(std::execution::par, values, results, binary_op);
         break;
-    case math::span::execution_policy::par_unseq:
+    case math::execution_policy::par_unseq:
         std::ignore = transform(std::execution::par_unseq, values, results, binary_op);
         break;
-    case math::span::execution_policy::unseq:
+    case math::execution_policy::unseq:
         #if CODA_OSS_cpp20
         std::ignore = transform(std::execution::unseq, values, results, binary_op);
         #else
@@ -71,34 +71,34 @@ inline void transform(math::span::execution_policy policy,
     }
 }
 
-void math::span::Sin(execution_policy policy, span<const float> values, span<float> results)
+void math::Sin(execution_policy policy, span<const float> values, span<float> results)
 {
     static const auto f = [](auto&& v) { return std::sin(v); };
     transform(policy, values, results, f);
 }
-void math::span::Sin(execution_policy policy, span<const double> values, span<double> results)
+void math::Sin(execution_policy policy, span<const double> values, span<double> results)
 {
     static const auto f = [](auto&& v) { return std::sin(v); };
     transform(policy, values, results, f);
 }
 
-void math::span::Cos(execution_policy policy, span<const float> values, span<float> results)
+void math::Cos(execution_policy policy, span<const float> values, span<float> results)
 {
     static const auto f = [](auto&& v) { return std::cos(v); };
     transform(policy, values, results, f);
 }
-void math::span::Cos(execution_policy policy, span<const double> values, span<double> results)
+void math::Cos(execution_policy policy, span<const double> values, span<double> results)
 {
     static const auto f = [](auto&& v) { return std::cos(v); };
     transform(policy, values, results, f);
 }
 
-void math::span::Tan(execution_policy policy, span<const float> values, span<float> results)
+void math::Tan(execution_policy policy, span<const float> values, span<float> results)
 {
     static const auto f = [](auto&& v) { return std::tan(v); };
     transform(policy, values, results, f);
 }
-void math::span::Tan(execution_policy policy, span<const double> values, span<double> results)
+void math::Tan(execution_policy policy, span<const double> values, span<double> results)
 {
     static const auto f = [](auto&& v) { return std::tan(v); };
     transform(policy, values, results, f);
