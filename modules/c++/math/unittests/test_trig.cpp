@@ -83,7 +83,7 @@ template <typename ExecutionPolicy>
 static void test_Sin(const std::string& testName, ExecutionPolicy&& policy,
     double expected_ratio)
 {
-    constexpr size_t iterations = sys::release ? 10000000 : 400;
+    constexpr size_t iterations = sys::release ? 15000000 : 400;
 
     const auto inputs_ = make_values<float>(iterations);
     const auto inputs = sys::make_span(inputs_);
@@ -97,9 +97,9 @@ static void test_Sin(const std::string& testName, ExecutionPolicy&& policy,
     test_Sin_almost_equal(testName, &(results[0]));
 
     const auto ratio = elapsed_slow / elapsed_fast;
-    //fprintf(stderr, "%10.4f\n", ratio);
     if constexpr (sys::release) // DEBUG code is slow
     {
+        //fprintf(stderr, "%10.4f\n", ratio);
         TEST_ASSERT(ratio >= expected_ratio);
     }
     else
@@ -110,10 +110,14 @@ static void test_Sin(const std::string& testName, ExecutionPolicy&& policy,
 TEST_CASE(Test_Sin)
 {
     // Ratios observed by testing
-    constexpr auto expected_par_unseq = sys::Platform == sys::PlatformType::Windows ? 6 : 0.9;
+    //
+    // With a WAF build on Linux, `-march=haswell` is passed gets AVX-2 (or even AVX-512?)
+    // auto-vectorization; as can be seen, creating threads just slows things down.
+
+    constexpr auto expected_par_unseq = sys::Platform == sys::PlatformType::Windows ? 6 : 0.6;
     test_Sin(testName, std::execution::par_unseq, expected_par_unseq);
 
-    constexpr auto expected_par= sys::Platform == sys::PlatformType::Windows ? 6 : 1.15;
+    constexpr auto expected_par= sys::Platform == sys::PlatformType::Windows ? 6 : 0.75;
     test_Sin(testName, std::execution::par, expected_par);
 
     #if CODA_OSS_cpp20
