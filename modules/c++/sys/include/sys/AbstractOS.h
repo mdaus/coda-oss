@@ -70,7 +70,7 @@ constexpr auto getSIMDInstructionSet() { return SIMDInstructionSet::
             AVX512F
     #elif __AVX2__
             AVX2
-    #elif _M_X64
+    #elif _M_X64 /*MSVC*/ || __SSE2__ /*GCC*/
             SSE2
     #else
         #error "Can't determine SIMDInstructionSet'"
