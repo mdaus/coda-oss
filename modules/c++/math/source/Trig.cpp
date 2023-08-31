@@ -35,8 +35,29 @@
 #include <tuple> // std::ignore
 #include <cmath>
 
+#include "sys/OS.h"
+
 template<typename T>
 using span = math::span<T>;
+
+// "Figure out" an `ExecutionPolicy` based on  `getSIMDInstructionSet()`.
+static auto determineExecutionPolicy()
+{
+    static const auto simdInstructionSet = sys::OS().getSIMDInstructionSet();
+    switch (simdInstructionSet)
+    {
+    case sys::SIMDInstructionSet::SSE2:
+        return math::ExecutionPolicy::ParUnseq;
+
+    // Auto-vectorization seems to work pretty well, at least for `sin()`, et. al. below
+    case sys::SIMDInstructionSet::AVX2:
+    case sys::SIMDInstructionSet::AVX512F:
+        return math::ExecutionPolicy::None;
+
+    default:
+        throw std::logic_error("Unknown SIMDInstructionSet value.");
+    }
+}
 
 // https://en.cppreference.com/w/cpp/algorithm/transform
 template <typename ExecutionPolicy, typename T, typename BinaryOperation>
@@ -61,19 +82,29 @@ inline void transform(math::ExecutionPolicy policy,
     case math::ExecutionPolicy::Seq:
         std::ignore = transform(std::execution::seq, values, results, binary_op);
         break;
+    
     case math::ExecutionPolicy::Par:
         std::ignore = transform(std::execution::par, values, results, binary_op);
         break;
+    
     case math::ExecutionPolicy::ParUnseq:
         std::ignore = transform(std::execution::par_unseq, values, results, binary_op);
         break;
-    #if CODA_OSS_cpp20
+
     case math::ExecutionPolicy::Unseq:
+        #if CODA_OSS_cpp20
         std::ignore = transform(std::execution::unseq, values, results, binary_op);
+        #else
+        throw std::logic_error("C++20 needed for `Unseq`.");
+        #endif
         break;
-    #endif
+
     case math::ExecutionPolicy::None:
         std::ignore = transform(values, results, binary_op);
+        break;
+
+    case math::ExecutionPolicy::Unknown:
+        transform(determineExecutionPolicy(), values, results, binary_op);
         break;
     }
 }

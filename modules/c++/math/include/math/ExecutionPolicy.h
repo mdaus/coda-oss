@@ -39,18 +39,27 @@ namespace math
 
 namespace execution
 {
+    // `none` (or `no_policy`) means "we've thought about it" or "did some checks"
+    // and have "determiend" that the "best" execution policy is "no policy."
+    // This might mean, for example, that `transform()` is called *without* an
+    // `ExecutionPolicy`.
     struct no_policy final { };
     inline constexpr no_policy none{};
+
+    // `unknown` means "we don't know what the exeuction policy should be
+    // (if any);" the implementaton should figure out what to do.  This might
+    // be the same as `none`, or it might use SIMD instructors or Intel MKL.
+    struct unknown_policy final { };
+    inline constexpr unknown_policy unknown{};
 }
 
 // https://en.cppreference.com/w/cpp/algorithm/execution_policy_tag
 enum class ExecutionPolicy
 {
-    None, // implementation figures out what to do
+    None, // no policy specified, easier than passing a `NULL` pointer
+    Unknown, // implementation figures out what to do
 	Seq, Par, ParUnseq,
-    #if CODA_OSS_cpp20
-    Unseq,
-    #endif
+    Unseq, // n.b., std::execution::unseq is C++20
 };
 
 template<typename TExecutionPolicy>
@@ -58,6 +67,7 @@ auto to_ExecutionPolicy(TExecutionPolicy&& policy)
 {
     const void* pPolicy = &policy;
     if (pPolicy == &execution::none) return ExecutionPolicy::None;
+    if (pPolicy == &execution::unknown) return ExecutionPolicy::Unknown;
 
     if (pPolicy == &std::execution::seq) return ExecutionPolicy::Seq;
     if (pPolicy == &std::execution::par) return ExecutionPolicy::Par;
