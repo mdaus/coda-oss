@@ -37,25 +37,35 @@ namespace math
 // We don't have that concern, and a concrete type (rather than a template)
 // means we can put the implementation in a CPP file.
 
+namespace execution
+{
+    struct no_policy final { };
+    inline constexpr no_policy none{};
+}
+
 // https://en.cppreference.com/w/cpp/algorithm/execution_policy_tag
 enum class ExecutionPolicy
 {
+    None, // implementation figures out what to do
 	Seq, Par, ParUnseq,
     #if CODA_OSS_cpp20
-    Unseq
+    Unseq,
     #endif
 };
 
 template<typename TExecutionPolicy>
-constexpr auto to_ExecutionPolicy(TExecutionPolicy&& policy)
+auto to_ExecutionPolicy(TExecutionPolicy&& policy)
 {
-    if constexpr (policy == std::execution::seq) return ExecutionPolicy::Seq;
-    if constexpr (policy == std::execution::par) return ExecutionPolicy::Par;
-    if constexpr (policy == std::execution::par_unseq) return ExecutionPolicy::ParUnseq;
+    const void* pPolicy = &policy;
+    if (pPolicy == &execution::none) return ExecutionPolicy::None;
+
+    if (pPolicy == &std::execution::seq) return ExecutionPolicy::Seq;
+    if (pPolicy == &std::execution::par) return ExecutionPolicy::Par;
+    if (pPolicy == &std::execution::par_unseq) return ExecutionPolicy::ParUnseq;
     #if CODA_OSS_cpp20
-    if constexpr (policy == std::execution::unseq) return ExecutionPolicy::Unseq;
+    if (pPolicy == &std::execution::unseq) return ExecutionPolicy::Unseq;
     #endif
-    static_assert("should not get here!");
+    throw std::logic_error("Unknown execution policy in to_ExecutionPolicy().");
 }
 
 }

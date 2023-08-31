@@ -45,6 +45,12 @@ inline auto transform(ExecutionPolicy&& policy,  span<const T> values, span<T> r
 {
     return std::transform(policy, values.begin(), values.end(),  results.begin(), binary_op);
 }
+template <typename T, typename BinaryOperation>
+inline auto transform(span<const T> values, span<T> results,
+    BinaryOperation binary_op)
+{
+    return std::transform(values.begin(), values.end(),  results.begin(), binary_op);
+}
 
 template <typename T, typename BinaryOperation>
 inline void transform(math::ExecutionPolicy policy, 
@@ -66,38 +72,43 @@ inline void transform(math::ExecutionPolicy policy,
         std::ignore = transform(std::execution::unseq, values, results, binary_op);
         break;
     #endif
+    case math::ExecutionPolicy::None:
+        std::ignore = transform(values, results, binary_op);
+        break;
     }
 }
 
 void math::Sin(ExecutionPolicy policy, span<const float> values, span<float> results)
 {
-    static const auto f = [](auto&& v) { return std::sin(v); };
-    transform(policy, values, results, f);
+    transform(policy, values, results, sinf);
+}
+inline double sind(double arg)
+{
+    return ::sin(arg);
 }
 void math::Sin(ExecutionPolicy policy, span<const double> values, span<double> results)
 {
-    static const auto f = [](auto&& v) { return std::sin(v); };
-    transform(policy, values, results, f);
+    transform(policy, values, results, sind);
 }
 
-void math::Cos(ExecutionPolicy policy, span<const float> values, span<float> results)
-{
-    static const auto f = [](auto&& v) { return std::cos(v); };
-    transform(policy, values, results, f);
-}
-void math::Cos(ExecutionPolicy policy, span<const double> values, span<double> results)
-{
-    static const auto f = [](auto&& v) { return std::cos(v); };
-    transform(policy, values, results, f);
-}
-
-void math::Tan(ExecutionPolicy policy, span<const float> values, span<float> results)
-{
-    static const auto f = [](auto&& v) { return std::tan(v); };
-    transform(policy, values, results, f);
-}
-void math::Tan(ExecutionPolicy policy, span<const double> values, span<double> results)
-{
-    static const auto f = [](auto&& v) { return std::tan(v); };
-    transform(policy, values, results, f);
-}
+//void math::Cos(ExecutionPolicy policy, span<const float> values, span<float> results)
+//{
+//    static const auto f = [](auto&& v) { return std::cos(v); };
+//    transform(policy, values, results, f);
+//}
+//void math::Cos(ExecutionPolicy policy, span<const double> values, span<double> results)
+//{
+//    static const auto f = [](auto&& v) { return std::cos(v); };
+//    transform(policy, values, results, f);
+//}
+//
+//void math::Tan(ExecutionPolicy policy, span<const float> values, span<float> results)
+//{
+//    static const auto f = [](auto&& v) { return std::tan(v); };
+//    transform(policy, values, results, f);
+//}
+//void math::Tan(ExecutionPolicy policy, span<const double> values, span<double> results)
+//{
+//    static const auto f = [](auto&& v) { return std::tan(v); };
+//    transform(policy, values, results, f);
+//}
