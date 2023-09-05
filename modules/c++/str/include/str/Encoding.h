@@ -40,6 +40,8 @@
 
 namespace str
 {
+namespace details
+{
 template <typename TReturn, typename TChar>
 inline auto cast(const TChar* s)
 {
@@ -52,11 +54,12 @@ inline auto cast(const TChar* s)
     static_assert(sizeof(*retval) == sizeof(*s), "sizeof(*TReturn) != sizeof(*TChar)"); 
     return retval;
 }
+}
 template <typename TBasicStringT, typename TChar>
 inline auto c_str(const std::basic_string<TChar>& s)
 {
     using return_t = typename TBasicStringT::const_pointer;
-    return cast<return_t>(s.c_str());
+    return details::cast<return_t>(s.c_str());
 }
 template <typename TBasicStringT, typename TChar>
 inline auto str(const std::basic_string<TChar>& s)
@@ -67,7 +70,7 @@ template <typename TBasicStringT, typename TChar>
 inline TBasicStringT make_string(TChar* p)
 {
     using const_pointer = typename TBasicStringT::const_pointer;
-    return cast<const_pointer>(p);  // copy into RV
+    return details::cast<const_pointer>(p);  // copy into RV
 }
 
 /************************************************************************/
