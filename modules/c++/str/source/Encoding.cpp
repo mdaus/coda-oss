@@ -417,7 +417,7 @@ std::string str::testing::to_string(const str::W1252string& s)
     #endif
 }
 
-std::string str::to_string(const std::wstring& s)
+std::string str::details::to_string(const std::wstring& s)
 {
     const auto p = details::c_str(s);
     const auto sz = s.length();
@@ -431,7 +431,7 @@ std::string str::to_string(const std::wstring& s)
     return retval;
 }
 
-std::wstring str::to_wstring(const std::string& s)
+std::wstring str::details::to_wstring(const std::string& s)
 {
      #if _WIN32
     return to_wstring_(s, false /*is_utf8*/); // Input is Windows-1252 on Windows
@@ -439,7 +439,7 @@ std::wstring str::to_wstring(const std::string& s)
     return to_wstring_(s, true /*is_utf8*/);  // Input is UTF-8 everywhere except Windows
     #endif
 }
-std::wstring str::to_wstring(const coda_oss::u8string& s)
+std::wstring str::details::to_wstring(const coda_oss::u8string& s)
 {
     return to_wstring_(s, true /*is_utf8*/);
 }
