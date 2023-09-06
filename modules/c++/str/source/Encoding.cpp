@@ -395,7 +395,7 @@ static std::wstring to_wstring_(const std::basic_string<CharT>& s, bool is_utf8)
 
 /***********************************************************************************/
 
-std::string str::to_string(const coda_oss::u8string& s)
+std::string str::testing::to_string(const coda_oss::u8string& s)
 {
     #if _WIN32
     std::string retval;
@@ -406,7 +406,7 @@ std::string str::to_string(const coda_oss::u8string& s)
     #endif
 }
 
-std::string str::to_string(const str::W1252string& s)
+std::string str::testing::to_string(const str::W1252string& s)
 {
     #if _WIN32
     return str<std::string>(s);
@@ -443,7 +443,7 @@ std::wstring str::to_wstring(const coda_oss::u8string& s)
 {
     return to_wstring_(s, true /*is_utf8*/);
 }
-std::wstring str::to_wstring(const str::W1252string& s)
+std::wstring str::testing::to_wstring(const str::W1252string& s)
 {
     return to_wstring_(s, false /*is_utf8*/);
 }
