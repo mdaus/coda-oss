@@ -434,7 +434,7 @@ static auto to_w1252string(const std::u16string& s)
 {
     return str::to_w1252string(str::to_u8string(s));
 }
-static auto toString(const std::wstring& s)
+inline static auto toString(const std::wstring& s)
 {
     return str::details::to_string(s);
 }
