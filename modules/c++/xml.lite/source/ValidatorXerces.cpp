@@ -207,7 +207,7 @@ using XMLCh_t = wchar_t;
 static_assert(std::is_same<::XMLCh, XMLCh_t>::value, "XMLCh should be wchar_t");
 inline void reset(const std::u8string& xml, std::unique_ptr<std::wstring>& pWString)
 {
-    pWString = std::make_unique<std::wstring>(str::toWString(xml));
+    pWString = std::make_unique<std::wstring>(str::to_wstring(xml));
 }
 #else
 using XMLCh_t = char16_t;

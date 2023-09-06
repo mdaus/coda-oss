@@ -273,14 +273,14 @@ static std::u16string classificationText_u16() { return u"A\u00c9IOU"; } // UTF-
 static std::u32string classificationText_u32() { return U"A\u00c9IOU"; } // UTF-32 "AÉIOU"
 
 static std::string classificationText_platform() { return 
-    sys::Platform == sys::PlatformType::Linux ? str::toString(classificationText_u8()) : str::toString(classificationText_w1252()); }
+    sys::Platform == sys::PlatformType::Linux ? str::to_string(classificationText_u8()) : str::to_string(classificationText_w1252()); }
 
 TEST_CASE(test_u8string_to_string)
 {
-    auto actual = str::toString(classificationText_u8());
+    auto actual = str::to_string(classificationText_u8());
     TEST_ASSERT_EQ(classificationText_platform(), actual);
 
-    actual = str::toString(classificationText_w1252()); 
+    actual = str::to_string(classificationText_w1252()); 
     TEST_ASSERT_EQ(classificationText_platform(), actual);
 }
 
@@ -300,11 +300,11 @@ TEST_CASE(test_u8string_to_u16string)
 
     const auto u8 = classificationText_u8();
     TEST_ASSERT(str::u8FromNative(wide) == u8);
-    TEST_ASSERT(wide == str::toWString(u8));
+    TEST_ASSERT(wide == str::to_wstring(u8));
     
     const auto w1252 = str::c_str<str::W1252string>(classificationText_w1252());
     TEST_ASSERT(w1252FromNative(wide) == w1252);
-    TEST_ASSERT(wide == str::toWString(w1252));
+    TEST_ASSERT(wide == str::to_wstring(w1252));
 
     TEST_ASSERT(classificationText_u16() == actual);  // _EQ wants to do toString()
     TEST_ASSERT(classificationText_u16() == to_u16string(w1252)); // _EQ wants to do toString()
@@ -321,11 +321,11 @@ TEST_CASE(test_u8string_to_u32string)
     const std::wstring wide(classificationText_wide_());
     const auto u8 = classificationText_u8();
     TEST_ASSERT(str::u8FromNative(wide) == u8);
-    TEST_ASSERT(wide == str::toWString(u8));
+    TEST_ASSERT(wide == str::to_wstring(u8));
 
     const auto w1252 = str::c_str<str::W1252string>(classificationText_w1252());
     TEST_ASSERT(w1252FromNative(wide) == w1252);
-    TEST_ASSERT(wide == str::toWString(w1252));
+    TEST_ASSERT(wide == str::to_wstring(w1252));
 
     TEST_ASSERT(classificationText_u32() == actual);  // _EQ wants to do toString()
     TEST_ASSERT(classificationText_u32() == to_u32string(w1252)); // _EQ wants to do toString()
@@ -333,11 +333,11 @@ TEST_CASE(test_u8string_to_u32string)
 
 static auto toWString(const std::u16string& s)
 {
-    return str::toWString(str::to_u8string(s));
+    return str::to_wstring(str::to_u8string(s));
 }
 static auto toString(const std::u16string& s)
 {
-    return str::toString(str::to_u8string(s));
+    return str::to_string(str::to_u8string(s));
 }
 
 static void test_wide_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16,
@@ -373,13 +373,13 @@ static void test_Windows1252_ascii(const std::string& testName, const char* pStr
     TEST_ASSERT_EQ(pStr, u8); // native() is the same on all platforms/encodings for ASCII
     {
         const auto w1252 = str::make_string<str::W1252string>(pStr);
-        const auto str1252 = str::toString(w1252);
+        const auto str1252 = str::to_string(w1252);
         TEST_ASSERT_EQ(pStr, str1252);  // native() is the same on all platforms/encodings for ASCII
     }
 
     const auto u16 = str::to_u16string(str::u8FromNative(pStr));
     TEST_ASSERT(u16 == pUtf16);
-    auto wstring = str::toWString(pStr);
+    auto wstring = str::to_wstring(pStr);
     std::string native = pStr;
     auto w1252 = str::make_string<str::W1252string>(pStr);
     test_wide_(testName, pStr, pUtf16, wstring, native, w1252);
@@ -418,7 +418,7 @@ static void test_Windows1252_(const std::string& testName, const char* pStr, std
 {
     const auto u16 = str::to_u16string(str::to_u8string<str::W1252string>(pStr));
     TEST_ASSERT(u16 == pUtf16);
-    auto wstring = str::toWString(str::to_u8string<str::W1252string>(pStr));
+    auto wstring = str::to_wstring(str::to_u8string<str::W1252string>(pStr));
     auto s = str::toString(str::to_u8string<str::W1252string>(pStr));
     auto w1252 = str::make_string<str::W1252string>(pStr);
     test_wide_(testName, pStr, pUtf16, wstring, s, w1252);
@@ -521,7 +521,7 @@ TEST_CASE(test_Windows1252)
     {
         const std::string expected(1, ch.first);
         const std::wstring input(1, ch.second); // `std::wstring` is UTF-16 on Windows
-        const auto actual = str::toString(input);
+        const auto actual = str::to_string(input);
         TEST_ASSERT_EQ(expected, actual);
     }
     #endif
@@ -545,8 +545,8 @@ static void test_Encodeding_(const std::string& testName, const coda_oss::u8stri
 }
 TEST_CASE(test_Encodeding)
 {
-    const auto utf_8 = str::toString(classificationText_u8());
-    const auto iso8859_1 = str::toString(classificationText_w1252());
+    const auto utf_8 = str::to_string(classificationText_u8());
+    const auto iso8859_1 = str::to_string(classificationText_w1252());
     const auto utf_8_u8 = classificationText_u8();
     const auto iso8859_1_u8 = str::to_u8string(classificationText_w1252());
     const auto utf_8_view = str::str<std::string>(classificationText_u8());
