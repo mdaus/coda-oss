@@ -395,7 +395,7 @@ static std::wstring to_wstring_(const std::basic_string<CharT>& s, bool is_utf8)
 
 /***********************************************************************************/
 
-std::string str::testing::to_string(const coda_oss::u8string& s)
+std::string str::details::to_string(const coda_oss::u8string& s)
 {
     #if _WIN32
     std::string retval;

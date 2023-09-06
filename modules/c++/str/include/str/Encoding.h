@@ -192,13 +192,13 @@ namespace details
   {
     return s;
   }
+CODA_OSS_API std::string to_string(const coda_oss::u8string&);
 CODA_OSS_API std::string to_string(const std::wstring&); // input is UTF-16 or UTF-32 depending on the platform
 CODA_OSS_API std::wstring to_wstring(const std::string&); // platform determines Windows-1252 or UTF-8 input and output encoding
 CODA_OSS_API std::wstring to_wstring(const coda_oss::u8string&); // platform determines UTF-16 or UTF-32 output encoding
 }
 namespace testing
 {
-CODA_OSS_API std::string to_string(const coda_oss::u8string&);
 CODA_OSS_API std::string to_string(const str::W1252string&);    
 CODA_OSS_API std::wstring to_wstring(const str::W1252string&); // platform determines UTF-16 or UTF-32 output encoding
 }

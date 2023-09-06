@@ -98,7 +98,7 @@ std::string toString(std::u32string::const_pointer) = delete; // only used in un
 
 inline std::ostream& operator<<(std::ostream& os, const coda_oss::u8string& s)
 {
-    os << toString(s);
+    os << details::to_string(s);
     return os;
 }
 

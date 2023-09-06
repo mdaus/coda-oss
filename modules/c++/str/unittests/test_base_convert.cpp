@@ -269,7 +269,7 @@ static const str::W1252string& classificationText_w1252()
 
 static auto toString(const coda_oss::u8string& s)
  {
-     return str::testing::to_string(s);
+     return str::details::to_string(s);
  }
  static auto toString(const str::W1252string& s)
  {
@@ -358,7 +358,7 @@ static auto toWString(const std::string& s)
 }
 static auto toString(const std::u16string& s)
 {
-    return str::testing::to_string(str::to_u8string(s));
+    return str::details::to_string(str::to_u8string(s));
 }
 
 static void test_wide_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16,
