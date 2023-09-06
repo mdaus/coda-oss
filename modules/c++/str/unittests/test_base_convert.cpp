@@ -78,13 +78,9 @@ TEST_CASE(testCharToString)
 template<typename T>
 static constexpr std::u8string::value_type cast8(T ch)
 {
-    static_assert(sizeof(std::u8string::value_type) == sizeof(char), "sizeof(Char8_T) != sizeof(char)");
-    return static_cast<std::u8string::value_type>(ch);
-}
-template <typename TChar>
-static inline constexpr std::u32string::value_type U(TChar ch)
-{
-    return static_cast<std::u32string::value_type>(ch);
+    using u8ch_t = std::u8string::value_type;
+    static_assert(sizeof(u8ch_t) == sizeof(char), "sizeof(Char8_T) != sizeof(char)");
+    return static_cast<u8ch_t>(ch);
 }
 
 TEST_CASE(test_string_to_u8string_ascii)
@@ -103,7 +99,7 @@ TEST_CASE(test_string_to_u8string_ascii)
         const auto actual = str::to_u8string<str::W1252string>(input);
         const std::u8string expected8{cast8('|'), cast8(ch), cast8('|')}; 
         TEST_ASSERT_EQ(actual, expected8);
-        const std::u32string expected{U'|', U(ch), U'|'};
+        const std::u32string expected{U'|', ch, U'|'};
         test_assert_eq(testName, actual, expected);
     }
 }
@@ -212,7 +208,7 @@ TEST_CASE(test_string_to_u8string_iso8859_1)
         const std::string input_ { '|', static_cast<std::string::value_type>(ch), '|'};
         const auto input(str::str<str::W1252string>(input_));
         const auto actual = to_u8string(input);
-        const std::u32string expected{U'|', U(ch), U'|'};
+        const std::u32string expected{U'|', ch, U'|'};
         test_assert_eq(testName, actual, expected);
 
         TEST_ASSERT(str::to_u8string(input) == actual);
@@ -353,14 +349,14 @@ static void test_wide_(const std::string& testName, const char* pStr, std::u16st
 
     #if _WIN32
     // Since we're using UTF-16, on Windows that can be cast to wchar_t
-    auto pWide = str::cast<std::wstring::const_pointer>(pUtf16);
+    const auto wide = str::make_string<std::wstring>(pUtf16);
 
     const _bstr_t str(pStr);
     const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
     TEST_ASSERT(wstring == std_wstr);
-    TEST_ASSERT(std_wstr == pWide);
+    TEST_ASSERT(std_wstr == wide);
 
-    const _bstr_t wide_str(pWide);
+    const _bstr_t wide_str(wide.c_str());
     const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
     TEST_ASSERT_EQ(native, std_str);
     TEST_ASSERT_EQ(std_str, pStr);
@@ -385,7 +381,7 @@ static void test_Windows1252_ascii(const std::string& testName, const char* pStr
     TEST_ASSERT(u16 == pUtf16);
     auto wstring = str::toWString(pStr);
     std::string native = pStr;
-    auto w1252 = str::cast<str::W1252string::const_pointer>(pStr);
+    auto w1252 = str::make_string<str::W1252string>(pStr);
     test_wide_(testName, pStr, pUtf16, wstring, native, w1252);
 
     native = toString(pUtf16);
