@@ -259,9 +259,9 @@ void xml::lite::Element::prettyConsoleOutput_(io::OutputStream& stream,
 
 std::string xml::lite::Element::getCharacterData() const
 {
-    return str::toString(mCharacterData);
+    return str::details::to_string(mCharacterData);
 }
-coda_oss::u8string& xml::lite::Element::getCharacterData(coda_oss::u8string& result) const
+const coda_oss::u8string& xml::lite::Element::getCharacterData(coda_oss::u8string& result) const
 {
     result = mCharacterData;
     return result;
@@ -278,7 +278,7 @@ static void writeCharacterData_utf8(io::OutputStream& stream, const std::u8strin
 }
 static void writeCharacterData_native(io::OutputStream& stream, const std::u8string& characterData)
 {
-    stream.write(str::toString(characterData));
+    stream.write(str::details::to_string(characterData));
 }
 
 static void depthPrint_(const xml::lite::Element& element,

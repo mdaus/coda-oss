@@ -85,12 +85,17 @@ inline std::string toString(const std::string& value)
 {
     return value;
 }
-// can't be a template; `bool` overload above is a better match
+// Prevent the template above from getting used; instead, use routines from **Encoding.h**.
+std::string toString(const std::wstring&) = delete;
+std::string toString(const std::u16string&) = delete;
+std::string toString(const std::u32string&) = delete;
+std::string toString(const coda_oss::u8string&) = delete;
+std::string toString(const str::W1252string&) = delete;
+
 inline std::string toString(std::string::const_pointer pStr)
 {
     return toString(std::string(pStr));
 }
-
 // can't be a template; `bool` overload above is a better match
 std::string toString(std::wstring::const_pointer) = delete; // only used in unittests
 std::string toString(std::u16string::const_pointer) = delete; // only used in unittests
