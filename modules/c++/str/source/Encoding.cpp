@@ -385,7 +385,7 @@ inline auto to_uXXstring(const std::basic_string<CharT>& s)
     #endif
 }
 template<typename CharT>
-static std::wstring toWString_(const std::basic_string<CharT>& s, bool is_utf8)
+static std::wstring to_wstring_(const std::basic_string<CharT>& s, bool is_utf8)
 {
    
     const auto result = is_utf8 ? to_uXXstring<coda_oss::u8string>(s)
@@ -395,7 +395,7 @@ static std::wstring toWString_(const std::basic_string<CharT>& s, bool is_utf8)
 
 /***********************************************************************************/
 
-std::string str::toString(const coda_oss::u8string& s)
+std::string str::details::to_string(const coda_oss::u8string& s)
 {
     #if _WIN32
     std::string retval;
@@ -406,7 +406,7 @@ std::string str::toString(const coda_oss::u8string& s)
     #endif
 }
 
-std::string str::toString(const str::W1252string& s)
+std::string str::testing::to_string(const str::W1252string& s)
 {
     #if _WIN32
     return str<std::string>(s);
@@ -417,7 +417,7 @@ std::string str::toString(const str::W1252string& s)
     #endif
 }
 
-std::string str::toString(const std::wstring& s)
+std::string str::details::to_string(const std::wstring& s)
 {
     const auto p = details::c_str(s);
     const auto sz = s.length();
@@ -431,21 +431,21 @@ std::string str::toString(const std::wstring& s)
     return retval;
 }
 
-std::wstring str::toWString(const std::string& s)
+std::wstring str::details::to_wstring(const std::string& s)
 {
      #if _WIN32
-    return toWString_(s, false /*is_utf8*/); // Input is Windows-1252 on Windows
+    return to_wstring_(s, false /*is_utf8*/); // Input is Windows-1252 on Windows
     #else
-    return toWString_(s, true /*is_utf8*/);  // Input is UTF-8 everywhere except Windows
+    return to_wstring_(s, true /*is_utf8*/);  // Input is UTF-8 everywhere except Windows
     #endif
 }
-std::wstring str::toWString(const coda_oss::u8string& s)
+std::wstring str::details::to_wstring(const coda_oss::u8string& s)
 {
-    return toWString_(s, true /*is_utf8*/);
+    return to_wstring_(s, true /*is_utf8*/);
 }
-std::wstring str::toWString(const str::W1252string& s)
+std::wstring str::testing::to_wstring(const str::W1252string& s)
 {
-    return toWString_(s, false /*is_utf8*/);
+    return to_wstring_(s, false /*is_utf8*/);
 }
 
 /***********************************************************************************/

@@ -182,6 +182,27 @@ inline auto u8FromNative(const std::wstring& s) // platform determines UTF16 or 
     return str::to_u8string(details::c_str(s), s.length());
 }
 
+/************************************************************************/
+
+// The resultant `std::string`s have "native" encoding (which is lost) depending
+// on the platform: UTF-8 on Linux and Windows-1252 on Windows.
+namespace details
+{
+  inline std::string to_string(const std::string& s)
+  {
+    return s;
+  }
+CODA_OSS_API std::string to_string(const coda_oss::u8string&);
+CODA_OSS_API std::string to_string(const std::wstring&); // input is UTF-16 or UTF-32 depending on the platform
+CODA_OSS_API std::wstring to_wstring(const std::string&); // platform determines Windows-1252 or UTF-8 input and output encoding
+CODA_OSS_API std::wstring to_wstring(const coda_oss::u8string&); // platform determines UTF-16 or UTF-32 output encoding
+}
+namespace testing
+{
+CODA_OSS_API std::string to_string(const str::W1252string&);    
+CODA_OSS_API std::wstring to_wstring(const str::W1252string&); // platform determines UTF-16 or UTF-32 output encoding
+}
+
 }
 
 #endif // CODA_OSS_str_Encoding_h_INCLUDED_
