@@ -318,8 +318,7 @@ struct CODA_OSS_API Element  // SOAPElement derives :-(
      *  Returns the character data of this element.
      *  \return the charater data
      */
-    std::string getCharacterData() const;
-    const coda_oss::u8string& getCharacterData(coda_oss::u8string& result) const;
+    coda_oss::u8string getCharacterData() const;
     //explicit operator coda_oss::u8string() const
     //{
     //    coda_oss::u8string result;
@@ -501,6 +500,8 @@ private:
 
 Element& add(const xml::lite::QName&, const std::string& value, Element& parent);
 
+CODA_OSS_API std::string getCharacterData(const Element&);
+
 #ifndef SWIG
 // The (old) version of SWIG we're using doesn't like certain C++11 features.
 
@@ -513,7 +514,7 @@ template <typename ToType>
 inline auto castValue(const Element& element, ToType toType)  // getValue() conflicts with below
    -> decltype(toType(std::string()))
 {
-    const auto characterData = element.getCharacterData();
+    const auto characterData = getCharacterData(element);
     if (characterData.empty())
     {
         throw except::BadCastException(Ctxt("call getCharacterData() to get an empty string"));
@@ -612,8 +613,6 @@ CODA_OSS_API Element& addChild(Element&, const xml::lite::QName&, const coda_oss
 CODA_OSS_API Element& addChild(Element&, const xml::lite::QName&, const std::string& characterData);
 CODA_OSS_API Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&);
 CODA_OSS_API Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&, const coda_oss::u8string& characterData);
-
-CODA_OSS_API coda_oss::u8string getCharacterData(const Element&);
 
 CODA_OSS_API xml::lite::AttributeNode& addAttribute(Element&, const xml::lite::AttributeNode&);
 CODA_OSS_API void operator+=(Element&, const xml::lite::AttributeNode&);  // addAttribute()

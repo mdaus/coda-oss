@@ -104,7 +104,7 @@ TEST_CASE(test_getElementsByTagName)
         TEST_ASSERT_EQ(aElements.size(), static_cast<size_t>(1));
         const auto& a = *(aElements[0]);
 
-        const auto characterData = a.getCharacterData();
+        const auto characterData = getCharacterData(a);
         TEST_ASSERT_EQ(characterData, text());
     }
     
@@ -116,7 +116,7 @@ TEST_CASE(test_getElementsByTagName)
         TEST_ASSERT_EQ(aElements.size(), static_cast<size_t>(1));
         const auto& a = *(aElements[0]);
 
-        const auto characterData = a.getCharacterData();
+        const auto characterData = getCharacterData(a);
         TEST_ASSERT_EQ(characterData, text());
     }
 }
@@ -155,14 +155,14 @@ TEST_CASE(test_getElementByTagName)
 
     {
         const auto& a = root.getElementByTagName("a", true /*recurse*/);
-        const auto characterData = a.getCharacterData();
+        const auto characterData = getCharacterData(a);
         TEST_ASSERT_EQ(characterData, text());
     }
 
     const auto& doc = root.getElementByTagName("doc");
     {
         const auto& a = doc.getElementByTagName("a");
-        const auto characterData = a.getCharacterData();
+        const auto characterData = getCharacterData(a);
         TEST_ASSERT_EQ(characterData, text());
     }
 }
@@ -260,7 +260,7 @@ TEST_CASE(test_getValue)
         std::string value;
         auto result = getValue(e, value);
         TEST_ASSERT_FALSE(result);
-        value = e.getCharacterData();
+        value = getCharacterData(e);
         TEST_ASSERT_TRUE(value.empty());
     }
 }

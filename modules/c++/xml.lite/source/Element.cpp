@@ -257,19 +257,13 @@ void xml::lite::Element::prettyConsoleOutput_(io::OutputStream& stream,
 }
 
 
-std::string xml::lite::Element::getCharacterData() const
+coda_oss::u8string xml::lite::Element::getCharacterData() const
 {
-    return str::to_native(mCharacterData);
+    return mCharacterData;
 }
-const coda_oss::u8string& xml::lite::Element::getCharacterData(coda_oss::u8string& result) const
+std::string xml::lite::getCharacterData(const Element& e)
 {
-    result = mCharacterData;
-    return result;
-}
-coda_oss::u8string xml::lite::getCharacterData(const Element& e)
-{
-    coda_oss::u8string retval;
-    return e.getCharacterData(retval);
+    return str::to_native(e.getCharacterData());
 }
 
 static void writeCharacterData_utf8(io::OutputStream& stream, const std::u8string& characterData)
@@ -313,7 +307,7 @@ static void depthPrint_(const xml::lite::Element& element,
         acc += std::string("\"");
     }
 
-    const auto characterData = getCharacterData(element);
+    const auto characterData = element.getCharacterData();
     auto&& children = element.getChildren();
     if (characterData.empty() && children.empty())
     {

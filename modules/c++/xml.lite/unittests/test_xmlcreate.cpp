@@ -128,8 +128,7 @@ TEST_CASE(testXmlCreateWhitespace)
         xmlParser.preserveCharacterData(false);
         xmlParser.parse(input);
         const auto& root = getRootElement(getDocument(xmlParser));
-        std::u8string actual;
-        root.getCharacterData(actual);
+        const auto actual = root.getCharacterData();
         static const coda_oss::u8string empty;
         TEST_ASSERT(actual == empty);  // preserveCharacterData == false
     }
@@ -139,8 +138,7 @@ TEST_CASE(testXmlCreateWhitespace)
         xmlParser.preserveCharacterData(true);
         xmlParser.parse(input);
         const auto& root = getRootElement(getDocument(xmlParser));
-        std::u8string actual;
-        root.getCharacterData(actual);
+        const auto actual = root.getCharacterData();
         TEST_ASSERT(actual == text); // preserveCharacterData == true
     }
 }

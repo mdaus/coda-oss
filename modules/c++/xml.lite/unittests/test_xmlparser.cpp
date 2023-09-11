@@ -108,7 +108,7 @@ static void test_a_element(const std::string& testName, const xml::lite::Element
     TEST_ASSERT_EQ(aElements.size(), static_cast<size_t>(1));
     const auto& a = *(aElements[0]);
 
-    const auto characterData = a.getCharacterData();
+    const auto characterData = getCharacterData(a);
     TEST_ASSERT_EQ(characterData, text());
 }
 TEST_CASE(testXmlParseSimple)
@@ -162,7 +162,7 @@ TEST_CASE(testXmlUtf8_u8string)
     xml::lite::MinidomParser xmlParser;
     const auto& a = testXmlUtf8_(xmlParser);
 
-    const auto actual = getCharacterData(a);
+    const auto actual = a.getCharacterData();
     TEST_ASSERT_EQ(actual, utf8Text8());
 }
 
@@ -171,7 +171,7 @@ TEST_CASE(testXmlUtf8)
     xml::lite::MinidomParser xmlParser;
     const auto& a = testXmlUtf8_(xmlParser);
 
-    auto actual = a.getCharacterData();
+    auto actual = getCharacterData(a);
     const auto expected = platfromText_();
     TEST_ASSERT_EQ(actual, expected);
 }
@@ -320,24 +320,24 @@ static void testReadEncodedXmlFile(const std::string& testName, const std::strin
     const auto& root = getRootElement(getDocument(xmlParser));
 
     const auto& a = root("a"_q, true /*recurse*/);
-    auto characterData = a.getCharacterData();
+    auto characterData = getCharacterData(a);
     TEST_ASSERT_EQ(characterData, platformText);
 
-    const auto u8_characterData = getCharacterData(a);
+    const auto u8_characterData = a.getCharacterData();
     TEST_ASSERT_EQ(text8_, u8_characterData);     
 
     const auto& textXML = root("text"_q, true /*recurse*/);
-    characterData = textXML.getCharacterData();
+    characterData = getCharacterData(textXML);
     const auto expectedText = preserveCharacterData ? "\tt\te\tx\tt\t" : "t\te\tx\tt";
     TEST_ASSERT_EQ(characterData, expectedText);
 
     const auto& whitespaceXML = root("whitespace"_q, true /*recurse*/);
-    characterData = whitespaceXML.getCharacterData();
+    characterData = getCharacterData(whitespaceXML);
     const auto expectedWhitespace = preserveCharacterData ? "             " : "";
     TEST_ASSERT_EQ(characterData, expectedWhitespace);
 
     const auto& emptyXML = root("empty"_q, true /*recurse*/);
-    characterData = emptyXML.getCharacterData();
+    characterData = getCharacterData(emptyXML);
     TEST_ASSERT_EQ(characterData, "");
 }
 TEST_CASE(testReadEncodedXmlFiles)
@@ -368,25 +368,24 @@ static void testReadXmlFile(const std::string& testName, const std::string& xmlF
     TEST_ASSERT_EQ(aElements.size(), static_cast<size_t>(1));
     const auto& a = *(aElements[0]);
 
-    auto characterData = a.getCharacterData();
+    auto characterData = getCharacterData(a);
     TEST_ASSERT_EQ(characterData, platformText);
 
-    std::u8string u8_characterData;
-    a.getCharacterData(u8_characterData);
+    const auto u8_characterData = a.getCharacterData();
     TEST_ASSERT_EQ(text8_, u8_characterData);
 
     const auto& textXML = root("text"_q, true /*recurse*/);
-    characterData = textXML.getCharacterData();
+    characterData = getCharacterData(textXML);
     const auto expectedText = preserveCharacterData ? "\tt\te\tx\tt\t" : "t\te\tx\tt";
     TEST_ASSERT_EQ(characterData, expectedText);
 
     const auto& whitespaceXML = root("whitespace"_q, true /*recurse*/);
-    characterData = whitespaceXML.getCharacterData();
+    characterData = getCharacterData(whitespaceXML);
     const auto expectedWhitespace = preserveCharacterData ? "             " : "";
     TEST_ASSERT_EQ(characterData, expectedWhitespace);
 
     const auto& emptyXML = root("empty"_q, true /*recurse*/);
-    characterData = emptyXML.getCharacterData();
+    characterData = getCharacterData(emptyXML);
     TEST_ASSERT_EQ(characterData, "");
 }
 TEST_CASE(testReadXmlFiles)
@@ -445,12 +444,11 @@ TEST_CASE(testReadEmbeddedXml)
     const std::string classificationText_iso8859_1("NON CLASSIFI\xc9 / UNCLASSIFIED");  // ISO8859-1 "NON CLASSIFIÉ / UNCLASSIFIED"
     const std::string classificationText_utf_8("NON CLASSIFI\xc3\x89 / UNCLASSIFIED");  // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
     const auto classificationText_platform = sys::Platform == sys::PlatformType::Linux ? classificationText_utf_8 : classificationText_iso8859_1;
-    const auto characterData = classificationXML.getCharacterData();
+    const auto characterData = getCharacterData(classificationXML);
     TEST_ASSERT_EQ(characterData, classificationText_platform);
 
     const auto expected = from_utf8(classificationText_utf_8);
-    std::u8string u8_characterData;
-    classificationXML.getCharacterData(u8_characterData);
+    const auto u8_characterData = classificationXML.getCharacterData();
     TEST_ASSERT_EQ(u8_characterData, expected);
     const auto u8_characterData_ = as_utf8(u8_characterData);
     TEST_ASSERT_EQ(classificationText_utf_8, u8_characterData_);
