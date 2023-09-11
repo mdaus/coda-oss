@@ -77,7 +77,7 @@ inline std::string toString(const TX& X)
 }
 inline std::string toString(const coda_oss::u8string& X)
 {
-    return str::details::to_string(X);
+    return str::to_native(X);
 }
 
 template<typename TX>
