@@ -203,6 +203,11 @@ CODA_OSS_API std::string to_string(const str::W1252string&);
 CODA_OSS_API std::wstring to_wstring(const str::W1252string&); // platform determines UTF-16 or UTF-32 output encoding
 }
 
+inline std::string to_native(const coda_oss::u8string& s) // cf., std::filesystem::native(), https://en.cppreference.com/w/cpp/filesystem/path/native
+{
+    return details::to_string(s);
+}
+
 }
 
 #endif // CODA_OSS_str_Encoding_h_INCLUDED_

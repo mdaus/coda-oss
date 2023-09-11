@@ -269,7 +269,7 @@ static const str::W1252string& classificationText_w1252()
 
  static auto toString(const coda_oss::u8string& s)
  {
-     return str::details::to_string(s);
+     return str::to_native(s);
  }
 
 // UTF-16 on Windows, UTF-32 on Linux
