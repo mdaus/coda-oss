@@ -55,7 +55,7 @@ inline auto FmtX(const char* format, const char* pStr)
 }
 inline auto FmtX(const char* format, const std::string& s)
 {
-    return str::Format(format, s.c_str());
+    return FmtX(format, s.c_str());
 }
 inline auto FmtX(const char* format, int i)
 {
@@ -88,7 +88,7 @@ inline auto FmtX(const char* format, char ch, const char* pStr)
 }
 inline auto FmtX(const char* format, char ch, const std::string& s)
 {
-    return str::Format(format, ch, s.c_str());
+    return FmtX(format, ch, s.c_str());
 }
 inline auto FmtX(const char* format, const std::string& s1, const std::string& s2)
 {
