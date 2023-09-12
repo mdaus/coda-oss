@@ -143,8 +143,10 @@ std::string sys::OSUnix::getPlatformName() const
     if (uname(&name) == -1)
         throw sys::SystemException("Uname failed");
 
-    return str::Format("%s (%s): %s [build: %s]", name.sysname, name.machine,
-                name.release, name.version);
+    std::string retval = name.sysname;
+    retval += " (" + name.machine + "): ";
+    retval += name.release + " [build: " + name.version + "]";
+    return retval;
 }
 
 std::string sys::OSUnix::getNodeName() const
