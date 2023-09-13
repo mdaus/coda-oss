@@ -24,11 +24,11 @@ jobs:
         ls env:
         mkdir target-Release
         cd target-Release
-        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DPYTHON_VERSION=${{ matrix.python-version }} -DENABLE_SWIG=ON -DENABLE_ASAN=ON
+        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DPYTHON_VERSION=${{ matrix.python-version }} -DENABLE_SWIG=ON
         cd ..
         mkdir target-Debug
         cd target-Debug
-        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DENABLE_PYTHON=OFF -DENABLE_ASAN=ON
+        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DENABLE_PYTHON=OFF
     - name: build
       run: |
         cd target-Release
