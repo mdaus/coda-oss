@@ -330,6 +330,16 @@ void Regex::split(const std::string& str, std::vector<std::string>& v)
     }
 }
 
+static void replace(std::string& result, size_t pos, size_t count, const std::string& str)
+{
+    // ASAN dignostic on Windows with replace() ... bug in VS?
+    //result.replace(pos, count, str);
+    const auto input = result; // TODO: use std::string::replace()
+    result = input.substr(0, pos);
+    result += str;
+    result += input.substr(pos + count);
+}
+
 std::string Regex::sub(const std::string& str, const std::string& repl)
 {
     size_t begin;
@@ -339,7 +349,7 @@ std::string Regex::sub(const std::string& str, const std::string& repl)
     std::string result = search(str, startIndex, 0, begin, end);
     while (!result.empty())
     {
-        toReplace.replace(begin, result.size(), repl);
+        replace(toReplace, begin, result.size(), repl);
 
         // You can't skip ahead result.size() here because 'repl' may be shorter
         // than 'result'
