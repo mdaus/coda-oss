@@ -186,12 +186,12 @@ TEST_CASE(testRequiredThrows)
             ->setRequired(true);
 
     // The exceptions leak memory which causes an ASAN diagnostic on Linux.
-    #if !CODA_OSS_POSIX_SOURCE
+    #if CODA_OSS_POSIX_SOURCE && __SANITIZE_ADDRESS__
+    TEST_SUCCESS;
+    #else
     const std::string program(testName);
     TEST_EXCEPTION(parser.parse(program, str::split("")));
     TEST_EXCEPTION(parser.parse(program, str::split("-c")));
-    #else
-    TEST_SUCCESS;
     #endif
 }
 
