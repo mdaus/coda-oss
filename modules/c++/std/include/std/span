@@ -58,7 +58,7 @@ namespace std // This is slightly uncouth: we're not supposed to augment "std".
     #endif
 #endif
 
-#if !CODA_OSS_NO_nonmember_container_access
+#if !CODA_OSS_NO_nonmember_container_access && !CODA_OSS_cpp17
 namespace std // This is slightly uncouth: we're not supposed to augment "std".
 {
     using coda_oss::size;
@@ -78,7 +78,7 @@ namespace std // This is slightly uncouth: we're not supposed to augment "std".
     #endif
 #endif
 
-#if !CODA_OSS_NO_std_ssize
+#if !CODA_OSS_NO_std_ssize && !CODA_OSS_cpp20
 namespace std // This is slightly uncouth: we're not supposed to augment "std".
 {
     using coda_oss::ssize;

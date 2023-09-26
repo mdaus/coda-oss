@@ -23,6 +23,10 @@
 #ifndef CODA_OSS_coda_oss_span_h_INCLUDED_
 #define CODA_OSS_coda_oss_span_h_INCLUDED_
 
+#include <stdint.h>
+#include <stdlib.h>
+#include<stddef.h>
+
 #include <cstddef>
 #include <type_traits>
 
@@ -93,24 +97,23 @@ inline span<byte> as_writable_bytes(span<T> s) noexcept
 
 // https://en.cppreference.com/w/cpp/iterator/size
 template <typename C>
-constexpr auto size(const C& c) -> decltype(c.size())
+constexpr size_t size(const C& c)
 {
     return c.size();
 }
 template <typename C>
-constexpr auto ssize(const C& c) -> std::common_type_t<std::ptrdiff_t, std::make_signed_t<decltype(c.size())>>
+constexpr ptrdiff_t ssize(const C& c)
 {
-    using R = std::common_type_t<std::ptrdiff_t, std::make_signed_t<decltype(c.size())>>;
-    return gsl::narrow<R>(c.size());
+    return gsl::narrow<ptrdiff_t>(c.size());
 }
 
-template <typename T, std::size_t N>
-constexpr std::size_t size(const T (&)[N]) noexcept
+template <typename T, size_t N>
+constexpr size_t size(const T (&)[N]) noexcept
 {
     return N;
 }
-template <typename T, std::ptrdiff_t N>
-constexpr std::ptrdiff_t ssize(const T (&)[N]) noexcept
+template <typename T, ptrdiff_t N>
+constexpr ptrdiff_t ssize(const T (&)[N]) noexcept
 {
     return N;
 }
