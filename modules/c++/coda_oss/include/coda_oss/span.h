@@ -23,6 +23,7 @@
 #ifndef CODA_OSS_coda_oss_span_h_INCLUDED_
 #define CODA_OSS_coda_oss_span_h_INCLUDED_
 
+#include <cstddef>
 #include <type_traits>
 
 #include "coda_oss/CPlusPlus.h"
@@ -88,6 +89,30 @@ inline span<byte> as_writable_bytes(span<T> s) noexcept
     void* const p_ = s.data();
     auto const p = static_cast<byte*>(p_);
     return span<byte>(p, s.size_bytes());
+}
+
+// https://en.cppreference.com/w/cpp/iterator/size
+template <typename C>
+constexpr auto size(const C& c) -> decltype(c.size())
+{
+    return c.size();
+}
+template <typename C>
+constexpr auto ssize(const C& c) -> std::common_type_t<std::ptrdiff_t, std::make_signed_t<decltype(c.size())>>
+{
+    using R = std::common_type_t<std::ptrdiff_t, std::make_signed_t<decltype(c.size())>>;
+    return gsl::narrow<R>(c.size());
+}
+
+template <typename T, std::size_t N>
+constexpr std::size_t size(const T (&)[N]) noexcept
+{
+    return N;
+}
+template <typename T, std::ptrdiff_t N>
+constexpr std::ptrdiff_t ssize(const T (&)[N]) noexcept
+{
+    return N;
 }
 
 }

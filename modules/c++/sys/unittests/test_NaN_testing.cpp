@@ -21,6 +21,9 @@
  */
 
 #include <limits>
+#include <std/span>
+#include <vector>
+
 #include "TestCase.h"
 
 TEST_CASE(testNaNsAreNotEqual)
@@ -58,9 +61,21 @@ TEST_CASE(testIsNaN)
     TEST_ASSERT_FALSE(IS_NAN(std::string("test string")));
 }
 
+TEST_CASE(test_ssize)
+{
+    static const std::vector<int> v(10);
+    TEST_ASSERT_EQ(std::ssize(v), 10);
+    TEST_ASSERT_EQ(std::size(v), v.size());
+
+    static const int a[20];
+    TEST_ASSERT_EQ(std::ssize(a), 20);
+    TEST_ASSERT_EQ(std::size(a), sizeof(a) / sizeof(a[0]));
+}
+
 TEST_MAIN(
     TEST_CHECK(testNaNsAreNotEqual);
     TEST_CHECK(testNaNIsNotAlmostEqualToNumber);
     TEST_CHECK(testIsNaN);
-)
+    TEST_CHECK(test_ssize);
+    )
 
