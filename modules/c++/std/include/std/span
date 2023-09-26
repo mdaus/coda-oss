@@ -54,11 +54,17 @@ namespace std // This is slightly uncouth: we're not supposed to augment "std".
     #if defined(__cpp_lib_nonmember_container_access) && (__cpp_lib_nonmember_container_access >= 201411L)
         #define CODA_OSS_NO_nonmember_container_access 1  // no need to muck with `std`
     #else
-        #define CODA_OSS_NO_nonmember_container_access 0  // use our own
+        // It seems MSVC has this even at C++14, see <xutility>
+        // https://learn.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=msvc-170
+        #if _MSC_VER >= 1900 // Visual Studio 2015 (14.0)
+            #define CODA_OSS_NO_nonmember_container_access 1  // no need to muck with `std`
+        #else
+            #define CODA_OSS_NO_nonmember_container_access 0  // use our own
+        #endif
     #endif
 #endif
 
-#if !CODA_OSS_NO_nonmember_container_access && !CODA_OSS_cpp17
+#if !CODA_OSS_NO_nonmember_container_access
 namespace std // This is slightly uncouth: we're not supposed to augment "std".
 {
     using coda_oss::size;
@@ -78,7 +84,7 @@ namespace std // This is slightly uncouth: we're not supposed to augment "std".
     #endif
 #endif
 
-#if !CODA_OSS_NO_std_ssize && !CODA_OSS_cpp20
+#if !CODA_OSS_NO_std_ssize
 namespace std // This is slightly uncouth: we're not supposed to augment "std".
 {
     using coda_oss::ssize;
