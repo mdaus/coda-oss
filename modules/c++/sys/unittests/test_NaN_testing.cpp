@@ -63,13 +63,32 @@ TEST_CASE(testIsNaN)
 
 TEST_CASE(test_ssize)
 {
-    static const std::vector<int> v(10);
-    TEST_ASSERT_EQ(std::ssize(v), 10);
-    TEST_ASSERT_EQ(std::size(v), v.size());
+    // https://en.cppreference.com/w/cpp/iterator/size
 
-    static const int a[20];
-    TEST_ASSERT_EQ(std::ssize(a), 20);
-    TEST_ASSERT_EQ(std::size(a), sizeof(a) / sizeof(a[0]));
+    // Works with containers
+    std::vector<int> v{3, 1, 4};
+    TEST_ASSERT_EQ(std::size(v), 3);
+
+    // And works with built-in arrays too
+    int a[]{-5, 10, 15};
+    // Returns the number of elements (not bytes) as opposed to sizeof
+    TEST_ASSERT_EQ(std::size(a), 3);
+    static_assert(sizeof(a) == 12, "sizeof(a)");
+
+    // Provides a safe way (compared to sizeof) of getting string buffer size
+    const char str[] = "12345";
+    // These are fine and give the correct result
+    TEST_ASSERT_EQ(std::size(str), 6);
+    static_assert(sizeof(str) == 6, "sizeof(str)");
+
+    // But use of sizeof here is a common source of bugs
+    const char* str_decayed = "12345";
+    static_assert(sizeof(str_decayed) == sizeof(void*), "sizeof(void*)");
+
+    // Since C++20 the signed size (std::ssize) is available
+    auto i = std::ssize(v);
+    for (--i; i != -1; --i) { }
+    TEST_ASSERT_EQ(i, -1);
 }
 
 TEST_MAIN(
