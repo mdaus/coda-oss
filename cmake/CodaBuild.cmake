@@ -165,6 +165,11 @@ macro(coda_initialize_build)
         # This should probably be replaced by GenerateExportHeader
         #set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
         set(CMAKE_VS_INCLUDE_INSTALL_TO_DEFAULT_BUILD TRUE)
+
+       if (ENABLE_ASAN)
+            # https://docs.microsoft.com/en-us/cpp/sanitizers/asan?view=msvc-160
+            add_compile_options(/fsanitize=address)
+       endif()
     endif()
 
     # Unix/Linux specific options
@@ -173,6 +178,12 @@ macro(coda_initialize_build)
             -D_LARGEFILE_SOURCE
             -D_FILE_OFFSET_BITS=64
         )
+
+       if (ENABLE_ASAN)
+            # https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html
+            add_compile_options(-fsanitize=address)
+            add_link_options(-fsanitize=address)
+       endif()
     endif()
 
     # all targets should be installed using this export set
