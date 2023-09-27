@@ -170,6 +170,17 @@ macro(coda_initialize_build)
             # https://docs.microsoft.com/en-us/cpp/sanitizers/asan?view=msvc-160
             add_compile_options(/fsanitize=address)
        endif()
+
+       # Note SSE2 is implicitly enabled for x64 builds.
+       if (ENABLE_AVX2 AND (NOT ENABLE_AVX512F))
+            # https://learn.microsoft.com/en-us/cpp/build/reference/arch-x86?view=msvc-170
+            add_compile_options(/arch:AVX2)
+       endif()
+       if (ENABLE_AVX512F)
+            # https://learn.microsoft.com/en-us/cpp/build/reference/arch-x86?view=msvc-170
+           add_compile_options(/arch:AVX512)
+       endif()
+
     endif()
 
     # Unix/Linux specific options
@@ -184,6 +195,21 @@ macro(coda_initialize_build)
             add_compile_options(-fsanitize=address)
             add_link_options(-fsanitize=address)
        endif()
+
+       # Note SSE2 is implicitly enabled for x64 builds.
+       if (ENABLE_AVX2 AND (NOT ENABLE_AVX512F))
+            # https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
+            # It doesn't look like GCC has a specific option for AVX2;
+            # other projects use "haswell"
+            add_compile_options(-march=haswell)
+       endif()
+       if (ENABLE_AVX512F)
+            # https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
+            # It doesn't look like GCC has a specific option for AVX512F;
+            # other projects use "native" which isn't quite correct.'
+            add_compile_options(-march=native)
+       endif()
+
     endif()
 
     # all targets should be installed using this export set
