@@ -21,6 +21,7 @@
  */
 
 #include <tuple> // std::ignore
+#include <std/span>
 
 #include <types/Complex.h>
 #include <config/compiler_extensions.h>
