@@ -258,6 +258,21 @@
     <ClCompile Include="..\modules\drivers\highfive\unittests\tests_high_five_base.cpp">
       <Filter>hdf5.lite</Filter>
     </ClCompile>
+    <ClCompile Include="enums.cpp">
+      <Filter>enums</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\enums\unittests\test_enums_convert.cpp">
+      <Filter>enums</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\enums\unittests\test_enums_details.cpp">
+      <Filter>enums</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\enums\unittests\test_enums_Enum.cpp">
+      <Filter>enums</Filter>
+    </ClCompile>
+    <ClCompile Include="..\modules\c++\enums\unittests\test_enums_macros.cpp">
+      <Filter>enums</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -317,6 +332,9 @@
     </Filter>
     <Filter Include="xml.lite">
       <UniqueIdentifier>{f4dfc761-e468-4305-84dc-f3579e46107e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="enums">
+      <UniqueIdentifier>{5021d8bc-0f04-4416-95cc-f9670961a55a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

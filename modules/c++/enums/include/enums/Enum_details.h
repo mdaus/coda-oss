@@ -20,9 +20,9 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_enums_Enum_details_h_INCLUDED_
 #define CODA_OSS_enums_Enum_details_h_INCLUDED_
-#pragma once
 
 #include <map>
 #include <vector>

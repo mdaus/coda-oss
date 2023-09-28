@@ -20,9 +20,9 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_enums_Convert_h_INCLUDED_
 #define CODA_OSS_enums_Convert_h_INCLUDED_
-#pragma once
 
  // Utilities to convert enums to/from strings.
 

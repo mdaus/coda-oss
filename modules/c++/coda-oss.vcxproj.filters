@@ -951,6 +951,30 @@
     <ClInclude Include="str\include\str\W1252string.h">
       <Filter>str</Filter>
     </ClInclude>
+    <ClInclude Include="enums\include\enums\Convert.h">
+      <Filter>enums</Filter>
+    </ClInclude>
+    <ClInclude Include="enums\include\enums\Enum.h">
+      <Filter>enums</Filter>
+    </ClInclude>
+    <ClInclude Include="enums\include\enums\Enum_details.h">
+      <Filter>enums</Filter>
+    </ClInclude>
+    <ClInclude Include="enums\include\enums\Enum_fromString.h">
+      <Filter>enums</Filter>
+    </ClInclude>
+    <ClInclude Include="enums\include\enums\Enum_toString.h">
+      <Filter>enums</Filter>
+    </ClInclude>
+    <ClInclude Include="enums\include\enums\Macros.h">
+      <Filter>enums</Filter>
+    </ClInclude>
+    <ClInclude Include="enums\include\enums\Test.h">
+      <Filter>enums</Filter>
+    </ClInclude>
+    <ClInclude Include="enums\include\enums\underlying_type.h">
+      <Filter>enums</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1492,6 +1516,9 @@
     </Filter>
     <Filter Include="coda_oss">
       <UniqueIdentifier>{59f3d9a1-06d3-4779-aef2-cc55223c3017}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="enums">
+      <UniqueIdentifier>{dce6a9dc-82d4-4540-88c9-5cd9b84272d4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

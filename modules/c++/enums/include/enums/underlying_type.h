@@ -20,9 +20,9 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_enums_underlying_type_h_INCLUDED_
 #define CODA_OSS_enums_underlying_type_h_INCLUDED_
-#pragma once
 
 #include <type_traits>
 
