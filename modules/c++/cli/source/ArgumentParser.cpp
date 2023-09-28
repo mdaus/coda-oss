@@ -24,6 +24,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <std/span>
 
 #include <import/str.h>
 #include <import/mem.h>
@@ -317,8 +318,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                 std::map<std::string, Argument*>& flagMap =
                         (subOption ? shortOptionsFlags : shortFlags);
                 if (flagMap.find(op) != flagMap.end())
-                    parseError(FmtX("Conflicting option: %c%s", mPrefixChar,
-                                    op.c_str()));
+                    parseError(FmtX("Conflicting option: %c%s", mPrefixChar, op));
                 flagMap[op] = arg;
             }
             for (std::vector<std::string>::const_iterator it =
@@ -328,8 +328,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                 std::map<std::string, Argument*>& flagMap =
                         (subOption ? longOptionsFlags : longFlags);
                 if (flagMap.find(op) != flagMap.end())
-                    parseError(FmtX("Conflicting option: %c%c%s", mPrefixChar,
-                                    mPrefixChar, op.c_str()));
+                    parseError(FmtX("Conflicting option: %c%c%s", mPrefixChar, mPrefixChar, op));
                 flagMap[op] = arg;
             }
         }
@@ -458,8 +457,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                     }
                     else
                     {
-                        throw except::Exception(Ctxt(
-                                FmtX("Invalid option: [%s]", argStr.c_str())));
+                        throw except::Exception(Ctxt(FmtX("Invalid option: [%s]", argStr)));
                     }
                 }
             }
@@ -500,8 +498,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                     }
                     else
                     {
-                        throw except::Exception(Ctxt(
-                                FmtX("Invalid option: [%s]", argStr.c_str())));
+                        throw except::Exception(Ctxt(FmtX("Invalid option: [%s]", argStr)));
                     }
 
                 }
@@ -537,8 +534,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                             break;
                         }
                     }
-                    if (maxArgs >= 0 &&
-                        v->size() >= static_cast<size_t>(maxArgs))
+                    if (maxArgs >= 0 && std::ssize(*v) >= maxArgs)
                     {
                         // it's another positional argument, so we break out
                         break;
@@ -549,10 +545,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                 }
 
                 if (!added)
-                    parseError(
-                               FmtX(
-                                    "option requires value or has exceeded its max: [%s]",
-                                    argVar.c_str()));
+                    parseError(FmtX("option requires value or has exceeded its max: [%s]", argVar));
 
                 currentResults->put(argVar, v);
                 break;
@@ -677,11 +670,9 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
         if (arg->isRequired() || numGiven > 0)
         {
             if (minArgs > 0 && numGiven < static_cast<size_t>(minArgs))
-                parseError(FmtX("not enough arguments, %d required: [%s]",
-                                minArgs, argId.c_str()));
+                parseError(FmtX("not enough arguments, %d required: [%s]", minArgs, argId));
             if (maxArgs >= 0 && numGiven > static_cast<size_t>(maxArgs))
-                parseError(FmtX("too many arguments, %d supported: [%s]",
-                                maxArgs, argId.c_str()));
+                parseError(FmtX("too many arguments, %d supported: [%s]", maxArgs, argId));
         }
 
 
