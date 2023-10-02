@@ -160,7 +160,7 @@ TEST_CASE(testIterate)
     std::unique_ptr<cli::Results>
             results(parser.parse(str::split("-v -c config.xml")));
     std::vector<std::string> keys;
-    for(cli::Results::const_iterator it = results->begin(); it != results->end(); ++it)
+    for(auto it = results->begin(); it != results->end(); ++it)
         keys.push_back(it->first);
     TEST_ASSERT_EQ(std::ssize(keys), 2);
     // std::map returns keys in alphabetical order...

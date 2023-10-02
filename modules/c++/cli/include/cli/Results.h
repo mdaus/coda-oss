@@ -25,6 +25,7 @@
 #define CODA_OSS_cli_Results_h_INCLUDED_
 
 #include <map>
+#include <memory>
 
 #include "sys/Conf.h"
 
@@ -33,9 +34,8 @@
 namespace cli
 {
 
-class Results
+class Results final
 {
-protected:
     typedef std::map<std::string, cli::Value*> ValueStorage_T;
     typedef ValueStorage_T::iterator ValueIter_T;
     typedef ValueStorage_T::const_iterator ConstValueIter_T;
@@ -44,13 +44,15 @@ protected:
     typedef ResultsStorage_T::const_iterator ConstResultsIter_T;
 
 public:
-    Results()
-    {
-    }
+    Results() = default;
     ~Results()
     {
         destroy();
     }
+    Results(const Results&) = delete;
+    Results& operator=(const Results&) = delete;
+    Results(Results&&) = default;
+    Results& operator=(Results&&) = default;
 
     bool hasValue(const std::string& key) const
     {
@@ -122,15 +124,12 @@ public:
         mResults[key] = args;
     }
 
-    typedef ValueStorage_T::iterator iterator;
-    typedef ValueStorage_T::const_iterator const_iterator;
+    auto begin() { return mValues.begin(); }
+    auto begin() const { return mValues.begin(); }
+    auto end() { return mValues.end(); }
+    auto end() const { return mValues.end(); }
 
-    iterator begin() { return mValues.begin(); }
-    const_iterator begin() const { return mValues.begin(); }
-    iterator end() { return mValues.end(); }
-    const_iterator end() const { return mValues.end(); }
-
-protected:
+private:
     ValueStorage_T mValues;
     ResultsStorage_T mResults;
 
