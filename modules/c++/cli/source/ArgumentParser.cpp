@@ -284,6 +284,12 @@ cli::Results* cli::ArgumentParser::parse(const std::vector<std::string>& args)
         return parse("cli::ArgumentParser::parse" /*program*/, args).release(); // provide a "meaningful" default program name
     }
 }
+
+static auto makeValue(const cli::Results& currentResults, const std::string& argVar)
+{
+    return currentResults.hasValue(argVar) ? currentResults.getValue(argVar) : new cli::Value;
+}
+
 std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& program, const std::vector<std::string>& args)
 {
     if (!program.empty())
@@ -513,9 +519,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
             {
             case cli::STORE:
             {
-                cli::Value* v = currentResults->hasValue(argVar)
-                        ? currentResults->getValue(argVar)
-                        : new cli::Value;
+                auto v = makeValue(*currentResults, argVar);
                 int maxArgs = arg->getMaxArgs();
                 // risky, I know...
                 bool added = false;
@@ -566,9 +570,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
             {
                 if (optionsStr.empty())
                     parseError(FmtX("invalid sub option: [%s]", argVar.c_str()));
-                cli::Value* v = currentResults->hasValue(optionsStr)
-                        ? currentResults->getValue(optionsStr)
-                        : new cli::Value;
+                auto v = makeValue(*currentResults, optionsStr);
                 if (i < s - 1)
                 {
                     std::string nextArg = explodedArgs[i + 1];
@@ -609,8 +611,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                 int maxArgs = posArg->getMaxArgs();
                 if (currentResults->hasValue(argVar))
                 {
-                    cli::Value *posVal = lastPosVal
-                            = currentResults->getValue(argVar);
+                    auto posVal = lastPosVal = currentResults->getValue(argVar);
                     if (static_cast<int>(posVal->size()) >= maxArgs)
                         continue;
                     break;
@@ -682,7 +683,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
         if (numGiven > 0 && !choices.empty())
         {
             bool isValid = false;
-            cli::Value *vals = results->getValue(argVar);
+            auto vals = results->getValue(argVar);
 
             for (size_t ii = 0; ii < numGiven; ++ii)
             {
