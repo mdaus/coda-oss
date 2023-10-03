@@ -26,6 +26,7 @@
 
 #include <map>
 #include <memory>
+#include <utility>
 
 #include "sys/Conf.h"
 
@@ -71,7 +72,7 @@ public:
 
     cli::Value* getValue(const std::string& key) const
     {
-        ConstValueIter_T p = mValues.find(key);
+        auto const p = mValues.find(key);
         if (p == mValues.end())
         {
             const std::string errorMessage = "No argument named " + key;
@@ -111,6 +112,10 @@ public:
                 delete getValue(key);
         }
         mValues[key] = value;
+    }
+    void put(const std::string& key, std::unique_ptr<cli::Value> value)
+    {
+        put(key, value.release());
     }
 
     void put(const std::string& key, cli::Results *args)

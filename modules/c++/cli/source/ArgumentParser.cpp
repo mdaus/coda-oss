@@ -28,10 +28,11 @@
 
 #include <import/str.h>
 #include <import/mem.h>
+#include <gsl/gsl.h>
 
 namespace
 {
-static const size_t MAX_ARG_LINE_LENGTH = 21;
+constexpr size_t MAX_ARG_LINE_LENGTH = 21;
 
 bool containsOnly(const std::string& str,
                   const std::map<std::string, cli::Argument*>& flags)
@@ -555,10 +556,10 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                 break;
             }
             case cli::STORE_TRUE:
-                currentResults->put(argVar, new cli::Value(true));
+                currentResults->put(argVar, std::make_unique<cli::Value>(true));
                 break;
             case cli::STORE_FALSE:
-                currentResults->put(argVar, new cli::Value(false));
+                currentResults->put(argVar, std::make_unique<cli::Value>(false));
                 break;
             case cli::STORE_CONST:
             {
@@ -612,7 +613,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                 if (currentResults->hasValue(argVar))
                 {
                     auto posVal = lastPosVal = currentResults->getValue(argVar);
-                    if (static_cast<int>(posVal->size()) >= maxArgs)
+                    if (gsl::narrow<int>(posVal->size()) >= maxArgs)
                         continue;
                     break;
                 }
@@ -652,12 +653,11 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
             if (defaultVal != nullptr)
                 results->put(argVar, defaultVal->clone());
             else if (arg->getAction() == cli::STORE_FALSE)
-                results->put(argVar, new cli::Value(true));
+                results->put(argVar, std::make_unique<cli::Value>(true));
             else if (arg->getAction() == cli::STORE_TRUE)
-                results->put(argVar, new cli::Value(false));
+                results->put(argVar, std::make_unique<cli::Value>(false));
             else if (arg->isRequired())
-                parseError(FmtX("missing required argument: [%s]",
-                                argVar.c_str()));
+                parseError(FmtX("missing required argument: [%s]", argVar));
         }
 
 
