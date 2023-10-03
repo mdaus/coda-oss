@@ -617,8 +617,9 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                 }
                 else if (maxArgs != 0)
                 {
-                    lastPosVal = new cli::Value;
-                    currentResults->put(argVar, lastPosVal);
+                    auto lastPosVal_ = std::make_unique<cli::Value>();
+                    lastPosVal = lastPosVal_.get();
+                    currentResults->put(argVar, std::move(lastPosVal_));
                     break;
                 }
             }
