@@ -71,33 +71,25 @@ public:
         return getValue(key);
     }
 
-    const std::unique_ptr<cli::Value>& getValue_(const std::string& key) const
-    {
-        auto const p = mValues.find(key);
-        if (p == mValues.end())
-        {
-            const std::string errorMessage = "No argument named " + key;
-            throw except::NoSuchKeyException(Ctxt(errorMessage));
-        }
-        return p->second;
-    }
     const cli::Value* getValue(const std::string& key) const
     {
-        return getValue_(key).get();
-    }
-    std::unique_ptr<cli::Value>& getValue_(const std::string& key)
-    {
         auto const p = mValues.find(key);
         if (p == mValues.end())
         {
             const std::string errorMessage = "No argument named " + key;
             throw except::NoSuchKeyException(Ctxt(errorMessage));
         }
-        return p->second;
+        return p->second.get();
     }
     cli::Value* getValue(const std::string& key)
     {
-        return getValue_(key).get();
+        auto const p = mValues.find(key);
+        if (p == mValues.end())
+        {
+            const std::string errorMessage = "No argument named " + key;
+            throw except::NoSuchKeyException(Ctxt(errorMessage));
+        }
+        return p->second.get();
     }
 
     template<typename T>
@@ -124,7 +116,7 @@ public:
 
     void put(const std::string& key, std::unique_ptr<cli::Value> value)
     {
-        if (hasValue(key) && (getValue_(key).get() == value.get()))
+        if (hasValue(key) && (getValue(key) == value.get()))
         {
             return;
         }
