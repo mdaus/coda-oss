@@ -27,6 +27,7 @@
 #include <map>
 #include <memory>
 #include <utility>
+#include <stdexcept>
 
 #include "sys/Conf.h"
 
@@ -121,22 +122,26 @@ public:
         return p->second;
     }
 
-    void put(const std::string& key, cli::Value *value)
-    {
-        if (hasValue(key))
-        {
-            auto existing = getValue(key);
-            if (existing != value)
-                mValues[key].reset(value);
-        }
-        else
-        {
-            mValues[key] = std::unique_ptr<cli::Value>(value);
-        }
-    }
     void put(const std::string& key, std::unique_ptr<cli::Value> value)
     {
-        put(key, value.release());
+        if (hasValue(key) && (getValue_(key).get() == value.get()))
+        {
+            return;
+        }
+        mValues[key] = std::move(value);
+    }
+    void put(const std::string& key, cli::Value* value)
+    {
+        if (value == nullptr)
+        {
+            throw std::invalid_argument("'value' is NULL.");
+        }
+
+        cli::Value* pExistingValue = hasValue(key) ? getValue(key) : nullptr;
+        if (pExistingValue != value) // already know 'value' can't be NULL
+        {
+            put(key, std::unique_ptr<cli::Value>(value));
+        }
     }
 
     void put(const std::string& key, cli::Results *args)
