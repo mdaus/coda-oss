@@ -37,7 +37,7 @@ namespace cli
 
 class Results final
 {
-    typedef std::map<std::string, cli::Value*> ValueStorage_T;
+    typedef std::map<std::string, std::unique_ptr<cli::Value>> ValueStorage_T;
     typedef ValueStorage_T::iterator ValueIter_T;
     typedef ValueStorage_T::const_iterator ConstValueIter_T;
     typedef std::map<std::string, cli::Results*> ResultsStorage_T;
@@ -78,7 +78,7 @@ public:
             const std::string errorMessage = "No argument named " + key;
             throw except::NoSuchKeyException(Ctxt(errorMessage));
         }
-        return p->second;
+        return p->second.get();
     }
     cli::Value* getValue(const std::string& key)
     {
@@ -88,7 +88,7 @@ public:
             const std::string errorMessage = "No argument named " + key;
             throw except::NoSuchKeyException(Ctxt(errorMessage));
         }
-        return p->second;
+        return p->second.get();
     }
 
     template<typename T>
@@ -119,9 +119,12 @@ public:
         {
             auto existing = getValue(key);
             if (existing != value)
-                delete getValue(key);
+                mValues[key].reset(value);
         }
-        mValues[key] = value;
+        else
+        {
+            mValues[key] = std::unique_ptr<cli::Value>(value);
+        }
     }
     void put(const std::string& key, std::unique_ptr<cli::Value> value)
     {
@@ -150,12 +153,10 @@ private:
 
     void destroy()
     {
-        for (ValueIter_T it = mValues.begin(), end = mValues.end(); it != end; ++it)
-            delete it->second;
+        mValues.clear();
         for (ResultsIter_T it = mResults.begin(), end = mResults.end(); it
                 != end; ++it)
             delete it->second;
-        mValues.clear();
         mResults.clear();
     }
 };
