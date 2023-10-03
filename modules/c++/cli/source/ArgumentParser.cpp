@@ -286,9 +286,9 @@ cli::Results* cli::ArgumentParser::parse(const std::vector<std::string>& args)
     }
 }
 
-static auto makeValue(const cli::Results& currentResults, const std::string& argVar)
+static auto makeValue(cli::Results& currentResults, const std::string& argVar)
 {
-    return currentResults.hasValue(argVar) ? currentResults.getValue(argVar) : new cli::Value;
+    return currentResults.hasValue(argVar) ? currentResults.getValue(argVar) : new cli::Value();
 }
 
 std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& program, const std::vector<std::string>& args)

@@ -65,12 +65,22 @@ public:
         return mResults.find(key) != mResults.end();
     }
 
-    cli::Value* operator[](const std::string& key) const
+    const cli::Value* operator[](const std::string& key) const
     {
         return getValue(key);
     }
 
-    cli::Value* getValue(const std::string& key) const
+    const cli::Value* getValue(const std::string& key) const
+    {
+        auto const p = mValues.find(key);
+        if (p == mValues.end())
+        {
+            const std::string errorMessage = "No argument named " + key;
+            throw except::NoSuchKeyException(Ctxt(errorMessage));
+        }
+        return p->second;
+    }
+    cli::Value* getValue(const std::string& key)
     {
         auto const p = mValues.find(key);
         if (p == mValues.end())
@@ -107,7 +117,7 @@ public:
     {
         if (hasValue(key))
         {
-            cli::Value* existing = getValue(key);
+            auto existing = getValue(key);
             if (existing != value)
                 delete getValue(key);
         }
