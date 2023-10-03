@@ -124,14 +124,10 @@ public:
     }
     void put(const std::string& key, cli::Value* value)
     {
-        if (value == nullptr)
-        {
-            throw std::invalid_argument("'value' is NULL.");
-        }
-
         cli::Value* pExistingValue = hasValue(key) ? getValue(key) : nullptr;
-        if (pExistingValue != value) // already know 'value' can't be NULL
+        if ((pExistingValue == nullptr) || (pExistingValue != value))
         {
+            // Either 1) we didn't already have a value or 2) the existing value is different
             put(key, std::unique_ptr<cli::Value>(value));
         }
     }

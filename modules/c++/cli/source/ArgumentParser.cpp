@@ -286,9 +286,17 @@ cli::Results* cli::ArgumentParser::parse(const std::vector<std::string>& args)
     }
 }
 
-static auto makeValue(cli::Results& currentResults, const std::string& argVar)
+static auto put(cli::Results& currentResults, const std::string& argVar,
+                cli::Value* v, std::unique_ptr<cli::Value>&& v_)
 {
-    return currentResults.hasValue(argVar) ? currentResults.getValue(argVar) : new cli::Value();
+    if (v == v_.get()) // no existing value, using the newly created std::unique_ptr
+    {
+        currentResults.put(argVar, std::move(v_));
+    }
+    else
+    {
+        currentResults.put(argVar, v); // already had a value, just update
+    }
 }
 
 std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& program, const std::vector<std::string>& args)
@@ -520,7 +528,8 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
             {
             case cli::STORE:
             {
-                auto v = makeValue(*currentResults, argVar);
+                auto v_ = std::make_unique<cli::Value>();
+                auto v =  currentResults->hasValue(argVar) ? currentResults->getValue(argVar) : v_.get();
                 int maxArgs = arg->getMaxArgs();
                 // risky, I know...
                 bool added = false;
@@ -552,7 +561,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                 if (!added)
                     parseError(FmtX("option requires value or has exceeded its max: [%s]", argVar));
 
-                currentResults->put(argVar, v);
+                put(*currentResults, argVar, v, std::move(v_));
                 break;
             }
             case cli::STORE_TRUE:
@@ -571,7 +580,9 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
             {
                 if (optionsStr.empty())
                     parseError(FmtX("invalid sub option: [%s]", argVar.c_str()));
-                auto v = makeValue(*currentResults, optionsStr);
+
+                auto v_ = std::make_unique<cli::Value>();
+                auto v = currentResults->hasValue(optionsStr) ? currentResults->getValue(optionsStr) : v_.get();
                 if (i < s - 1)
                 {
                     std::string nextArg = explodedArgs[i + 1];
@@ -592,7 +603,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                     // this indicates the sub op is a bool
                     v->add(true);
                 }
-                currentResults->put(optionsStr, v);
+                put(*currentResults, optionsStr, v, std::move(v_));
                 break;
             }
             case cli::VERSION:
