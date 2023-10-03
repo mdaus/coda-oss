@@ -604,16 +604,14 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
         {
             // it's a positional argument
             cli::Value* lastPosVal = nullptr;
-            for (std::vector<cli::Argument*>::iterator it =
-                    positionalArgs.begin(); it != positionalArgs.end(); ++it)
+            for (auto&& posArg : positionalArgs)
             {
-                cli::Argument *posArg = *it;
                 std::string argVar = posArg->getVariable();
                 int maxArgs = posArg->getMaxArgs();
                 if (currentResults->hasValue(argVar))
                 {
-                    auto posVal = lastPosVal = currentResults->getValue(argVar);
-                    if (gsl::narrow<int>(posVal->size()) >= maxArgs)
+                    lastPosVal = currentResults->getValue(argVar);
+                    if (gsl::narrow<int>(lastPosVal->size()) >= maxArgs)
                         continue;
                     break;
                 }
