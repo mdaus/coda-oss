@@ -87,7 +87,7 @@ struct CODA_OSS_API Value final
     {
         if (index >= mValues.size())
             throw except::IndexOutOfRangeException(
-                                                   Ctxt(FmtX("Invalid index: %d", index)));
+                                                   Ctxt(str::Format("Invalid index: %d", index)));
         return str::toType<T>(mValues[index]);
     }
 
