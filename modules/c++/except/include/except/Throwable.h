@@ -191,13 +191,14 @@ public:
         }
         return toString() + backtrace;
     }
-
+    #ifndef SWIGPYTHON
     const char* what() const noexcept override final  // derived classes override toString()
     {
         // adding this to toString() output could (significantly) alter existing display
         mWhat = toString(true /*includeBacktrace*/); // call any derived toString()
         return mWhat.c_str();
     }
+    #endif
 
 protected:
     //! The name of exception trace
