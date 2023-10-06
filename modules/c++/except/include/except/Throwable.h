@@ -77,9 +77,10 @@ CODA_OSS_disable_warning_push
 #pragma warning(disable: 4275) // non dll-interface class '...' used as base for dll-interface class '...'
 #endif
 class CODA_OSS_API Throwable : public std::exception
-CODA_OSS_disable_warning_pop
 {
-    void doGetBacktrace();
+CODA_OSS_disable_warning_pop
+
+  void doGetBacktrace();
     Throwable(const Context*, const Throwable* pT, const std::string* pMessage, bool callGetBacktrace, std::nullptr_t);
 protected:
     Throwable(const Context*, const Throwable* pT = nullptr, const std::string* pMessage = nullptr, bool callGetBacktrace = false);
