@@ -20,9 +20,9 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_except_Throwable_h_INCLUDED_
 #define CODA_OSS_except_Throwable_h_INCLUDED_
-#pragma once
 
 #include <string>
 #include <vector>
@@ -71,14 +71,16 @@ namespace except
  * This class provides the base interface for exceptions and errors.
  */
 
-
+#ifndef SWIGPYTHON
 CODA_OSS_disable_warning_push
 #if _MSC_VER
 #pragma warning(disable: 4275) // non dll-interface class '...' used as base for dll-interface class '...'
 #endif
-class CODA_OSS_API Throwable : public std::exception
-{
+class CODA_OSS_API Throwable : public std::exception {
 CODA_OSS_disable_warning_pop
+#else
+class Throwable {
+#endif // SWIGPYTHON
 
   void doGetBacktrace();
     Throwable(const Context*, const Throwable* pT, const std::string* pMessage, bool callGetBacktrace, std::nullptr_t);
