@@ -47,14 +47,11 @@
  * A lot of existing code has "catch (std::exception)" BEFORE "catch (except::Throwable)" 
  * making it difficult to change without the risk of breaking something. :-(
  */
-#ifdef CODA_OSS_THROWABLE_ISA_STD_EXCEPTION  // -DCODA_OSS_THROWABLE_ISA_STD_EXCEPTION
+#ifdef CODA_OSS_THROWABLE_ISA_STD_EXCEPTION 
+#error "No longer supported, please update your code."
+#endif
 #ifdef CODA_OSS_except_Throwable_ISA_std_exception
-#error "CODA_OSS_except_Throwable_ISA_std_exception is already #define'd."
-#endif
-#define CODA_OSS_except_Throwable_ISA_std_exception 1
-#endif
-#ifndef CODA_OSS_except_Throwable_ISA_std_exception // or, -DCODA_OSS_except_Throwable_ISA_std_exception=1
-#define CODA_OSS_except_Throwable_ISA_std_exception 0
+#error "No longer supported, please update your code."
 #endif
 
 /*!
@@ -89,7 +86,6 @@ class Throwable {
     Throwable(const Context*, const Throwable* pT, const std::string* pMessage, bool callGetBacktrace, std::nullptr_t);
 protected:
     Throwable(const Context*, const Throwable* pT = nullptr, const std::string* pMessage = nullptr, bool callGetBacktrace = false);
-    Throwable(const Context*, const ThrowableEx* pT, const std::string* pMessage = nullptr, bool callGetBacktrace = false);
 
 public:
     Throwable() = default;
@@ -98,7 +94,6 @@ public:
     Throwable(Throwable&&) = default;
     Throwable& operator=(Throwable&&) = default;
 
-    Throwable(const ThrowableEx&);
 
     /*!
      * Constructor.  Takes a message
@@ -118,7 +113,6 @@ public:
      * \param c The Context
      */
     Throwable(const Throwable&, Context);
-    Throwable(const ThrowableEx&, Context);
 
     /*!
      * Destructor
@@ -188,7 +182,7 @@ public:
 
     virtual std::string toString(bool includeBacktrace) const
     {
-        // Adding the backtrace to existing toString() output could substantally alter existing strings.
+        // Adding the backtrace to existing toString() output could substantially alter existing strings.
         std::string backtrace;
         if (includeBacktrace)
         {
@@ -223,57 +217,8 @@ private:
  *
  * This class provides the base interface for exceptions and errors.
  */
+using ThrowableEx = Throwable;
 
-/*
- * It can be quite convenient to derive from std::exception as often one less
- * "catch" will be needed and we'll have standard what().  But doing so could
- * break existing code as "catch (const std::exception&)" will catch
- * except::Throwable when it didn't before.
- */
-// Use multiple-inheritance :-( to reduce duplicated boilerplate code.
-class ThrowableEx : public Throwable // "ThrowableEx" = "Throwable exception"
-#if !CODA_OSS_except_Throwable_ISA_std_exception
-    , public std::exception
-#endif
-{
-public:
-    ThrowableEx() = default;
-    virtual ~ThrowableEx() = default;
-    ThrowableEx(const ThrowableEx&) = default;
-    ThrowableEx& operator=(const ThrowableEx&) = default;
-    ThrowableEx(ThrowableEx&&) = default;
-    ThrowableEx& operator=(ThrowableEx&&) = default;
-
-    ThrowableEx(const Throwable& t) : Throwable(t){}
-
-    /*!
-     * Constructor.  Takes a message
-     * \param message The message
-     */
-    ThrowableEx(const std::string& message) : Throwable(message) {}
-
-    /*!
-     * Constructor.  Takes a Context.
-     * \param c The Context
-     */
-    ThrowableEx(const Context& ctx) : Throwable(ctx) {}
-
-    /*!
-     * Constructor. Takes a Throwable and a Context
-     * \param t The throwable
-     * \param c The Context
-     */
-    ThrowableEx(const ThrowableEx& t, const Context& ctx) : Throwable(t, ctx) {}
-    ThrowableEx(const Throwable& t, const Context& ctx) : Throwable(t, ctx) {}
-
-    #if !CODA_OSS_except_Throwable_ISA_std_exception
-    const char* what() const noexcept override final  // derived classes override toString()
-    {
-        const Throwable* pThrowable = this;
-        return pThrowable->what();
-    }
-    #endif
-};
 using Throwable11 = ThrowableEx; // keep old name around for other projects
 }
 
