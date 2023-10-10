@@ -7,70 +7,22 @@ CMakeLists.txt text eol=lf
 
 # Modern tools on Windows can handle Linux LF
 # See https://stackoverflow.com/a/13154031/8877 for details
-* text=auto eol=lf
-.git?*	    text
+*     		text=auto eol=lf
+*.*   		text=auto eol=lf
+.git?*	   	text=auto eol=lf
 
 # Leave known Windows-only text files as CR/LF
-*.sln text eol=crlf
-*.vcxproj text eol=crlf
-*.vcxproj.filters text eol=crlf
-*.ruleset text eol=crlf
-
-# Python builds with WAF
-wscript	 text
-waf	 binary
-
-# Text file formats
-*.txt	text
-*.text	text
-*.md	text diff=markdown
-*.tex	text
-*.?ml	text
-*.kmz	  binary
-*.log	text
-
-# Source code
-*.htm?	text
-*.css	text
-*.c	text
-*.cc	text
-*.c??	text
-*.c??m	text
-*.ccm	text
-*.C	text
-*.h??	text
-*.h	text
-*.hh	text
-*.ixx	text
-*.mpp	text
-*.py	text
-*.pyc	binary
-# .f and .f90
-*.f*	text
-*.m	text
-*.java	text
-*.cs	text
-*.vb	text
-*.js	text
-*.ts	text
-*.pl	text
-*.sh	text
-*.csh	text
-*.bash	text
-*.bat	text eol=crlf
-*.ps1	text
-*.ipynb	text
-
-# Serialization
-*.json	text
-*.yaml	text
-*.yml	text
-*.xml	text
-*.xsd	text
-*.xslt	text
+*.sln	      	     text eol=crlf
+*.vcxproj 	     text eol=crlf
+*.vcxproj.filters    text eol=crlf
+*.ruleset 	     text eol=crlf
+*.bat		     text eol=crlf
 
 ######################
 # Known binary files
+
+# Python builds with WAF
+waf	 binary
 
 # executables, libraries; yes, sometimes they're part of a repository
 *.exe	       binary
@@ -80,6 +32,7 @@ lib*.so*       binary
 lib*.a*	       binary
 *.lib	       binary
 *.mex	       binary
+*.pyc	binary
 
 # from various unit_test/ directories
 *.dat  	       binary
@@ -102,6 +55,7 @@ lib*.a*	       binary
 *.svg	text
 *.raw	binary
 *.hei?	binary
+*.kmz	  binary
 
 # music
 *.mp3	binary
