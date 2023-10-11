@@ -29,6 +29,7 @@
 #include <io/InputStream.h>
 
 #include "MinidomParser.h"
+#include "DOMConfiguration.h"
 
 /*!
  * \file DOMParser.h
@@ -48,8 +49,13 @@ struct DOMDocument;
  * \brief Simple wrapper around MinidomParser.
  *
  */
-struct CODA_OSS_API DOMParser final
+class CODA_OSS_API DOMParser final
 {
+    std::unique_ptr<MinidomParser> pParser;
+    DOMConfiguration configuration;
+
+public:
+
     DOMParser();
     ~DOMParser();
 
@@ -62,10 +68,8 @@ struct CODA_OSS_API DOMParser final
     /*!
      *  See DOMLSParser.hpp
      */
+    DOMConfiguration& getDomConfig();
     DOMDocument parse(io::InputStream&);
-            
-private:
-    std::unique_ptr<MinidomParser> pParser;
 };
 
 }

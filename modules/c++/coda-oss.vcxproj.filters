@@ -966,6 +966,9 @@
     <ClInclude Include="xml.lite\include\xml\lite\DOMSerializer.h">
       <Filter>xml.lite</Filter>
     </ClInclude>
+    <ClInclude Include="xml.lite\include\xml\lite\DOMConfiguration.h">
+      <Filter>xml.lite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1426,6 +1429,9 @@
       <Filter>xml.lite</Filter>
     </ClCompile>
     <ClCompile Include="xml.lite\source\DOMSerializer.cpp">
+      <Filter>xml.lite</Filter>
+    </ClCompile>
+    <ClCompile Include="xml.lite\source\DOMConfiguration.cpp">
       <Filter>xml.lite</Filter>
     </ClCompile>
   </ItemGroup>

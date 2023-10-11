@@ -29,6 +29,8 @@
 #include <config/Exports.h>
 #include <io/OutputStream.h>
 
+#include "xml/lite/DOMConfiguration.h"
+
 /*!
  * \file DOMParser.h
  * \brief Wrapper around MinidomParser that tries to follow
@@ -46,8 +48,11 @@ struct DOMNode;
  * \class DOMSerializer
  *
  */
-struct CODA_OSS_API DOMSerializer final
+class CODA_OSS_API DOMSerializer final
 {
+    DOMConfiguration configuration;
+
+public:
     DOMSerializer();
     ~DOMSerializer();
 
@@ -60,6 +65,7 @@ struct CODA_OSS_API DOMSerializer final
     /*!
      *  See DOMLSSerializer.hpp
      */
+    DOMConfiguration& getDomConfig();
     bool write(const DOMNode&, io::OutputStream&) const;
     coda_oss::u8string writeToString(const DOMNode&) const;
 };

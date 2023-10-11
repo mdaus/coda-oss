@@ -311,6 +311,7 @@
     <ClInclude Include="xml.lite\include\xml\lite\Attributes.h" />
     <ClInclude Include="xml.lite\include\xml\lite\ContentHandler.h" />
     <ClInclude Include="xml.lite\include\xml\lite\Document.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\DOMConfiguration.h" />
     <ClInclude Include="xml.lite\include\xml\lite\DOMDocument.h" />
     <ClInclude Include="xml.lite\include\xml\lite\DOMElement.h" />
     <ClInclude Include="xml.lite\include\xml\lite\DOMNode.h" />
@@ -483,6 +484,7 @@
     <ClCompile Include="unique\source\UUID.cpp" />
     <ClCompile Include="xml.lite\source\Attributes.cpp" />
     <ClCompile Include="xml.lite\source\Document.cpp" />
+    <ClCompile Include="xml.lite\source\DOMConfiguration.cpp" />
     <ClCompile Include="xml.lite\source\DOMDocument.cpp" />
     <ClCompile Include="xml.lite\source\DOMElement.cpp" />
     <ClCompile Include="xml.lite\source\DOMNode.cpp" />

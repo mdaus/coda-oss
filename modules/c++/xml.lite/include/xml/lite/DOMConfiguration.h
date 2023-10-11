@@ -21,28 +21,49 @@
  *
  */
 
-#include "xml/lite/DOMParser.h"
+#pragma once
+
+#include <string>
+#include <vector>
+#include <coda_oss/optional.h>
+#include <map>
+
+#include <config/Exports.h>
 
 
-#include <assert.h>
+/*!
+ * \file DOMConfiguration.h
+ * https://xerces.apache.org/xerces-c/ApacheDOMC++Binding.html
+ *
+ */
 
-#include "xml/lite/DOMDocument.h"
-
-xml::lite::DOMParser::DOMParser() : pParser(std::make_unique<MinidomParser>())
+namespace xml
 {
+namespace lite
+{
+
+using DOMStringList = std::vector<std::string>;
+
+/*!
+ * \class DOMConfiguration
+ * \brief Simple wrapper around MinidomParser.
+ *
+ */
+class CODA_OSS_API DOMConfiguration final
+{
+    std::map<std::string, bool> parameters;
+
+public:
+
+    /*!
+     *  See DOMConfiguration.hpp
+     */
+    void setParameter(const std::string&, bool);
+    coda_oss::optional<bool> getParameter(const std::string&) const;
+    bool canSetParameter(const std::string&, bool) const;
+    DOMStringList getParameterNames() const;
+};
+
+}
 }
 
-xml::lite::DOMParser::~DOMParser() = default;
-
-xml::lite::DOMConfiguration& xml::lite::DOMParser::getDomConfig()
-{
-    return configuration;
-}
-
-xml::lite::DOMDocument xml::lite::DOMParser::parse(io::InputStream& is)
-{
-    pParser->parse(is);
-    auto retval = pParser->getDocument();
-    assert(retval != nullptr);
-    return DOMDocument(*retval);
-}

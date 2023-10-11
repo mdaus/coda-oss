@@ -21,28 +21,35 @@
  *
  */
 
-#include "xml/lite/DOMParser.h"
+#include "xml/lite/DOMConfiguration.h"
 
 
 #include <assert.h>
 
-#include "xml/lite/DOMDocument.h"
 
-xml::lite::DOMParser::DOMParser() : pParser(std::make_unique<MinidomParser>())
+void xml::lite::DOMConfiguration::setParameter(const std::string& name, bool value)
 {
+    parameters[name] = value;
 }
 
-xml::lite::DOMParser::~DOMParser() = default;
-
-xml::lite::DOMConfiguration& xml::lite::DOMParser::getDomConfig()
+coda_oss::optional<bool> xml::lite::DOMConfiguration::getParameter(const std::string& name) const
 {
-    return configuration;
+    coda_oss::optional<bool> retval;
+    auto it = parameters.find(name);
+    if (it != parameters.end())
+    {
+        retval = it->second;
+    }
+    return retval;
 }
 
-xml::lite::DOMDocument xml::lite::DOMParser::parse(io::InputStream& is)
+bool xml::lite::DOMConfiguration::canSetParameter(const std::string&, bool) const
 {
-    pParser->parse(is);
-    auto retval = pParser->getDocument();
-    assert(retval != nullptr);
-    return DOMDocument(*retval);
+    return true; // can set any parameter to any value
 }
+
+xml::lite::DOMStringList xml::lite::DOMConfiguration::getParameterNames() const
+{
+    return xml::lite::DOMStringList{}; // no parameters
+}
+

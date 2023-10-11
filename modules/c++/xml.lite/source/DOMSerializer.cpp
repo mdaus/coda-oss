@@ -30,6 +30,11 @@
 
 #include "xml/lite/DOMElement.h"
 
+xml::lite::DOMConfiguration& xml::lite::DOMSerializer::getDomConfig()
+{
+    return configuration;
+}
+
 bool xml::lite::DOMSerializer::write(const DOMNode& node, io::OutputStream& os) const
 {
     if (auto pElement = dynamic_cast<const DOMElement*>(&node))
