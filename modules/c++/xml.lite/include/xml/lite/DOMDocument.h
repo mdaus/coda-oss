@@ -37,6 +37,7 @@
 
 #include <memory>
 #include <coda_oss/string.h>
+#include <vector>
 
 #include <config/Exports.h>
 
@@ -56,21 +57,23 @@ struct DOMElement;
  */
 struct CODA_OSS_API DOMDocument  final : public DOMNode
 {
-    DOMDocument();
-    ~DOMDocument();
+    DOMDocument(Document&);
+    ~DOMDocument() = default;
 
     DOMDocument(const DOMDocument&) = delete;
     DOMDocument& operator=(const DOMDocument&) = delete;
-    DOMDocument(DOMDocument&&) = delete;
-    DOMDocument& operator=(DOMDocument&&) = delete;
+    DOMDocument(DOMDocument&&) = default;
+    DOMDocument& operator=(DOMDocument&&) = default;
 
     /*!
      *  See DOMDocument.hpp
      */
     DOMElement& getDocumentElement() const;
 
+    std::vector<DOMNode*> getElementsByTagName(const std::string&) const;
+
 private:
-    Document& document;
+    Document* pDocument = nullptr;
 };
 
 }

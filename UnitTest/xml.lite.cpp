@@ -6,6 +6,8 @@
 #include <xml/lite/QName.h>
 #include <xml/lite/MinidomParser.h>
 #include <xml/lite/Validator.h>
+#include <xml/lite/DOMParser.h>
+#include <xml/lite/DOMDocument.h>
 
 namespace xml_lite
 {
@@ -28,6 +30,10 @@ TEST_CLASS(test_xmlelement){ public:
 
 TEST_CLASS(test_xmlparser){ public:
 #include "xml.lite/unittests/test_xmlparser.cpp"
+};
+
+TEST_CLASS(test_xmldom){ public:
+#include "xml.lite/unittests/test_xmldom.cpp"
 };
 
 }

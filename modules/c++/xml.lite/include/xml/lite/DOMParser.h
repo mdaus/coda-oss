@@ -62,11 +62,10 @@ struct CODA_OSS_API DOMParser final
     /*!
      *  See DOMLSParser.hpp
      */
-    DOMDocument* parse(io::InputStream&);
+    DOMDocument parse(io::InputStream&);
             
 private:
     std::unique_ptr<MinidomParser> pParser;
-
 };
 
 }

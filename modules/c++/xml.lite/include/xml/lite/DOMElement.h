@@ -3,7 +3,7 @@
  * =========================================================================
  * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
-  * © Copyright 2023, Maxar Technologies, Inc.
+ * © Copyright 2023, Maxar Technologies, Inc.
  *
  * xml.lite-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -70,6 +70,8 @@ struct CODA_OSS_API DOMElement final : public DOMNode
     coda_oss::u8string getNodeValue() const override;
 
     void setNodeValue(const coda_oss::u8string&) override;
+
+    std::vector<xml::lite::DOMNode*> getElementsByTagName(const std::string& tag) const;
 
 private:
     Element& element;

@@ -32,3 +32,8 @@ void xml::lite::DOMElement::setNodeValue(const coda_oss::u8string& v)
 {
     element.setCharacterData(v);
 }
+
+std::vector<xml::lite::DOMNode*> xml::lite::DOMElement::getElementsByTagName(const std::string&) const
+{
+    return std::vector<xml::lite::DOMNode*>{};
+}

@@ -25,3 +25,11 @@
 
 #include "xml/lite/Document.h"
 
+xml::lite::DOMDocument::DOMDocument(Document& doc) : pDocument(&doc)
+{
+}
+
+std::vector<xml::lite::DOMNode*> xml::lite::DOMDocument::getElementsByTagName(const std::string&) const
+{
+    return std::vector<xml::lite::DOMNode*>{};
+}

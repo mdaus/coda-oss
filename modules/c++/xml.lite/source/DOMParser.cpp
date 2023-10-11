@@ -24,8 +24,20 @@
 #include "xml/lite/DOMParser.h"
 
 
+#include <assert.h>
+
+#include "xml/lite/DOMDocument.h"
+
 xml::lite::DOMParser::DOMParser() : pParser(std::make_unique<MinidomParser>())
 {
 }
 
 xml::lite::DOMParser::~DOMParser() = default;
+
+xml::lite::DOMDocument xml::lite::DOMParser::parse(io::InputStream& is)
+{
+    pParser->parse(is);
+    auto retval = pParser->getDocument();
+    assert(retval != nullptr);
+    return DOMDocument(*retval);
+}
