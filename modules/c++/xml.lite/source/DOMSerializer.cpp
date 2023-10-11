@@ -3,7 +3,7 @@
  * =========================================================================
  * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
-   * © Copyright 2023, Maxar Technologies, Inc.
+ * © Copyright 2023, Maxar Technologies, Inc.
  *
  * xml.lite-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,31 +21,33 @@
  *
  */
 
+#include "xml/lite/DOMSerializer.h"
+
+
+#include <assert.h>
+
+#include <io/StringStream.h>
+
 #include "xml/lite/DOMElement.h"
 
-xml::lite::DOMElement::DOMElement(Element& element) : pElement_(&element)
+bool xml::lite::DOMSerializer::write(const DOMNode& node, io::OutputStream& os) const
 {
-}
-xml::lite::DOMElement::~DOMElement() = default;
-
-coda_oss::u8string xml::lite::DOMElement::getNodeValue() const
-{
-    return getCharacterData(*pElement_);
-}
-
-void xml::lite::DOMElement::setNodeValue(const coda_oss::u8string& v)
-{
-    pElement_->setCharacterData(v);
-}
-
-xml::lite::DOMNodeList xml::lite::DOMElement::getElementsByTagName(const std::string& tag) const
-{
-    const auto elements = pElement_->getElementsByTagName(tag);
-
-    xml::lite::DOMNodeList retval;
-    for (auto& element : elements)
+    if (auto pElement = dynamic_cast<const DOMElement*>(&node))
     {
-        retval.emplace_back(std::make_unique<DOMElement>(*element));
+        pElement->pElement_->print(os);
+        return true;
     }
-    return retval;
+
+    return false; // node isn't DOMElement
+}
+
+coda_oss::u8string xml::lite::DOMSerializer::writeToString(const DOMNode& node) const
+{
+    io::U8StringStream ss;
+    if (write(node, ss))
+    {
+        return ss.stream().str();
+    }
+
+    return coda_oss::u8string{};
 }

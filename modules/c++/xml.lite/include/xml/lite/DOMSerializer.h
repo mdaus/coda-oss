@@ -3,7 +3,7 @@
  * =========================================================================
  * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
-   * © Copyright 2023, Maxar Technologies, Inc.
+ * © Copyright 2023, Maxar Technologies, Inc.
  *
  * xml.lite-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,31 +21,49 @@
  *
  */
 
-#include "xml/lite/DOMElement.h"
+#pragma once
 
-xml::lite::DOMElement::DOMElement(Element& element) : pElement_(&element)
+#include <memory>
+#include <coda_oss/string.h>
+
+#include <config/Exports.h>
+#include <io/OutputStream.h>
+
+/*!
+ * \file DOMParser.h
+ * \brief Wrapper around MinidomParser that tries to follow
+ * https://xerces.apache.org/xerces-c/ApacheDOMC++Binding.html
+ *
+ */
+
+namespace xml
 {
-}
-xml::lite::DOMElement::~DOMElement() = default;
-
-coda_oss::u8string xml::lite::DOMElement::getNodeValue() const
+namespace lite
 {
-    return getCharacterData(*pElement_);
-}
+struct DOMNode;
 
-void xml::lite::DOMElement::setNodeValue(const coda_oss::u8string& v)
+/*!
+ * \class DOMSerializer
+ *
+ */
+struct CODA_OSS_API DOMSerializer final
 {
-    pElement_->setCharacterData(v);
+    DOMSerializer();
+    ~DOMSerializer();
+
+    DOMSerializer(const DOMSerializer&) = delete;
+    DOMSerializer& operator=(const DOMSerializer&) = delete;
+    DOMSerializer(DOMSerializer&&) = default;
+    DOMSerializer& operator=(DOMSerializer&&) = default;
+
+
+    /*!
+     *  See DOMLSSerializer.hpp
+     */
+    bool write(const DOMNode&, io::OutputStream&) const;
+    coda_oss::u8string writeToString(const DOMNode&) const;
+};
+
+}
 }
 
-xml::lite::DOMNodeList xml::lite::DOMElement::getElementsByTagName(const std::string& tag) const
-{
-    const auto elements = pElement_->getElementsByTagName(tag);
-
-    xml::lite::DOMNodeList retval;
-    for (auto& element : elements)
-    {
-        retval.emplace_back(std::make_unique<DOMElement>(*element));
-    }
-    return retval;
-}

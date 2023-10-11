@@ -25,8 +25,9 @@
 
 #include <TestCase.h>
 
-#include "xml/lite/DOMParser.h"
-#include "xml/lite/DOMDocument.h"
+#include <str/Convert.h>
+#include <xml/lite/DOMParser.h>
+#include <xml/lite/DOMDocument.h>
 
 static const std::string& text()
 {
@@ -55,9 +56,13 @@ TEST_CASE(testXmlDOMParse)
 
     const auto aElements = getElementsByTagName(*docElements[0], "a");
     TEST_ASSERT_EQ(std::ssize(aElements), 1);
-    const auto& a = *(aElements[0]);
+    auto& a = *(aElements[0]);
 
-    const auto characterData = a.getNodeValue();
+    auto characterData = a.getNodeValue();
+    TEST_ASSERT_EQ(str::to_native(characterData), text());
+
+    a.setNodeValue(str::u8FromNative(text()));
+    characterData = a.getNodeValue();
     TEST_ASSERT_EQ(str::to_native(characterData), text());
 }
 
