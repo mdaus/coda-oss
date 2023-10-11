@@ -71,10 +71,10 @@ struct CODA_OSS_API DOMElement final : public DOMNode
 
     void setNodeValue(const coda_oss::u8string&) override;
 
-    std::vector<xml::lite::DOMNode> getElementsByTagName(const std::string& tag) const;
+   DOMNodeList getElementsByTagName(const std::string& tag) const;
 
 private:
-    Element* pElement;
+    Element* pElement = nullptr;
 };
 
 }

@@ -41,14 +41,13 @@
 
 #include <config/Exports.h>
 
-#include "DOMNode.h"
+#include "DOMElement.h"
 
 namespace xml
 {
 namespace lite
 {
 struct Document;
-struct DOMElement;
 
 /*!
  * \class DOMDocument
@@ -68,9 +67,7 @@ struct CODA_OSS_API DOMDocument  final : public DOMNode
     /*!
      *  See DOMDocument.hpp
      */
-    DOMElement& getDocumentElement() const;
-
-    std::vector<DOMNode*> getElementsByTagName(const std::string&) const;
+    DOMElement getDocumentElement() const;
 
 private:
     Document* pDocument = nullptr;

@@ -38,14 +38,14 @@ void xml::lite::DOMElement::setNodeValue(const coda_oss::u8string& v)
     pElement->setCharacterData(v);
 }
 
-std::vector<xml::lite::DOMNode> xml::lite::DOMElement::getElementsByTagName(const std::string& tag) const
+xml::lite::DOMNodeList xml::lite::DOMElement::getElementsByTagName(const std::string& tag) const
 {
     const auto elements = pElement->getElementsByTagName(tag);
 
-    std::vector<xml::lite::DOMNode> retval;
+    xml::lite::DOMNodeList retval;
     for (auto& element : elements)
     {
-        retval.emplace_back(DOMElement(*element));
+        retval.emplace_back(std::make_unique<DOMElement>(*element));
     }
     return retval;
 }

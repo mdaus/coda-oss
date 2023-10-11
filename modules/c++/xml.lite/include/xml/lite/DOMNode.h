@@ -25,6 +25,7 @@
 
 #include <memory>
 #include <coda_oss/string.h>
+#include <vector>
 
 #include <config/Exports.h>
 
@@ -66,6 +67,8 @@ public:
     virtual void setPrefix(const std::string&) const;
 
 };
+
+using DOMNodeList = std::vector<std::unique_ptr<xml::lite::DOMNode>>;
 
 }
 }

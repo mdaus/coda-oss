@@ -24,12 +24,13 @@
 #include "xml/lite/DOMDocument.h"
 
 #include "xml/lite/Document.h"
+#include "xml/lite/DOMElement.h"
 
 xml::lite::DOMDocument::DOMDocument(Document& doc) : pDocument(&doc)
 {
 }
 
-std::vector<xml::lite::DOMNode*> xml::lite::DOMDocument::getElementsByTagName(const std::string&) const
+ xml::lite::DOMElement xml::lite::DOMDocument::getDocumentElement() const
 {
-    return std::vector<xml::lite::DOMNode*>{};
-}
+     return DOMElement(getRootElement(*pDocument));
+ }

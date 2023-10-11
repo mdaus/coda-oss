@@ -48,12 +48,17 @@ TEST_CASE(testXmlDOMParse)
     xml::lite::DOMParser parser;
     auto doc = parser.parse(ss);
 
-    const auto aElements = doc.getElementsByTagName("a");
-    TEST_ASSERT_EQ(std::ssize(aElements), 1);
-    //const auto& a = *(aElements[0]);
+    const auto& root = doc.getDocumentElement();
 
-    //const auto characterData = a.getCharacterData();
-    //TEST_ASSERT_EQ(characterData, text());
+    const auto docElements = root.getElementsByTagName("doc");
+    TEST_ASSERT_EQ(std::ssize(docElements), 1);
+
+    const auto aElements = dynamic_cast<const xml::lite::DOMElement*>(docElements[0].get())->getElementsByTagName("a");
+    TEST_ASSERT_EQ(std::ssize(aElements), 1);
+    const auto& a = *(aElements[0]);
+
+    const auto characterData = a.getNodeValue();
+    TEST_ASSERT_EQ(str::to_native(characterData), text());
 }
 
 TEST_MAIN(
