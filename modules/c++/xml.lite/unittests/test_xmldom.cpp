@@ -53,7 +53,7 @@ TEST_CASE(testXmlDOMParse)
     const auto docElements = root.getElementsByTagName("doc");
     TEST_ASSERT_EQ(std::ssize(docElements), 1);
 
-    const auto aElements = dynamic_cast<const xml::lite::DOMElement*>(docElements[0].get())->getElementsByTagName("a");
+    const auto aElements = getElementsByTagName(*docElements[0], "a");
     TEST_ASSERT_EQ(std::ssize(aElements), 1);
     const auto& a = *(aElements[0]);
 

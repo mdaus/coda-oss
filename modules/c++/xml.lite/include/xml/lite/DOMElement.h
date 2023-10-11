@@ -77,6 +77,11 @@ private:
     Element* pElement = nullptr;
 };
 
+inline DOMNodeList getElementsByTagName(const DOMNode& node, const std::string& tag)
+{
+    return dynamic_cast<const xml::lite::DOMElement&>(node).getElementsByTagName(tag);
+}
+
 }
 }
 
