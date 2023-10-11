@@ -311,6 +311,10 @@
     <ClInclude Include="xml.lite\include\xml\lite\Attributes.h" />
     <ClInclude Include="xml.lite\include\xml\lite\ContentHandler.h" />
     <ClInclude Include="xml.lite\include\xml\lite\Document.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\DOMDocument.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\DOMElement.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\DOMNode.h" />
+    <ClInclude Include="xml.lite\include\xml\lite\DOMParser.h" />
     <ClInclude Include="xml.lite\include\xml\lite\Element.h" />
     <ClInclude Include="xml.lite\include\xml\lite\MinidomHandler.h" />
     <ClInclude Include="xml.lite\include\xml\lite\MinidomParser.h" />
@@ -478,6 +482,10 @@
     <ClCompile Include="unique\source\UUID.cpp" />
     <ClCompile Include="xml.lite\source\Attributes.cpp" />
     <ClCompile Include="xml.lite\source\Document.cpp" />
+    <ClCompile Include="xml.lite\source\DOMDocument.cpp" />
+    <ClCompile Include="xml.lite\source\DOMElement.cpp" />
+    <ClCompile Include="xml.lite\source\DOMNode.cpp" />
+    <ClCompile Include="xml.lite\source\DOMParser.cpp" />
     <ClCompile Include="xml.lite\source\Element.cpp" />
     <ClCompile Include="xml.lite\source\MinidomHandler.cpp" />
     <ClCompile Include="xml.lite\source\MinidomParser.cpp" />
