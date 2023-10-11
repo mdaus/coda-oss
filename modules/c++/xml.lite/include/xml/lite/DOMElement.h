@@ -74,6 +74,19 @@ struct CODA_OSS_API DOMElement final : public DOMNode
 
     DOMNodeList getElementsByTagName(const std::string& tag) const;
 
+    Element& details_getElement_()
+    {
+        return getElement();
+    }
+    const Element& details_getElement_() const
+    {
+        return getElement();
+    }
+
+private:
+    Element& getElement();
+    const Element& getElement() const;
+
     Element* pElement_ = nullptr;
     std::unique_ptr<Element> pOwnedElement_;
 };

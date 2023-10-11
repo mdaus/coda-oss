@@ -31,19 +31,40 @@ xml::lite::DOMElement::DOMElement(std::unique_ptr<Element> pElement) : pOwnedEle
 }
 xml::lite::DOMElement::~DOMElement() = default;
 
+template<typename T1, typename T2>
+inline auto& getElement_(T1&& pElement_, T2&& pOwnedElement_)
+{
+    if (pElement_ == nullptr)
+    {
+        assert(pOwnedElement_.get() != nullptr);
+        return *pOwnedElement_;
+    }
+
+    assert(pOwnedElement_.get() == nullptr);
+    return *pElement_;
+}
+xml::lite::Element& xml::lite::DOMElement::getElement()
+{
+    return getElement_(pElement_, pOwnedElement_);
+}
+const xml::lite::Element& xml::lite::DOMElement::getElement() const
+{
+    return getElement_(pElement_, pOwnedElement_);
+}
+
 coda_oss::u8string xml::lite::DOMElement::getNodeValue() const
 {
-    return getCharacterData(*pElement_);
+    return getCharacterData(getElement());
 }
 
 void xml::lite::DOMElement::setNodeValue(const coda_oss::u8string& v)
 {
-    pElement_->setCharacterData(v);
+    getElement().setCharacterData(v);
 }
 
 xml::lite::DOMNodeList xml::lite::DOMElement::getElementsByTagName(const std::string& tag) const
 {
-    const auto elements = pElement_->getElementsByTagName(tag);
+    const auto elements = getElement().getElementsByTagName(tag);
 
     xml::lite::DOMNodeList retval;
     for (auto& element : elements)

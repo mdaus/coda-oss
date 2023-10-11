@@ -22,6 +22,7 @@
  */
 
 #include <std/string>
+#include <std/span> // std::ssize()
 
 #include <TestCase.h>
 

@@ -45,14 +45,14 @@ bool xml::lite::DOMSerializer::write(const DOMNode& node, io::OutputStream& os) 
         const auto prettyPrint = configuration.getParameter("prettyPrint");
         if (!prettyPrint) return false;  // should always be set
 
-        auto pElement = pDOMElement->pElement_;
+        auto& element = pDOMElement->details_getElement_();
         if (*prettyPrint)
         {
-            *consoleOutput ? pElement->prettyConsoleOutput_(os) : pElement->prettyPrint(os);
+            *consoleOutput ? element.prettyConsoleOutput_(os) : element.prettyPrint(os);
         }
         else
         {
-            *consoleOutput ? pElement->consoleOutput_(os) : pElement->print(os);
+            *consoleOutput ? element.consoleOutput_(os) : element.print(os);
         }
         return true;
     }
