@@ -54,6 +54,9 @@ class CODA_OSS_API DOMConfiguration final
     std::map<std::string, bool> parameters;
 
 public:
+    DOMConfiguration();
+    ~DOMConfiguration() = default;
+
 
     /*!
      *  See DOMConfiguration.hpp

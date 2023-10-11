@@ -26,6 +26,15 @@
 
 #include <assert.h>
 
+static const std::map<std::string, bool> defaultParameters
+{
+        {"prettyPrint", false},  // Element::prettyPrint()
+        {"consoleOutput", false},  // Element::consoleOutput_
+};
+
+xml::lite::DOMConfiguration::DOMConfiguration() : parameters(defaultParameters)
+{
+}
 
 void xml::lite::DOMConfiguration::setParameter(const std::string& name, bool value)
 {
@@ -50,6 +59,12 @@ bool xml::lite::DOMConfiguration::canSetParameter(const std::string&, bool) cons
 
 xml::lite::DOMStringList xml::lite::DOMConfiguration::getParameterNames() const
 {
-    return xml::lite::DOMStringList{}; // no parameters
+    xml::lite::DOMStringList retval;
+    retval.reserve(parameters.size());
+    for (auto&& kv : parameters)
+    {
+        retval.push_back(kv.first);
+    }
+    return retval;
 }
 

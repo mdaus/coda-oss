@@ -37,9 +37,23 @@ xml::lite::DOMConfiguration& xml::lite::DOMSerializer::getDomConfig()
 
 bool xml::lite::DOMSerializer::write(const DOMNode& node, io::OutputStream& os) const
 {
-    if (auto pElement = dynamic_cast<const DOMElement*>(&node))
+    if (auto pDOMElement = dynamic_cast<const DOMElement*>(&node))
     {
-        pElement->pElement_->print(os);
+        // look at "prettyPrint" and "consoleOutput" to determine method to call
+        const auto consoleOutput = configuration.getParameter("consoleOutput");
+        if (!consoleOutput) return false;  // should always be set
+        const auto prettyPrint = configuration.getParameter("prettyPrint");
+        if (!prettyPrint) return false;  // should always be set
+
+        auto pElement = pDOMElement->pElement_;
+        if (*prettyPrint)
+        {
+            *consoleOutput ? pElement->prettyConsoleOutput_(os) : pElement->prettyPrint(os);
+        }
+        else
+        {
+            *consoleOutput ? pElement->consoleOutput_(os) : pElement->print(os);
+        }
         return true;
     }
 
