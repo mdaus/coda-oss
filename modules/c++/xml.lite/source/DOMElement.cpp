@@ -26,6 +26,9 @@
 xml::lite::DOMElement::DOMElement(Element& element) : pElement_(&element)
 {
 }
+xml::lite::DOMElement::DOMElement(std::unique_ptr<Element> pElement) : pOwnedElement_(std::move(pElement))
+{
+}
 xml::lite::DOMElement::~DOMElement() = default;
 
 coda_oss::u8string xml::lite::DOMElement::getNodeValue() const

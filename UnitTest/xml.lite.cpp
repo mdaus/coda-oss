@@ -8,6 +8,7 @@
 #include <xml/lite/Validator.h>
 #include <xml/lite/DOMParser.h>
 #include <xml/lite/DOMDocument.h>
+#include <xml/lite/DOMSerializer.h>
 
 namespace xml_lite
 {

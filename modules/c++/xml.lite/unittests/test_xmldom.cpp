@@ -28,6 +28,7 @@
 #include <str/Convert.h>
 #include <xml/lite/DOMParser.h>
 #include <xml/lite/DOMDocument.h>
+#include <xml/lite/DOMSerializer.h>
 
 static const std::string& text()
 {
@@ -66,6 +67,20 @@ TEST_CASE(testXmlDOMParse)
     TEST_ASSERT_EQ(str::to_native(characterData), text());
 }
 
+TEST_CASE(testXmlDOMWrite)
+{
+    xml::lite::DOMDocument document;
+    auto rootElement = document.createElementNS("" /*uri*/, "root");
+
+    const xml::lite::DOMSerializer serializer;
+
+    io::StringStream output;
+    serializer.write(rootElement, output);
+    //expected = "<root>" + characterData + "</root>";
+}
+
+
 TEST_MAIN(
     TEST_CHECK(testXmlDOMParse);
+    TEST_CHECK(testXmlDOMWrite);
 )

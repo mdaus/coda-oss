@@ -42,6 +42,7 @@
 #include <config/Exports.h>
 
 #include "DOMElement.h"
+#include "MinidomParser.h"
 
 namespace xml
 {
@@ -56,7 +57,8 @@ struct Document;
  */
 struct CODA_OSS_API DOMDocument  final : public DOMNode
 {
-    DOMDocument(Document&);
+    DOMDocument();
+    explicit DOMDocument(Document&);
     ~DOMDocument() = default;
 
     DOMDocument(const DOMDocument&) = delete;
@@ -67,9 +69,11 @@ struct CODA_OSS_API DOMDocument  final : public DOMNode
     /*!
      *  See DOMDocument.hpp
      */
+    DOMElement createElementNS(const std::string& uri, const std::string& q) const;
     DOMElement getDocumentElement() const;
 
 private:
+    std::unique_ptr<MinidomParser> pParser;
     Document* pDocument = nullptr;
 };
 

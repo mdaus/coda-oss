@@ -53,15 +53,6 @@ class CODA_OSS_API DOMSerializer final
     DOMConfiguration configuration;
 
 public:
-    DOMSerializer();
-    ~DOMSerializer();
-
-    DOMSerializer(const DOMSerializer&) = delete;
-    DOMSerializer& operator=(const DOMSerializer&) = delete;
-    DOMSerializer(DOMSerializer&&) = default;
-    DOMSerializer& operator=(DOMSerializer&&) = default;
-
-
     /*!
      *  See DOMLSSerializer.hpp
      */

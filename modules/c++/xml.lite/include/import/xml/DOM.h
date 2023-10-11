@@ -3,7 +3,6 @@
  * =========================================================================
  * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
-   * © Copyright 2023, Maxar Technologies, Inc.
  *
  * xml.lite-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,27 +20,11 @@
  *
  */
 
-#include "xml/lite/DOMDocument.h"
+#pragma once
 
-#include "xml/lite/Document.h"
+#include "xml/lite/DOMConfiguration.h"
 #include "xml/lite/DOMElement.h"
-
-xml::lite::DOMDocument::DOMDocument() :
-    pParser(std::make_unique<xml::lite::MinidomParser>()), pDocument(pParser->getDocument())
-{
-}
-
-xml::lite::DOMDocument::DOMDocument(Document& doc) : pDocument(&doc)
-{
-}
-
-xml::lite::DOMElement xml::lite::DOMDocument::createElementNS(const std::string& uri, const std::string& q) const
-{
-    std::unique_ptr<Element> pElement(pDocument->createElement(q, uri));
-    return xml::lite::DOMElement(std::move(pElement));
-}
-
- xml::lite::DOMElement xml::lite::DOMDocument::getDocumentElement() const
-{
-     return DOMElement(getRootElement(*pDocument));
- }
+#include "xml/lite/DOMDocument.h"
+#include "xml/lite/DOMNode.h"
+#include "xml/lite/DOMParser.h"
+#include "xml/lite/DOMSerializer.h"

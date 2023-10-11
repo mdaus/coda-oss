@@ -56,6 +56,7 @@ namespace lite
 struct CODA_OSS_API DOMElement final : public DOMNode
 {
     DOMElement(Element&);
+    DOMElement(std::unique_ptr<Element>);
     ~DOMElement();
 
     DOMElement(const DOMElement&) = delete;
@@ -66,14 +67,15 @@ struct CODA_OSS_API DOMElement final : public DOMNode
     /*!
      *  See DOMElement.hpp
      */
-    //coda_oss::u8string getNodeName() const override;
+    // coda_oss::u8string getNodeName() const override;
     coda_oss::u8string getNodeValue() const override;
 
     void setNodeValue(const coda_oss::u8string&) override;
 
-   DOMNodeList getElementsByTagName(const std::string& tag) const;
+    DOMNodeList getElementsByTagName(const std::string& tag) const;
 
     Element* pElement_ = nullptr;
+    std::unique_ptr<Element> pOwnedElement_;
 };
 
 inline DOMNodeList getElementsByTagName(const DOMNode& node, const std::string& tag)
