@@ -55,13 +55,13 @@ namespace lite
  */
 struct CODA_OSS_API DOMElement final : public DOMNode
 {
-    DOMElement();
+    DOMElement(Element&);
     ~DOMElement();
 
     DOMElement(const DOMElement&) = delete;
     DOMElement& operator=(const DOMElement&) = delete;
-    DOMElement(DOMElement&&) = delete;
-    DOMElement& operator=(DOMElement&&) = delete;
+    DOMElement(DOMElement&&) = default;
+    DOMElement& operator=(DOMElement&&) = default;
 
     /*!
      *  See DOMElement.hpp
@@ -71,10 +71,10 @@ struct CODA_OSS_API DOMElement final : public DOMNode
 
     void setNodeValue(const coda_oss::u8string&) override;
 
-    std::vector<xml::lite::DOMNode*> getElementsByTagName(const std::string& tag) const;
+    std::vector<xml::lite::DOMNode> getElementsByTagName(const std::string& tag) const;
 
 private:
-    Element& element;
+    Element* pElement;
 };
 
 }

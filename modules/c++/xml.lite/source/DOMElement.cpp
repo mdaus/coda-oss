@@ -23,17 +23,29 @@
 
 #include "xml/lite/DOMElement.h"
 
+xml::lite::DOMElement::DOMElement(Element& element) : pElement(&element)
+{
+}
+xml::lite::DOMElement::~DOMElement() = default;
+
 coda_oss::u8string xml::lite::DOMElement::getNodeValue() const
 {
-    return getCharacterData(element);
+    return getCharacterData(*pElement);
 }
 
 void xml::lite::DOMElement::setNodeValue(const coda_oss::u8string& v)
 {
-    element.setCharacterData(v);
+    pElement->setCharacterData(v);
 }
 
-std::vector<xml::lite::DOMNode*> xml::lite::DOMElement::getElementsByTagName(const std::string&) const
+std::vector<xml::lite::DOMNode> xml::lite::DOMElement::getElementsByTagName(const std::string& tag) const
 {
-    return std::vector<xml::lite::DOMNode*>{};
+    const auto elements = pElement->getElementsByTagName(tag);
+
+    std::vector<xml::lite::DOMNode> retval;
+    for (auto& element : elements)
+    {
+        retval.emplace_back(DOMElement(*element));
+    }
+    return retval;
 }
