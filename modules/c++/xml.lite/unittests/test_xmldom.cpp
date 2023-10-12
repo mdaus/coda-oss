@@ -83,7 +83,50 @@ TEST_CASE(testXmlDOMWrite)
     TEST_ASSERT_EQ(actual, expected);
 }
 
+static const std::string& strUri()
+{
+    static const std::string retval("urn:example.com");
+    return retval;
+}
+static const xml::lite::Uri& uri()
+{
+    static const xml::lite::Uri retval(strUri());
+    return retval;
+}
+
+static const auto& strAttributeXml()
+{
+    static const std::string strXml_1_ = R"(
+<root>
+    <doc name="doc">
+        <a a="a">TEXT</a>
+        <values int="314" double="3.14" string="abc" bool="yes" empty=""/>
+        <ns_values xmlns:ns=")";
+    static const std::string strXml_2_ = R"(" ns:int="314" />
+    </doc>
+</root>)";
+    static const auto retval = strXml_1_ + strUri() + strXml_2_;
+    return retval;
+}
+
+TEST_CASE(testXmlDOMGetAttribute)
+{
+    io::StringStream ss;
+    ss.stream() << strAttributeXml();
+
+    auto parser = xml::lite::DOMImplementation().createParser();
+    auto document = parser.parse(ss);
+
+    const auto& root = document.getDocumentElement();
+    const auto& doc = getElementByTagName(root, "doc");
+    const auto& a = getElementByTagName(*doc, "a");
+
+    const auto value = a->getAttribute("a");
+    TEST_ASSERT_EQ("a", *value);
+}
+
 TEST_MAIN(
     TEST_CHECK(testXmlDOMParse);
     TEST_CHECK(testXmlDOMWrite);
+    TEST_CHECK(testXmlDOMGetAttribute);
 )

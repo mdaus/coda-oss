@@ -35,9 +35,12 @@
  * itself.
  */
 
+#include <assert.h>
+
 #include <memory>
 #include <coda_oss/string.h>
 #include <coda_oss/optional.h>
+#include <coda_oss/span.h>
 
 #include <config/Exports.h>
 
@@ -111,9 +114,31 @@ private:
     std::unique_ptr<Element> pOwnedElement_;
 };
 
-inline DOMNodeList getElementsByTagName(const DOMNode& node, const std::string& tag)
+inline auto getElementsByTagName(const DOMElement& element, const std::string& tag)
 {
-    return dynamic_cast<const xml::lite::DOMElement&>(node).getElementsByTagName(tag);
+    return element.getElementsByTagName(tag);
+}
+inline auto getElementsByTagName(const DOMNode& node, const std::string& tag)
+{
+    return getElementsByTagName(dynamic_cast<const xml::lite::DOMElement&>(node), tag);
+}
+
+inline std::unique_ptr<DOMNode> getNodeByTagName(const DOMElement& element, const std::string& tag)
+{
+    auto elements = getElementsByTagName(element, tag);
+    assert(coda_oss::ssize(elements) == 1);
+    return std::move(elements[0]);
+}
+inline std::unique_ptr<DOMElement> getElementByTagName(const DOMElement& element, const std::string& tag)
+{
+    auto node = getNodeByTagName(element, tag);
+
+    std::unique_ptr<DOMElement> retval;
+    if (dynamic_cast<const DOMElement*>(node.get())) // right type?
+    {
+        retval.reset(dynamic_cast<DOMElement*>(node.release())); // transfer ownership
+    }
+    return retval;
 }
 
 }
