@@ -36,6 +36,18 @@ xml::lite::DOMDocument::DOMDocument(std::shared_ptr<DOMConfiguration> config, Do
 {
 }
 
+coda_oss::u8string xml::lite::DOMDocument::getNodeValue() const
+{
+    return getCharacterData(getRootElement(pDocument));
+}
+
+xml::lite::Uri xml::lite::DOMDocument::getNamespaceURI() const
+{
+    xml::lite::Uri retval;
+    getRootElement(pDocument).getUri(retval);
+    return retval;
+}
+
 xml::lite::DOMConfiguration& xml::lite::DOMDocument::getDomConfig()
 {
     return *pConfiguration;

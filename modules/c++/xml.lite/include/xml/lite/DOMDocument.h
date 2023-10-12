@@ -74,6 +74,12 @@ public:
     DOMDocument& operator=(DOMDocument&&) = default;
 
     /*!
+     *  See DOMNode.hpp
+     */
+    coda_oss::u8string getNodeValue() const override;
+    Uri getNamespaceURI() const override;
+
+    /*!
      *  See DOMDocument.hpp
      */
     DOMElement createElementNS(const Uri& uri, const std::string& q) const;

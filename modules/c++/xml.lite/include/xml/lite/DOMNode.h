@@ -57,11 +57,11 @@ public:
      *  See DOMNode.hpp
      */
     //virtual coda_oss::u8string getNodeName() const;
-    virtual coda_oss::u8string getNodeValue() const;
+    virtual coda_oss::u8string getNodeValue() const = 0;
 
     virtual void setNodeValue(const coda_oss::u8string&);
 
-    virtual Uri getNamespaceURI() const;
+    virtual Uri getNamespaceURI() const = 0;
     virtual std::string getPrefix() const;
     virtual std::string getLocalName() const;
     virtual void setPrefix(const std::string&) const;

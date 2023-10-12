@@ -30,19 +30,9 @@
 //    throw std::logic_error("not implemented: DOMNode::getNodeName()");
 //}
 
-coda_oss::u8string xml::lite::DOMNode::getNodeValue() const
-{
-    throw std::logic_error("not implemented: DOMNode::getNodeValue()");
-}
-
 void xml::lite::DOMNode::setNodeValue(const coda_oss::u8string&)
 {
     throw std::logic_error("not implemented: DOMNode::setNodeValue()");
-}
-
-xml::lite::Uri xml::lite::DOMNode::getNamespaceURI() const
-{
-    throw std::logic_error("not implemented: DOMNode::getNamespaceURI()");
 }
 
 std::string xml::lite::DOMNode::getPrefix() const
