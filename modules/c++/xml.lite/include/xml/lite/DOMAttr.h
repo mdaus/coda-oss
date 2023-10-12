@@ -63,6 +63,7 @@ public:
     /*!
      *  See DOMNode.hpp
      */
+    std::string getNodeName() const override;
     Uri getNamespaceURI() const override;
     std::string getPrefix() const override;
     std::string getLocalName() const override;

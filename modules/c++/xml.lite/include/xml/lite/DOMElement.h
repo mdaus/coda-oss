@@ -73,7 +73,7 @@ struct CODA_OSS_API DOMElement final : public DOMNode
     /*!
      *  See DOMNode.hpp
      */
-    // coda_oss::u8string getNodeName() const override;
+    std::string getNodeName() const override;
     coda_oss::u8string getNodeValue() const override;
 
     void setNodeValue(const coda_oss::u8string&) override;

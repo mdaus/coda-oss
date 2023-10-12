@@ -76,6 +76,7 @@ public:
     /*!
      *  See DOMNode.hpp
      */
+    std::string getNodeName() const override;
     coda_oss::u8string getNodeValue() const override;
     Uri getNamespaceURI() const override;
 

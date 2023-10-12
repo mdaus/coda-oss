@@ -56,7 +56,7 @@ public:
     /*!
      *  See DOMNode.hpp
      */
-    //virtual coda_oss::u8string getNodeName() const;
+    virtual std::string getNodeName() const = 0;
     virtual coda_oss::u8string getNodeValue() const;
 
     virtual void setNodeValue(const coda_oss::u8string&);

@@ -36,9 +36,15 @@ xml::lite::DOMDocument::DOMDocument(std::shared_ptr<DOMConfiguration> config, Do
 {
 }
 
+// See the table at https://xerces.apache.org/xerces-c/apiDocs-3/classDOMNode.html#aa92ed11988e02ff704493d97b18c2b37
+std::string xml::lite::DOMDocument::getNodeName() const
+{
+    return "#document";
+}
+
 coda_oss::u8string xml::lite::DOMDocument::getNodeValue() const
 {
-    return getCharacterData(getRootElement(pDocument));
+    return coda_oss::u8string{}; // i.e., NULL
 }
 
 xml::lite::Uri xml::lite::DOMDocument::getNamespaceURI() const

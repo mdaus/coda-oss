@@ -52,6 +52,11 @@ const xml::lite::Element& xml::lite::DOMElement::getElement() const
     return getElement_(pElement_, pOwnedElement_);
 }
 
+std::string xml::lite::DOMElement::getNodeName() const
+{
+    return getElement().getLocalName();
+}
+
 coda_oss::u8string xml::lite::DOMElement::getNodeValue() const
 {
     return getCharacterData(getElement());

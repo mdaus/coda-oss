@@ -30,6 +30,11 @@ xml::lite::DOMAttr::DOMAttr(AttributeNode& node) :
 {
 }
 
+std::string xml::lite::DOMAttr::getNodeName() const
+{
+    return getName();
+}
+
 xml::lite::Uri xml::lite::DOMAttr::getNamespaceURI() const
 {
     xml::lite::Uri retval;

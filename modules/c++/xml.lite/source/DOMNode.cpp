@@ -25,11 +25,6 @@
 
 #include <stdexcept>
 
-//coda_oss::u8string xml::lite::DOMNode::getNodeName() const
-//{
-//    throw std::logic_error("not implemented: DOMNode::getNodeName()");
-//}
-
  coda_oss::u8string xml::lite::DOMNode::getNodeValue() const
 {
      throw std::logic_error("not implemented: DOMNode::getNodeValue()");
