@@ -27,9 +27,9 @@
 #include <TestCase.h>
 
 #include <str/Convert.h>
-#include <xml/lite/DOMParser.h>
-#include <xml/lite/DOMDocument.h>
-#include <xml/lite/DOMSerializer.h>
+#include <xml/dom/DOMParser.h>
+#include <xml/dom/DOMDocument.h>
+#include <xml/dom/DOMSerializer.h>
 
 static const std::string& text()
 {

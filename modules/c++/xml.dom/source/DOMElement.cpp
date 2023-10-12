@@ -21,7 +21,7 @@
  *
  */
 
-#include "xml/lite/DOMElement.h"
+#include "xml/dom/DOMElement.h"
 
 xml::lite::DOMElement::DOMElement(Element& element) : pElement_(&element)
 {

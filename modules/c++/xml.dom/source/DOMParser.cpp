@@ -21,7 +21,7 @@
  *
  */
 
-#include "xml/lite/DOMParser.h"
+#include "xml/dom/DOMParser.h"
 
 
 #include <assert.h>

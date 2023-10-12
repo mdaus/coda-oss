@@ -21,10 +21,10 @@
  *
  */
 
-#include "xml/lite/DOMDocument.h"
+#include "xml/dom/DOMDocument.h"
 
 #include "xml/lite/Document.h"
-#include "xml/lite/DOMElement.h"
+#include "xml/dom/DOMElement.h"
 
 xml::lite::DOMDocument::DOMDocument() :
     pParser(std::make_unique<xml::lite::MinidomParser>()), pDocument(pParser->getDocument())

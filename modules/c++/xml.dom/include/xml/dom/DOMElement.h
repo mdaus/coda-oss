@@ -39,9 +39,9 @@
 #include <coda_oss/string.h>
 
 #include <config/Exports.h>
+#include <xml/lite/Element.h>
 
 #include "DOMNode.h"
-#include "Element.h"
 
 namespace xml
 {

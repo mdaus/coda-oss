@@ -29,7 +29,7 @@
 #include <config/Exports.h>
 #include <io/OutputStream.h>
 
-#include "xml/lite/DOMConfiguration.h"
+#include "DOMConfiguration.h"
 
 /*!
  * \file DOMParser.h

@@ -40,9 +40,9 @@
 #include <vector>
 
 #include <config/Exports.h>
+#include <xml/lite/MinidomParser.h>
 
 #include "DOMElement.h"
-#include "MinidomParser.h"
 
 namespace xml
 {

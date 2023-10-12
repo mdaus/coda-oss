@@ -21,7 +21,7 @@
  *
  */
 
-#include "xml/lite/DOMNode.h"
+#include "xml/dom/DOMNode.h"
 
 #include <stdexcept>
 

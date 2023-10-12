@@ -29,7 +29,7 @@
 
 #include <config/Exports.h>
 
-#include "QName.h"
+#include <xml/lite/QName.h>
 
 namespace xml
 {

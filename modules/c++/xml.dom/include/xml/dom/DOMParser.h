@@ -27,8 +27,8 @@
 
 #include <config/Exports.h>
 #include <io/InputStream.h>
+#include <xml/lite/MinidomParser.h>
 
-#include "MinidomParser.h"
 #include "DOMConfiguration.h"
 
 /*!

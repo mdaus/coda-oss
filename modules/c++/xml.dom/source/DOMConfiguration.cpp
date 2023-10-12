@@ -21,8 +21,7 @@
  *
  */
 
-#include "xml/lite/DOMConfiguration.h"
-
+#include "xml/dom/DOMConfiguration.h"
 
 #include <assert.h>
 

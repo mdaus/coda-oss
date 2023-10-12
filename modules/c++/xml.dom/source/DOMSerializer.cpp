@@ -21,14 +21,14 @@
  *
  */
 
-#include "xml/lite/DOMSerializer.h"
+#include "xml/dom/DOMSerializer.h"
 
 
 #include <assert.h>
 
 #include <io/StringStream.h>
 
-#include "xml/lite/DOMElement.h"
+#include "xml/dom/DOMElement.h"
 
 xml::lite::DOMConfiguration& xml::lite::DOMSerializer::getDomConfig()
 {
