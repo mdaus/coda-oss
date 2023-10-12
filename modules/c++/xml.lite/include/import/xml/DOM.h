@@ -28,3 +28,4 @@
 #include "xml/lite/DOMNode.h"
 #include "xml/lite/DOMParser.h"
 #include "xml/lite/DOMSerializer.h"
+#include "xml/lite/DOMImplementation.h"

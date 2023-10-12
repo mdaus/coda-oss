@@ -29,7 +29,7 @@
 #include <config/Exports.h>
 #include <io/OutputStream.h>
 
-#include "xml/lite/DOMConfiguration.h"
+#include "DOMConfiguration.h"
 
 /*!
  * \file DOMParser.h
@@ -50,13 +50,16 @@ struct DOMNode;
  */
 class CODA_OSS_API DOMSerializer final
 {
-    DOMConfiguration configuration;
+    DOMConfiguration mConfiguration;
 
 public:
+    DOMSerializer(const DOMConfiguration&);
+
     /*!
      *  See DOMLSSerializer.hpp
      */
     DOMConfiguration& getDomConfig();
+    const DOMConfiguration& getDomConfig() const;
     bool write(const DOMNode&, io::OutputStream&) const;
     coda_oss::u8string writeToString(const DOMNode&) const;
 };

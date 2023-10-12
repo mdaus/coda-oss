@@ -6,9 +6,7 @@
 #include <xml/lite/QName.h>
 #include <xml/lite/MinidomParser.h>
 #include <xml/lite/Validator.h>
-#include <xml/lite/DOMParser.h>
-#include <xml/lite/DOMDocument.h>
-#include <xml/lite/DOMSerializer.h>
+#include <import/xml/DOM.h>
 
 namespace xml_lite
 {

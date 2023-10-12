@@ -30,6 +30,7 @@
 #include <xml/lite/DOMParser.h>
 #include <xml/lite/DOMDocument.h>
 #include <xml/lite/DOMSerializer.h>
+#include <xml/lite/DOMImplementation.h>
 
 static const std::string& text()
 {
@@ -48,7 +49,7 @@ TEST_CASE(testXmlDOMParse)
     ss.stream() << strXml();
     TEST_ASSERT_EQ(ss.stream().str(), strXml());
 
-    xml::lite::DOMParser parser;
+    auto parser = xml::lite::DOMImplementation().createParser();
     auto doc = parser.parse(ss);
 
     const auto& root = doc.getDocumentElement();
@@ -73,7 +74,7 @@ TEST_CASE(testXmlDOMWrite)
     xml::lite::DOMDocument document;
     auto rootElement = document.createElementNS("" /*uri*/, "root");
 
-    const xml::lite::DOMSerializer serializer;
+    const auto serializer = xml::lite::DOMImplementation().createSerializer();
 
     io::StringStream output;
     serializer.write(rootElement, output);

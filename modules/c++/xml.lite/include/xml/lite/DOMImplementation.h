@@ -27,6 +27,7 @@
 
 #include "DOMParser.h"
 #include "DOMSerializer.h"
+#include "DOMConfiguration.h"
 
 /*!
  * \file DOMImplementation.h
@@ -49,8 +50,9 @@ struct CODA_OSS_API DOMImplementation final
      */
     DOMParser createParser() const;
     DOMSerializer createSerializer() const;
+
+    DOMConfiguration configuration;
 };
 
 }
 }
-

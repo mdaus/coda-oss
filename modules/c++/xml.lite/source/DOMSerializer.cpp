@@ -30,19 +30,29 @@
 
 #include "xml/lite/DOMElement.h"
 
+xml::lite::DOMSerializer::DOMSerializer(const DOMConfiguration& configuration) :
+    mConfiguration(configuration)
+{
+}
+
 xml::lite::DOMConfiguration& xml::lite::DOMSerializer::getDomConfig()
 {
-    return configuration;
+    return mConfiguration;
 }
+const xml::lite::DOMConfiguration& xml::lite::DOMSerializer::getDomConfig() const
+{
+    return mConfiguration;
+}
+
 
 bool xml::lite::DOMSerializer::write(const DOMNode& node, io::OutputStream& os) const
 {
     if (auto pDOMElement = dynamic_cast<const DOMElement*>(&node))
     {
         // look at "prettyPrint" and "consoleOutput" to determine method to call
-        const auto consoleOutput = configuration.getParameter("consoleOutput");
+        const auto consoleOutput = getDomConfig().getParameter("consoleOutput");
         if (!consoleOutput) return false;  // should always be set
-        const auto prettyPrint = configuration.getParameter("prettyPrint");
+        const auto prettyPrint = getDomConfig().getParameter("prettyPrint");
         if (!prettyPrint) return false;  // should always be set
 
         auto& element = pDOMElement->details_getElement_();

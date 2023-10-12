@@ -23,3 +23,12 @@
 
 #include "xml/lite/DOMImplementation.h"
 
+xml::lite::DOMParser xml::lite::DOMImplementation::createParser() const
+{
+    return xml::lite::DOMParser(configuration);
+}
+
+xml::lite::DOMSerializer xml::lite::DOMImplementation::createSerializer() const
+{
+    return xml::lite::DOMSerializer(configuration);
+}
