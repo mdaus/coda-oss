@@ -34,12 +34,12 @@
 #include <config/Exports.h>
 
 #include "DOMNode.h"
-#include "Attributes.h"
 
 namespace xml
 {
 namespace lite
 {
+struct AttributeNode;
 
 /*!
  * \class DOMAttr
@@ -51,8 +51,8 @@ class CODA_OSS_API DOMAttr final : public DOMNode
     AttributeNode* pAttributeNode = nullptr;
 
 public:
-
     DOMAttr() = default;
+    DOMAttr(AttributeNode&);
     ~DOMAttr() = default;
 
     DOMAttr(const DOMAttr&) = delete;

@@ -79,6 +79,16 @@ coda_oss::optional<std::string> xml::lite::DOMElement::getAttribute(const std::s
     }
     return attributes[idx].getValue();
 }
+coda_oss::optional<xml::lite::DOMAttr> xml::lite::DOMElement::getAttributeNode(const std::string& name)
+{
+    auto&& attributes = getElement().getAttributes();
+    const auto idx = attributes.getIndex(name);
+    if (idx < 0)
+    {
+        return coda_oss::optional<xml::lite::DOMAttr>{};  // empty optional
+    }
+    return DOMAttr(attributes[idx]);
+}
 void xml::lite::DOMElement::setAttribute(const std::string& name, const std::string& value)
 {
     getElement().getAttributes()[name] = value;
@@ -98,15 +108,33 @@ void  xml::lite::DOMElement::setAttributeNS(const QName& q, const std::string& v
 {
     getElement().getAttributes()[q] = value;
 }
-
-xml::lite::DOMNodeList xml::lite::DOMElement::getElementsByTagName(const std::string& tag) const
+coda_oss::optional<xml::lite::DOMAttr> xml::lite::DOMElement::getAttributeNodeNS(const QName& q)
 {
-    const auto elements = getElement().getElementsByTagName(tag);
+    auto&& attributes = getElement().getAttributes();
+    const auto idx = attributes.getIndex(q);
+    if (idx < 0)
+    {
+        return coda_oss::optional<xml::lite::DOMAttr>{};  // empty optional
+    }
+    return DOMAttr(attributes[idx]);
+}
 
+static auto to_DOMNodeList(const std::vector<xml::lite::Element*>& elements)
+{
     xml::lite::DOMNodeList retval;
     for (auto& element : elements)
     {
-        retval.emplace_back(std::make_unique<DOMElement>(*element));
+        retval.emplace_back(std::make_unique<xml::lite::DOMElement>(*element));
     }
     return retval;
+}
+xml::lite::DOMNodeList xml::lite::DOMElement::getElementsByTagName(const std::string& tag) const
+{
+    const auto elements = getElement().getElementsByTagName(tag);
+    return to_DOMNodeList(elements);
+}
+xml::lite::DOMNodeList xml::lite::DOMElement::getElementsByTagNameNS(const QName& q) const
+{
+    const auto elements = getElement().getElementsByTagNameNS(q.getName());
+    return to_DOMNodeList(elements);
 }

@@ -23,6 +23,13 @@
 
 #include "xml/lite/DOMAttr.h"
 
+#include "xml/lite/Attributes.h"
+
+xml::lite::DOMAttr::DOMAttr(AttributeNode& node) :
+    pAttributeNode(&node)
+{
+}
+
 xml::lite::Uri xml::lite::DOMAttr::getNamespaceURI() const
 {
     xml::lite::Uri retval;
