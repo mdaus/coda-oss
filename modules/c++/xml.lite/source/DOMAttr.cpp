@@ -36,3 +36,26 @@ xml::lite::Uri xml::lite::DOMAttr::getNamespaceURI() const
     pAttributeNode->getUri(retval);
     return retval;
 }
+
+std::string xml::lite::DOMAttr::getPrefix() const
+{
+    return pAttributeNode->getPrefix();
+}
+
+std::string xml::lite::DOMAttr::getLocalName() const
+{
+    return pAttributeNode->getLocalName();
+}
+std::string xml::lite::DOMAttr::getName() const
+{
+    return getLocalName();
+}
+
+std::string xml::lite::DOMAttr::getValue() const
+{
+    return pAttributeNode->getValue();
+}
+void xml::lite::DOMAttr::setValue(const std::string& v)
+{
+    pAttributeNode->setValue(v);
+}

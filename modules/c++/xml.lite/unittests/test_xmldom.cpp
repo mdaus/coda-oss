@@ -120,6 +120,27 @@ TEST_CASE(testXmlDOMGetAttribute)
     TEST_ASSERT_EQ("a", *value);
 }
 
+TEST_CASE(testXmlDOMGetAttributeNode)
+{
+    io::StringStream ss;
+    ss.stream() << strAttributeXml();
+
+    auto parser = xml::lite::DOMImplementation().createParser();
+    auto document = parser.parse(ss);
+
+    auto root = document.getDocumentElement();
+    auto doc = getElementByTagName(root, "doc");
+    auto a = getElementByTagName(*doc, "a");
+
+    auto node = a->getAttributeNode("asdf");
+    TEST_ASSERT(!node.has_value());
+
+    node = a->getAttributeNode("a");
+    TEST_ASSERT(node.has_value());
+    const auto value = node->getValue();
+    TEST_ASSERT_EQ("a", value);
+}
+
 TEST_MAIN(
     TEST_CHECK(testXmlDOMParse);
     TEST_CHECK(testXmlDOMWrite);
