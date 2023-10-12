@@ -52,12 +52,12 @@ TEST_CASE(testXmlDOMParse)
     auto parser = xml::lite::DOMImplementation().createParser();
     auto doc = parser.parse(ss);
 
-    const auto& root = doc.getDocumentElement();
+    auto root = doc.getDocumentElement();
 
-    const auto docElements = root.getElementsByTagName("doc");
+    auto docElements = root.getElementsByTagName("doc");
     TEST_ASSERT_EQ(std::ssize(docElements), 1);
 
-    const auto aElements = getElementsByTagName(*docElements[0], "a");
+    auto aElements = getElementsByTagName(*docElements[0], "a");
     TEST_ASSERT_EQ(std::ssize(aElements), 1);
     auto& a = *(aElements[0]);
 
@@ -86,11 +86,6 @@ TEST_CASE(testXmlDOMWrite)
 static const std::string& strUri()
 {
     static const std::string retval("urn:example.com");
-    return retval;
-}
-static const xml::lite::Uri& uri()
-{
-    static const xml::lite::Uri retval(strUri());
     return retval;
 }
 

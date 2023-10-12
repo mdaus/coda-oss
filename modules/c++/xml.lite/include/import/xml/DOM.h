@@ -22,10 +22,12 @@
 
 #pragma once
 
+#include "xml/lite/DOMAttr.h"
 #include "xml/lite/DOMConfiguration.h"
-#include "xml/lite/DOMElement.h"
 #include "xml/lite/DOMDocument.h"
+#include "xml/lite/DOMElement.h"
+#include "xml/lite/DOMImplementation.h"
 #include "xml/lite/DOMNode.h"
 #include "xml/lite/DOMParser.h"
 #include "xml/lite/DOMSerializer.h"
-#include "xml/lite/DOMImplementation.h"
+

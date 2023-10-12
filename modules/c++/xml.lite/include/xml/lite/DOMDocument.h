@@ -83,7 +83,8 @@ public:
      *  See DOMDocument.hpp
      */
     DOMElement createElementNS(const QName&) const;
-    DOMElement getDocumentElement() const;
+    const DOMElement getDocumentElement() const;
+    DOMElement getDocumentElement();
 
     DOMConfiguration& getDomConfig();
     const DOMConfiguration& getDomConfig() const;

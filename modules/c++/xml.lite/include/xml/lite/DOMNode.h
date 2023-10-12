@@ -68,7 +68,8 @@ public:
 
 };
 
-using DOMNodeList = std::vector<std::unique_ptr<xml::lite::DOMNode>>;
+using DOMMutableNodeList = std::vector<std::unique_ptr<xml::lite::DOMNode>>;
+using DOMConstNodeList = std::vector<std::unique_ptr<const xml::lite::DOMNode>>;
 
 }
 }

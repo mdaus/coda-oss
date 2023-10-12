@@ -63,7 +63,11 @@ xml::lite::DOMElement xml::lite::DOMDocument::createElementNS(const QName& q) co
     return xml::lite::DOMElement(std::move(pElement));
 }
 
- xml::lite::DOMElement xml::lite::DOMDocument::getDocumentElement() const
+const xml::lite::DOMElement xml::lite::DOMDocument::getDocumentElement() const
 {
      return DOMElement(getRootElement(*pDocument));
  }
+xml::lite::DOMElement xml::lite::DOMDocument::getDocumentElement()
+{
+    return DOMElement(getRootElement(*pDocument));
+}
