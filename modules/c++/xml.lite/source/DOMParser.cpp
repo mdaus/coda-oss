@@ -28,8 +28,8 @@
 
 #include "xml/lite/DOMDocument.h"
 
-xml::lite::DOMParser::DOMParser(const DOMConfiguration& configuration) :
-    pParser(std::make_unique<MinidomParser>()), mConfiguration(configuration)
+xml::lite::DOMParser::DOMParser(std::shared_ptr<DOMConfiguration> config) :
+    pParser(std::make_unique<MinidomParser>()), pConfiguration(config)
 {
 }
 
@@ -37,11 +37,11 @@ xml::lite::DOMParser::~DOMParser() = default;
 
 xml::lite::DOMConfiguration& xml::lite::DOMParser::getDomConfig()
 {
-    return mConfiguration;
+    return *pConfiguration;
 }
 const xml::lite::DOMConfiguration& xml::lite::DOMParser::getDomConfig() const
 {
-    return mConfiguration;
+    return *pConfiguration;
 }
 
 xml::lite::DOMDocument xml::lite::DOMParser::parse(io::InputStream& is)

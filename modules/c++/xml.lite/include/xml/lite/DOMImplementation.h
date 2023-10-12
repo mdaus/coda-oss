@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include <config/Exports.h>
 
 #include "DOMParser.h"
@@ -45,13 +47,22 @@ namespace lite
  */
 struct CODA_OSS_API DOMImplementation final
 {
+    DOMImplementation();
+    ~DOMImplementation();
+
     /*!
      *  See DOMImplementationLS.hpp
      */
     DOMParser createParser() const;
     DOMSerializer createSerializer() const;
 
-    DOMConfiguration configuration;
+private:
+    // We want a new DOMConfiguration for each DOMImplementation, but
+    // we want that configuration to be *shared* among everything created
+    // via the factory function.  Furthermore, we don't want to force clients
+    // to keep an DOMImplementation instance around, it's convenient
+    // to write `auto parser = DOMImplementation().createParser();`.
+    std::shared_ptr<DOMConfiguration> pConfiguration;
 };
 
 }

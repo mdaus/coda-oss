@@ -30,20 +30,19 @@
 
 #include "xml/lite/DOMElement.h"
 
-xml::lite::DOMSerializer::DOMSerializer(const DOMConfiguration& configuration) :
-    mConfiguration(configuration)
+xml::lite::DOMSerializer::DOMSerializer(std::shared_ptr<DOMConfiguration> config) :
+    pConfiguration(config)
 {
 }
 
 xml::lite::DOMConfiguration& xml::lite::DOMSerializer::getDomConfig()
 {
-    return mConfiguration;
+    return *pConfiguration;
 }
 const xml::lite::DOMConfiguration& xml::lite::DOMSerializer::getDomConfig() const
 {
-    return mConfiguration;
+    return *pConfiguration;
 }
-
 
 bool xml::lite::DOMSerializer::write(const DOMNode& node, io::OutputStream& os) const
 {

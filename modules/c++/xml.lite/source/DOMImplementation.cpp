@@ -23,12 +23,18 @@
 
 #include "xml/lite/DOMImplementation.h"
 
+xml::lite::DOMImplementation::DOMImplementation() :
+    pConfiguration(std::make_shared<DOMConfiguration>())
+{
+}
+xml::lite::DOMImplementation::~DOMImplementation() = default;
+
 xml::lite::DOMParser xml::lite::DOMImplementation::createParser() const
 {
-    return xml::lite::DOMParser(configuration);
+    return xml::lite::DOMParser(pConfiguration);
 }
 
 xml::lite::DOMSerializer xml::lite::DOMImplementation::createSerializer() const
 {
-    return xml::lite::DOMSerializer(configuration);
+    return xml::lite::DOMSerializer(pConfiguration);
 }

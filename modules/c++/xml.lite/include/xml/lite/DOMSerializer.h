@@ -50,10 +50,10 @@ struct DOMNode;
  */
 class CODA_OSS_API DOMSerializer final
 {
-    DOMConfiguration mConfiguration;
+    std::shared_ptr<DOMConfiguration> pConfiguration;
 
 public:
-    DOMSerializer(const DOMConfiguration&);
+    DOMSerializer(std::shared_ptr<DOMConfiguration>);
 
     /*!
      *  See DOMLSSerializer.hpp

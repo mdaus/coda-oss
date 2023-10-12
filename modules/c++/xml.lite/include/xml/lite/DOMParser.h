@@ -52,10 +52,10 @@ struct DOMDocument;
 class CODA_OSS_API DOMParser final
 {
     std::unique_ptr<MinidomParser> pParser;
-    DOMConfiguration mConfiguration;
+    std::shared_ptr<DOMConfiguration> pConfiguration;
 
 public:
-    DOMParser(const DOMConfiguration&);
+    DOMParser(std::shared_ptr<DOMConfiguration>);
     ~DOMParser();
 
     DOMParser(const DOMParser&) = delete;
