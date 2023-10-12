@@ -30,6 +30,7 @@
 
 #include "MinidomParser.h"
 #include "DOMConfiguration.h"
+#include "DOMDocument.h"
 
 /*!
  * \file DOMParser.h
@@ -42,8 +43,6 @@ namespace xml
 {
 namespace lite
 {
-struct DOMDocument;
-
 /*!
  * \class DOMParser
  * \brief Simple wrapper around MinidomParser.
@@ -62,7 +61,6 @@ public:
     DOMParser& operator=(const DOMParser&) = delete;
     DOMParser(DOMParser&&) = default;
     DOMParser& operator=(DOMParser&&) = default;
-
 
     /*!
      *  See DOMLSParser.hpp

@@ -43,6 +43,7 @@
 
 #include "DOMElement.h"
 #include "MinidomParser.h"
+#include "QName.h"
 
 namespace xml
 {
@@ -55,8 +56,12 @@ struct Document;
  * \brief Wrapper around Document that tries to follow
  * https://xerces.apache.org/xerces-c/ApacheDOMC++Binding.html
  */
-struct CODA_OSS_API DOMDocument  final : public DOMNode
+class CODA_OSS_API DOMDocument  final : public DOMNode
 {
+    std::unique_ptr<MinidomParser> pParser;
+    Document* pDocument = nullptr;
+
+public:
     DOMDocument();
     explicit DOMDocument(Document&);
     ~DOMDocument() = default;
@@ -69,12 +74,9 @@ struct CODA_OSS_API DOMDocument  final : public DOMNode
     /*!
      *  See DOMDocument.hpp
      */
-    DOMElement createElementNS(const std::string& uri, const std::string& q) const;
+    DOMElement createElementNS(const Uri& uri, const std::string& q) const;
+    DOMElement createElementNS(const QName&) const;
     DOMElement getDocumentElement() const;
-
-private:
-    std::unique_ptr<MinidomParser> pParser;
-    Document* pDocument = nullptr;
 };
 
 }
