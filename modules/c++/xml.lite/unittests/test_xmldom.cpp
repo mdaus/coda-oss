@@ -77,9 +77,10 @@ TEST_CASE(testXmlDOMWrite)
 
     io::StringStream output;
     serializer.write(rootElement, output);
-    //expected = "<root>" + characterData + "</root>";
+    const auto actual = output.stream().str();
+    const auto expected = "<root/>";
+    TEST_ASSERT_EQ(actual, expected);
 }
-
 
 TEST_MAIN(
     TEST_CHECK(testXmlDOMParse);
