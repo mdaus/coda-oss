@@ -29,6 +29,13 @@ xml::lite::DOMImplementation::DOMImplementation() :
 }
 xml::lite::DOMImplementation::~DOMImplementation() = default;
 
+xml::lite::DOMDocument xml::lite::DOMImplementation::createDocument() const
+{
+    return xml::lite::DOMDocument(pConfiguration);
+}
+//DOMDocument createDocument(const QName&) const;
+//DOMDocument createDocument(const Uri&, const std::string&) const;
+
 xml::lite::DOMParser xml::lite::DOMImplementation::createParser() const
 {
     return xml::lite::DOMParser(pConfiguration);

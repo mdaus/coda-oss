@@ -49,5 +49,5 @@ xml::lite::DOMDocument xml::lite::DOMParser::parse(io::InputStream& is)
     pParser->parse(is);
     auto retval = pParser->getDocument();
     assert(retval != nullptr);
-    return DOMDocument(*retval);
+    return DOMDocument(pConfiguration, *retval);
 }

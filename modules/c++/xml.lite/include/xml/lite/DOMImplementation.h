@@ -27,9 +27,11 @@
 
 #include <config/Exports.h>
 
+#include "QName.h"
 #include "DOMParser.h"
 #include "DOMSerializer.h"
 #include "DOMConfiguration.h"
+#include "DOMDocument.h"
 
 /*!
  * \file DOMImplementation.h
@@ -49,6 +51,13 @@ struct CODA_OSS_API DOMImplementation final
 {
     DOMImplementation();
     ~DOMImplementation();
+
+    /*!
+     *  See DOMImplementation.hpp
+     */
+    DOMDocument createDocument() const;
+    DOMDocument createDocument(const QName&) const;
+    DOMDocument createDocument(const Uri&, const std::string&) const;
 
     /*!
      *  See DOMImplementationLS.hpp

@@ -44,6 +44,7 @@
 #include "DOMElement.h"
 #include "MinidomParser.h"
 #include "QName.h"
+#include "DOMConfiguration.h"
 
 namespace xml
 {
@@ -58,12 +59,13 @@ struct Document;
  */
 class CODA_OSS_API DOMDocument  final : public DOMNode
 {
+    std::shared_ptr<DOMConfiguration> pConfiguration;
     std::unique_ptr<MinidomParser> pParser;
     Document* pDocument = nullptr;
 
 public:
-    DOMDocument();
-    explicit DOMDocument(Document&);
+    explicit DOMDocument(std::shared_ptr<DOMConfiguration>);
+    explicit DOMDocument(std::shared_ptr<DOMConfiguration>, Document&);
     ~DOMDocument() = default;
 
     DOMDocument(const DOMDocument&) = delete;
@@ -77,6 +79,9 @@ public:
     DOMElement createElementNS(const Uri& uri, const std::string& q) const;
     DOMElement createElementNS(const QName&) const;
     DOMElement getDocumentElement() const;
+
+    DOMConfiguration& getDomConfig();
+    const DOMConfiguration& getDomConfig() const;
 };
 
 }

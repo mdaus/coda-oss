@@ -26,13 +26,23 @@
 #include "xml/lite/Document.h"
 #include "xml/lite/DOMElement.h"
 
-xml::lite::DOMDocument::DOMDocument() :
+xml::lite::DOMDocument::DOMDocument(std::shared_ptr<DOMConfiguration> config) :
+    pConfiguration(config),
     pParser(std::make_unique<xml::lite::MinidomParser>()), pDocument(pParser->getDocument())
 {
 }
-
-xml::lite::DOMDocument::DOMDocument(Document& doc) : pDocument(&doc)
+xml::lite::DOMDocument::DOMDocument(std::shared_ptr<DOMConfiguration> config, Document& doc) :
+    pConfiguration(config), pDocument(&doc)
 {
+}
+
+xml::lite::DOMConfiguration& xml::lite::DOMDocument::getDomConfig()
+{
+    return *pConfiguration;
+}
+const xml::lite::DOMConfiguration& xml::lite::DOMDocument::getDomConfig() const
+{
+    return *pConfiguration;
 }
 
 xml::lite::DOMElement xml::lite::DOMDocument::createElementNS(const QName& q) const
