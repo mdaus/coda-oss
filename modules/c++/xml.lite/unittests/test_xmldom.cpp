@@ -72,7 +72,7 @@ TEST_CASE(testXmlDOMParse)
 TEST_CASE(testXmlDOMWrite)
 {
     auto document = xml::lite::DOMImplementation().createDocument();
-    auto rootElement = document.createElementNS(xml::lite::Uri(), "root");
+    auto rootElement = document.createElementNS(xml::lite::QName(xml::lite::Uri(), "root"));
 
     const auto serializer = xml::lite::DOMImplementation().createSerializer();
 

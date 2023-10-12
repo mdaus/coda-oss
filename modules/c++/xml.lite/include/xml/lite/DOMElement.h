@@ -44,6 +44,7 @@
 #include "DOMNode.h"
 #include "DOMAttr.h"
 #include "Element.h"
+#include "QName.h"
 
 namespace xml
 {
@@ -80,8 +81,10 @@ struct CODA_OSS_API DOMElement final : public DOMNode
      *  See DOMElement.hpp
      */
     coda_oss::optional<std::string> getAttribute(const std::string&) const;
-    void setAttribute(const std::string& name, const std::string& value);
     DOMNodeList getElementsByTagName(const std::string& tag) const;
+    void setAttribute(const std::string& name, const std::string& value);
+    coda_oss::optional<std::string> getAttributeNS(const QName&) const;
+    void setAttributeNS(const QName&, const std::string& value);
 
     Element& details_getElement_()
     {

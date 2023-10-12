@@ -62,10 +62,6 @@ xml::lite::DOMElement xml::lite::DOMDocument::createElementNS(const QName& q) co
     std::unique_ptr<Element> pElement(pDocument->createElement(q.getName(), q.getUri().value));
     return xml::lite::DOMElement(std::move(pElement));
 }
-xml::lite::DOMElement xml::lite::DOMDocument::createElementNS(const Uri& uri, const std::string& q) const
-{
-    return createElementNS(QName(uri, q));
-}
 
  xml::lite::DOMElement xml::lite::DOMDocument::getDocumentElement() const
 {

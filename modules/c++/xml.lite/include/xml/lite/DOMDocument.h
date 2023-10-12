@@ -82,7 +82,6 @@ public:
     /*!
      *  See DOMDocument.hpp
      */
-    DOMElement createElementNS(const Uri& uri, const std::string& q) const;
     DOMElement createElementNS(const QName&) const;
     DOMElement getDocumentElement() const;
 

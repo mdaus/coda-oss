@@ -71,19 +71,32 @@ xml::lite::Uri xml::lite::DOMElement::getNamespaceURI() const
 
 coda_oss::optional<std::string> xml::lite::DOMElement::getAttribute(const std::string& name) const
 {
-    coda_oss::optional<std::string> retval;
-
     auto&& attributes = getElement().getAttributes();
     const auto idx = attributes.getIndex(name);
-    if (idx >= 0)
+    if (idx <  0)
     {
-        retval = attributes[idx].getValue();
+        return coda_oss::optional<std::string>{}; // empty optional
     }
-    return retval;
+    return attributes[idx].getValue();
 }
 void xml::lite::DOMElement::setAttribute(const std::string& name, const std::string& value)
 {
     getElement().getAttributes()[name] = value;
+}
+
+coda_oss::optional<std::string> xml::lite::DOMElement::getAttributeNS(const QName& q) const
+{
+    auto&& attributes = getElement().getAttributes();
+    const auto idx = attributes.getIndex(q);
+    if (idx < 0)
+    {
+        return coda_oss::optional<std::string>{};  // empty optional
+    }
+    return attributes[idx].getValue();
+}
+void  xml::lite::DOMElement::setAttributeNS(const QName& q, const std::string& value)
+{
+    getElement().getAttributes()[q] = value;
 }
 
 xml::lite::DOMNodeList xml::lite::DOMElement::getElementsByTagName(const std::string& tag) const
