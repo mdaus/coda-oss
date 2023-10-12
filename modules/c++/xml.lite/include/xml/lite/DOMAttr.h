@@ -3,7 +3,7 @@
  * =========================================================================
  * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
-  * © Copyright 2023, Maxar Technologies, Inc.
+ * © Copyright 2023, Maxar Technologies, Inc.
  *
  * xml.lite-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,52 +23,55 @@
 
 #pragma once
 
+/*!
+ * \file  DOMAttr.h
+ * \brief File describing the tree API
+ */
+
 #include <memory>
 #include <coda_oss/string.h>
-#include <vector>
 
 #include <config/Exports.h>
 
-#include "QName.h"
+#include "DOMNode.h"
+#include "Attributes.h"
 
 namespace xml
 {
 namespace lite
 {
+
 /*!
- * \class DOMNode
- * \brief Base class for DOMDocument, DOMAttribute, DOMElement, etc.
+ * \class DOMAttr
+ * \brief Wrapper around AttributeNode that tries to follow
  * https://xerces.apache.org/xerces-c/ApacheDOMC++Binding.html
  */
-struct CODA_OSS_API DOMNode
+class CODA_OSS_API DOMAttr final : public DOMNode
 {
-protected:
-    DOMNode() = default;
+    AttributeNode* pAttributeNode = nullptr;
 
 public:
-    virtual ~DOMNode() = default;
 
-    DOMNode(const DOMNode&) = delete;
-    DOMNode& operator=(const DOMNode&) = delete;
-    DOMNode(DOMNode&&) = default;
-    DOMNode& operator=(DOMNode&&) = default;
+    DOMAttr() = default;
+    ~DOMAttr() = default;
+
+    DOMAttr(const DOMAttr&) = delete;
+    DOMAttr& operator=(const DOMAttr&) = delete;
+    DOMAttr(DOMAttr&&) = default;
+    DOMAttr& operator=(DOMAttr&&) = default;
 
     /*!
      *  See DOMNode.hpp
      */
-    //virtual coda_oss::u8string getNodeName() const;
-    virtual coda_oss::u8string getNodeValue() const;
+    Uri getNamespaceURI() const override;
 
-    virtual void setNodeValue(const coda_oss::u8string&);
-
-    virtual Uri getNamespaceURI() const = 0;
-    virtual std::string getPrefix() const;
-    virtual std::string getLocalName() const;
-    virtual void setPrefix(const std::string&) const;
-
+    /*!
+     *  See DOMAttr.hpp
+     */
+    std::string getName() const;
+    std::string getValue() const;
+    void setValue(const std::string&);
 };
-
-using DOMNodeList = std::vector<std::unique_ptr<xml::lite::DOMNode>>;
 
 }
 }

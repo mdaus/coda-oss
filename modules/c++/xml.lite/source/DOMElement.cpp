@@ -69,6 +69,23 @@ xml::lite::Uri xml::lite::DOMElement::getNamespaceURI() const
     return retval;
 }
 
+coda_oss::optional<std::string> xml::lite::DOMElement::getAttribute(const std::string& name) const
+{
+    coda_oss::optional<std::string> retval;
+
+    auto&& attributes = getElement().getAttributes();
+    const auto idx = attributes.getIndex(name);
+    if (idx >= 0)
+    {
+        retval = attributes[idx].getValue();
+    }
+    return retval;
+}
+void xml::lite::DOMElement::setAttribute(const std::string& name, const std::string& value)
+{
+    getElement().getAttributes()[name] = value;
+}
+
 xml::lite::DOMNodeList xml::lite::DOMElement::getElementsByTagName(const std::string& tag) const
 {
     const auto elements = getElement().getElementsByTagName(tag);

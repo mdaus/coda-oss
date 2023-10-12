@@ -37,10 +37,12 @@
 
 #include <memory>
 #include <coda_oss/string.h>
+#include <coda_oss/optional.h>
 
 #include <config/Exports.h>
 
 #include "DOMNode.h"
+#include "DOMAttr.h"
 #include "Element.h"
 
 namespace xml
@@ -65,7 +67,7 @@ struct CODA_OSS_API DOMElement final : public DOMNode
     DOMElement& operator=(DOMElement&&) = default;
 
     /*!
-     *  See DOMElement.hpp
+     *  See DOMNode.hpp
      */
     // coda_oss::u8string getNodeName() const override;
     coda_oss::u8string getNodeValue() const override;
@@ -74,6 +76,11 @@ struct CODA_OSS_API DOMElement final : public DOMNode
 
     Uri getNamespaceURI() const override;
 
+    /*!
+     *  See DOMElement.hpp
+     */
+    coda_oss::optional<std::string> getAttribute(const std::string&) const;
+    void setAttribute(const std::string& name, const std::string& value);
     DOMNodeList getElementsByTagName(const std::string& tag) const;
 
     Element& details_getElement_()

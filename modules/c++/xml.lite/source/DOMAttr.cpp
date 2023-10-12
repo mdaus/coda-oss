@@ -21,37 +21,11 @@
  *
  */
 
-#include "xml/lite/DOMNode.h"
+#include "xml/lite/DOMAttr.h"
 
-#include <stdexcept>
-
-//coda_oss::u8string xml::lite::DOMNode::getNodeName() const
-//{
-//    throw std::logic_error("not implemented: DOMNode::getNodeName()");
-//}
-
- coda_oss::u8string xml::lite::DOMNode::getNodeValue() const
+xml::lite::Uri xml::lite::DOMAttr::getNamespaceURI() const
 {
-     throw std::logic_error("not implemented: DOMNode::getNodeValue()");
- }
-
-void xml::lite::DOMNode::setNodeValue(const coda_oss::u8string&)
-{
-    throw std::logic_error("not implemented: DOMNode::setNodeValue()");
+    xml::lite::Uri retval;
+    pAttributeNode->getUri(retval);
+    return retval;
 }
-
-std::string xml::lite::DOMNode::getPrefix() const
-{
-    throw std::logic_error("not implemented: DOMNode::getPrefix()");
-}
-
-std::string xml::lite::DOMNode::getLocalName() const
-{
-    throw std::logic_error("not implemented: DOMNode::getLocalName()");
-}
-
-void xml::lite::DOMNode::setPrefix(const std::string&) const
-{
-    throw std::logic_error("not implemented: DOMNode::setPrefix()");
-}
-
