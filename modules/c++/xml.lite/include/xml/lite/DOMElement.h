@@ -72,6 +72,8 @@ struct CODA_OSS_API DOMElement final : public DOMNode
 
     void setNodeValue(const coda_oss::u8string&) override;
 
+    Uri getNamespaceURI() const override;
+
     DOMNodeList getElementsByTagName(const std::string& tag) const;
 
     Element& details_getElement_()

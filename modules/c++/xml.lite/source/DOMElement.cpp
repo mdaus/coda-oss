@@ -62,6 +62,13 @@ void xml::lite::DOMElement::setNodeValue(const coda_oss::u8string& v)
     getElement().setCharacterData(v);
 }
 
+xml::lite::Uri xml::lite::DOMElement::getNamespaceURI() const
+{
+    xml::lite::Uri retval;
+    getElement().getUri(retval);
+    return retval;
+}
+
 xml::lite::DOMNodeList xml::lite::DOMElement::getElementsByTagName(const std::string& tag) const
 {
     const auto elements = getElement().getElementsByTagName(tag);
