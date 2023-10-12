@@ -23,6 +23,8 @@
 
 #include "xml/lite/DOMAttr.h"
 
+#include "str/Convert.h"
+
 #include "xml/lite/Attributes.h"
 
 xml::lite::DOMAttr::DOMAttr(AttributeNode& node) :
@@ -33,6 +35,11 @@ xml::lite::DOMAttr::DOMAttr(AttributeNode& node) :
 std::string xml::lite::DOMAttr::getNodeName() const
 {
     return getName();
+}
+
+coda_oss::u8string xml::lite::DOMAttr::getNodeValue() const
+{
+    return str::u8FromNative(getValue());
 }
 
 xml::lite::Uri xml::lite::DOMAttr::getNamespaceURI() const

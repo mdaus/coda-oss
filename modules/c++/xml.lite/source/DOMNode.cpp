@@ -28,7 +28,7 @@
  coda_oss::u8string xml::lite::DOMNode::getNodeValue() const
 {
      throw std::logic_error("not implemented: DOMNode::getNodeValue()");
- }
+}
 
 void xml::lite::DOMNode::setNodeValue(const coda_oss::u8string&)
 {

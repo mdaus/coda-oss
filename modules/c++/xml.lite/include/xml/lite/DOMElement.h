@@ -74,10 +74,6 @@ struct CODA_OSS_API DOMElement final : public DOMNode
      *  See DOMNode.hpp
      */
     std::string getNodeName() const override;
-    coda_oss::u8string getNodeValue() const override;
-
-    void setNodeValue(const coda_oss::u8string&) override;
-
     Uri getNamespaceURI() const override;
 
     /*!
@@ -159,6 +155,22 @@ inline auto getElementByTagName(DOMElement& element, const std::string& tag)
         retval.reset(dynamic_cast<DOMElement*>(node.release())); // transfer ownership
     }
     return retval;
+}
+
+// The DOM documentation (https://xerces.apache.org/xerces-c/apiDocs-3/classDOMNode.html) says that `nodeValue` should
+// be `null` for *DOMElement*.  It also says that the text is stored as a single *DOMText* node.
+// However, that API doesn't line-up very well with our existing **xml.lite** code; instead, we'll
+// "overload" `getTextContent()` and `setTextContent()`.  Note that these are intentionally
+// free functions, not the overridden *DOMNode* methods.
+CODA_OSS_API coda_oss::u8string getTextContent(const DOMElement&);
+inline coda_oss::u8string getTextContent(const DOMNode& node)
+{
+    return getTextContent(dynamic_cast<const DOMElement&>(node));
+}
+CODA_OSS_API void setTextContent(DOMElement&, const coda_oss::u8string&);
+inline void setTextContent(DOMNode& node, const coda_oss::u8string& v)
+{
+    setTextContent(dynamic_cast<DOMElement&>(node), v);
 }
 
 }

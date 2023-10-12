@@ -57,14 +57,14 @@ std::string xml::lite::DOMElement::getNodeName() const
     return getElement().getLocalName();
 }
 
-coda_oss::u8string xml::lite::DOMElement::getNodeValue() const
+coda_oss::u8string xml::lite::getTextContent(const DOMElement& element)
 {
-    return getCharacterData(getElement());
+    return getCharacterData(element.details_getElement_());
 }
 
-void xml::lite::DOMElement::setNodeValue(const coda_oss::u8string& v)
+void xml::lite::setTextContent(DOMElement& element, const coda_oss::u8string& v)
 {
-    getElement().setCharacterData(v);
+    element.details_getElement_().setCharacterData(v);
 }
 
 xml::lite::Uri xml::lite::DOMElement::getNamespaceURI() const

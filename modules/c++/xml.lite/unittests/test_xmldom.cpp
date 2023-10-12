@@ -61,11 +61,11 @@ TEST_CASE(testXmlDOMParse)
     TEST_ASSERT_EQ(std::ssize(aElements), 1);
     auto& a = *(aElements[0]);
 
-    auto characterData = a.getNodeValue();
+    auto characterData = getTextContent(a);
     TEST_ASSERT_EQ(str::to_native(characterData), text());
 
-    a.setNodeValue(str::u8FromNative(text()));
-    characterData = a.getNodeValue();
+    setTextContent(a, str::u8FromNative(text()));
+    characterData = getTextContent(a);
     TEST_ASSERT_EQ(str::to_native(characterData), text());
 }
 
