@@ -258,8 +258,11 @@
     <ClCompile Include="..\modules\drivers\highfive\unittests\tests_high_five_base.cpp">
       <Filter>hdf5.lite</Filter>
     </ClCompile>
-    <ClCompile Include="..\modules\c++\xml.lite\unittests\test_xmldom.cpp">
-      <Filter>xml.lite</Filter>
+    <ClCompile Include="..\modules\c++\xml.dom\unittests\test_xmldom.cpp">
+      <Filter>xml.dom</Filter>
+    </ClCompile>
+    <ClCompile Include="xml.dom.cpp">
+      <Filter>xml.dom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -320,6 +323,9 @@
     </Filter>
     <Filter Include="xml.lite">
       <UniqueIdentifier>{f4dfc761-e468-4305-84dc-f3579e46107e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xml.dom">
+      <UniqueIdentifier>{4a813331-5c94-46e0-96f5-1f2f6ee17df2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

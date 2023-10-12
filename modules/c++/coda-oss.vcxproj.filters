@@ -951,23 +951,23 @@
     <ClInclude Include="str\include\str\W1252string.h">
       <Filter>str</Filter>
     </ClInclude>
-    <ClInclude Include="xml.lite\include\xml\lite\DOMParser.h">
-      <Filter>xml.lite</Filter>
+    <ClInclude Include="xml.dom\include\xml\dom\DOMConfiguration.h">
+      <Filter>xml.dom</Filter>
     </ClInclude>
-    <ClInclude Include="xml.lite\include\xml\lite\DOMDocument.h">
-      <Filter>xml.lite</Filter>
+    <ClInclude Include="xml.dom\include\xml\dom\DOMDocument.h">
+      <Filter>xml.dom</Filter>
     </ClInclude>
-    <ClInclude Include="xml.lite\include\xml\lite\DOMNode.h">
-      <Filter>xml.lite</Filter>
+    <ClInclude Include="xml.dom\include\xml\dom\DOMElement.h">
+      <Filter>xml.dom</Filter>
     </ClInclude>
-    <ClInclude Include="xml.lite\include\xml\lite\DOMElement.h">
-      <Filter>xml.lite</Filter>
+    <ClInclude Include="xml.dom\include\xml\dom\DOMNode.h">
+      <Filter>xml.dom</Filter>
     </ClInclude>
-    <ClInclude Include="xml.lite\include\xml\lite\DOMSerializer.h">
-      <Filter>xml.lite</Filter>
+    <ClInclude Include="xml.dom\include\xml\dom\DOMParser.h">
+      <Filter>xml.dom</Filter>
     </ClInclude>
-    <ClInclude Include="xml.lite\include\xml\lite\DOMConfiguration.h">
-      <Filter>xml.lite</Filter>
+    <ClInclude Include="xml.dom\include\xml\dom\DOMSerializer.h">
+      <Filter>xml.dom</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1416,23 +1416,23 @@
     <ClCompile Include="unique\source\UUID.cpp">
       <Filter>unique</Filter>
     </ClCompile>
-    <ClCompile Include="xml.lite\source\DOMParser.cpp">
-      <Filter>xml.lite</Filter>
+    <ClCompile Include="xml.dom\source\DOMConfiguration.cpp">
+      <Filter>xml.dom</Filter>
     </ClCompile>
-    <ClCompile Include="xml.lite\source\DOMDocument.cpp">
-      <Filter>xml.lite</Filter>
+    <ClCompile Include="xml.dom\source\DOMDocument.cpp">
+      <Filter>xml.dom</Filter>
     </ClCompile>
-    <ClCompile Include="xml.lite\source\DOMNode.cpp">
-      <Filter>xml.lite</Filter>
+    <ClCompile Include="xml.dom\source\DOMElement.cpp">
+      <Filter>xml.dom</Filter>
     </ClCompile>
-    <ClCompile Include="xml.lite\source\DOMElement.cpp">
-      <Filter>xml.lite</Filter>
+    <ClCompile Include="xml.dom\source\DOMNode.cpp">
+      <Filter>xml.dom</Filter>
     </ClCompile>
-    <ClCompile Include="xml.lite\source\DOMSerializer.cpp">
-      <Filter>xml.lite</Filter>
+    <ClCompile Include="xml.dom\source\DOMParser.cpp">
+      <Filter>xml.dom</Filter>
     </ClCompile>
-    <ClCompile Include="xml.lite\source\DOMConfiguration.cpp">
-      <Filter>xml.lite</Filter>
+    <ClCompile Include="xml.dom\source\DOMSerializer.cpp">
+      <Filter>xml.dom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1528,6 +1528,9 @@
     </Filter>
     <Filter Include="coda_oss">
       <UniqueIdentifier>{59f3d9a1-06d3-4779-aef2-cc55223c3017}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xml.dom">
+      <UniqueIdentifier>{21b90236-d753-42d5-977c-4e507e878a1f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -62,6 +62,7 @@ add_subdirectory("math")
 add_subdirectory("mt")
 add_subdirectory("logging")
 add_subdirectory("xml.lite")
+add_subdirectory("xml.dom")
 add_subdirectory("net") # must be after "re"
 add_subdirectory("net.ssl") # must be after "net"
 add_subdirectory("plugin")
