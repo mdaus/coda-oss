@@ -67,11 +67,13 @@ public:
     std::string getPrefix() const;
     std::string getLocalName() const;
 
-    /*!
-     *  See DOMAttr.hpp
-     */
+
+    // https://xerces.apache.org/xerces-c/apiDocs-3/classDOMAttr.html#adacdb9c2e42946077b481da116a36527
     std::string getName() const;
+
+    // https://xerces.apache.org/xerces-c/apiDocs-3/classDOMAttr.html#a8c2f7efb05dcd48118a6d3f990dff589
     coda_oss::u8string getValue() const;
+    // https://xerces.apache.org/xerces-c/apiDocs-3/classDOMAttr.html#ad2660958e94797d918114df04adb87ff
     void setValue(const coda_oss::u8string&);
 };
 

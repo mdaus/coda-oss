@@ -56,8 +56,7 @@ struct CODA_OSS_API DOMImplementation final
      *  See DOMImplementation.hpp
      */
     DOMDocument createDocument() const;
-    DOMDocument createDocument(const QName&) const;
-    DOMDocument createDocument(const Uri&, const std::string&) const;
+    //DOMDocument createDocument(const QName&) const;
 
     /*!
      *  See DOMImplementationLS.hpp

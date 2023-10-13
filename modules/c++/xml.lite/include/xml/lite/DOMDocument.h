@@ -79,13 +79,14 @@ public:
     std::string getNodeName() const;
     Uri getNamespaceURI() const;
 
-    /*!
-     *  See DOMDocument.hpp
-     */
-    DOMElement createElementNS(const QName&) const;
+    // https://xerces.apache.org/xerces-c/apiDocs-3/classDOMDocument.html#aae9690a57a92f9f0289aa1f52898a0c5
+    DOMElement createElement(const QName&) const;
+
+    // https://xerces.apache.org/xerces-c/apiDocs-3/classDOMDocument.html#a4022778ef118940330febf5f1821cf89
     const DOMElement getDocumentElement() const;
     DOMElement getDocumentElement();
 
+    // https://xerces.apache.org/xerces-c/apiDocs-3/classDOMDocument.html#ab2ff9b015ac835703f70a14acfe462d1
     DOMConfiguration& getDomConfig();
     const DOMConfiguration& getDomConfig() const;
 };

@@ -58,7 +58,7 @@ const xml::lite::DOMConfiguration& xml::lite::DOMDocument::getDomConfig() const
     return *pConfiguration;
 }
 
-xml::lite::DOMElement xml::lite::DOMDocument::createElementNS(const QName& q) const
+xml::lite::DOMElement xml::lite::DOMDocument::createElement(const QName& q) const
 {
     std::unique_ptr<Element> pElement(pDocument->createElement(q.getName(), q.getUri().value));
     return xml::lite::DOMElement(std::move(pElement));
