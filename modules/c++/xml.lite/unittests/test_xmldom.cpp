@@ -50,16 +50,11 @@ TEST_CASE(testXmlDOMParse)
     TEST_ASSERT_EQ(ss.stream().str(), strXml());
 
     auto parser = xml::lite::DOMImplementation().createParser();
-    auto doc = parser.parse(ss);
+    auto xml = parser.parse(ss);
 
-    auto root = doc.getDocumentElement();
-
-    auto docElements = root.getElementsByTagName(xml::lite::QName("doc"));
-    TEST_ASSERT_EQ(std::ssize(docElements), 1);
-
-    auto aElements = docElements[0].getElementsByTagName(xml::lite::QName("a"));
-    TEST_ASSERT_EQ(std::ssize(aElements), 1);
-    auto& a = aElements[0];
+    auto root = xml.getDocumentElement();
+    auto doc = getElementByTagName(root, xml::lite::QName("doc"));
+    auto a = getElementByTagName(doc, xml::lite::QName("a"));
 
     auto characterData = getTextContent(a);
     TEST_ASSERT_EQ(str::to_native(characterData), text());
@@ -71,8 +66,8 @@ TEST_CASE(testXmlDOMParse)
 
 TEST_CASE(testXmlDOMWrite)
 {
-    auto document = xml::lite::DOMImplementation().createDocument();
-    auto rootElement = document.createElementNS(xml::lite::QName("root"));
+    auto xml = xml::lite::DOMImplementation().createDocument();
+    auto rootElement = xml.createElement(xml::lite::QName("root"));
 
     const auto serializer = xml::lite::DOMImplementation().createSerializer();
 
@@ -110,9 +105,9 @@ TEST_CASE(testXmlDOMGetAttribute)
     ss.stream() << strAttributeXml();
 
     auto parser = xml::lite::DOMImplementation().createParser();
-    auto document = parser.parse(ss);
+    auto xml = parser.parse(ss);
 
-    const auto& root = document.getDocumentElement();
+    const auto& root = xml.getDocumentElement();
     const auto& doc = getElementByTagName(root, xml::lite::QName("doc"));
     const auto& a = getElementByTagName(doc, xml::lite::QName("a"));
 
@@ -126,9 +121,9 @@ TEST_CASE(testXmlDOMGetAttributeNode)
     ss.stream() << strAttributeXml();
 
     auto parser = xml::lite::DOMImplementation().createParser();
-    auto document = parser.parse(ss);
+    auto xml = parser.parse(ss);
 
-    auto root = document.getDocumentElement();
+    auto root = xml.getDocumentElement();
     auto doc = getElementByTagName(root, xml::lite::QName("doc"));
     auto a = getElementByTagName(doc, xml::lite::QName("a"));
 
