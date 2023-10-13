@@ -53,11 +53,11 @@ std::string xml::lite::DOMAttr::getName() const
     return getLocalName();
 }
 
-std::string xml::lite::DOMAttr::getValue() const
+coda_oss::u8string xml::lite::DOMAttr::getValue() const
 {
-    return pAttributeNode->getValue();
+    return str::u8FromNative(pAttributeNode->getValue());
 }
-void xml::lite::DOMAttr::setValue(const std::string& v)
+void xml::lite::DOMAttr::setValue(const coda_oss::u8string& v)
 {
-    pAttributeNode->setValue(v);
+    pAttributeNode->setValue(str::to_native(v));
 }

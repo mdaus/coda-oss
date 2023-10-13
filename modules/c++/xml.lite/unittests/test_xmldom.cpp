@@ -138,7 +138,7 @@ TEST_CASE(testXmlDOMGetAttributeNode)
     node = a.getAttributeNode("a");
     TEST_ASSERT(node.has_value());
     const auto value = node->getValue();
-    TEST_ASSERT_EQ("a", value);
+    TEST_ASSERT_EQ("a", str::to_native(value));
 }
 
 TEST_MAIN(

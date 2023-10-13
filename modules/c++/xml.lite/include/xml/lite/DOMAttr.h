@@ -71,8 +71,8 @@ public:
      *  See DOMAttr.hpp
      */
     std::string getName() const;
-    std::string getValue() const;
-    void setValue(const std::string&);
+    coda_oss::u8string getValue() const;
+    void setValue(const coda_oss::u8string&);
 };
 
 }
