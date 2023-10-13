@@ -117,7 +117,7 @@ TEST_CASE(testXmlDOMGetAttribute)
     const auto& a = getElementByTagName(doc, xml::lite::QName("a"));
 
     const auto value = a.getAttribute(xml::lite::QName("a"));
-    TEST_ASSERT_EQ("a", *value);
+    TEST_ASSERT_EQ("a", str::to_native(*value));
 }
 
 TEST_CASE(testXmlDOMGetAttributeNode)

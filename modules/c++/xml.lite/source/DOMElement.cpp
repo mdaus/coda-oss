@@ -23,6 +23,8 @@
 
 #include "xml/lite/DOMElement.h"
 
+#include "str/Convert.h"
+
 xml::lite::DOMElement::DOMElement(Element& element) : pElement_(&element)
 {
 }
@@ -74,19 +76,19 @@ xml::lite::Uri xml::lite::DOMElement::getNamespaceURI() const
     return retval;
 }
 
-coda_oss::optional<std::string> xml::lite::DOMElement::getAttribute(const QName& q) const
+coda_oss::optional<coda_oss::u8string> xml::lite::DOMElement::getAttribute(const QName& q) const
 {
     auto&& attributes = getElement().getAttributes();
     const auto idx = attributes.getIndex(q);
     if (idx < 0)
     {
-        return coda_oss::optional<std::string>{};  // empty optional
+        return coda_oss::optional<coda_oss::u8string>{};  // empty optional
     }
-    return attributes[idx].getValue();
+    return str::u8FromNative(attributes[idx].getValue());
 }
-void  xml::lite::DOMElement::setAttribute(const QName& q, const std::string& value)
+void  xml::lite::DOMElement::setAttribute(const QName& q, const coda_oss::u8string& value)
 {
-    getElement().getAttributes()[q] = value;
+    getElement().getAttributes()[q] = str::to_native(value);
 }
 coda_oss::optional<xml::lite::DOMAttr> xml::lite::DOMElement::getAttributeNode(const QName& q)
 {

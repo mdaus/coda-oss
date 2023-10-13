@@ -78,10 +78,15 @@ struct CODA_OSS_API DOMElement final
     /*!
      *  See DOMElement.hpp
      */
-    coda_oss::optional<std::string> getAttribute(const QName&) const;
+    // https://xerces.apache.org/xerces-c/apiDocs-3/classDOMElement.html#a3b360b65d4658c55d95403b9f938fd17
+    coda_oss::optional<coda_oss::u8string> getAttribute(const QName&) const;
+    // https://xerces.apache.org/xerces-c/apiDocs-3/classDOMElement.html#af81e9e0e0cfe6847c5ea0297130cc9c8
+    void setAttribute(const QName&, const coda_oss::u8string& value);
+    // https://xerces.apache.org/xerces-c/apiDocs-3/classDOMElement.html#a68c006aec0a98b9625c442f7a00de760
     coda_oss::optional<DOMAttr> getAttributeNode(const QName&);
+
+    // https://xerces.apache.org/xerces-c/apiDocs-3/classDOMElement.html#ae1e9dc30c6fabffb7b0df2d1a5c12a70
     std::vector<DOMElement> getElementsByTagName(const QName&) const;
-    void setAttribute(const QName&, const std::string& value);
 
     Element& details_getElement_()
     {
