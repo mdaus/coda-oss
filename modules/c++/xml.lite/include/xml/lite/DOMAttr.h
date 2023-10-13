@@ -33,7 +33,7 @@
 
 #include <config/Exports.h>
 
-#include "DOMNode.h"
+#include "QName.h"
 
 namespace xml
 {
@@ -46,7 +46,7 @@ struct AttributeNode;
  * \brief Wrapper around AttributeNode that tries to follow
  * https://xerces.apache.org/xerces-c/ApacheDOMC++Binding.html
  */
-class CODA_OSS_API DOMAttr final : public DOMNode
+class CODA_OSS_API DOMAttr final
 {
     AttributeNode* pAttributeNode = nullptr;
 
@@ -63,11 +63,9 @@ public:
     /*!
      *  See DOMNode.hpp
      */
-    std::string getNodeName() const override;
-    coda_oss::u8string getNodeValue() const override;
-    Uri getNamespaceURI() const override;
-    std::string getPrefix() const override;
-    std::string getLocalName() const override;
+    Uri getNamespaceURI() const;
+    std::string getPrefix() const;
+    std::string getLocalName() const;
 
     /*!
      *  See DOMAttr.hpp

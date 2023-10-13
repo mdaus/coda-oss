@@ -57,7 +57,7 @@ struct Document;
  * \brief Wrapper around Document that tries to follow
  * https://xerces.apache.org/xerces-c/ApacheDOMC++Binding.html
  */
-class CODA_OSS_API DOMDocument  final : public DOMNode
+class CODA_OSS_API DOMDocument  final
 {
     std::shared_ptr<DOMConfiguration> pConfiguration;
     std::unique_ptr<MinidomParser> pParser;
@@ -76,8 +76,8 @@ public:
     /*!
      *  See DOMNode.hpp
      */
-    std::string getNodeName() const override;
-    Uri getNamespaceURI() const override;
+    std::string getNodeName() const;
+    Uri getNamespaceURI() const;
 
     /*!
      *  See DOMDocument.hpp

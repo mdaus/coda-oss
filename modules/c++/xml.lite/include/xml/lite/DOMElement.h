@@ -73,8 +73,8 @@ struct CODA_OSS_API DOMElement final : public DOMNode
     /*!
      *  See DOMNode.hpp
      */
-    std::string getNodeName() const override;
-    Uri getNamespaceURI() const override;
+    std::string getNodeName() const;
+    Uri getNamespaceURI() const;
 
     /*!
      *  See DOMElement.hpp
