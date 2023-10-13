@@ -44,7 +44,6 @@
 
 #include <config/Exports.h>
 
-#include "DOMNode.h"
 #include "DOMAttr.h"
 #include "Element.h"
 #include "QName.h"
@@ -59,7 +58,7 @@ namespace lite
  * \brief Wrapper around Element that tries to follow
  * https://xerces.apache.org/xerces-c/ApacheDOMC++Binding.html
  */
-struct CODA_OSS_API DOMElement final : public DOMNode
+struct CODA_OSS_API DOMElement final
 {
     DOMElement(Element&);
     DOMElement(std::unique_ptr<Element>);
@@ -122,15 +121,7 @@ inline auto getElementByTagName(const DOMElement& element, const QName& q)
 // "overload" `getTextContent()` and `setTextContent()`.  Note that these are intentionally
 // free functions, not the overridden *DOMNode* methods.
 CODA_OSS_API coda_oss::u8string getTextContent(const DOMElement&);
-inline coda_oss::u8string getTextContent(const DOMNode& node)
-{
-    return getTextContent(dynamic_cast<const DOMElement&>(node));
-}
 CODA_OSS_API void setTextContent(DOMElement&, const coda_oss::u8string&);
-inline void setTextContent(DOMNode& node, const coda_oss::u8string& v)
-{
-    setTextContent(dynamic_cast<DOMElement&>(node), v);
-}
 
 }
 }

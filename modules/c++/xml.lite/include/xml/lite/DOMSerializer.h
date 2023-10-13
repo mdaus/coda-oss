@@ -42,7 +42,7 @@ namespace xml
 {
 namespace lite
 {
-struct DOMNode;
+struct DOMElement;
 
 /*!
  * \class DOMSerializer
@@ -60,8 +60,7 @@ public:
      */
     DOMConfiguration& getDomConfig();
     const DOMConfiguration& getDomConfig() const;
-    bool write(const DOMNode&, io::OutputStream&) const;
-    coda_oss::u8string writeToString(const DOMNode&) const;
+    bool write(const DOMElement&, io::OutputStream&) const;
 };
 
 }

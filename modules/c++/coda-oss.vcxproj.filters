@@ -957,9 +957,6 @@
     <ClInclude Include="xml.lite\include\xml\lite\DOMDocument.h">
       <Filter>xml.lite</Filter>
     </ClInclude>
-    <ClInclude Include="xml.lite\include\xml\lite\DOMNode.h">
-      <Filter>xml.lite</Filter>
-    </ClInclude>
     <ClInclude Include="xml.lite\include\xml\lite\DOMElement.h">
       <Filter>xml.lite</Filter>
     </ClInclude>
@@ -1426,9 +1423,6 @@
       <Filter>xml.lite</Filter>
     </ClCompile>
     <ClCompile Include="xml.lite\source\DOMDocument.cpp">
-      <Filter>xml.lite</Filter>
-    </ClCompile>
-    <ClCompile Include="xml.lite\source\DOMNode.cpp">
       <Filter>xml.lite</Filter>
     </ClCompile>
     <ClCompile Include="xml.lite\source\DOMElement.cpp">

@@ -316,7 +316,6 @@
     <ClInclude Include="xml.lite\include\xml\lite\DOMDocument.h" />
     <ClInclude Include="xml.lite\include\xml\lite\DOMElement.h" />
     <ClInclude Include="xml.lite\include\xml\lite\DOMImplementation.h" />
-    <ClInclude Include="xml.lite\include\xml\lite\DOMNode.h" />
     <ClInclude Include="xml.lite\include\xml\lite\DOMParser.h" />
     <ClInclude Include="xml.lite\include\xml\lite\DOMSerializer.h" />
     <ClInclude Include="xml.lite\include\xml\lite\Element.h" />
@@ -491,7 +490,6 @@
     <ClCompile Include="xml.lite\source\DOMDocument.cpp" />
     <ClCompile Include="xml.lite\source\DOMElement.cpp" />
     <ClCompile Include="xml.lite\source\DOMImplementation.cpp" />
-    <ClCompile Include="xml.lite\source\DOMNode.cpp" />
     <ClCompile Include="xml.lite\source\DOMParser.cpp" />
     <ClCompile Include="xml.lite\source\DOMSerializer.cpp" />
     <ClCompile Include="xml.lite\source\Element.cpp" />

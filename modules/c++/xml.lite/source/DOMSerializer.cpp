@@ -44,38 +44,22 @@ const xml::lite::DOMConfiguration& xml::lite::DOMSerializer::getDomConfig() cons
     return *pConfiguration;
 }
 
-bool xml::lite::DOMSerializer::write(const DOMNode& node, io::OutputStream& os) const
+bool xml::lite::DOMSerializer::write(const DOMElement& domElement, io::OutputStream& os) const
 {
-    if (auto pDOMElement = dynamic_cast<const DOMElement*>(&node))
+    // look at "prettyPrint" and "consoleOutput" to determine method to call
+    const auto consoleOutput = getDomConfig().getParameter("consoleOutput");
+    if (!consoleOutput) return false;  // should always be set
+    const auto prettyPrint = getDomConfig().getParameter("prettyPrint");
+    if (!prettyPrint) return false;  // should always be set
+
+    auto& element = domElement.details_getElement_();
+    if (*prettyPrint)
     {
-        // look at "prettyPrint" and "consoleOutput" to determine method to call
-        const auto consoleOutput = getDomConfig().getParameter("consoleOutput");
-        if (!consoleOutput) return false;  // should always be set
-        const auto prettyPrint = getDomConfig().getParameter("prettyPrint");
-        if (!prettyPrint) return false;  // should always be set
-
-        auto& element = pDOMElement->details_getElement_();
-        if (*prettyPrint)
-        {
-            *consoleOutput ? element.prettyConsoleOutput_(os) : element.prettyPrint(os);
-        }
-        else
-        {
-            *consoleOutput ? element.consoleOutput_(os) : element.print(os);
-        }
-        return true;
+        *consoleOutput ? element.prettyConsoleOutput_(os) : element.prettyPrint(os);
     }
-
-    return false; // node isn't DOMElement
-}
-
-coda_oss::u8string xml::lite::DOMSerializer::writeToString(const DOMNode& node) const
-{
-    io::U8StringStream ss;
-    if (write(node, ss))
+    else
     {
-        return ss.stream().str();
+        *consoleOutput ? element.consoleOutput_(os) : element.print(os);
     }
-
-    return coda_oss::u8string{};
+    return true;
 }
