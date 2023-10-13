@@ -59,8 +59,12 @@ namespace lite
  * \brief Wrapper around Element that tries to follow
  * https://xerces.apache.org/xerces-c/ApacheDOMC++Binding.html
  */
-struct CODA_OSS_API DOMElement final
+class CODA_OSS_API DOMElement final
 {
+    Element* pElement_ = nullptr;
+    std::unique_ptr<Element> pOwnedElement_;
+
+public:
     DOMElement(Element&);
     DOMElement(std::unique_ptr<Element>);
     ~DOMElement();
@@ -99,11 +103,18 @@ struct CODA_OSS_API DOMElement final
     }
 
 private:
+    DOMElement() = default;
+
+public:
+    static coda_oss::optional<DOMElement> nullopt()
+    {
+        std::unique_ptr<Element> pElement;
+        return DOMElement(std::move(pElement));
+    }
+
+private:
     Element& getElement();
     const Element& getElement() const;
-
-    Element* pElement_ = nullptr;
-    std::unique_ptr<Element> pOwnedElement_;
 };
 
 inline coda_oss::optional<DOMElement> getElementByTagName(std::nothrow_t, const DOMElement& e, const QName& q)
@@ -111,8 +122,7 @@ inline coda_oss::optional<DOMElement> getElementByTagName(std::nothrow_t, const 
     auto elements = e.getElementsByTagName(q);
     if (elements.size() != 1)
     {
-        std::unique_ptr<Element> pElement;
-        return DOMElement(std::move(pElement));
+        return DOMElement::nullopt();
     }
     return std::move(elements[0]);
 }

@@ -42,7 +42,7 @@ namespace xml
 {
 namespace lite
 {
-struct DOMElement;
+class DOMElement;
 
 /*!
  * \class DOMSerializer
