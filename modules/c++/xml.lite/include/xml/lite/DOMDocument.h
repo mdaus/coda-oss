@@ -65,7 +65,7 @@ class CODA_OSS_API DOMDocument  final
 
 public:
     explicit DOMDocument(std::shared_ptr<DOMConfiguration>);
-    explicit DOMDocument(std::shared_ptr<DOMConfiguration>, Document&);
+    DOMDocument(std::shared_ptr<DOMConfiguration>, Document&);
     ~DOMDocument() = default;
 
     DOMDocument(const DOMDocument&) = delete;

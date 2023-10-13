@@ -41,8 +41,9 @@
 #include <coda_oss/string.h>
 #include <coda_oss/optional.h>
 #include <coda_oss/span.h>
+#include <new> // std::nothrow_t
 
-#include <config/Exports.h>
+#include "config/Exports.h"
 
 #include "DOMAttr.h"
 #include "Element.h"
@@ -105,11 +106,20 @@ private:
     std::unique_ptr<Element> pOwnedElement_;
 };
 
-inline auto getElementByTagName(const DOMElement& element, const QName& q)
+inline coda_oss::optional<DOMElement> getElementByTagName(std::nothrow_t, const DOMElement& e, const QName& q)
 {
-    auto elements = element.getElementsByTagName(q);
-    assert(coda_oss::ssize(elements) == 1);
+    auto elements = e.getElementsByTagName(q);
+    if (elements.size() != 1)
+    {
+        std::unique_ptr<Element> pElement;
+        return DOMElement(std::move(pElement));
+    }
     return std::move(elements[0]);
+}
+inline auto getElementByTagName(const DOMElement& e, const QName& q)
+{
+    auto result = getElementByTagName(std::nothrow, e, q);
+    return std::move(*result);
 }
 
 // The DOM documentation (https://xerces.apache.org/xerces-c/apiDocs-3/classDOMNode.html) says that `nodeValue` should
