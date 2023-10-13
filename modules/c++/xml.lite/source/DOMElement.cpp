@@ -154,3 +154,14 @@ xml::lite::DOMMutableNodeList xml::lite::DOMElement::getElementsByTagNameNS(cons
     const auto elements = getElement().getElementsByTagNameNS(q.getName());
     return to_DOMNodeList<xml::lite::DOMMutableNodeList>(elements);
 }
+
+std::vector<xml::lite::DOMElement> xml::lite::DOMElement::getElementsByTagName(const QName& q) const
+{
+    const auto elements = getElement().getElementsByTagNameNS(q.getName());
+    std::vector<xml::lite::DOMElement> retval;
+    for (auto& element : elements)
+    {
+        retval.emplace_back(*element);
+    }
+    return retval;
+}
