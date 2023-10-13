@@ -124,37 +124,6 @@ coda_oss::optional<xml::lite::DOMAttr> xml::lite::DOMElement::getAttributeNodeNS
     return DOMAttr(attributes[idx]);
 }
 
-template <typename TDOMNodeList>
-static auto to_DOMNodeList(const std::vector<xml::lite::Element*>& elements)
-{
-    TDOMNodeList retval;
-    for (auto& element : elements)
-    {
-        retval.emplace_back(std::make_unique<xml::lite::DOMElement>(*element));
-    }
-    return retval;
-}
-xml::lite::DOMConstNodeList xml::lite::DOMElement::getElementsByTagName(const std::string& tag) const
-{
-    const auto elements = getElement().getElementsByTagName(tag);
-    return to_DOMNodeList<xml::lite::DOMConstNodeList>(elements);
-}
-xml::lite::DOMMutableNodeList xml::lite::DOMElement::getElementsByTagName(const std::string& tag)
-{
-    const auto elements = getElement().getElementsByTagName(tag);
-    return to_DOMNodeList<xml::lite::DOMMutableNodeList>(elements);
-}
-xml::lite::DOMConstNodeList xml::lite::DOMElement::getElementsByTagNameNS(const QName& q) const
-{
-    const auto elements = getElement().getElementsByTagNameNS(q.getName());
-    return to_DOMNodeList<xml::lite::DOMConstNodeList>(elements);
-}
-xml::lite::DOMMutableNodeList xml::lite::DOMElement::getElementsByTagNameNS(const QName& q)
-{
-    const auto elements = getElement().getElementsByTagNameNS(q.getName());
-    return to_DOMNodeList<xml::lite::DOMMutableNodeList>(elements);
-}
-
 std::vector<xml::lite::DOMElement> xml::lite::DOMElement::getElementsByTagName(const QName& q) const
 {
     const auto elements = getElement().getElementsByTagNameNS(q.getName());

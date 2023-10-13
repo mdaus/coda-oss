@@ -54,12 +54,12 @@ TEST_CASE(testXmlDOMParse)
 
     auto root = doc.getDocumentElement();
 
-    auto docElements = root.getElementsByTagName("doc");
+    auto docElements = root.getElementsByTagName(xml::lite::QName("doc"));
     TEST_ASSERT_EQ(std::ssize(docElements), 1);
 
-    auto aElements = getElementsByTagName(*docElements[0], "a");
+    auto aElements = docElements[0].getElementsByTagName(xml::lite::QName("a"));
     TEST_ASSERT_EQ(std::ssize(aElements), 1);
-    auto& a = *(aElements[0]);
+    auto& a = aElements[0];
 
     auto characterData = getTextContent(a);
     TEST_ASSERT_EQ(str::to_native(characterData), text());
@@ -72,7 +72,7 @@ TEST_CASE(testXmlDOMParse)
 TEST_CASE(testXmlDOMWrite)
 {
     auto document = xml::lite::DOMImplementation().createDocument();
-    auto rootElement = document.createElementNS(xml::lite::QName(xml::lite::Uri(), "root"));
+    auto rootElement = document.createElementNS(xml::lite::QName("root"));
 
     const auto serializer = xml::lite::DOMImplementation().createSerializer();
 
@@ -113,10 +113,10 @@ TEST_CASE(testXmlDOMGetAttribute)
     auto document = parser.parse(ss);
 
     const auto& root = document.getDocumentElement();
-    const auto& doc = getElementByTagName(root, "doc");
-    const auto& a = getElementByTagName(*doc, "a");
+    const auto& doc = getElementByTagName(root, xml::lite::QName("doc"));
+    const auto& a = getElementByTagName(doc, xml::lite::QName("a"));
 
-    const auto value = a->getAttribute("a");
+    const auto value = a.getAttribute("a");
     TEST_ASSERT_EQ("a", *value);
 }
 
@@ -129,13 +129,13 @@ TEST_CASE(testXmlDOMGetAttributeNode)
     auto document = parser.parse(ss);
 
     auto root = document.getDocumentElement();
-    auto doc = getElementByTagName(root, "doc");
-    auto a = getElementByTagName(*doc, "a");
+    auto doc = getElementByTagName(root, xml::lite::QName("doc"));
+    auto a = getElementByTagName(doc, xml::lite::QName("a"));
 
-    auto node = a->getAttributeNode("asdf");
+    auto node = a.getAttributeNode("asdf");
     TEST_ASSERT(!node.has_value());
 
-    node = a->getAttributeNode("a");
+    node = a.getAttributeNode("a");
     TEST_ASSERT(node.has_value());
     const auto value = node->getValue();
     TEST_ASSERT_EQ("a", value);
