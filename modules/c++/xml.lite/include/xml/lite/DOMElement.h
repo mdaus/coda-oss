@@ -78,18 +78,10 @@ struct CODA_OSS_API DOMElement final
     /*!
      *  See DOMElement.hpp
      */
-    coda_oss::optional<std::string> getAttribute(const std::string&) const;
-    coda_oss::optional<DOMAttr> getAttributeNode(const std::string&);
+    coda_oss::optional<std::string> getAttribute(const QName&) const;
+    coda_oss::optional<DOMAttr> getAttributeNode(const QName&);
     std::vector<DOMElement> getElementsByTagName(const QName&) const;
-    void setAttribute(const std::string& name, const std::string& value);
-    // setAttributeNode()
-    // removeAttributeNode()
-    // removeAttribute()
-    coda_oss::optional<std::string> getAttributeNS(const QName&) const;
-    void setAttributeNS(const QName&, const std::string& value);
-    // removeAttributeNS()
-    coda_oss::optional<DOMAttr> getAttributeNodeNS(const QName&);
-    // setAttributeNodeNS()
+    void setAttribute(const QName&, const std::string& value);
 
     Element& details_getElement_()
     {

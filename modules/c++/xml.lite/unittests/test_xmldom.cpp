@@ -116,7 +116,7 @@ TEST_CASE(testXmlDOMGetAttribute)
     const auto& doc = getElementByTagName(root, xml::lite::QName("doc"));
     const auto& a = getElementByTagName(doc, xml::lite::QName("a"));
 
-    const auto value = a.getAttribute("a");
+    const auto value = a.getAttribute(xml::lite::QName("a"));
     TEST_ASSERT_EQ("a", *value);
 }
 
@@ -132,10 +132,10 @@ TEST_CASE(testXmlDOMGetAttributeNode)
     auto doc = getElementByTagName(root, xml::lite::QName("doc"));
     auto a = getElementByTagName(doc, xml::lite::QName("a"));
 
-    auto node = a.getAttributeNode("asdf");
+    auto node = a.getAttributeNode(xml::lite::QName("asdf"));
     TEST_ASSERT(!node.has_value());
 
-    node = a.getAttributeNode("a");
+    node = a.getAttributeNode(xml::lite::QName("a"));
     TEST_ASSERT(node.has_value());
     const auto value = node->getValue();
     TEST_ASSERT_EQ("a", str::to_native(value));
