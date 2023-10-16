@@ -65,6 +65,7 @@ class CODA_OSS_API DOMElement final
     std::unique_ptr<Element> pOwnedElement_;
 
 public:
+    DOMElement() = default; // our optional<> is broken TODO: remove default ctor
     DOMElement(Element&);
     DOMElement(std::unique_ptr<Element>);
     ~DOMElement();
@@ -103,16 +104,6 @@ public:
     }
 
 private:
-    DOMElement() = default;
-
-public:
-    static coda_oss::optional<DOMElement> nullopt()
-    {
-        std::unique_ptr<Element> pElement;
-        return DOMElement(std::move(pElement));
-    }
-
-private:
     Element& getElement();
     const Element& getElement() const;
 };
@@ -122,7 +113,7 @@ inline coda_oss::optional<DOMElement> getElementByTagName(std::nothrow_t, const 
     auto elements = e.getElementsByTagName(q);
     if (elements.size() != 1)
     {
-        return DOMElement::nullopt();
+        return DOMElement{}; // TODO: nullopt
     }
     return std::move(elements[0]);
 }
