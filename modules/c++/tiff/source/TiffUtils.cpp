@@ -31,11 +31,13 @@
 
 void* tiff_setErrorHandler(void* pHandler)
 {
-    return TIFFSetErrorHandler(reinterpret_cast<TIFFErrorHandler>(pHandler));
+    auto retval = TIFFSetErrorHandler(reinterpret_cast<TIFFErrorHandler>(pHandler));
+    return reinterpret_cast<void*>(retval);
 }
 void* tiff_setWarningHandler(void* pHandler)
 {
-    return TIFFSetWarningHandler(reinterpret_cast<TIFFErrorHandler>(pHandler));
+    auto retval = TIFFSetWarningHandler(reinterpret_cast<TIFFErrorHandler>(pHandler));
+    return reinterpret_cast<void*>(retval);
 }
 
 bool tiff_readData(const coda_oss::filesystem::path& fileName,
