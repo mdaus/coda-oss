@@ -90,11 +90,12 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #define HAVE_SYS_TYPES_H 1
 
-/* Define to 1 if you have the <unistd.h> header file. */
-#define HAVE_UNISTD_H 1
+#ifndef _WIN32
+	/* Define to 1 if you have the <unistd.h> header file. */
+	#define HAVE_UNISTD_H 1
+#endif
 
-/* Native cpu byte order: 1 if big-endian (Motorola) or 0 if little-endian
-   (Intel) */
+/* Native cpu byte order: 1 if big-endian (Motorola) or 0 if little-endian (Intel) */
 #define HOST_BIGENDIAN 0
 
 /* Support ISO JBIG compression (requires JBIG-KIT library) */
