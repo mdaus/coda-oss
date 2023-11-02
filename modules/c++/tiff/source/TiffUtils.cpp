@@ -24,6 +24,7 @@
 
 #include "gsl/gsl.h"
 
+#if __has_include("tiffio.h")
 #include "tiffio.h"
 #if _MSC_VER && _WIN32
 #pragma comment(lib, "libtiff-c.lib")
@@ -158,3 +159,5 @@ bool tiff_readData(const coda_oss::filesystem::path& fileName,
     TIFFClose(tif);
     return true;
 }
+
+#endif // __has_include
