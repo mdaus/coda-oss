@@ -104,7 +104,7 @@
 /* #undef JPEG_DUAL_MODE_8_12 */
 
 /* Support JPEG compression (requires IJG JPEG library) */
-#define JPEG_SUPPORT 1
+/* #undef JPEG_SUPPORT */
 
 /* Support lerc compression */
 /* #undef LERC_SUPPORT */
@@ -134,7 +134,7 @@
 #define NEXT_SUPPORT 1
 
 /* Support Old JPEG compresson (read-only) */
-#define OJPEG_SUPPORT 1
+/* #undef OJPEG_SUPPORT */
 
 /* Name of package */
 #define PACKAGE "tiff"
@@ -161,7 +161,7 @@
 #define PACKBITS_SUPPORT 1
 
 /* Support Pixar log-format algorithm (requires Zlib) */
-#define PIXARLOG_SUPPORT 1
+/* #undef PIXARLOG_SUPPORT */
 
 /* The size of `size_t', as computed by sizeof. */
 #define SIZEOF_SIZE_T 8
@@ -216,7 +216,7 @@
 #endif
 
 /* Support Deflate compression */
-#define ZIP_SUPPORT 1
+/* #undef ZIP_SUPPORT */
 
 /* Support zstd compression */
 /* #undef ZSTD_SUPPORT */

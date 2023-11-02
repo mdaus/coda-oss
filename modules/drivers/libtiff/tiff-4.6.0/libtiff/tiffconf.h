@@ -73,7 +73,7 @@
 #define CCITT_SUPPORT 1
 
 /* Support JPEG compression (requires IJG JPEG library) */
-#define JPEG_SUPPORT 1
+/* #undef JPEG_SUPPORT */
 
 /* Support JBIG compression (requires JBIG-KIT library) */
 /* #undef JBIG_SUPPORT */
@@ -92,19 +92,19 @@
 
 /* Support Old JPEG compresson (read contrib/ojpeg/README first! Compilation
    fails with unpatched IJG JPEG library) */
-#define OJPEG_SUPPORT 1
+/* #undef OJPEG_SUPPORT */
 
 /* Support Macintosh PackBits algorithm */
 #define PACKBITS_SUPPORT 1
 
 /* Support Pixar log-format algorithm (requires Zlib) */
-#define PIXARLOG_SUPPORT 1
+/* #undef PIXARLOG_SUPPORT */
 
 /* Support ThunderScan 4-bit RLE algorithm */
 #define THUNDER_SUPPORT 1
 
 /* Support Deflate compression */
-#define ZIP_SUPPORT 1
+/* #undef ZIP_SUPPORT */
 
 /* Support libdeflate enhanced compression */
 /* #undef LIBDEFLATE_SUPPORT */
