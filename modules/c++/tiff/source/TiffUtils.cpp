@@ -21,7 +21,9 @@
  */
 
 #include "tiffio.h"
+#if _MSC_VER && _WIN32
 #pragma comment(lib, "libtiff-c.lib")
+#endif
 
 void* tiff_SetErrorHandler(void* pHandler)
 {

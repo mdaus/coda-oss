@@ -42,5 +42,30 @@ private:
 
 };
 
+class SetErrorHandler final
+{
+    void* mpHandler = nullptr;
+
+public:
+    SetErrorHandler(void* pHandler=nullptr);
+    ~SetErrorHandler();
+    SetErrorHandler(const SetErrorHandler&) = delete;
+    SetErrorHandler& operator=(const SetErrorHandler&) = delete;
+    SetErrorHandler(SetErrorHandler&&) = default;
+    SetErrorHandler& operator=(SetErrorHandler&&) = default;
+};
+class SetWarningHandler final
+{
+    void* mpHandler = nullptr;
+
+public:
+    SetWarningHandler(void* pHandler = nullptr);
+    ~SetWarningHandler();
+    SetWarningHandler(const SetWarningHandler&) = delete;
+    SetWarningHandler& operator=(const SetWarningHandler&) = delete;
+    SetWarningHandler(SetWarningHandler&&) = default;
+    SetWarningHandler& operator=(SetWarningHandler&&) = default;
+};
+
 }
 #endif // __TIFF_UTILS_H__
