@@ -77,7 +77,7 @@
 /* #undef LIBJPEG_12_PATH */
 
 /* Support LZMA2 compression */
-#define LZMA_SUPPORT 1
+/* #undef LZMA_SUPPORT  */
 
 /* Name of package */
 #define PACKAGE "tiff"

@@ -123,7 +123,7 @@
 #define LT_OBJDIR ".libs/"
 
 /* Support LZMA2 compression */
-#define LZMA_SUPPORT 1
+/* #undef LZMA_SUPPORT  */
 
 /* Support LZW algorithm */
 #define LZW_SUPPORT 1
