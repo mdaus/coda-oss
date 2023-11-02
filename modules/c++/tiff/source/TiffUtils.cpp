@@ -27,9 +27,11 @@
 
 void* tiff_SetErrorHandler(void* pHandler)
 {
-    return TIFFSetErrorHandler(reinterpret_cast<TIFFErrorHandler>(pHandler));
+    auto retval = TIFFSetErrorHandler(reinterpret_cast<TIFFErrorHandler>(pHandler));
+    return reinterpret_cast<void*>(retval);
 }
 void* tiff_SetWarningHandler(void* pHandler)
 {
-    return TIFFSetWarningHandler(reinterpret_cast<TIFFErrorHandler>(pHandler));
+    auto retval = TIFFSetWarningHandler(reinterpret_cast<TIFFErrorHandler>(pHandler));
+    return reinterpret_cast<void*>(retval);
 }
