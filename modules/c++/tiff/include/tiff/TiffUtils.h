@@ -24,6 +24,8 @@
 #pragma once
 
 #include <stdarg.h>
+#include <iostream>
+#include <string>
 
 #include <sys/filesystem.h>
 #include <coda_oss/cstddef.h>
@@ -33,3 +35,10 @@ tiff_errorhandler_t tiff_setErrorHandler(tiff_errorhandler_t pHandler = nullptr)
 tiff_errorhandler_t tiff_setWarningHandler(tiff_errorhandler_t pHandler = nullptr); // TIFFSetErrorHandler()
 
 bool tiff_readData(const coda_oss::filesystem::path&, coda_oss::byte* buffer, size_t numElements);
+
+struct tiff_stream_ final { };
+using tiff_stream = tiff_stream_*; // TIFF
+
+tiff_stream tiff_streamOpen(const std::string& name, std::istream&); // TIFFStreamOpen()
+bool tiff_readData(tiff_stream, coda_oss::byte* buffer, size_t numElements);
+
