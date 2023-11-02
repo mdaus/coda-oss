@@ -22,5 +22,10 @@
 
 #pragma once
 
-void* tiff_SetErrorHandler(void* pHandler=nullptr);
-void* tiff_SetWarningHandler(void* pHandler = nullptr);
+#include <sys/filesystem.h>
+#include <coda_oss/cstddef.h>
+
+void* tiff_setErrorHandler(void* pHandler=nullptr);
+void* tiff_setWarningHandler(void* pHandler = nullptr);
+
+bool tiff_readData(const coda_oss::filesystem::path&, coda_oss::byte* buffer, size_t numElements);

@@ -183,18 +183,18 @@ tiff::IFD* tiff::Utils::createGeoTiffIFD(tiff::IFD* ifd)
 
 tiff::SetErrorHandler::SetErrorHandler(void* pHandler)
 {
-    mpHandler = tiff_SetErrorHandler(pHandler);
+    mpHandler = tiff_setErrorHandler(pHandler);
 }
 tiff::SetErrorHandler::~SetErrorHandler()
 {
-    tiff_SetErrorHandler(mpHandler);
+    tiff_setErrorHandler(mpHandler);
 }
 
 tiff::SetWarningHandler::SetWarningHandler(void* pHandler)
 {
-    mpHandler = tiff_SetWarningHandler(pHandler);
+    mpHandler = tiff_setWarningHandler(pHandler);
 }
 tiff::SetWarningHandler::~SetWarningHandler()
 {
-    tiff_SetWarningHandler(mpHandler);
+    tiff_setWarningHandler(mpHandler);
 }
