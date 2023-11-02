@@ -181,7 +181,7 @@ tiff::IFD* tiff::Utils::createGeoTiffIFD(tiff::IFD* ifd)
     return geoIFD;
 }
 
-tiff::SetErrorHandler::SetErrorHandler(void* pHandler)
+tiff::SetErrorHandler::SetErrorHandler(tiff_errorhandler_t pHandler)
 {
     mpHandler = tiff_setErrorHandler(pHandler);
 }
@@ -190,7 +190,7 @@ tiff::SetErrorHandler::~SetErrorHandler()
     tiff_setErrorHandler(mpHandler);
 }
 
-tiff::SetWarningHandler::SetWarningHandler(void* pHandler)
+tiff::SetWarningHandler::SetWarningHandler(tiff_errorhandler_t pHandler)
 {
     mpHandler = tiff_setWarningHandler(pHandler);
 }

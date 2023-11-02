@@ -3,6 +3,7 @@
  * =========================================================================
  * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
+  * © Copyright 2023, Maxar Technologies, Inc.
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,10 +23,13 @@
 
 #pragma once
 
+#include <stdarg.h>
+
 #include <sys/filesystem.h>
 #include <coda_oss/cstddef.h>
 
-void* tiff_setErrorHandler(void* pHandler=nullptr);
-void* tiff_setWarningHandler(void* pHandler = nullptr);
+using tiff_errorhandler_t = void(*)(const char*, const char*, va_list); // TIFFErrorHandler
+tiff_errorhandler_t tiff_setErrorHandler(tiff_errorhandler_t pHandler = nullptr); // TIFFSetWarningHandler()
+tiff_errorhandler_t tiff_setWarningHandler(tiff_errorhandler_t pHandler = nullptr); // TIFFSetErrorHandler()
 
 bool tiff_readData(const coda_oss::filesystem::path&, coda_oss::byte* buffer, size_t numElements);
