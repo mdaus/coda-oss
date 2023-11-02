@@ -24,6 +24,7 @@
 #include "tiff/TiffUtils.h"
 
 #include "gsl/gsl.h"
+#include "config/compiler_extensions.h"
 
 #if __has_include("tiffio.h")
 #include "tiffio.h"
@@ -40,15 +41,10 @@ tiff_errorhandler_t tiff_setWarningHandler(tiff_errorhandler_t pHandler)
     return TIFFSetWarningHandler(pHandler);
 }
 
-bool tiff_readData(const coda_oss::filesystem::path& fileName,
-                   coda_oss::byte* buffer,
-                   size_t numElements)
+bool tiff_readData(tiff_stream stream_, coda_oss::byte* buffer, size_t numElements)
 {
-    TIFF* tif = TIFFOpen(fileName.string().c_str(), "r");
-    if (tif == nullptr)
-    {
-        return false;
-    }
+    void* pStream = stream_;
+    auto tif = static_cast<TIFF*>(pStream);
 
     // Code from PTCOMPUTE SimpleTIFFReader::readTIFFData()
 
@@ -158,5 +154,34 @@ bool tiff_readData(const coda_oss::filesystem::path& fileName,
     TIFFClose(tif);
     return true;
 }
+bool tiff_readData(const coda_oss::filesystem::path& fileName, coda_oss::byte* buffer, size_t numElements)
+{
+    TIFF* tif = TIFFOpen(fileName.string().c_str(), "r");
+    if (tif == nullptr)
+    {
+        return false;
+    }
+
+    void* pTif = tif;
+    auto tif_ = static_cast<tiff_stream>(pTif);
+    return tiff_readData(tif_, buffer, numElements);
+}
+
+#if __has_include("tiffio.hxx") && __has_include("tif_stream.cxx_")
+#include "tiffio.hxx"
+
+CODA_OSS_disable_warning_push
+#if _MSC_VER
+#pragma warning(disable: 26818) // Switch statement does not cover all cases. Consider adding a '...' label (es.79).
+#endif
+#include "tif_stream.cxx_"
+CODA_OSS_disable_warning_pop
+
+tiff_stream tiff_streamOpen(const std::string& name,  std::istream& is)
+{
+    void* result = TIFFStreamOpen(name.c_str(), &is);
+    return static_cast<tiff_stream>(result);
+}
+#endif // __has_include
 
 #endif // __has_include
