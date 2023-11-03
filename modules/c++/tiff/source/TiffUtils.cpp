@@ -26,7 +26,6 @@
 #include "gsl/gsl.h"
 #include "config/compiler_extensions.h"
 
-#if __has_include("tiffio.h")
 #include "tiffio.h"
 #if _MSC_VER && _WIN32
 #pragma comment(lib, "libtiff-c.lib")
@@ -167,7 +166,6 @@ bool tiff_readData(const coda_oss::filesystem::path& fileName, coda_oss::byte* b
     return tiff_readData(tif_, buffer, numElements);
 }
 
-#if __has_include("tiffio.hxx") && __has_include("tif_stream.cxx_")
 #include "tiffio.hxx"
 
 CODA_OSS_disable_warning_push
@@ -182,6 +180,3 @@ tiff_stream tiff_streamOpen(const std::string& name,  std::istream& is)
     void* result = TIFFStreamOpen(name.c_str(), &is);
     return static_cast<tiff_stream>(result);
 }
-#endif // __has_include
-
-#endif // __has_include
