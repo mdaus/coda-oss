@@ -59,7 +59,8 @@ struct CODA_OSS_API Context final
     Context(const char* file /*__FILE__*/, int line /*__LINE__*/,
             const std::string& func,
             const std::string& time,
-            const std::string& message) : mMessage(message), mTime(time), mFunc(func), mFile(file), mLine(line) { }
+            const std::string& message = "" /*for existing SWIG bindings*/)
+      : mMessage(message), mTime(time), mFunc(func), mFile(file), mLine(line) { }
     Context(const char* file /*__FILE__*/, int line /*__LINE__*/,
             const std::string& func,
             const std::string& time,
