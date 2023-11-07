@@ -122,7 +122,7 @@ void io::copy(const std::string& path,
             oss << "Copy Failed: Could not copy source [" <<
                 path << "] to destination [" <<
                 newFile << "]";
-            throw except::Exception(Ctxt(oss.str()));
+            throw except::Exception(Ctxt(oss));
         }
     }
 }
