@@ -175,6 +175,19 @@ inline Group NodeTraits<Derivate>::getGroup(const std::string& group_name) const
 }
 
 template <typename Derivate>
+inline DataType NodeTraits<Derivate>::getDataType(const std::string& type_name,
+                                                  const DataTypeAccessProps& accessProps) const {
+    const auto hid = H5Topen2(static_cast<const Derivate*>(this)->getId(),
+                              type_name.c_str(),
+                              accessProps.getId());
+    if (hid < 0) {
+        HDF5ErrMapper::ToException<DataTypeException>(
+            std::string("Unable to open the datatype \"") + type_name + "\":");
+    }
+    return DataType(hid);
+}
+
+template <typename Derivate>
 inline size_t NodeTraits<Derivate>::getNumberObjects() const {
     hsize_t res;
     if (H5Gget_num_objs(static_cast<const Derivate*>(this)->getId(), &res) < 0) {
@@ -355,6 +368,29 @@ inline void NodeTraits<Derivate>::createExternalLink(const std::string& link_nam
                                      linkAccessProps.getId());
     if (status < 0) {
         HDF5ErrMapper::ToException<GroupException>(std::string("Unable to create external link: "));
+    }
+}
+
+template <typename Derivate>
+template <typename T, typename>
+inline void NodeTraits<Derivate>::createHardLink(const std::string& link_name,
+                                                 const T& target_obj,
+                                                 LinkCreateProps linkCreateProps,
+                                                 const LinkAccessProps& linkAccessProps,
+                                                 const bool parents) {
+    static_assert(!std::is_same<T, Attribute>::value,
+                  "hdf5 doesn't support hard links to Attributes");
+    if (parents) {
+        linkCreateProps.add(CreateIntermediateGroup{});
+    }
+    auto status = H5Lcreate_hard(target_obj.getId(),
+                                 ".",
+                                 static_cast<const Derivate*>(this)->getId(),
+                                 link_name.c_str(),
+                                 linkCreateProps.getId(),
+                                 linkAccessProps.getId());
+    if (status < 0) {
+        HDF5ErrMapper::ToException<GroupException>(std::string("Unable to create hard link: "));
     }
 }
 
