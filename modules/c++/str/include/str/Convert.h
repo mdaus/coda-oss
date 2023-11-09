@@ -63,6 +63,43 @@ std::string toString(const T& value)
     return buf.str();
 }
 
+// https://en.cppreference.com/w/cpp/string/basic_string/to_string
+inline auto toString(int value)
+{
+    return std::to_string(value);
+}
+inline auto toString(long value)
+{
+    return std::to_string(value);
+}
+inline auto toString(long long value)
+{
+    return std::to_string(value);
+}
+inline auto toString(unsigned value)
+{
+    return std::to_string(value);
+}
+inline auto toString(unsigned long value)
+{
+    return std::to_string(value);
+}
+inline auto toString(unsigned long long value)
+{
+    return std::to_string(value);
+}
+inline auto toString(float value)
+{
+    return std::to_string(value);
+}
+inline auto toString(double value)
+{
+    return std::to_string(value);
+}
+inline auto toString(long double value)
+{
+    return std::to_string(value);
+}
 inline std::string toString(uint8_t value)
 {
     return toString(gsl::narrow<unsigned int>(value));
