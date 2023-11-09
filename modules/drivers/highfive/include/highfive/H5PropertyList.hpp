@@ -22,6 +22,67 @@
 
 namespace HighFive {
 
+/// \defgroup PropertyLists Property Lists
+/// HDF5 is configured through what they call property lists. In HDF5 the
+/// process has four steps:
+///
+/// 1. Create a property list. As users we now have an `hid_t` identifying the
+/// property list.
+/// 2. Set properties as desired.
+/// 3. Pass the HID to the HDF5 function to be configured.
+/// 4. Free the property list.
+///
+/// Note that the mental picture is that one creates a settings object, and
+/// then passes those settings to a function such as `H5Dwrite`. In and of
+/// themselves the settings don't change the behaviour of HDF5. Rather they
+/// need to be used to take affect.
+///
+/// The second aspect is that property lists represent any number of related
+/// settings, e.g. there's property lists anything related to creating files
+/// and another for accessing files, same for creating and accessing datasets,
+/// etc. Settings that affect creating files, must be passed a file creation
+/// property list, while settings that affect file access require a file access
+/// property list.
+///
+/// In HighFive the `PropertyList` works similar in that it's a object
+/// representing the settings, i.e. internally it's just the property lists
+/// HID. Just like in HDF5 one adds the settings to the settings object; and
+/// then passes the settings object to the respective method. Example:
+///
+///
+///     // Create an object which contains the setting to
+///     // open files with MPI-IO.
+///     auto fapl = FileAccessProps();
+///     fapl.add(MPIOFileAccess(MPI_COMM_WORLD, MPI_INFO_NULL);
+///
+///     // To open a specific file with MPI-IO, we do:
+///     auto file = File("foo.h5", File::ReadOnly, fapl);
+///
+/// Note that the `MPIOFileAccess` object by itself doesn't affect the
+/// `FileAccessProps`. Rather it needs to be explicitly added to the `fapl`
+/// (the group of file access related settings), and then the `fapl` needs to
+/// be passed to the constructor of `File` for the settings to take affect.
+///
+/// This is important to understand when reading properties. Example:
+///
+///     // Obtain the file access property list:
+///     auto fapl = file.getAccessPropertyList()
+///
+///     // Extracts a copy of the collective MPI-IO metadata settings from
+///     // the group of file access related setting, i.e. the `fapl`:
+///     auto mpio_metadata = MPIOCollectiveMetadata(fapl);
+///
+///     if(mpio_metadata.isCollectiveRead()) {
+///       // something specific if meta data is read collectively.
+///     }
+///
+///     // Careful, this only affects the `mpio_metadata` object, but not the
+///     //  `fapl`, and also not whether `file` uses collective MPI-IO for
+///     // metadata.
+///     mpio_metadata = MPIOCollectiveMetadata(false, false);
+///
+/// @{
+
 ///
 /// \brief Types of property lists
 ///
@@ -72,6 +133,26 @@ class PropertyListBase: public Object {
     friend T details::get_plist(const U&, hid_t (*f)(hid_t));
 };
 
+/// \interface PropertyInterface
+/// \brief HDF5 file property object
+///
+/// A property is an object which is expected to have a method with the
+/// following signature `void apply(hid_t hid) const`
+///
+/// \sa Instructions to document C++20 concepts with Doxygen: https://github.com/doxygen/doxygen/issues/2732#issuecomment-509629967
+///
+/// \cond
+#if HIGHFIVE_HAS_CONCEPTS && __cplusplus >= 202002L
+template <typename P>
+concept PropertyInterface = requires(P p, const hid_t hid) {
+    {p.apply(hid)};
+};
+
+#else
+#define PropertyInterface typename
+#endif
+/// \endcond
+
 ///
 /// \brief HDF5 property Lists
 ///
@@ -88,8 +169,8 @@ class PropertyList: public PropertyListBase {
     /// Add a property to this property list.
     /// A property is an object which is expected to have a method with the
     /// following signature void apply(hid_t hid) const
-    ///
-    template <typename P>
+    /// \tparam PropertyInterface
+    template <PropertyInterface P>
     void add(const P& property);
 
     ///
@@ -377,6 +458,7 @@ class PageBufferSize {
 #endif
 
 /// \brief Set hints as to how many links to expect and their average length
+/// \implements PropertyInterface
 ///
 class EstimatedLinkInfo {
   public:
@@ -402,6 +484,7 @@ class EstimatedLinkInfo {
 };
 
 
+/// \implements PropertyInterface
 class Chunking {
   public:
     explicit Chunking(const std::vector<hsize_t>& dims);
@@ -420,6 +503,7 @@ class Chunking {
     std::vector<hsize_t> _dims;
 };
 
+/// \implements PropertyInterface
 class Deflate {
   public:
     explicit Deflate(unsigned level);
@@ -431,6 +515,7 @@ class Deflate {
     const unsigned _level;
 };
 
+/// \implements PropertyInterface
 class Szip {
   public:
     explicit Szip(unsigned options_mask = H5_SZIP_EC_OPTION_MASK,
@@ -446,6 +531,7 @@ class Szip {
     const unsigned _pixels_per_block;
 };
 
+/// \implements PropertyInterface
 class Shuffle {
   public:
     Shuffle() = default;
@@ -460,6 +546,7 @@ class Shuffle {
 /// The precise time of when HDF5 requests space to store the dataset
 /// can be configured. Please, consider the upstream documentation for
 /// `H5Pset_alloc_time`.
+/// \implements PropertyInterface
 class AllocationTime {
   public:
     explicit AllocationTime(H5D_alloc_time_t alloc_time);
@@ -476,6 +563,7 @@ class AllocationTime {
 
 /// Dataset access property to control chunk cache configuration.
 /// Do not confuse with the similar file access property for H5Pset_cache
+/// \implements PropertyInterface
 class Caching {
   public:
     /// https://support.hdfgroup.org/HDF5/doc/RM/H5P/H5Pset_chunk_cache.html for
@@ -498,6 +586,7 @@ class Caching {
     double _w0;
 };
 
+/// \implements PropertyInterface
 class CreateIntermediateGroup {
   public:
     explicit CreateIntermediateGroup(bool create = true);
@@ -518,6 +607,7 @@ class CreateIntermediateGroup {
 };
 
 #ifdef H5_HAVE_PARALLEL
+/// \implements PropertyInterface
 class UseCollectiveIO {
   public:
     explicit UseCollectiveIO(bool enable = true);
@@ -540,6 +630,7 @@ class UseCollectiveIO {
 /// creation of this object. This object will not update automatically for later data transfers,
 /// i.e. `H5Pget_mpio_no_collective_cause` is called in the constructor, and not when fetching
 /// a value, such as `wasCollective`.
+/// \implements PropertyInterface
 class MpioNoCollectiveCause {
   public:
     explicit MpioNoCollectiveCause(const DataTransferProps& dxpl);
@@ -575,6 +666,7 @@ struct CreationOrder {
 ///
 /// Let user retrieve objects by creation order time instead of name.
 ///
+/// \implements PropertyInterface
 class LinkCreationOrder {
   public:
     ///
@@ -598,6 +690,44 @@ class LinkCreationOrder {
     void apply(hid_t hid) const;
     unsigned _flags;
 };
+
+
+///
+/// \brief Set threshold for attribute storage.
+///
+/// HDF5 can store Attributes in the object header (compact) or in the B-tree
+/// (dense). This property sets the threshold when attributes are moved to one
+/// or the other storage format.
+///
+/// Please refer to the upstream documentation of `H5Pset_attr_phase_change` or
+/// Section 8 (Attributes) in the User Guide, in particular Subsection 8.5.
+///
+/// \implements PropertyInterface
+class AttributePhaseChange {
+  public:
+    ///
+    /// \brief Create the property from the threshold values.
+    ///
+    /// When the number of attributes hits `max_compact` the attributes are
+    /// moved to dense storage, once the number drops to below `min_dense` the
+    /// attributes are moved to compact storage.
+    AttributePhaseChange(unsigned max_compact, unsigned min_dense);
+
+    /// \brief Extract threshold values from property list.
+    explicit AttributePhaseChange(const GroupCreateProps& gcpl);
+
+    unsigned max_compact() const;
+    unsigned min_dense() const;
+
+  private:
+    friend GroupCreateProps;
+    void apply(hid_t hid) const;
+
+    unsigned _max_compact;
+    unsigned _min_dense;
+};
+
+/// @}
 
 }  // namespace HighFive
 

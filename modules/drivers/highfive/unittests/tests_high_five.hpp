@@ -12,6 +12,17 @@
 #include <string>
 #include <vector>
 #include <tuple>
+#include <sstream>
+#include <functional>
+#include <iomanip>
+
+// We don't need windows specific functionality. However, to better detect defects caused by macros,
+// we include this header.
+// The list of identifiers is taken from `Boost::Predef`.
+#if defined(_WIN32) || defined(_WIN64) || defined(__WIN32__) || defined(__TOS_WIN__) || \
+    defined(__WINDOWS__)
+#include <Windows.h>
+#endif
 
 using ldcomplex = std::complex<long double>;
 using dcomplex = std::complex<double>;
@@ -35,8 +46,8 @@ using base_test_types = std::tuple<int,
 #include <half.hpp>
 
 using float16_t = half_float::half;
-using numerical_test_types = decltype(
-    std::tuple_cat(std::declval<base_test_types>(), std::tuple<float16_t>()));
+using numerical_test_types =
+    decltype(std::tuple_cat(std::declval<base_test_types>(), std::tuple<float16_t>()));
 #else
 using numerical_test_types = base_test_types;
 #endif
@@ -154,15 +165,21 @@ struct ContentGenerate<std::string> {
 template <typename T>
 inline std::string typeNameHelper() {
     std::string name = typeid(T).name();
-#if defined(WIN32)
-    // Replace illegal windows file path characters
     std::replace(std::begin(name), std::end(name), ' ', '_');
     std::replace(std::begin(name), std::end(name), '<', '_');
     std::replace(std::begin(name), std::end(name), '>', '_');
     std::replace(std::begin(name), std::end(name), ':', '_');
-#endif
-    return name;
+
+    if (name.size() > 64) {
+        std::stringstream hash;
+        hash << std::hex << std::hash<std::string>{}(name);
+
+        return hash.str();
+    } else {
+        return name;
+    }
 }
+
 
 template <typename ElemT, typename DataT>
 inline HighFive::DataSet readWriteDataset(const DataT& ndvec,

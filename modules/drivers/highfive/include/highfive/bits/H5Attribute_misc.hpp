@@ -61,8 +61,9 @@ inline T Attribute::read() const {
 template <typename T>
 inline void Attribute::read(T& array) const {
     const DataSpace& mem_space = getMemSpace();
+    auto file_datatype = getDataType();
     const details::BufferInfo<T> buffer_info(
-        getDataType(),
+        file_datatype,
         [this]() -> std::string { return this->getName(); },
         details::BufferInfo<T>::read);
 
@@ -82,35 +83,41 @@ inline void Attribute::read(T& array) const {
         return;
     }
 
-    auto r = details::data_converter::get_reader<T>(dims, array);
-    read(r.get_pointer(), buffer_info.data_type);
+    auto r = details::data_converter::get_reader<T>(dims, array, file_datatype);
+    read(r.getPointer(), buffer_info.data_type);
     // re-arrange results
-    r.unserialize();
-    auto t = create_datatype<typename details::inspector<T>::base_type>();
+    r.unserialize(array);
+
+    auto t = buffer_info.data_type;
     auto c = t.getClass();
+
     if (c == DataTypeClass::VarLen || t.isVariableStr()) {
 #if H5_VERSION_GE(1, 12, 0)
         // This one have been created in 1.12.0
-        (void) H5Treclaim(t.getId(), mem_space.getId(), H5P_DEFAULT, r.get_pointer());
+        (void) H5Treclaim(t.getId(), mem_space.getId(), H5P_DEFAULT, r.getPointer());
 #else
         // This one is deprecated since 1.12.0
-        (void) H5Dvlen_reclaim(t.getId(), mem_space.getId(), H5P_DEFAULT, r.get_pointer());
+        (void) H5Dvlen_reclaim(t.getId(), mem_space.getId(), H5P_DEFAULT, r.getPointer());
 #endif
     }
 }
 
 template <typename T>
-inline void Attribute::read(T* array, const DataType& dtype) const {
+inline void Attribute::read(T* array, const DataType& mem_datatype) const {
     static_assert(!std::is_const<T>::value,
                   "read() requires a non-const structure to read data into");
-    using element_type = typename details::inspector<T>::base_type;
-    // Auto-detect mem datatype if not provided
-    const DataType& mem_datatype = dtype.empty() ? create_and_check_datatype<element_type>()
-                                                 : dtype;
 
     if (H5Aread(getId(), mem_datatype.getId(), static_cast<void*>(array)) < 0) {
         HDF5ErrMapper::ToException<AttributeException>("Error during HDF5 Read: ");
     }
+}
+
+template <typename T>
+inline void Attribute::read(T* array) const {
+    using element_type = typename details::inspector<T>::base_type;
+    const DataType& mem_datatype = create_and_check_datatype<element_type>();
+
+    read(array, mem_datatype);
 }
 
 template <typename T>
@@ -121,8 +128,10 @@ inline void Attribute::write(const T& buffer) {
         return;
     }
 
+    auto file_datatype = getDataType();
+
     const details::BufferInfo<T> buffer_info(
-        getDataType(),
+        file_datatype,
         [this]() -> std::string { return this->getName(); },
         details::BufferInfo<T>::write);
 
@@ -132,18 +141,23 @@ inline void Attribute::write(const T& buffer) {
            << " into dataset of dimensions " << mem_space.getNumberDimensions();
         throw DataSpaceException(ss.str());
     }
-    auto w = details::data_converter::serialize<T>(buffer);
-    write_raw(w.get_pointer(), buffer_info.data_type);
+    auto w = details::data_converter::serialize<T>(buffer, file_datatype);
+    write_raw(w.getPointer(), buffer_info.data_type);
 }
 
 template <typename T>
-inline void Attribute::write_raw(const T* buffer, const DataType& dtype) {
-    using element_type = typename details::inspector<T>::base_type;
-    const auto& mem_datatype = dtype.empty() ? create_and_check_datatype<element_type>() : dtype;
-
+inline void Attribute::write_raw(const T* buffer, const DataType& mem_datatype) {
     if (H5Awrite(getId(), mem_datatype.getId(), buffer) < 0) {
         HDF5ErrMapper::ToException<DataSetException>("Error during HDF5 Write: ");
     }
+}
+
+template <typename T>
+inline void Attribute::write_raw(const T* buffer) {
+    using element_type = typename details::inspector<T>::base_type;
+    const auto& mem_datatype = create_and_check_datatype<element_type>();
+
+    write_raw(buffer, mem_datatype);
 }
 
 }  // namespace HighFive

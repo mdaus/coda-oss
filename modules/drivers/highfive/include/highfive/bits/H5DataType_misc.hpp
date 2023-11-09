@@ -22,9 +22,67 @@
 #include <half.hpp>
 #endif
 
-#include "H5Converter_misc.hpp"
+#include "H5Inspector_misc.hpp"
 
 namespace HighFive {
+
+namespace detail {
+
+inline hid_t h5t_copy(hid_t original) {
+    auto copy = H5Tcopy(original);
+    if (copy == H5I_INVALID_HID) {
+        HDF5ErrMapper::ToException<DataTypeException>("Error copying datatype.");
+    }
+
+    return copy;
+}
+
+inline hsize_t h5t_get_size(hid_t hid) {
+    hsize_t size = H5Tget_size(hid);
+    if (size == 0) {
+        HDF5ErrMapper::ToException<DataTypeException>("Error getting size of datatype.");
+    }
+
+    return size;
+}
+
+inline H5T_cset_t h5t_get_cset(hid_t hid) {
+    auto cset = H5Tget_cset(hid);
+    if (cset == H5T_CSET_ERROR) {
+        HDF5ErrMapper::ToException<DataTypeException>("Error getting cset of datatype.");
+    }
+
+    return cset;
+}
+
+inline H5T_str_t h5t_get_strpad(hid_t hid) {
+    auto strpad = H5Tget_strpad(hid);
+    if (strpad == H5T_STR_ERROR) {
+        HDF5ErrMapper::ToException<DataTypeException>("Error getting strpad of datatype.");
+    }
+
+    return strpad;
+}
+
+inline void h5t_set_size(hid_t hid, hsize_t size) {
+    if (H5Tset_size(hid, size) < 0) {
+        HDF5ErrMapper::ToException<DataTypeException>("Error setting size of datatype.");
+    }
+}
+
+inline void h5t_set_cset(hid_t hid, H5T_cset_t cset) {
+    if (H5Tset_cset(hid, cset) < 0) {
+        HDF5ErrMapper::ToException<DataTypeException>("Error setting cset of datatype.");
+    }
+}
+
+inline void h5t_set_strpad(hid_t hid, H5T_str_t strpad) {
+    if (H5Tset_strpad(hid, strpad) < 0) {
+        HDF5ErrMapper::ToException<DataTypeException>("Error setting strpad of datatype.");
+    }
+}
+}  // namespace detail
+
 
 namespace {  // unnamed
 inline DataTypeClass convert_type_class(const H5T_class_t& tclass);
@@ -41,7 +99,7 @@ inline DataTypeClass DataType::getClass() const {
 }
 
 inline size_t DataType::getSize() const {
-    return H5Tget_size(_hid);
+    return detail::h5t_get_size(_hid);
 }
 
 inline bool DataType::operator==(const DataType& other) const {
@@ -68,68 +126,110 @@ inline bool DataType::isReference() const {
     return H5Tequal(_hid, H5T_STD_REF_OBJ) > 0;
 }
 
+inline StringType DataType::asStringType() const {
+    if (getClass() != DataTypeClass::String) {
+        throw DataTypeException("Invalid conversion to StringType.");
+    }
+
+    if (isValid() && H5Iinc_ref(_hid) < 0) {
+        throw ObjectException("Reference counter increase failure");
+    }
+
+    return StringType(_hid);
+}
+
 inline std::string DataType::string() const {
     return type_class_string(getClass()) + std::to_string(getSize() * 8);
+}
+
+inline StringPadding StringType::getPadding() const {
+    return StringPadding(detail::h5t_get_strpad(_hid));
+}
+
+inline CharacterSet StringType::getCharacterSet() const {
+    return CharacterSet(detail::h5t_get_cset(_hid));
+}
+
+inline FixedLengthStringType::FixedLengthStringType(size_t size,
+                                                    StringPadding padding,
+                                                    CharacterSet character_set) {
+    if (size == 0 && padding == StringPadding::NullTerminated) {
+        throw DataTypeException(
+            "Fixed-length, null-terminated need at least one byte to store the null-character.");
+    }
+
+    _hid = detail::h5t_copy(H5T_C_S1);
+
+    detail::h5t_set_size(_hid, hsize_t(size));
+    detail::h5t_set_cset(_hid, H5T_cset_t(character_set));
+    detail::h5t_set_strpad(_hid, H5T_str_t(padding));
+}
+
+inline VariableLengthStringType::VariableLengthStringType(CharacterSet character_set) {
+    _hid = detail::h5t_copy(H5T_C_S1);
+
+    detail::h5t_set_size(_hid, H5T_VARIABLE);
+    detail::h5t_set_cset(_hid, H5T_cset_t(character_set));
 }
 
 // char mapping
 template <>
 inline AtomicType<char>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_CHAR);
+    _hid = detail::h5t_copy(H5T_NATIVE_CHAR);
 }
 
 template <>
 inline AtomicType<signed char>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_SCHAR);
+    _hid = detail::h5t_copy(H5T_NATIVE_SCHAR);
 }
 
 template <>
 inline AtomicType<unsigned char>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_UCHAR);
+    _hid = detail::h5t_copy(H5T_NATIVE_UCHAR);
 }
 
 // short mapping
 template <>
 inline AtomicType<short>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_SHORT);
+    _hid = detail::h5t_copy(H5T_NATIVE_SHORT);
 }
 
 template <>
 inline AtomicType<unsigned short>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_USHORT);
+    _hid = detail::h5t_copy(H5T_NATIVE_USHORT);
 }
 
 // integer mapping
 template <>
 inline AtomicType<int>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_INT);
+    _hid = detail::h5t_copy(H5T_NATIVE_INT);
 }
 
 template <>
 inline AtomicType<unsigned>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_UINT);
+    _hid = detail::h5t_copy(H5T_NATIVE_UINT);
 }
 
 // long mapping
 template <>
 inline AtomicType<long>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_LONG);
+    _hid = detail::h5t_copy(H5T_NATIVE_LONG);
 }
 
 template <>
 inline AtomicType<unsigned long>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_ULONG);
+    _hid = detail::h5t_copy(H5T_NATIVE_ULONG);
 }
 
 // long long mapping
 template <>
 inline AtomicType<long long>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_LLONG);
+    _hid = detail::h5t_copy(H5T_NATIVE_LLONG);
 }
 
 template <>
 inline AtomicType<unsigned long long>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_ULLONG);
+    _hid = detail::h5t_copy(H5T_NATIVE_ULLONG);
 }
 
 // half-float, float, double and long double mapping
@@ -138,11 +238,11 @@ using float16_t = half_float::half;
 
 template <>
 inline AtomicType<float16_t>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_FLOAT);
+    _hid = detail::h5t_copy(H5T_NATIVE_FLOAT);
     // Sign position, exponent position, exponent size, mantissa position, mantissa size
     H5Tset_fields(_hid, 15, 10, 5, 0, 10);
     // Total datatype size (in bytes)
-    H5Tset_size(_hid, 2);
+    detail::h5t_set_size(_hid, 2);
     // Floating point exponent bias
     H5Tset_ebias(_hid, 15);
 }
@@ -150,17 +250,17 @@ inline AtomicType<float16_t>::AtomicType() {
 
 template <>
 inline AtomicType<float>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_FLOAT);
+    _hid = detail::h5t_copy(H5T_NATIVE_FLOAT);
 }
 
 template <>
 inline AtomicType<double>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_DOUBLE);
+    _hid = detail::h5t_copy(H5T_NATIVE_DOUBLE);
 }
 
 template <>
 inline AtomicType<long double>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_LDOUBLE);
+    _hid = detail::h5t_copy(H5T_NATIVE_LDOUBLE);
 }
 
 // std string
@@ -173,7 +273,7 @@ inline AtomicType<std::string>::AtomicType() {
 // std byte
 template <>
 inline AtomicType<std::byte>::AtomicType() {
-    _hid = H5Tcopy(H5T_NATIVE_B8);
+    _hid = detail::h5t_copy(H5T_NATIVE_B8);
 }
 #endif
 
@@ -200,8 +300,8 @@ class AtomicType<std::complex<T>>: public DataType {
         : DataType(
               CompoundType({{"r", create_datatype<T>(), 0}, {"i", create_datatype<T>(), sizeof(T)}},
                            sizeof(std::complex<T>))) {
-        static_assert(std::is_floating_point<T>::value,
-                      "std::complex accepts only floating point numbers.");
+        static_assert(std::is_arithmetic<T>::value,
+                      "std::complex accepts only floating point and integral numbers.");
     }
 };
 
@@ -230,18 +330,15 @@ inline FixedLenStringArray<N>::FixedLenStringArray(const char array[][N], std::s
 template <std::size_t N>
 inline FixedLenStringArray<N>::FixedLenStringArray(const std::string* iter_begin,
                                                    const std::string* iter_end) {
-    datavec.resize(static_cast<std::size_t>(iter_end - iter_begin));
-    for (auto& dst_array: datavec) {
-        const char* src = (iter_begin++)->c_str();
-        const size_t length = std::min(N - 1, std::strlen(src));
-        std::memcpy(dst_array.data(), src, length);
-        dst_array[length] = 0;
+    datavec.reserve(static_cast<std::size_t>(iter_end - iter_begin));
+    for (std::string const* it = iter_begin; it != iter_end; ++it) {
+        push_back(*it);
     }
 }
 
 template <std::size_t N>
 inline FixedLenStringArray<N>::FixedLenStringArray(const std::vector<std::string>& vec)
-    : FixedLenStringArray(&vec.front(), &vec.back()) {}
+    : FixedLenStringArray(vec.data(), vec.data() + vec.size()) {}
 
 template <std::size_t N>
 inline FixedLenStringArray<N>::FixedLenStringArray(
@@ -271,7 +368,7 @@ inline std::string FixedLenStringArray<N>::getString(std::size_t i) const {
 // Reference mapping
 template <>
 inline AtomicType<Reference>::AtomicType() {
-    _hid = H5Tcopy(H5T_STD_REF_OBJ);
+    _hid = detail::h5t_copy(H5T_STD_REF_OBJ);
 }
 
 inline size_t find_first_atomic_member_size(hid_t hid) {
@@ -294,7 +391,7 @@ inline size_t find_first_atomic_member_size(hid_t hid) {
     } else if (H5Tget_class(hid) == H5T_STRING) {
         return 1;
     }
-    return H5Tget_size(hid);
+    return detail::h5t_get_size(hid);
 }
 
 // Calculate the padding required to align an element of a struct
@@ -325,7 +422,7 @@ inline void CompoundType::create(size_t size) {
 
         // Do a first pass to find the total size of the compound datatype
         for (auto& member: members) {
-            size_t member_size = H5Tget_size(member.base_type.getId());
+            size_t member_size = detail::h5t_get_size(member.base_type.getId());
 
             if (member_size == 0) {
                 throw DataTypeException("Cannot get size of DataType with hid: " +
@@ -393,12 +490,9 @@ inline void EnumType<T>::commit(const Object& object, const std::string& name) c
 namespace {
 
 inline hid_t create_string(size_t length) {
-    hid_t _hid = H5Tcopy(H5T_C_S1);
-    if (H5Tset_size(_hid, length) < 0) {
-        HDF5ErrMapper::ToException<DataTypeException>("Unable to define datatype size to variable");
-    }
-    // define encoding to UTF-8 by default
-    H5Tset_cset(_hid, H5T_CSET_UTF8);
+    hid_t _hid = detail::h5t_copy(H5T_C_S1);
+    detail::h5t_set_size(_hid, length);
+    detail::h5t_set_cset(_hid, H5T_CSET_UTF8);
     return _hid;
 }
 

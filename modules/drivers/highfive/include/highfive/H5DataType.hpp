@@ -11,9 +11,12 @@
 #include <type_traits>
 #include <vector>
 
+#include <H5Tpublic.h>
+
 #include "H5Object.hpp"
 #include "bits/H5Utils.hpp"
 
+#include "bits/string_padding.hpp"
 #include "H5PropertyList.hpp"
 
 namespace HighFive {
@@ -47,6 +50,7 @@ inline DataTypeClass operator&(DataTypeClass lhs, DataTypeClass rhs) {
     return static_cast<DataTypeClass>(static_cast<T>(lhs) & static_cast<T>(rhs));
 }
 
+class StringType;
 
 ///
 /// \brief HDF5 Data Type
@@ -86,6 +90,11 @@ class DataType: public Object {
     bool isFixedLenStr() const;
 
     ///
+    /// \brief Returns this datatype as a `StringType`.
+    ///
+    StringType asStringType() const;
+
+    ///
     /// \brief Check the DataType was default constructed.
     /// Such value might represent auto-detection of the datatype from a buffer
     ///
@@ -106,7 +115,66 @@ class DataType: public Object {
     friend class File;
     friend class DataSet;
     friend class CompoundType;
+    template <typename Derivate>
+    friend class NodeTraits;
 };
+
+
+enum class CharacterSet : std::underlying_type<H5T_cset_t>::type {
+    Ascii = H5T_CSET_ASCII,
+    Utf8 = H5T_CSET_UTF8,
+};
+
+class StringType: public DataType {
+  public:
+    ///
+    /// \brief For stings return the character set.
+    ///
+    CharacterSet getCharacterSet() const;
+
+    ///
+    /// \brief For fixed length stings return the padding.
+    ///
+    StringPadding getPadding() const;
+
+  protected:
+    using DataType::DataType;
+    friend class DataType;
+};
+
+class FixedLengthStringType: public StringType {
+  public:
+    ///
+    /// \brief Create a fixed length string datatype.
+    ///
+    /// The string will be `size` bytes long, regardless whether it's ASCII or
+    /// UTF8. In particular, a string with `n` UFT8 characters in general
+    /// requires `4*n` bytes.
+    ///
+    /// The string padding is subtle, essentially it's just a hint. A
+    /// nullterminated string is guaranteed to have one `'\0'` which marks the
+    /// semantic end of the string. The length of the buffer must be at least
+    /// `size` bytes regardless. HDF5 will read or write `size` bytes,
+    /// irrespective of the when the `\0` occurs.
+    ///
+    /// Note that when writing passing `StringPadding::NullTerminated` is a
+    /// guarantee to the reader that it contains a `\0`. Therefore, make sure
+    /// that the string really is nullterminated. Otherwise prefer a
+    /// null-padded string which only means states that the buffer is filled up
+    /// with 0 or more `\0`.
+    FixedLengthStringType(size_t size,
+                          StringPadding padding,
+                          CharacterSet character_set = CharacterSet::Ascii);
+};
+
+class VariableLengthStringType: public StringType {
+  public:
+    ///
+    /// \brief Create a variable length string HDF5 datatype.
+    ///
+    VariableLengthStringType(CharacterSet character_set = CharacterSet::Ascii);
+};
+
 
 ///
 /// \brief create an HDF5 DataType from a C++ type
@@ -175,11 +243,14 @@ class CompoundType: public DataType {
         size_t n_members = static_cast<size_t>(result);
         members.reserve(n_members);
         for (unsigned i = 0; i < n_members; i++) {
-            const char* name = H5Tget_member_name(_hid, i);
+            char* name = H5Tget_member_name(_hid, i);
             size_t offset = H5Tget_member_offset(_hid, i);
             hid_t member_hid = H5Tget_member_type(_hid, i);
             DataType member_type{member_hid};
-            members.emplace_back(name, member_type, offset);
+            members.emplace_back(std::string(name), member_type, offset);
+            if (H5free_memory(name) < 0) {
+                throw DataTypeException("Could not free names from the compound datatype");
+            }
         }
     }
 
@@ -250,7 +321,7 @@ class EnumType: public DataType {
     }
 
     EnumType(std::initializer_list<member_def> t_members)
-        : EnumType(std::vector<member_def>({t_members})) {}
+        : EnumType(std::vector<member_def>(t_members)) {}
 
     /// \brief Commit datatype into the given Object
     /// \param object Location to commit object into
@@ -280,15 +351,20 @@ DataType create_and_check_datatype();
 /// Although fixed-len arrays can be created 'raw' without the need for
 /// this structure, to retrieve results efficiently it must be used.
 ///
+/// \tparam N Size of the string in bytes, including the null character. Note,
+///           that all string must be null-terminated.
+///
 template <std::size_t N>
 class FixedLenStringArray {
   public:
     FixedLenStringArray() = default;
 
     ///
-    /// \brief Create a FixedStringArray from a raw contiguous buffer
+    /// \brief Create a FixedStringArray from a raw contiguous buffer.
     ///
-    FixedLenStringArray(const char array[][N], std::size_t length);
+    /// The argument `n_strings` specifies the number of strings.
+    ///
+    FixedLenStringArray(const char array[][N], std::size_t n_strings);
 
     ///
     /// \brief Create a FixedStringArray from a sequence of strings.

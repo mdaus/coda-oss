@@ -259,6 +259,15 @@ class SliceTraits {
     Selection select(const HyperSlab& hyperslab) const;
 
     ///
+    /// \brief Select an \p hyperslab in the current Slice/Dataset.
+    ///
+    /// If the selection can be read into a simple, multi-dimensional dataspace,
+    /// then this overload enable specifying the shape of the memory dataspace
+    /// with `memspace`. Note, that simple implies no offsets, strides or
+    /// number of blocks, just the size of the block in each dimension.
+    Selection select(const HyperSlab& hyperslab, const DataSpace& memspace) const;
+
+    ///
     /// \brief Select a region in the current Slice/Dataset of \p count points at
     /// \p offset separated by \p stride. If strides are not provided they will
     /// default to 1 in all dimensions.
@@ -308,8 +317,20 @@ class SliceTraits {
     /// \param xfer_props: Data Transfer properties
     template <typename T>
     void read(T* array,
-              const DataType& dtype = DataType(),
+              const DataType& dtype,
               const DataTransferProps& xfer_props = DataTransferProps()) const;
+
+    ///
+    /// Read the entire dataset into a raw buffer
+    ///
+    /// Same as `read(T*, const DataType&, const DataTransferProps&)`. However,
+    /// this overload deduces the HDF5 datatype of the element of `array` from
+    /// `T`. Note, that the file datatype is already fixed.
+    ///
+    /// \param array: A buffer containing enough space for the data
+    /// \param xfer_props: Data Transfer properties
+    template <typename T>
+    void read(T* array, const DataTransferProps& xfer_props = DataTransferProps()) const;
 
     ///
     /// Write the integrality N-dimension buffer to this dataset
@@ -322,22 +343,33 @@ class SliceTraits {
     void write(const T& buffer, const DataTransferProps& xfer_props = DataTransferProps());
 
     ///
-    /// Write from a raw buffer into this dataset
+    /// Write from a raw pointer into this dataset.
     ///
     /// No dimensionality checks will be performed, it is the user's
     /// responsibility to ensure that the buffer holds the right amount of
     /// elements. For n-dimensional matrices the buffer layout follows H5
     /// default conventions.
+    ///
+    /// Note, this is the shallowest wrapper around `H5Dwrite` and should
+    /// be used if full control is needed. Generally prefer `write`.
+    ///
     /// \param buffer: A buffer containing the data to be written
-    /// \param dtype: The type of the data, in case it cannot be automatically guessed
+    /// \param dtype: The datatype of `buffer`, i.e. the memory data type.
     /// \param xfer_props: The HDF5 data transfer properties, e.g. collective MPI-IO.
     template <typename T>
     void write_raw(const T* buffer,
-                   const DataType& dtype = DataType(),
+                   const DataType& mem_datatype,
                    const DataTransferProps& xfer_props = DataTransferProps());
 
-  protected:
-    inline Selection select_impl(const HyperSlab& hyperslab, const DataSpace& memspace) const;
+    ///
+    /// Write from a raw pointer into this dataset.
+    ///
+    /// Same as `write_raw(const T*, const DataTransferProps&)`. However, this
+    /// overload attempts to guess the data type of `buffer`, i.e. the memory
+    /// datatype. Note that the file datatype is already fixed.
+    ///
+    template <typename T>
+    void write_raw(const T* buffer, const DataTransferProps& xfer_props = DataTransferProps());
 };
 
 }  // namespace HighFive
