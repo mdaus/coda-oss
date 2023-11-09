@@ -292,7 +292,7 @@ static std::string getSpecialEnv_PID(const AbstractOS& os, const std::string& en
     UNREFERENCED_PARAMETER(envVar);
     #endif
     const auto pid = os.getProcessId();
-    return str::toString(pid);
+    return std::to_string(pid);
 }
 
 static std::string getSpecialEnv_USER(const AbstractOS& os, const std::string& envVar)
@@ -475,7 +475,7 @@ std::string AbstractOS::getSpecialEnv(const std::string& envVar) const
 
     if (envVar == "EPOCHSECONDS")
     {
-        return str::toString(sys::DateTime::getEpochSeconds());
+        return std::to_string(sys::DateTime::getEpochSeconds());
     }
 
     if (envVar == "OSTYPE")
