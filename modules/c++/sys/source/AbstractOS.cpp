@@ -394,7 +394,7 @@ static std::string getSpecialEnv_SECONDS_()
     // https://en.cppreference.com/w/cpp/chrono/c/difftime
     static const auto start = std::time(nullptr);
     const auto diff = static_cast<int64_t>(std::difftime(std::time(nullptr), start));
-    return str::toString(diff);
+    return std::to_string(diff);
 }
 static std::string getSpecialEnv_SECONDS(const AbstractOS&, const std::string& envVar)
 {
