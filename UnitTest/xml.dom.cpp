@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 
-#include <xml/lite/DOMParser.h>
-#include <xml/lite/DOMDocument.h>
-#include <xml/lite/DOMSerializer.h>
+#include <xml/dom/DOMParser.h>
+#include <xml/dom/DOMDocument.h>
+#include <xml/dom/DOMSerializer.h>
 
 namespace xml_dom
 {

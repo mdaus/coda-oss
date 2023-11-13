@@ -26,7 +26,7 @@
 
 #include <assert.h>
 
-#include "xml/lite/DOMDocument.h"
+#include "xml/dom/DOMDocument.h"
 
 xml::lite::DOMParser::DOMParser() : pParser(std::make_unique<MinidomParser>())
 {
