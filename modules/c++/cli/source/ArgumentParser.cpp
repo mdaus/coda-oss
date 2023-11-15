@@ -333,7 +333,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                 std::map<std::string, Argument*>& flagMap =
                         (subOption ? shortOptionsFlags : shortFlags);
                 if (flagMap.find(op) != flagMap.end())
-                    parseError(FmtX("Conflicting option: %c%s", mPrefixChar, op));
+                    parseError(str::Format("Conflicting option: %c%s", mPrefixChar, op));
                 flagMap[op] = arg;
             }
             for (std::vector<std::string>::const_iterator it =
@@ -343,7 +343,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                 std::map<std::string, Argument*>& flagMap =
                         (subOption ? longOptionsFlags : longFlags);
                 if (flagMap.find(op) != flagMap.end())
-                    parseError(FmtX("Conflicting option: %c%c%s", mPrefixChar, mPrefixChar, op));
+                    parseError(str::Format("Conflicting option: %c%c%s", mPrefixChar, mPrefixChar, op));
                 flagMap[op] = arg;
             }
         }
@@ -472,7 +472,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                     }
                     else
                     {
-                        throw except::Exception(Ctxt(FmtX("Invalid option: [%s]", argStr)));
+                        throw except::Exception(Ctxt(str::Format("Invalid option: [%s]", argStr)));
                     }
                 }
             }
@@ -513,7 +513,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                     }
                     else
                     {
-                        throw except::Exception(Ctxt(FmtX("Invalid option: [%s]", argStr)));
+                        throw except::Exception(Ctxt(str::Format("Invalid option: [%s]", argStr)));
                     }
 
                 }
@@ -559,7 +559,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                 }
 
                 if (!added)
-                    parseError(FmtX("option requires value or has exceeded its max: [%s]", argVar));
+                    parseError(str::Format("option requires value or has exceeded its max: [%s]", argVar));
 
                 put(*currentResults, argVar, v, std::move(v_));
                 break;
@@ -579,7 +579,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
             case cli::SUB_OPTIONS:
             {
                 if (optionsStr.empty())
-                    parseError(FmtX("invalid sub option: [%s]", argVar.c_str()));
+                    parseError(str::Format("invalid sub option: [%s]", argVar));
 
                 auto v_ = std::make_unique<cli::Value>();
                 auto v = currentResults->hasValue(optionsStr) ? currentResults->getValue(optionsStr) : v_.get();
@@ -667,7 +667,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
             else if (arg->getAction() == cli::STORE_TRUE)
                 results->put(argVar, std::make_unique<cli::Value>(false));
             else if (arg->isRequired())
-                parseError(FmtX("missing required argument: [%s]", argVar));
+                parseError(str::Format("missing required argument: [%s]", argVar));
         }
 
 
@@ -681,9 +681,9 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
         if (arg->isRequired() || numGiven > 0)
         {
             if (minArgs > 0 && numGiven < static_cast<size_t>(minArgs))
-                parseError(FmtX("not enough arguments, %d required: [%s]", minArgs, argId));
+                parseError(str::Format("not enough arguments, %d required: [%s]", minArgs, argId));
             if (maxArgs >= 0 && numGiven > static_cast<size_t>(maxArgs))
-                parseError(FmtX("too many arguments, %d supported: [%s]", maxArgs, argId));
+                parseError(str::Format("too many arguments, %d supported: [%s]", maxArgs, argId));
         }
 
 
@@ -706,7 +706,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
             }
             if (!isValid)
             {
-                parseError(FmtX("invalid option for [%s]", argVar.c_str()));
+                parseError(str::Format("invalid option for [%s]", argVar));
             }
         }
     }
