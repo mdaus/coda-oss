@@ -1,4 +1,4 @@
-#if !(defined(WIN32) || defined(_WIN32))
+#ifndef _WIN32
 #include "net/DaemonUnix.h"
 
 #include <iostream>
@@ -258,12 +258,12 @@ void DaemonUnix::redirectStreamsTo(const std::string& filename)
     if (openFileFor(STDOUT_FILENO, filename, O_WRONLY|O_CREAT|O_TRUNC) < 0)
     {
         throw except::Exception(
-            Ctxt(FmtX("Failed to open file %s for STDOUT.", filename.c_str())));
+            Ctxt(str::Format("Failed to open file %s for STDOUT.", filename)));
     }
     if (openFileFor(STDERR_FILENO, filename, O_WRONLY|O_CREAT|O_TRUNC) < 0)
     {
         throw except::Exception(
-            Ctxt(FmtX("Failed to open file %s for STDERR.", filename.c_str())));
+            Ctxt(str::Format("Failed to open file %s for STDERR.", filename)));
     }
 }
 

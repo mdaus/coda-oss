@@ -26,7 +26,7 @@
 
 #include "config/Exports.h"
 
-#if defined(WIN32) || defined(_WIN32)
+#ifdef _WIN32
 #if !defined(USE_NSPR_THREADS)
 
 #include "sys/MutexInterface.h"
@@ -64,7 +64,7 @@ public:
      *  Return the type name.  This function is essentially free,
      *  because it is static RTTI.
      */
-    const char* getNativeType() const
+    const char* getNativeType() const noexcept
     {
         return typeid(mNative).name();
     }

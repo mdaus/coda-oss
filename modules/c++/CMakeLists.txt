@@ -1,16 +1,36 @@
 set(TARGET_LANGUAGE c++)
-set(CMAKE_CXX_STANDARD 14)
-set(CXX_STANDARD_REQUIRED true)
 
-# turn on warnings as errors
 if (MSVC)
-    add_compile_options(/WX /W4)
+    # By default, there is a /W3 on the command-line from somewhere (?); adding
+    # /Wn results in a compiler warning.
+    #
+    # https://github.com/microsoft/STL/wiki/Changelog#vs-2022-179-preview-1
+    # > *Note*: `/Wall` is not intended for regular production use, as it contains a large number of
+    # > extremely noisy and low-value warnings. In general, the STL does not attempt to be `/Wall` clean.
+    string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}") # add_compile_options(/W4)
 
-     # use standard (not legacy) C pre-processor
-    add_compile_options(/Zc:preprocessor)
-    add_compile_options(/wd5105) # macro expansion producing '...' has undefined behavior
 elseif (UNIX)
-    add_compile_options(-Werror)
+    # https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
+    add_compile_options(-Werror) # Make all warnings into errors
+    add_compile_options(-Wall -Wextra -Wpedantic -pedantic-errors -Wunused)
+
+    add_compile_options(-Wzero-as-null-pointer-constant)
+    add_compile_options(-Wsuggest-final-types -Wsuggest-final-methods)
+    add_compile_options(-Wsuggest-override)
+    add_compile_options(-Woverloaded-virtual)
+    add_compile_options(-Warray-bounds)
+    add_compile_options(-Wduplicated-branches -Wduplicated-cond)
+    add_compile_options(-Wtrampolines)
+    add_compile_options(-Wshadow)
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wold-style-cast")
+    #add_compile_options(-Wfloat-equal)
+    #add_compile_options(-Wconversion)
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Weffc++")
+
+    add_compile_options(-Wno-double-promotion) # implicit conversion of `float` to `double` is fine
+
+    # Need a newer compiler than GCC 9
+    #add_compile_options(-Wnrvo)
 endif()
 
 # add an interface library for unittests

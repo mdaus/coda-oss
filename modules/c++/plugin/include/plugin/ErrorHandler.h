@@ -19,7 +19,7 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
+#pragma once
 #ifndef __PLUGIN_ERROR_HANDLER_H__
 #define __PLUGIN_ERROR_HANDLER_H__
 
@@ -27,9 +27,11 @@
 #include <import/sys.h>
 #include <import/logging.h>
 
+#include "config/Exports.h"
+
 namespace plugin
 {
-class ErrorHandler
+class CODA_OSS_API ErrorHandler
 {
 public:
     ErrorHandler() {}
@@ -47,20 +49,20 @@ public:
     virtual void onPluginError(except::Context& c) = 0;
 };
 
-class DefaultErrorHandler : public ErrorHandler
+class CODA_OSS_API DefaultErrorHandler final : public ErrorHandler
 {
 public:
     DefaultErrorHandler(logging::LoggerPtr logger = logging::LoggerPtr());
 
-    void onPluginDirectoryNotFound(const std::string& dir);
+    void onPluginDirectoryNotFound(const std::string& dir) override;
 
-    void onPluginLoadedAlready(const std::string& file);
+    void onPluginLoadedAlready(const std::string& file) override;
 
-    void onPluginLoadFailed(const std::string& file);
+    void onPluginLoadFailed(const std::string& file) override;
 
-    void onPluginVersionUnsupported(const std::string& message);
+    void onPluginVersionUnsupported(const std::string& message) override;
 
-    void onPluginError(except::Context& c);
+    void onPluginError(except::Context& c) override;
 
 protected:
     logging::LoggerPtr mLogger;

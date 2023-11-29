@@ -44,15 +44,15 @@ public:
 	vec[2] = 0.0;
     }
     virtual ~A() {}
-    virtual void serialize(OutputStream& os)
+    virtual void serialize(OutputStream& os) override
     {
 	os.writeln("Class A");
-	os.writeln(FmtX("%f", vec[0]));
-	os.writeln(FmtX("%f", vec[1]));
-	os.writeln(FmtX("%f", vec[2]));
+	os.writeln(str::Format("%f", vec[0]));
+	os.writeln(str::Format("%f", vec[1]));
+	os.writeln(str::Format("%f", vec[2]));
 
     }
-    virtual void deserialize(InputStream& is)
+    virtual void deserialize(InputStream& is) override
     {
 	string classType = fillString(is);
 	string vec_0 = fillString(is);
@@ -60,9 +60,9 @@ public:
 	string vec_2 = fillString(is);
 
 	assert(classType == "Class A");
-	dbg.writeln(FmtX("vec[0] = %s", vec_0.c_str()));
-	dbg.writeln(FmtX("vec[1] = %s", vec_1.c_str()));
-	dbg.writeln(FmtX("vec[2] = %s", vec_2.c_str()));
+	dbg.writeln(str::Format("vec[0] = %s", vec_0));
+	dbg.writeln(str::Format("vec[1] = %s", vec_1));
+	dbg.writeln(str::Format("vec[2] = %s", vec_2));
 
 	vec[0] = str::toType<float>(vec_0);
 	vec[1] = str::toType<float>(vec_1);

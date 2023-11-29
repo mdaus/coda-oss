@@ -99,7 +99,7 @@ struct WorkSharingBalancedRunnable1D : public sys::Runnable
     WorkSharingBalancedRunnable1D(WorkSharingBalancedRunnable1D&&) = default;
     WorkSharingBalancedRunnable1D& operator=(WorkSharingBalancedRunnable1D&&) = delete;
 
-    virtual void run()
+    virtual void run() override
     {
         // Operate over this thread's range
         processElements(mCounter, mEndElement);
@@ -238,7 +238,7 @@ void runWorkSharingBalanced1D(size_t numElements,
         std::ostringstream ostr;
         ostr << "Got " << numThreads << " threads but " << ops.size()
              << " functors";
-        throw except::Exception(Ctxt(ostr.str()));
+        throw except::Exception(Ctxt(ostr));
     }
 
     std::vector<size_t> threadPoolEndElements;

@@ -20,16 +20,16 @@
  *
  */
 
-#if defined(WIN32) || defined(_WIN32)
+#ifdef _WIN32
 
 #include <limits>
 #include <cmath>
 #include "sys/File.h"
 
-void sys::File::create(const std::string& str,
-                       int accessFlags,
-                       int creationFlags)
+_SYS_HANDLE_TYPE sys::File::createFile(const coda_oss::filesystem::path& str_, int accessFlags, int creationFlags) noexcept
 {
+    const auto str = str_.string();
+
     // If the truncate bit is on AND the file does exist,
     // we need to set the mode to TRUNCATE_EXISTING
     if ((creationFlags & sys::File::TRUNCATE) && sys::OS().exists(str) )
@@ -43,18 +43,23 @@ void sys::File::create(const std::string& str,
 
     const auto dwDesiredAccess = static_cast<DWORD>(accessFlags);
     const auto dwCreationDisposition = static_cast<DWORD>(creationFlags);
-    mHandle = CreateFile(str.c_str(),
+    return CreateFile(str.c_str(),
                          dwDesiredAccess,
                          FILE_SHARE_READ,
                          nullptr /*lpSecurityAttributes*/,
                          dwCreationDisposition,
                          FILE_ATTRIBUTE_NORMAL,
-                         static_cast<HANDLE>(0) /*hTemplateFile*/);
+                         static_cast<HANDLE>(nullptr) /*hTemplateFile*/);
+}
+void sys::File::create(const std::string& str,
+                       int accessFlags,
+                       int creationFlags)
+{
+    create(std::nothrow, str, accessFlags, creationFlags);
     if (mHandle == INVALID_HANDLE_VALUE)
     {
-        throw sys::SystemException(Ctxt(FmtX("Error opening file: [%s]", str.c_str())));
+        throw sys::SystemException(Ctxt(str::Format("Error opening file: [%s]", str)));
     }
-    mPath = str;
 }
 
 void sys::File::readInto(void* buffer, size_t size)
@@ -77,7 +82,7 @@ void sys::File::readInto(void* buffer, size_t size)
                       bufferPtr + bytesRead,
                       bytesToRead,
                       &bytesThisRead,
-                      NULL))
+                      nullptr))
         {
             throw sys::SystemException(Ctxt("Error reading from file"));
         }
@@ -114,7 +119,7 @@ void sys::File::writeFrom(const void* buffer, size_t size)
                        bufferPtr + bytesWritten,
                        bytesToWrite,
                        &bytesThisWrite,
-                       NULL))
+                       nullptr))
         {
             throw sys::SystemException(Ctxt("Writing from file"));
         }
@@ -135,7 +140,7 @@ sys::Off_T sys::File::seekTo(sys::Off_T offset, int whence)
     if (SetFilePointerEx(mHandle, largeInt, &newFilePointer, dwMoveMethod) == 0)
     {
         const auto dwLastError = GetLastError();
-        throw sys::SystemException(Ctxt("SetFilePointer failed: GetLastError() = " + str::toString(dwLastError)));
+        throw sys::SystemException(Ctxt("SetFilePointer failed: GetLastError() = " + std::to_string(dwLastError)));
     }
 
     return static_cast<sys::Off_T>(newFilePointer.QuadPart);
@@ -163,8 +168,7 @@ sys::Off_T sys::File::lastModifiedTime()
         return (sys::Off_T)stInMillis;
     }
     throw sys::SystemException(Ctxt(
-                    FmtX("Error getting last modified time for path %s",
-                            mPath.c_str())));
+                    str::Format("Error getting last modified time for path %s", mPath)));
 }
 
 void sys::File::flush()

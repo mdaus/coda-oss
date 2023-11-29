@@ -141,7 +141,7 @@ public:
             // capture the error
             sys::SocketErr err; 
 
-#if defined(WIN32) || defined(_WIN32)
+#ifdef _WIN32
 
             /* Wrapper for setsockopt dealing with Windows specific issues :-
              *
@@ -170,7 +170,7 @@ public:
 
             std::ostringstream oss;
             oss << "Socket setOptions failure: " << err.toString();
-            throw sys::SocketException(Ctxt(oss.str()));
+            throw sys::SocketException(Ctxt(oss));
         }
     }
 

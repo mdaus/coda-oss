@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once
 #ifndef __SYS_FILE_FINDER_H__
 #define __SYS_FILE_FINDER_H__
 
@@ -28,6 +29,7 @@
 #include <string>
 #include <utility>
 
+#include "config/Exports.h"
 #include "sys/filesystem.h"
 
 namespace sys
@@ -36,7 +38,7 @@ namespace sys
 /**
  * Predicate interface for all entries
  */
-struct FilePredicate
+struct CODA_OSS_API FilePredicate
 {
     using argument_type = std::string;
     using result_type = bool;
@@ -51,16 +53,16 @@ struct FilePredicate
 struct ExistsPredicate : FilePredicate
 {
     virtual ~ExistsPredicate() = default;
-    virtual bool operator()(const std::string& entry) const;
+    virtual bool operator()(const std::string& entry) const override;
 };
 
 /**
  * Predicate that matches files only (no directories)
  */
-struct FileOnlyPredicate: public FilePredicate
+struct CODA_OSS_API FileOnlyPredicate : public FilePredicate
 {
     virtual ~FileOnlyPredicate() = default;
-    virtual bool operator()(const std::string& entry) const;
+    virtual bool operator()(const std::string& entry) const override;
 };
 
 /**
@@ -69,7 +71,7 @@ struct FileOnlyPredicate: public FilePredicate
 struct DirectoryOnlyPredicate: public FilePredicate
 {
     virtual ~DirectoryOnlyPredicate() = default;
-    virtual bool operator()(const std::string& entry) const;
+    virtual bool operator()(const std::string& entry) const override;
 };
 
 /**
@@ -78,7 +80,7 @@ struct DirectoryOnlyPredicate: public FilePredicate
 struct FragmentPredicate : public FilePredicate
 {
     FragmentPredicate(const std::string& fragment, bool ignoreCase = true);
-    bool operator()(const std::string& entry) const;
+    bool operator()(const std::string& entry) const override;
 
 private:
     std::string mFragment;
@@ -96,7 +98,7 @@ private:
 struct ExtensionPredicate: public FileOnlyPredicate
 {
     ExtensionPredicate(const std::string& ext, bool ignoreCase = true);
-    bool operator()(const std::string& filename) const;
+    bool operator()(const std::string& filename) const override;
 
 private:
     std::string mExt;
@@ -111,7 +113,7 @@ struct NotPredicate : public FilePredicate
     NotPredicate(FilePredicate* filter, bool ownIt = false);
     virtual ~NotPredicate();
 
-    virtual bool operator()(const std::string& entry) const;
+    virtual bool operator()(const std::string& entry) const override;
 
 protected:
     typedef std::pair<FilePredicate*, bool> PredicatePair;
@@ -132,7 +134,7 @@ struct LogicalPredicate : public FilePredicate
     sys::LogicalPredicate& addPredicate(FilePredicate* filter, 
                                         bool ownIt = false);
 
-    virtual bool operator()(const std::string& entry) const;
+    virtual bool operator()(const std::string& entry) const override;
 
 protected:
     bool mOrOperator = true;
@@ -146,7 +148,7 @@ protected:
  *  The FileFinder class allows you to search for 
  *  files/directories in a clean way.
  */
-struct FileFinder final
+struct CODA_OSS_API FileFinder final
 {
     FileFinder() = default;
     ~FileFinder() = default;
@@ -166,7 +168,7 @@ struct FileFinder final
 // until either the file is found or we stop at a ".git" directory.
 //
 // This (obviously) might take a while, so consider whether the result should be cached.
-coda_oss::filesystem::path findFirstFile(const coda_oss::filesystem::path& startingDirectory, const coda_oss::filesystem::path& filename);
+CODA_OSS_API coda_oss::filesystem::path findFirstFile(const coda_oss::filesystem::path& startingDirectory, const coda_oss::filesystem::path& filename);
 coda_oss::filesystem::path findFirstDirectory(const coda_oss::filesystem::path& startingDirectory, const coda_oss::filesystem::path& dir);
 
 // This is here most to avoid creating a new module for a few utility routines
@@ -174,11 +176,11 @@ namespace test // i.e., sys::test
 {
     // Try to find the specified "root" directory starting at the given path.
     // Used by unittest to find sample files.
-    coda_oss::filesystem::path findRootDirectory(const coda_oss::filesystem::path& p, const std::string& rootName,
+    CODA_OSS_API coda_oss::filesystem::path findRootDirectory(const coda_oss::filesystem::path& p, const std::string& rootName,
         std::function<bool(const coda_oss::filesystem::path&)> isRoot);
 
-    coda_oss::filesystem::path findCMakeBuildRoot(const coda_oss::filesystem::path& p);
-    bool isCMakeBuild(const coda_oss::filesystem::path& p);
+    CODA_OSS_API coda_oss::filesystem::path findCMakeBuildRoot(const coda_oss::filesystem::path& p);
+    bool CODA_OSS_API isCMakeBuild(const coda_oss::filesystem::path& p);
 
     coda_oss::filesystem::path findCMakeInstallRoot(const coda_oss::filesystem::path& p);
     bool isCMakeInstall(const coda_oss::filesystem::path& p);
@@ -191,9 +193,10 @@ namespace test // i.e., sys::test
     // e.g., root / "externals" / [name] / path / file
     //
     // Once modulePath is found, the result is cached to avoid searching again.
-    coda_oss::filesystem::path findModuleFile(const coda_oss::filesystem::path& root,
+    coda_oss::filesystem::path findModuleFile(
+            const coda_oss::filesystem::path& root,
             const std::string& externalsName, const coda_oss::filesystem::path& modulePath, const coda_oss::filesystem::path& moduleFile);
-    coda_oss::filesystem::path findGITModuleFile( // use current_directory() to find_dotGITDirectory()
+    CODA_OSS_API coda_oss::filesystem::path findGITModuleFile(  // use current_directory() to find_dotGITDirectory()
             const std::string& externalsName, const coda_oss::filesystem::path& modulePath, const coda_oss::filesystem::path& moduleFile);
 }
 }

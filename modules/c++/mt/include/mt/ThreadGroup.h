@@ -81,7 +81,7 @@ struct CODA_OSS_API ThreadGroup
 
     /*!
     *  Creates and starts a thread from a sys::Runnable.
-    *  \param runnable auto_ptr to sys::Runnable
+    *  \param runnable unique_ptr to sys::Runnable
     */
     void createThread(std::unique_ptr<sys::Runnable>&& runnable);
 
@@ -168,7 +168,7 @@ private:
         /*!
          *  Call run() on the Runnable passed to createThread
          */
-        virtual void run();
+        virtual void run() override;
 
     private:
         std::unique_ptr<sys::Runnable> mRunnable;

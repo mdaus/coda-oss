@@ -77,7 +77,17 @@ struct CODA_OSS_API path final // N.B. this is an INCOMPLETE and NON-STANDARD im
     template<typename TSource>
     path(const TSource& source)
     {
+      *this = source;
+    }
+    ~path() = default;
+
+    path& operator=(const path&) = default;
+    path& operator=(path&&) = default;
+    template<typename TSource>
+    path& operator=(const TSource& source)
+    {
         p_ = to_native(source);
+	return *this;
     }
 
     path& operator/=(const path&);  // http://en.cppreference.com/w/cpp/filesystem/path/append

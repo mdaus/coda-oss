@@ -21,14 +21,11 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_mem_AutoPtr_h_INCLUDED_
 #define CODA_OSS_mem_AutoPtr_h_INCLUDED_
-#pragma once
 
 #include <memory>
-
-#include "coda_oss/memory.h"
-#include "mem/SharedPtr.h"
 
 namespace mem
 {

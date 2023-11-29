@@ -20,18 +20,21 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_xml_lite_Attributes_h_INCLUDED_
 #define CODA_OSS_xml_lite_Attributes_h_INCLUDED_
-#pragma once
 
 #include <string>
 #include <vector>
 
+#include <config/Exports.h>
+
 #include "sys/Conf.h"
 #include "except/Exception.h"
-#include "xml/lite/QName.h"
 #include "str/Convert.h"
+#include "gsl/gsl.h"
 
+#include "xml/lite/QName.h"
 /*!
  *  \file Attributes.h
  *  \brief Implementation of SAX 2.0 Attributes
@@ -54,7 +57,7 @@ namespace lite
  *  internal organs.  We have a URI, a QName, and a local part
  *  as well.  We also need a value, of course.
  */
-struct AttributeNode final
+struct CODA_OSS_API AttributeNode final
 {
     AttributeNode() = default;
 
@@ -157,7 +160,7 @@ protected:
  *  this data structure everywhere.  That also allows us to
  *  simplify future dom classes
  */
-struct Attributes final
+struct CODA_OSS_API Attributes final
 {
     typedef std::vector<AttributeNode> Attributes_T;
     //! Default constructor
@@ -215,6 +218,10 @@ struct Attributes final
     int getLength() const
     {
         return static_cast<int>(size());
+    }
+    bool empty() const
+    {
+        return mAttributes.empty();
     }
 
     /*!
@@ -330,7 +337,7 @@ struct Attributes final
     }
     std::string operator[](const xml::lite::QName& name) const
     {
-        const size_t idx = getIndex(name);
+        const auto idx = gsl::narrow<size_t>(getIndex(name));
         return mAttributes[idx].getValue();
     }
 
@@ -348,7 +355,7 @@ struct Attributes final
     }
     std::string operator[](const std::string& s) const
     {
-        const size_t idx = getIndex(s);
+        const auto idx = gsl::narrow<size_t>(getIndex(s));
         return mAttributes[idx].getValue();
     }
 
@@ -395,6 +402,16 @@ struct Attributes final
     {
         mAttributes.clear();
     }
+
+    auto begin() const
+    {
+        return mAttributes.begin();
+    }
+    auto end() const
+    {
+        return mAttributes.end();
+    }
+
 private:
     //! Underlying representation
     Attributes_T mAttributes;

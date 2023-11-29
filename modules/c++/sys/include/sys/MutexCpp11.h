@@ -50,12 +50,12 @@ struct MutexCpp11 final : public MutexInterface
     /*!
      *  Lock the mutex.
      */
-    virtual void lock();
+    virtual void lock() override;
 
     /*!
      *  Unlock the mutex.
      */
-    virtual void unlock();
+    virtual void unlock() override;
 
     /*!
      *  Returns the native type.
@@ -66,7 +66,7 @@ struct MutexCpp11 final : public MutexInterface
      *  Return the type name.  This function is essentially free,
      *  because it is static RTTI.
      */
-    const char* getNativeType() const
+    const char* getNativeType() const noexcept
     {
         return typeid(mNative).name();
     }

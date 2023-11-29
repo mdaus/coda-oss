@@ -25,7 +25,7 @@ public:
     {
     }
 
-    virtual void run()
+    virtual void run() override
     {
         for (size_t ii = mStartElement; ii < mEndElement; ++ii)
         {
@@ -75,7 +75,7 @@ void run1D(size_t numElements, size_t numThreads, const std::vector<OpT>& ops)
         std::ostringstream ostr;
         ostr << "Got " << numThreads << " threads but " << ops.size()
              << " functors";
-        throw except::Exception(Ctxt(ostr.str()));
+        throw except::Exception(Ctxt(ostr));
     }
 
     if (numThreads <= 1)

@@ -20,6 +20,8 @@
  *
  */
 
+#include <tuple>
+
 #ifdef _WIN32
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #endif
@@ -65,11 +67,11 @@ void SocketAddress::setHost(const std::string& host)
     }
     else
     {
-#if defined(WIN32) || defined(_WIN32)
+#ifdef _WIN32
         struct sockaddr saddr;
         int slen = sizeof(saddr);
         struct sockaddr_in *paddr = (struct sockaddr_in *)&saddr;
-        (void) WSAStringToAddress((LPSTR)host.c_str(), AF_INET, NULL, &saddr, &slen);
+        std::ignore = WSAStringToAddress((LPSTR)host.c_str(), AF_INET, nullptr, &saddr, &slen);
         mAddress.sin_addr = paddr->sin_addr;
 #else
         ::inet_pton(AF_INET, host.c_str(), &mAddress.sin_addr);

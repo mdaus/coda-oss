@@ -49,7 +49,7 @@ namespace sys
      */
     inline long getThreadID()
     {
-	return (long)pthread_self();
+      return static_cast<long>(pthread_self());
     }
 
 /*!
@@ -96,7 +96,7 @@ struct ThreadPosix : public ThreadInterface
     /*!
      *  The startpoint for thread processing
      */
-    virtual void start();
+    virtual void start() override;
 
 
     /*!
@@ -110,12 +110,12 @@ struct ThreadPosix : public ThreadInterface
     /*!
      *  Calls the native destroy stuff
      */
-    virtual void kill();
+    virtual void kill() override;
 
     /*!
      *  Join the pthread
      */
-    virtual void join();
+    virtual void join() override;
 
     /*!
      *  Calls sched_yield to yield the thread of control

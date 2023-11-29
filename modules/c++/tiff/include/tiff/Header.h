@@ -19,11 +19,13 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
+#pragma once
 #ifndef __TIFF_HEADER_H__
 #define __TIFF_HEADER_H__
 
 #include <import/io.h>
+#include <config/Exports.h>
+
 #include "tiff/Common.h"
 
 namespace tiff
@@ -34,7 +36,7 @@ namespace tiff
  * @class Header
  * @brief Contains TIFF header information
  *********************************************************************/
-class Header : public io::Serializable
+class CODA_OSS_API Header : public io::Serializable
 {
 public:
     enum ByteOrder { MM, II };
@@ -96,7 +98,7 @@ public:
      * @param output
      *   the stream to write the header to
      *****************************************************************/
-    void serialize(io::OutputStream& output);
+    void serialize(io::OutputStream& output) override;
 
     /**
      *****************************************************************
@@ -105,7 +107,7 @@ public:
      * @param input
      *   the stream to read the header from
      *****************************************************************/
-    void deserialize(io::InputStream& input);
+    void deserialize(io::InputStream& input) override;
 
     /**
      *****************************************************************

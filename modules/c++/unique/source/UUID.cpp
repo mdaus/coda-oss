@@ -22,7 +22,7 @@
 
 #include "unique/UUID.hpp"
 
-#if defined(WIN32) || defined(_WIN32)
+#ifdef _WIN32
 #include <rpc.h>
 #else
 #include <uuid/uuid.h>
@@ -30,9 +30,9 @@
 
 std::string unique::generateUUID()
 {
-#if defined(WIN32) || defined(_WIN32)
+#ifdef _WIN32
     GUID uuid;
-    unsigned char *cResult = NULL;
+    unsigned char* cResult = nullptr;
     
     if ((UuidCreateSequential (&uuid) != RPC_S_OK)
         || (UuidToString(&uuid, &cResult) != RPC_S_OK))

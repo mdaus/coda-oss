@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once
 #ifndef __LOGGING_ENUMS_H__
 #define __LOGGING_ENUMS_H__
 
@@ -40,7 +41,7 @@ namespace logging
  *
  *  Enumeration used to represent LogLevels
  */
-struct LogLevel
+struct LogLevel final
 {
     //! The enumerations allowed
     enum
@@ -92,7 +93,7 @@ struct LogLevel
         else if (s == "SEVERE")
             value = LOG_CRITICAL;
         else
-            throw except::InvalidFormatException(Ctxt(FmtX("Invalid enum value: %s", s.c_str())));
+            throw except::InvalidFormatException(Ctxt(str::Format("Invalid enum value: %s", s)));
     }
 
     //! int constructor
@@ -119,12 +120,12 @@ struct LogLevel
             value = LOG_CRITICAL;
             break;
         default:
-            throw except::InvalidFormatException(Ctxt(FmtX("Invalid enum value: %d", i)));
+            throw except::InvalidFormatException(Ctxt(str::Format("Invalid enum value: %d", i)));
         }
     }
 
     //! destructor
-    ~LogLevel(){}
+    ~LogLevel() = default;
 
     //! Returns string representation of the value
     std::string toString() const
@@ -144,19 +145,15 @@ struct LogLevel
         case 5:
             return std::string("CRITICAL");
         default:
-            throw except::InvalidFormatException(Ctxt(FmtX("Invalid enum value: %d", value)));
+            throw except::InvalidFormatException(Ctxt(str::Format("Invalid enum value: %d", value)));
         }
     }
 
     //! assignment operator
-    LogLevel& operator=(const LogLevel& o)
-    {
-        if (&o != this)
-        {
-            value = o.value;
-        }
-        return *this;
-    }
+    LogLevel& operator=(const LogLevel&) = default;
+    LogLevel(const LogLevel&) = default;
+    LogLevel& operator=(LogLevel&&) = default;
+    LogLevel(LogLevel&&) = default;
 
     bool operator==(const LogLevel& o) const { return value == o.value; }
     bool operator!=(const LogLevel& o) const { return value != o.value; }
