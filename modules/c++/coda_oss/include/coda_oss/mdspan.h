@@ -20,13 +20,11 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 #ifndef CODA_OSS_coda_oss_mdspan_h_INCLUDED_
 #define CODA_OSS_coda_oss_mdspan_h_INCLUDED_
-#pragma once
 
-#include "coda_oss/namespace_.h"
-
-#include "mdspan/mdspan.h"  // not mdspan/mdspan; need #pragma here to turn off warnings
+#include "experimental/mdspan"
 
 namespace coda_oss
 {

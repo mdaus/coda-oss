@@ -18,9 +18,9 @@
  * License along with this program; If not, http://www.gnu.org/licenses/.
  *
  */
+#pragma once
 #ifndef CODA_OSS_std_mdspan_INCLUDED_
 #define CODA_OSS_std_mdspan_INCLUDED_
-#pragma once
 
 #include "coda_oss/mdspan.h"
 #include "coda_oss/CPlusPlus.h"

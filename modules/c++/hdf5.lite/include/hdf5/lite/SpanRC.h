@@ -35,6 +35,7 @@
 
 #include "config/Exports.h"
 #include "coda_oss/span.h"
+#include "coda_oss/mdspan.h"
 #include "types/RowCol.h"
 
 namespace hdf5
