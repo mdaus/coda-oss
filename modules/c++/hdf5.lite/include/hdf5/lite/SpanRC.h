@@ -47,9 +47,63 @@ namespace lite
 {
 namespace details
 {
-// https://github.com/kokkos/mdspan/wiki/A-Gentle-Introduction-to-mdspan
+//// https://github.com/kokkos/mdspan/wiki/A-Gentle-Introduction-to-mdspan
+//template <typename T>
+//using Span2D = coda_oss::mdspan<T, coda_oss::dextents<size_t, 2>>;
 template <typename T>
-using Span2D = coda_oss::mdspan<T, coda_oss::dextents<size_t, 2>>;
+struct Span2D final
+{
+    using element_type = T;
+    using size_type = size_t;
+    using extents_type = coda_oss::dextents<size_type, 2>;
+    coda_oss::mdspan<element_type, extents_type> mds_;
+    using reference = typename decltype(mds_)::reference;
+    using data_handle_type = T*;
+
+    Span2D() = default;
+    Span2D(data_handle_type p, const std::array<size_t, 2>& dims) noexcept : mds_(p, dims)
+    {
+    }
+    Span2D(data_handle_type p, size_t r, size_t c) noexcept : Span2D(p, std::array<size_t, 2>{r, c})
+    {
+    }
+    Span2D(const Span2D&) noexcept = default;
+
+    constexpr data_handle_type data_handle() const noexcept
+    {
+        return mds_.data_handle();
+    }
+
+    /*constexpr*/ reference operator[](size_t idx) const noexcept
+    {
+        return data_handle()[idx];
+    }
+    /*constexpr*/ reference operator()(size_t r, size_t c) const noexcept
+    {
+        const auto offset = (r * extent(1)) + c;
+        return (*this)[offset];
+    }
+
+    constexpr size_type size() const noexcept
+    {
+        return mds_.size();
+    }
+
+    constexpr bool empty() const noexcept
+    {
+        return mds_.empty();
+    }
+
+    static constexpr auto rank() noexcept
+    {
+        return decltype(mds_)::rank();
+    }
+
+    auto extent(size_t r) const
+    {
+        return mds_.extent(r);
+    }
+};
 
 template <typename T>
 struct SpanRC final
@@ -82,10 +136,6 @@ struct SpanRC final
     {
         const auto offset = (r * rc_.col) + c;
         return (*this)[offset];
-    }
-    /*constexpr*/ reference operator[](size_type idx) const noexcept
-    {
-        return (*this)(idx.row, idx.col);
     }
 
     constexpr size_t size() const noexcept
