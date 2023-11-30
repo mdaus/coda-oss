@@ -75,6 +75,5 @@ add_subdirectory("math.poly")
 add_subdirectory("numpyutils")
 add_subdirectory("hdf5.lite")
 add_subdirectory("gsl")
-add_subdirectory("mdspan")
 add_subdirectory("std")
 
