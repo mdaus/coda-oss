@@ -39,8 +39,11 @@
 
 #include "config/Exports.h"
 #include "coda_oss/span.h"
-#include "coda_oss/mdspan.h"
 #include "types/RowCol.h"
+
+#if CODA_OSS_cpp17 // can't even #include this file with older C++14 compilers! :-(
+#include "coda_oss/mdspan.h"
+#endif
 
 namespace hdf5
 {
@@ -48,63 +51,9 @@ namespace lite
 {
 namespace details
 {
-//// https://github.com/kokkos/mdspan/wiki/A-Gentle-Introduction-to-mdspan
+// https://github.com/kokkos/mdspan/wiki/A-Gentle-Introduction-to-mdspan
 template <typename T>
 using msdpan_2 = coda_oss::mdspan<T, coda_oss::dextents<size_t, 2>>;
-
-template <typename T>
-struct Span2D final
-{
-    using element_type = T;
-    using size_type = size_t;
-    msdpan_2<T> mds_;
-    using reference = typename decltype(mds_)::reference;
-    using data_handle_type = T*;
-
-    Span2D() = default;
-    Span2D(data_handle_type p, const std::array<size_type, 2>& dims) noexcept : mds_(p, dims)
-    {
-    }
-    Span2D(data_handle_type p, size_type r, size_type c) noexcept : Span2D(p, std::array<size_type, 2>{r, c})
-    {
-    }
-    Span2D(const Span2D&) noexcept = default;
-
-    constexpr data_handle_type data_handle() const noexcept
-    {
-        return mds_.data_handle();
-    }
-
-    /*constexpr*/ reference operator[](size_type idx) const noexcept
-    {
-        return data_handle()[idx];
-    }
-    /*constexpr*/ reference operator()(size_type r, size_type c) const noexcept
-    {
-        const auto offset = (r * extent(1)) + c;
-        return (*this)[offset];
-    }
-
-    constexpr size_type size() const noexcept
-    {
-        return mds_.size();
-    }
-
-    constexpr bool empty() const noexcept
-    {
-        return mds_.empty();
-    }
-
-    static constexpr auto rank() noexcept
-    {
-        return decltype(mds_)::rank();
-    }
-
-    auto extent(size_t r) const
-    {
-        return mds_.extent(r);
-    }
-};
 
 template <typename T>
 struct SpanRC final
@@ -115,7 +64,7 @@ struct SpanRC final
     using reference = T&;
 
     SpanRC() = default;
-    SpanRC(pointer p, const std::array<size_type, 2>& dims) noexcept : SpanRC(p, dims[0], dims[1])
+    SpanRC(pointer p, const std::array<size_type, 2>& dims) noexcept : SpanRC(p, types::RowCol<size_type>(dims))
     {
     }
     SpanRC(const SpanRC&) noexcept = default;
@@ -165,14 +114,16 @@ private:
     SpanRC(pointer p, types::RowCol<size_type> rc) noexcept : s_(p, rc.area()), rc_(std::move(rc))
     {
     }
-    SpanRC(pointer p, size_type r, size_type c) noexcept : SpanRC(p, types::RowCol<size_type>(r, c))
-    {
-    }
 };
 }
 
+#if CODA_OSS_cpp20
 template<typename T>
-using SpanRC = details::SpanRC<T>;
+using SpanRC = details::msdpan_2<T>;
+#else
+template<typename T>
+using SpanRC = details::SpanRC<T>; // TODO: get mdspan working with other compilers
+#endif
 
 }
 }
