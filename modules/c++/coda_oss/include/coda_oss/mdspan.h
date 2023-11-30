@@ -34,4 +34,7 @@ namespace coda_oss
 	using std::experimental::dynamic_extent;
 }
 
+// https://en.cppreference.com/w/cpp/feature_test#cpp_lib_mdspan
+#define CODA_OSS_mdspan 202207L
+
 #endif  // CODA_OSS_coda_oss_mdspan_h_INCLUDED_

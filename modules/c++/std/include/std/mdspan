@@ -39,7 +39,14 @@
 namespace std // This is slightly uncouth: we're not supposed to augment "std".
 {
     using coda_oss::mdspan;
+	using coda_oss::extents;
+	using coda_oss::dextents;
+	using coda_oss::dynamic_extent;
 }
+#ifndef __cpp_lib_mdspan
+#define __cpp_lib_mdspan 202002L //  https://en.cppreference.com/w/cpp/feature_test#cpp_lib_mdspan
+#endif
+
 #endif  // CODA_OSS_NO_std_mdspan
 
 #endif  // CODA_OSS_std_mdspan_INCLUDED_
