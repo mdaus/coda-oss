@@ -51,12 +51,14 @@ namespace lite
 {
 namespace details
 {
+#if CODA_OSS_cpp20
 // https://github.com/kokkos/mdspan/wiki/A-Gentle-Introduction-to-mdspan
 template <typename T>
 using msdpan_2 = coda_oss::mdspan<T, coda_oss::dextents<size_t, 2>>;
+#endif
 
 template <typename T>
-struct SpanRC final
+struct SpanRC final // TODO: use std::mdspan
 {
     using size_type = size_t;
     using element_type = T;
