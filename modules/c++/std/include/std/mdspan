@@ -2,7 +2,7 @@
  * This file is part of std-c++
  * =========================================================================
  *
- * (C) Copyright 2023, Maxar Technologies, Inc.
+ * © Copyright 2023, Maxar Technologies, Inc.
  *
  * std-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -39,9 +39,7 @@
 namespace std // This is slightly uncouth: we're not supposed to augment "std".
 {
     using coda_oss::mdspan;
-	using coda_oss::extents;
 	using coda_oss::dextents;
-	using coda_oss::dynamic_extent;
 }
 #ifndef __cpp_lib_mdspan
 #define __cpp_lib_mdspan 202002L //  https://en.cppreference.com/w/cpp/feature_test#cpp_lib_mdspan
