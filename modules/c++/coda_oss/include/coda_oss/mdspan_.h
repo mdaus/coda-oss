@@ -22,6 +22,8 @@
  */
 #pragma once
 
+#include <assert.h>
+
 #include <array>
 
 #include "coda_oss/span.h"
