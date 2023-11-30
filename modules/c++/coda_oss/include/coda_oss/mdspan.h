@@ -29,6 +29,9 @@
 namespace coda_oss
 {
 	using std::experimental::mdspan;
+	using std::experimental::extents;
+	using std::experimental::dextents;
+	using std::experimental::dynamic_extent;
 }
 
 #endif  // CODA_OSS_coda_oss_mdspan_h_INCLUDED_
