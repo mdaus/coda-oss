@@ -3,7 +3,7 @@
  * =========================================================================
  *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
- * (C) Copyright 2023, Maxar Technologies, Inc.
+ * © Copyright 2023, Maxar Technologies, Inc.
  *
  * coda_oss-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,8 +21,6 @@
  *
  */
 #pragma once
-#ifndef CODA_OSS_coda_oss_mdspan_h_INCLUDED_
-#define CODA_OSS_coda_oss_mdspan_h_INCLUDED_
 
 #include "coda_oss/CPlusPlus.h"
 
@@ -33,23 +31,22 @@
 // be the same as `std::mdspan`.
 #ifndef CODA_OSS_HAVE_std_mdspan_
     #define CODA_OSS_HAVE_std_mdspan_ 0  // assume no <mdspan>
+#endif
+#ifndef CODA_OSS_HAVE_experimental_mdspan_
     #define CODA_OSS_HAVE_experimental_mdspan_ 0  // assume no std::experimental::mdspan
 #endif
-#if CODA_OSS_cpp17 // can't even #include this file with older C++14 compilers! :-(
+#if CODA_OSS_cpp17 // __has_include
     #if __has_include(<mdspan>) // __cpp_lib_mdspan not until C++23
         #include <mdspan>
         #undef CODA_OSS_HAVE_std_mdspan_
         #define CODA_OSS_HAVE_std_mdspan_ 1  // provided by the implementation, probably C++23
     #endif
-    // Try the (much) more robust implemention from https://github.com/kokkos/mdspan
-    #if __has_include("coda_oss/experimental/mdspan")
+   
+    #if CODA_OSS_cpp20  // Can't even #include this file with older C++14/17 compilers! :-(
+        // Use the much more robust implemention from https://github.com/kokkos/mdspan
         #include "coda_oss/experimental/mdspan"
-
-        // We can #include the file, but the code doesn't worth with older C++17 compilers.
-        #if CODA_OSS_cpp20
-            #undef CODA_OSS_HAVE_experimental_mdspan_
-            #define CODA_OSS_HAVE_experimental_mdspan_ 1  // provided coda_oss/experimental/mdspan
-        #endif
+        #undef CODA_OSS_HAVE_experimental_mdspan_
+        #define CODA_OSS_HAVE_experimental_mdspan_ 1  // provided coda_oss/experimental/mdspan
     #endif
 #endif // CODA_OSS_cpp17
 
@@ -67,4 +64,3 @@ namespace coda_oss
     #endif 
 }
 
-#endif  // CODA_OSS_coda_oss_mdspan_h_INCLUDED_
