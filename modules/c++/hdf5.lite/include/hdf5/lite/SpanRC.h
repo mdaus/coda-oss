@@ -40,12 +40,7 @@
 #include "config/Exports.h"
 #include "coda_oss/span.h"
 #include "types/RowCol.h"
-
-#if CODA_OSS_cpp17 // can't even #include this file with older C++14 compilers! :-(
-#if __has_include("coda_oss/mdspan.h")
 #include "coda_oss/mdspan.h"
-#endif
-#endif
 
 namespace hdf5
 {
@@ -53,11 +48,11 @@ namespace lite
 {
 namespace details
 {
-#if CODA_OSS_cpp20 && CODA_OSS_mdspan
+//#if CODA_OSS_cpp20 && CODA_OSS_mdspan
 // https://github.com/kokkos/mdspan/wiki/A-Gentle-Introduction-to-mdspan
 template <typename T>
 using msdpan_2 = coda_oss::mdspan<T, coda_oss::dextents<size_t, 2>>;
-#endif
+//#endif
 
 template <typename T>
 struct SpanRC final // TODO: use std::mdspan
@@ -121,13 +116,8 @@ private:
 };
 }
 
-#if CODA_OSS_cpp20 && CODA_OSS_mdspan
 template<typename T>
 using SpanRC = details::msdpan_2<T>;
-#else
-template<typename T>
-using SpanRC = details::SpanRC<T>; // TODO: get mdspan working with other compilers
-#endif
 
 }
 }
