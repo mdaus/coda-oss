@@ -132,7 +132,7 @@ public:
 
     static constexpr auto rank() noexcept
     {
-        return typename extents_type::rank();
+        return extents_type::rank();
     }
 };
 
