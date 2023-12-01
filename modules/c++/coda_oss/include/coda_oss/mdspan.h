@@ -36,17 +36,24 @@
     #define CODA_OSS_HAVE_experimental_mdspan_ 0  // assume no std::experimental::mdspan
 #endif
 #if CODA_OSS_cpp17 // __has_include
-    #if __has_include(<mdspan>) // __cpp_lib_mdspan not until C++23
+    #if __has_include(<mdspan>) // <mdspan> not until C++23
         #include <mdspan>
         #undef CODA_OSS_HAVE_std_mdspan_
         #define CODA_OSS_HAVE_std_mdspan_ 1  // provided by the implementation, probably C++23
     #endif
    
     #if CODA_OSS_cpp20  // Can't even #include this file with older C++14/17 compilers! :-(
-        // Use the much more robust implemention from https://github.com/kokkos/mdspan
-        #include "coda_oss/experimental/mdspan"
-        #undef CODA_OSS_HAVE_experimental_mdspan_
-        #define CODA_OSS_HAVE_experimental_mdspan_ 1  // provided coda_oss/experimental/mdspan
+        // Put this in a __has_include so that it's optional.  Our simple implemtnation works
+        // for our needs, and this brings along a lot of code that our older compilers don't
+        // like. By the time we need more functionality, maybe we'll be using C++23?
+        //
+        // Until then, having this available allows checking our implementation against
+        // something much more real. https://github.com/kokkos/mdspan
+        #if __has_include("coda_oss/experimental/mdspan")
+            #include "coda_oss/experimental/mdspan"
+            #undef CODA_OSS_HAVE_experimental_mdspan_
+            #define CODA_OSS_HAVE_experimental_mdspan_ 1  // provided coda_oss/experimental/mdspan
+        #endif
     #endif
 #endif // CODA_OSS_cpp17
 

@@ -28,15 +28,19 @@
 
 #include "coda_oss/span.h"
 
-// This is a super-simple partial and incomplete implementation of `std::mdspan` (in C++23).
-// It's just enough to allow *hdf5::lite::SpanRC* to work with ours or a more complete one.
+// This is a simple, partial, and incomplete implementation of `std::mdspan` (in C++23).
 // https://en.cppreference.com/w/cpp/container/mdspan
+//
+// Why? Our (current) needs are much more limited than all the use-cases for `std::mdspan`:
+// dynamic (not static) extents, rank of 2 (rows × cols), contiguous memory, ...
+// By the time we really need more features, maybe we'll be using C++23? 
 namespace coda_oss
 {
 namespace details
 {
+ // https://en.cppreference.com/w/cpp/container/mdspan/extents
 template<typename IndexType, size_t Rank>
-struct dextents final
+struct dextents final // this is actually supposed to be an alias template with all dynamic extents
 {
     static_assert(Rank == 2, "Rank must have a value of 2");
     using index_type = IndexType;
@@ -44,12 +48,15 @@ struct dextents final
     using rank_type = size_t;
 
     constexpr dextents() = default;
+    
+    // These are supposed to be templates, but we don't need that complication right now.
     constexpr dextents(index_type i0, index_type i1) noexcept : exts_{i0, i1}
     {
     }
     constexpr explicit dextents(const std::array<index_type, Rank>& exts) noexcept : exts_(exts)
     {
     }
+
     dextents(const dextents&) = default;
     dextents& operator=(const dextents&) = default;
     dextents(dextents&&) = default;
@@ -69,17 +76,18 @@ private:
     std::array<index_type, Rank> exts_;
 };
 
-template <typename IndexType, size_t Rank>
-inline size_t area(const dextents <IndexType, Rank>& exts)
-{
-    return exts.extent(0) * exts.extent(1);
-}
-
 template<typename T, typename TExtents>
 class mdspan final
 {
-    coda_oss::span<T> s_;
+    coda_oss::span<T> s_; // `span` instead of a raw pointer to get more range checking.
     TExtents ext_;
+
+    // c.f., `types::RowCol`
+    template <typename IndexType, size_t Rank>
+    static size_t area(const dextents<IndexType, Rank>& exts)
+    {
+        return exts.extent(0) * exts.extent(1);
+    }
 
 public:
     using extents_type = TExtents;
@@ -88,12 +96,15 @@ public:
     using reference = T&;
 
     constexpr mdspan() = default;
+
+    // Again, these are supposed to be templates ...
     mdspan(data_handle_type p, const extents_type& ext) noexcept : s_(p, area(ext)), ext_(ext)
     {
     }
     mdspan(data_handle_type p, const std::array<size_type, 2>& dims) noexcept : mdspan(p, extents_type(dims))
     {
     }
+
     mdspan(const mdspan&) = default;
     mdspan& operator=(const mdspan&) = default;
     mdspan(mdspan&&) = default;
@@ -135,8 +146,6 @@ public:
         return extents_type::rank();
     }
 };
-
 }
-
 }
 

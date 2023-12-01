@@ -19,8 +19,6 @@
  *
  */
 #pragma once
-#ifndef CODA_OSS_std_mdspan_INCLUDED_
-#define CODA_OSS_std_mdspan_INCLUDED_
 
 #include "coda_oss/mdspan.h"
 #include "coda_oss/CPlusPlus.h"
@@ -46,5 +44,3 @@ namespace std // This is slightly uncouth: we're not supposed to augment "std".
 #endif
 
 #endif  // CODA_OSS_NO_std_mdspan
-
-#endif  // CODA_OSS_std_mdspan_INCLUDED_
