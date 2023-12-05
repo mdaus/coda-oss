@@ -34,6 +34,7 @@
 #include "coda_oss/CPlusPlus.h"
 #include "coda_oss/string.h"
 #include "str/Convert.h"
+#include "str/W1252string.h"
 
 namespace str
 {
@@ -181,6 +182,18 @@ CODA_OSS_API std::vector<std::string> split(const std::string& s,
 //! Uses std::transform to convert all chars to upper case
 CODA_OSS_API void lower(std::string& s);
 CODA_OSS_API void upper(std::string& s);
+
+// Using std::transform() with ::toupper() is considerably slower than a lookup-table
+CODA_OSS_API void ascii_lower(std::string& s);
+CODA_OSS_API void ascii_upper(std::string& s);
+
+// With Windows-1252 encoding, we can convert between 'ä' and 'Ä'.
+// Harder to the same for UTF-8 as it is a multi-byte encoding; besides,
+// our needs are mostly English with an occassional smattering of French.
+CODA_OSS_API void w1252_lower(std::string& s);
+CODA_OSS_API void w1252_upper(std::string& s);
+CODA_OSS_API void lower(str::W1252string& s);
+CODA_OSS_API void upper(str::W1252string& s);
 
 /*!
  * Replaces any characters that are invalid in XML (&, <, >, ', ") with their
