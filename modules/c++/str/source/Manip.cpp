@@ -308,16 +308,14 @@ void upper(std::string& s)
 // Since we only have 256 values, a lookup table is very fast and doesn't
 // use much memory.
 static const auto& make_lookup(std::array<uint8_t, UINT8_MAX + 1>& result,
-                               void (*to)(char&))
+                               char (*to)(char))
 {
     // For each of 256 values, record the corresponding tolower/toupper value;
     // this makes converting very fast as no checking or arithmetic must be done.
     for (size_t i = 0; i <= 0xff; i++)
     {
-        result[i] = static_cast<uint8_t>(i);
-        void* const p_ = &(result[i]);
-        auto const p8 = static_cast<char*>(p_);
-        to(*p8);
+        const auto ch = to(static_cast<char>(i));
+        result[i] = static_cast<uint8_t>(ch);
     }
     return result;
 }
@@ -332,43 +330,35 @@ static void do_lookup(std::basic_string<TChar>& s, const std::array<uint8_t, UIN
     }
 }
 
-inline void ascii_toupper(char& ch)
-{
-    // This is faster than returning a value as it avoids an assignment when nothing changes.
-    if ((ch >= 'a') && (ch <= 'z'))
-    {
-        ch ^= 0x20;  // ('a' - 'A');
-    }
-}
 void str::ascii_upper(std::string& s)
 {
     static std::array<uint8_t, UINT8_MAX + 1> lookup_;
-    static const auto& lookup = make_lookup(lookup_, ascii_toupper);
+    static const auto& lookup = make_lookup(lookup_, toupperCheck);
     do_lookup(s, lookup);
 }
 
-inline void w1252_toupper(char& ch)
+inline char w1252_toupper(char ch)
 {
+    if ((ch >= 'a') && (ch <= 'z'))
+    {
+        return ch ^ 0x20;  // ('a' - 'A');
+    }
+
     constexpr uint8_t a_with_grave = 0xe0 /*'à'*/;
     constexpr uint8_t o_with_diaeresis = 0xf6 /*'ö'*/;
     constexpr uint8_t o_with_slash = 0xf8 /*'ø'*/;
     constexpr uint8_t small_thorn = 0xfe /*'þ'*/;
 
     const auto u8 = static_cast<uint8_t>(ch);
-
-    // This is faster than returning a value as it avoids an assignment when nothing changes.
-    if ((ch >= 'a') && (ch <= 'z'))
+    if ((u8 >= a_with_grave) && (u8 <= o_with_diaeresis))
     {
-        ch ^= 0x20;  // ('a' - 'A');
+        return ch ^ 0x20;
     }
-    else if ((u8 >= a_with_grave) && (u8 <= o_with_diaeresis))
+    if ((u8 >= o_with_slash) && (u8 <= small_thorn))
     {
-        ch ^= 0x20;
+        return ch ^ 0x20;
     }
-    else if ((u8 >= o_with_slash) && (u8 <= small_thorn))
-    {
-        ch ^= 0x20;
-    }
+    return ch;
 }
 static const auto& w1252_upper_lookup()
 {
@@ -385,43 +375,35 @@ void str::upper(str::W1252string& s)
     do_lookup(s, w1252_upper_lookup());
 }
 
-inline void ascii_tolower(char& ch)
-{
-    // This is faster than returning a value as it avoids an assignment when nothing changes.
-    if ((ch >= 'A') && (ch <= 'Z'))
-    {
-        ch |= 0x20;
-    }
-}
 void str::ascii_lower(std::string& s)
 {
     static std::array<uint8_t, UINT8_MAX + 1> lookup_;
-    static const auto& lookup = make_lookup(lookup_, ascii_tolower);
+    static const auto& lookup = make_lookup(lookup_, tolowerCheck);
     do_lookup(s, lookup);
 }
 
-inline void w1252_tolower(char& ch)
+inline char w1252_tolower(char ch)
 {
+    if ((ch >= 'A') && (ch <= 'Z'))
+    {
+        return ch | 0x20;
+    }
+
     constexpr uint8_t A_with_grave = 0xc0 /*'À'*/;
     constexpr uint8_t O_with_diaeresis = 0xd6 /*'Ö'*/;
     constexpr uint8_t O_with_slash = 0xd8 /*'Ø'*/;
     constexpr uint8_t capital_thorn = 0xde /*'Þ'*/;
 
     const auto u8 = static_cast<uint8_t>(ch);
-
-    // This is faster than returning a value as it avoids an assignment when nothing changes.
-    if ((ch >= 'A') && (ch <= 'Z'))
+    if ((u8 >= A_with_grave) && (u8 <= O_with_diaeresis))
     {
-        ch |= 0x20;
+        return ch | 0x20;
     }
-    else if ((u8 >= A_with_grave) && (u8 <= O_with_diaeresis))
+    if ((u8 >= O_with_slash) && (u8 <= capital_thorn))
     {
-        ch |= 0x20;
+        return ch | 0x20;
     }
-    else if ((u8 >= O_with_slash) && (u8 <= capital_thorn))
-    {
-        ch |= 0x20;
-    }
+    return ch;
 }
 static const auto& w1252_lower_lookup()
 {
