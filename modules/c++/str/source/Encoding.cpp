@@ -229,7 +229,7 @@ inline void w1252to32(str::W1252string::const_pointer p, size_t sz, std::u32stri
 }
 
 template<typename TKey, typename TValue>
-std::map<TValue, TKey> kv_to_vk(const std::map<TKey, TValue>& kv)
+auto kv_to_vk(const std::map<TKey, TValue>& kv)
 {
     std::map<TValue, TKey> retval;
     for (const auto& p : kv)
