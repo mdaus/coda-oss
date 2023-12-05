@@ -188,12 +188,18 @@ CODA_OSS_API void ascii_lower(std::string& s);
 CODA_OSS_API void ascii_upper(std::string& s);
 
 // With Windows-1252 encoding, we can convert between 'ä' and 'Ä'.
-// Harder to the same for UTF-8 as it is a multi-byte encoding; besides,
-// our needs are mostly English with an occassional smattering of French.
 CODA_OSS_API void w1252_lower(std::string& s);
 CODA_OSS_API void w1252_upper(std::string& s);
 CODA_OSS_API void lower(str::W1252string& s);
 CODA_OSS_API void upper(str::W1252string& s);
+
+// Hooking up UTF-8 for completeness and unit-testing.
+// ** THESE ROUTINES ARE SLOW **
+// Performance improvements can be made, but nobody needs such right now.
+CODA_OSS_API void utf8_lower(std::string& s);
+CODA_OSS_API void utf8_upper(std::string& s);
+CODA_OSS_API void lower(coda_oss::u8string& s);
+CODA_OSS_API void upper(coda_oss::u8string& s);
 
 /*!
  * Replaces any characters that are invalid in XML (&, <, >, ', ") with their

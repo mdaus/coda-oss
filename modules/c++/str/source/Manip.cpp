@@ -366,9 +366,9 @@ static const auto& w1252_upper_lookup()
     static const auto& lookup = make_lookup(lookup_, w1252_toupper);
     return lookup;
 }
-void w1252_upper(std::string& s)
+void w1252_upper(std::string& w1252)
 {
-    do_lookup(s, w1252_upper_lookup());
+    do_lookup(w1252, w1252_upper_lookup());
 }
 void upper(str::W1252string& s)
 {
@@ -411,13 +411,49 @@ static const auto& w1252_lower_lookup()
     static const auto& lookup = make_lookup(lookup_, w1252_tolower);
     return lookup;
 }
-void w1252_lower(std::string& s)
+void w1252_lower(std::string& w1252)
 {
-    do_lookup(s, w1252_lower_lookup());
+    do_lookup(w1252, w1252_lower_lookup());
 }
 void lower(str::W1252string& s)
 {
     do_lookup(s, w1252_lower_lookup());
+}
+
+// These routines are SLOW ... yes, they can be made faster
+// but nobody needs that right now.
+inline auto utf8_convert(str::W1252string& w1252, void (*convert)(str::W1252string&))
+{
+    convert(w1252); // upper() or lower() for Windows-1252
+    return to_u8string(w1252);
+}
+inline void utf8_convert(std::string& strUtf8, void (*convert)(str::W1252string&))
+{
+    auto w1252 = to_w1252string(str::str<coda_oss::u8string>(strUtf8));
+    const auto utf8 = utf8_convert(w1252, convert);
+    strUtf8 = str::str<std::string>(utf8);
+}
+void utf8_upper(std::string& strUtf8)
+{
+    utf8_convert(strUtf8, upper);
+}
+void utf8_lower(std::string& strUtf8)
+{
+    utf8_convert(strUtf8, lower);
+}
+
+inline void utf8_convert(coda_oss::u8string& s, void (*convert)(str::W1252string&))
+{
+    auto w1252 = to_w1252string(s);
+    s = utf8_convert(w1252, convert);
+}
+void lower(coda_oss::u8string& s)
+{
+    utf8_convert(s, lower);
+}
+void upper(coda_oss::u8string& s)
+{
+    utf8_convert(s, upper);
 }
 
 void escapeForXML(std::string& str)
