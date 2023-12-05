@@ -40,7 +40,7 @@
 
 namespace
 {
-char transformCheck(int c, int (*transform)(int))
+inline char transformCheck(int c, int (*transform)(int))
 {
     // Ensure the character can be represented
     // as an unsigned char or is 'EOF', as the
@@ -56,12 +56,12 @@ char transformCheck(int c, int (*transform)(int))
     }
 }
 
-char tolowerCheck(char c)
+inline char tolowerCheck(char c)
 {
     return transformCheck(c, tolower);
 }
 
-char toupperCheck(char c)
+inline char toupperCheck(char c)
 {
     return transformCheck(c, toupper);
 }
@@ -239,9 +239,8 @@ bool isAlphanumeric(const std::string& s)
 
 bool isAsciiPrintable(const std::string& s)
 {
-    for (const auto& ch : s)
+    for (const auto& c : s)
     {
-        char c = ch;
         if (c < 32 || c > 126)
             return false;
     }

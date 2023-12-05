@@ -58,6 +58,7 @@ TEST_CASE(testData)
 TEST_CASE(testUpper)
 {
     std::string s = "test-something1";
+    TEST_ASSERT(str::eq(s, "TEST-SOMETHING1"));
     str::upper( s);
     TEST_ASSERT_EQ(s, "TEST-SOMETHING1");
 }
@@ -65,7 +66,8 @@ TEST_CASE(testUpper)
 TEST_CASE(testLower)
 {
     std::string s = "TEST1";
-    str::lower( s);
+    TEST_ASSERT(str::eq(s, "test1"));
+    str::lower(s);
     TEST_ASSERT_EQ(s, "test1");
 }
 

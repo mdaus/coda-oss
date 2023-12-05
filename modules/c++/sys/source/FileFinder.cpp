@@ -80,13 +80,10 @@ bool sys::ExtensionPredicate::operator()(const std::string& filename) const
     if (!sys::FileOnlyPredicate::operator()(filename))
         return false;
 
-    std::string ext = sys::Path::splitExt(filename).second;
+    const std::string ext = sys::Path::splitExt(filename).second;
     if (mIgnoreCase)
     {
-        std::string matchExt = mExt;
-        str::lower(matchExt);
-        str::lower(ext);
-        return ext == matchExt;
+        return str::eq(ext, mExt);
     }
     else
         return ext == mExt;
