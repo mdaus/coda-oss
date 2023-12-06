@@ -57,16 +57,40 @@ TEST_CASE(testData)
 
 TEST_CASE(testUpper)
 {
-    std::string s = "test-something1";
+    const std::string s_ = "test-something1";
+    std::string s = s_;
+    TEST_ASSERT(str::eq(s, "TEST-SOMETHING1"));
     str::upper( s);
     TEST_ASSERT_EQ(s, "TEST-SOMETHING1");
+
+    s = s_;
+    str::ascii_upper(s);
+    TEST_ASSERT_EQ(s, "TEST-SOMETHING1");
+
+    #if _WIN32
+    s = "<×àa`öo\"øo/þb÷>";
+    str::w1252_upper(s);
+    TEST_ASSERT_EQ(s, "<×ÀA`ÖO\"ØO/ÞB÷>");
+    #endif
 }
 
 TEST_CASE(testLower)
 {
-    std::string s = "TEST1";
-    str::lower( s);
+    const std::string s_ = "TEST1";
+    std::string s = s_;
+    TEST_ASSERT(str::eq(s, "test1"));
+    str::lower(s);
     TEST_ASSERT_EQ(s, "test1");
+
+    s = s_;
+    str::ascii_lower(s);
+    TEST_ASSERT_EQ(s, "test1");
+
+    #if _WIN32
+    s = "[×ÀÖØÞ÷]";
+    str::w1252_lower(s);
+    TEST_ASSERT_EQ(s, "[×àöøþ÷]");
+#endif
 }
 
 TEST_CASE(test_eq_ne)

@@ -169,15 +169,13 @@ char* strptime(const char *buf, const char *fmt, struct tm& tm, double& millis)
                 // Full name.
                 len = DAY[i].size();
                 std::string day(bp, len);
-                str::lower(day);
-                if (day == DAY[i])
+                if (str::eq(day, DAY[i]))
                     break;
 
                 // Abbreviated name.
                 len = AB_DAY[i].size();
                 day = std::string(bp, len);
-                str::lower(day);
-                if (day == AB_DAY[i])
+                if (str::eq(day, AB_DAY[i]))
                     break;
             }
 
@@ -202,15 +200,13 @@ char* strptime(const char *buf, const char *fmt, struct tm& tm, double& millis)
                 // Full name.
                 len = MONTH[i].size();
                 std::string month(bp, len);
-                str::lower(month);
-                if (month == MONTH[i])
+                if (str::eq(month, MONTH[i]))
                     break;
 
                 // Abbreviated name.
                 len = AB_MONTH[i].size();
                 month = std::string(bp, len);
-                str::lower(month);
-                if (month == AB_MONTH[i])
+                if (str::eq(month, AB_MONTH[i]))
                     break;
             }
 
