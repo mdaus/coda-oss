@@ -178,14 +178,36 @@ CODA_OSS_API std::vector<std::string> split(const std::string& s,
                                const std::string& splitter = " ",
                                size_t maxSplit = std::string::npos);
 
+/***********************************************************************************/
 //! Uses std::transform to convert all chars to lower case
 //! Uses std::transform to convert all chars to upper case
-CODA_OSS_API void lower(std::string& s);
-CODA_OSS_API void upper(std::string& s);
-
+//CODA_OSS_API void lower(std::string& s);
+//CODA_OSS_API void upper(std::string& s);
+//
 // Using std::transform() with ::toupper() is considerably slower than a lookup-table
 CODA_OSS_API void ascii_lower(std::string& s);
+inline void lower(std::string& s)
+{
+    ascii_lower(s);
+}
+inline std::string lower(const std::string& s)
+{
+    std::string retval = s;
+    lower(retval);
+    return retval;
+}
+
 CODA_OSS_API void ascii_upper(std::string& s);
+inline void upper(std::string& s)
+{
+    ascii_upper(s);
+}
+inline std::string upper(const std::string& s)
+{
+    std::string retval = s;
+    upper(retval);
+    return retval;
+}
 
 // At this point, you might want to `lower()` and `upper()` for UTF-8 and/or
 // Windows-1252. That can be done, but ... our needs are mostly English (99.9%)
@@ -219,6 +241,8 @@ CODA_OSS_API void upper(coda_oss::u8string& s);
 // names to discourage use.
 CODA_OSS_API str::Windows1252_T to_w1252_upper(str::Windows1252_T);
 CODA_OSS_API str::Windows1252_T to_w1252_lower(str::Windows1252_T);
+
+/***********************************************************************************/
 
 /*!
  * Replaces any characters that are invalid in XML (&, <, >, ', ") with their

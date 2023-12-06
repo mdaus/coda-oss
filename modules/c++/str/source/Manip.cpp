@@ -290,19 +290,6 @@ std::vector<std::string> split(const std::string& s,
 
     return vec;
 }
-template <typename TChar, typename Fn>
-inline void transform(std::basic_string<TChar>& s, Fn f)
-{
-    (void) std::transform(s.begin(), s.end(), s.begin(), f);
-}
-void lower(std::string& s)
-{
-    transform(s, tolowerCheck);
-}
-void upper(std::string& s)
-{
-    transform(s, toupperCheck);
-}
 
 // Calling ::toupper() can be slow as the CRT might check for locales.
 // Since we only have 256 values, a lookup table is very fast and doesn't
