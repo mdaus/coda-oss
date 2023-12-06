@@ -220,18 +220,14 @@ template<typename TChar>
 static void test_change_case_(const std::string& testName,
     const std::basic_string<TChar>& lower, const  std::basic_string<TChar>& upper)
 {
-    auto s = upper;
-    str::lower(s);
+    auto s = str::lower(upper);
     TEST_ASSERT(s == lower);
-    s = lower;
-    str::upper(s);
+    s = str::upper(lower);
     TEST_ASSERT(s == upper);
 
-    s = upper;
-    str::upper(s);
+    s = str::upper(upper);
     TEST_ASSERT(s == upper);
-    s = lower;
-    str::lower(s);
+    s = str::lower(lower);
     TEST_ASSERT(s == lower);
 }
 TEST_CASE(test_change_case)

@@ -63,10 +63,6 @@ TEST_CASE(testUpper)
     str::upper( s);
     TEST_ASSERT_EQ(s, "TEST-SOMETHING1");
 
-    s = s_;
-    str::ascii_upper(s);
-    TEST_ASSERT_EQ(s, "TEST-SOMETHING1");
-
     //#if _WIN32
     //s = "<×àa`öo\"øo/þb÷>";
     //str::w1252_upper(s);
@@ -103,10 +99,6 @@ TEST_CASE(testLower)
     std::string s = s_;
     TEST_ASSERT(str::eq(s, "test1"));
     str::lower(s);
-    TEST_ASSERT_EQ(s, "test1");
-
-    s = s_;
-    str::ascii_lower(s);
     TEST_ASSERT_EQ(s, "test1");
 
     //#if _WIN32
