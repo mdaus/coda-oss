@@ -165,6 +165,7 @@ public:
         const Trace& t = getTrace();
         if (t.getSize() > 0)
             s << ": " << t;
+
         return s.str();
     }
 
