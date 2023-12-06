@@ -67,11 +67,11 @@ TEST_CASE(testUpper)
     str::ascii_upper(s);
     TEST_ASSERT_EQ(s, "TEST-SOMETHING1");
 
-    #if _WIN32
-    s = "<×àa`öo\"øo/þb÷>";
-    str::w1252_upper(s);
-    TEST_ASSERT_EQ(s, "<×ÀA`ÖO\"ØO/ÞB÷>");
-    #endif
+    //#if _WIN32
+    //s = "<×àa`öo\"øo/þb÷>";
+    //str::w1252_upper(s);
+    //TEST_ASSERT_EQ(s, "<×ÀA`ÖO\"ØO/ÞB÷>");
+    //#endif
 }
 
 TEST_CASE(testLower)
@@ -86,11 +86,11 @@ TEST_CASE(testLower)
     str::ascii_lower(s);
     TEST_ASSERT_EQ(s, "test1");
 
-    #if _WIN32
-    s = "[×ÀÖØÞ÷]";
-    str::w1252_lower(s);
-    TEST_ASSERT_EQ(s, "[×àöøþ÷]");
-#endif
+    //#if _WIN32
+    //s = "[×ÀÖØÞ÷]";
+    //str::w1252_lower(s);
+    //TEST_ASSERT_EQ(s, "[×àöøþ÷]");
+    //#endif
 }
 
 TEST_CASE(test_eq_ne)

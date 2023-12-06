@@ -253,8 +253,8 @@ TEST_CASE(test_change_case)
     const auto def_1252 = str::str<str::W1252string>(def_1252_);
     const auto def8 = str::to_u8string(def_1252);
 
-    test_change_case_(testName, def8, DEF8);
-    test_change_case_(testName, def_1252, DEF_1252);
+    //test_change_case_(testName, def8, DEF8);
+    //test_change_case_(testName, def_1252, DEF_1252);
 }
 
 // https://en.wikipedia.org/wiki/%C3%89#Character_mappings

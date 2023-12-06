@@ -34,6 +34,7 @@
 #include "coda_oss/CPlusPlus.h"
 #include "coda_oss/string.h"
 #include "str/Convert.h"
+#include "str/W1252string.h"
 
 namespace str
 {
@@ -213,6 +214,11 @@ CODA_OSS_API void utf8_upper(std::string& s);
 CODA_OSS_API void lower(coda_oss::u8string& s);
 CODA_OSS_API void upper(coda_oss::u8string& s);
 */
+
+// I've already got these hooked up, keep the code around ... long ugly
+// names to discourage use.
+CODA_OSS_API str::Windows1252_T to_w1252_upper(str::Windows1252_T);
+CODA_OSS_API str::Windows1252_T to_w1252_lower(str::Windows1252_T);
 
 /*!
  * Replaces any characters that are invalid in XML (&, <, >, ', ") with their
