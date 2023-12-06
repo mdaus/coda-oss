@@ -26,20 +26,37 @@
 #define CODA_OSS_sys_SysInt_h_INCLUDED_
 
 #include <stdint.h>
+#include <cstdint>
 
 namespace sys
 {
-    typedef char              byte;
-    typedef unsigned char     ubyte;
-    typedef uint8_t            Uint8_T;
-    typedef uint16_t           Uint16_T;
-    typedef uint32_t           Uint32_T;
-    typedef uint64_t           Uint64_T;
-    typedef size_t             Size_T;
-    typedef int8_t             Int8_T;
-    typedef int16_t            Int16_T;
-    typedef int32_t            Int32_T;
-    typedef int64_t            Int64_T;
+typedef char byte;
+typedef unsigned char ubyte;
+typedef uint8_t Uint8_T;
+typedef uint16_t Uint16_T;
+typedef uint32_t Uint32_T;
+typedef uint64_t Uint64_T;
+typedef size_t Size_T;
+typedef int8_t Int8_T;
+typedef int16_t Int16_T;
+typedef int32_t Int32_T;
+typedef int64_t Int64_T;
+
+// From Herb Sutter's "cppfront" project:
+// https://github.com/hsutter/cppfront/blob/main/include/cpp2util.h
+//
+//  Convenience names for fundamental types
+
+//  Encouraged by default: Fixed-precision names
+using i8 = std::int8_t;
+using i16 = std::int16_t;
+using i32 = std::int32_t;
+using i64 = std::int64_t;
+using u8 = std::uint8_t;
+using u16 = std::uint16_t;
+using u32 = std::uint32_t;
+using u64 = std::uint64_t;
+
 }
 
 #endif // CODA_OSS_sys_SysInt_h_INCLUDED_
