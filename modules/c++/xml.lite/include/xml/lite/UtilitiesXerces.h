@@ -409,17 +409,19 @@ struct XercesErrorHandler final : public XercesErrorHandlerInterface_T
  */
 struct CODA_OSS_API XercesContext final
 {
-    //! Constructor
     XercesContext();
-    
-    //! Destructor
     ~XercesContext();
+
+    XercesContext(const XercesContext&) = delete;
+    XercesContext& operator=(const XercesContext&) = delete;
+    XercesContext(XercesContext&&) = delete;
+    XercesContext& operator=(XercesContext&&) = delete;
 
     void destroy();
     
 private:
     static std::mutex mMutex;
-    bool mIsDestroyed;
+    bool mIsDestroyed = false;
 };
 }
 }

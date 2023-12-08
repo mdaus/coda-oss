@@ -165,9 +165,12 @@ ValidatorXerces::ValidatorXerces(
                                      xercesc::Grammar::SchemaGrammarType,
                                      true))
         {
-            std::ostringstream oss;
-            oss << "Error: Failure to load schema " << schema;
-            log->warn(Ctxt(oss));
+            if (log != nullptr)
+            {
+                std::ostringstream oss;
+                oss << "Error: Failure to load schema " << schema;
+                log->warn(Ctxt(oss));
+            }
         }
     }
 

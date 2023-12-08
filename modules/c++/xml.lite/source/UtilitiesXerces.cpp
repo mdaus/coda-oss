@@ -186,8 +186,7 @@ fatalError(const SAXParseException &exception)
     throw except::Error(Ctxt(xex.getMessage()));
 }
 
-XercesContext::XercesContext() :
-    mIsDestroyed(false)
+XercesContext::XercesContext()
 {
     //! XMLPlatformUtils::Initialize is not thread safe!
     try
