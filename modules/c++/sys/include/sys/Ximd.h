@@ -140,9 +140,23 @@ inline auto operator+(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
     return Ximd<T>([&](size_t i) { return lhs[i] + rhs[i]; });
 }
 template <typename T>
+inline auto operator+(const Ximd<T>& lhs, typename Ximd<T>::value_type rhs) noexcept
+{
+    Ximd<T> rhs_;
+    rhs_ = rhs;
+    return lhs + rhs_;
+}
+template <typename T>
 inline auto operator-(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
 {
     return Ximd<T>([&](size_t i) { return lhs[i] - rhs[i]; });
+}
+template <typename T>
+inline auto operator-(const Ximd<T>& lhs, typename Ximd<T>::value_type rhs) noexcept
+{
+    Ximd<T> rhs_;
+    rhs_ = rhs;
+    return lhs-  rhs_;
 }
 template <typename T>
 inline auto operator*(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
@@ -181,6 +195,13 @@ inline auto operator==(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
     return ximd_mask([&](size_t i) { return lhs[i] == rhs[i]; });
 }
 template <typename T>
+inline auto operator==(const Ximd<T>& lhs, typename Ximd<T>::value_type rhs) noexcept
+{
+    Ximd<T> rhs_;
+    rhs_ = rhs;
+    return lhs == rhs_;
+}
+template <typename T>
 inline auto operator<(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
 {
     return ximd_mask([&](size_t i) { return lhs[i] < rhs[i]; });
@@ -196,6 +217,18 @@ template <typename T>
 inline auto operator<=(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
 {
     return ximd_mask([&](size_t i) { return lhs[i] <= rhs[i]; });
+}
+template <typename T>
+inline auto operator>(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
+{
+    return ximd_mask([&](size_t i) { return lhs[i] > rhs[i]; });
+}
+template <typename T>
+inline auto operator>(const Ximd<T>& lhs, typename Ximd<T>::value_type rhs) noexcept
+{
+    Ximd<T> rhs_;
+    rhs_ = rhs;
+    return lhs > rhs_;
 }
 
 inline bool any_of(const ximd_mask& m)

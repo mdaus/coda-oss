@@ -314,9 +314,246 @@ TEST_CASE(testLookup)
     }
 }
 
+// And ... more sample code from SIX
+static auto iota_0_256_()
+{
+    static_assert(sizeof(size_t) > sizeof(uint8_t), "size_t can't hold UINT8_MAX!");
+
+    std::vector<uint8_t> retval;
+    retval.reserve(UINT8_MAX + 1);
+    for (size_t i = 0; i <= UINT8_MAX; i++) // Be careful with indexing so that we don't wrap-around in the loop.
+    {
+        retval.push_back(gsl::narrow<uint8_t>(i));
+    }
+    assert(retval.size() == UINT8_MAX + 1);
+    return retval;
+}
+static inline std::vector<uint8_t> iota_0_256()
+{
+    static const auto retval = iota_0_256_();
+    return retval;
+}
+
+static auto make_magnitudes_()
+{
+    std::vector<float> result;
+    result.reserve(AmplitudeTableSize);
+    for (const auto amplitude : iota_0_256())
+    {
+        // AmpPhase -> Complex
+        const auto phase = amplitude;
+        const auto complex = toComplex(amplitude, phase);
+        result.push_back(std::abs(complex));
+    }
+
+    // I don't know if we can guarantee that the amplitude table is non-decreasing.
+    // Check to verify property at runtime.
+    if (!std::is_sorted(result.begin(), result.end()))
+    {
+        throw std::runtime_error("magnitudes must be sorted");
+    }
+
+    std::array<float, AmplitudeTableSize> retval;
+    std::copy(result.begin(), result.end(), retval.begin());
+    return retval;
+}
+static std::span<const float> magnitudes()
+{
+    //! The sorted set of possible magnitudes order from small to large.
+    static const std::array<float, AmplitudeTableSize> cached_magnitudes = make_magnitudes_();
+    return sys::make_span(cached_magnitudes);
+}
+
+/*!
+ * Find the nearest element given an iterator range.
+ * @param value query value
+ * @return index of nearest value within the iterator range.
+ */
+static uint8_t nearest(std::span<const float> magnitudes, float value)
+{
+    const auto begin = magnitudes.begin();
+    const auto end = magnitudes.end();
+
+    const auto it = std::lower_bound(begin, end, value);
+    if (it == begin) return 0;
+
+    const auto prev_it = std::prev(it);
+    const auto nearest_it = it == end ? prev_it  :
+        (value - *prev_it <= *it - value ? prev_it : it);
+    const auto distance = std::distance(begin, nearest_it);
+    assert(distance <= std::numeric_limits<uint8_t>::max());
+    return gsl::narrow<uint8_t>(distance);
+}
+static uint8_t find_nearest(zfloat phase_direction, zfloat v)
+{
+    // We have to do a 1D nearest neighbor search for magnitude.
+    // But it's not the magnitude of the input complex value - it's the projection of
+    // the complex value onto the ray of candidate magnitudes at the selected phase.
+    // i.e. dot product.
+    const auto projection = (phase_direction.real() * v.real()) + (phase_direction.imag() * v.imag());
+    //assert(std::abs(projection - std::abs(v)) < 1e-5); // TODO ???
+    return nearest(magnitudes(), projection);
+}
+
+template<typename TTest, typename TResult>
+static inline auto select(const TTest& test_, const TResult& t, const TResult& f)
+{
+    TResult retval;
+    for (size_t i = 0; i < test_.size(); i++)
+    {
+        retval[i] = test_[i] ? t[i] : f[i];
+    }
+    return retval;
+}
+
+template<size_t N>
+static inline auto lookup(const intv& zindex, std::span<const float> magnitudes)
+{
+    const auto generate = [&](size_t i) {
+        const auto i_ = zindex[i];
+        return magnitudes[i_];
+    };
+    return floatv(generate);
+}
+static inline auto lower_bound_(std::span<const float> magnitudes, const floatv& v)
+{
+    intv first; first = 0;
+    intv last; last = gsl::narrow<int>(magnitudes.size());
+
+    auto count = last - first;
+    while (any_of(count > 0))
+    {
+        auto it = first;
+        const auto step = count / 2;
+        it += step;
+
+        auto next = it; ++next; // ... ++it;
+        auto advance = count; advance -= step + 1;  // ...  -= step + 1;
+
+        const auto c = lookup<AmplitudeTableSize>(it, magnitudes); // magnituides[it]
+
+        const auto test = c < v; // (c < v).__cvt(); // https://github.com/VcDevel/std-simd/issues/41
+
+        //where(test, it) = next; // ... ++it
+        //where(test, first) = it; // first = ...
+        //// count -= step + 1 <...OR...> count = step
+        //where(test, count) = advance;
+        //where(!test, count) = step;
+        it = select(test, next, it); // ... ++it
+        first = select(test, it, first); // first = ...
+        count = select(test, advance, step); // count -= step + 1 <...OR...> count = step
+    }
+    return first;
+}
+static inline auto lower_bound(std::span<const float> magnitudes, const floatv& value)
+{
+    auto retval = lower_bound_(magnitudes, value);
+    for (size_t i = 0; i < value.size(); i++)
+    {
+        const auto it = std::lower_bound(magnitudes.begin(), magnitudes.end(), value[i]);
+        const auto result = gsl::narrow<int>(std::distance(magnitudes.begin(), it));
+        assert(retval[i] == result);
+    }
+    return retval;
+}
+
+static auto nearest(std::span<const float> magnitudes, const floatv& value)
+{
+    assert(magnitudes.size() == AmplitudeTableSize);
+
+    /*
+        const auto it = std::lower_bound(begin, end, value);
+        if (it == begin) return 0;
+
+        const auto prev_it = std::prev(it);
+        const auto nearest_it = it == end ? prev_it  :
+            (value - *prev_it <= *it - value ? prev_it : it);
+        const auto distance = std::distance(begin, nearest_it);
+        assert(distance <= std::numeric_limits<uint8_t>::max());
+        return gsl::narrow<uint8_t>(distance);
+    */
+    const auto it = lower_bound(magnitudes, value);
+    const auto prev_it  = it - 1;  // const auto prev_it = std::prev(it);
+
+    const auto v0 = value - lookup<AmplitudeTableSize>(prev_it, magnitudes); // value - *prev_it
+    const auto v1 = lookup<AmplitudeTableSize>(it, magnitudes) - value; // *it - value
+    //const auto nearest_it = select(v0 <= v1, prev_it, it); //  (value - *prev_it <= *it - value ? prev_it : it);
+    
+    intv end; end = gsl::narrow<int>(magnitudes.size());
+    //const auto end_test = select(it == end, prev_it, nearest_it); // it == end ? prev_it  : ...
+    intv zero; zero = 0;
+    auto retval = select(it == 0, zero, // if (it == begin) return 0;
+        select(it == end, prev_it,  // it == end ? prev_it  : ...
+            select(v0 <= v1, prev_it, it) //  (value - *prev_it <= *it - value ? prev_it : it);
+        ));
+    return retval;
+}
+
+static auto find_nearest(std::span<const float> magnitudes, const floatv& phase_direction_real, const floatv& phase_direction_imag,
+    const zfloatv& v)
+{
+    // We have to do a 1D nearest neighbor search for magnitude.
+    // But it's not the magnitude of the input complex value - it's the projection of
+    // the complex value onto the ray of candidate magnitudes at the selected phase.
+    // i.e. dot product.
+    const auto projection = (phase_direction_real * real(v)) + (phase_direction_imag * imag(v));
+    for (size_t i = 0; i < projection.size(); i++)
+    {
+        const auto p = (phase_direction_real[i] * real(v)[i]) + (phase_direction_imag[i] * imag(v)[i]);
+        assert(p == projection[i]);
+    }
+
+    //assert(std::abs(projection - std::abs(v)) < 1e-5); // TODO ???
+    return nearest(magnitudes, projection);
+}
+static inline auto find_nearest(std::span<const float> magnitudes, const zfloatv& phase_direction, const zfloatv& v)
+{
+    return find_nearest(magnitudes, real(phase_direction), imag(phase_direction), v);
+}
+
+TEST_CASE(testFindNearest)
+{
+    const auto& values = cxValues();
+    const auto& phase_directions = getPhaseDirections();
+
+    static const auto& expected_getPhase = expected_getPhase_values(testName, phase_delta());
+    std::vector<zfloat> expected_phase_directions;
+    for (auto&& phase : expected_getPhase)
+    {
+        expected_phase_directions.push_back(phase_directions[phase]);
+    }
+    std::vector<uint8_t> expected;
+    for (size_t i = 0; i < values.size(); i++)
+    {
+        auto a = find_nearest(expected_phase_directions[i], values[i]);
+        expected.push_back(a);
+    }
+    
+    const auto valuesv = load(cxValues());
+    std::vector<uint8_t> actual;
+    for (auto&& v : valuesv)
+    {
+        const auto phase = getPhase(v, phase_delta());
+        const auto phase_direction = lookup<AmplitudeTableSize>(phase, phase_directions);
+        const auto amplitude = find_nearest(magnitudes(), phase_direction, v);
+
+        for (auto&& a : store(amplitude))
+        {
+            actual.push_back(static_cast<uint8_t>(a));
+        }
+    }
+
+    TEST_ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); i++)
+    {
+        TEST_ASSERT_EQ(actual[i], expected[i]);
+    }
+}
+
 TEST_MAIN(
     TEST_CHECK(testDefaultConstructor);
 
     TEST_CHECK(testGetPhase);
     TEST_CHECK(testLookup);
+    TEST_CHECK(testFindNearest);
 )
