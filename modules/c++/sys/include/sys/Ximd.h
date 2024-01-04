@@ -56,7 +56,7 @@ namespace CODA_OSS_Ximd_namespace
 {
 // Need a class for the "broadcast" constructor (not impelemented).
 // Also helps to avoid overloading `std::array`.
-template <typename T, int N = 4>
+template <typename T> //, int N = 4>
 struct Ximd final
 {
     static_assert(std::is_arithmetic<T>::value, "T must be arithmetic");
@@ -83,6 +83,11 @@ struct Ximd final
     {
         *this = other;
     }
+    template<typename U>
+    Ximd(const U* mem)
+    {
+        copy_from(mem);
+    }
 
     // https://en.cppreference.com/w/cpp/experimental/simd/simd/simd
     // this is the same as `U&& v` above; avoid enable_if gunk for now.
@@ -107,7 +112,22 @@ struct Ximd final
 
     static constexpr size_t size() noexcept
     {
+        constexpr int N = 4;
         return N;
+    }
+
+    template <typename U>
+    void copy_from(const U* mem)
+    {
+        *this = Ximd([&](size_t i) { return mem[i]; });
+    }
+    template <typename U>
+    void copy_to(U* mem) const
+    {
+        for (size_t i = 0; i < size(); i++)
+        {
+            mem[i] = (*this)[i];
+        }
     }
 
     Ximd& operator++() noexcept
@@ -126,11 +146,11 @@ struct Ximd final
     std::array<value_type, size()> value{};
 };
 
-template<typename T, int N>
-using fixed_size_ximd = Ximd<T, N>;
-
-template<typename T, int N>
-using native_ximd = Ximd<T>;
+//template<typename T, int N>
+//using fixed_size_ximd = Ximd<T, N>;
+//
+//template<typename T, int N>
+//using native_ximd = Ximd<T>;
 
 using ximd_mask = Ximd<bool>;
 
@@ -253,7 +273,6 @@ inline auto round(const Ximd<T>& v)
 {
     return Ximd<T>([&](size_t i) { return std::round(v[i]); });
 }
-
 
 } // CODA_OSS_Ximd_namespace
 

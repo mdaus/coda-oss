@@ -86,7 +86,15 @@ static inline auto make_zfloatv(TGeneratorReal&& generate_real, TGeneratorImag&&
     return retval;
 }
 
-static inline auto load(std::span<const zfloat> p)
+template <typename T>
+static inline auto copy_from(std::span<const T> p)
+{
+    sys::Ximd<T> retval;
+    assert(p.size() == retval.size());
+    retval.copy_from(p.data());
+    return retval;
+}
+static inline auto copy_from(std::span<const zfloat> p)
 {
     const auto generate_real = [&](size_t i) { return p[i].real(); };
     const auto generate_imag = [&](size_t i) { return p[i].imag(); };
@@ -94,16 +102,13 @@ static inline auto load(std::span<const zfloat> p)
 }
 
 template<typename T>
-static inline auto store(const sys::Ximd<T>& v)
+static inline auto copy_to(const sys::Ximd<T>& v)
 {
-    std::vector<typename sys::Ximd<T>::value_type> retval;
-    for (size_t i = 0; i < v.size(); i++)
-    {
-        retval.push_back(v[i]);
-    }
+    std::vector<typename sys::Ximd<T>::value_type> retval(v.size());
+    v.copy_to(retval.data());
     return retval;
 }
-static inline auto store(const zfloatv& v)
+static inline auto copy_to(const zfloatv& v)
 {
     std::vector<zfloat> retval;
     for (size_t i = 0; i < size(v); i++)
@@ -143,7 +148,7 @@ static uint8_t getPhase(zfloat v, float phase_delta)
     return gsl::narrow_cast<uint8_t>(std::round(phase / phase_delta));
 }
 
-static inline auto if_add(const sys::ximd_mask& m, const floatv lhs, typename floatv::value_type rhs)
+static inline auto if_add(const sys::ximd_mask& m, const floatv& lhs, typename floatv::value_type rhs)
 {
     const auto generate_add = [&](size_t i) {
         return m[i] ? lhs[i] + rhs : lhs[i];
@@ -225,7 +230,7 @@ static auto load(const std::vector<zfloat>& values)
     auto p = sys::make_span(pValues.data(), sz);
     for (size_t i = 0; i < values.size() / sz; i++)
     {
-        retval.push_back(load(p));
+        retval.push_back(copy_from(p));
         p = sys::make_span(p.data() + sz, p.size());
     }
     return retval;
@@ -240,8 +245,8 @@ TEST_CASE(testGetPhase)
     for (auto&& zvaluev : valuesv)
     {
         const auto phase = getPhase(zvaluev, phase_delta());
-        const auto phase_ = store(phase);
-        for (auto&& ph : store(phase))
+        const auto phase_ = copy_to(phase);
+        for (auto&& ph : copy_to(phase))
         {
             actual.push_back(gsl::narrow_cast<uint8_t>(ph));
         }
@@ -256,10 +261,10 @@ TEST_CASE(testGetPhase)
 
 // Again, more sample code from SIX
 static constexpr size_t AmplitudeTableSize = 256;
-static const auto& getPhaseDirections()
+static auto getPhaseDirections_()
 {
     //! Unit vector rays that represent each direction that phase can point.
-    static std::array<zfloat, AmplitudeTableSize> phase_directions; // interleaved, std::complex<float>
+    std::array<zfloat, AmplitudeTableSize> phase_directions; // interleaved, std::complex<float>
 
      const auto p0 = GetPhase(toComplex(1, 0));
     for (size_t i = 0; i < AmplitudeTableSize; i++)
@@ -270,6 +275,11 @@ static const auto& getPhaseDirections()
         phase_directions[i] = {x, y};
     }
     return phase_directions;
+}
+static const auto& getPhaseDirections()
+{
+    static const auto retval = getPhaseDirections_();
+    return retval;
 }
 
 template <size_t N>
@@ -306,7 +316,7 @@ TEST_CASE(testLookup)
         const auto phase = getPhase(zvaluev, phase_delta());
         const auto phase_direction = lookup<AmplitudeTableSize>(phase, phase_directions);
 
-        for (auto&& pd : store(phase_direction))
+        for (auto&& pd : copy_to(phase_direction))
         {
             actual.push_back(pd);
         }
@@ -365,7 +375,7 @@ static auto make_magnitudes_()
 static std::span<const float> magnitudes()
 {
     //! The sorted set of possible magnitudes order from small to large.
-    static const std::array<float, AmplitudeTableSize> cached_magnitudes = make_magnitudes_();
+    static const auto cached_magnitudes = make_magnitudes_();
     return sys::make_span(cached_magnitudes);
 }
 
@@ -529,7 +539,7 @@ TEST_CASE(testFindNearest)
         const auto phase_direction = lookup<AmplitudeTableSize>(phase, phase_directions);
         const auto amplitude = find_nearest(magnitudes(), phase_direction, v);
 
-        for (auto&& a : store(amplitude))
+        for (auto&& a : copy_to(amplitude))
         {
             actual.push_back(static_cast<uint8_t>(a));
         }
