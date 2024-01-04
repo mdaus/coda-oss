@@ -56,7 +56,7 @@ namespace CODA_OSS_Ximd_namespace
 {
 // Need a class for the "broadcast" constructor (not impelemented).
 // Also helps to avoid overloading `std::array`.
-template <typename T> //, int N = 4>
+template <typename T, int N = 4>
 struct Ximd final
 {
     static_assert(std::is_arithmetic<T>::value, "T must be arithmetic");
@@ -112,7 +112,6 @@ struct Ximd final
 
     static constexpr size_t size() noexcept
     {
-        constexpr int N = 4;
         return N;
     }
 
@@ -143,7 +142,7 @@ struct Ximd final
     }
 
  private:
-    std::array<value_type, size()> value{};
+    std::array<value_type, N> value{};
 };
 
 //template<typename T, int N>
