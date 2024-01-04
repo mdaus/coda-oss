@@ -24,7 +24,7 @@
 #pragma once 
 
 /*!
- *  \brief A simple ("poor man's) "implemtation" of std::experimental::simd
+ *  \brief A simple (poor man's) "implemtation" of std::experimental::simd
  * for development/testing purposes.
  *
  * `std::experimental::simd` needs G++11 and C++20 and the "vectorclass"
@@ -43,6 +43,7 @@
 #if CODA_OSS_Ximd_ENABLED
 
 #include <array>
+#include <type_traits>
 
 // By default, we'll put things in the `sys` namespace as everything
 // else here does; but a developer might want to change that.
@@ -51,18 +52,22 @@
 #endif
 namespace CODA_OSS_Ximd_namespace
 {
-constexpr size_t native_size = 4;
+constexpr int native_size = 4;
 
 // Need a class for the "broadcast" constructor.
 // Also helps to avoid overloading `std::array`.
-template <typename T>
+template <typename T, int N = native_size>
 struct Ximd final
 {
+    static_assert(std::is_arithmetic<T>::value, "T must be arithmetic");
+    static_assert(std::is_same<T, std::remove_cv<T>::type>::value, "no `const` for T");
+
     using value_type = T;
     using reference = T&;
 
     Ximd() = default;
-    Ximd(const value_type& v) noexcept
+    template<typename U>
+    Ximd(const U& v) noexcept
     {
         *this = Ximd([&](size_t) { return v; });
     }
@@ -76,9 +81,10 @@ struct Ximd final
     template <typename G>
     explicit Ximd(G&& generator) noexcept
     {
-        for (size_t i = 0; i < value.size(); i++)
+        // This is where all the "magic" (would) happen.
+        for (size_t i = 0; i < size(); i++)
         {
-            value[i] = generator(i);
+            (*this)[i] = generator(i);
         }
     }
 
@@ -91,9 +97,9 @@ struct Ximd final
         return value[pos];
     }
 
-    constexpr auto size() const noexcept
+    static constexpr size_t size() noexcept
     {
-        return value.size();
+        return N;
     }
 
     Ximd& operator++() noexcept
@@ -109,11 +115,32 @@ struct Ximd final
     }
 
  private:
-    std::array<value_type, native_size> value{};
+    std::array<value_type, size()> value{};
 };
+
+template<typename T, int N>
+using fixed_size_ximd = Ximd<T, N>;
+
+template<typename T, int N>
+using native_ximd = Ximd<T, native_size>;
 
 using ximd_mask = Ximd<bool>;
 
+template <typename T>
+inline auto operator+(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
+{
+    return Ximd<T>([&](size_t i) { return lhs[i] + rhs[i]; });
+}
+template <typename T>
+inline auto operator-(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
+{
+    return Ximd<T>([&](size_t i) { return lhs[i] - rhs[i]; });
+}
+template <typename T>
+inline auto operator*(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
+{
+    return Ximd<T>([&](size_t i) { return lhs[i] * rhs[i]; });
+}
 template <typename T>
 inline auto operator/(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
 {
@@ -121,54 +148,30 @@ inline auto operator/(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
 }
 
 template <typename T>
-inline auto operator*(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
+inline auto& operator+=(Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
 {
-    return Ximd<T>([&](size_t i) { return lhs[i] * rhs[i]; });
-}
-
-template <typename T>
-inline auto operator-(const Ximd<T>& lhs, const Ximd<T>& rhs)
-{
-    return Ximd([&](size_t i) { return lhs[i] - rhs[i]; });
+    lhs = lhs + rhs;
+    return lhs;
 }
 template <typename T>
-inline auto& operator-=(Ximd<T>& lhs, const Ximd<T>& rhs)
+inline auto& operator-=(Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
 {
-    lhs = Ximd<T>([&](size_t i) {
-                lhs[i] -= rhs[i];
-                return lhs[i];
-            });
+    lhs = lhs - rhs;
     return lhs;
 }
 
 template <typename T>
-inline auto& operator+=(Ximd<T>& lhs, const Ximd<T>& rhs)
-{
-    lhs = Ximd<T>([&](size_t i) {
-                lhs[i] += rhs[i];
-                return lhs[i];
-            });
-    return lhs;
-}
-
-template <typename T>
-inline auto operator+(const Ximd<T>& lhs, const Ximd<T>& rhs)
-{
-    return Ximd<T>([&](size_t i) { return lhs[i] + rhs[i]; });
-}
-
-template <typename T>
-inline auto operator==(const Ximd<T>& lhs, const Ximd<T>& rhs)
+inline auto operator==(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
 {
     return ximd_mask([&](size_t i) { return lhs[i] == rhs[i]; });
 }
 template <typename T>
-inline auto operator<(const Ximd<T>& lhs, const Ximd<T>& rhs)
+inline auto operator<(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
 {
     return ximd_mask([&](size_t i) { return lhs[i] < rhs[i]; });
 }
 template <typename T>
-inline auto operator<=(const Ximd<T>& lhs, const Ximd<T>& rhs)
+inline auto operator<=(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
 {
     return ximd_mask([&](size_t i) { return lhs[i] <= rhs[i]; });
 }

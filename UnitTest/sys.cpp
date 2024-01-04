@@ -21,6 +21,7 @@
 #include <sys/DateTime.h>
 #include <sys/Conf.h>
 #include <sys/Path.h>
+#include <sys/Ximd.h>
 
 namespace sys
 {
@@ -54,6 +55,10 @@ TEST_CLASS(test_os){ public:
 
 TEST_CLASS(test_path){ public:
 #include "sys/unittests/test_path.cpp"
+};
+
+TEST_CLASS(test_ximd){ public:
+#include "sys/unittests/test_ximd.cpp"
 };
 
 }
