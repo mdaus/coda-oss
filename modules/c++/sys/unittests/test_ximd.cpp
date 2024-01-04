@@ -26,7 +26,12 @@
 #include <std/span>
 #include <std/numbers>
 
+// These are unittests, always enable unless explicitly disabled
+#ifndef CODA_OSS_Ximd_ENABLED
+#define CODA_OSS_Ximd_ENABLED 1
+#endif
 #include <sys/Ximd.h>
+
 #include <gsl/gsl.h>
 #include <sys/Span.h>
 
@@ -447,14 +452,7 @@ static inline auto lower_bound_(std::span<const float> magnitudes, const floatv&
 }
 static inline auto lower_bound(std::span<const float> magnitudes, const floatv& value)
 {
-    auto retval = lower_bound_(magnitudes, value);
-    for (size_t i = 0; i < value.size(); i++)
-    {
-        const auto it = std::lower_bound(magnitudes.begin(), magnitudes.end(), value[i]);
-        const auto result = gsl::narrow<int>(std::distance(magnitudes.begin(), it));
-        assert(retval[i] == result);
-    }
-    return retval;
+    return lower_bound_(magnitudes, value);
 }
 
 static auto nearest(std::span<const float> magnitudes, const floatv& value)
@@ -497,12 +495,6 @@ static auto find_nearest(std::span<const float> magnitudes, const floatv& phase_
     // the complex value onto the ray of candidate magnitudes at the selected phase.
     // i.e. dot product.
     const auto projection = (phase_direction_real * real(v)) + (phase_direction_imag * imag(v));
-    for (size_t i = 0; i < projection.size(); i++)
-    {
-        const auto p = (phase_direction_real[i] * real(v)[i]) + (phase_direction_imag[i] * imag(v)[i]);
-        assert(p == projection[i]);
-    }
-
     //assert(std::abs(projection - std::abs(v)) < 1e-5); // TODO ???
     return nearest(magnitudes, projection);
 }

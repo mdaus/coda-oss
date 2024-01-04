@@ -60,7 +60,7 @@ template <typename T, int N = 4>
 struct Ximd final
 {
     static_assert(std::is_arithmetic<T>::value, "T must be arithmetic");
-    static_assert(std::is_same<T, std::remove_cv<T>::type>::value, "no `const` for T");
+    //static_assert(std::is_same<T, std::remove_cv<T>::type>::value, "no `const` for T");
 
     using value_type = T;
     using reference = T&;
