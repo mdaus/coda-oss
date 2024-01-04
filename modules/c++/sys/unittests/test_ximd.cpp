@@ -143,7 +143,7 @@ static inline auto getPhase(const zfloatv& v, float phase_delta)
     return roundi(phase / phase_delta);
 }
 
-static const std::vector<zfloat>& cxValues()
+static const auto& cxValues()
 {
     static const std::vector<zfloat> retval{/*{0, 0},*/ {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
     return retval;
@@ -154,7 +154,6 @@ static auto expected_getPhase_values(const std::string& testName, float phase_de
     auto&& values = cxValues();
     TEST_ASSERT(values.size() % floatv::size() == 0);
     std::vector<uint8_t> expected;
-    expected.reserve(values.size());
     for (auto&& v : values)
     {
         expected.push_back(getPhase(v, phase_delta));
@@ -162,26 +161,60 @@ static auto expected_getPhase_values(const std::string& testName, float phase_de
     return expected;
 }
 
-TEST_CASE(testGetPhase)
+static auto toComplex_(double A, uint8_t phase)
 {
-    constexpr auto phase_delta = 0.01f;
-    static const auto expected = expected_getPhase_values(testName, phase_delta);
+    // The phase values should be read in (values 0 to 255) and converted to float by doing:
+    // P = (1 / 256) * input_value
+    const double P = (1.0 / 256.0) * phase;
 
-    std::vector<zfloatv> valuesv;
+    // To convert the amplitude and phase values to complex float (i.e. real and imaginary):
+    // S = A * cos(2 * pi * P) + j * A * sin(2 * pi * P)
+    const double angle = 2 * std::numbers::pi * P;
+    const auto sin_angle = sin(angle);
+    const auto cos_angle = cos(angle);
+    zfloat S(gsl::narrow_cast<float>(A * cos_angle), gsl::narrow_cast<float>(A * sin_angle));
+    return S;
+}
+inline static auto toComplex(uint8_t amplitude, uint8_t phase)
+{
+    // A = input_amplitude(i.e. 0 to 255)
+    const double A = amplitude;
+    return toComplex_(A, phase);
+}
+
+static auto phase_delta()
+{
+    static const auto p0 = GetPhase(toComplex(1, 0));
+    static const auto p1 = GetPhase(toComplex(1, 1));
+    assert(p0 == 0.0);
+    assert(p1 > p0);
+    static const auto retval = gsl::narrow_cast<float>(p1 - p0);
+    return retval;
+}
+
+static auto load(const std::vector<zfloat>& values)
+{
+    std::vector<zfloatv> retval;
     constexpr auto sz = floatv::size();
-    auto&& values = cxValues();
     auto const pValues = sys::make_span(values);
     auto p = sys::make_span(pValues.data(), sz);
     for (size_t i = 0; i < values.size() / sz; i++)
     {
-        valuesv.push_back(load(p));
+        retval.push_back(load(p));
         p = sys::make_span(p.data() + sz, p.size());
     }
+    return retval;
+}
 
+TEST_CASE(testGetPhase)
+{
+    static const auto& expected = expected_getPhase_values(testName, phase_delta());
+
+    const auto valuesv = load(cxValues());
     std::vector<uint8_t> actual;
     for (auto&& zvaluev : valuesv)
     {
-        const auto phase = getPhase(zvaluev, phase_delta);
+        const auto phase = getPhase(zvaluev, phase_delta());
         for (size_t i = 0; i < phase.size(); i++)
         {
             actual.push_back(gsl::narrow_cast<uint8_t>(phase[i]));
@@ -195,9 +228,75 @@ TEST_CASE(testGetPhase)
     }
 }
 
+// Again, more sample code from SIX
+static constexpr size_t AmplitudeTableSize = 256;
+static const auto& getPhaseDirections()
+{
+    //! Unit vector rays that represent each direction that phase can point.
+    static std::array<zfloat, AmplitudeTableSize> phase_directions; // interleaved, std::complex<float>
+
+     const auto p0 = GetPhase(toComplex(1, 0));
+    for (size_t i = 0; i < AmplitudeTableSize; i++)
+    {
+        const float angle = static_cast<float>(p0) + i * phase_delta();
+        const auto y = sin(angle);
+        const auto x = cos(angle);
+        phase_directions[i] = {x, y};
+    }
+    return phase_directions;
+}
+
+template <size_t N>
+static inline auto lookup(const intv& zindex, const std::array<zfloat, N>& phase_directions)
+{
+    const auto generate_real = [&](size_t i)
+    {
+        const auto i_ = zindex[i];
+        return phase_directions[i_].real();
+    };
+    const auto generate_imag = [&](size_t i)
+    {
+        const auto i_ = zindex[i];
+        return phase_directions[i_].imag();
+    };
+    return make_zfloatv(generate_real, generate_imag);
+}
+
+TEST_CASE(testLookup)
+{
+    const auto& phase_directions = getPhaseDirections();
+
+    static const auto& expected_getPhase = expected_getPhase_values(testName, phase_delta());
+    std::vector<zfloat> expected;
+    for (auto&& phase : expected_getPhase)
+    {
+        expected.push_back(phase_directions[phase]);
+    }
+    
+    const auto valuesv = load(cxValues());
+    std::vector<zfloat> actual;
+    for (auto&& zvaluev : valuesv)
+    {
+        const auto phase = getPhase(zvaluev, phase_delta());
+        const auto phase_direction = lookup<AmplitudeTableSize>(phase, phase_directions);
+
+        for (size_t i = 0; i < size(phase_direction); i++)
+        {
+            const auto pd = phase_directions[phase[i]];
+            actual.push_back(pd);
+        }
+    }
+
+    TEST_ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); i++)
+    {
+        TEST_ASSERT_EQ(actual[i], expected[i]);
+    }
+}
 
 TEST_MAIN(
     TEST_CHECK(testDefaultConstructor);
 
     TEST_CHECK(testGetPhase);
+    TEST_CHECK(testLookup);
 )
