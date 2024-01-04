@@ -88,6 +88,26 @@ static inline auto load(std::span<const zfloat> p)
     return make_zfloatv(generate_real, generate_imag);
 }
 
+template<typename T>
+static inline auto store(const sys::Ximd<T>& v)
+{
+    std::vector<typename sys::Ximd<T>::value_type> retval;
+    for (size_t i = 0; i < v.size(); i++)
+    {
+        retval.push_back(v[i]);
+    }
+    return retval;
+}
+static inline auto store(const zfloatv& v)
+{
+    std::vector<zfloat> retval;
+    for (size_t i = 0; i < size(v); i++)
+    {        
+        retval.emplace_back(real(v)[i], imag(v)[i]);
+    }
+    return retval;
+}
+
 TEST_CASE(testDefaultConstructor)
 {
     // sanity check implementation and utility routines
@@ -215,9 +235,10 @@ TEST_CASE(testGetPhase)
     for (auto&& zvaluev : valuesv)
     {
         const auto phase = getPhase(zvaluev, phase_delta());
-        for (size_t i = 0; i < phase.size(); i++)
+        const auto phase_ = store(phase);
+        for (auto&& ph : store(phase))
         {
-            actual.push_back(gsl::narrow_cast<uint8_t>(phase[i]));
+            actual.push_back(gsl::narrow_cast<uint8_t>(ph));
         }
     }
 
@@ -280,9 +301,8 @@ TEST_CASE(testLookup)
         const auto phase = getPhase(zvaluev, phase_delta());
         const auto phase_direction = lookup<AmplitudeTableSize>(phase, phase_directions);
 
-        for (size_t i = 0; i < size(phase_direction); i++)
+        for (auto&& pd : store(phase_direction))
         {
-            const auto pd = phase_directions[phase[i]];
             actual.push_back(pd);
         }
     }
