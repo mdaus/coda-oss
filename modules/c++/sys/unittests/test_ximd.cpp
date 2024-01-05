@@ -39,8 +39,12 @@
 
 using zfloat = std::complex<float>;
 
-using intv = sys::Ximd<int>;
-using floatv = sys::Ximd<float>;
+template<typename T>
+using simd = sys::ximd::Ximd<T>;
+using intv = simd<int>;
+using floatv = simd<float>;
+using intv_mask = sys::ximd::ximd_mask;
+using floatv_mask = sys::ximd::ximd_mask;
 
 // Manage a SIMD complex as an array of two SIMDs
 using zfloatv = std::array<floatv, 2>;
@@ -71,7 +75,7 @@ static inline auto arg(const zfloatv& z)
 {
     // https://en.cppreference.com/w/cpp/numeric/complex/arg
     // > `std::atan2(std::imag(z), std::real(z))`
-    return atan2(real(z), imag(z));  // arg()
+    return atan2(imag(z), real(z));  // arg()
 }
 
 template <typename TGeneratorReal, typename TGeneratorImag>
@@ -89,7 +93,7 @@ static inline auto make_zfloatv(TGeneratorReal&& generate_real, TGeneratorImag&&
 template <typename T>
 static inline auto copy_from(std::span<const T> p)
 {
-    sys::Ximd<T> retval;
+    simd<T> retval;
     assert(p.size() == retval.size());
     retval.copy_from(p.data());
     return retval;
@@ -102,9 +106,9 @@ static inline auto copy_from(std::span<const zfloat> p)
 }
 
 template<typename T>
-static inline auto copy_to(const sys::Ximd<T>& v)
+static inline auto copy_to(const simd<T>& v)
 {
-    std::vector<typename sys::Ximd<T>::value_type> retval(v.size());
+    std::vector<typename simd<T>::value_type> retval(v.size());
     v.copy_to(retval.data());
     return retval;
 }
@@ -148,7 +152,7 @@ static uint8_t getPhase(zfloat v, float phase_delta)
     return gsl::narrow_cast<uint8_t>(std::round(phase / phase_delta));
 }
 
-static inline auto if_add(const sys::ximd_mask& m, const floatv& lhs, typename floatv::value_type rhs)
+static inline auto if_add(const floatv_mask& m, const floatv& lhs, typename floatv::value_type rhs)
 {
     const auto generate_add = [&](size_t i) {
         return m[i] ? lhs[i] + rhs : lhs[i];
