@@ -133,7 +133,7 @@ TEST_CASE(testDefaultConstructor)
 }
 
 // Sample code from SIX; see **ComplexToAMP8IPHS8I.cpp**.
-static inline auto GetPhase(std::complex<double> v)
+static auto GetPhase(std::complex<double> v)
 {
     // There's an intentional conversion to zero when we cast 256 -> uint8. That wrap around
     // handles cases that are close to 2PI.
@@ -162,7 +162,7 @@ static inline auto roundi(const floatv& v)  // match vcl::roundi()
     { return static_cast<typename intv::value_type>(rounded[i]); };
     return intv(generate_roundi);
 }
-static inline auto getPhase(const zfloatv& v, float phase_delta)
+static auto getPhase(const zfloatv& v, float phase_delta)
 {
     // Phase is determined via arithmetic because it's equally spaced.
     // There's an intentional conversion to zero when we cast 256 -> uint8. That wrap around
@@ -172,10 +172,12 @@ static inline auto getPhase(const zfloatv& v, float phase_delta)
     phase = if_add(phase < 0.0f, phase, std::numbers::pi_v<float> * 2.0f); // Wrap from [0, 2PI]
     return roundi(phase / phase_delta);
 }
-
-static const auto& cxValues()
+static inline const auto& cxValues()
 {
-    static const std::vector<zfloat> retval{/*{0, 0},*/ {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
+    //static const std::vector<zfloat> retval{/*{0, 0},*/ {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
+    static const std::vector<zfloat> retval{{0.0, 0.0}, {1.0, 1.0}, {10.0, -10.0}, {-100.0, 100.0}, {-1000.0, -1000.0}, // sample data from SIX
+            {-1.0, -1.0}, {1.0, -1.0}, {-1.0, 1.0} // "pad" to multiple of floatv::size()
+    };
     return retval;
 }
 
@@ -276,7 +278,7 @@ static auto getPhaseDirections_()
     }
     return phase_directions;
 }
-static const auto& getPhaseDirections()
+static inline const auto& getPhaseDirections()
 {
     static const auto retval = getPhaseDirections_();
     return retval;
@@ -372,7 +374,7 @@ static auto make_magnitudes_()
     std::copy(result.begin(), result.end(), retval.begin());
     return retval;
 }
-static std::span<const float> magnitudes()
+static inline std::span<const float> magnitudes()
 {
     //! The sorted set of possible magnitudes order from small to large.
     static const auto cached_magnitudes = make_magnitudes_();
@@ -411,12 +413,12 @@ static uint8_t find_nearest(zfloat phase_direction, zfloat v)
 }
 
 template<typename TTest, typename TResult>
-static inline auto select(const TTest& test_, const TResult& t, const TResult& f)
+static inline auto select(const TTest& test, const TResult& t, const TResult& f)
 {
     TResult retval;
-    for (size_t i = 0; i < test_.size(); i++)
+    for (size_t i = 0; i < test.size(); i++)
     {
-        retval[i] = test_[i] ? t[i] : f[i];
+        retval[i] = test[i] ? t[i] : f[i];
     }
     return retval;
 }
