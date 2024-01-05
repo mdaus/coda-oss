@@ -423,15 +423,21 @@ static inline auto select(const TTest& test, const TResult& t, const TResult& f)
     return retval;
 }
 
-template<size_t N>
-static inline auto lookup(const intv& zindex, std::span<const float> magnitudes)
+static auto lookup(const intv& zindex, std::span<const float> magnitudes)
 {
     const auto generate = [&](size_t i) {
         const auto i_ = zindex[i];
-        return magnitudes[i_];
+        
+        // The index may be out of range. This is expected because `i` might be "don't care."
+        if ((i_ >= 0) && (i_ < magnitudes.size()))
+        {
+            return magnitudes[i_];
+        }
+        return NAN; // propogate "don't care"
     };
     return floatv(generate);
 }
+
 static inline auto lower_bound_(std::span<const float> magnitudes, const floatv& v)
 {
     intv first; first = 0;
@@ -447,7 +453,7 @@ static inline auto lower_bound_(std::span<const float> magnitudes, const floatv&
         auto next = it; ++next; // ... ++it;
         auto advance = count; advance -= step + 1;  // ...  -= step + 1;
 
-        const auto c = lookup<AmplitudeTableSize>(it, magnitudes); // magnituides[it]
+        const auto c = lookup(it, magnitudes); // magnituides[it]
 
         const auto test = c < v; // (c < v).__cvt(); // https://github.com/VcDevel/std-simd/issues/41
 
@@ -485,8 +491,8 @@ static auto nearest(std::span<const float> magnitudes, const floatv& value)
     const auto it = lower_bound(magnitudes, value);
     const auto prev_it  = it - 1;  // const auto prev_it = std::prev(it);
 
-    const auto v0 = value - lookup<AmplitudeTableSize>(prev_it, magnitudes); // value - *prev_it
-    const auto v1 = lookup<AmplitudeTableSize>(it, magnitudes) - value; // *it - value
+    const auto v0 = value - lookup(prev_it, magnitudes); // value - *prev_it
+    const auto v1 = lookup(it, magnitudes) - value; // *it - value
     //const auto nearest_it = select(v0 <= v1, prev_it, it); //  (value - *prev_it <= *it - value ? prev_it : it);
     
     intv end; end = gsl::narrow<int>(magnitudes.size());
