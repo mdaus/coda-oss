@@ -433,7 +433,7 @@ static auto lookup(const intv& zindex, std::span<const float> magnitudes)
         const auto i_ = zindex[i];
         
         // The index may be out of range. This is expected because `i` might be "don't care."
-        if ((i_ >= 0) && (i_ < ssize(magnitudes)))
+        if ((i_ >= 0) && (i_ < std::ssize(magnitudes)))
         {
             return magnitudes[i_];
         }
