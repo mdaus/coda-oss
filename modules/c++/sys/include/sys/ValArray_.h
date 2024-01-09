@@ -120,6 +120,8 @@ struct ValArray final : public std::valarray<T>
     }
 };
 
+using ValArray_mask = ValArray<bool>;
+
 template <typename T>
 inline auto round(const ValArray<T>& v)
 {
