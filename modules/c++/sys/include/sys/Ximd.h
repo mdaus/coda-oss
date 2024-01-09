@@ -154,7 +154,7 @@ template <typename T, int N = 4>
 struct ValArray final : public std::valarray<T>
 {
     using base_t = std::valarray<T>;
-    const ValArray(const base_t& other) : base_t(other)
+    ValArray(const base_t& other) : base_t(other)
     {
     }
 
