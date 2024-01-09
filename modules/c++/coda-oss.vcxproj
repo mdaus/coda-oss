@@ -285,7 +285,9 @@
     <ClInclude Include="sys\include\sys\ThreadWin32.h" />
     <ClInclude Include="sys\include\sys\TimeStamp.h" />
     <ClInclude Include="sys\include\sys\UTCDateTime.h" />
+    <ClInclude Include="sys\include\sys\ValArray_.h" />
     <ClInclude Include="sys\include\sys\Ximd.h" />
+    <ClInclude Include="sys\include\sys\Ximd_.h" />
     <ClInclude Include="tiff\include\tiff\Common.h" />
     <ClInclude Include="tiff\include\tiff\FileReader.h" />
     <ClInclude Include="tiff\include\tiff\FileWriter.h" />

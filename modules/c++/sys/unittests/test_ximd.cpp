@@ -43,8 +43,8 @@ template<typename T>
 using simd = sys::ximd::Ximd<T>;
 using intv = simd<int>;
 using floatv = simd<float>;
-using intv_mask = sys::ximd::ximd_mask;
-using floatv_mask = sys::ximd::ximd_mask;
+using intv_mask = sys::ximd::details::Ximd_mask;
+using floatv_mask = sys::ximd::details::Ximd_mask;
 
 // Manage a SIMD complex as an array of two SIMDs
 using zfloatv = std::array<floatv, 2>;
@@ -185,8 +185,8 @@ static uint8_t getPhase(zfloat v, float phase_delta)
     return gsl::narrow_cast<uint8_t>(std::round(phase / phase_delta));
 }
 
-template<typename TVector>
-static inline auto if_add(const floatv_mask& m, const TVector& lhs, typename TVector::value_type rhs)
+template<typename TMask, typename TVector>
+static inline auto if_add(const TMask& m, const TVector& lhs, typename TVector::value_type rhs)
 {
     const auto generate_add = [&](size_t i) {
         return m[i] ? lhs[i] + rhs : lhs[i];

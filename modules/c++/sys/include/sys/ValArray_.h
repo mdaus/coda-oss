@@ -42,41 +42,91 @@
 
 #if CODA_OSS_Ximd_ENABLED
 
+#include <array>
 #include <type_traits>
 #include <functional>
 #include <cmath>
-
-#include "Ximd_.h"
-#include "ValArray_.h"
+#include <valarray>
 
 namespace sys
 {
 namespace ximd
 {
-
-template<typename T>
-using Ximd = details::Ximd<T>;
-//template<typename T>
-//using Ximd = details::ValArray<T>;
-
-// template<typename T, int N>
-// using fixed_size_ximd = Ximd<T, N>;
-//
-// template<typename T, int N>
-// using native_ximd = Ximd<T>;
-
-template <typename Mask>
-inline bool any_of(const Mask& m)
+namespace details
 {
-    for (size_t i = 0; i < m.size(); i++)
+// Need a class for the "broadcast" constructor (not impelemented).
+template <typename T, int N = 4>
+struct ValArray final : public std::valarray<T>
+{
+    using base_t = std::valarray<T>;
+    ValArray(const base_t& other) : base_t(other)
     {
-        if (m[i])
+    }
+
+    ValArray() : base_t(N)
+    {
+    }
+
+    template <typename U>
+    ValArray(U v) noexcept : ValArray(base_t(v, N))
+    {
+    }
+
+    template <typename U>
+    void copy_from(const U* mem)
+    {
+        *this = generate([&](size_t i) { return mem[i]; });
+    }
+    template <typename U>
+    void copy_to(U* mem) const
+    {
+        for (size_t i = 0; i < size(); i++)
         {
-            return true;
+            mem[i] = (*this)[i];
         }
     }
-    return false;
+
+    // https://en.cppreference.com/w/cpp/experimental/simd/simd/simd
+    // this is the same as `U&& v` above; avoid enable_if gunk for now.
+    template <typename G>
+    static auto generate(G&& generator) noexcept
+    {
+        ValArray retval;
+        for (size_t i = 0; i < size(); i++)
+        {
+            retval[i] = generator(i);
+        }
+        return retval;
+    }
+
+    static constexpr size_t size() noexcept
+    {
+        return N;
+    }
+
+    ValArray& operator++() noexcept
+    {
+        *this = generate([&](size_t i) {
+                    auto v = (*this)[i];
+                    return ++v;
+                });
+        return *this;
+    }
+    ValArray operator++(int) noexcept
+    {
+        auto tmp = *this;
+        ++(*this);
+        return tmp;
+    }
+};
+
+template <typename T>
+inline auto round(const ValArray<T>& v)
+{
+    return ValArray<T>::generate([&](size_t i) { return std::round(v[i]); });
 }
+
+} // details
 
 } // ximd
 } // sys
