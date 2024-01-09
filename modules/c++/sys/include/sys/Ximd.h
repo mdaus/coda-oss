@@ -327,19 +327,6 @@ inline auto operator>(const Ximd<T>& lhs, typename Ximd<T>::value_type rhs) noex
     return lhs > Ximd<T>(rhs);
 }
 
-template<typename Mask>
-inline bool any_of_(const Mask& m)
-{
-    for (size_t i = 0; i < m.size(); i++)
-    {
-        if (m[i])
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 template <typename T>
 inline auto atan2(const Ximd<T>& real, const Ximd<T>& imag)
 {
@@ -359,17 +346,17 @@ inline auto round(const ValArray<T>& v)
 
 } // details
 
-inline bool any_of(const ximd_mask& m)
+template <typename Mask>
+inline bool any_of(const Mask& m)
 {
-    return details::any_of_(m);
-}
-inline bool any_of(const std::valarray<bool>& m)
-{
-    return details::any_of_(m);
-}
-inline bool any_of(const std::valarray<int>& m)
-{
-    return details::any_of_(m);
+    for (size_t i = 0; i < m.size(); i++)
+    {
+        if (m[i])
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 } // ximd
