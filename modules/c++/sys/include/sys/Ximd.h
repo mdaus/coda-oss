@@ -46,37 +46,44 @@
 #include <type_traits>
 #include <functional>
 #include <cmath>
+#include <valarray>
 
 namespace sys
 {
 namespace ximd
 {
-
+namespace details
+{
 // Need a class for the "broadcast" constructor (not impelemented).
 // Also helps to avoid overloading `std::array`.
 template <typename T, int N = 4>
 struct Ximd final
 {
     static_assert(std::is_arithmetic<T>::value, "T must be arithmetic");
-    // static_assert(std::is_same<T, std::remove_cv<T>::type>::value, "no `const` for T");
+    // static_assert(std::is_same<T, std::remove_cv<T>::type>::value, "no
+    // `const` for T");
 
     using value_type = T;
     using reference = T&;
 
-    Ximd() = default;
-    // This is the same as the "generater" overload below ... avoid enable_if gunk for now.
-     template<typename U>
-     Ximd(U v) noexcept
+    Ximd()
+    {
+        value.resize(N);
+    }
+    // This is the same as the "generater" overload below ... avoid enable_if
+    // gunk for now.
+    template <typename U>
+    Ximd(U v) noexcept : Ximd()
     {
         *this = generate([&](size_t) { return v; });
     }
     template <typename U>
-    Ximd(const Ximd<U>& other) noexcept
+    Ximd(const Ximd<U>& other) noexcept : Ximd()
     {
         *this = other;
     }
     template <typename U>
-    Ximd(const U* mem)
+    Ximd(const U* mem) : Ximd()
     {
         copy_from(mem);
     }
@@ -95,7 +102,7 @@ struct Ximd final
         return retval;
     }
     template <typename G>
-    explicit Ximd(G&& generator, nullptr_t) noexcept
+    explicit Ximd(G&& generator, nullptr_t) noexcept : Ximd()
     {
         *this = generate(generator);
     }
@@ -141,8 +148,12 @@ struct Ximd final
     }
 
 private:
-    std::array<value_type, N> value{};
+    std::valarray<value_type> value;
 };
+}
+
+template<typename T>
+using Ximd = details::Ximd<T>;
 
 // template<typename T, int N>
 // using fixed_size_ximd = Ximd<T, N>;
@@ -152,6 +163,8 @@ private:
 
 using ximd_mask = Ximd<bool>;
 
+namespace details
+{
 template <typename T>
 inline auto operator+(const Ximd<T>& lhs, const Ximd<T>& rhs) noexcept
 {
@@ -269,6 +282,7 @@ inline auto round(const Ximd<T>& v)
 {
     return Ximd<T>::generate([&](size_t i) { return std::round(v[i]); });
 }
+} // details
 
 } // ximd
 } // sys
