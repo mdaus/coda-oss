@@ -151,17 +151,19 @@ private:
 };
 
 template <typename T, int N = 4>
-class ValArray final : public std::valarray<T>
+struct ValArray final : public std::valarray<T>
 {
     using base_t = std::valarray<T>;
+    const ValArray(const base_t& other) : base_t(other)
+    {
+    }
 
-    public:
     ValArray() : base_t(N)
     {
     }
 
     template <typename U>
-    ValArray(U v) noexcept : base_t(v, N)
+    ValArray(U v) noexcept : ValArray(base_t(v, N))
     {
     }
 
@@ -199,7 +201,10 @@ class ValArray final : public std::valarray<T>
 
     ValArray& operator++() noexcept
     {
-        *this = generate([&](size_t i) { return ++(*this[i]); });
+        *this = generate([&](size_t i) {
+                    auto v = (*this)[i];
+                    return ++v;
+                });
         return *this;
     }
     ValArray operator++(int) noexcept
@@ -322,7 +327,8 @@ inline auto operator>(const Ximd<T>& lhs, typename Ximd<T>::value_type rhs) noex
     return lhs > Ximd<T>(rhs);
 }
 
-inline bool any_of(const ximd_mask& m)
+template<typename Mask>
+inline bool any_of_(const Mask& m)
 {
     for (size_t i = 0; i < m.size(); i++)
     {
@@ -352,6 +358,19 @@ inline auto round(const ValArray<T>& v)
 }
 
 } // details
+
+inline bool any_of(const ximd_mask& m)
+{
+    return details::any_of_(m);
+}
+inline bool any_of(const std::valarray<bool>& m)
+{
+    return details::any_of_(m);
+}
+inline bool any_of(const std::valarray<int>& m)
+{
+    return details::any_of_(m);
+}
 
 } // ximd
 } // sys

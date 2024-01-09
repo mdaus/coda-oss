@@ -112,6 +112,14 @@ static inline auto copy_to(const simd<T>& v)
     v.copy_to(retval.data());
     return retval;
 }
+template <typename T>
+static inline auto copy_to(const std::valarray<T>& v)
+{
+    std::vector<typename simd<T>::value_type> retval(v.size());
+    const sys::ximd::details::ValArray<T> v_(v);
+    v_.copy_to(retval.data());
+    return retval;
+}
 static inline auto copy_to(const zfloatv& v)
 {
     std::vector<zfloat> retval;
@@ -177,13 +185,15 @@ static uint8_t getPhase(zfloat v, float phase_delta)
     return gsl::narrow_cast<uint8_t>(std::round(phase / phase_delta));
 }
 
-static inline auto if_add(const floatv_mask& m, const floatv& lhs, typename floatv::value_type rhs)
+template<typename TVector>
+static inline auto if_add(const floatv_mask& m, const TVector& lhs, typename TVector::value_type rhs)
 {
     const auto generate_add = [&](size_t i) {
         return m[i] ? lhs[i] + rhs : lhs[i];
     };
     return floatv::generate(generate_add);
 }
+
 static inline auto roundi(const floatv& v)  // match vcl::roundi()
 {
     const auto rounded = round(v);
@@ -451,6 +461,16 @@ static auto select(const TTest& test, const TResult& t, const TResult& f)
     }
     return retval;
 }
+template <typename TTest, typename T>
+static auto select(const TTest& test, const std::valarray<T>& t, const std::valarray<T>& f)
+{
+    std::valarray<T> retval;
+    for (size_t i = 0; i < test.size(); i++)
+    {
+        retval[i] = test[i] ? t[i] : f[i];
+    }
+    return retval;
+}
 
 static auto lookup(const intv& zindex, std::span<const float> magnitudes)
 {
@@ -473,7 +493,7 @@ static inline auto lower_bound_(std::span<const float> magnitudes, const floatv&
     intv last; last = gsl::narrow<int>(magnitudes.size());
 
     auto count = last - first;
-    while (any_of(count > 0))
+    while (sys::ximd::any_of(count > 0))
     {
         auto it = first;
         const auto step = count / 2;
