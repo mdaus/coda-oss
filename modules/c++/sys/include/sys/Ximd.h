@@ -217,10 +217,10 @@ struct ValArray final : public std::valarray<T>
 
 }
 
-template<typename T>
-using Ximd = details::Ximd<T>;
 //template<typename T>
-//using Ximd = details::ValArray<T>;
+//using Ximd = details::Ximd<T>;
+template<typename T>
+using Ximd = details::ValArray<T>;
 
 // template<typename T, int N>
 // using fixed_size_ximd = Ximd<T, N>;

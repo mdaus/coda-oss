@@ -464,7 +464,7 @@ static auto select(const TTest& test, const TResult& t, const TResult& f)
 template <typename TTest, typename T>
 static auto select(const TTest& test, const std::valarray<T>& t, const std::valarray<T>& f)
 {
-    std::valarray<T> retval;
+    simd<T> retval;
     for (size_t i = 0; i < test.size(); i++)
     {
         retval[i] = test[i] ? t[i] : f[i];
