@@ -442,7 +442,7 @@ static uint8_t find_nearest(zfloat phase_direction, zfloat v)
 }
 
 template<typename TTest, typename TResult>
-static inline auto select(const TTest& test, const TResult& t, const TResult& f)
+static auto select(const TTest& test, const TResult& t, const TResult& f)
 {
     TResult retval;
     for (size_t i = 0; i < test.size(); i++)

@@ -73,9 +73,8 @@ struct Ximd final
     // This is the same as the "generater" overload below ... avoid enable_if
     // gunk for now.
     template <typename U>
-    Ximd(U v) noexcept : Ximd()
+    Ximd(U v) noexcept : value(v, N)
     {
-        *this = generate([&](size_t) { return v; });
     }
     template <typename U>
     Ximd(const Ximd<U>& other) noexcept : Ximd()
@@ -124,7 +123,7 @@ struct Ximd final
     template <typename U>
     void copy_from(const U* mem)
     {
-        *this = Ximd::generate([&](size_t i) { return mem[i]; });
+        *this = generate([&](size_t i) { return mem[i]; });
     }
     template <typename U>
     void copy_to(U* mem) const
@@ -137,7 +136,7 @@ struct Ximd final
 
     Ximd& operator++() noexcept
     {
-        *this = Ximd::generate([&](size_t i) { return ++value[i]; });
+        *this = generate([&](size_t i) { return ++value[i]; });
         return *this;
     }
     Ximd operator++(int) noexcept
@@ -150,10 +149,73 @@ struct Ximd final
 private:
     std::valarray<value_type> value;
 };
+
+template <typename T, int N = 4>
+class ValArray final : public std::valarray<T>
+{
+    using base_t = std::valarray<T>;
+
+    public:
+    ValArray() : base_t(N)
+    {
+    }
+
+    template <typename U>
+    ValArray(U v) noexcept : base_t(v, N)
+    {
+    }
+
+    template <typename U>
+    void copy_from(const U* mem)
+    {
+        *this = generate([&](size_t i) { return mem[i]; });
+    }
+    template <typename U>
+    void copy_to(U* mem) const
+    {
+        for (size_t i = 0; i < size(); i++)
+        {
+            mem[i] = (*this)[i];
+        }
+    }
+
+    // https://en.cppreference.com/w/cpp/experimental/simd/simd/simd
+    // this is the same as `U&& v` above; avoid enable_if gunk for now.
+    template <typename G>
+    static auto generate(G&& generator) noexcept
+    {
+        ValArray retval;
+        for (size_t i = 0; i < size(); i++)
+        {
+            retval[i] = generator(i);
+        }
+        return retval;
+    }
+
+    static constexpr size_t size() noexcept
+    {
+        return N;
+    }
+
+    ValArray& operator++() noexcept
+    {
+        *this = generate([&](size_t i) { return ++(*this[i]); });
+        return *this;
+    }
+    ValArray operator++(int) noexcept
+    {
+        auto tmp = *this;
+        ++(*this);
+        return tmp;
+    }
+};
+
 }
 
 template<typename T>
 using Ximd = details::Ximd<T>;
+//template<typename T>
+//using Ximd = details::ValArray<T>;
 
 // template<typename T, int N>
 // using fixed_size_ximd = Ximd<T, N>;
@@ -282,6 +344,13 @@ inline auto round(const Ximd<T>& v)
 {
     return Ximd<T>::generate([&](size_t i) { return std::round(v[i]); });
 }
+
+template <typename T>
+inline auto round(const ValArray<T>& v)
+{
+    return ValArray<T>::generate([&](size_t i) { return std::round(v[i]); });
+}
+
 } // details
 
 } // ximd
