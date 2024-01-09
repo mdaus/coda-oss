@@ -122,17 +122,42 @@ static inline auto copy_to(const zfloatv& v)
     return retval;
 }
 
-TEST_CASE(testDefaultConstructor)
+TEST_CASE(testBroadcastConstructor)
 {
     // sanity check implementation and utility routines
     TEST_ASSERT_EQ(floatv::size(), size(zfloatv{}));
 
-    // intv v = 1;
-    intv v;
-    v = 1;
+    const intv v = 314;
     for (size_t i = 0; i < v.size(); i++)
     {
-        TEST_ASSERT_EQ(1, v[i]);
+        TEST_ASSERT_EQ(314, v[i]);
+    }
+}
+
+TEST_CASE(testOperator)
+{
+    // sanity check implementation and utility routines
+    TEST_ASSERT_EQ(floatv::size(), size(zfloatv{}));
+
+    const intv a = 2;
+    auto c = a + 3;
+    for (size_t i = 0; i < c.size(); i++)
+    {
+        TEST_ASSERT_EQ(5, c[i]);
+    }
+
+    const intv b = 3;
+    c = a + b;
+    for (size_t i = 0; i < c.size(); i++)
+    {
+        TEST_ASSERT_EQ(5, c[i]);
+    }
+
+    const intv five = 5;
+    const auto test = c == 5;
+    for (size_t i = 0; i < test.size(); i++)
+    {
+        TEST_ASSERT_TRUE(test[i]);
     }
 }
 
@@ -565,7 +590,8 @@ TEST_CASE(testFindNearest)
 }
 
 TEST_MAIN(
-    TEST_CHECK(testDefaultConstructor);
+    TEST_CHECK(testBroadcastConstructor);
+    TEST_CHECK(testOperator);
 
     TEST_CHECK(testGetPhase);
     TEST_CHECK(testLookup);
