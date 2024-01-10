@@ -135,11 +135,39 @@ namespace details
     constexpr size_t std_valarray_size = 4;
 
     template <typename T, typename U>
-    inline void broadcast(U v, std::valarray<T>& result)
+    inline void broadcast(U v, std::valarray<T>& va)
     {
-        result = std::valarray<T>(v, std_valarray_size);
+        va = std::valarray<T>(v, std_valarray_size);
     }
+
+    template <typename U, typename T>
+    inline void copy_to(const std::valarray<T>& va, U* mem)
+    {
+        for (size_t i = 0; i < va.size(); i++)
+        {
+            mem[i] = va[i];
+        }
+    }
+
+    // https://en.cppreference.com/w/cpp/experimental/simd/simd/simd
+    template <typename T, typename G>
+    inline void generate(std::valarray<T>& va, G&& generator) noexcept
+    {
+        for (size_t i = 0; i < va.size(); i++)
+        {
+            va[i] = generator(i);
+        }
+    }
+
 } // details
+
+template <typename T>
+std::valarray<T> round(const std::valarray<T>& va)
+{
+    std::valarray<T> retval(va.size());
+    details::generate(retval, [&](size_t i) { return std::round(va[i]); });
+    return retval;
+}
 
 } // ximd
 } // sys
