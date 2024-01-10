@@ -148,14 +148,16 @@ TEST_CASE(testOperator)
     TEST_ASSERT_EQ(floatv::size(), size(zfloatv{}));
 
     const intv a = 2;
-    auto c = a + 3;
-    for (size_t i = 0; i < c.size(); i++)
     {
-        TEST_ASSERT_EQ(5, c[i]);
+        auto c = a + 3;
+        for (size_t i = 0; i < c.size(); i++)
+        {
+            TEST_ASSERT_EQ(5, c[i]);
+        }
     }
 
     const intv b = 3;
-    c = a + b;
+    const auto c = a + b;
     for (size_t i = 0; i < c.size(); i++)
     {
         TEST_ASSERT_EQ(5, c[i]);
@@ -185,13 +187,39 @@ static uint8_t getPhase(zfloat v, float phase_delta)
     return gsl::narrow_cast<uint8_t>(std::round(phase / phase_delta));
 }
 
-template<typename TMask, typename TVector>
-static inline auto if_add(const TMask& m, const TVector& lhs, typename TVector::value_type rhs)
+template <typename TTest, typename TResultT, typename TResultF, typename TRetval>
+static void select_(const TTest& test, const TResultT& t, const TResultF& f,
+                    TRetval& retval)
 {
-    const auto generate_add = [&](size_t i) {
-        return m[i] ? lhs[i] + rhs : lhs[i];
-    };
-    return floatv::generate(generate_add);
+    for (size_t i = 0; i < test.size(); i++)
+    {
+        retval[i] = test[i] ? t[i] : f[i];
+    }
+}
+template<typename TTest, typename TResult>
+static auto select(const TTest& test, const TResult& t, const TResult& f)
+{
+    TResult retval;
+    select_(test, t, f, retval);
+    return retval;
+}
+template <typename TTest, typename T>
+static auto select(const TTest& test, const std::valarray<T>& t, const std::valarray<T>& f)
+{
+    simd<T> retval;
+    select_(test, t, f, retval);
+    return retval;
+}
+
+template<typename TMask, typename TVector>
+static inline auto if_add(const TMask& m, const TVector& lhs, float rhs_)
+{
+    using value_type = typename TVector::value_type;
+    const simd<value_type> rhs = rhs_;
+
+    simd<value_type> retval;
+    select_(m, lhs + rhs, lhs, retval);
+    return retval;
 }
 
 static inline auto roundi(const floatv& v)  // match vcl::roundi()
@@ -449,27 +477,6 @@ static uint8_t find_nearest(zfloat phase_direction, zfloat v)
     const auto projection = (phase_direction.real() * v.real()) + (phase_direction.imag() * v.imag());
     //assert(std::abs(projection - std::abs(v)) < 1e-5); // TODO ???
     return nearest(magnitudes(), projection);
-}
-
-template<typename TTest, typename TResult>
-static auto select(const TTest& test, const TResult& t, const TResult& f)
-{
-    TResult retval;
-    for (size_t i = 0; i < test.size(); i++)
-    {
-        retval[i] = test[i] ? t[i] : f[i];
-    }
-    return retval;
-}
-template <typename TTest, typename T>
-static auto select(const TTest& test, const std::valarray<T>& t, const std::valarray<T>& f)
-{
-    simd<T> retval;
-    for (size_t i = 0; i < test.size(); i++)
-    {
-        retval[i] = test[i] ? t[i] : f[i];
-    }
-    return retval;
 }
 
 static auto lookup(const intv& zindex, std::span<const float> magnitudes)
