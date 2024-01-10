@@ -130,6 +130,17 @@ inline auto round(const ValArray<T>& v)
 
 } // details
 
+namespace details
+{
+    constexpr size_t std_valarray_size = 4;
+
+    template <typename T, typename U>
+    inline void broadcast(U v, std::valarray<T>& result)
+    {
+        result = std::valarray<T>(v, std_valarray_size);
+    }
+} // details
+
 } // ximd
 } // sys
 

@@ -258,6 +258,12 @@ inline auto round(const Ximd<T>& v)
     return Ximd<T>::generate([&](size_t i) { return std::round(v[i]); });
 }
 
+template <typename T, typename U>
+inline void broadcast(U v, Ximd<T>& result)
+{
+    result = Ximd<T>(v);
+}
+
 } // details
 } // ximd
 } // sys

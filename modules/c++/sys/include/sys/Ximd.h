@@ -58,6 +58,8 @@ template<typename T>
 using Ximd = details::Ximd<T>;
 //template<typename T>
 //using Ximd = details::ValArray<T>;
+//template<typename T>
+//using Ximd = std::valarray<T>;
 
 // template<typename T, int N>
 // using fixed_size_ximd = Ximd<T, N>;
@@ -76,6 +78,14 @@ inline bool any_of(const Mask& m)
         }
     }
     return false;
+}
+
+template <typename T>
+inline auto broadcast(T v)
+{
+    Ximd<T> result;
+    details::broadcast(v, result);
+    return result;
 }
 
 } // ximd
