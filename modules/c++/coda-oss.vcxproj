@@ -19,6 +19,8 @@
     <ClInclude Include="coda_oss\include\coda_oss\bit.h" />
     <ClInclude Include="coda_oss\include\coda_oss\CPlusPlus.h" />
     <ClInclude Include="coda_oss\include\coda_oss\cstddef.h" />
+    <ClInclude Include="coda_oss\include\coda_oss\mdspan.h" />
+    <ClInclude Include="coda_oss\include\coda_oss\mdspan_.h" />
     <ClInclude Include="coda_oss\include\coda_oss\namespace_.h" />
     <ClInclude Include="coda_oss\include\coda_oss\numbers.h" />
     <ClInclude Include="coda_oss\include\coda_oss\optional.h" />
@@ -283,6 +285,7 @@
     <ClInclude Include="sys\include\sys\ThreadWin32.h" />
     <ClInclude Include="sys\include\sys\TimeStamp.h" />
     <ClInclude Include="sys\include\sys\UTCDateTime.h" />
+    <ClInclude Include="sys\include\sys\Ximd.h" />
     <ClInclude Include="tiff\include\tiff\Common.h" />
     <ClInclude Include="tiff\include\tiff\FileReader.h" />
     <ClInclude Include="tiff\include\tiff\FileWriter.h" />
@@ -509,6 +512,7 @@
     <None Include="std\include\std\bit" />
     <None Include="std\include\std\cstddef" />
     <None Include="std\include\std\filesystem" />
+    <None Include="std\include\std\mdspan" />
     <None Include="std\include\std\memory" />
     <None Include="std\include\std\numbers" />
     <None Include="std\include\std\optional" />
@@ -609,6 +613,7 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <WarningLevel>Level3</WarningLevel>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>
