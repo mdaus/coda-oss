@@ -951,6 +951,15 @@
     <ClInclude Include="str\include\str\W1252string.h">
       <Filter>str</Filter>
     </ClInclude>
+    <ClInclude Include="coda_oss\include\coda_oss\mdspan.h">
+      <Filter>coda_oss</Filter>
+    </ClInclude>
+    <ClInclude Include="coda_oss\include\coda_oss\mdspan_.h">
+      <Filter>coda_oss</Filter>
+    </ClInclude>
+    <ClInclude Include="sys\include\sys\Ximd.h">
+      <Filter>sys</Filter>
+    </ClInclude>
     <ClInclude Include="xml.dom\include\xml\dom\DOMConfiguration.h">
       <Filter>xml.dom</Filter>
     </ClInclude>
@@ -1530,7 +1539,7 @@
       <UniqueIdentifier>{59f3d9a1-06d3-4779-aef2-cc55223c3017}</UniqueIdentifier>
     </Filter>
     <Filter Include="xml.dom">
-      <UniqueIdentifier>{21b90236-d753-42d5-977c-4e507e878a1f}</UniqueIdentifier>
+      <UniqueIdentifier>{666d5271-6843-4358-87dd-2fac8f851f63}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1597,6 +1606,9 @@
     <None Include="coda-oss.ruleset" />
     <None Include="sys\source\CppUnitTestAssert_.cpp_">
       <Filter>sys</Filter>
+    </None>
+    <None Include="std\include\std\mdspan">
+      <Filter>std</Filter>
     </None>
   </ItemGroup>
 </Project>
