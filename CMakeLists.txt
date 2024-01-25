@@ -5,8 +5,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(coda-oss)
 
-project(coda-oss)
-
 set(CMAKE_CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED true)
 

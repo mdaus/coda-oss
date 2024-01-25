@@ -24,7 +24,6 @@
     <ClInclude Include="coda_oss\include\coda_oss\namespace_.h" />
     <ClInclude Include="coda_oss\include\coda_oss\numbers.h" />
     <ClInclude Include="coda_oss\include\coda_oss\optional.h" />
-    <ClInclude Include="coda_oss\include\coda_oss\optional_.h" />
     <ClInclude Include="coda_oss\include\coda_oss\span.h" />
     <ClInclude Include="coda_oss\include\coda_oss\string.h" />
     <ClInclude Include="coda_oss\include\coda_oss\type_traits.h" />
@@ -122,7 +121,6 @@
     <ClInclude Include="math\include\math\Round.h" />
     <ClInclude Include="math\include\math\Utilities.h" />
     <ClInclude Include="mem\include\mem\Align.h" />
-    <ClInclude Include="mem\include\mem\AutoPtr.h" />
     <ClInclude Include="mem\include\mem\BufferView.h" />
     <ClInclude Include="mem\include\mem\ComplexView.h" />
     <ClInclude Include="mem\include\mem\ScopedAlignedArray.h" />
