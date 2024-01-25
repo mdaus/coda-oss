@@ -957,15 +957,6 @@
     <ClInclude Include="coda_oss\include\coda_oss\mdspan_.h">
       <Filter>coda_oss</Filter>
     </ClInclude>
-    <ClInclude Include="sys\include\sys\Ximd.h">
-      <Filter>sys</Filter>
-    </ClInclude>
-    <ClInclude Include="sys\include\sys\ValArray_.h">
-      <Filter>sys</Filter>
-    </ClInclude>
-    <ClInclude Include="sys\include\sys\Ximd_.h">
-      <Filter>sys</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
