@@ -19,10 +19,6 @@
  *
  */
 #pragma once
-#ifndef CODA_OSS_std_filesystem_INCLUDED_
-#define CODA_OSS_std_filesystem_INCLUDED_
 
 #include <filesystem>
 #include "sys/filesystem.h"
-
-#endif  // CODA_OSS_std_filesystem_INCLUDED_

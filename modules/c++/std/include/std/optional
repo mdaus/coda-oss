@@ -19,9 +19,6 @@
  *
  */
 #pragma once 
-#ifndef CODA_OSS_std_optional_INCLUDED_
-#define CODA_OSS_std_optional_INCLUDED_
 
 #include "coda_oss/optional.h"
 
-#endif  // CODA_OSS_std_optional_INCLUDED_

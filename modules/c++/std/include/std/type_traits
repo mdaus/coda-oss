@@ -19,10 +19,7 @@
  *
  */
 #pragma once
-#ifndef CODA_OSS_std_type_traits_INCLUDED_
-#define CODA_OSS_std_type_traits_INCLUDED_
 
-#include <type_traits>
+#include "coda_oss/type_traits.h"
 
-#endif  // CODA_OSS_std_type_traits_INCLUDED_
 

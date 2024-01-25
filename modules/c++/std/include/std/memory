@@ -19,9 +19,5 @@
  *
  */
 #pragma once
-#ifndef CODA_OSS_std_memory_INCLUDED_
-#define CODA_OSS_std_memory_INCLUDED_
 
 #include <memory>
-
-#endif  // CODA_OSS_std_memory_INCLUDED_

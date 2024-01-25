@@ -19,9 +19,5 @@
  *
  */
 #pragma once 
-#ifndef CODA_OSS_std_cstddef_INCLUDED_
-#define CODA_OSS_std_cstddef_INCLUDED_
 
-#include <cstddef>
-
-#endif  // CODA_OSS_std_cstddef_INCLUDED_
+#include "coda_oss/cstddef.h"
