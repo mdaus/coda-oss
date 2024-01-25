@@ -56,12 +56,8 @@ bool sys::FragmentPredicate::operator()(const std::string& entry) const
 {
     if (mIgnoreCase)
     {
-        std::string base = entry;
-        str::lower(base);
-
-        std::string match = mFragment;
-        str::lower(match);
-
+        const auto base = str::lower(entry);
+        const auto match = str::lower(mFragment);
         return str::contains(base, match);
     }
     else

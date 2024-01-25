@@ -290,19 +290,6 @@ std::vector<std::string> split(const std::string& s,
 
     return vec;
 }
-template <typename TChar, typename Fn>
-inline void transform(std::basic_string<TChar>& s, Fn f)
-{
-    (void) std::transform(s.begin(), s.end(), s.begin(), f);
-}
-void lower(std::string& s)
-{
-    transform(s, tolowerCheck);
-}
-void upper(std::string& s)
-{
-    transform(s, toupperCheck);
-}
 
 // Calling ::toupper() can be slow as the CRT might check for locales.
 // Since we only have 256 values, a lookup table is very fast and doesn't
@@ -337,7 +324,14 @@ void ascii_upper(std::string& s)
     do_lookup(s, lookup);
 }
 
-inline char w1252_toupper(char ch)
+void ascii_lower(std::string& s)
+{
+    static std::array<uint8_t, UINT8_MAX + 1> lookup_;
+    static const auto& lookup = make_lookup(lookup_, tolowerCheck);
+    do_lookup(s, lookup);
+}
+
+inline char to_w1252_upper_(char ch)
 {
     if ((ch >= 'a') && (ch <= 'z'))
     {
@@ -345,28 +339,31 @@ inline char w1252_toupper(char ch)
     }
 
     // See chart at: https://en.wikipedia.org/wiki/Windows-1252
+    const auto u8 = static_cast<uint8_t>(ch);
+
     constexpr uint8_t s_with_caron = 0x9a /* š */;
     constexpr uint8_t oe = 0x9c /* œ */;
     constexpr uint8_t z_with_caron = 0x9e /* ž */;
-    constexpr uint8_t a_with_grave = 0xe0 /* à */;
-    constexpr uint8_t o_with_diaeresis = 0xf6 /* ö */;
-    constexpr uint8_t o_with_slash = 0xf8 /* ø */;
-    constexpr uint8_t small_thorn = 0xfe /* þ */;
-    constexpr uint8_t y_with_diaeresis = 0xff /* ÿ */;
-
-    const auto u8 = static_cast<uint8_t>(ch);
     if ((u8 == s_with_caron) || (u8 == oe) || (u8 == z_with_caron))
     {
         return ch ^ 0x10;    
     }
+
+    constexpr uint8_t a_with_grave = 0xe0 /* à */;
+    constexpr uint8_t o_with_diaeresis = 0xf6 /* ö */;
     if ((u8 >= a_with_grave) && (u8 <= o_with_diaeresis))
     {
         return ch ^ 0x20;
     }
+    // U+00F7 ÷ DIVISION SIGN
+    constexpr uint8_t o_with_slash = 0xf8 /* ø */;
+    constexpr uint8_t small_thorn = 0xfe /* þ */;
     if ((u8 >= o_with_slash) && (u8 <= small_thorn))
     {
         return ch ^ 0x20;
     }
+
+    constexpr uint8_t y_with_diaeresis = 0xff /* ÿ */;
     if (u8 == y_with_diaeresis)
     {
         constexpr uint8_t Y_with_diaeresis = 0x9f /* Ÿ */;
@@ -375,10 +372,63 @@ inline char w1252_toupper(char ch)
 
     return ch;
 }
+str::Windows1252_T to_w1252_upper(str::Windows1252_T ch)
+{
+    const auto retval = to_w1252_upper_(static_cast<char>(ch));
+    return static_cast<str::Windows1252_T>(retval);
+}
+
+inline char to_w1252_lower_(char ch)
+{
+    if ((ch >= 'A') && (ch <= 'Z'))
+    {
+        return ch | 0x20;
+    }
+
+    // See chart at: https://en.wikipedia.org/wiki/Windows-1252
+    const auto u8 = static_cast<uint8_t>(ch);
+
+    constexpr uint8_t S_with_caron = 0x8a /* Š */;
+    constexpr uint8_t OE = 0x8c /*Œ */;
+    constexpr uint8_t Z_with_caron = 0x8e /* Ž */;
+    if ((u8 == S_with_caron) || (u8 == OE) || (u8 == Z_with_caron))
+    {
+        return ch | 0x10;
+    }
+
+    constexpr uint8_t Y_with_diaeresis = 0x9f /* Ÿ */;
+    if (u8 == Y_with_diaeresis)
+    {
+        constexpr uint8_t y_with_diaeresis = 0xff /* ÿ */;
+        return y_with_diaeresis;
+    }
+
+    constexpr uint8_t A_with_grave = 0xc0 /* À */;
+    constexpr uint8_t O_with_diaeresis = 0xd6 /* Ö */;
+    if ((u8 >= A_with_grave) && (u8 <= O_with_diaeresis))
+    {
+        return ch | 0x20;
+    }
+    // U+00D7 × MULTIPLICATION SIGN 
+    constexpr uint8_t O_with_slash = 0xd8 /* Ø */;
+    constexpr uint8_t capital_thorn = 0xde /* Þ */;
+    if ((u8 >= O_with_slash) && (u8 <= capital_thorn))
+    {
+        return ch | 0x20;
+    }
+
+    return ch;
+}
+str::Windows1252_T to_w1252_lower(str::Windows1252_T ch)
+{
+    const auto retval = to_w1252_lower_(static_cast<char>(ch));
+    return static_cast<str::Windows1252_T>(retval);
+}
+
 static const auto& w1252_upper_lookup()
 {
     static std::array<uint8_t, UINT8_MAX + 1> lookup_;
-    static const auto& lookup = make_lookup(lookup_, w1252_toupper);
+    static const auto& lookup = make_lookup(lookup_, to_w1252_upper_);
     return lookup;
 }
 void w1252_upper(std::string& w1252)
@@ -390,53 +440,10 @@ void upper(str::W1252string& s)
     do_lookup(s, w1252_upper_lookup());
 }
 
-void ascii_lower(std::string& s)
-{
-    static std::array<uint8_t, UINT8_MAX + 1> lookup_;
-    static const auto& lookup = make_lookup(lookup_, tolowerCheck);
-    do_lookup(s, lookup);
-}
-
-inline char w1252_tolower(char ch)
-{
-    if ((ch >= 'A') && (ch <= 'Z'))
-    {
-        return ch | 0x20;
-    }
-
-    constexpr uint8_t S_with_caron = 0x8a /* Š */;
-    constexpr uint8_t OE = 0x8c /*Œ */;
-    constexpr uint8_t Z_with_caron = 0x8e /* Ž */;
-    constexpr uint8_t Y_with_diaeresis = 0x9f /* Ÿ */;
-    constexpr uint8_t A_with_grave = 0xc0 /* À */;
-    constexpr uint8_t O_with_diaeresis = 0xd6 /* Ö */;
-    constexpr uint8_t O_with_slash = 0xd8 /* Ø */;
-    constexpr uint8_t capital_thorn = 0xde /* Þ */;
-
-    const auto u8 = static_cast<uint8_t>(ch);
-    if ((u8 == S_with_caron) || (u8 == OE) || (u8 == Z_with_caron))
-    {
-        return ch | 0x10;
-    }
-    if (u8 == Y_with_diaeresis)
-    {
-        constexpr uint8_t y_with_diaeresis = 0xff /* ÿ */;
-        return y_with_diaeresis;
-    }
-    if ((u8 >= A_with_grave) && (u8 <= O_with_diaeresis))
-    {
-        return ch | 0x20;
-    }
-    if ((u8 >= O_with_slash) && (u8 <= capital_thorn))
-    {
-        return ch | 0x20;
-    }
-    return ch;
-}
 static const auto& w1252_lower_lookup()
 {
     static std::array<uint8_t, UINT8_MAX + 1> lookup_;
-    static const auto& lookup = make_lookup(lookup_, w1252_tolower);
+    static const auto& lookup = make_lookup(lookup_, to_w1252_lower_);
     return lookup;
 }
 void w1252_lower(std::string& w1252)

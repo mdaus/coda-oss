@@ -463,9 +463,7 @@ std::string sys::DateTime::dayOfWeekToStringAbbr(int dayOfWeek)
 
 int sys::DateTime::monthToValue(const std::string& month)
 {
-    std::string m = month;
-    str::lower(m);
-
+    const auto m = str::lower(month);
     if (str::startsWith(m, "jan"))
         return 1;
     else if (str::startsWith(m, "feb"))
@@ -497,9 +495,7 @@ int sys::DateTime::monthToValue(const std::string& month)
 
 int sys::DateTime::dayOfWeekToValue(const std::string& dayOfWeek)
 {
-    std::string d = dayOfWeek;
-    str::lower(d);
-
+    const auto d = str::lower(dayOfWeek);
     if (str::startsWith(d, "sun"))
         return 1;
     else if (str::startsWith(d, "mon"))
