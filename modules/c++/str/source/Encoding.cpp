@@ -203,13 +203,40 @@ static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<
         throw std::invalid_argument("Invalid Windows-1252 character.");
     }
 }
+template <typename TChar>
+static auto make_Windows1252_lookup(bool strict)
+{
+    std::vector<std::basic_string<TChar>> retval(0xff+1);
+    for (size_t i = 0; i <= 0xff; i++)
+    {
+        const auto ch = static_cast<str::W1252string::value_type>(i);
+        fromWindows1252_(ch, retval[i], strict);
+    }
+    return retval;
+}
+template <typename TChar>
+static const auto& getLookup(bool strict)
+{
+    if (strict)
+    {
+        static const auto lookup = make_Windows1252_lookup<TChar>(strict);
+        return lookup; 
+    }
+    else
+    {
+        static const auto lookup = make_Windows1252_lookup<TChar>(strict);
+        return lookup; 
+    }
+}
 
 template<typename TChar>
-inline void w1252_to_string_(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
+inline void w1252_to_string_(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result, bool strict = false)
 {
+    const auto& lookup = getLookup<TChar>(strict);
     for (size_t i = 0; i < sz; i++)
     {
-        fromWindows1252_(p[i], result);
+        const auto ch = static_cast<ptrdiff_t>(p[i]);
+        result += lookup[ch];
     }
 }
 inline void w1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u16string& result)
