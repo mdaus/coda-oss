@@ -175,11 +175,7 @@ static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<
 
     switch (static_cast<uint8_t>(ch))
     {
-    case 0x81:
-    case 0x8d:
-    case 0x8f:
-    case 0x90:
-    case 0x9d:
+    case 0x81: case 0x8d: case 0x8f: case 0x90: case 0x9d:
     {
         if (strict)
         {
@@ -207,19 +203,32 @@ static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<
         throw std::invalid_argument("Invalid Windows-1252 character.");
     }
 }
+
 template<typename TChar>
-inline void w1252_to_string(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
+inline void w1252_to_string_(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
 {
     for (size_t i = 0; i < sz; i++)
     {
         fromWindows1252_(p[i], result);
     }
 }
-template<typename CharT>
-inline void w1252to8(str::W1252string::const_pointer p, size_t sz, std::basic_string<CharT>& result)
+inline void w1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u16string& result)
 {
-    w1252_to_string(p, sz, result);
+    w1252_to_string_(p, sz, result);
 }
+inline void w1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u32string& result)
+{
+    w1252_to_string_(p, sz, result);
+}
+inline void w1252to8(str::W1252string::const_pointer p, size_t sz, std::string& result)
+{
+    w1252_to_string_(p, sz, result);
+}
+inline void w1252to8(str::W1252string::const_pointer p, size_t sz, coda_oss::u8string& result)
+{
+    w1252_to_string_(p, sz, result);
+}
+
 inline void w1252to16(str::W1252string::const_pointer p, size_t sz, std::u16string& result)
 {
     w1252_to_string(p, sz, result);
