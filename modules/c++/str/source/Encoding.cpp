@@ -437,7 +437,6 @@ static void get_utf8_string(coda_oss::u8string::const_pointer p, size_t sz, size
 template<typename TChar>
 static void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::basic_string<TChar>& result, bool strict=false)
 {
-    using value_type = TChar;
     for (size_t i = 0; i < sz; i++)
     {
         const auto b1 = static_cast<uint8_t>(p[i]);
