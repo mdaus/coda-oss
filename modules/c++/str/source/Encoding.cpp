@@ -34,6 +34,7 @@
 #include <vector>
 #include <iterator>
 #include <string>
+#include <set>
 
 #include "gsl/gsl.h"
 #include "config/compiler_extensions.h"
@@ -70,6 +71,18 @@ inline coda_oss::u8string utf8_(char32_t i)
 {
     const auto ch = gsl::narrow<std::u32string::value_type>(i);
     return str::to_u8string(std::u32string{ch});
+}
+
+static const auto& replacement_character()
+{
+    static const auto retval = utf8_(U'\xfffd');
+    return retval;
+}
+
+static const auto& get_Windows1252_undefined()
+{
+    static const std::set<uint8_t> retval{0x81, 0x8d, 0x8f, 0x90, 0x9d};
+    return retval;
 }
 
 static const auto& Windows1252_x80_x9F_to_u8string_()
@@ -173,9 +186,9 @@ static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<
         return;
     }
 
-    switch (static_cast<uint8_t>(ch))
-    {
-    case 0x81: case 0x8d: case 0x8f: case 0x90: case 0x9d:
+    static const auto& w1252_undefined = get_Windows1252_undefined();
+    const auto i8 = static_cast<uint8_t>(ch);
+    if (w1252_undefined.find(i8) != w1252_undefined.end())
     {
         if (strict)
         {
@@ -189,18 +202,17 @@ static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<
             // > unused; however, the Windows API `MultiByteToWideChar` maps these
             // > to the corresponding C1 control codes. The "best fit" mapping
             // > documents this behavior, too.
-            static const coda_oss::u8string replacement_character = utf8_(U'\xfffd');
-            append(result, replacement_character);
+            append(result, replacement_character());
         }
         else
         {
             // _bstr_t just preserves these values, do the same
             append(result, utf8_(ch32));
         }
-        break;
     }
-    default:
-        throw std::invalid_argument("Invalid Windows-1252 character.");
+    else
+    {
+        throw std::logic_error("Unhandled Windows-1252 character."); // this shouldn't happen
     }
 }
 template <typename TChar>
@@ -230,9 +242,9 @@ static const auto& getLookup(bool strict)
 }
 
 template<typename TChar>
-inline void w1252_to_string_(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result, bool strict = false)
+static void w1252_to_string_(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result, bool strict = false)
 {
-    const auto& lookup = getLookup<TChar>(strict);
+    auto&& lookup = getLookup<TChar>(strict);
     for (size_t i = 0; i < sz; i++)
     {
         const auto ch = static_cast<ptrdiff_t>(p[i]);
@@ -356,50 +368,75 @@ static void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::basi
     }
 }
 
-static auto u16_to_Windows1252()
+static auto make_u16_to_w1252_map(bool strict)
 {
     // Find the corresponding UTF-16 value for every Windows-1252 input;
-    // obviously, most UTF-16 values can't be converted.  Skip the first half
-    // as they're the same for ASCII.
+    // obviously, most UTF-16 values can't be converted.
+    const auto& lookup = getLookup<std::u16string::value_type>(strict);
+
     std::map<std::u16string::value_type, str::W1252string::value_type> retval;
-    for (uint16_t i = 0x0080; i <= 0x00ff; i++)  // **not** `uint8_t` to avoid wrap-around
+    for (size_t i = 0; i <= 0xff; i++)  // **not** `uint8_t` to avoid wrap-around
     {
+        const auto u16 = lookup[i];
+        assert(u16.length() == 1); // all values in Basic Multi-lingual Plane (BMP); no emojis, etc.
         const auto ch = static_cast<str::W1252string::value_type>(i);
-        const auto u16 = str::to_u16string(&ch, 1);
-        assert(u16.length() == 1);
         retval[u16[0]] = ch;
     }
     return retval;
 }
-static inline void utf16to1252(std::u16string::const_pointer p, size_t sz, std::string& result, bool strict=false)
+static const auto& get_u16_to_w1252_map(bool strict)
+{
+    if (strict)
+    {
+        static const auto lookup = make_u16_to_w1252_map(strict);
+        return lookup;
+    }
+    else
+    {
+        static const auto lookup = make_u16_to_w1252_map(strict);
+        return lookup;
+    }
+}
+
+static inline void utf16to1252_(std::u16string::value_type ch, std::string& result, bool strict)
 {
     using value_type = std::string::value_type;
 
-    static const auto map = u16_to_Windows1252();
+    auto&& map = get_u16_to_w1252_map(strict);
+    const auto it = map.find(ch);
+    if (it != map.end())
+    {
+        const auto w1252 = static_cast<value_type>(it->second);
+
+        static const auto& w1252_undefined = get_Windows1252_undefined();
+        const auto i8 = static_cast<uint8_t>(w1252);
+        const auto is_undefined = w1252_undefined.find(i8) == w1252_undefined.end();
+
+        // only care about undefined for `strict`
+        if (!is_undefined || !strict)
+        {
+            result += w1252;
+            return; // not undefined or not strict
+        }
+    }
+
+    // Either not in map, or the Windows1252 character is undefined.
+    if (strict)
+    {
+        throw std::invalid_argument("UTF-16 sequence can't be converted to Windows-1252.");
+    }
+    else
+    {
+        assert("UTF-16 sequence can't be converted to Windows-1252." && 0);
+        result += static_cast<value_type>(0x7F);  // <DEL>
+    }
+}
+static inline void utf16to1252(std::u16string::const_pointer p, size_t sz, std::string& result, bool strict=false)
+{
     for (size_t i = 0; i < sz; i++)
     {
         const auto ch = p[i];
-
-        if (ch < 0x0080) // ASCII
-        {
-            result += gsl::narrow<value_type>(ch);  
-            continue;
-        }
-
-        const auto it = map.find(ch);
-        if (it != map.end())
-        {
-            result += static_cast<value_type>(it->second);
-        }
-        else if (strict)
-        {
-            throw std::invalid_argument("UTF-16 sequence can't be converted to Windows-1252.");
-        }
-        else
-        {
-            assert("UTF-16 sequence can't be converted to Windows-1252." && 0);
-            result += static_cast<value_type>(0x7F);  // <DEL>
-        }
+        utf16to1252_(ch, result, strict);
     }
 }
 
