@@ -275,11 +275,11 @@ class Utf_to_Windows1252 final
     template<typename TMap, typename TUtf>
     void utf_to_1252(const TMap& map, const TUtf& utf, std::basic_string<TChar>& result) const
     {
-        auto w1252 = gsl::narrow<TChar>(0x7F);  // <DEL>
+        auto w1252 = static_cast<TChar>(0x7F);  // <DEL>
         const auto it = map.find(utf);
         if (it != map.end())
         {
-            w1252 = gsl::narrow<TChar>(it->second);
+            w1252 = static_cast<TChar>(it->second);
         }
         #ifndef NDEBUG
         else
