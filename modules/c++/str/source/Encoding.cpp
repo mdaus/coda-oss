@@ -73,11 +73,16 @@ inline coda_oss::u8string utf8_(char32_t i)
     return str::to_u8string(std::u32string{ch});
 }
 
+//  https://en.wikipedia.org/wiki/Windows-1252
+// > According to the information on Microsoft's and the Unicode Consortium's
+// > websites, positions 81, 8D, 8F, 90, and 9D are unused;  however, the
+// > Windows API `MultiByteToWideChar` maps these to the corresponding
+// > C1 control codes. The "best fit" mapping documents this behavior, too.
 static const auto& Windows1252_x80_x9F_to_u8string_()
 {
     static const std::map<char32_t, coda_oss::u8string> retval{
-            {U'\x80', utf8_(U'\x20AC')}  // EURO SIGN
-        // , {U'\x81, replacement_character } // UNDEFINED
+          {U'\x80', utf8_(U'\x20AC') } // EURO SIGN
+        , {U'\x81', utf8_(U'\x0081') } // UNDEFINED; _bstr_t just preserves these values, do the same  // , {U'\x81', replacement_character } // UNDEFINED
         , {U'\x82', utf8_(U'\x201A') } // SINGLE LOW-9 QUOTATION MARK
         , {U'\x83', utf8_(U'\x0192') } // LATIN SMALL LETTER F WITH HOOK
         , {U'\x84', utf8_(U'\x201E') } // DOUBLE LOW-9 QUOTATION MARK
@@ -89,10 +94,10 @@ static const auto& Windows1252_x80_x9F_to_u8string_()
         , {U'\x8A', utf8_(U'\x0160') } // LATIN CAPITAL LETTER S WITH CARON
         , {U'\x8B', utf8_(U'\x2039') } // SINGLE LEFT-POINTING ANGLE QUOTATION MARK
         , {U'\x8C', utf8_(U'\x0152') } // LATIN CAPITAL LIGATURE OE
-        //, {U'\x8D, replacement_character } // UNDEFINED
+        , {U'\x8D', utf8_(U'\x008D') } // UNDEFINED; _bstr_t just preserves these values, do the same  // , {U'\x8D', replacement_character } // UNDEFINED
         , {U'\x8E', utf8_(U'\x017D') } // LATIN CAPITAL LETTER Z WITH CARON
-        //, {U'\x8F, replacement_character } // UNDEFINED
-        //, {U'\x90, replacement_character } // UNDEFINED
+        , {U'\x8F', utf8_(U'\x008F') } // UNDEFINED; _bstr_t just preserves these values, do the same  // , {U'\x8F', replacement_character } // UNDEFINED
+        , {U'\x90', utf8_(U'\x0090') } // UNDEFINED; _bstr_t just preserves these values, do the same  // , {U'\x90', replacement_character } // UNDEFINED
         , {U'\x91', utf8_(U'\x2018') } // LEFT SINGLE QUOTATION MARK
         , {U'\x92', utf8_(U'\x2019') } // RIGHT SINGLE QUOTATION MARK
         , {U'\x93', utf8_(U'\x201C') } // LEFT DOUBLE QUOTATION MARK
@@ -105,7 +110,7 @@ static const auto& Windows1252_x80_x9F_to_u8string_()
         , {U'\x9A', utf8_(U'\x0161') } // LATIN SMALL LETTER S WITH CARON
         , {U'\x9B', utf8_(U'\x203A') } // SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
         , {U'\x9C', utf8_(U'\x0153') } // LATIN SMALL LIGATURE OE
-        //, {U'\x9D, replacement_character } // UNDEFINED
+        , {U'\x9D', utf8_(U'\x009D') } // UNDEFINED; _bstr_t just preserves these values, do the same  // , {U'\x9D', replacement_character } // UNDEFINED
         , {U'\x9E', utf8_(U'\x017E') } // LATIN SMALL LETTER Z WITH CARON
         , {U'\x9F', utf8_(U'\x0178') } // LATIN CAPITAL LETTER Y WITH DIAERESIS
     };
@@ -176,15 +181,16 @@ static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<
         append(result, it->second);
         return;
     }
-
+    
     //  https://en.wikipedia.org/wiki/Windows-1252
-    // > According to the information on Microsoft's and the Unicode Consortium's
-    // > websites, positions 81, 8D, 8F, 90, and 9D are unused;  however, the
-    // > Windows API `MultiByteToWideChar` maps these to the corresponding
-    // > C1 control codes. The "best fit" mapping documents this behavior, too.
-    //static const auto replacement_character = utf8_(U'\xfffd');
-    //append(result, replacement_character);
-    append(result, utf8_(ch32)); // _bstr_t just preserves these values, do the same
+    // > According to the information on Microsoft's and the Unicode
+    // Consortium's > websites, positions 81, 8D, 8F, 90, and 9D are unused;
+    // however, the > Windows API `MultiByteToWideChar` maps these to the
+    // corresponding > C1 control codes. The "best fit" mapping documents this
+    // behavior, too.
+    // static const auto replacement_character = utf8_(U'\xfffd');
+    // append(result, replacement_character);
+    throw std::logic_error("Windows-1252 value not in map.");
 }
 template <typename TChar>
 class Windows1252_to_basic_string final
@@ -300,17 +306,21 @@ template <typename TChar> // may be stored in std::string or str::Windows1252
 class Utf_to_Windows1252 final
 {
     template<typename TMap, typename TUtf>
-    bool utf_to_1252(const TMap& map, const TUtf& utf, std::basic_string<TChar>& result) const
+    void utf_to_1252(const TMap& map, const TUtf& utf, std::basic_string<TChar>& result) const
     {
+        auto w1252 = static_cast<TChar>(0x7F);  // <DEL>
         const auto it = map.find(utf);
         if (it != map.end())
         {
-            const auto w1252 = static_cast<TChar>(it->second);
-            result += w1252;
-            return true; // in map
+            w1252 = static_cast<TChar>(it->second);
         }
-
-        return false; // not in map, let caller handle
+        #ifndef NDEBUG
+        else
+        {
+            assert("UTF sequence can't be converted to Windows-1252." && 0);
+        }
+        #endif // NDEBUG
+        result += w1252;
     }
 
     static auto make_u16_map()
@@ -329,27 +339,11 @@ class Utf_to_Windows1252 final
         }
         return retval;
     }
-    static const auto& getUtf16Map()
-    {
-        static const auto map = make_u16_map();
-        return map;
-    }
-    void utf16to1252(std::u16string::value_type utf, std::basic_string<TChar>& result) const
-    {
-        const auto& map = getUtf16Map();
-        if (utf_to_1252(map, utf, result))
-        {
-            return; // successful conversion
-        }
-
-        assert("UTF-16 sequence can't be converted to Windows-1252." && 0);
-        result += static_cast<TChar>(0x7F);  // <DEL>
-    }
 
     static auto make_utf8_map()
     {
         // Find the corresponding UTF-8 value for every Windows-1252 input.
-        auto&& map = getUtf16Map();
+        static const auto map = make_u16_map();
 
         // Convert UTF-16 to UTF-8
         std::map<coda_oss::u8string, TChar> retval;
@@ -359,55 +353,34 @@ class Utf_to_Windows1252 final
         }
         return retval;
     }
-    static const auto& getUtf8Map()
-    {
-        static const auto map = make_utf8_map();
-        return map;
-    }
-    void utf8to1252(const coda_oss::u8string& utf, std::basic_string<TChar>& result) const 
-    {
-        const auto& map = getUtf8Map();
-        if (utf_to_1252(map, utf, result))
-        {
-            return;  // successful conversion
-        }
-
-        // Either 1) not in map, or 2) 'undefiend' with strict=true
-        if (utf.length() == 2)  // _bstr_t preserves these values
-        {
-            result += static_cast<TChar>(utf[0]);
-            result += static_cast<TChar>(utf[1]);
-        }
-        else
-        {
-            assert("UTF-8 sequence can't be converted to Windows-1252." && 0);
-            result += static_cast<TChar>(0x7F);  // <DEL>
-        }
-    }
 
 public:
     Utf_to_Windows1252() = default;
 
     auto operator()(std::u16string::const_pointer p, size_t sz) const
     {
+        static const auto map = make_u16_map();
+
         std::basic_string<TChar> retval;
         for (size_t i = 0; i < sz; i++)
         {
             const auto utf16 = p[i];
-            utf16to1252(utf16, retval);
+            utf_to_1252(map, utf16, retval);
         }
         return retval;
     }
 
     auto operator()(coda_oss::u8string::const_pointer p, size_t sz) const
     {
+        static const auto map = make_utf8_map();
+
         std::basic_string<TChar> retval;
         for (size_t i = 0; i < sz; i++)
         {
             auto utf8 = coda_oss::u8string{p[i]};
             get_utf8_string(p, sz, i, utf8);
 
-            utf8to1252(utf8, retval);
+            utf_to_1252(map, utf8, retval);
         }
         return retval;
     }
