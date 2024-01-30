@@ -29,12 +29,10 @@
 #endif
 
 #include <map>
-#include <locale>
 #include <stdexcept>
 #include <vector>
 #include <iterator>
 #include <string>
-#include <set>
 
 #include "gsl/gsl.h"
 #include "config/compiler_extensions.h"
@@ -49,21 +47,6 @@ CODA_OSS_disable_warning(-Wshadow)
 #endif
 #include "str/utf8.h"
 CODA_OSS_disable_warning_pop
-
-//// "sys" depends on "str" so can't use sys::PlatformType
-//enum class PlatformType
-//{
-//    Windows,
-//    Linux,
-//    // MacOS
-//};
-#if _WIN32
-//static constexpr auto Platform = PlatformType::Windows;
-#elif defined(_POSIX_C_SOURCE)
-//static constexpr auto Platform = PlatformType::Linux;
-#else
-#error "Unknown platform"
-#endif
 
 // Need to look up characters from \x80 (EURO SIGN) to \x9F (LATIN CAPITAL LETTER Y WITH DIAERESIS)
 // in a map: http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
@@ -120,6 +103,7 @@ static auto Windows1252_to_u8string()
 {
     auto retval = Windows1252_x80_x9F_to_u8string_();
 
+    using value_type = coda_oss::u8string::value_type;
     // Add the ASCII values to the map too.  1) We're already looking
     // in the map anyway for Windows-1252 characters. 2) Need map
     // entires for conversion from UTF-8 to Windows-1252.
@@ -127,7 +111,7 @@ static auto Windows1252_to_u8string()
     {
         assert(retval.find(ch) == retval.end()); // be sure we're not clobbering anything!
 
-        coda_oss::u8string s {static_cast<coda_oss::u8string::value_type>(ch)};
+        coda_oss::u8string s {gsl::narrow<value_type>(ch)};
         retval[ch] = std::move(s);    
     }
 
@@ -142,8 +126,8 @@ static auto Windows1252_to_u8string()
         // *out++=0xc2+(*in>0xbf), *out++=(*in++&0x3f)+0x80;
         const auto b1 = 0xc2 + (ch > 0xbf);
         const auto b2 = (ch & 0x3f) + 0x80;
-        coda_oss::u8string s {static_cast<coda_oss::u8string::value_type>(b1)};
-        s += coda_oss::u8string {static_cast<coda_oss::u8string::value_type>(b2)};
+        coda_oss::u8string s{gsl::narrow<value_type>(b1)};
+        s += coda_oss::u8string {gsl::narrow<value_type>(b2)};
         retval[ch] = std::move(s);    
     }
 
@@ -174,7 +158,7 @@ template<typename TChar>
 static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<TChar>& result)
 {
     static const auto map = Windows1252_to_u8string();
-    const auto ch32 = static_cast<std::u32string::value_type>(ch);
+    const auto ch32 = gsl::narrow<std::u32string::value_type>(ch);
     const auto it = map.find(ch32);
     if (it != map.end())
     {
@@ -200,7 +184,7 @@ class Windows1252_to_basic_string final
         std::vector<std::basic_string<TChar>> retval(0xff + 1);
         for (size_t i = 0; i <= 0xff; i++)
         {
-            const auto ch = static_cast<str::W1252string::value_type>(i);
+            const auto ch = gsl::narrow<str::W1252string::value_type>(i);
             fromWindows1252_(ch, retval[i]);
         }
         return retval;
@@ -221,7 +205,7 @@ public:
         std::basic_string<TChar> retval;
         for (size_t i = 0; i < sz; i++)
         {
-            const auto ch = static_cast<ptrdiff_t>(p[i]);
+            const auto ch = gsl::narrow<ptrdiff_t>(p[i]);
             retval += lookup[ch];
         }    
         return retval;
@@ -276,16 +260,16 @@ static void get_next_utf8_byte(coda_oss::u8string::const_pointer p, size_t sz,
     i++;  // move to next byte
 
     // Bytes 2, 3 and 4 are always >= 0x80 (10xxxxxx), see https://en.wikipedia.org/wiki/UTF-8
-    const auto b = static_cast<uint8_t>(p[i]);
-    if (b < static_cast<uint8_t>(0x80))  // 10xxxxxx
+    const auto b = gsl::narrow<uint8_t>(p[i]);
+    if (b < gsl::narrow<uint8_t>(0x80))  // 10xxxxxx
     {
         throw std::invalid_argument("Invalid next byte in UTF-8 encoding.");
     }
-    utf8 += coda_oss::u8string{static_cast<coda_oss::u8string::value_type>(b)};
+    utf8 += coda_oss::u8string{gsl::narrow<coda_oss::u8string::value_type>(b)};
 }
 static void get_utf8_string(coda_oss::u8string::const_pointer p, size_t sz, size_t& i, coda_oss::u8string& utf8)
 {
-    const auto b1 = static_cast<uint8_t>(p[i]);
+    const auto b1 = gsl::narrow<uint8_t>(p[i]);
     if (b1 >= 0x80)  // 0xxxxxxx
     {
         get_next_utf8_byte(p, sz, i, utf8);
@@ -308,11 +292,11 @@ class Utf_to_Windows1252 final
     template<typename TMap, typename TUtf>
     void utf_to_1252(const TMap& map, const TUtf& utf, std::basic_string<TChar>& result) const
     {
-        auto w1252 = static_cast<TChar>(0x7F);  // <DEL>
+        auto w1252 = gsl::narrow<TChar>(0x7F);  // <DEL>
         const auto it = map.find(utf);
         if (it != map.end())
         {
-            w1252 = static_cast<TChar>(it->second);
+            w1252 = gsl::narrow<TChar>(it->second);
         }
         #ifndef NDEBUG
         else
@@ -406,7 +390,7 @@ struct back_inserter final
 
     back_inserter& operator=(uint8_t v)
     {
-        container->push_back(static_cast<coda_oss::u8string::value_type>(v));
+        container->push_back(gsl::narrow<coda_oss::u8string::value_type>(v));
         return *this;
     }
     back_inserter& operator*() noexcept { return *this; }
