@@ -34,6 +34,7 @@
 #include <vector>
 #include <iterator>
 #include <string>
+#include <set>
 
 #include "gsl/gsl.h"
 #include "config/compiler_extensions.h"
@@ -114,13 +115,24 @@ static auto Windows1252_to_u8string()
 {
     auto retval = Windows1252_x80_x9F_to_u8string_();
 
-    // Add the ISO8859-1 values to the map too.  1) We're already looking
+    // Add the ASCII values to the map too.  1) We're already looking
     // in the map anyway for Windows-1252 characters. 2) Need map
     // entires for conversion from UTF-8 to Windows-1252.
+    for (char32_t ch = U'\x00'; ch < U'\x80'; ch++)
+    {
+        assert(retval.find(ch) == retval.end()); // be sure we're not clobbering anything!
+
+        coda_oss::u8string s {static_cast<coda_oss::u8string::value_type>(ch)};
+        retval[ch] = std::move(s);    
+    }
+
+    // Ditto for ISO8859-1 ...
     for (char32_t ch = U'\xA0'; ch <= U'\xff'; ch++)
     {
+        assert(retval.find(ch) == retval.end()); // be sure we're not clobbering anything!
+
         // ISO8859-1 can be converted to UTF-8 with bit-twiddling
-      
+        //      
         // https://stackoverflow.com/questions/4059775/convert-iso-8859-1-strings-to-utf-8-in-c-c
         // *out++=0xc2+(*in>0xbf), *out++=(*in++&0x3f)+0x80;
         const auto b1 = 0xc2 + (ch > 0xbf);
@@ -154,16 +166,8 @@ inline void append(std::u32string& result, const coda_oss::u8string& utf8)
 }
 
 template<typename TChar>
-static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<TChar>& result, bool strict=false)
+static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<TChar>& result)
 {
-    // ASCII is the same in UTF-8
-    if (ch < static_cast<str::W1252string::value_type>(0x80))
-    {
-        using value_type = typename std::basic_string<TChar>::value_type;
-        result += static_cast<value_type>(ch);  // ASCII
-        return;
-    }
-
     static const auto map = Windows1252_to_u8string();
     const auto ch32 = static_cast<std::u32string::value_type>(ch);
     const auto it = map.find(ch32);
@@ -173,53 +177,74 @@ static void fromWindows1252_(str::W1252string::value_type ch, std::basic_string<
         return;
     }
 
-    switch (static_cast<uint8_t>(ch))
-    {
-    case 0x81:
-    case 0x8d:
-    case 0x8f:
-    case 0x90:
-    case 0x9d:
-    {
-        if (strict)
-        {
-            // If the input text contains a character that isn't defined in Windows-1252; return a
-            // "replacement character."  Yes, this will  **corrupt** the input data as information is lost:
-            // https://en.wikipedia.org/wiki/Specials_(Unicode_block)#Replacement_character
-            //
-            // Or ... https://en.wikipedia.org/wiki/Windows-1252
-            // > According to the information on Microsoft's and the Unicode
-            // > Consortium's websites, positions 81, 8D, 8F, 90, and 9D are
-            // > unused; however, the Windows API `MultiByteToWideChar` maps these
-            // > to the corresponding C1 control codes. The "best fit" mapping
-            // > documents this behavior, too.
-            static const coda_oss::u8string replacement_character = utf8_(U'\xfffd');
-            append(result, replacement_character);
-        }
-        else
-        {
-            // _bstr_t just preserves these values, do the same
-            append(result, utf8_(ch32));
-        }
-        break;
-    }
-    default:
-        throw std::invalid_argument("Invalid Windows-1252 character.");
-    }
+    //  https://en.wikipedia.org/wiki/Windows-1252
+    // > According to the information on Microsoft's and the Unicode Consortium's
+    // > websites, positions 81, 8D, 8F, 90, and 9D are unused;  however, the
+    // > Windows API `MultiByteToWideChar` maps these to the corresponding
+    // > C1 control codes. The "best fit" mapping documents this behavior, too.
+    //static const auto replacement_character = utf8_(U'\xfffd');
+    //append(result, replacement_character);
+    append(result, utf8_(ch32)); // _bstr_t just preserves these values, do the same
 }
+template <typename TChar>
+class Windows1252_to_basic_string final
+{
+    static auto make_Windows1252_lookup()
+    {
+        std::vector<std::basic_string<TChar>> retval(0xff + 1);
+        for (size_t i = 0; i <= 0xff; i++)
+        {
+            const auto ch = static_cast<str::W1252string::value_type>(i);
+            fromWindows1252_(ch, retval[i]);
+        }
+        return retval;
+    }
+    
+public:
+    static const auto& getLookup()
+    {
+        static const auto lookup = make_Windows1252_lookup();
+        return lookup;
+    }
+
+    Windows1252_to_basic_string() = default;
+    auto operator()(str::W1252string::const_pointer p, size_t sz) const
+    {
+        static const auto& lookup = getLookup();
+
+        std::basic_string<TChar> retval;
+        for (size_t i = 0; i < sz; i++)
+        {
+            const auto ch = static_cast<ptrdiff_t>(p[i]);
+            retval += lookup[ch];
+        }    
+        return retval;
+    }
+};
+
 template<typename TChar>
-inline void w1252_to_string(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
+static void w1252_to_string_(str::W1252string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
 {
-    for (size_t i = 0; i < sz; i++)
-    {
-        fromWindows1252_(p[i], result);
-    }
+    static const Windows1252_to_basic_string<TChar> convert;
+    result = convert(p, sz);
 }
-template<typename CharT>
-inline void w1252to8(str::W1252string::const_pointer p, size_t sz, std::basic_string<CharT>& result)
+inline void w1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u16string& result)
 {
-    w1252_to_string(p, sz, result);
+    w1252_to_string_(p, sz, result);
 }
+inline void w1252_to_string(str::W1252string::const_pointer p, size_t sz, std::u32string& result)
+{
+    w1252_to_string_(p, sz, result);
+}
+inline void w1252to8(str::W1252string::const_pointer p, size_t sz, std::string& result)
+{
+    w1252_to_string_(p, sz, result);
+}
+inline void w1252to8(str::W1252string::const_pointer p, size_t sz, coda_oss::u8string& result)
+{
+    w1252_to_string_(p, sz, result);
+}
+
 inline void w1252to16(str::W1252string::const_pointer p, size_t sz, std::u16string& result)
 {
     w1252_to_string(p, sz, result);
@@ -233,17 +258,6 @@ inline void w1252to16(str::W1252string::const_pointer p, size_t sz, std::u16stri
 inline void w1252to32(str::W1252string::const_pointer p, size_t sz, std::u32string& result)
 {
     w1252_to_string(p, sz, result);
-}
-
-template<typename TKey, typename TValue>
-auto kv_to_vk(const std::map<TKey, TValue>& kv)
-{
-    std::map<TValue, TKey> retval;
-    for (const auto& p : kv)
-    {
-        retval[p.second] = p.first;
-    }
-    return retval;
 }
 
 static void get_next_utf8_byte(coda_oss::u8string::const_pointer p, size_t sz,
@@ -263,108 +277,153 @@ static void get_next_utf8_byte(coda_oss::u8string::const_pointer p, size_t sz,
     }
     utf8 += coda_oss::u8string{static_cast<coda_oss::u8string::value_type>(b)};
 }
-template<typename TChar>
-static void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::basic_string<TChar>& result, bool strict=false)
+static void get_utf8_string(coda_oss::u8string::const_pointer p, size_t sz, size_t& i, coda_oss::u8string& utf8)
 {
-    using value_type = TChar;
-    for (size_t i = 0; i < sz; i++)
+    const auto b1 = static_cast<uint8_t>(p[i]);
+    if (b1 >= 0x80)  // 0xxxxxxx
     {
-        const auto b1 = static_cast<uint8_t>(p[i]);
-
-        // ASCII is the same in UTF-8
-        if (b1 < 0x80) // 0xxxxxxx
-        {
-            result += static_cast<value_type>(b1);  // ASCII
-            continue;
-        }
-
-        auto utf8 = coda_oss::u8string{static_cast<coda_oss::u8string::value_type>(b1)};
-
         get_next_utf8_byte(p, sz, i, utf8);
         if (b1 >= 0xE0)  // 1110xxxx
         {
             // should be a 3- or 4-byte sequence
-            get_next_utf8_byte(p, sz, i, utf8);      
+            get_next_utf8_byte(p, sz, i, utf8);
             if (b1 >= 0xF0)  // 1111xxx
             {
                 // should be a 4-byte sequence
-                get_next_utf8_byte(p, sz, i, utf8);     
-            }
-        }
-
-        static const auto map = kv_to_vk(Windows1252_to_u8string());
-        const auto it = map.find(utf8);
-        if (it != map.end())
-        {
-            result += static_cast<value_type>(it->second);
-        }
-        else if (strict)
-        {
-            throw std::invalid_argument("UTF-8 sequence can't be converted to Windows-1252.");
-            //assert("UTF-8 sequence can't be converted to Windows-1252." && 0);
-            //result += static_cast<TChar>(0x7F);  // <DEL>
-        }
-        else
-        {
-            // _bstr_t preserves these values
-            if (utf8.length() == 2)
-            {
-                result += static_cast<value_type>(utf8[1]);
-            }
-            else
-            {
-                assert("UTF-8 sequence can't be converted to Windows-1252." && 0);
-                result += static_cast<value_type>(0x7F);  // <DEL>
+                get_next_utf8_byte(p, sz, i, utf8);
             }
         }
     }
 }
 
-static auto u16_to_Windows1252()
+template <typename TChar> // may be stored in std::string or str::Windows1252
+class Utf_to_Windows1252 final
 {
-    // Find the corresponding UTF-16 value for every Windows-1252 input;
-    // obviously, most UTF-16 values can't be converted.  Skip the first half
-    // as they're the same for ASCII.
-    std::map<std::u16string::value_type, str::W1252string::value_type> retval;
-    for (uint16_t i = 0x0080; i <= 0x00ff; i++)  // **not** `uint8_t` to avoid wrap-around
+    template<typename TMap, typename TUtf>
+    bool utf_to_1252(const TMap& map, const TUtf& utf, std::basic_string<TChar>& result) const
     {
-        const auto ch = static_cast<str::W1252string::value_type>(i);
-        const auto u16 = str::to_u16string(&ch, 1);
-        assert(u16.length() == 1);
-        retval[u16[0]] = ch;
-    }
-    return retval;
-}
-static inline void utf16to1252(std::u16string::const_pointer p, size_t sz, std::string& result, bool strict=false)
-{
-    using value_type = std::string::value_type;
-
-    static const auto map = u16_to_Windows1252();
-    for (size_t i = 0; i < sz; i++)
-    {
-        const auto ch = p[i];
-
-        if (ch < 0x0080) // ASCII
-        {
-            result += gsl::narrow<value_type>(ch);  
-            continue;
-        }
-
-        const auto it = map.find(ch);
+        const auto it = map.find(utf);
         if (it != map.end())
         {
-            result += static_cast<value_type>(it->second);
+            const auto w1252 = static_cast<TChar>(it->second);
+            result += w1252;
+            return true; // in map
         }
-        else if (strict)
+
+        return false; // not in map, let caller handle
+    }
+
+    static auto make_u16_map()
+    {
+        // Find the corresponding UTF-16 value for every Windows-1252 input;
+        // obviously, most UTF-16 values can't be converted.
+        auto&& lookup = Windows1252_to_basic_string<std::u16string::value_type>::getLookup();
+
+        std::map<std::u16string::value_type, TChar> retval;
+        for (size_t i = 0; i <= 0xff; i++)  // **not** `uint8_t` to avoid wrap-around
         {
-            throw std::invalid_argument("UTF-16 sequence can't be converted to Windows-1252.");
+            const auto u16 = lookup[i];
+            assert(u16.length() == 1); // all values in Basic Multi-lingual Plane (BMP); no emojis, etc.
+            const auto ch = static_cast<TChar>(i);
+            retval[u16[0]] = ch;
+        }
+        return retval;
+    }
+    static const auto& getUtf16Map()
+    {
+        static const auto map = make_u16_map();
+        return map;
+    }
+    void utf16to1252(std::u16string::value_type utf, std::basic_string<TChar>& result) const
+    {
+        const auto& map = getUtf16Map();
+        if (utf_to_1252(map, utf, result))
+        {
+            return; // successful conversion
+        }
+
+        assert("UTF-16 sequence can't be converted to Windows-1252." && 0);
+        result += static_cast<TChar>(0x7F);  // <DEL>
+    }
+
+    static auto make_utf8_map()
+    {
+        // Find the corresponding UTF-8 value for every Windows-1252 input.
+        auto&& map = getUtf16Map();
+
+        // Convert UTF-16 to UTF-8
+        std::map<coda_oss::u8string, TChar> retval;
+        for (auto&& kv : map)
+        {
+            retval[utf8_(kv.first)] = kv.second;
+        }
+        return retval;
+    }
+    static const auto& getUtf8Map()
+    {
+        static const auto map = make_utf8_map();
+        return map;
+    }
+    void utf8to1252(const coda_oss::u8string& utf, std::basic_string<TChar>& result) const 
+    {
+        const auto& map = getUtf8Map();
+        if (utf_to_1252(map, utf, result))
+        {
+            return;  // successful conversion
+        }
+
+        // Either 1) not in map, or 2) 'undefiend' with strict=true
+        if (utf.length() == 2)  // _bstr_t preserves these values
+        {
+            result += static_cast<TChar>(utf[0]);
+            result += static_cast<TChar>(utf[1]);
         }
         else
         {
-            assert("UTF-16 sequence can't be converted to Windows-1252." && 0);
-            result += static_cast<value_type>(0x7F);  // <DEL>
+            assert("UTF-8 sequence can't be converted to Windows-1252." && 0);
+            result += static_cast<TChar>(0x7F);  // <DEL>
         }
     }
+
+public:
+    Utf_to_Windows1252() = default;
+
+    auto operator()(std::u16string::const_pointer p, size_t sz) const
+    {
+        std::basic_string<TChar> retval;
+        for (size_t i = 0; i < sz; i++)
+        {
+            const auto utf16 = p[i];
+            utf16to1252(utf16, retval);
+        }
+        return retval;
+    }
+
+    auto operator()(coda_oss::u8string::const_pointer p, size_t sz) const
+    {
+        std::basic_string<TChar> retval;
+        for (size_t i = 0; i < sz; i++)
+        {
+            auto utf8 = coda_oss::u8string{p[i]};
+            get_utf8_string(p, sz, i, utf8);
+
+            utf8to1252(utf8, retval);
+        }
+        return retval;
+    }
+};
+
+template<typename TChar>
+static inline void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
+{
+    static const Utf_to_Windows1252<TChar> convert;
+    result = convert(p, sz);
+}
+
+static inline void utf16to1252(std::u16string::const_pointer p, size_t sz, std::string& result)
+{
+    static const Utf_to_Windows1252<std::string::value_type> convert;
+    result = convert(p, sz);
 }
 
 struct back_inserter final
