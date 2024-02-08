@@ -43,11 +43,13 @@
         #define CODA_OSS_HAVE_std_simd_ 1  // provided by the implementation, probably C++26
     #endif
    
+    /* not quite ready for experimental::simd
     #if __has_include(<experimental/simd>) // G++11
         #include <experimental/simd>
         #undef CODA_OSS_HAVE_experimental_simd_
         #define CODA_OSS_HAVE_experimental_simd_ 1  // provided by <experimental/simd>
     #endif
+    */
 
     #if __has_include("vectorclass/simd/simd")  // our own implementation using VCL
         #ifdef VCL_NAMESPACE

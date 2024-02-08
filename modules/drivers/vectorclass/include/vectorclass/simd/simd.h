@@ -34,7 +34,7 @@ namespace simd
 		using VecNt = typename abi_type::type; // e.g., Vec4i
 		using native_type = details::Boolean_vector_class<N, VecNt>; // e.g., Vec4ib
 
-		static constexpr auto size = basic_simd<details::integer_from<Bytes>, Abi>::size;
+	        static constexpr auto size = basic_simd<details::integer_from<Bytes>, Abi>::size();
 		static_assert(size == native_type::size());
 
 		constexpr basic_simd_mask() noexcept = default;
@@ -69,7 +69,8 @@ namespace simd
 
 		using native_type = typename details::VecNt<abi_type::N, T>::Vector_class; // e.g., Vec4i
 
-		static constexpr std::integral_constant<details::size_type, native_type::size()> size;
+	    //static constexpr std::integral_constant<details::size_type, native_type::size()> size;
+	    static constexpr details::size_type size() { return native_type::size(); }
 		//static_assert(size() == native_type::size());
 
 		constexpr basic_simd() noexcept = default;

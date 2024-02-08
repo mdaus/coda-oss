@@ -26,7 +26,7 @@ namespace simd
 		using U = typename V::value_type;
 		using Abi0 = typename V::abi_type;
 		// "Let `Abi1` denote the type `deduce_t<T, basic_simd<U, Abi0>::size, Abi0>`"
-		using Abi1 = typename details::simd_abi::deduce_t<T, basic_simd<U, Abi0>::size, Abi0>;
+		using Abi1 = typename details::simd_abi::deduce_t<T, basic_simd<U, Abi0>::size(), Abi0>;
 	public:
 		// "... the member typedef `type` names `basic_simd<T, Abi1>` if `V` is `basic_simd<U, Abi0>` ..."
 		using type = basic_simd<T, Abi1>;

@@ -100,10 +100,11 @@ static inline auto generate(TGeneratorReal&& generate_real, TGeneratorImag&& gen
     auto rv = static_cast<Vec>(real(retval));
     auto iv = static_cast<Vec>(imag(retval));
 
-    for (int i = 0; i < size(retval); i++)
+    for (size_t i = 0; i < size(retval); i++)
     {
-        rv.insert(i, generate_real(i));
-        iv.insert(i, generate_imag(i));
+        const auto i_ = gsl::narrow<int>(i);
+        rv.insert(i_, generate_real(i));
+        iv.insert(i_, generate_imag(i));
     }
 
     real(retval) = rv;

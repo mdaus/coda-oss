@@ -136,7 +136,7 @@ namespace simd
 		template <int Elements_per_vector, typename T>
 		using Boolean_vector_class = typename VecNb<Vec<Elements_per_vector, T>>::Boolean_vector_class;
 
-		template<size_type N_, typename T = void>
+		template<size_type N_, typename T>
 		struct fixed_size
 		{
 			static constexpr auto N = N_;
