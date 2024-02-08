@@ -51,7 +51,7 @@
 
     #if __has_include("vectorclass/simd/simd")  // our own implementation using VCL
         #ifdef VCL_NAMESPACE
-        #error VCL_NAMESPACE already #define'd
+        #error "VCL_NAMESPACE already #define'd"
         #endif
 
         #define VCL_NAMESPACE vcl
@@ -82,7 +82,14 @@
         #pragma warning(disable: 26818) // Switch statement does not cover all cases. Consider adding a '...' label (es.79).
         #pragma warning(disable: 26475) // Do not use function style casts (es.49). Prefer '...' over '...'.
         #pragma warning(disable: 26477) // Use '...' rather than 0 or NULL (es.47).
-        #endif // _MSC_VER
+
+	#elif defined(__GNUC__) || defined(__clang__)
+
+	CODA_OSS_disable_warning(-Wzero-as-null-pointer-constant)
+	CODA_OSS_disable_warning(-Wshadow)
+
+	#endif
+
         #include "vectorclass/version2/vectorclass.h"
         #include "vectorclass/version2/vectormath_trig.h"
         CODA_OSS_disable_warning_pop
@@ -105,7 +112,7 @@ namespace coda_oss
     #if CODA_OSS_HAVE_std_simd_
         namespace simd = std::simd;
     #elif CODA_OSS_HAVE_experimental_simd_
-        namespace simd = std::experimental::simd;
+        namespace simd = std::experimental;
     #elif CODA_OSS_HAVE_vcl_simd_
         namespace simd = vcl::simd;
     #endif 

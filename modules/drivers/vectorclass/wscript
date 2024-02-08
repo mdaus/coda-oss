@@ -1,5 +1,5 @@
-NAME            = vectorclass
-VERSION         = '2.7.1'
+NAME            = 'vectorclass'
+VERSION         = '2.02.00'
 
 options = configure = distclean = lambda p: None
 
