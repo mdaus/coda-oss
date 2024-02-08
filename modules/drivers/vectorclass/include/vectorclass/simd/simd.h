@@ -69,7 +69,7 @@ namespace simd
 
 		using native_type = typename details::VecNt<abi_type::N, T>::Vector_class; // e.g., Vec4i
 
-		static constexpr std::integral_constant<details::size_type, native_type::size()> size = -1;
+		static constexpr std::integral_constant<details::size_type, native_type::size()> size;
 		//static_assert(size() == native_type::size());
 
 		constexpr basic_simd() noexcept = default;
