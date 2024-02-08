@@ -80,3 +80,4 @@ if (CODA_ENABLE_HDF5 OR CODA_HDF5_HOME)
 endif()
 
 add_subdirectory("libtiff")
+add_subdirectory("vectorclass")

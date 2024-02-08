@@ -23,10 +23,10 @@ namespace simd
 	template<typename T, typename V> class rebind_simd
 	{
 		// "`V` is ... `basic_simd<U, Abi0>` ... where `U`, ..., and `Abi0` are deduced from `V` ..."
-		using U = V::value_type;
-		using Abi0 = V::abi_type;
+		using U = typename V::value_type;
+		using Abi0 = typename V::abi_type;
 		// "Let `Abi1` denote the type `deduce_t<T, basic_simd<U, Abi0>::size, Abi0>`"
-		using Abi1 = details::simd_abi::deduce_t<T, basic_simd<U, Abi0>::size, Abi0>;
+		using Abi1 = typename details::simd_abi::deduce_t<T, basic_simd<U, Abi0>::size, Abi0>;
 	public:
 		// "... the member typedef `type` names `basic_simd<T, Abi1>` if `V` is `basic_simd<U, Abi0>` ..."
 		using type = basic_simd<T, Abi1>;
@@ -37,10 +37,10 @@ namespace simd
 	template<details::size_type N, typename V> class resize_simd
 	{
 		// "`V` is ... `basic_simd<U, Abi0>` ... where `U`, ..., and `Abi0` are deduced from `V` ..."
-		using T = V::value_type;
-		using Abi0 = V::abi_type;
+		using T = typename V::value_type;
+		using Abi0 = typename V::abi_type;
 		// "Let `Abi1` denote the type `deduce_t<T, N, Abi0>`"
-		using Abi1 = details::simd_abi::deduce_t<T, N, Abi0>;
+		using Abi1 = typename details::simd_abi::deduce_t<T, N, Abi0>;
 	public:
 		// "... the member typedef `type` names `basic_simd<T, Abi1>` if `V` is `basic_simd<U, Abi0>` ..."
 		using type = basic_simd<T, Abi1>;

@@ -960,6 +960,9 @@
     <ClInclude Include="tiff\include\tiff\TiffUtils.h">
       <Filter>tiff</Filter>
     </ClInclude>
+    <ClInclude Include="coda_oss\include\coda_oss\simd.h">
+      <Filter>coda_oss</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1572,6 +1575,9 @@
       <Filter>sys</Filter>
     </None>
     <None Include="std\include\std\mdspan">
+      <Filter>std</Filter>
+    </None>
+    <None Include="std\include\std\simd">
       <Filter>std</Filter>
     </None>
   </ItemGroup>

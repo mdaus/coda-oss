@@ -34,14 +34,14 @@ namespace simd
 	template<size_t Bytes, typename Abi>
 	constexpr bool any_of(const basic_simd_mask<Bytes, Abi>& m) noexcept
 	{
-		using Vec_b = basic_simd_mask<Bytes, Abi>::native_type;
+		using Vec_b = typename basic_simd_mask<Bytes, Abi>::native_type;
 		return horizontal_or(static_cast<Vec_b>(m));
 	}
 
 	template<size_t Bytes, typename Abi>
 	constexpr bool all_of(const basic_simd_mask<Bytes, Abi>& m) noexcept
 	{
-		using Vec_b = basic_simd_mask<Bytes, Abi>::native_type;
+		using Vec_b = typename basic_simd_mask<Bytes, Abi>::native_type;
 		return horizontal_and(static_cast<Vec_b>(m));
 	}
 }
