@@ -11,9 +11,9 @@ jobs:
     name: ${{ matrix.os }}-${{ matrix.python-version }}-CMake
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5 # https://github.com/marketplace/actions/setup-python
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install python dependencies
@@ -58,24 +58,25 @@ jobs:
         os: [windows-latest]
         platform: [x64]
         configuration: [Debug] # Debug turns on more compiler warnings
-    name: ${{ matrix.os }}-msbuild
+        avx: [AVX2, AVX512F]
+    name: ${{ matrix.os }}-${{ matrix.avx }}-msbuild
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
       run: |
         ls env:
         mkdir out
         cd out
-        cmake .. -DCMAKE_INSTALL_PREFIX=install\${{ matrix.platform }}-${{ matrix.configuration }} -DENABLE_PYTHON=OFF
+        cmake .. -DCMAKE_INSTALL_PREFIX=install\${{ matrix.platform }}-${{ matrix.configuration }} -DENABLE_PYTHON=OFF -DENABLE_${{ matrix.avx }}=ON
     - name: build
       run: |
         cd out
         cmake --build . --config ${{ matrix.configuration }} -j
         cmake --build . --config ${{ matrix.configuration }} --target install
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1 # https://github.com/marketplace/actions/setup-msbuild
+      uses: microsoft/setup-msbuild@v1.1 # https://github.com/marketplace/actions/setup-msbuild
       with:
         msbuild-architecture: x64
     - name: msbuild
@@ -89,7 +90,7 @@ jobs:
     #      searchFolder: D:\a\nitro\nitro\${{ matrix.platform }}\${{ matrix.configuration }}
     #      runInParallel: true  
 
-  build-linux-cmake:
+  build-linux-cmake-default:
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -97,9 +98,9 @@ jobs:
     name: ${{ matrix.os }}-${{ matrix.python-version }}-CMake
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5 # https://github.com/marketplace/actions/setup-python
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install python dependencies
@@ -109,10 +110,7 @@ jobs:
       run: |
         env
         which python
-        mkdir target
-        cd target
-        export CC=gcc-11
-        export CXX=g++-11
+        mkdir target && cd target
         cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DPYTHON_VERSION=${{ matrix.python-version }} -DENABLE_SWIG=ON
     - name: build
       run: |
@@ -129,6 +127,31 @@ jobs:
         cd target
         cmake --build . --target install
 
+  build-linux-cmake:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        configuration: [Debug, Release]
+        avx: [AVX2, AVX512F]
+    name: ${{ matrix.os }}-${{ matrix.configuration }}-${{ matrix.avx }}-CMake
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
+    - name: configure
+      run: |
+        mkdir out && cd out
+        cmake .. -DENABLE_PYTHON=OFF -DENABLE_ASAN=ON -DENABLE_${{ matrix.avx }}=ON
+    - name: build
+      run: |
+        cd out
+        # "-j" spawns too many processes causing GCC to crash
+        cmake --build . --config ${{ matrix.configuration }} -j 12
+    - name: test
+    # should run w/o install
+      run: |
+        cd out
+        ctest -C ${{ matrix.configuration }} --output-on-failure
+
   build-waf:
     strategy:
       matrix:
@@ -138,9 +161,9 @@ jobs:
     name: ${{ matrix.os }}-${{ matrix.python-version }}-waf${{ matrix.debugging }}
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5 # https://github.com/marketplace/actions/setup-python
       with:
         python-version: ${{ matrix.python-version }}
     - name: configure_with_swig
