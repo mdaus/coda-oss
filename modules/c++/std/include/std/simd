@@ -23,23 +23,25 @@
 #include "coda_oss/simd.h"
 #include "coda_oss/CPlusPlus.h"
 
+// Calling this **stdx** (instead of *std*) for now as it hasn't yet been voted into C++26
+
 // Make it (too?) easy for clients to get our various std:: implementations
-#ifndef CODA_OSS_NO_std_simd
+#ifndef CODA_OSS_NO_stdx_simd
     #if CODA_OSS_cpp26
         #include <simd>
-        #define CODA_OSS_NO_std_simd 1  // part of C++26 (hopefully)
+        #define CODA_OSS_NO_stdx_simd 1  // part of C++26 (hopefully)
     #else
-        #define CODA_OSS_NO_std_simd 0  // use our own
+        #define CODA_OSS_NO_stdx_simd 0  // use our own
     #endif
 #endif
 
-#if !CODA_OSS_NO_std_simd
-namespace std // This is slightly uncouth: we're not supposed to augment "std".
+#if !CODA_OSS_NO_stdx_simd
+namespace stdx // TODO: This is slightly uncouth: we're not supposed to augment "std".
 {
     namespace simd = coda_oss::simd;
 }
-#ifndef __cpp_lib_simd
-#define __cpp_lib_simd 202402L //  https://en.cppreference.com/w/cpp/feature_test#cpp_lib_simd
-#endif
+//#ifndef __cpp_lib_simd
+//#define __cpp_lib_simd 202402L //  https://en.cppreference.com/w/cpp/feature_test#cpp_lib_simd
+//#endif
 
-#endif  // CODA_OSS_NO_std_simd
+#endif  // CODA_OSS_NO_stdx_simd
