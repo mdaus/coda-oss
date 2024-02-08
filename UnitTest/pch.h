@@ -32,6 +32,7 @@
 #include <std/span>
 #include <std/string>
 #include <std/type_traits>
+#include <std/simd>
 
 #include "CppUnitTest.h"
 

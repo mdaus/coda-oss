@@ -2,6 +2,7 @@
 #include "CppUnitTest.h"
 
 #include <coda_oss/numbers.h>
+#include <coda_oss/simd.h>
 
 #include <import/sys.h>
 #include <sys/Runnable.h>
@@ -56,6 +57,10 @@ TEST_CLASS(test_os){ public:
 
 TEST_CLASS(test_path){ public:
 #include "sys/unittests/test_path.cpp"
+};
+
+TEST_CLASS(test_simd){ public:
+#include "sys/unittests/test_simd.cpp"
 };
 
 }
