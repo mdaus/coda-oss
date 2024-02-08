@@ -1,0 +1,7 @@
+NAME            = vectorclass
+VERSION         = '2.7.1'
+
+options = configure = distclean = lambda p: None
+
+def build(bld):
+    bld.module(**globals())
