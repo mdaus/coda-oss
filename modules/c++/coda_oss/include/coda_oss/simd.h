@@ -25,18 +25,42 @@
 #include "coda_oss/CPlusPlus.h"
 #include "config/disable_compiler_warnings.h"
 
-// This logic needs to be here rather than <std/simd> so that `coda_oss::simd` will
-// be the same as `std::simd`.
-#ifndef CODA_OSS_HAVE_std_simd_
-    #define CODA_OSS_HAVE_std_simd_ 0  // assume no <simd>
+// Third parties want to compile this code in different enviroments which we don't know about;
+// SIMD support makes that more difficult.
+#ifdef CODA_OSS_DISABLE_SIMD
+    #ifdef CODA_OSS_ENABLE_SIMD
+        #error "CODA_OSS_ENABLE_SIMD already #define'd'"
+    #endif
+    #define CODA_OSS_ENABLE_SIMD 0
+#endif // CODA_OSS_DISABLE_SIMD
+
+#ifndef CODA_OSS_ENABLE_SIMD
+    #if __AVX512F__ || __AVX2__
+        #define CODA_OSS_ENABLE_SIMD 1
+    #elif _MSC_VER && _M_X64 /*MSVC for SSE2*/ 
+        #define CODA_OSS_ENABLE_SIMD 1
+    #elif __GNUC__ && __SSE2__
+        #define CODA_OSS_ENABLE_SIMD 1
+    #else
+        #define CODA_OSS_ENABLE_SIMD 0
+    #endif
 #endif
-#ifndef CODA_OSS_HAVE_experimental_simd_
-    #define CODA_OSS_HAVE_experimental_simd_ 0  // assume no std::experimental::simd
-#endif
-#ifndef CODA_OSS_HAVE_vcl_simd_
-    #define CODA_OSS_HAVE_vcl_simd_ 0  // assume no vcl::simd
-#endif
-#if CODA_OSS_cpp17 // __has_include
+
+#if CODA_OSS_ENABLE_SIMD
+    // This logic needs to be here rather than <std/simd> so that `coda_oss::simd` will
+    // be the same as `std::simd`.
+    #ifndef CODA_OSS_HAVE_std_simd_
+        #define CODA_OSS_HAVE_std_simd_ 0  // assume no <simd>
+    #endif
+    #ifndef CODA_OSS_HAVE_experimental_simd_
+        #define CODA_OSS_HAVE_experimental_simd_ 0  // assume no std::experimental::simd
+    #endif
+    #ifndef CODA_OSS_HAVE_vcl_simd_
+        #define CODA_OSS_HAVE_vcl_simd_ 0  // assume no vcl::simd
+    #endif
+#endif // CODA_OSS_ENABLE_SIMD
+
+#if CODA_OSS_ENABLE_SIMD && CODA_OSS_cpp17 /* __has_include only >= C++17 */
     #if __has_include(<simd>) // <simd> not until C++26 (hopefully!)
         #include <simd>
         #undef CODA_OSS_HAVE_std_simd_
@@ -53,9 +77,8 @@
 
     #if __has_include("vectorclass/simd/simd")  // our own implementation using VCL
         #ifdef VCL_NAMESPACE
-        #error "VCL_NAMESPACE already #define'd"
+            #error "VCL_NAMESPACE already #define'd"
         #endif
-
         #define VCL_NAMESPACE vcl
 
         // The vectorclass headers #pragma-away some warnings; be sure those don't persist
@@ -87,8 +110,8 @@
 
 	#elif defined(__GNUC__) || defined(__clang__)
 
-	CODA_OSS_disable_warning(-Wzero-as-null-pointer-constant)
-	CODA_OSS_disable_warning(-Wshadow)
+	    CODA_OSS_disable_warning(-Wzero-as-null-pointer-constant)
+	    CODA_OSS_disable_warning(-Wshadow)
 
 	#endif
 
@@ -107,7 +130,7 @@
         #define CODA_OSS_HAVE_vcl_simd_ 1  // provided by vectorclass/simd/simd.h
     #endif
 
-#endif // CODA_OSS_cpp17
+#endif // CODA_OSS_ENABLE_SIMD && CODA_OSS_cpp17
 
 namespace coda_oss
 {

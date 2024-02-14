@@ -34,6 +34,7 @@
 #include "sys/SystemException.h"
 #include "str/Tokenizer.h"
 #include "sys/filesystem.h"
+#include "coda_oss/simd.h"
 
 
 /*!
@@ -60,25 +61,6 @@ namespace sys
 * enviroments which we don't know about; SIMD support makes that
 * more difficult.
  */
-#ifdef CODA_OSS_DISABLE_SIMD
-    #ifdef CODA_OSS_ENABLE_SIMD
-        #error "CODA_OSS_ENABLE_SIMD already #define'd'"
-    #endif
-    #define CODA_OSS_ENABLE_SIMD 0
-#endif // CODA_OSS_DISABLE_SIMD
-
-#ifndef CODA_OSS_ENABLE_SIMD
-    #if __AVX512F__ || __AVX2__
-        #define CODA_OSS_ENABLE_SIMD 1
-    #elif _MSC_VER && _M_X64 /*MSVC for SSE2*/ 
-        #define CODA_OSS_ENABLE_SIMD 1
-    #elif __GNUC__ && __SSE2__
-        #define CODA_OSS_ENABLE_SIMD 1
-    #else
-        #define CODA_OSS_ENABLE_SIMD 0
-    #endif
-#endif
-
 enum class SIMDInstructionSet
 {
     Disabled, // CODA_OSS_ENABLE_SIMD = 0
