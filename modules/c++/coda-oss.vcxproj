@@ -506,6 +506,7 @@
     <None Include="std\include\std\memory" />
     <None Include="std\include\std\numbers" />
     <None Include="std\include\std\optional" />
+    <None Include="std\include\std\simd" />
     <None Include="std\include\std\span" />
     <None Include="std\include\std\string" />
     <None Include="std\include\std\type_traits" />

@@ -103,6 +103,7 @@ CODA_OSS_disable_warning_system_header_push
 #include <coda_oss/string.h>
 #include <coda_oss/type_traits.h>
 #include <coda_oss/mdspan.h>
+#include <coda_oss/simd.h>
 
 CODA_OSS_disable_warning_pop
 

@@ -40,6 +40,7 @@
 #define CODA_OSS_cplusplus17 201703L
 #define CODA_OSS_cplusplus20 202002L
 #define CODA_OSS_cplusplus23 202302L
+#define CODA_OSS_cplusplus26 202699L // TODO: real version number when C++26 is official
 
 #if CODA_OSS_cplusplus < CODA_OSS_cplusplus11
     #undef CODA_OSS_cplusplus  // oops...try to fix
@@ -78,6 +79,7 @@
 #define CODA_OSS_cpp17 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus17)
 #define CODA_OSS_cpp20 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus20)
 #define CODA_OSS_cpp23 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus23)
+#define CODA_OSS_cpp26  0 // TODO: (CODA_OSS_cplusplus >= CODA_OSS_cplusplus26)
 
 #if !CODA_OSS_cpp20
 #error "Must compile with C++20 or greater."
