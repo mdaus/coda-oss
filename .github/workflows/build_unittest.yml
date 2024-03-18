@@ -132,15 +132,14 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         configuration: [Debug, Release]
-        avx: [AVX512F]
-    name: ${{ matrix.os }}-${{ matrix.configuration }}-${{ matrix.avx }}-CMake
+    name: ${{ matrix.os }}-${{ matrix.configuration }}-CMake
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
       run: |
         mkdir out && cd out
-        cmake .. -DENABLE_PYTHON=OFF -DENABLE_ASAN=ON -DENABLE_${{ matrix.avx }}=ON
+        cmake .. -DENABLE_PYTHON=OFF -DENABLE_ASAN=ON
     - name: build
       run: |
         cd out
