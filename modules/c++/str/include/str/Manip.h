@@ -3,6 +3,7 @@
  * =========================================================================
  * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
+ * © Copyright 2024, Maxar Technologies, Inc.
  *
  * str-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,15 +20,14 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
-#ifndef __STR_MANIP_H__
-#define __STR_MANIP_H__
+#pragma once
 
 #include <ctype.h>
 #include <wchar.h>
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "config/compiler_extensions.h"
 #include "config/Exports.h"
@@ -73,6 +73,14 @@ CODA_OSS_API void trim(std::string& s);
 CODA_OSS_API std::string trim(const std::string& s);
 CODA_OSS_API void trim(coda_oss::u8string& s);
 CODA_OSS_API coda_oss::u8string trim(const coda_oss::u8string& s);
+
+/**
+ *  Trim whitespace and leading/trailing zeros from a string representing a base-10 number.
+ *  Turns "0314" into "314" and "03.140" to "3.14"; obviously, "3140" remains unchanged.
+ *  If the string doesn't look like a base-10 number, it is returned unchanged.
+ *  @param  strNumber10  String representing a base-10 number.
+ */
+CODA_OSS_API std::string trimZeros(const std::string& strNumber10, int precision = std::cout.precision() /* 6 */);
 
 /**
  *  Checks the end of s with match
@@ -283,4 +291,3 @@ CODA_OSS_API bool ne(const std::string& lhs, const std::string& rhs) noexcept;
 
 }
 
-#endif

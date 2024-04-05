@@ -553,3 +553,122 @@ bool ne(const std::string& lhs, const std::string& rhs) noexcept
 }
 
 }
+
+static auto find_decimal_point(const std::string& strReal)
+{
+    const auto decimal_point = strReal.find('.');
+    if (decimal_point == std::string::npos)
+    {
+        return decimal_point;
+    }
+    const auto last_period = strReal.find_last_of('.');
+    if (decimal_point != last_period) // "3.14.15" ... i.e., not a number
+    {
+        return std::string::npos; // multiple '.'s, not a decimal point
+    }
+    return decimal_point;
+}
+
+static std::string remove_trailing_zeros(std::string strReal, bool keep_decimal_point = true)
+{
+    const auto decimal_point = find_decimal_point(strReal);
+    if (decimal_point == std::string::npos)
+    {
+        return strReal; // don't remove trailing zeros from "3140" !
+    }
+
+    size_t trailing_zero;
+    while ((trailing_zero = strReal.find_last_of('0')) == (strReal.length() - 1)) // stop when no trailing zero: "3.1415", "30.14", "3.014"
+    {
+        auto count = trailing_zero; // "31.000" -> "31.00"
+        const auto has_tenths_zero = (decimal_point + 1 == trailing_zero);
+        if (has_tenths_zero) // "31.0"
+        {
+            if (keep_decimal_point)
+            {
+                return strReal; // keeping decimal-point, "31.0" is unchanged
+            }
+            count = decimal_point; //  not keeping decimal-point: "31.0" -> "31"
+        }
+        strReal = strReal.substr(0, count); 
+    }
+    return strReal;
+}
+
+static std::string remove_leading_zeros(std::string strReal, bool keep_zero_before_decimal_point = true)
+{
+    auto decimal_point = find_decimal_point(strReal);
+    if (decimal_point == std::string::npos) // either 0 or more than 1 '.'
+    {
+        if (strReal.find('.') != std::string::npos)
+        {
+            // No decimal-point, but have a '.'; must not be a number.
+            return strReal;
+        }
+    }
+
+    const auto sign = strReal.find_first_of("+-");
+    const std::string strSign(sign == 0 ? strReal.substr(0, 1) : "");  // save sign
+    strReal = (sign == 0) ? strReal.substr(1) : strReal;  // remove sign
+
+    size_t first_zero;
+    while ((first_zero = strReal.find('0')) == 0) // zeros at the beginning
+    {
+        // Don't need to keep checking when we already know there isn't a decimal-point.
+        if ((keep_zero_before_decimal_point) && (decimal_point != std::string::npos))
+        {
+            decimal_point = find_decimal_point(strReal); // location changes as leading 0s are removed
+            if (first_zero + 1 == decimal_point) // all that's left is "0.", no "00."
+            {
+                break; // "0.31" remains "0.31"
+            }
+        }
+
+        strReal = strReal.substr(1); // remove this leading zero
+    }        
+    strReal = strSign + strReal; // add back sign;
+    return strReal;
+}
+
+// Turns "0314" into "314" and "03.140" to "3.14"; obviously, "3140" remains unchanged.
+// Does not (yet) support scientific notation.
+static std::string trimOnlyZeros(std::string strNumber, int precision)
+{
+    const auto nonDigit = strNumber.find_first_not_of("+-.0123456789"); // TODO: e, E
+    if (nonDigit != std::string::npos)
+    {
+        return strNumber; // doesn't appear to be a number ... but see TODO above
+    }
+
+    strNumber = remove_leading_zeros(strNumber);
+    strNumber = remove_trailing_zeros(strNumber);
+
+    // The "problem" with high values for `precision` is that we can get a bunch of trailing
+    // zeros e.g., "3.141500".  Even "worse" is when there are a bunch of zeros and then
+    // a non-zero digit e.g., "3.141500001".  In many cases, 0.000000001 is effectively
+    // meaningless and just noise.
+    const auto decimal_point = find_decimal_point(strNumber);
+    if (decimal_point == std::string::npos)
+    {
+        return strNumber;  // no decimal-point, no 0.000000001
+    }
+    
+    auto strFraction = strNumber.substr(decimal_point + 1);  // "000000001"
+    if (strFraction.length() > precision) // We've got a longer fraction than what's desired ...
+    {        
+        // This leaves an extra decimal digit so we don't have to round 0.0000019 to  0.000002
+        // Yes, we're still truncating instead of rounding, but it's beyond the desired precision.
+        // If the extra digit is a "0", it will get removed by remove_trailing_zeros(), below.
+        strFraction = strFraction.substr(0, precision + 1); // "3.1415000" for precision=6
+    }
+
+    const auto strWhole = strNumber.substr(0, decimal_point);  // "3"
+    // Need to add back the decimal-point first: `remove_trailing_zeros()` won't turn "310" into "31".
+    return remove_trailing_zeros(strWhole + "." + strFraction); // "3" + "." + 14150"
+}
+std::string str::trimZeros(const std::string& strNumber10, int precision)
+{
+    // First, get rid of any whitespace; `trimOnlyZeros()` only looks for zeros.
+    auto result = trim(strNumber10);
+    return trimOnlyZeros(result, precision);
+}

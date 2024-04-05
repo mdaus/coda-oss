@@ -36,6 +36,21 @@ TEST_CASE(testTrim)
     TEST_ASSERT_EQ(s, "test");
 }
 
+TEST_CASE(testTrimZeros)
+{
+    TEST_ASSERT_EQ(str::trimZeros("314."), "314.");
+    TEST_ASSERT_EQ(str::trimZeros("0x31415926"), "0x31415926");
+    TEST_ASSERT_EQ(str::trimZeros("+30.14"), "+30.14");
+    TEST_ASSERT_EQ(str::trimZeros("-3.014"), "-3.014");
+    TEST_ASSERT_EQ(str::trimZeros("-31.0"), "-31.0");
+    TEST_ASSERT_EQ(str::trimZeros("03.14.150"), "03.14.150");
+
+    TEST_ASSERT_EQ(str::trimZeros("000314150000"), "314150000");
+    TEST_ASSERT_EQ(str::trimZeros("-000314150000"), "-314150000");
+    TEST_ASSERT_EQ(str::trimZeros("-00.31"), "-0.31");
+    TEST_ASSERT_EQ(str::trimZeros("-0003.14150000"), "-3.1415");
+}
+
 TEST_CASE(testData)
 {
     std::string s;
@@ -369,6 +384,7 @@ TEST_CASE(test_toTypeComplexShort)
 
 TEST_MAIN(
     TEST_CHECK(testTrim);
+    TEST_CHECK(testTrimZeros);
     TEST_CHECK(testData);
     TEST_CHECK(testUpper);
     TEST_CHECK(test_toupper);
