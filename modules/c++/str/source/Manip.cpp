@@ -654,7 +654,7 @@ static std::string trimOnlyZeros(std::string strNumber, int precision)
     }
     
     auto strFraction = strNumber.substr(decimal_point + 1);  // "000000001"
-    if (strFraction.length() > precision) // We've got a longer fraction than what's desired ...
+    if (strFraction.length() > gsl::narrow<size_t>(precision)) // We've got a longer fraction than what's desired ...
     {        
         // This leaves an extra decimal digit so we don't have to round 0.0000019 to  0.000002
         // Yes, we're still truncating instead of rounding, but it's beyond the desired precision.
