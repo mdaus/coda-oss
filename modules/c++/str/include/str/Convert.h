@@ -55,10 +55,18 @@ template <typename T> int getPrecision(const types::ComplexInteger<T>&);
 // Note that std::to_string() doesn't necessarily generate the same output as writing
 // to std::cout; see https://en.cppreference.com/w/cpp/string/basic_string/to_string
 template <typename T>
-std::string toString_(const T& value)
+std::string toString_(const T& value, std::streamsize precision = -1)
 {
     std::ostringstream buf;
-    buf.precision(getPrecision(value));
+
+    // It appears that only values of `precision` >= 0 are meaningful for
+    // formatting with `std::ostream`.
+    if (precision < 0)
+    {
+        precision = getPrecision(value);
+    }
+    buf.precision(precision);
+
     buf << std::boolalpha << value;
     return buf.str();
 }
@@ -93,17 +101,17 @@ inline auto toString(unsigned long long value)
 {
     return toString_(value);
 }
-inline auto toString(float value)
+inline auto toString(float value, std::streamsize precision = -1)
 {
-    return toString_(value);
+    return toString_(value, precision);
 }
-inline auto toString(double value)
+inline auto toString(double value, std::streamsize precision = -1)
 {
-    return toString_(value);
+    return toString_(value, precision);
 }
-inline auto toString(long double value)
+inline auto toString(long double value, std::streamsize precision = -1)
 {
-    return toString_(value);
+    return toString_(value, precision);
 }
 
 inline std::string toString(uint8_t value)
