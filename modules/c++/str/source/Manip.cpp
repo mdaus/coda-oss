@@ -643,6 +643,16 @@ static std::string trimOnlyZeros(std::string strNumber, int precision)
     strNumber = remove_leading_zeros(strNumber);
     strNumber = remove_trailing_zeros(strNumber);
 
+    // TODO: Using `precission` might be be quite right.  What I want to say is "if the last
+    // digit of a long decimal is preceeded by a bunch of zeros, then ignore that
+    // last digit (and the preceeding zeros)."  Need to find a clear way to say
+    // both "nth" digit and "last" digit, as well as specifing exactly how many makes
+    // "a bunch" of zeros.  For example, in "3.141500001", the "0.000000001" is
+    // likely just noise in many (even "most") cases.  However, that may not be 
+    // true for "3.14150009206" because even though there are three consequtive
+    // zeros, there are followed by two non-zero digits. ... or, the "92" are deemed
+    // to still be "interesting" digits.
+    //
     // The "problem" with high values for `precision` is that we can get a bunch of trailing
     // zeros e.g., "3.141500".  Even "worse" is when there are a bunch of zeros and then
     // a non-zero digit e.g., "3.141500001".  In many cases, 0.000000001 is effectively
