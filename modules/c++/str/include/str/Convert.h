@@ -55,12 +55,18 @@ template <typename T> int getPrecision(const types::ComplexInteger<T>&);
 // Note that std::to_string() doesn't necessarily generate the same output as writing
 // to std::cout; see https://en.cppreference.com/w/cpp/string/basic_string/to_string
 template <typename T>
-std::string toString_(const T& value)
+std::string toString__(const T& value, int precision)
 {
     std::ostringstream buf;
-    buf.precision(getPrecision(value));
+    buf.precision(precision);
     buf << std::boolalpha << value;
     return buf.str();
+}
+
+template <typename T>
+std::string toString_(const T& value)
+{
+    return toString__(value, getPrecision(value));
 }
 template <typename T>
 inline std::string toString(const T& value)
