@@ -357,6 +357,7 @@ void sys::OSWin32::getAvailableCPUs(std::vector<int>& /*physicalCPUs*/,
 sys::SIMDInstructionSet sys::OSWin32::getSIMDInstructionSet() const
 {
     // https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-isprocessorfeaturepresent
+#if _MSC_VER >= 1920
     if (IsProcessorFeaturePresent(PF_AVX512F_INSTRUCTIONS_AVAILABLE))
     {
         return SIMDInstructionSet::AVX512F;
@@ -365,6 +366,7 @@ sys::SIMDInstructionSet sys::OSWin32::getSIMDInstructionSet() const
     {
         return SIMDInstructionSet::AVX2;
     }
+#endif
     if (IsProcessorFeaturePresent(PF_XMMI64_INSTRUCTIONS_AVAILABLE))
     {
         return SIMDInstructionSet::SSE2;
