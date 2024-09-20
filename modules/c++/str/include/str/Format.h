@@ -150,6 +150,10 @@ inline auto Format(const char* format, size_t ul1, size_t ul2)
 {
     return details::Format(format, ul1, ul2);
 }
+inline auto Format(const char* format, size_t ul1, size_t ul2, size_t ul3)
+{
+    return details::Format(format, ul1, ul2, ul3);
+}
 inline auto Format(const char* format, size_t ul1, int i2)
 {
     return details::Format(format, ul1, i2);
