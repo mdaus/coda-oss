@@ -340,7 +340,7 @@ def compile_template(line):
 	return Task.funex(fun)
 
 
-re_blank = re.compile('(\n|\r|\\s)*\n', re.M)
+re_blank = re.compile(r'(\n|\r|\\s)*\n', re.M)
 def rm_blank_lines(txt):
 	txt = re_blank.sub('\r\n', txt)
 	return txt
@@ -372,7 +372,7 @@ def stealth_write(self, data, flags='wb'):
 		Logs.debug('msvs: skipping %s' % self.abspath())
 Node.Node.stealth_write = stealth_write
 
-re_quote = re.compile("[^a-zA-Z0-9-]")
+re_quote = re.compile(r"[^a-zA-Z0-9-]")
 def quote(s):
 	return re_quote.sub("_", s)
 
