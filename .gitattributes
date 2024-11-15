@@ -24,9 +24,6 @@ CMakeLists.txt text eol=lf
 ######################
 # Known binary files
 
-# Python builds with WAF
-waf	 binary
-
 # executables, libraries; yes, sometimes they're part of a repository
 *.exe	       binary
 *.out	       binary
