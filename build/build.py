@@ -1566,7 +1566,7 @@ def m4subst(tsk):
 def m4substFile(input, output, path, dict={}, env=None, chmod=None):
     import re
     #similar to the subst in misc.py - but outputs to the src directory
-    m4_re = re.compile('@(\w+)@', re.M)
+    m4_re = re.compile(r'@(\w+)@', re.M)
 
     infile = join(path.abspath(), input)
     dir = path.relpath()
