@@ -98,7 +98,7 @@ jobs:
   build-linux-cmake-default:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-22.04]
         python-version: ['3.7']
     name: ${{ matrix.os }}-${{ matrix.python-version }}-CMake
     runs-on: ${{ matrix.os }}
@@ -135,7 +135,7 @@ jobs:
   build-linux-cmake:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-22.04]
         configuration: [Debug, Release]
         avx: [AVX512F]
     name: ${{ matrix.os }}-${{ matrix.configuration }}-${{ matrix.avx }}-CMake
@@ -160,7 +160,7 @@ jobs:
   build-waf:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-2019]
+        os: [windows-2019, ubuntu-22.04]
         python-version: ['3.7']
         debugging: ['--enable-debugging', '']
     name: ${{ matrix.os }}-${{ matrix.python-version }}-waf${{ matrix.debugging }}
@@ -172,7 +172,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: configure_with_swig
-      if: ${{ matrix.os == 'ubuntu-latest' }}
+      if: ${{ matrix.os == 'ubuntu-22.04' }}
       run: |
         pip install numpy
         mkdir install${{ matrix.os }}Waf-Github
