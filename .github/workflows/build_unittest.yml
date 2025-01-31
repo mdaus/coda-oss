@@ -16,6 +16,8 @@ jobs:
     name: ${{ matrix.os }}-${{ matrix.python-version }}-CMake
     runs-on: ${{ matrix.os }}
     steps:
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: Set up Python
       uses: actions/setup-python@v5 # https://github.com/marketplace/actions/setup-python
@@ -68,6 +70,8 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
       run: |
@@ -103,6 +107,8 @@ jobs:
     name: ${{ matrix.os }}-${{ matrix.python-version }}-CMake
     runs-on: ${{ matrix.os }}
     steps:
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: Set up Python
       uses: actions/setup-python@v5 # https://github.com/marketplace/actions/setup-python
@@ -141,6 +147,8 @@ jobs:
     name: ${{ matrix.os }}-${{ matrix.configuration }}-${{ matrix.avx }}-CMake
     runs-on: ${{ matrix.os }}
     steps:
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
       run: |
@@ -166,6 +174,8 @@ jobs:
     name: ${{ matrix.os }}-${{ matrix.python-version }}-waf${{ matrix.debugging }}
     runs-on: ${{ matrix.os }}
     steps:
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: Set up Python
       uses: actions/setup-python@v5 # https://github.com/marketplace/actions/setup-python
