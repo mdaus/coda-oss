@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -104,7 +104,7 @@ struct CODA_OSS_API File
      *  \param accessFlags File access flags
      *  \param creationFlags File creation flags
      */
-    File(const Path& path, int accessFlags = READ_ONLY, 
+    File(const Path& path, int accessFlags = READ_ONLY,
          int creationFlags = EXISTING)
     {
         create(path.getPath(), accessFlags, creationFlags);
@@ -132,7 +132,7 @@ struct CODA_OSS_API File
      *  \param accessFlags File access flags
      *  \param creationFlags File creation flags
      */
-    explicit File(const std::string& str, int accessFlags = READ_ONLY, 
+    explicit File(const std::string& str, int accessFlags = READ_ONLY,
          int creationFlags = EXISTING)
     {
         create(str, accessFlags, creationFlags);
@@ -207,7 +207,22 @@ struct CODA_OSS_API File
     void readInto(void* buffer, size_t size);
 
     /*!
-     *  Write from a buffer 'size' bytes into the 
+     *  Read from the File, at offset bytes from the beginning, into a buffer
+     *  'size' bytes.  Does not use or update the internal file pointer.
+     *  Blocks.
+     *  If size is 0, no OS level read operation occurs.
+     *  If size is < 0, an exception is thrown.
+     *  If size is > length of file, an exception occurs.
+     *
+     *  \param buffer The buffer to put to
+     *  \param size The number of bytes
+     */
+    void readAtInto(sys::Off_T offset,
+                    void* buffer,
+                    size_t size);
+
+    /*!
+     *  Write from a buffer 'size' bytes into the
      *  file.
      *  Blocks.
      *  If size is 0, no OS level write operation occurs.
@@ -226,7 +241,7 @@ struct CODA_OSS_API File
      *  \return Global offset location.
      */
 
-    sys::Off_T seekTo(sys::Off_T offset, 
+    sys::Off_T seekTo(sys::Off_T offset,
                       int whence);
 
     /*!
@@ -264,7 +279,7 @@ struct CODA_OSS_API File
 protected:
     _SYS_HANDLE_TYPE mHandle = SYS_INVALID_HANDLE;
     std::string mPath;
-    
+
     static _SYS_HANDLE_TYPE createFile(const coda_oss::filesystem::path&, int accessFlags, int creationFlags) noexcept;
 
 };
