@@ -20,14 +20,14 @@
  *
  */
 
+#include <TestCase.h>
+#include <io/FileInputStreamOS.h>
+
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <io/FileInputStreamOS.h>
-#include <TestCase.h>
 
 std::string thisExecutable;
-
 
 TEST_CASE(testParallelReads)
 {

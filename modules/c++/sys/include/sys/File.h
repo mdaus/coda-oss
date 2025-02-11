@@ -104,7 +104,8 @@ struct CODA_OSS_API File
      *  \param accessFlags File access flags
      *  \param creationFlags File creation flags
      */
-    File(const Path& path, int accessFlags = READ_ONLY,
+    File(const Path& path,
+         int accessFlags = READ_ONLY,
          int creationFlags = EXISTING)
     {
         create(path.getPath(), accessFlags, creationFlags);
@@ -132,8 +133,9 @@ struct CODA_OSS_API File
      *  \param accessFlags File access flags
      *  \param creationFlags File creation flags
      */
-    explicit File(const std::string& str, int accessFlags = READ_ONLY,
-         int creationFlags = EXISTING)
+    explicit File(const std::string& str,
+                  int accessFlags = READ_ONLY,
+                  int creationFlags = EXISTING)
     {
         create(str, accessFlags, creationFlags);
     }
@@ -217,9 +219,7 @@ struct CODA_OSS_API File
      *  \param buffer The buffer to put to
      *  \param size The number of bytes
      */
-    void readAtInto(sys::Off_T offset,
-                    void* buffer,
-                    size_t size);
+    void readAtInto(sys::Off_T offset, void* buffer, size_t size);
 
     /*!
      *  Write from a buffer 'size' bytes into the
@@ -241,8 +241,7 @@ struct CODA_OSS_API File
      *  \return Global offset location.
      */
 
-    sys::Off_T seekTo(sys::Off_T offset,
-                      int whence);
+    sys::Off_T seekTo(sys::Off_T offset, int whence);
 
     /*!
      *  Report current offset within file.

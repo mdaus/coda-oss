@@ -45,7 +45,7 @@
 namespace io
 {
 constexpr size_t defaultNumThreads = 1;
-constexpr size_t defaultChunkSize = 32L*1024L*1024L;
+constexpr size_t defaultChunkSize = 32L * 1024L * 1024L;
 constexpr size_t defaultMinChunksForThreading = 4;
 
 /*!
@@ -63,6 +63,7 @@ protected:
     size_t mMaxReadThreads;
     size_t mParallelChunkSize;
     size_t mMinChunksForThreading;
+
 public:
 
     FileInputStreamOS() = default;
@@ -237,6 +238,7 @@ public:
     {
         return mMinChunksForThreading;
     }
+
 protected:
     /*!
      * Read up to len bytes of data from input stream into an array

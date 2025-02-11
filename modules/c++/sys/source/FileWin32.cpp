@@ -112,8 +112,8 @@ void sys::File::readAtInto(sys::Off_T offset, void* buffer, size_t size)
     while (bytesRead < size)
     {
         // Determine how many bytes to read
-        const DWORD bytesToRead = static_cast<DWORD>(
-                std::min(MAX_READ_SIZE, bytesRemaining));
+        const DWORD bytesToRead =
+                static_cast<DWORD>(std::min(MAX_READ_SIZE, bytesRemaining));
 
         // Read from file
         DWORD bytesThisRead = 0;

@@ -21,8 +21,9 @@
  */
 
 #include "io/FileInputStreamOS.h"
-#include "mt/ThreadPlanner.h"
+
 #include "mt/ThreadGroup.h"
+#include "mt/ThreadPlanner.h"
 
 #if !defined(USE_IO_STREAMS)
 
@@ -31,29 +32,27 @@ namespace
 class ChunkReadRunnable : public sys::Runnable
 {
 public:
-    ChunkReadRunnable(sys::File &file,
+    ChunkReadRunnable(sys::File& file,
                       size_t offset,
                       size_t len,
-                      void *buffer) :
-            mFile(file),
-            mOffset(offset),
-            mLen(len),
-            mBuffer(buffer)
+                      void* buffer) :
+        mFile(file), mOffset(offset), mLen(len), mBuffer(buffer)
     {
     }
 
     void run() override
     {
-        // No need to clear buffer because the readInto call will write every byte
+        // No need to clear buffer because the readInto call will write every
+        // byte
         //::memset(mBuffer, 0, mLen);
         mFile.readAtInto(mOffset, mBuffer, mLen);
     }
 
 private:
-    sys::File &mFile;
+    sys::File& mFile;
     size_t mOffset;
     size_t mLen;
-    void *mBuffer;
+    void* mBuffer;
 };
 }
 
@@ -94,9 +93,11 @@ sys::SSize_T io::FileInputStreamOS::readImpl(void* buffer, size_t len)
         len = static_cast<sys::Size_T>(avail);
     }
 
-    if (mMaxReadThreads <= 1 || len <= mParallelChunkSize * mMinChunksForThreading)
+    if (mMaxReadThreads <= 1 ||
+        len <= mParallelChunkSize * mMinChunksForThreading)
     {
-        // No need to clear buffer because the readInto call will write every byte
+        // No need to clear buffer because the readInto call will write every
+        // byte
         //::memset(buffer, 0, len);
         mFile.readInto(buffer, len);
         return static_cast<sys::SSize_T>(len);
@@ -114,11 +115,11 @@ sys::SSize_T io::FileInputStreamOS::readImpl(void* buffer, size_t len)
     while (planner.getThreadInfo(threadNum++, threadOffset, threadNumChunks))
     {
         size_t bufferOffset = threadOffset * mParallelChunkSize;
-        threadGroup.createThread(new ChunkReadRunnable(
-                mFile,
-                baseLocation + bufferOffset,
-                threadNumChunks * mParallelChunkSize,
-                bufferPtr + bufferOffset));
+        threadGroup.createThread(
+                new ChunkReadRunnable(mFile,
+                                      baseLocation + bufferOffset,
+                                      threadNumChunks * mParallelChunkSize,
+                                      bufferPtr + bufferOffset));
     }
 
     threadGroup.joinAll();

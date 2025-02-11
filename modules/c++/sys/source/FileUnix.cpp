@@ -95,9 +95,7 @@ void sys::File::readInto(void* buffer, Size_T size)
     throw sys::SystemException(Ctxt("Unknown read state"));
 }
 
-void sys::File::readAtInto(sys::Off_T offset,
-                           void* buffer,
-                           size_t size)
+void sys::File::readAtInto(sys::Off_T offset, void* buffer, size_t size)
 {
     SSize_T bytesRead = 0;
     Size_T totalBytesRead = 0;
@@ -111,8 +109,10 @@ void sys::File::readAtInto(sys::Off_T offset,
 
     for (i = 1; i <= _SYS_MAX_READ_ATTEMPTS; i++)
     {
-        bytesRead = ::pread(mHandle, bufferPtr + totalBytesRead, size
-                - totalBytesRead, offset + totalBytesRead);
+        bytesRead = ::pread(mHandle,
+                            bufferPtr + totalBytesRead,
+                            size - totalBytesRead,
+                            offset + totalBytesRead);
 
         switch (bytesRead)
         {
