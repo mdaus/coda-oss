@@ -163,7 +163,7 @@ void sys::File::writeFrom(const void* buffer, size_t size)
                        &bytesThisWrite,
                        nullptr))
         {
-            throw sys::SystemException(Ctxt("Writing from file"));
+            throw sys::SystemException(Ctxt("Writing to file"));
         }
 
         // Accumulate this write until we are done

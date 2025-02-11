@@ -208,7 +208,7 @@ struct CODA_OSS_API File
 
     /*!
      *  Read from the File, at offset bytes from the beginning, into a buffer
-     *  'size' bytes.  Does not use or update the internal file pointer.
+     *  'size' bytes.  Does not use but may update the internal file pointer.
      *  Blocks.
      *  If size is 0, no OS level read operation occurs.
      *  If size is < 0, an exception is thrown.

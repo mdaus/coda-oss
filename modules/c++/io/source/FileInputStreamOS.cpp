@@ -124,7 +124,7 @@ sys::SSize_T io::FileInputStreamOS::readImpl(void* buffer, size_t len)
     threadGroup.joinAll();
 
     size_t threadedRead = chunks * mParallelChunkSize;
-    seek(threadedRead, CURRENT);
+    seek(baseLocation + threadedRead, START);
     mFile.readInto(bufferPtr + threadedRead, len - threadedRead);
     return static_cast<sys::SSize_T>(len);
 }
