@@ -45,7 +45,7 @@ macro(coda_setup_msvc_crt)
     if (CONAN_PACKAGE_NAME)
         # conan handles this
     else()
-        set(STATIC_CRT OFF CACHE BOOL "use static CRT library /MT, or /MTd for Debug (/MD or /MDd if off)")
+        option(STATIC_CRT "use static CRT library /MT, or /MTd for Debug (/MD or /MDd if off)" OFF)
         if (STATIC_CRT)
             set(CODA_MSVC_RUNTIME "/MT")
         else()
