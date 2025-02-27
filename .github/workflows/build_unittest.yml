@@ -128,11 +128,8 @@ jobs:
         cd target
         # "-j" spawns too many processes causing GCC to crash
         cmake --build . -j 12
-        echo "Making build tree"
         tree -if --noreport > build.manifest
-        echo "Made build tree. comparing"
-        cmp -s ${GITHUB_WORKSPACE}/.github/build.manifest build.manifest
-        echo "Comparison passed"
+        diff ${GITHUB_WORKSPACE}/.github/build.manifest build.manifest
     - name: test
     # should run w/o install
       run: |
