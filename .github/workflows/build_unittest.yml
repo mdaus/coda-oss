@@ -128,9 +128,6 @@ jobs:
         cd target
         # "-j" spawns too many processes causing GCC to crash
         cmake --build . -j 12
-    - name: manifest
-      run: |
-        cd target
         tree -if --noreport > build.manifest
         cmp -s ${GITHUB_WORKSPACE}/.github/build.manifest build.manifest
     - name: test
