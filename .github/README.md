@@ -3,5 +3,5 @@
 mkdir <build-dir>; cd <build-dir>
 cmake .. -G "Unix Makefiles" -DENABLE_SWIG=ON -DPYTHON_VERSION=3.7
 cmake --build . -j
-tree -if --no-report > ../.github/build.manifest
+tree -if --noreport --sort=name > ../.github/build.manifest
 ```
