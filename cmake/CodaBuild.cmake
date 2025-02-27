@@ -343,7 +343,7 @@ function(coda_fetch_driver)
         # The returned properties use the lower-cased name
         string(TOLOWER ${target_name} target_name_lc)
         if (NOT ${target_name_lc}_POPULATED) # This makes sure we only fetch once.
-            message("Populating content for external dependency ${driver_name}")
+            message("Populating content for external dependency ${target_name_lc}")
             # Now (at configure time) unpack the content.
             FetchContent_Populate(${target_name})
             # Remember where we put stuff
