@@ -137,7 +137,7 @@ jobs:
     - name: install
       run: |
         cd target
-        cmake --build . --target install
+        cmake --install .
         cd install${{ matrix.os }}CMake-Github
         tree -if --noreport > install.manifest
         diff ${GITHUB_WORKSPACE}/.github/install.manifest install.manifest

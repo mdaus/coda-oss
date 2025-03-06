@@ -5,5 +5,5 @@ cmake .. -G "Unix Makefiles" -DENABLE_SWIG=ON -DPYTHON_VERSION=3.7
 cmake --build . -j
 cmake --install . --prefix ./install
 cd install
-tree -if --noreport --sort=name  > ../.github/install.manifest
+tree -if --noreport --sort=name  > ../../.github/install.manifest
 ```
