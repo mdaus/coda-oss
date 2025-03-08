@@ -128,7 +128,6 @@ jobs:
         cd target
         # "-j" spawns too many processes causing GCC to crash
         cmake --build . -j 12
-
     - name: test
     # should run w/o install
       run: |
@@ -139,7 +138,7 @@ jobs:
         cd target
         cmake --install .
         cd install${{ matrix.os }}CMake-Github
-        tree -if --noreport > install.manifest
+        tree -if --noreport | sort > install.manifest
         diff ${GITHUB_WORKSPACE}/.github/install.manifest install.manifest
 
   build-linux-cmake:
