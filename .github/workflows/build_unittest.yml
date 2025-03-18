@@ -136,7 +136,10 @@ jobs:
     - name: install
       run: |
         cd target
-        cmake --build . --target install
+        cmake --install .
+        cd install${{ matrix.os }}CMake-Github
+        tree -if --noreport | sort > install.manifest
+        diff ${GITHUB_WORKSPACE}/.github/install.manifest install.manifest
 
   build-linux-cmake:
     strategy:
@@ -153,17 +156,17 @@ jobs:
     - name: configure
       run: |
         mkdir out && cd out
-        cmake .. -DENABLE_PYTHON=OFF -DENABLE_${{ matrix.avx }}=ON
+        cmake .. -DENABLE_PYTHON=OFF -DENABLE_${{ matrix.avx }}=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
     - name: build
       run: |
         cd out
         # "-j" spawns too many processes causing GCC to crash
-        cmake --build . --config ${{ matrix.configuration }} -j 12
+        cmake --build . -j 12
     - name: test
     # should run w/o install
       run: |
         cd out
-        ctest -C ${{ matrix.configuration }} --output-on-failure
+        ctest --output-on-failure
 
   build-waf:
     strategy:
