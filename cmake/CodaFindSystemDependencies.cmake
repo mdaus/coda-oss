@@ -1,5 +1,12 @@
 # find and import system dependencies
 macro(coda_find_system_dependencies)
+    # creates imported target Boost::serialization, if found
+    # see https://cmake.org/cmake/help/latest/module/FindBoost.html
+    # Nothing uses the boost flag?
+    option(ENABLE_BOOST "Enable building modules dependent on Boost" OFF)
+    
+    option(ENABLE_PYTHON "Enable building Python modules" ON)
+    option(ENABLE_SWIG "Enable generation of SWIG bindings" OFF)
     # creates imported target Threads::Threads
     # see https://cmake.org/cmake/help/latest/module/FindThreads.html
     set(THREADS_PREFER_PTHREAD_FLAG TRUE)
@@ -9,9 +16,6 @@ macro(coda_find_system_dependencies)
     # see https://cmake.org/cmake/help/latest/module/FindCURL.html
     find_package(CURL)
 
-    # creates imported target Boost::serialization, if found
-    # see https://cmake.org/cmake/help/latest/module/FindBoost.html
-    set(ENABLE_BOOST OFF CACHE BOOL "Enable building modules dependent on Boost")
 
     # sets the following variables if Python installation found:
     #   Python_FOUND                - flag indicating system has the requested components
@@ -32,10 +36,8 @@ macro(coda_find_system_dependencies)
     #   Python_NumPy_INCLUDE_DIRS   - NumPy include directories
     #
     # see https://cmake.org/cmake/help/latest/module/FindPython.html
-    set(ENABLE_PYTHON ON CACHE BOOL "Enable building Python modules")
     set(PYTHON_VERSION "" CACHE STRING "Hint for which version of Python to find")
     set(PYTHON_HOME "" CACHE PATH "Path to existing Python installation")
-    set(ENABLE_SWIG OFF CACHE BOOL "Enable generation of SWIG bindings")
     if (PYTHON_HOME)
         # specifying PYTHON_HOME implies ENABLE_PYTHON
         set(ENABLE_PYTHON ON CACHE BOOL "Enable building Python modules" FORCE)
