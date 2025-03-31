@@ -107,7 +107,7 @@ public:
 
     inline _T operator()(double atX, double atY) const
     {
-        _T rv(0);
+        _T rv{};
         double atXPower(1);
 
         for (size_t i = 0; i <= _OrderX; i++)
@@ -120,7 +120,7 @@ public:
     }
     _T integrate(double startX, double endX, double startY, double endY) const
     {
-        _T rv(0);
+        _T rv{};
         double div(0);
         double endAtPower = endX;
         double startAtPower = startX;
