@@ -65,7 +65,7 @@ public:
         // Initialize coefficents;
         for (size_t i = 0; i < _Order+1; i++)
         {
-            mCoef[i] = _T(0.0);
+            mCoef[i] = _T{};
         }
     }
 
@@ -175,7 +175,7 @@ public:
      */
     _T operator() (double at) const
     {
-        _T rv(0.0);
+        _T rv{};
         double atPower = 1;
 
         for (size_t i = 0; i <= _Order; i++)
@@ -192,7 +192,7 @@ public:
      */
     _T integrate(double start, double end) const
     {
-        _T rv(0.0);
+        _T rv{};
         double div;
         double newCoef;
         double endAtPower = end;
