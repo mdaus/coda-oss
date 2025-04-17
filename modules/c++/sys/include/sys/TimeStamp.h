@@ -1,8 +1,9 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
+ * (C) Copyright 2025, Arka Group, L.P.
  *
  * sys-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,8 +15,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -33,7 +34,7 @@
 /*!
  *  \file  TimeStamp.h
  *  \brief Get a timestamp in a system-independent manner
- * 
+ *
  *  Provide the API for timestamps
  */
 
@@ -66,7 +67,10 @@ struct TimeStamp final
     std::string local() const
     {
         sys::LocalDateTime dt;
-        return dt.format(getFormat());
+        std::string base = dt.format(getFormat());
+
+        double fracSec = fmod(dt.getSecond(), 1);
+        return base + FmtX(".%03.0f", fracSec * 1000);
     }
 
     /*!
@@ -76,7 +80,10 @@ struct TimeStamp final
     std::string gmt() const
     {
         sys::UTCDateTime dt;
-        return dt.format(getFormat());
+        std::string base = dt.format(getFormat());
+
+        double fracSec = fmod(dt.getSecond(), 1);
+        return base + FmtX(".%03.0f", fracSec * 1000);
     }
 
 private:

@@ -6,7 +6,7 @@ option(ENABLE_JPEG "enable use of libjpeg" ON)
 option(ENABLE_PCRE "enable PCRE library" ON)
 option(ENABLE_UUID "enable UUID library" ON)
 option(ENABLE_ZIP "enable zlib" ON)
-option(CODA_ENABLE_HDF5 "enable hdf5" ON)
+option(ENABLE_NLOHMANN "enable nlohmann" ON)
 
 # Turn off all warnings; this is code we don't control.
 if (MSVC)
@@ -74,7 +74,6 @@ if (NOT CONAN_PACKAGE_NAME)
     endif()
 endif()
 
-option(ENABLE_NLOHMANN "enable nlohmann" ON)
 if(ENABLE_NLOHMANN)
     add_subdirectory(nlohmann)
 endif()

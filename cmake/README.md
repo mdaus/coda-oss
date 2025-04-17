@@ -81,6 +81,7 @@ These options may be passed in the cmake configure step as `-DOPTION_NAME="optio
 |ENABLE_PCRE|ON|build PCRE (PERL Compatible Regular Expressions) library and modules dependent on it|
 |ENABLE_UUID|ON|build uuid library and modules dependent on it|
 |ENABLE_ZIP|ON|build zlib and modules dependent on it|
+|ENABLE_NLOHMANN|ON|enable `nlohmann` json and modules dependent on it|
 |JPEG_HOME||path to existing libjpeg installation; if not provided, it will be built from source (implies ENABLE_JPEG=ON)|
 |J2K_HOME||path to existing openjpeg installation; if not provided, it will be built from source (implies ENABLE_J2K=ON)|
 |PCRE_HOME||path to existing pcre installation; if not provided, it will be built from source (implies ENABLE_PCRE=ON)|
