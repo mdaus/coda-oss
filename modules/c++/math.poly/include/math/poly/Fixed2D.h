@@ -74,7 +74,7 @@ public:
     Fixed2D<_OrderX, _OrderY, _T>& operator=(const TwoD<_T>& coeff)
     {
 
-        size_t sizeC = std::min<unsigned int>(coeff.orderX(), _OrderX);
+        size_t sizeC = std::min<size_t>(coeff.orderX(), _OrderX);
         for (size_t i = 0; i <= sizeC; i++)
         {
             mCoef[i] = coeff[i];
