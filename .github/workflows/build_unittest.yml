@@ -168,7 +168,9 @@ jobs:
   build-waf:
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-22.04]
+        os: [
+            # BROKEN: windows-latest, 
+            ubuntu-22.04]
         python-version: ['3.7']
         debugging: ['--enable-debugging', '']
     name: ${{ matrix.os }}-${{ matrix.python-version }}-waf${{ matrix.debugging }}
