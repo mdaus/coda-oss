@@ -86,14 +86,14 @@ TEST_CASE(testVelocity)
     std::vector<double> values;
     getRandValues(values);
 
-    // 0 poly should have 0 velocity
+    // Constant poly should have 0 velocity
     auto constPoly(getRandPoly<0>());
     for (const auto& val: values)
     {
         TEST_ASSERT_EQ(constPoly.velocity(val), 0.0);
     }
 
-    // 1 poly should have 0 velocity
+    // Linear poly should have constant velocity
     auto linearPoly(getRandPoly<1>());
     for (const auto& val: values)
     {
@@ -119,7 +119,7 @@ TEST_CASE(testAcceleration)
     std::vector<double> values;
     getRandValues(values);
 
-    // 0 and 1 polys should have 0 acceleration
+    // Constant and linear polys should have 0 acceleration
     auto constPoly(getRandPoly<0>());
     for (const auto& val: values)
     {
@@ -132,7 +132,7 @@ TEST_CASE(testAcceleration)
         TEST_ASSERT_EQ(linearPoly.acceleration(val), 0.0);
     }
 
-    // Quadratic poly should have 0 acceleration
+    // Quadratic poly should have constant acceleration
     auto quadraticPoly(getRandPoly<2>());
     for (const auto& val: values)
     {
