@@ -137,8 +137,8 @@ public:
         }
     }
 
-    inline size_t order() const { return _Order; }
-    inline size_t size() const { return _Order + 1; }
+    constexpr inline size_t order() const { return _Order; }
+    constexpr inline size_t size() const { return _Order + 1; }
 
     /*!
      *
