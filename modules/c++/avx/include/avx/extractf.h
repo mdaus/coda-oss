@@ -4,6 +4,7 @@
  *
  * (C) Copyright 2004 - 2019, MDA Information Systems LLC
  * (C) Copyright 2021, Maxar Technologies, Inc.
+ * (C) Copyright 2025, Arka Group, L.P.
  *
  * config-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,6 +27,7 @@
 
 #include <config/compiler_extensions.h>
 
+#ifdef __AVX__
 #ifndef CODA_OSS_mm256_extractf_DEFINED_
     #define CODA_OSS_mm256_extractf_DEFINED_ 1
 
@@ -52,6 +54,7 @@
         }
     }
 
+#endif
 #endif
 
 #endif  // CODA_OSS_avx_extractf_h_INCLUDED_
