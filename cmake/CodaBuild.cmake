@@ -45,7 +45,7 @@ macro(coda_setup_msvc_crt)
     if (CONAN_PACKAGE_NAME)
         # conan handles this
     else()
-        set(STATIC_CRT OFF CACHE BOOL "use static CRT library /MT, or /MTd for Debug (/MD or /MDd if off)")
+        option(STATIC_CRT "use static CRT library /MT, or /MTd for Debug (/MD or /MDd if off)" OFF)
         if (STATIC_CRT)
             set(CODA_MSVC_RUNTIME "/MT")
         else()
@@ -343,7 +343,7 @@ function(coda_fetch_driver)
         # The returned properties use the lower-cased name
         string(TOLOWER ${target_name} target_name_lc)
         if (NOT ${target_name_lc}_POPULATED) # This makes sure we only fetch once.
-            message("Populating content for external dependency ${driver_name}")
+            message("Populating content for external dependency ${target_name_lc}")
             # Now (at configure time) unpack the content.
             FetchContent_Populate(${target_name})
             # Remember where we put stuff
@@ -388,6 +388,8 @@ function(coda_add_tests)
             "DEPS;SOURCES;ARGS;FILTER_LIST"  # multi args
             "${ARGN}"
         )
+        option(${PROJECT_NAME}_AUTO_UNITTEST "run unittests during build" OFF)
+
         if (ARG_UNPARSED_ARGUMENTS)
             message(FATAL_ERROR "received unexpected argument(s): ${ARG_UNPARSED_ARGUMENTS}")
         endif()
@@ -461,6 +463,18 @@ function(coda_add_tests)
                         RUNTIME DESTINATION "${ARG_DIRECTORY}/${ARG_MODULE_NAME}/${test_subdir}")
             endif()
         endforeach()
+
+        if (${ARG_UNITTEST} AND ${PROJECT_NAME}_AUTO_UNITTEST)
+            set (MOD ${ARG_MODULE_NAME}-${TARGET_LANGUAGE})
+            get_target_property(type ${MOD} TYPE)
+            # Can only define POST_BUILD targets on non-interface libs
+            if (NOT ${type} STREQUAL "INTERFACE_LIBRARY")
+                add_custom_command(TARGET ${MOD} POST_BUILD
+                    COMMAND ${CMAKE_CTEST_COMMAND} 
+                    --test-dir ${CMAKE_CURRENT_BINARY_DIR} --output-on-failure
+                    DEPENDS ${test_group_tgt})
+            endif()
+        endif()
     endif()
 endfunction()
 
