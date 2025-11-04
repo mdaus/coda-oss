@@ -16,8 +16,8 @@ endif()
 if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
     # this is the top level project
 
-    # Allow other project to set different standard. 
-    set(CMAKE_CXX_STANDARD 14)
+    # Only set std if not used as external library
+    set(CMAKE_CXX_STANDARD 20)
     set(CXX_STANDARD_REQUIRED true)
 
     # Always turn on "warnings as errors" to avoid lots of (meaningless?) build output;

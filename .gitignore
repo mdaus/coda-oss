@@ -22,6 +22,8 @@ Makefile
 modules/**/Makefile
 out/
 CMakeSettings.json
+# Ref: https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html
+CMakeUserPresets.json
 
 # Eclipse
 .project
@@ -44,6 +46,9 @@ project.sln
 *.tlog
 **/x64/
 *.vcxproj.user
+
+# VSCode
+.vscode/
 
 # Unit-tests
 TEST_*_TMP*.*
