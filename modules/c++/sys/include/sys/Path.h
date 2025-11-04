@@ -31,10 +31,10 @@
 
 #include "config/Exports.h"
 #include <import/str.h>
-#include "coda_oss/span.h"
+#include <span>
 
 #include "sys/OS.h"
-#include "sys/filesystem.h"
+#include <filesystem>
 #include "sys/Span.h"
 
 
@@ -81,7 +81,7 @@ public:
     * c.f., https://docs.microsoft.com/en-us/dotnet/api/system.environment.expandenvironmentvariables?view=net-5.0
     */
     static std::string expandEnvironmentVariables(const std::string& path, bool checkIfExists = true);
-    static std::string expandEnvironmentVariables(const std::string& path, coda_oss::filesystem::file_type);
+    static std::string expandEnvironmentVariables(const std::string& path, std::filesystem::file_type);
     static std::vector<std::string> expandedEnvironmentVariables(const std::string& path); // mostly for unit-testing
 
     /*!
@@ -298,9 +298,9 @@ protected:
 std::ostream& operator<<(std::ostream& os, const sys::Path& path);
 std::istream& operator>>(std::istream& os, sys::Path& path);
 
-// Convert between collections of paths as strings and coda_oss::filesystem::path
-CODA_OSS_API std::vector<std::string> convertPaths(coda_oss::span<const coda_oss::filesystem::path>);
-CODA_OSS_API std::vector<coda_oss::filesystem::path> convertPaths(coda_oss::span<const std::string>);
+// Convert between collections of paths as strings and std::filesystem::path
+CODA_OSS_API std::vector<std::string> convertPaths(std::span<const std::filesystem::path>);
+CODA_OSS_API std::vector<std::filesystem::path> convertPaths(std::span<const std::string>);
 template<typename T>
 inline auto convertPaths(const std::vector<T>& paths)
 {

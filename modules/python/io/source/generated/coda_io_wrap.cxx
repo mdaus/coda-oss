@@ -5707,7 +5707,7 @@ fail:
 
 SWIGINTERN PyObject *_wrap_new_FileInputStream__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  coda_oss::filesystem::path *arg1 = 0 ;
+  std::filesystem::path *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -5716,13 +5716,13 @@ SWIGINTERN PyObject *_wrap_new_FileInputStream__SWIG_2(PyObject *SWIGUNUSEDPARM(
   if (!PyArg_ParseTuple(args,(char *)"O:new_FileInputStream",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_coda_oss__filesystem__path,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_FileInputStream" "', argument " "1"" of type '" "coda_oss::filesystem::path const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_FileInputStream" "', argument " "1"" of type '" "std::filesystem::path const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileInputStream" "', argument " "1"" of type '" "coda_oss::filesystem::path const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileInputStream" "', argument " "1"" of type '" "std::filesystem::path const &""'"); 
   }
-  arg1 = reinterpret_cast< coda_oss::filesystem::path * >(argp1);
-  result = (io::FileInputStreamOS *)new io::FileInputStreamOS((coda_oss::filesystem::path const &)*arg1);
+  arg1 = reinterpret_cast< std::filesystem::path * >(argp1);
+  result = (io::FileInputStreamOS *)new io::FileInputStreamOS((std::filesystem::path const &)*arg1);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_io__FileInputStreamOS, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -5833,7 +5833,7 @@ fail:
     "  Possible C/C++ prototypes are:\n"
     "    io::FileInputStreamOS::FileInputStreamOS()\n"
     "    io::FileInputStreamOS::FileInputStreamOS(std::string const &)\n"
-    "    io::FileInputStreamOS::FileInputStreamOS(coda_oss::filesystem::path const &)\n"
+    "    io::FileInputStreamOS::FileInputStreamOS(std::filesystem::path const &)\n"
     "    io::FileInputStreamOS::FileInputStreamOS(char const *)\n"
     "    io::FileInputStreamOS::FileInputStreamOS(sys::File const &)\n");
   return 0;
@@ -6608,7 +6608,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"new_FileInputStream", _wrap_new_FileInputStream, METH_VARARGS, (char *)"\n"
 		"FileInputStreamOS()\n"
 		"FileInputStreamOS(std::string const & inputFile)\n"
-		"FileInputStreamOS(coda_oss::filesystem::path const & inputFile)\n"
+		"FileInputStreamOS(std::filesystem::path const & inputFile)\n"
 		"FileInputStreamOS(char const * inputFile)\n"
 		"new_FileInputStream(sys::File const & inputFile) -> FileInputStream\n"
 		""},
@@ -6712,7 +6712,7 @@ static void *_p_io__SeekableNullOutputStreamTo_p_io__Seekable(void *x, int *SWIG
 static swig_type_info _swigt__p_OutputStream = {"_p_OutputStream", "OutputStream *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_coda_oss__byte = {"_p_coda_oss__byte", "coda_oss::byte *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_coda_oss__filesystem__path = {"_p_coda_oss__filesystem__path", "coda_oss::filesystem::path *|io::FileOutputStreamOS::path *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_coda_oss__filesystem__path = {"_p_coda_oss__filesystem__path", "std::filesystem::path *|io::FileOutputStreamOS::path *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_coda_oss__u8string = {"_p_coda_oss__u8string", "coda_oss::u8string *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_io__BidirectionalStream = {"_p_io__BidirectionalStream", "io::BidirectionalStream *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_io__FileInputStreamOS = {"_p_io__FileInputStreamOS", "io::FileInputStreamOS *", 0, 0, (void*)0, 0};

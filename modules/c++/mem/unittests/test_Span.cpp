@@ -25,7 +25,7 @@
 #include <vector>
 #include <string>
 
-#include <coda_oss/span.h>
+#include <span>
 #include <sys/Span.h>
 
 #include "TestCase.h"
@@ -52,7 +52,7 @@ TEST_CASE(testSpanBuffer)
 {
     {
         std::vector<int> ints{1, 2, 3, 4, 5};
-        const coda_oss::span<int> span(ints.data(), ints.size());
+        const std::span<int> span(ints.data(), ints.size());
         testSpanBuffer_(testName, ints, span);
     }
 }
@@ -77,7 +77,7 @@ TEST_CASE(testSpanVector)
 {
     {
         std::vector<int> ints{1, 2, 3, 4, 5};
-        const coda_oss::span<int> span(ints.data(), ints.size());
+        const std::span<int> span(ints.data(), ints.size());
         testSpanVector_(testName, ints, span);
     }
 }

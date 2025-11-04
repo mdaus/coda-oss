@@ -29,7 +29,7 @@
 #include <import/io.h>
 #include <import/mem.h>
 #include <types/RowCol.h>
-#include <sys/filesystem.h>
+#include <filesystem>
 
 #include "sio/lite/InvalidHeaderException.h"
 #include "sio/lite/FileHeader.h"
@@ -188,7 +188,7 @@ template<typename T> void writeSIO(const T* image, size_t rows, size_t cols,
     imageStream.close();
 }
 template<typename T>
-void writeSIO(const T* image, const types::RowCol<size_t>& dims, const sys::filesystem::path& imageFile,
+void writeSIO(const T* image, const types::RowCol<size_t>& dims, const std::filesystem::path& imageFile,
                                    int et = AUTO, int es = AUTO)
 {
     writeSIO(image, dims.row, dims.col, imageFile.string(), et, es);

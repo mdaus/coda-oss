@@ -33,7 +33,7 @@
 #include "sys/Path.h"
 #include "str/Manip.h"
 
-sys::File sys::make_File(const coda_oss::filesystem::path& path, int accessFlags, int creationFlags)
+sys::File sys::make_File(const std::filesystem::path& path, int accessFlags, int creationFlags)
 {
     sys::File retval(std::nothrow, path, accessFlags, creationFlags);
     if (retval.isOpen())
@@ -50,7 +50,7 @@ sys::File sys::make_File(const coda_oss::filesystem::path& path, int accessFlags
     return sys::File(expanded, accessFlags, creationFlags);
 }
 
-sys::File sys::make_File(const coda_oss::filesystem::path& parent, const coda_oss::filesystem::path& name,
+sys::File sys::make_File(const std::filesystem::path& parent, const std::filesystem::path& name,
         int accessFlags, int creationFlags)
 {
     sys::File retval(std::nothrow, parent, name, accessFlags, creationFlags);
@@ -59,7 +59,7 @@ sys::File sys::make_File(const coda_oss::filesystem::path& parent, const coda_os
         return retval;
     }
 
-    const auto expanded_parent = sys::Path::expandEnvironmentVariables(parent.string(), coda_oss::filesystem::file_type::directory);
+    const auto expanded_parent = sys::Path::expandEnvironmentVariables(parent.string(), std::filesystem::file_type::directory);
     // 'name' probably won't work without 'parent' so no need to checkIfExists
     const auto expanded_name =  sys::Path::expandEnvironmentVariables(name.string(), false /*checkIfExists*/);
 
@@ -86,7 +86,7 @@ static inline FILE* fopen_(const std::string& fname, const std::string& mode)
 }
 #endif
 
-FILE* sys::fopen(const coda_oss::filesystem::path& fname, const std::string& mode)
+FILE* sys::fopen(const std::filesystem::path& fname, const std::string& mode)
 {
     // Call  sys::expandEnvironmentVariables() if the initial fopen() fails.
     auto retval = fopen_(fname.string(), mode);
@@ -121,7 +121,7 @@ static inline int open_(const std::string& pathname, int flags)
     return CODA_OSS_open(p, flags);
     CODA_OSS_disable_warning_pop
 }
-int sys::open(const coda_oss::filesystem::path& path, int flags)
+int sys::open(const std::filesystem::path& path, int flags)
 {
     // Call  sys::expandEnvironmentVariables() if the initial open() fails.
     const auto retval = open_(path.string(), flags);
@@ -149,7 +149,7 @@ static inline int open_(const std::string& pathname, int flags, int mode)
     return CODA_OSS_open(p, flags, mode);
     CODA_OSS_disable_warning_pop
 }
-int sys::open(const coda_oss::filesystem::path& path, int flags, int mode)
+int sys::open(const std::filesystem::path& path, int flags, int mode)
 {
     // Call  sys::expandEnvironmentVariables() if the initial open() fails.
     const auto retval = open_(path.string(), flags, mode);
@@ -195,7 +195,7 @@ static inline int stat_(const std::string& pathname, struct CODA_OSS_stat  &buff
     CODA_OSS_disable_warning_pop
 }
 #undef CODA_OSS_stat_
-int sys::stat(const coda_oss::filesystem::path& path, struct CODA_OSS_stat &buffer)
+int sys::stat(const std::filesystem::path& path, struct CODA_OSS_stat &buffer)
 {
     // Call  sys::expandEnvironmentVariables() if the initial stat() fails.
     const auto retval = stat_(path.string(), buffer);
@@ -213,7 +213,7 @@ int sys::stat(const coda_oss::filesystem::path& path, struct CODA_OSS_stat &buff
     return stat_(expanded, buffer);
 }
 
-void sys::open(std::ifstream& ifs, const coda_oss::filesystem::path& path, std::ios_base::openmode mode)
+void sys::open(std::ifstream& ifs, const std::filesystem::path& path, std::ios_base::openmode mode)
 {
     // Call  sys::expandEnvironmentVariables() if the initial open() fails.
     ifs.open(path.string(), mode);
@@ -230,7 +230,7 @@ void sys::open(std::ifstream& ifs, const coda_oss::filesystem::path& path, std::
     }
     ifs.open(expanded, mode);
 }
-std::ifstream sys::make_ifstream(const coda_oss::filesystem::path& path, std::ios_base::openmode mode)
+std::ifstream sys::make_ifstream(const std::filesystem::path& path, std::ios_base::openmode mode)
 {
     std::ifstream retval;
     open(retval, path, mode);

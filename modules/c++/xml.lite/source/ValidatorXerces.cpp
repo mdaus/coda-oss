@@ -22,7 +22,7 @@
 
 #include <algorithm>
 #include <iterator>
-#include <std/filesystem>
+#include <filesystem>
 #include <std/memory>
 #include <std/string>
 #include <regex>
@@ -178,7 +178,7 @@ ValidatorXerces::ValidatorXerces(
     mSchemaPool->lockPool();
 }
 
-std::vector<coda_oss::filesystem::path> ValidatorXerces::loadSchemas(const std::vector<coda_oss::filesystem::path>& schemaPaths, bool recursive)
+std::vector<std::filesystem::path> ValidatorXerces::loadSchemas(const std::vector<std::filesystem::path>& schemaPaths, bool recursive)
 {
     // load our schemas --
     // search each directory for schemas

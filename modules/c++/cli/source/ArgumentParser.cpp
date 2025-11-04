@@ -24,7 +24,7 @@
 
 #include <algorithm>
 #include <iterator>
-#include <std/span>
+#include <span>
 
 #include <import/str.h>
 #include <import/mem.h>

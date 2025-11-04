@@ -25,6 +25,8 @@ if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
     if (MSVC)
        add_compile_options(/WX) # warnings as errors
        add_compile_options(/MP) # multi-processor compile
+       # https://learn.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170
+        add_compile_options(-Zc:__cplusplus)
     elseif (UNIX)
        add_compile_options(-Werror) # warnings as errors
     endif()

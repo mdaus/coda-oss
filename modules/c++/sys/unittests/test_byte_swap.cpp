@@ -26,7 +26,7 @@
 #include <vector>
 #include <std/bit> // std::endian
 #include <std/cstddef>
-#include <std/span>
+#include <span>
 #include <type_traits>
 
 #include <sys/Conf.h>

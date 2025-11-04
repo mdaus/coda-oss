@@ -56,7 +56,7 @@
 
 #include <config/Version.h>
 #include <config/Exports.h>
-#include <sys/CPlusPlus.h>
+#include <coda_oss/CPlusPlus.h>
 #include <str/Convert.h>
 
 #if defined (__APPLE_CC__)

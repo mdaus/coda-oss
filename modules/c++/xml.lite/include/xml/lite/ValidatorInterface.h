@@ -41,7 +41,7 @@
 #include <io/InputStream.h>
 #include <str/Convert.h>
 #include <logging/Logger.h>
-#include <sys/filesystem.h>
+#include <filesystem>
 #include <str/Encoding.h>
 
 #include <xml/lite/Element.h>
@@ -119,7 +119,7 @@ public:
     ValidatorInterface(const std::vector<std::string>& /*schemaPaths*/,
                        logging::Logger* /*log*/,
                        bool /*recursive*/ = true) {}
-    ValidatorInterface(const std::vector<coda_oss::filesystem::path>&,
+    ValidatorInterface(const std::vector<std::filesystem::path>&,
                        logging::Logger* /*log*/,
                        bool /*recursive*/ = true) { }
 

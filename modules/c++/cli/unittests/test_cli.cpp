@@ -24,7 +24,7 @@
 
 #include <sstream>
 #include <fstream>
-#include <std/span>
+#include <span>
 
 #include <import/cli.h>
 #include <import/mem.h>

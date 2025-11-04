@@ -4861,7 +4861,7 @@ SWIGINTERN PyObject *StreamHandler_swigregister(PyObject *SWIGUNUSEDPARM(self), 
 
 SWIGINTERN PyObject *_wrap_new_FileHandler__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  coda_oss::filesystem::path *arg1 = 0 ;
+  std::filesystem::path *arg1 = 0 ;
   LogLevel arg2 ;
   int arg3 ;
   void *argp1 = 0 ;
@@ -4878,12 +4878,12 @@ SWIGINTERN PyObject *_wrap_new_FileHandler__SWIG_0(PyObject *SWIGUNUSEDPARM(self
   if (!PyArg_ParseTuple(args,(char *)"OOO:new_FileHandler",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_coda_oss__filesystem__path,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_FileHandler" "', argument " "1"" of type '" "coda_oss::filesystem::path const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_FileHandler" "', argument " "1"" of type '" "std::filesystem::path const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileHandler" "', argument " "1"" of type '" "coda_oss::filesystem::path const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileHandler" "', argument " "1"" of type '" "std::filesystem::path const &""'"); 
   }
-  arg1 = reinterpret_cast< coda_oss::filesystem::path * >(argp1);
+  arg1 = reinterpret_cast< std::filesystem::path * >(argp1);
   {
     res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_LogLevel,  0  | 0);
     if (!SWIG_IsOK(res2)) {
@@ -4902,7 +4902,7 @@ SWIGINTERN PyObject *_wrap_new_FileHandler__SWIG_0(PyObject *SWIGUNUSEDPARM(self
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_FileHandler" "', argument " "3"" of type '" "int""'");
   } 
   arg3 = static_cast< int >(val3);
-  result = (logging::FileHandler *)new logging::FileHandler((coda_oss::filesystem::path const &)*arg1,arg2,arg3);
+  result = (logging::FileHandler *)new logging::FileHandler((std::filesystem::path const &)*arg1,arg2,arg3);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_logging__FileHandler, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -4912,7 +4912,7 @@ fail:
 
 SWIGINTERN PyObject *_wrap_new_FileHandler__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  coda_oss::filesystem::path *arg1 = 0 ;
+  std::filesystem::path *arg1 = 0 ;
   LogLevel arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -4925,12 +4925,12 @@ SWIGINTERN PyObject *_wrap_new_FileHandler__SWIG_1(PyObject *SWIGUNUSEDPARM(self
   if (!PyArg_ParseTuple(args,(char *)"OO:new_FileHandler",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_coda_oss__filesystem__path,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_FileHandler" "', argument " "1"" of type '" "coda_oss::filesystem::path const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_FileHandler" "', argument " "1"" of type '" "std::filesystem::path const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileHandler" "', argument " "1"" of type '" "coda_oss::filesystem::path const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileHandler" "', argument " "1"" of type '" "std::filesystem::path const &""'"); 
   }
-  arg1 = reinterpret_cast< coda_oss::filesystem::path * >(argp1);
+  arg1 = reinterpret_cast< std::filesystem::path * >(argp1);
   {
     res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_LogLevel,  0  | 0);
     if (!SWIG_IsOK(res2)) {
@@ -4944,7 +4944,7 @@ SWIGINTERN PyObject *_wrap_new_FileHandler__SWIG_1(PyObject *SWIGUNUSEDPARM(self
       if (SWIG_IsNewObj(res2)) delete temp;
     }
   }
-  result = (logging::FileHandler *)new logging::FileHandler((coda_oss::filesystem::path const &)*arg1,arg2);
+  result = (logging::FileHandler *)new logging::FileHandler((std::filesystem::path const &)*arg1,arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_logging__FileHandler, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -4954,7 +4954,7 @@ fail:
 
 SWIGINTERN PyObject *_wrap_new_FileHandler__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  coda_oss::filesystem::path *arg1 = 0 ;
+  std::filesystem::path *arg1 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
@@ -4963,13 +4963,13 @@ SWIGINTERN PyObject *_wrap_new_FileHandler__SWIG_2(PyObject *SWIGUNUSEDPARM(self
   if (!PyArg_ParseTuple(args,(char *)"O:new_FileHandler",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_coda_oss__filesystem__path,  0  | 0);
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_FileHandler" "', argument " "1"" of type '" "coda_oss::filesystem::path const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_FileHandler" "', argument " "1"" of type '" "std::filesystem::path const &""'"); 
   }
   if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileHandler" "', argument " "1"" of type '" "coda_oss::filesystem::path const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileHandler" "', argument " "1"" of type '" "std::filesystem::path const &""'"); 
   }
-  arg1 = reinterpret_cast< coda_oss::filesystem::path * >(argp1);
-  result = (logging::FileHandler *)new logging::FileHandler((coda_oss::filesystem::path const &)*arg1);
+  arg1 = reinterpret_cast< std::filesystem::path * >(argp1);
+  result = (logging::FileHandler *)new logging::FileHandler((std::filesystem::path const &)*arg1);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_logging__FileHandler, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -5031,9 +5031,9 @@ SWIGINTERN PyObject *_wrap_new_FileHandler(PyObject *self, PyObject *args) {
 fail:
   SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_FileHandler'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    logging::FileHandler::FileHandler(coda_oss::filesystem::path const &,LogLevel,int)\n"
-    "    logging::FileHandler::FileHandler(coda_oss::filesystem::path const &,LogLevel)\n"
-    "    logging::FileHandler::FileHandler(coda_oss::filesystem::path const &)\n");
+    "    logging::FileHandler::FileHandler(std::filesystem::path const &,LogLevel,int)\n"
+    "    logging::FileHandler::FileHandler(std::filesystem::path const &,LogLevel)\n"
+    "    logging::FileHandler::FileHandler(std::filesystem::path const &)\n");
   return 0;
 }
 
@@ -7932,9 +7932,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"StreamHandler_close", _wrap_StreamHandler_close, METH_VARARGS, (char *)"StreamHandler_close(StreamHandler self)"},
 	 { (char *)"StreamHandler_swigregister", StreamHandler_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_FileHandler", _wrap_new_FileHandler, METH_VARARGS, (char *)"\n"
-		"FileHandler(coda_oss::filesystem::path const & fname, LogLevel level, int creationFlags)\n"
-		"FileHandler(coda_oss::filesystem::path const & fname, LogLevel level)\n"
-		"new_FileHandler(coda_oss::filesystem::path const & fname) -> FileHandler\n"
+		"FileHandler(std::filesystem::path const & fname, LogLevel level, int creationFlags)\n"
+		"FileHandler(std::filesystem::path const & fname, LogLevel level)\n"
+		"new_FileHandler(std::filesystem::path const & fname) -> FileHandler\n"
 		""},
 	 { (char *)"delete_FileHandler", _wrap_delete_FileHandler, METH_VARARGS, (char *)"delete_FileHandler(FileHandler self)"},
 	 { (char *)"FileHandler_swigregister", FileHandler_swigregister, METH_VARARGS, NULL},
@@ -8091,7 +8091,7 @@ static swig_type_info _swigt__p_Filter = {"_p_Filter", "Filter *", 0, 0, (void*)
 static swig_type_info _swigt__p_LogLevel = {"_p_LogLevel", "LogLevel *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_LogRecord = {"_p_LogRecord", "LogRecord *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_coda_oss__filesystem__path = {"_p_coda_oss__filesystem__path", "coda_oss::filesystem::path *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_coda_oss__filesystem__path = {"_p_coda_oss__filesystem__path", "std::filesystem::path *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__Context = {"_p_except__Context", "except::Context *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_except__Throwable = {"_p_except__Throwable", "except::Throwable *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_io__OutputStream = {"_p_io__OutputStream", "io::OutputStream *", 0, 0, (void*)0, 0};

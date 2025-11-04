@@ -31,18 +31,18 @@ jobs:
         ls env:
         mkdir target-Release
         cd target-Release
-        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DPYTHON_VERSION=${{ matrix.python-version }} -DENABLE_SWIG=ON
+        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DPYTHON_VERSION=${{ matrix.python-version }} -DENABLE_SWIG=ON -DCMAKE_VERBOSE_MAKEFILE=ON
         cd ..
         mkdir target-Debug
         cd target-Debug
-        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DENABLE_PYTHON=OFF
+        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DENABLE_PYTHON=OFF -DCMAKE_VERBOSE_MAKEFILE=ON
     - name: build
       run: |
         cd target-Release
-        cmake --build . --config Release -j
+        cmake --build . --config Release -j 
         cd ..
         cd target-Debug
-        cmake --build . --config Debug -j
+        cmake --build . --config Debug -j 
     - name: test # should run w/o install
       run: |
         cd target-Release
@@ -78,7 +78,7 @@ jobs:
         ls env:
         mkdir out
         cd out
-        cmake .. -DCMAKE_INSTALL_PREFIX=install\${{ matrix.platform }}-${{ matrix.configuration }} -DENABLE_PYTHON=OFF -DENABLE_${{ matrix.avx }}=ON
+        cmake .. -DCMAKE_INSTALL_PREFIX=install\${{ matrix.platform }}-${{ matrix.configuration }} -DENABLE_PYTHON=OFF -DENABLE_${{ matrix.avx }}=ON -DCMAKE_VERBOSE_MAKEFILE=ON
     - name: build
       run: |
         cd out
@@ -122,7 +122,7 @@ jobs:
         env
         which python
         mkdir target && cd target
-        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DPYTHON_VERSION=${{ matrix.python-version }} -DENABLE_SWIG=ON
+        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DPYTHON_VERSION=${{ matrix.python-version }} -DENABLE_SWIG=ON -DCMAKE_VERBOSE_MAKEFILE=ON
     - name: build
       run: |
         cd target
@@ -153,7 +153,7 @@ jobs:
     - name: configure
       run: |
         mkdir out && cd out
-        cmake .. -DENABLE_PYTHON=OFF -DENABLE_${{ matrix.avx }}=ON -DCMAKE_INSTALL_PREFIX=${{ matrix.configuration }}
+        cmake .. -DENABLE_PYTHON=OFF -DENABLE_${{ matrix.avx }}=ON -DCMAKE_INSTALL_PREFIX=${{ matrix.configuration }} -DCMAKE_VERBOSE_MAKEFILE=ON
     - name: build
       run: |
         cd out

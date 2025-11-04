@@ -21,7 +21,7 @@
  */
 
 #include <limits>
-#include <std/span>
+#include <span>
 #include <vector>
 
 #include "TestCase.h"

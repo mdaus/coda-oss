@@ -22,7 +22,7 @@
 
 #include <vector>
 #include <memory>
-#include <std/span>
+#include <span>
 
 #include "TestCase.h"
 

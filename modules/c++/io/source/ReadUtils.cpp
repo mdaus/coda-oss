@@ -23,7 +23,7 @@
 #include <io/ReadUtils.h>
 
 #include <io/FileInputStream.h>
-#include <coda_oss/span.h>
+#include <span>
 
 namespace io
 {
@@ -34,7 +34,7 @@ void readFileContents_(const TPath& pathname, std::vector<T>& buffer)
     buffer.resize(inStream.available());
     if (!buffer.empty())
     {
-        inStream.read(coda_oss::span<T>(buffer.data(), buffer.size()), true);
+        inStream.read(std::span<T>(buffer.data(), buffer.size()), true);
     }
 }
 void readFileContents(const std::string& pathname,
@@ -42,7 +42,7 @@ void readFileContents(const std::string& pathname,
 {
     readFileContents_(pathname, buffer);
 }
-void readFileContents(const coda_oss::filesystem::path& pathname, std::vector<coda_oss::byte>& buffer)
+void readFileContents(const std::filesystem::path& pathname, std::vector<coda_oss::byte>& buffer)
 {
     readFileContents_(pathname, buffer);
 }

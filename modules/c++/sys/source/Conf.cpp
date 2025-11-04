@@ -29,7 +29,7 @@
 #include <tuple>
 #include "coda_oss/bit.h"
 #include "coda_oss/cstddef.h"
-#include "coda_oss/span.h"
+#include <span>
 
 #include "sys/Span.h"
 
@@ -133,7 +133,7 @@ bool sys::isLittleEndianSystem()
  *  \param numElems
  */
 template <typename TUInt>
-inline auto byteSwap(coda_oss::span<TUInt> buffer)
+inline auto byteSwap(std::span<TUInt> buffer)
 {
     static_assert(std::is_unsigned<TUInt>::value, "TUInt must be 'unsigned'");
     for (auto& v : buffer)
@@ -143,14 +143,14 @@ inline auto byteSwap(coda_oss::span<TUInt> buffer)
     return sys::as_bytes(buffer);
 }
 template <typename TUInt>
-inline auto byteSwap_n_(coda_oss::span<coda_oss::byte> buffer_)
+inline auto byteSwap_n_(std::span<coda_oss::byte> buffer_)
 {
     const auto buffer = sys::make_span<TUInt>(buffer_.data(), buffer_.size_bytes() / sizeof(TUInt));
     assert(buffer.size_bytes() == buffer_.size_bytes());
     return byteSwap(buffer);
 }
 template <typename TUInt>
-inline auto byteSwap_n(coda_oss::span<coda_oss::byte> buffer, size_t elemSize)
+inline auto byteSwap_n(std::span<coda_oss::byte> buffer, size_t elemSize)
 {
     if (sizeof(TUInt) != elemSize)
     {
@@ -158,7 +158,7 @@ inline auto byteSwap_n(coda_oss::span<coda_oss::byte> buffer, size_t elemSize)
     }
     return byteSwap_n_<TUInt>(buffer);
 }
-static coda_oss::span<const coda_oss::byte> byteSwap(coda_oss::span<coda_oss::byte> buffer, size_t elemSize, size_t numElems)
+static std::span<const coda_oss::byte> byteSwap(std::span<coda_oss::byte> buffer, size_t elemSize, size_t numElems)
 {
     switch (elemSize)
     {
@@ -190,10 +190,10 @@ void sys::byteSwap(void* buffer_, size_t elemSize, size_t numElems)
         return;
 
     auto const pBytes = static_cast<coda_oss::byte*>(buffer_);
-    const coda_oss::span<coda_oss::byte> buffer(pBytes, elemSize * numElems);
+    const std::span<coda_oss::byte> buffer(pBytes, elemSize * numElems);
     std::ignore = ::byteSwap(buffer, elemSize, numElems);
 }
-coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<coda_oss::byte> buffer, size_t elemSize)
+std::span<const coda_oss::byte> sys::byteSwap(std::span<coda_oss::byte> buffer, size_t elemSize)
 {
     if ((buffer.empty()) || (elemSize < 2))
         return sys::make_const_span(buffer);
@@ -218,7 +218,7 @@ coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<coda_oss::byte
  *  \param[out] outputBuffer buffer to write swapped elements to
  */
 template <typename TUInt>
-inline auto byteSwap_n_(coda_oss::span<const TUInt> buffer, coda_oss::span<coda_oss::byte> outputBuffer_)
+inline auto byteSwap_n_(std::span<const TUInt> buffer, std::span<coda_oss::byte> outputBuffer_)
 {
     static_assert(std::is_unsigned<TUInt>::value, "TUInt must be 'unsigned'");
 
@@ -233,7 +233,7 @@ inline auto byteSwap_n_(coda_oss::span<const TUInt> buffer, coda_oss::span<coda_
     return sys::as_bytes(outputBuffer);
 }
 template <typename TUInt>
-inline auto byteSwap_n(coda_oss::span<const coda_oss::byte> buffer_, size_t elemSize, coda_oss::span<coda_oss::byte> outputBuffer)
+inline auto byteSwap_n(std::span<const coda_oss::byte> buffer_, size_t elemSize, std::span<coda_oss::byte> outputBuffer)
 {
     if (sizeof(TUInt) != elemSize)
     {
@@ -245,9 +245,9 @@ inline auto byteSwap_n(coda_oss::span<const coda_oss::byte> buffer_, size_t elem
     return byteSwap_n_<TUInt>(buffer,  outputBuffer);
 }
 
-static auto byteSwap(coda_oss::span<const coda_oss::byte> buffer,
+static auto byteSwap(std::span<const coda_oss::byte> buffer,
                       size_t elemSize, size_t numElems,
-                      coda_oss::span<coda_oss::byte> outputBuffer)
+                      std::span<coda_oss::byte> outputBuffer)
 {
     auto const bufferPtr = buffer.data();
     auto const outputBufferPtr = outputBuffer.data();
@@ -289,15 +289,15 @@ void sys::byteSwap(const void* buffer_, size_t elemSize, size_t numElems, void* 
     }
 
     auto const pBytes = static_cast<const coda_oss::byte*>(buffer_);
-    const coda_oss::span<const coda_oss::byte> buffer(pBytes, elemSize * numElems);
+    const std::span<const coda_oss::byte> buffer(pBytes, elemSize * numElems);
 
     auto const pOutputBytes = static_cast<coda_oss::byte*>(outputBuffer_);
-    const coda_oss::span<coda_oss::byte> outputBuffer(pOutputBytes, elemSize * numElems);
+    const std::span<coda_oss::byte> outputBuffer(pOutputBytes, elemSize * numElems);
 
     std::ignore = ::byteSwap(buffer, elemSize, numElems, outputBuffer);
 }
-coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<const coda_oss::byte> buffer,
-         size_t elemSize, coda_oss::span<coda_oss::byte> outputBuffer)
+std::span<const coda_oss::byte> sys::byteSwap(std::span<const coda_oss::byte> buffer,
+         size_t elemSize, std::span<coda_oss::byte> outputBuffer)
 {
     if ((buffer.empty()) || (outputBuffer.empty()))
     {
@@ -320,9 +320,9 @@ coda_oss::span<const coda_oss::byte> sys::byteSwap(coda_oss::span<const coda_oss
  }
 
 // byte-swap a single value
-coda_oss::span<const coda_oss::byte> sys::byteSwap(
-        coda_oss::span<const coda_oss::byte> inPtr,
-        coda_oss::span<coda_oss::byte> outPtr)
+std::span<const coda_oss::byte> sys::byteSwap(
+        std::span<const coda_oss::byte> inPtr,
+        std::span<coda_oss::byte> outPtr)
 {
     if (inPtr.size() != outPtr.size())
     {

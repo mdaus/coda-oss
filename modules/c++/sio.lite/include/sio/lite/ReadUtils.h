@@ -35,7 +35,7 @@
 #include <sio/lite/FileReader.h>
 #include <sio/lite/FileHeader.h>
 #include <sio/lite/ElementType.h>
-#include <sys/filesystem.h>
+#include <filesystem>
 #include <sys/Span.h>
 
 namespace sio
@@ -71,7 +71,7 @@ void readSIO(const std::string& pathname,
     reader.read(image.get(), numPixels * sizeof(InputT), true);
 }
 template <typename InputT>
-void readSIO(const coda_oss::filesystem::path& pathname,
+void readSIO(const std::filesystem::path& pathname,
              types::RowCol<size_t>& dims,
              std::vector<InputT>& image)
 {

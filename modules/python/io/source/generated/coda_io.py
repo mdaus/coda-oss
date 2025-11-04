@@ -462,7 +462,7 @@ class FileInputStream(SeekableInputStream):
         """
         FileInputStreamOS() -> FileInputStream
         FileInputStreamOS(std::string const & inputFile) -> FileInputStream
-        FileInputStreamOS(coda_oss::filesystem::path const & inputFile) -> FileInputStream
+        FileInputStreamOS(std::filesystem::path const & inputFile) -> FileInputStream
         FileInputStreamOS(char const * inputFile) -> FileInputStream
         __init__(io::FileInputStreamOS self, sys::File const & inputFile) -> FileInputStream
         """

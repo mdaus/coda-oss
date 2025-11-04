@@ -38,8 +38,8 @@
 #include <sys/DateTime.h>
 #include <sys/Dbg.h>
 
-#include <sys/filesystem.h>
-namespace fs = coda_oss::filesystem;
+#include <filesystem>
+namespace fs = std::filesystem;
 
 namespace sys
 {
@@ -86,8 +86,8 @@ AbstractOS::search(const std::vector<std::string>& searchPaths,
     return elementsFound;
 }
 
-std::vector<coda_oss::filesystem::path> AbstractOS::search(
-        const std::vector<coda_oss::filesystem::path>& searchPaths,
+std::vector<std::filesystem::path> AbstractOS::search(
+        const std::vector<std::filesystem::path>& searchPaths,
         const std::string& fragment,
         const std::string& extension,
         bool recursive) const

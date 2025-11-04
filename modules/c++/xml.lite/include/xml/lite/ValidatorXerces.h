@@ -102,7 +102,7 @@ struct CODA_OSS_API ValidatorXerces : public ValidatorInterface
     ValidatorXerces(const std::vector<std::string>& schemaPaths, 
                     logging::Logger* log = nullptr,
                     bool recursive = true);
-    ValidatorXerces(const std::vector<coda_oss::filesystem::path>&,
+    ValidatorXerces(const std::vector<std::filesystem::path>&,
                     logging::Logger* log = nullptr,
                     bool recursive = true);
 
@@ -126,7 +126,7 @@ struct CODA_OSS_API ValidatorXerces : public ValidatorInterface
     bool validate(const str::W1252string&, const std::string& xmlID, std::vector<ValidationInfo>&) const override;
 
     // Search each directory for XSD files
-    static std::vector<coda_oss::filesystem::path> loadSchemas(const std::vector<coda_oss::filesystem::path>& schemaPaths, bool recursive=true);
+    static std::vector<std::filesystem::path> loadSchemas(const std::vector<std::filesystem::path>& schemaPaths, bool recursive=true);
 
 private:
     XercesContext mCtxt;

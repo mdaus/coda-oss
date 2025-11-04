@@ -24,8 +24,8 @@
 #include <algorithm>
 #include <iterator>
 
-#include <sys/filesystem.h>
-namespace fs = coda_oss::filesystem;
+#include <filesystem>
+namespace fs = std::filesystem;
 
 namespace sys
 {
@@ -853,17 +853,17 @@ std::string Path::expandEnvironmentVariables(const std::string& path, fs::file_t
 
 
 template<typename TReturn, typename TSpan, typename TFunc>
-inline auto convertPaths_(coda_oss::span<const TSpan> paths, TFunc fun)
+inline auto convertPaths_(std::span<const TSpan> paths, TFunc fun)
 {
     std::vector<TReturn> retval;
     std::transform(paths.begin(), paths.end(), std::back_inserter(retval), fun);
     return retval;
 }
-std::vector<std::string> sys::convertPaths(coda_oss::span<const fs::path> paths)
+std::vector<std::string> sys::convertPaths(std::span<const fs::path> paths)
 {
     return convertPaths_<std::string>(paths, [](const auto& p) { return p.string(); });
 }
-std::vector<fs::path> sys::convertPaths(coda_oss::span<const std::string> paths)
+std::vector<fs::path> sys::convertPaths(std::span<const std::string> paths)
 {
     return convertPaths_<fs::path>(paths, [](const auto& p) { return p; });
 }

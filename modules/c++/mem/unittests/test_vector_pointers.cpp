@@ -22,7 +22,7 @@
 
 #include <vector>
 #include <complex>
-#include <std/span>
+#include <span>
 #include <type_traits>
 
 #include <mem/VectorOfPointers.h>

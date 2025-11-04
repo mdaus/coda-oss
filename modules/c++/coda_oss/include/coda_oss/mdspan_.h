@@ -3,7 +3,7 @@
  * =========================================================================
  *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
- * © Copyright 2023, Maxar Technologies, Inc.
+ * ï¿½ Copyright 2023, Maxar Technologies, Inc.
  *
  * coda_oss-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,13 +26,13 @@
 
 #include <array>
 
-#include "coda_oss/span.h"
+#include <span>
 
 // This is a simple, partial, and incomplete implementation of `std::mdspan` (in C++23).
 // https://en.cppreference.com/w/cpp/container/mdspan
 //
 // Why? Our (current) needs are much more limited than all the use-cases for `std::mdspan`:
-// dynamic (not static) extents, rank of 2 (rows × cols), contiguous memory, ...
+// dynamic (not static) extents, rank of 2 (rows ï¿½ cols), contiguous memory, ...
 // By the time we really need more features, maybe we'll be using C++23? 
 namespace coda_oss
 {
@@ -79,7 +79,7 @@ private:
 template<typename T, typename TExtents>
 class mdspan final
 {
-    coda_oss::span<T> s_; // `span` instead of a raw pointer to get more range checking.
+    std::span<T> s_; // `span` instead of a raw pointer to get more range checking.
     TExtents ext_;
 
     // c.f., `types::RowCol`

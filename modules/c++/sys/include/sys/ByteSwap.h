@@ -28,7 +28,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include <coda_oss/span.h>
+#include <span>
 #include <coda_oss/cstddef.h>
 #include <type_traits>
 #include <stdexcept>
@@ -51,7 +51,7 @@ namespace sys
  *  \param elemSize
  *  \param numElems
  */
-coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(coda_oss::span<coda_oss::byte>buffer, size_t elemSize);
+std::span<const coda_oss::byte> CODA_OSS_API byteSwap(std::span<coda_oss::byte>buffer, size_t elemSize);
 void CODA_OSS_API byteSwap(void* buffer, size_t elemSize, size_t numElems);
 
 // If the caller has given us bytes, assume she knows what she's doing; i.e., don't check sizeof(T)
@@ -89,7 +89,7 @@ inline void check_elemSize(size_t elemSize)
 // Repackage into a span<T>; the size is 2* because for byte-swapping
 // we want to look at this as an array of `T`, not `std::complex<T>`.
 template <typename T>
-inline auto make_span(coda_oss::span<const std::complex<T>> s)
+inline auto make_span(std::span<const std::complex<T>> s)
 {
     //static_assert(std::is_floating_point<T>::value, "std::complex<T> should use floating-point");
 
@@ -99,7 +99,7 @@ inline auto make_span(coda_oss::span<const std::complex<T>> s)
     return sys::make_span(p, sz);
 }
 template<typename T>
-inline auto make_span(coda_oss::span<std::complex<T>> s)
+inline auto make_span(std::span<std::complex<T>> s)
 {
     //static_assert(std::is_floating_point<T>::value, "std::complex<T> should use floating-point");
 
@@ -130,7 +130,7 @@ inline void byteSwap(std::complex<T>* buffer, size_t elemSize, size_t numElems) 
 }
 
 template <typename T>
-inline auto byteSwap(coda_oss::span<T> buffer)
+inline auto byteSwap(std::span<T> buffer)
 {
     static_assert(!std::is_const<T>::value, "T cannot be 'const'");
     static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
@@ -139,7 +139,7 @@ inline auto byteSwap(coda_oss::span<T> buffer)
 
 // Take care of treating std::complex<T> as T[]
 template <typename T>
-inline auto byteSwap(coda_oss::span<std::complex<T>> buffer)
+inline auto byteSwap(std::span<std::complex<T>> buffer)
 {
     return byteSwap(details::make_span(buffer));
 }
@@ -154,8 +154,8 @@ inline auto byteSwap(coda_oss::span<std::complex<T>> buffer)
  *  \param numElems
  *  \param[out] outputBuffer buffer to write swapped elements to
  */
-coda_oss::span<const coda_oss::byte> CODA_OSS_API byteSwap(coda_oss::span<const coda_oss::byte> buffer,
-         size_t elemSize, coda_oss::span<coda_oss::byte> outputBuffer);
+std::span<const coda_oss::byte> CODA_OSS_API byteSwap(std::span<const coda_oss::byte> buffer,
+         size_t elemSize, std::span<coda_oss::byte> outputBuffer);
 void CODA_OSS_API byteSwap(const void* buffer, size_t elemSize, size_t numElems, void* outputBuffer);
 
 // If the caller has given us bytes, assume she knows what she's doing; i.e., don't check sizeof(T)
@@ -203,20 +203,20 @@ inline void byteSwap(const std::complex<T>* buffer, size_t elemSize, size_t numE
 }
 
 template <typename T>
-inline auto byteSwap(coda_oss::span<const T> buffer, coda_oss::span<coda_oss::byte> outputBuffer)
+inline auto byteSwap(std::span<const T> buffer, std::span<coda_oss::byte> outputBuffer)
 {
     static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
     return byteSwap(as_bytes(buffer), sizeof(T), outputBuffer);
 }
 // Take care of treating std::complex<T> as T[]
 template <typename T>
-inline auto byteSwap(coda_oss::span<const std::complex<T>> buffer, coda_oss::span<coda_oss::byte> outputBuffer)
+inline auto byteSwap(std::span<const std::complex<T>> buffer, std::span<coda_oss::byte> outputBuffer)
 {
     return byteSwap(details::make_span(buffer), outputBuffer);
 }
 
 template <typename T>
-inline auto byteSwap(coda_oss::span<const T> buffer)
+inline auto byteSwap(std::span<const T> buffer)
 {
     std::vector<coda_oss::byte> retval(buffer.size_bytes());
     std::ignore = byteSwap(buffer, make_span(retval));
@@ -224,7 +224,7 @@ inline auto byteSwap(coda_oss::span<const T> buffer)
 }
 // Take care of treating std::complex<T> as T[]
 template <typename T>
-inline auto byteSwap(coda_oss::span<const std::complex<T>> buffer)
+inline auto byteSwap(std::span<const std::complex<T>> buffer)
 {
     return byteSwap(details::make_span(buffer));
 }

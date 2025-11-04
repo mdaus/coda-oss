@@ -23,7 +23,7 @@
 #define CODA_OSS_std_optional_INCLUDED_
 
 #include "coda_oss/optional.h"
-
+#include <optional>
 // Make it (too?) easy for clients to get our various std:: implementations
 #ifndef CODA_OSS_NO_std_optional
     #if CODA_OSS_HAVE_std_optional_ // set in coda_oss/optional.h
@@ -36,8 +36,8 @@
 #if !CODA_OSS_NO_std_optional
 namespace std // This is slightly uncouth: we're not supposed to augment "std".
 {
-    using coda_oss::optional;
-    using coda_oss::make_optional;
+    using std::optional;
+    using std::make_optional;
 }
 #ifndef __cpp_lib_optional
 #define __cpp_lib_optional 201606L // https://en.cppreference.com/w/cpp/feature_test

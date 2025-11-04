@@ -21,9 +21,9 @@
  */
 
 #include <std/string>
-#include <std/filesystem>
+#include <filesystem>
 #include <std/optional>
-#include <std/span>
+#include <span>
 
 #include "io/StringStream.h"
 #include "io/FileInputStream.h"
@@ -60,7 +60,7 @@ static const std::u8string& text8()
 
 static const auto& iso88591Text1252()
 {
-    static const auto retval = str::make_string<str::W1252string>("T\xc9XT");  // ISO8859-1, "TÉXT"
+    static const auto retval = str::make_string<str::W1252string>("T\xc9XT");  // ISO8859-1, "Tï¿½XT"
     return retval;
 }
 static auto pIso88591Text_()
@@ -71,7 +71,7 @@ static auto pIso88591Text_()
 
 static const auto& utf8Text8()
 {
-    static const auto retval = str::make_string<coda_oss::u8string>("T\xc3\x89XT"); // UTF-8,  "TÉXT"
+    static const auto retval = str::make_string<coda_oss::u8string>("T\xc3\x89XT"); // UTF-8,  "Tï¿½XT"
     return retval;
 } 
 static const auto pUtf8Text_()
@@ -443,8 +443,8 @@ TEST_CASE(testReadEmbeddedXml)
     const auto& classificationXML = root.getElementByTagName("Classification", true /*recurse*/);
 
      // UTF-8 characters in 50x50.nitf
-    const std::string classificationText_iso8859_1("NON CLASSIFI\xc9 / UNCLASSIFIED");  // ISO8859-1 "NON CLASSIFIÉ / UNCLASSIFIED"
-    const std::string classificationText_utf_8("NON CLASSIFI\xc3\x89 / UNCLASSIFIED");  // UTF-8 "NON CLASSIFIÉ / UNCLASSIFIED"
+    const std::string classificationText_iso8859_1("NON CLASSIFI\xc9 / UNCLASSIFIED");  // ISO8859-1 "NON CLASSIFIï¿½ / UNCLASSIFIED"
+    const std::string classificationText_utf_8("NON CLASSIFI\xc3\x89 / UNCLASSIFIED");  // UTF-8 "NON CLASSIFIï¿½ / UNCLASSIFIED"
     const auto classificationText_platform = sys::Platform == sys::PlatformType::Linux ? classificationText_utf_8 : classificationText_iso8859_1;
     const auto characterData = classificationXML.getCharacterData();
     TEST_ASSERT_EQ(characterData, classificationText_platform);

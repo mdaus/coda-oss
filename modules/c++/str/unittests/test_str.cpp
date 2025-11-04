@@ -21,7 +21,7 @@
  */
 
 #include <tuple> // std::ignore
-#include <std/span>
+#include <span>
 
 #include <types/Complex.h>
 #include <config/compiler_extensions.h>
@@ -64,9 +64,9 @@ TEST_CASE(testUpper)
     TEST_ASSERT_EQ(s, "TEST-SOMETHING1");
 
     //#if _WIN32
-    //s = "<×àa`öo\"øo/þb÷>";
+    //s = "<ï¿½ï¿½a`ï¿½o\"ï¿½o/ï¿½bï¿½>";
     //str::w1252_upper(s);
-    //TEST_ASSERT_EQ(s, "<×ÀA`ÖO\"ØO/ÞB÷>");
+    //TEST_ASSERT_EQ(s, "<ï¿½ï¿½A`ï¿½O\"ï¿½O/ï¿½Bï¿½>");
     //#endif
 }
 
@@ -102,9 +102,9 @@ TEST_CASE(testLower)
     TEST_ASSERT_EQ(s, "test1");
 
     //#if _WIN32
-    //s = "[×ÀÖØÞ÷]";
+    //s = "[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½]";
     //str::w1252_lower(s);
-    //TEST_ASSERT_EQ(s, "[×àöøþ÷]");
+    //TEST_ASSERT_EQ(s, "[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½]");
     //#endif
 }
 

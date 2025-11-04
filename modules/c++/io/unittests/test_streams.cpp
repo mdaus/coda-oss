@@ -20,7 +20,7 @@
  *
  */
 
-#include <std/span>
+#include <span>
 #include <std/cstddef>
 
 #include <import/io.h>

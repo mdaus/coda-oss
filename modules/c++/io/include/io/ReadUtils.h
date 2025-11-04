@@ -30,7 +30,7 @@
 #include <config/Exports.h>
 #include <sys/Conf.h>
 #include <coda_oss/cstddef.h> // byte
-#include <sys/filesystem.h>
+#include <filesystem>
 
 namespace io
 {
@@ -43,7 +43,7 @@ namespace io
  * \param buffer Raw bytes of the file
  */
 CODA_OSS_API void readFileContents(const std::string& pathname, std::vector<sys::byte>& buffer);
-CODA_OSS_API void readFileContents(const coda_oss::filesystem::path& pathname, std::vector<coda_oss::byte>& buffer);
+CODA_OSS_API void readFileContents(const std::filesystem::path& pathname, std::vector<coda_oss::byte>& buffer);
 
 /*!
  * Reads the contents of a file into a string.  The file is assumed to be a
