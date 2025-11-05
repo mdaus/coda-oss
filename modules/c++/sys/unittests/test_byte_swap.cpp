@@ -24,8 +24,8 @@
 
 #include <array>
 #include <vector>
-#include <std/bit> // std::endian
-#include <std/cstddef>
+#include <bit> // std::endian
+#include <cstddef>
 #include <span>
 #include <type_traits>
 

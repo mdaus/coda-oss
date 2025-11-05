@@ -4053,7 +4053,7 @@ fail:
 SWIGINTERN PyObject *_wrap_OutputStream_write__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   io::OutputStream *arg1 = (io::OutputStream *) 0 ;
-  coda_oss::byte arg2 ;
+  std::byte arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 ;
@@ -4070,12 +4070,12 @@ SWIGINTERN PyObject *_wrap_OutputStream_write__SWIG_1(PyObject *SWIGUNUSEDPARM(s
   {
     res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_coda_oss__byte,  0  | 0);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "OutputStream_write" "', argument " "2"" of type '" "coda_oss::byte""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "OutputStream_write" "', argument " "2"" of type '" "std::byte""'"); 
     }  
     if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "OutputStream_write" "', argument " "2"" of type '" "coda_oss::byte""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "OutputStream_write" "', argument " "2"" of type '" "std::byte""'");
     } else {
-      coda_oss::byte * temp = reinterpret_cast< coda_oss::byte * >(argp2);
+      std::byte * temp = reinterpret_cast< std::byte * >(argp2);
       arg2 = *temp;
       if (SWIG_IsNewObj(res2)) delete temp;
     }
@@ -4402,7 +4402,7 @@ fail:
   SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'OutputStream_write'.\n"
     "  Possible C/C++ prototypes are:\n"
     "    io::OutputStream::write(sys::byte)\n"
-    "    io::OutputStream::write(coda_oss::byte)\n"
+    "    io::OutputStream::write(std::byte)\n"
     "    io::OutputStream::write(std::string const &)\n"
     "    io::OutputStream::write(coda_oss::u8string const &)\n"
     "    io::OutputStream::write(void const *,size_t)\n");
@@ -6551,7 +6551,7 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"OutputStream_write", _wrap_OutputStream_write, METH_VARARGS, (char *)"\n"
 		"write(sys::byte b)\n"
-		"write(coda_oss::byte b)\n"
+		"write(std::byte b)\n"
 		"write(std::string const & str)\n"
 		"write(coda_oss::u8string const & str)\n"
 		"OutputStream_write(OutputStream self, void const * buffer, size_t len)\n"
@@ -6711,7 +6711,7 @@ static void *_p_io__SeekableNullOutputStreamTo_p_io__Seekable(void *x, int *SWIG
 }
 static swig_type_info _swigt__p_OutputStream = {"_p_OutputStream", "OutputStream *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_coda_oss__byte = {"_p_coda_oss__byte", "coda_oss::byte *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_coda_oss__byte = {"_p_coda_oss__byte", "std::byte *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_coda_oss__filesystem__path = {"_p_coda_oss__filesystem__path", "std::filesystem::path *|io::FileOutputStreamOS::path *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_coda_oss__u8string = {"_p_coda_oss__u8string", "coda_oss::u8string *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_io__BidirectionalStream = {"_p_io__BidirectionalStream", "io::BidirectionalStream *", 0, 0, (void*)0, 0};

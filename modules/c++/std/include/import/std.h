@@ -95,8 +95,8 @@ CODA_OSS_disable_warning_system_header_push
 #include <random>
 
 //#include <coda_oss/filesystem.h>
-#include <coda_oss/bit.h>
-#include <coda_oss/cstddef.h>
+#include <bit>
+#include <cstddef>
 #include <coda_oss/numbers.h>
 #include <coda_oss/optional.h>
 #include <span>

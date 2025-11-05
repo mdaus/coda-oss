@@ -21,13 +21,7 @@
     <ClInclude Include="gsl\include\gsl\use_gsl.h">
       <Filter>gsl</Filter>
     </ClInclude>
-    <ClInclude Include="coda_oss\include\coda_oss\bit.h">
-      <Filter>coda_oss</Filter>
-    </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\CPlusPlus.h">
-      <Filter>coda_oss</Filter>
-    </ClInclude>
-    <ClInclude Include="coda_oss\include\coda_oss\cstddef.h">
       <Filter>coda_oss</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\namespace_.h">
@@ -37,12 +31,6 @@
       <Filter>coda_oss</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\optional_.h">
-      <Filter>coda_oss</Filter>
-    </ClInclude>
-    <ClInclude Include="coda_oss\include\coda_oss\span.h">
-      <Filter>coda_oss</Filter>
-    </ClInclude>
-    <ClInclude Include="coda_oss\include\coda_oss\span_.h">
       <Filter>coda_oss</Filter>
     </ClInclude>
     <ClInclude Include="coda_oss\include\coda_oss\string.h">

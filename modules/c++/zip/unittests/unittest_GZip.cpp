@@ -66,7 +66,7 @@ TEST_CASE(gzip)
         output.close();
     }
     
-    std::vector<coda_oss::byte> buffer;
+    std::vector<std::byte> buffer;
     io::readFileContents(outputPath, buffer);
     TEST_ASSERT_EQ(32, buffer.size());
     {

@@ -16,17 +16,13 @@
     <ClInclude Include="cli\include\cli\ArgumentParser.h" />
     <ClInclude Include="cli\include\cli\Results.h" />
     <ClInclude Include="cli\include\cli\Value.h" />
-    <ClInclude Include="coda_oss\include\coda_oss\bit.h" />
     <ClInclude Include="coda_oss\include\coda_oss\CPlusPlus.h" />
-    <ClInclude Include="coda_oss\include\coda_oss\cstddef.h" />
     <ClInclude Include="coda_oss\include\coda_oss\mdspan.h" />
     <ClInclude Include="coda_oss\include\coda_oss\mdspan_.h" />
     <ClInclude Include="coda_oss\include\coda_oss\namespace_.h" />
     <ClInclude Include="coda_oss\include\coda_oss\numbers.h" />
     <ClInclude Include="coda_oss\include\coda_oss\optional.h" />
     <ClInclude Include="coda_oss\include\coda_oss\optional_.h" />
-    <ClInclude Include="coda_oss\include\coda_oss\span.h" />
-    <ClInclude Include="coda_oss\include\coda_oss\span_.h" />
     <ClInclude Include="coda_oss\include\coda_oss\string.h" />
     <ClInclude Include="coda_oss\include\coda_oss\type_traits.h" />
     <ClInclude Include="config\include\config\compiler_extensions.h" />

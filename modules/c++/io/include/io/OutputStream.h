@@ -30,7 +30,7 @@
 #include "sys/Dbg.h"
 #include "sys/Conf.h"
 #include "coda_oss/string.h"
-#include "coda_oss/cstddef.h"
+#include <cstddef>
 #include <span>
 
 /*!
@@ -64,7 +64,7 @@ struct CODA_OSS_API OutputStream
     {
         write(&b, 1);
     }
-    void write(coda_oss::byte b)
+    void write(std::byte b)
     {
         write(&b, 1);
     }

@@ -22,7 +22,7 @@
 
 #include "TestCase.h"
 
-#include <std/cstddef>
+#include <cstddef>
 
 #include <sys/Conf.h>
 #include <sys/AbstractOS.h>

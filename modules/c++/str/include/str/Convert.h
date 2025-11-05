@@ -38,7 +38,7 @@
 #include "config/Exports.h"
 #include "coda_oss/string.h"
 #include "coda_oss/optional.h"
-#include "coda_oss/cstddef.h"
+#include <cstddef>
 #include "types/Complex.h"
 #include "import/except.h"
 #include "gsl/gsl.h"
@@ -114,7 +114,7 @@ inline std::string toString(int8_t value)
 {
     return toString(gsl::narrow<int>(value));
 }
-inline std::string toString(coda_oss::byte value)
+inline std::string toString(std::byte value)
 {
     return toString(gsl::narrow<uint8_t>(value));
 }

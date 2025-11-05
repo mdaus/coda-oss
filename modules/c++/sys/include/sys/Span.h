@@ -26,7 +26,7 @@
 #define CODA_OSS_sys_Span_h_INCLUDED_
 
 #include <span>
-#include <coda_oss/cstddef.h>
+#include <cstddef>
 #include <vector>
 #include <array>
 #include <type_traits>

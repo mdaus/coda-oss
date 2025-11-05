@@ -165,7 +165,7 @@ class OutputStream(_object):
     def write(self, *args) -> "void":
         """
         write(OutputStream self, sys::byte b)
-        write(OutputStream self, coda_oss::byte b)
+        write(OutputStream self, std::byte b)
         write(OutputStream self, std::string const & str)
         write(OutputStream self, coda_oss::u8string const & str)
         write(OutputStream self, void const * buffer, size_t len)

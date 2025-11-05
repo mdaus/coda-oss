@@ -25,7 +25,7 @@
 #include <stdint.h>
 
 #include <array>
-#include <std/cstddef> // std::byte
+#include <cstddef> // std::byte
 #include <span>
 
 #include <sys/ByteSwap.h>

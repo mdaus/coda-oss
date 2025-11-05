@@ -29,7 +29,7 @@
 #include <stdlib.h>
 
 #include <span>
-#include <coda_oss/cstddef.h>
+#include <cstddef>
 #include <type_traits>
 #include <stdexcept>
 #include <complex>
@@ -51,7 +51,7 @@ namespace sys
  *  \param elemSize
  *  \param numElems
  */
-std::span<const coda_oss::byte> CODA_OSS_API byteSwap(std::span<coda_oss::byte>buffer, size_t elemSize);
+std::span<const std::byte> CODA_OSS_API byteSwap(std::span<std::byte>buffer, size_t elemSize);
 void CODA_OSS_API byteSwap(void* buffer, size_t elemSize, size_t numElems);
 
 // If the caller has given us bytes, assume she knows what she's doing; i.e., don't check sizeof(T)
@@ -61,7 +61,7 @@ inline void byteSwap_(TByte* buffer, size_t elemSize, size_t numElems)
     void* const buffer_ = buffer;
     byteSwap(buffer_, elemSize, numElems);
 }
-inline void byteSwap(coda_oss::byte* buffer, size_t elemSize, size_t numElems)
+inline void byteSwap(std::byte* buffer, size_t elemSize, size_t numElems)
 {
     return byteSwap_(buffer, elemSize, numElems);
 }
@@ -154,8 +154,8 @@ inline auto byteSwap(std::span<std::complex<T>> buffer)
  *  \param numElems
  *  \param[out] outputBuffer buffer to write swapped elements to
  */
-std::span<const coda_oss::byte> CODA_OSS_API byteSwap(std::span<const coda_oss::byte> buffer,
-         size_t elemSize, std::span<coda_oss::byte> outputBuffer);
+std::span<const std::byte> CODA_OSS_API byteSwap(std::span<const std::byte> buffer,
+         size_t elemSize, std::span<std::byte> outputBuffer);
 void CODA_OSS_API byteSwap(const void* buffer, size_t elemSize, size_t numElems, void* outputBuffer);
 
 // If the caller has given us bytes, assume she knows what she's doing; i.e., don't check sizeof(T)
@@ -167,7 +167,7 @@ inline void byteSwap_(const TByte* buffer, size_t elemSize, size_t numElems, U* 
     byteSwap(buffer_, elemSize, numElems, outputBuffer_);
 }
 template<typename U>
-inline void byteSwap(const coda_oss::byte* buffer, size_t elemSize, size_t numElems, U* outputBuffer)
+inline void byteSwap(const std::byte* buffer, size_t elemSize, size_t numElems, U* outputBuffer)
 {
     byteSwap_(buffer, elemSize, numElems, outputBuffer);
 }
@@ -203,14 +203,14 @@ inline void byteSwap(const std::complex<T>* buffer, size_t elemSize, size_t numE
 }
 
 template <typename T>
-inline auto byteSwap(std::span<const T> buffer, std::span<coda_oss::byte> outputBuffer)
+inline auto byteSwap(std::span<const T> buffer, std::span<std::byte> outputBuffer)
 {
     static_assert(details::is_byte_swappable<T>(), "T should not be a 'struct'");
     return byteSwap(as_bytes(buffer), sizeof(T), outputBuffer);
 }
 // Take care of treating std::complex<T> as T[]
 template <typename T>
-inline auto byteSwap(std::span<const std::complex<T>> buffer, std::span<coda_oss::byte> outputBuffer)
+inline auto byteSwap(std::span<const std::complex<T>> buffer, std::span<std::byte> outputBuffer)
 {
     return byteSwap(details::make_span(buffer), outputBuffer);
 }
@@ -218,7 +218,7 @@ inline auto byteSwap(std::span<const std::complex<T>> buffer, std::span<coda_oss
 template <typename T>
 inline auto byteSwap(std::span<const T> buffer)
 {
-    std::vector<coda_oss::byte> retval(buffer.size_bytes());
+    std::vector<std::byte> retval(buffer.size_bytes());
     std::ignore = byteSwap(buffer, make_span(retval));
     return retval;
 }
@@ -257,7 +257,7 @@ inline auto byteSwap(std::complex<T> val)
 struct ByteSwapRunnable final : public sys::Runnable
 {
     ByteSwapRunnable(void* buffer, size_t elemSize, size_t startElement, size_t numElements) noexcept :
-        mBuffer(static_cast<coda_oss::byte*>(buffer) + startElement * elemSize),
+        mBuffer(static_cast<std::byte*>(buffer) + startElement * elemSize),
         mElemSize(elemSize), mNumElements(numElements)
     {
     }
@@ -281,9 +281,9 @@ private:
 struct ByteSwapCopyRunnable final : public sys::Runnable
 {
     ByteSwapCopyRunnable(const void* buffer, size_t elemSize, size_t startElement, size_t numElements, void* outputBuffer) noexcept :
-        mBuffer(static_cast<const coda_oss::byte*>(buffer) + startElement * elemSize),
+        mBuffer(static_cast<const std::byte*>(buffer) + startElement * elemSize),
         mElemSize(elemSize), mNumElements(numElements),
-         mOutputBuffer(static_cast<coda_oss::byte*>(outputBuffer) + startElement * elemSize)
+         mOutputBuffer(static_cast<std::byte*>(outputBuffer) + startElement * elemSize)
     {
     }
     void run() override

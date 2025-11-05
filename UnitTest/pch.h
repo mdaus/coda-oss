@@ -24,8 +24,8 @@
 #include <assert.h>
 
 #include "import/std.h"
-#include <std/bit>
-#include <std/cstddef>
+#include <bit>
+#include <cstddef>
 #include <filesystem>
 #include <std/numbers>
 #include <std/optional>
