@@ -22,14 +22,13 @@
 
 #include <string>
 #include <filesystem>
-#include <std/optional>
+#include <optional>
 #include <span>
 
 #include "io/StringStream.h"
 #include "io/FileInputStream.h"
 #include "str/Convert.h"
 #include "str/Encoding.h"
-#include "coda_oss/CPlusPlus.h"
 #include "sys/OS.h"
 #include "sys/FileFinder.h"
 #include <TestCase.h>

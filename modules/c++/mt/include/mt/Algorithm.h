@@ -27,7 +27,7 @@
 #include <future>
 
 #include "config/compiler_extensions.h"
-#include "coda_oss/CPlusPlus.h"
+#include "config/CPlusPlus.h"
 #if CODA_OSS_cpp17
 	// <execution> is broken with the older version of GCC we're using
 	#if (__GNUC__ >= 10) || _MSC_VER

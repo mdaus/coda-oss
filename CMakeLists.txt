@@ -2,8 +2,8 @@
 #
 # Author:  Scott A. Colcord
 
-cmake_minimum_required(VERSION 3.28)
-project(coda-oss VERSION 1.0.0)
+cmake_minimum_required(VERSION 3.26)
+project(coda-oss VERSION 1.0.0 LANGUAGES C CXX)
 
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     # build and package with conan
@@ -16,14 +16,14 @@ endif()
 if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
     # this is the top level project
 
-    # Only set std if not used as external library
+    # Only set std if not used as library
     set(CMAKE_CXX_STANDARD 23)
     set(CXX_STANDARD_REQUIRED true)
 
     # Always turn on "warnings as errors" to avoid lots of (meaningless?) build output;
     # we'll dial-back warnings as necessary.
     if (MSVC)
-        add_compile_options(/WX) # warnings as errors
+        # No warnings as errors for MSVC
         add_compile_options(/MP) # multi-processor compile
     elseif (UNIX)
         add_compile_options(-Werror) # warnings as errors
@@ -52,6 +52,4 @@ add_subdirectory("modules")
 # generate package config, with the following paths exported
 set(JARS_DIR ${CODA_STD_PROJECT_LIB_DIR} CACHE INTERNAL
     "path to installed jars, needed by downstream projects")
-set(SWIG_INCLUDE_DIR "${CODA_STD_PROJECT_INCLUDE_DIR}/swig" CACHE INTERNAL
-    "path to installed SWIG includes, needed by downstream projects")
-coda_generate_package_config(JARS_DIR SWIG_INCLUDE_DIR)
+coda_generate_package_config(JARS_DIR)

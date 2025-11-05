@@ -27,11 +27,11 @@
 #include <bit>
 #include <cstddef>
 #include <filesystem>
-#include <std/numbers>
-#include <std/optional>
+#include <numbers>
+#include <optional>
 #include <span>
 #include <string>
-#include <std/type_traits>
+#include <type_traits>
 
 #include "CppUnitTest.h"
 
@@ -49,10 +49,8 @@
 #include <import/re.h>
 #include <import/zip.h>
 #include <import/xml/lite.h>
-#include <import/hdf5/lite.h>
 
 #include <io/ReadUtils.h>
-#include <hdf5/lite/highfive.h>
 
 #include "TestCase.h"
 

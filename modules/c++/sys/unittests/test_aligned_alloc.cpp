@@ -28,9 +28,7 @@
 #include <str/Convert.h>
 #include "TestCase.h"
 
-
-bool
-testAlignedAlloc(const size_t numBytes_, const size_t alignment)
+bool testAlignedAlloc(const size_t numBytes_, const size_t alignment)
 {
     // Allocate an aligned buffer
     void* const ptr = sys::alignedAlloc(numBytes_, alignment);

@@ -65,12 +65,10 @@ struct CODA_OSS_API Document  // SOAPDocument derives :-(
         mRootNode(rootNode), mOwnRoot(own)
     {
     }
-    #ifndef SWIG // SWIG doesn't like std::unique_ptr
     explicit Document(std::unique_ptr<Element>&& rootNode) : // implicitly own=true
         Document(rootNode.release(), true /*own*/)
     {
     }
-    #endif // SWIG
 
     /*!
      * Destroy the xml tree.  This deletes the nodes if they exist
@@ -81,7 +79,6 @@ struct CODA_OSS_API Document  // SOAPDocument derives :-(
         destroy();
     }
 
-    #ifndef SWIG // SWIG doesn't like std::unique_ptr
     std::unique_ptr<Document>& clone(std::unique_ptr<Document>& doc) const
     {
         doc = std::make_unique<Document>();
@@ -96,7 +93,6 @@ struct CODA_OSS_API Document  // SOAPDocument derives :-(
         std::unique_ptr<Document> doc;
         return clone(doc).release();
     }
-    #endif // SWIG
 
     /*!
      * Factory-type method for creating a new Element
@@ -106,7 +102,6 @@ struct CODA_OSS_API Document  // SOAPDocument derives :-(
      * \return A new element
      */
     virtual Element *createElement(const std::string & qname, const std::string & uri, std::string characterData = "");
-    #ifndef SWIG // SWIG doesn't like std::unique_ptr
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const std::string& characterData) const;
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const std::u8string& characterData) const;
     #endif // SWIG
@@ -146,12 +141,10 @@ struct CODA_OSS_API Document  // SOAPDocument derives :-(
      * \param element The node to set.
      */
     void setRootElement(Element * element, bool own = true);
-    #ifndef SWIG // SWIG doesn't like std::unique_ptr
     void setRootElement(std::unique_ptr<Element>&& element) // implicitly own=true
     {
         setRootElement(element.release(), true /*own*/);
     }
-    #endif // SWIG
 
     /*!
      * Retrieves the internal root element
@@ -163,13 +156,11 @@ struct CODA_OSS_API Document  // SOAPDocument derives :-(
             mOwnRoot = false;
         return mRootNode;
     }
-    #ifndef SWIG // SWIG doesn't like std::unique_ptr
     std::unique_ptr<Element>& getRootElement(std::unique_ptr<Element>& rootNode) // implicitly steal=true
     {
         rootNode.reset(getRootElement(true /*steal*/));
         return rootNode;
     }
-    #endif // SWIG
     Element *getRootElement() const
     {
         return mRootNode;

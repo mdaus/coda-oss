@@ -33,7 +33,7 @@
 		#define CODA_OSS_use_real_gsl_ (__GNUC__ >= 5) 
 	#else 
 		// assume GSL can be compiled with any C++14 compiler
-		#include "coda_oss/CPlusPlus.h"
+		#include "config/CPlusPlus.h"
 		#define CODA_OSS_use_real_gsl_ CODA_OSS_cpp14
 	#endif
 #endif

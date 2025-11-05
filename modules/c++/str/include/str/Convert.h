@@ -36,7 +36,7 @@
 #include <typeinfo>
 
 #include "config/Exports.h"
-#include "coda_oss/optional.h"
+#include <optional>
 #include <cstddef>
 #include "types/Complex.h"
 #include "import/except.h"
@@ -155,7 +155,7 @@ inline std::string toString(char value)
 }
 
 template <typename T>
-inline std::string toString(const coda_oss::optional<T>& value)
+inline std::string toString(const std::optional<T>& value)
 {
     // TODO: handle empty/NULL optional?
     return toString(value.value());

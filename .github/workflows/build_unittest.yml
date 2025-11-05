@@ -12,30 +12,22 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest]
-        python-version: ['3.7']
-    name: ${{ matrix.os }}-${{ matrix.python-version }}-CMake
+    name: ${{ matrix.os }}-CMake
     runs-on: ${{ matrix.os }}
     steps:
     - name: Skip Duplicate Actions
       uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
-    - name: Set up Python
-      uses: actions/setup-python@v5 # https://github.com/marketplace/actions/setup-python
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install python dependencies
-      run: |
-        pip install numpy
     - name: configure
       run: |
         ls env:
         mkdir target-Release
         cd target-Release
-        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DPYTHON_VERSION=${{ matrix.python-version }} -DENABLE_SWIG=ON
+        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github
         cd ..
         mkdir target-Debug
         cd target-Debug
-        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DENABLE_PYTHON=OFF
+        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github
     - name: build
       run: |
         cd target-Release
@@ -78,7 +70,7 @@ jobs:
         ls env:
         mkdir out
         cd out
-        cmake .. -DCMAKE_INSTALL_PREFIX=install\${{ matrix.platform }}-${{ matrix.configuration }} -DENABLE_PYTHON=OFF -DENABLE_${{ matrix.avx }}=ON
+        cmake .. -DCMAKE_INSTALL_PREFIX=install\${{ matrix.platform }}-${{ matrix.configuration }} -DENABLE_${{ matrix.avx }}=ON
     - name: build
       run: |
         cd out
@@ -103,26 +95,17 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04]
-        python-version: ['3.7']
-    name: ${{ matrix.os }}-${{ matrix.python-version }}-CMake
+    name: ${{ matrix.os }}-CMake
     runs-on: ${{ matrix.os }}
     steps:
     - name: Skip Duplicate Actions
       uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
-    - name: Set up Python
-      uses: actions/setup-python@v5 # https://github.com/marketplace/actions/setup-python
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install python dependencies
-      run: |
-        pip install numpy
     - name: configure
       run: |
         env
-        which python
         mkdir target && cd target
-        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github -DPYTHON_VERSION=${{ matrix.python-version }} -DENABLE_SWIG=ON
+        cmake .. -DCMAKE_INSTALL_PREFIX=install${{ matrix.os }}CMake-Github
     - name: build
       run: |
         cd target
@@ -141,7 +124,7 @@ jobs:
   build-linux-cmake:
     strategy:
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-24.04]
         configuration: [Debug, Release]
         avx: [AVX512F]
     name: ${{ matrix.os }}-${{ matrix.configuration }}-${{ matrix.avx }}-CMake
@@ -150,10 +133,14 @@ jobs:
     - name: Skip Duplicate Actions
       uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
+    - name: Setup Cpp
+      uses: aminya/setup-cpp@v1 # https://github.com/marketplace/actions/setup-cpp-c-c
+      with:
+          compiler: gcc-14
     - name: configure
       run: |
         mkdir out && cd out
-        cmake .. -DENABLE_PYTHON=OFF -DENABLE_${{ matrix.avx }}=ON -DCMAKE_INSTALL_PREFIX=${{ matrix.configuration }}
+        cmake .. -DENABLE_${{ matrix.avx }}=ON -DCMAKE_INSTALL_PREFIX=${{ matrix.configuration }}
     - name: build
       run: |
         cd out

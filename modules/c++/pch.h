@@ -13,7 +13,7 @@
 #define CODA_OSS_LIBRARY_SHARED 1
 #endif
 
-#include "coda_oss/CPlusPlus.h"
+#include "config/CPlusPlus.h"
 #include "config/disable_compiler_warnings.h"
 
 CODA_OSS_disable_warning_system_header_push
@@ -115,7 +115,4 @@ CODA_OSS_disable_warning_pop
 
 #include "xml/lite/xerces_.h"
 #pragma comment(lib, "xerces-c")
-
-#include "hdf5/lite/H5_.h"
-#pragma comment(lib, "hdf5-c++.lib")
 

@@ -31,7 +31,7 @@
 
 #include "config/compiler_extensions.h"
 #include "config/Exports.h"
-#include "coda_oss/CPlusPlus.h"
+#include "config/CPlusPlus.h"
 #include <string>
 #include "str/Convert.h"
 #include "str/W1252string.h"

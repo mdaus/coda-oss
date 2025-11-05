@@ -225,9 +225,6 @@
     <ClCompile Include="..\modules\c++\types\unittests\test_complex.cpp">
       <Filter>types</Filter>
     </ClCompile>
-    <ClCompile Include="hdf5.lite.cpp">
-      <Filter>hdf5.lite</Filter>
-    </ClCompile>
     <ClCompile Include="zip.cpp">
       <Filter>zip</Filter>
     </ClCompile>
@@ -251,12 +248,6 @@
     </ClCompile>
     <ClCompile Include="..\modules\c++\xml.lite\unittests\test_xmlparser.cpp">
       <Filter>xml.lite</Filter>
-    </ClCompile>
-    <ClCompile Include="..\modules\c++\hdf5.lite\unittests\test_highfive.cpp">
-      <Filter>hdf5.lite</Filter>
-    </ClCompile>
-    <ClCompile Include="..\modules\drivers\highfive\unittests\tests_high_five_base.cpp">
-      <Filter>hdf5.lite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -308,9 +299,6 @@
     </Filter>
     <Filter Include="re">
       <UniqueIdentifier>{d205c017-7e98-456f-923f-2f78870a3d7d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="hdf5.lite">
-      <UniqueIdentifier>{5997a3de-0dc5-4439-b068-b351c5f395e3}</UniqueIdentifier>
     </Filter>
     <Filter Include="zip">
       <UniqueIdentifier>{223c163f-0321-4935-8e20-0e05f048adf0}</UniqueIdentifier>

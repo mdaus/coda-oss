@@ -84,7 +84,6 @@ struct CODA_OSS_API Element  // SOAPElement derives :-(
         setCharacterData(characterData);
     }
 
-    #ifndef SWIG // SWIG doesn't like std::unique_ptr
     static std::unique_ptr<Element> create(const std::string& qname, const std::string& uri = "", const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const std::u8string&);
@@ -100,15 +99,8 @@ struct CODA_OSS_API Element  // SOAPElement derives :-(
     void destroyChildren();
 
     // use clone() to duplicate an Element
-    #if !(defined(SWIG) || defined(SWIGPYTHON) || defined(HAVE_PYTHON_H))  // SWIG needs these
-    //private: // encoded as part of the C++ name mangling by some compilers
-    #endif
     Element(const Element&);
     Element& operator=(const Element&);
-    #if !(defined(SWIG) || defined(SWIGPYTHON) || defined(HAVE_PYTHON_H))
-    public:
-    #endif
-
     Element(Element&&) = default;
     Element& operator=(Element&&) = default;
 
@@ -437,9 +429,7 @@ struct CODA_OSS_API Element  // SOAPElement derives :-(
      *  Adds a child element to this element
      *  \param node the child element to add
      */
-    #ifndef SWIG // SWIG doesn't like std::unique_ptr
     virtual Element& addChild(std::unique_ptr<Element>&& node);
-    #endif // SWIG
 
     /*!
      *  Returns all of the children of this element
@@ -500,9 +490,6 @@ private:
 };
 
 CODA_OSS_API Element& add(const xml::lite::QName&, const std::string& value, Element& parent);
-
-#ifndef SWIG
-// The (old) version of SWIG we're using doesn't like certain C++11 features.
 
 /*!
  *  Returns the character data of this element converted to the specified type.
@@ -573,29 +560,27 @@ inline Element& addNewElement(const xml::lite::QName& name, const T& value, Elem
 }
 
 template <typename T, typename ToString>
-inline Element& addNewElement(const xml::lite::QName& name, const coda_oss::optional<T>& v, Element& parent,
+inline Element& addNewElement(const xml::lite::QName& name, const std::optional<T>& v, Element& parent,
     ToString toString)
 {
     return addNewElement(name, v.value(), parent, toString);
 }
 template<typename T>
-inline Element& addNewElement(const xml::lite::QName& name, const coda_oss::optional<T>& v, Element& parent)
+inline Element& addNewElement(const xml::lite::QName& name, const std::optional<T>& v, Element& parent)
 {
     return addNewElement(name, v.value(), parent);
 }
 template <typename T, typename ToString>
-inline Element* addNewOptionalElement(const xml::lite::QName& name, const coda_oss::optional<T>& v, Element& parent,
+inline Element* addNewOptionalElement(const xml::lite::QName& name, const std::optional<T>& v, Element& parent,
         ToString toString)
 {
     return v.has_value() ? &addNewElement(name, v, parent, toString) : nullptr;
 }
 template<typename T>
-inline Element* addNewOptionalElement(const xml::lite::QName& name, const coda_oss::optional<T>& v, Element& parent)
+inline Element* addNewOptionalElement(const xml::lite::QName& name, const std::optional<T>& v, Element& parent)
 {
     return v.has_value() ? &addNewElement(name, v, parent) : nullptr;
 }
-
-#endif // SWIG
 
 
 CODA_OSS_API Element& setChild(Element&, std::unique_ptr<Element>&&);  // destroyChildren() + addChild()

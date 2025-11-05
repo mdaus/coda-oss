@@ -356,8 +356,7 @@ static auto toString(const std::u16string& s)
     return str::details::to_string(str::to_u8string(s));
 }
 
-static void test_wide_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16,
-    const std::wstring& wstring, const std::string& native, const str::W1252string& w1252)
+static void test_wide_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16, const std::wstring& wstring, const std::string& native, const str::W1252string& w1252)
 {
     // from UTF-16 back to Windows-1252
     const auto str_w1252 = str::str<std::string>(w1252);
@@ -448,30 +447,42 @@ static void test_Windows1252_(const std::string& testName, const char* pStr, std
     w1252 = to_w1252string(pUtf16);
     test_wide_(testName, pStr, pUtf16, wstring, s, w1252);
 }
-TEST_CASE(test_Windows1252_WIN32)
+// https://en.wikipedia.org/wiki/Windows-1252
+TEST_CASE(test_Windows1252_WIN32_1)
 {
-    // https://en.wikipedia.org/wiki/Windows-1252
-    #if _WIN32
+#if _WIN32
     // can convert with bit-twiddling
     constexpr auto w1252_a1_ff = "����"; // <INVERTED EXCLAMATION MARK><CENT SIGN><LATIN SMALL LETTER THORN><LATIN SMALL LETTER Y WITH DIAERESIS>
     //constexpr auto w1252_a1_ff = "\xa1\xa2\xfe\xff"; 
     constexpr auto u16_w1252_a1_ff = u"\u00a1\u00a2\u00fe\u00ff";
     test_Windows1252_(testName, w1252_a1_ff, u16_w1252_a1_ff);
-
+#else
+    TEST_ASSERT(true)
+#endif
+}
+TEST_CASE(test_Windows1252_WIN32_2)
+{
+#if _WIN32
     constexpr auto w1252 = "���������������������������"; // these values must be mapped
     //constexpr auto w1252 = "\x80\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8e" // these values must be mapped
     //    "\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9e\x9f";
     constexpr auto u16_utf8 = u"\u20ac\u201a\u0192\u201e\u2026\u2020\u2021\u02c6\u2030\u0160\u2039\u0152\u017d"
         "\u2018\u2019\u201c\u201d\u2022\u2013\u2014\u02dc\u2122\u0161\u203a\u0153\u017e\u0178";
     test_Windows1252_(testName, w1252, u16_utf8);
-    
+#else
+    TEST_ASSERT(true)
+#endif
+}
+TEST_CASE(test_Windows1252_WIN32_3)
+{
+#if _WIN32
     // This only works with "relaxed" (i.e., not "strict") conversion; which is what _bstr_t does
     constexpr auto w1252_unassigned = "\x81\x8d\x8f\x90\x9d";
     constexpr auto u16_w1252_unassigned = u"\x81\x8d\x8f\x90\x9d";
     test_Windows1252_(testName, w1252_unassigned, u16_w1252_unassigned);
-    #else
-    TEST_ASSERT_TRUE(true); // need to use hidden "testName" parameter
-    #endif
+#else
+    TEST_ASSERT(true)
+#endif
 }
 
 TEST_CASE(test_Windows1252)
@@ -595,7 +606,9 @@ TEST_MAIN(
     TEST_CHECK(test_u8string_to_u16string);
     TEST_CHECK(test_u8string_to_u32string);
     TEST_CHECK(test_ASCII);
-    TEST_CHECK(test_Windows1252_WIN32);
+    TEST_CHECK(test_Windows1252_WIN32_1);
+    TEST_CHECK(test_Windows1252_WIN32_2);
+    TEST_CHECK(test_Windows1252_WIN32_3);
     TEST_CHECK(test_Windows1252);
     TEST_CHECK(test_Encoding);
     )

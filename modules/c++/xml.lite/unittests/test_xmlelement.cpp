@@ -22,7 +22,7 @@
 
 #include <string>
 #include <span>
-#include "coda_oss/CPlusPlus.h"
+#include "config/CPlusPlus.h"
 #include "io/StringStream.h"
 #include <TestCase.h>
 

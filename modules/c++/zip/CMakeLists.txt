@@ -9,7 +9,7 @@ if (TARGET z AND TARGET minizip)
     coda_add_module(
         ${MODULE_NAME}
         VERSION 1.0
-        DEPS io-c++ coda_oss-c++ z minizip)
+        DEPS io-c++ z minizip)
 
     coda_add_tests(
         MODULE_NAME ${MODULE_NAME}

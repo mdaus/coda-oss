@@ -66,12 +66,6 @@ struct FileWriter
         mStream.reset(stream);
     }
 
-    // need copy for Python binding w/SWIG
-    //FileWriter(const FileWriter&) = default;
-    //FileWriter& operator=(const FileWriter&) = default;
-    //FileWriter(FileWriter&&) = default;
-    //FileWriter& operator=(FileWriter&&) = default;
-
     virtual ~FileWriter()
     {
         //if we aren't adopting it, release it

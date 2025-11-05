@@ -26,7 +26,7 @@
 #ifndef CODA_OSS_import_std_h_INCLUDED_
 #define CODA_OSS_import_std_h_INCLUDED_
 
-#include "coda_oss/CPlusPlus.h"
+#include "config/CPlusPlus.h"
 #include "config/disable_compiler_warnings.h"
 
 CODA_OSS_disable_warning_system_header_push
@@ -96,11 +96,11 @@ CODA_OSS_disable_warning_system_header_push
 
 #include <bit>
 #include <cstddef>
-#include <coda_oss/numbers.h>
-#include <coda_oss/optional.h>
+#include <numbers>
+#include <optional>
 #include <span>
 #include <string>
-#include <coda_oss/mdspan.h>
+#include <std/mdspan>
 
 CODA_OSS_disable_warning_pop
 

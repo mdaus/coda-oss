@@ -32,7 +32,7 @@
 #include <iostream>
 
 #include "config/disable_compiler_warnings.h"
-#include "coda_oss/CPlusPlus.h"
+#include "config/CPlusPlus.h"
 
 namespace types
 {
