@@ -2,7 +2,7 @@
 #
 # Author:  Scott A. Colcord
 
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.28)
 project(coda-oss VERSION 1.0.0)
 
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
@@ -17,7 +17,7 @@ if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
     # this is the top level project
 
     # Only set std if not used as external library
-    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD 23)
     set(CXX_STANDARD_REQUIRED true)
 
     # Always turn on "warnings as errors" to avoid lots of (meaningless?) build output;
@@ -25,9 +25,6 @@ if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
     if (MSVC)
         add_compile_options(/WX) # warnings as errors
         add_compile_options(/MP) # multi-processor compile
-
-        # https://learn.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170
-        add_compile_options(/Zc:__cplusplus) # updated __cplusplus macro
     elseif (UNIX)
         add_compile_options(-Werror) # warnings as errors
     endif()

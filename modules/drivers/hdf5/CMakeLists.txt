@@ -10,6 +10,10 @@ if(CODA_ENABLE_HDF5)
         add_compile_definitions (_BIND_TO_CURRENT_VCLIBS_VERSION=1 _CONSOLE)
     endif()
 
+    if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
+        add_compile_options(-Wno-implicit-function-declaration)
+    endif()
+
     coda_add_module(${MODULE_NAME} VERSION 1.14.2)
 else()
     message("${MODULE_NAME} will not be built since HDF5 is not enabled")

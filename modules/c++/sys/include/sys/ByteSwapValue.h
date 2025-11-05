@@ -44,60 +44,6 @@
 
 #include "Span.h"
 
-// The functions in this namespace are to replace std::byteswap if we don't have a sufficient CPP version
-namespace coda_oss
-{
-#ifdef __GNUC__
-#include <byteswap.h>  // "These functions are GNU extensions."
-#endif
-namespace details
-{
-    // Overloads for common types
-    inline constexpr uint8_t byteswap(uint8_t val) noexcept
-    {
-        return val;  // no-op
-    }
-    #if defined(_MSC_VER)
-        // These routines should generate a single instruction; see
-        // https://devblogs.microsoft.com/cppblog/a-tour-of-4-msvc-backend-improvements/
-        inline uint16_t byteswap(uint16_t val) noexcept
-        {
-            return _byteswap_ushort(val);
-        }
-        inline uint32_t byteswap(uint32_t val) noexcept
-        {
-            return _byteswap_ulong(val);
-        }
-        inline uint64_t byteswap(uint64_t val) noexcept
-        {
-            return _byteswap_uint64(val);
-        }
-    #elif defined(__GNUC__)
-        inline uint16_t byteswap(uint16_t val) noexcept
-        {
-            return bswap_16(val);
-        }
-        inline uint32_t byteswap(uint32_t val) noexcept
-        {
-            return bswap_32(val);
-        }
-        inline uint64_t byteswap(uint64_t val) noexcept
-        {
-            return bswap_64(val);
-        }
-    #else
-        #error "No platform-specific byteswap()"
-    #endif
-}
-
-template <std::integral T>
-inline T byteswap(T n) noexcept
-{
-    using unsigned_t = std::make_unsigned_t<T>; // "Since C++14" https://en.cppreference.com/w/cpp/types/make_unsigned
-    return details::byteswap(static_cast<unsigned_t>(n));
-}
-}
-
 namespace sys
 {
     /*!
@@ -136,11 +82,9 @@ namespace sys
         auto const pIn = static_cast<const TUInt*>(pIn_);
         void* const pOut_ = outBytes.data();
         auto const pOut = static_cast<TUInt*>(pOut_);
-#ifdef __cpp_lib_byteswap // C++23
+
         *pOut = std::byteswap(*pIn); // at long last, swap the bytes
-#else
-        *pOut = coda_oss::byteswap(*pIn);
-#endif
+
         // Give the raw byte-swapped bytes back to the caller for easy serialization
         return as_bytes(*pOut);
     }

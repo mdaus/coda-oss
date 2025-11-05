@@ -117,7 +117,7 @@ class Element(_object):
         __init__(xml::lite::Element self, std::string const & qname, std::string const & uri, std::string const & characterData) -> Element
         __init__(xml::lite::Element self, std::string const & qname, std::string const & uri) -> Element
         __init__(xml::lite::Element self, std::string const & qname) -> Element
-        __init__(xml::lite::Element self, xml::lite::QName const & qname, coda_oss::u8string const & characterData) -> Element
+        __init__(xml::lite::Element self, xml::lite::QName const & qname, std::u8string const & characterData) -> Element
         __init__(xml::lite::Element self, Element arg2) -> Element
         __init__(xml::lite::Element self, Element arg2) -> Element
         """
@@ -244,10 +244,10 @@ class Element(_object):
         return _xml_lite.Element_hasElement(self, *args)
 
 
-    def getCharacterData(self, *args) -> "coda_oss::u8string &":
+    def getCharacterData(self, *args) -> "std::u8string &":
         """
         getCharacterData(Element self) -> std::string
-        getCharacterData(Element self, coda_oss::u8string & result) -> coda_oss::u8string &
+        getCharacterData(Element self, std::u8string & result) -> std::u8string &
         """
         return _xml_lite.Element_getCharacterData(self, *args)
 
@@ -255,7 +255,7 @@ class Element(_object):
     def setCharacterData(self, *args) -> "void":
         """
         setCharacterData(Element self, std::string const & arg2)
-        setCharacterData(Element self, coda_oss::u8string s)
+        setCharacterData(Element self, std::u8string s)
         """
         return _xml_lite.Element_setCharacterData(self, *args)
 

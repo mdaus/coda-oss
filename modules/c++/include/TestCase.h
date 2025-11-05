@@ -75,7 +75,7 @@ inline std::string toString(const TX& X)
 {
     return str::toString(X);
 }
-inline std::string toString(const coda_oss::u8string& X)
+inline std::string toString(const std::u8string& X)
 {
     return str::to_native(X);
 }

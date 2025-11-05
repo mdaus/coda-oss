@@ -29,7 +29,7 @@
 #include "config/Exports.h"
 #include "sys/Dbg.h"
 #include "sys/Conf.h"
-#include "coda_oss/string.h"
+#include <string>
 #include <cstddef>
 #include <span>
 
@@ -77,9 +77,9 @@ struct CODA_OSS_API OutputStream
     {
         write(std::span<const std::string::value_type>(str.data(), str.size()));
     }
-    void write(const coda_oss::u8string& str)
+    void write(const std::u8string& str)
     {
-        write(std::span<const coda_oss::u8string::value_type>(str.data(), str.size()));
+        write(std::span<const std::u8string::value_type>(str.data(), str.size()));
     }
 
     /*!
@@ -91,7 +91,7 @@ struct CODA_OSS_API OutputStream
         write(str);
         write('\n');
     }
-    void writeln(const coda_oss::u8string& str)
+    void writeln(const std::u8string& str)
     {
         write(str);
         write('\n');

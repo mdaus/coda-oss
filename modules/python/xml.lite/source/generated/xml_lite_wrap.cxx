@@ -3434,7 +3434,7 @@ fail:
 SWIGINTERN PyObject *_wrap_new_Element__SWIG_4(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   xml::lite::QName *arg1 = 0 ;
-  coda_oss::u8string *arg2 = 0 ;
+  std::u8string *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -3454,13 +3454,13 @@ SWIGINTERN PyObject *_wrap_new_Element__SWIG_4(PyObject *SWIGUNUSEDPARM(self), P
   arg1 = reinterpret_cast< xml::lite::QName * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_coda_oss__u8string,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_Element" "', argument " "2"" of type '" "coda_oss::u8string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_Element" "', argument " "2"" of type '" "std::u8string const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_Element" "', argument " "2"" of type '" "coda_oss::u8string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_Element" "', argument " "2"" of type '" "std::u8string const &""'"); 
   }
-  arg2 = reinterpret_cast< coda_oss::u8string * >(argp2);
-  result = (xml::lite::Element *)new xml::lite::Element((xml::lite::QName const &)*arg1,(coda_oss::u8string const &)*arg2);
+  arg2 = reinterpret_cast< std::u8string * >(argp2);
+  result = (xml::lite::Element *)new xml::lite::Element((xml::lite::QName const &)*arg1,(std::u8string const &)*arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_xml__lite__Element, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -3648,7 +3648,7 @@ fail:
     "    xml::lite::Element::Element(std::string const &,std::string const &,std::string const &)\n"
     "    xml::lite::Element::Element(std::string const &,std::string const &)\n"
     "    xml::lite::Element::Element(std::string const &)\n"
-    "    xml::lite::Element::Element(xml::lite::QName const &,coda_oss::u8string const &)\n"
+    "    xml::lite::Element::Element(xml::lite::QName const &,std::u8string const &)\n"
     "    xml::lite::Element::Element(xml::lite::Element const &)\n"
     "    xml::lite::Element::Element(xml::lite::Element &&)\n");
   return 0;
@@ -6859,14 +6859,14 @@ fail:
 SWIGINTERN PyObject *_wrap_Element_getCharacterData__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   xml::lite::Element *arg1 = (xml::lite::Element *) 0 ;
-  coda_oss::u8string *arg2 = 0 ;
+  std::u8string *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  coda_oss::u8string *result = 0 ;
+  std::u8string *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:Element_getCharacterData",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_xml__lite__Element, 0 |  0 );
@@ -6876,13 +6876,13 @@ SWIGINTERN PyObject *_wrap_Element_getCharacterData__SWIG_1(PyObject *SWIGUNUSED
   arg1 = reinterpret_cast< xml::lite::Element * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_coda_oss__u8string,  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Element_getCharacterData" "', argument " "2"" of type '" "coda_oss::u8string &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Element_getCharacterData" "', argument " "2"" of type '" "std::u8string &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Element_getCharacterData" "', argument " "2"" of type '" "coda_oss::u8string &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Element_getCharacterData" "', argument " "2"" of type '" "std::u8string &""'"); 
   }
-  arg2 = reinterpret_cast< coda_oss::u8string * >(argp2);
-  result = (coda_oss::u8string *) &((xml::lite::Element const *)arg1)->getCharacterData(*arg2);
+  arg2 = reinterpret_cast< std::u8string * >(argp2);
+  result = (std::u8string *) &((xml::lite::Element const *)arg1)->getCharacterData(*arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_coda_oss__u8string, 0 |  0 );
   return resultobj;
 fail:
@@ -6930,7 +6930,7 @@ fail:
   SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'Element_getCharacterData'.\n"
     "  Possible C/C++ prototypes are:\n"
     "    xml::lite::Element::getCharacterData() const\n"
-    "    xml::lite::Element::getCharacterData(coda_oss::u8string &) const\n");
+    "    xml::lite::Element::getCharacterData(std::u8string &) const\n");
   return 0;
 }
 
@@ -6971,7 +6971,7 @@ fail:
 SWIGINTERN PyObject *_wrap_Element_setCharacterData__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   xml::lite::Element *arg1 = (xml::lite::Element *) 0 ;
-  coda_oss::u8string arg2 ;
+  std::u8string arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 ;
@@ -6988,12 +6988,12 @@ SWIGINTERN PyObject *_wrap_Element_setCharacterData__SWIG_1(PyObject *SWIGUNUSED
   {
     res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_coda_oss__u8string,  0  | 0);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Element_setCharacterData" "', argument " "2"" of type '" "coda_oss::u8string""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Element_setCharacterData" "', argument " "2"" of type '" "std::u8string""'"); 
     }  
     if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Element_setCharacterData" "', argument " "2"" of type '" "coda_oss::u8string""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Element_setCharacterData" "', argument " "2"" of type '" "std::u8string""'");
     } else {
-      coda_oss::u8string * temp = reinterpret_cast< coda_oss::u8string * >(argp2);
+      std::u8string * temp = reinterpret_cast< std::u8string * >(argp2);
       arg2 = *temp;
       if (SWIG_IsNewObj(res2)) delete temp;
     }
@@ -7049,7 +7049,7 @@ fail:
   SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'Element_setCharacterData'.\n"
     "  Possible C/C++ prototypes are:\n"
     "    xml::lite::Element::setCharacterData(std::string const &)\n"
-    "    xml::lite::Element::setCharacterData(coda_oss::u8string)\n");
+    "    xml::lite::Element::setCharacterData(std::u8string)\n");
   return 0;
 }
 
@@ -9621,7 +9621,7 @@ static PyMethodDef SwigMethods[] = {
 		"Element(std::string const & qname, std::string const & uri, std::string const & characterData)\n"
 		"Element(std::string const & qname, std::string const & uri)\n"
 		"Element(std::string const & qname)\n"
-		"Element(xml::lite::QName const & qname, coda_oss::u8string const & characterData)\n"
+		"Element(xml::lite::QName const & qname, std::u8string const & characterData)\n"
 		"Element(Element arg2)\n"
 		"new_Element(Element arg2) -> Element\n"
 		""},
@@ -9692,11 +9692,11 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"Element_getCharacterData", _wrap_Element_getCharacterData, METH_VARARGS, (char *)"\n"
 		"getCharacterData() -> std::string\n"
-		"Element_getCharacterData(Element self, coda_oss::u8string & result) -> coda_oss::u8string &\n"
+		"Element_getCharacterData(Element self, std::u8string & result) -> std::u8string &\n"
 		""},
 	 { (char *)"Element_setCharacterData", _wrap_Element_setCharacterData, METH_VARARGS, (char *)"\n"
 		"setCharacterData(std::string const & arg2)\n"
-		"Element_setCharacterData(Element self, coda_oss::u8string s)\n"
+		"Element_setCharacterData(Element self, std::u8string s)\n"
 		""},
 	 { (char *)"Element_setLocalName", _wrap_Element_setLocalName, METH_VARARGS, (char *)"Element_setLocalName(Element self, std::string const & localName)"},
 	 { (char *)"Element_getLocalName", _wrap_Element_getLocalName, METH_VARARGS, (char *)"Element_getLocalName(Element self) -> std::string"},
@@ -9798,7 +9798,7 @@ static PyMethodDef SwigMethods[] = {
 static swig_type_info _swigt__p_MinidomHandler = {"_p_MinidomHandler", "MinidomHandler *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_XMLReader = {"_p_XMLReader", "XMLReader *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_coda_oss__u8string = {"_p_coda_oss__u8string", "coda_oss::u8string *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_coda_oss__u8string = {"_p_coda_oss__u8string", "std::u8string *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_io__InputStream = {"_p_io__InputStream", "io::InputStream *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_io__OutputStream = {"_p_io__OutputStream", "io::OutputStream *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__nothrow_t = {"_p_std__nothrow_t", "std::nothrow_t *", 0, 0, (void*)0, 0};

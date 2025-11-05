@@ -99,7 +99,7 @@ CODA_OSS_disable_warning_system_header_push
 #include <coda_oss/numbers.h>
 #include <coda_oss/optional.h>
 #include <span>
-#include <coda_oss/string.h>
+#include <string>
 #include <coda_oss/mdspan.h>
 
 CODA_OSS_disable_warning_pop

@@ -20,7 +20,7 @@
  *
  */
 
-#include <std/string>
+#include <string>
 #include <filesystem>
 #include <std/optional>
 #include <span>
@@ -50,7 +50,7 @@ static const std::string& strXml()
 }
 static auto from_utf8(const std::string& utf8)
 {
-    return str::str<coda_oss::u8string>(utf8);
+    return str::str<std::u8string>(utf8);
 }
 static const std::u8string& text8()
 {
@@ -71,7 +71,7 @@ static auto pIso88591Text_()
 
 static const auto& utf8Text8()
 {
-    static const auto retval = str::make_string<coda_oss::u8string>("T\xc3\x89XT"); // UTF-8,  "T�XT"
+    static const auto retval = str::make_string<std::u8string>("T\xc3\x89XT"); // UTF-8,  "T�XT"
     return retval;
 } 
 static const auto pUtf8Text_()
@@ -424,7 +424,7 @@ static bool find_string(io::FileInputStream& stream, const std::string& s)
     return false;
 }
 
-static std::string as_utf8(const coda_oss::u8string& s)
+static std::string as_utf8(const std::u8string& s)
 {
     return str::str<std::string>(s);
 }

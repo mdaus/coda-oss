@@ -167,6 +167,9 @@ macro(coda_initialize_build)
         string(REGEX REPLACE "/EHsc" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
         add_compile_options(/EHs /bigobj)
 
+        # https://learn.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170
+        add_compile_options(/Zc:__cplusplus) # updated __cplusplus macro
+
         add_definitions(
             -DWIN32_LEAN_AND_MEAN
             -DNOMINMAX
@@ -332,12 +335,13 @@ function(coda_fetch_driver)
         FetchContent_Declare(${target_name}
             URL "${CMAKE_CURRENT_SOURCE_DIR}/${ARG_ARCHIVE}"
             URL_HASH ${ARG_HASH}
+            EXCLUDE_FROM_ALL
         )
         FetchContent_GetProperties(${target_name})
         # The returned properties use the lower-cased name
         string(TOLOWER ${target_name} target_name_lc)
         if (NOT ${target_name_lc}_POPULATED) # This makes sure we only fetch once.
-            message("Populating content for external dependency ${driver_name}")
+            message("Populating content for external dependency ${ARG_NAME}")
             # Now (at configure time) unpack the content.
             FetchContent_Populate(${target_name})
             # Remember where we put stuff

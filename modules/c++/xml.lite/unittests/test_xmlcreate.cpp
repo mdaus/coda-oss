@@ -21,7 +21,7 @@
  */
 
 #include <tuple>
-#include <std/string>
+#include <string>
 #include <filesystem>
 
 #include "io/StringStream.h"
@@ -130,7 +130,7 @@ TEST_CASE(testXmlCreateWhitespace)
         const auto& root = getRootElement(getDocument(xmlParser));
         std::u8string actual;
         root.getCharacterData(actual);
-        static const coda_oss::u8string empty;
+        static const std::u8string empty;
         TEST_ASSERT(actual == empty);  // preserveCharacterData == false
     }
     {

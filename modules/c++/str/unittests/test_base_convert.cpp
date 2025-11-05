@@ -23,7 +23,7 @@
 #include <wchar.h>
 
 #include <vector>
-#include <std/string>
+#include <string>
 #include <iterator>
 #include <map>
 #if _WIN32
@@ -120,19 +120,19 @@ TEST_CASE(test_string_to_u8string_windows_1252)
 {
     // Windows-1252 only characters must be mapped to UTF-8
     {
-        const std::string input = "|\x80|";  // Windows-1252, "|€|"
+        const std::string input = "|\x80|";  // Windows-1252, "|ï¿½|"
         const auto actual = str::to_u8string<str::W1252string>(input);
-        const std::u8string expected8{cast8('|'), cast8('\xE2'), cast8('\x82'), cast8('\xAC'), cast8('|')};  // UTF-8,  "|€|"
+        const std::u8string expected8{cast8('|'), cast8('\xE2'), cast8('\x82'), cast8('\xAC'), cast8('|')};  // UTF-8,  "|ï¿½|"
         TEST_ASSERT_EQ(actual, expected8);
-        const std::u32string expected{U"|\u20AC|"};  // UTF-32,  "|€|"
+        const std::u32string expected{U"|\u20AC|"};  // UTF-32,  "|ï¿½|"
         test_assert_eq(testName, actual, expected);
     }
     {
-        const std::string input = "|\x9F|";  // Windows-1252, "|Ÿ|"
+        const std::string input = "|\x9F|";  // Windows-1252, "|ï¿½|"
         const auto actual = str::to_u8string<str::W1252string>(input);
-        const std::u8string expected8{cast8('|'), cast8('\xC5'), cast8('\xB8'), cast8('|')};  // UTF-8,  "|Ÿ|"
+        const std::u8string expected8{cast8('|'), cast8('\xC5'), cast8('\xB8'), cast8('|')};  // UTF-8,  "|ï¿½|"
         TEST_ASSERT_EQ(actual, expected8);
-        const std::u32string expected{U"|\u0178|"};  // UTF-32,  "|Ÿ|"
+        const std::u32string expected{U"|\u0178|"};  // UTF-32,  "|ï¿½|"
         test_assert_eq(testName, actual, expected);
     }
     {
@@ -202,7 +202,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
 TEST_CASE(test_string_to_u8string_iso8859_1)
 {
     constexpr uint8_t nobreak_space = 0xa0;
-    constexpr uint8_t latin_small_letter_y_with_diaeresis = 0xff;  // 'ÿ'
+    constexpr uint8_t latin_small_letter_y_with_diaeresis = 0xff;  // 'ï¿½'
     for (uint32_t ch = nobreak_space; ch <= latin_small_letter_y_with_diaeresis; ch++)  // ISO8859-1
     {
         const std::string input_ { '|', static_cast<std::string::value_type>(ch), '|'};
@@ -240,12 +240,12 @@ TEST_CASE(test_change_case)
     //const std::wstring abc_w = L"abc";
     //test_change_case_(testName, abc_w, ABC_w);
 
-    // Yes, this can really come up, "non classifié" is French (Canadian) for "unclassified".
-    const std::string DEF_1252_{'D', '\xc9', 'F'}; // "DÉF" Windows-1252
+    // Yes, this can really come up, "non classifiï¿½" is French (Canadian) for "unclassified".
+    const std::string DEF_1252_{'D', '\xc9', 'F'}; // "Dï¿½F" Windows-1252
     const auto DEF_1252 = str::str<str::W1252string>(DEF_1252_);
     const auto DEF8 = str::to_u8string(DEF_1252);
 
-    const std::string def_1252_{'d', '\xe9', 'f'};  // "déf" Windows-1252
+    const std::string def_1252_{'d', '\xe9', 'f'};  // "dï¿½f" Windows-1252
     const auto def_1252 = str::str<str::W1252string>(def_1252_);
     const auto def8 = str::to_u8string(def_1252);
 
@@ -254,27 +254,27 @@ TEST_CASE(test_change_case)
 }
 
 // https://en.wikipedia.org/wiki/%C3%89#Character_mappings
-static const coda_oss::u8string& classificationText_u8()
+static const std::u8string& classificationText_u8()
 {
-    static const auto retval(str::make_string<std::u8string>("A\xc3\x89IOU")); // UTF-8 "AÉIOU"
+    static const auto retval(str::make_string<std::u8string>("A\xc3\x89IOU")); // UTF-8 "Aï¿½IOU"
     return retval;
  }
 
 static const str::W1252string& classificationText_w1252()
  {
-    static const auto retval(str::make_string<str::W1252string>("A\xc9IOU"));  // ISO8859-1 "AÉIOU"    
+    static const auto retval(str::make_string<str::W1252string>("A\xc9IOU"));  // ISO8859-1 "Aï¿½IOU"    
     return retval;
  }
 
- static auto toString(const coda_oss::u8string& s)
+ static auto toString(const std::u8string& s)
  {
      return str::to_native(s);
  }
 
 // UTF-16 on Windows, UTF-32 on Linux
-static const wchar_t* classificationText_wide_() { return L"A\x00c9IOU"; } // "wide characters" "AÉIOU"
-static std::u16string classificationText_u16() { return u"A\u00c9IOU"; } // UTF-16 "AÉIOU"
-static std::u32string classificationText_u32() { return U"A\u00c9IOU"; } // UTF-32 "AÉIOU"
+static const wchar_t* classificationText_wide_() { return L"A\x00c9IOU"; } // "wide characters" "Aï¿½IOU"
+static std::u16string classificationText_u16() { return u"A\u00c9IOU"; } // UTF-16 "Aï¿½IOU"
+static std::u32string classificationText_u32() { return U"A\u00c9IOU"; } // UTF-32 "Aï¿½IOU"
 
 static std::string classificationText_platform() { return 
     sys::Platform == sys::PlatformType::Linux ? toString(classificationText_u8()) : str::testing::to_string(classificationText_w1252()); }
@@ -296,7 +296,7 @@ static auto toWString(const str::W1252string& s)
 {
     return str::testing::to_wstring(s);
 }
-static auto toWString(const coda_oss::u8string& s)
+static auto toWString(const std::u8string& s)
 {
     return str::details::to_wstring(s);
 }
@@ -385,7 +385,7 @@ static void test_wide_(const std::string& testName, const char* pStr, std::u16st
 static void test_Windows1252_ascii(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16)
 {
     // For both UTF-8 and Windows-1252, ASCII is the same (they only differ for 0x80-0xff).
-    const auto u8 =  str::str<std::string>(str::to_u8string<coda_oss::u8string>(pStr));
+    const auto u8 =  str::str<std::string>(str::to_u8string<std::u8string>(pStr));
     TEST_ASSERT_EQ(pStr, u8); // native() is the same on all platforms/encodings for ASCII
     {
         const auto w1252 = str::make_string<str::W1252string>(pStr);
@@ -453,12 +453,12 @@ TEST_CASE(test_Windows1252_WIN32)
     // https://en.wikipedia.org/wiki/Windows-1252
     #if _WIN32
     // can convert with bit-twiddling
-    constexpr auto w1252_a1_ff = "¡¢þÿ"; // <INVERTED EXCLAMATION MARK><CENT SIGN><LATIN SMALL LETTER THORN><LATIN SMALL LETTER Y WITH DIAERESIS>
+    constexpr auto w1252_a1_ff = "ï¿½ï¿½ï¿½ï¿½"; // <INVERTED EXCLAMATION MARK><CENT SIGN><LATIN SMALL LETTER THORN><LATIN SMALL LETTER Y WITH DIAERESIS>
     //constexpr auto w1252_a1_ff = "\xa1\xa2\xfe\xff"; 
     constexpr auto u16_w1252_a1_ff = u"\u00a1\u00a2\u00fe\u00ff";
     test_Windows1252_(testName, w1252_a1_ff, u16_w1252_a1_ff);
 
-    constexpr auto w1252 = "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ"; // these values must be mapped
+    constexpr auto w1252 = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"; // these values must be mapped
     //constexpr auto w1252 = "\x80\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8e" // these values must be mapped
     //    "\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9e\x9f";
     constexpr auto u16_utf8 = u"\u20ac\u201a\u0192\u201e\u2026\u2020\u2021\u02c6\u2030\u0160\u2039\u0152\u017d"
@@ -547,9 +547,9 @@ TEST_CASE(test_Windows1252)
     #endif
 }
 
-static void test_Encodeding_(const std::string& testName, const coda_oss::u8string& classificationText_u8,
+static void test_Encodeding_(const std::string& testName, const std::u8string& classificationText_u8,
     const std::string& utf_8, const std::string& iso8859_1,
-    const coda_oss::u8string& utf_8_u8, const coda_oss::u8string& iso8859_1_u8,
+    const std::u8string& utf_8_u8, const std::u8string& iso8859_1_u8,
     const std::string& utf_8_view, const std::string& iso8859_1_view)
 {
     TEST_ASSERT_EQ(iso8859_1, utf_8);

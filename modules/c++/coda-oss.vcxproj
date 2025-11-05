@@ -19,11 +19,6 @@
     <ClInclude Include="coda_oss\include\coda_oss\CPlusPlus.h" />
     <ClInclude Include="coda_oss\include\coda_oss\mdspan.h" />
     <ClInclude Include="coda_oss\include\coda_oss\mdspan_.h" />
-    <ClInclude Include="coda_oss\include\coda_oss\namespace_.h" />
-    <ClInclude Include="coda_oss\include\coda_oss\numbers.h" />
-    <ClInclude Include="coda_oss\include\coda_oss\optional.h" />
-    <ClInclude Include="coda_oss\include\coda_oss\optional_.h" />
-    <ClInclude Include="coda_oss\include\coda_oss\string.h" />
     <ClInclude Include="config\include\config\compiler_extensions.h" />
     <ClInclude Include="config\include\config\disable_compiler_warnings.h" />
     <ClInclude Include="config\include\config\Exports.h" />
@@ -503,10 +498,6 @@
     <None Include="gsl\include\gsl\span_ext" />
     <None Include="gsl\include\gsl\string_span" />
     <None Include="gsl\include\gsl\util" />
-    <None Include="std\include\std\mdspan" />
-    <None Include="std\include\std\numbers" />
-    <None Include="std\include\std\optional" />
-    <None Include="std\include\std\string" />
     <None Include="sys\include\sys\sys_config.h.cmake.in" />
     <None Include="sys\source\CppUnitTestAssert_.cpp_">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

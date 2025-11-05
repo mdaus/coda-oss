@@ -36,7 +36,6 @@
 #include <typeinfo>
 
 #include "config/Exports.h"
-#include "coda_oss/string.h"
 #include "coda_oss/optional.h"
 #include <cstddef>
 #include "types/Complex.h"
@@ -132,7 +131,7 @@ inline std::string toString(const std::string& value)
 std::string toString(const std::wstring&) = delete;
 std::string toString(const std::u16string&) = delete;
 std::string toString(const std::u32string&) = delete;
-std::string toString(const coda_oss::u8string&) = delete;
+std::string toString(const std::u8string&) = delete;
 std::string toString(const str::W1252string&) = delete;
 
 inline std::string toString(std::string::const_pointer pStr)
@@ -144,7 +143,7 @@ std::string toString(std::wstring::const_pointer) = delete; // only used in unit
 std::string toString(std::u16string::const_pointer) = delete; // only used in unittests
 std::string toString(std::u32string::const_pointer) = delete; // only used in unittests
 
-inline std::ostream& operator<<(std::ostream& os, const coda_oss::u8string& s)
+inline std::ostream& operator<<(std::ostream& os, const std::u8string& s)
 {
     os << to_native(s);
     return os;

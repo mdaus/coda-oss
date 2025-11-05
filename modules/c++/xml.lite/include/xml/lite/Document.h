@@ -40,7 +40,7 @@
 
 #include <utility>
 #include <memory>
-#include "coda_oss/string.h"
+#include <string>
 
 #include <config/Exports.h>
 
@@ -108,7 +108,7 @@ struct CODA_OSS_API Document  // SOAPDocument derives :-(
     virtual Element *createElement(const std::string & qname, const std::string & uri, std::string characterData = "");
     #ifndef SWIG // SWIG doesn't like std::unique_ptr
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const std::string& characterData) const;
-    std::unique_ptr<Element> createElement(const xml::lite::QName&, const coda_oss::u8string& characterData) const;
+    std::unique_ptr<Element> createElement(const xml::lite::QName&, const std::u8string& characterData) const;
     #endif // SWIG
 
     /*!

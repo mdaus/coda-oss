@@ -4128,7 +4128,7 @@ fail:
 SWIGINTERN PyObject *_wrap_OutputStream_write__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   io::OutputStream *arg1 = (io::OutputStream *) 0 ;
-  coda_oss::u8string *arg2 = 0 ;
+  std::u8string *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -4144,13 +4144,13 @@ SWIGINTERN PyObject *_wrap_OutputStream_write__SWIG_3(PyObject *SWIGUNUSEDPARM(s
   arg1 = reinterpret_cast< io::OutputStream * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_coda_oss__u8string,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "OutputStream_write" "', argument " "2"" of type '" "coda_oss::u8string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "OutputStream_write" "', argument " "2"" of type '" "std::u8string const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "OutputStream_write" "', argument " "2"" of type '" "coda_oss::u8string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "OutputStream_write" "', argument " "2"" of type '" "std::u8string const &""'"); 
   }
-  arg2 = reinterpret_cast< coda_oss::u8string * >(argp2);
-  (arg1)->write((coda_oss::u8string const &)*arg2);
+  arg2 = reinterpret_cast< std::u8string * >(argp2);
+  (arg1)->write((std::u8string const &)*arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -4198,7 +4198,7 @@ fail:
 SWIGINTERN PyObject *_wrap_OutputStream_writeln__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   io::OutputStream *arg1 = (io::OutputStream *) 0 ;
-  coda_oss::u8string *arg2 = 0 ;
+  std::u8string *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -4214,13 +4214,13 @@ SWIGINTERN PyObject *_wrap_OutputStream_writeln__SWIG_1(PyObject *SWIGUNUSEDPARM
   arg1 = reinterpret_cast< io::OutputStream * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_coda_oss__u8string,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "OutputStream_writeln" "', argument " "2"" of type '" "coda_oss::u8string const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "OutputStream_writeln" "', argument " "2"" of type '" "std::u8string const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "OutputStream_writeln" "', argument " "2"" of type '" "coda_oss::u8string const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "OutputStream_writeln" "', argument " "2"" of type '" "std::u8string const &""'"); 
   }
-  arg2 = reinterpret_cast< coda_oss::u8string * >(argp2);
-  (arg1)->writeln((coda_oss::u8string const &)*arg2);
+  arg2 = reinterpret_cast< std::u8string * >(argp2);
+  (arg1)->writeln((std::u8string const &)*arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -4271,7 +4271,7 @@ fail:
   SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'OutputStream_writeln'.\n"
     "  Possible C/C++ prototypes are:\n"
     "    io::OutputStream::writeln(std::string const &)\n"
-    "    io::OutputStream::writeln(coda_oss::u8string const &)\n");
+    "    io::OutputStream::writeln(std::u8string const &)\n");
   return 0;
 }
 
@@ -4404,7 +4404,7 @@ fail:
     "    io::OutputStream::write(sys::byte)\n"
     "    io::OutputStream::write(std::byte)\n"
     "    io::OutputStream::write(std::string const &)\n"
-    "    io::OutputStream::write(coda_oss::u8string const &)\n"
+    "    io::OutputStream::write(std::u8string const &)\n"
     "    io::OutputStream::write(void const *,size_t)\n");
   return 0;
 }
@@ -6547,13 +6547,13 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_OutputStream", _wrap_delete_OutputStream, METH_VARARGS, (char *)"delete_OutputStream(OutputStream self)"},
 	 { (char *)"OutputStream_writeln", _wrap_OutputStream_writeln, METH_VARARGS, (char *)"\n"
 		"writeln(std::string const & str)\n"
-		"OutputStream_writeln(OutputStream self, coda_oss::u8string const & str)\n"
+		"OutputStream_writeln(OutputStream self, std::u8string const & str)\n"
 		""},
 	 { (char *)"OutputStream_write", _wrap_OutputStream_write, METH_VARARGS, (char *)"\n"
 		"write(sys::byte b)\n"
 		"write(std::byte b)\n"
 		"write(std::string const & str)\n"
-		"write(coda_oss::u8string const & str)\n"
+		"write(std::u8string const & str)\n"
 		"OutputStream_write(OutputStream self, void const * buffer, size_t len)\n"
 		""},
 	 { (char *)"OutputStream_flush", _wrap_OutputStream_flush, METH_VARARGS, (char *)"OutputStream_flush(OutputStream self)"},
@@ -6713,7 +6713,7 @@ static swig_type_info _swigt__p_OutputStream = {"_p_OutputStream", "OutputStream
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_coda_oss__byte = {"_p_coda_oss__byte", "std::byte *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_coda_oss__filesystem__path = {"_p_coda_oss__filesystem__path", "std::filesystem::path *|io::FileOutputStreamOS::path *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_coda_oss__u8string = {"_p_coda_oss__u8string", "coda_oss::u8string *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_coda_oss__u8string = {"_p_coda_oss__u8string", "std::u8string *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_io__BidirectionalStream = {"_p_io__BidirectionalStream", "io::BidirectionalStream *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_io__FileInputStreamOS = {"_p_io__FileInputStreamOS", "io::FileInputStreamOS *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_io__FileOutputStreamOS = {"_p_io__FileOutputStreamOS", "io::FileOutputStreamOS *", 0, 0, (void*)0, 0};
@@ -6726,7 +6726,7 @@ static swig_type_info _swigt__p_io__SeekableBidirectionalStream = {"_p_io__Seeka
 static swig_type_info _swigt__p_io__SeekableInputStream = {"_p_io__SeekableInputStream", "io::SeekableInputStream *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_io__SeekableNullOutputStream = {"_p_io__SeekableNullOutputStream", "io::SeekableNullOutputStream *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_io__SeekableOutputStream = {"_p_io__SeekableOutputStream", "io::SeekableOutputStream *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_io__StringStreamTT_coda_oss__u8string__value_type_t = {"_p_io__StringStreamTT_coda_oss__u8string__value_type_t", "io::U8StringStream *|io::StringStreamT< coda_oss::u8string::value_type > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_io__StringStreamTT_coda_oss__u8string__value_type_t = {"_p_io__StringStreamTT_coda_oss__u8string__value_type_t", "io::U8StringStream *|io::StringStreamT< std::u8string::value_type > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_io__StringStreamTT_std__string__value_type_t = {"_p_io__StringStreamTT_std__string__value_type_t", "io::StringStream *|io::StringStreamT< std::string::value_type > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_io__StringStreamTT_str__W1252string__value_type_t = {"_p_io__StringStreamTT_str__W1252string__value_type_t", "io::W1252StringStream *|io::StringStreamT< str::W1252string::value_type > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_path = {"_p_path", "path *", 0, 0, (void*)0, 0};

@@ -32,7 +32,7 @@
 #include "config/compiler_extensions.h"
 #include "config/Exports.h"
 #include "coda_oss/CPlusPlus.h"
-#include "coda_oss/string.h"
+#include <string>
 #include "str/Convert.h"
 #include "str/W1252string.h"
 
@@ -71,8 +71,8 @@ inline const CharT* data(const std::basic_string<CharT>& s) noexcept // to make 
  */
 CODA_OSS_API void trim(std::string& s);
 CODA_OSS_API std::string trim(const std::string& s);
-CODA_OSS_API void trim(coda_oss::u8string& s);
-CODA_OSS_API coda_oss::u8string trim(const coda_oss::u8string& s);
+CODA_OSS_API void trim(std::u8string& s);
+CODA_OSS_API std::u8string trim(const std::u8string& s);
 
 /**
  *  Checks the end of s with match
@@ -237,8 +237,8 @@ CODA_OSS_API void upper(str::W1252string& s);
 // Performance improvements can be made, but nobody needs such right now.
 CODA_OSS_API void utf8_lower(std::string& s);
 CODA_OSS_API void utf8_upper(std::string& s);
-CODA_OSS_API void lower(coda_oss::u8string& s);
-CODA_OSS_API void upper(coda_oss::u8string& s);
+CODA_OSS_API void lower(std::u8string& s);
+CODA_OSS_API void upper(std::u8string& s);
 */
 
 // I've already got these hooked up, keep the code around ... long ugly

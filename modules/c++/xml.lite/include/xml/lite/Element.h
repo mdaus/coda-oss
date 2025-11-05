@@ -27,7 +27,7 @@
 #include <memory>
 #include <string>
 #include <new> // std::nothrow_t
-#include <coda_oss/string.h>
+#include <string>
 #include <tuple>
 
 #include <config/Exports.h>
@@ -79,7 +79,7 @@ struct CODA_OSS_API Element  // SOAPElement derives :-(
     {
         setCharacterData(characterData);
     }
-    Element(const xml::lite::QName& qname, const coda_oss::u8string& characterData) : mName(qname)
+    Element(const xml::lite::QName& qname, const std::u8string& characterData) : mName(qname)
     {
         setCharacterData(characterData);
     }
@@ -87,7 +87,7 @@ struct CODA_OSS_API Element  // SOAPElement derives :-(
     #ifndef SWIG // SWIG doesn't like std::unique_ptr
     static std::unique_ptr<Element> create(const std::string& qname, const std::string& uri = "", const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const std::string& characterData = "");
-    static std::unique_ptr<Element> create(const xml::lite::QName&, const coda_oss::u8string&);
+    static std::unique_ptr<Element> create(const xml::lite::QName&, const std::u8string&);
     #endif // SWIG
     
     //! Destructor
@@ -319,10 +319,10 @@ struct CODA_OSS_API Element  // SOAPElement derives :-(
      *  \return the charater data
      */
     std::string getCharacterData() const;
-    const coda_oss::u8string& getCharacterData(coda_oss::u8string& result) const;
-    //explicit operator coda_oss::u8string() const
+    const std::u8string& getCharacterData(std::u8string& result) const;
+    //explicit operator std::u8string() const
     //{
-    //    coda_oss::u8string result;
+    //    std::u8string result;
     //    std::ignore = getCharacterData(result); // result will be copy-elided
     //    return result;
     //}
@@ -334,7 +334,7 @@ struct CODA_OSS_API Element  // SOAPElement derives :-(
     void setCharacterData(const std::string&);
     Element& operator=(const std::string&);  // setCharacterData()
     Element& operator=(const char*);  // setCharacterData()
-    void setCharacterData(coda_oss::u8string s)
+    void setCharacterData(std::u8string s)
     {
         // See Item #41 in "Effective Modern C++" by Scott Meyers.
         // std::basic_string<T> is "cheap to move" and "always copied"
@@ -496,7 +496,7 @@ private:
     Element* mParent = nullptr;
     //! The attributes for this element
     xml::lite::Attributes mAttributes;
-    coda_oss::u8string mCharacterData;
+    std::u8string mCharacterData;
 };
 
 CODA_OSS_API Element& add(const xml::lite::QName&, const std::string& value, Element& parent);
@@ -606,14 +606,14 @@ CODA_OSS_API Element& addChild(Element&, const std::string& qname);
 CODA_OSS_API void operator+=(Element&, const std::string& qname);  // addChild()
 CODA_OSS_API Element& addChild(Element&, const xml::lite::QName&); // there is also a QName in the xerces namespace
 CODA_OSS_API void operator+=(Element&, const xml::lite::QName&);  // addChild()
-CODA_OSS_API Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& characterData);
+CODA_OSS_API Element& addChild(Element&, const std::string& qname, const std::u8string& characterData);
 Element& addChild(Element&, const std::string&, const std::string&) = delete; // NO, order matters!
-CODA_OSS_API Element& addChild(Element&, const xml::lite::QName&, const coda_oss::u8string& characterData);
+CODA_OSS_API Element& addChild(Element&, const xml::lite::QName&, const std::u8string& characterData);
 CODA_OSS_API Element& addChild(Element&, const xml::lite::QName&, const std::string& characterData);
 CODA_OSS_API Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&);
-CODA_OSS_API Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&, const coda_oss::u8string& characterData);
+CODA_OSS_API Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&, const std::u8string& characterData);
 
-CODA_OSS_API coda_oss::u8string getCharacterData(const Element&);
+CODA_OSS_API std::u8string getCharacterData(const Element&);
 
 CODA_OSS_API xml::lite::AttributeNode& addAttribute(Element&, const xml::lite::AttributeNode&);
 CODA_OSS_API void operator+=(Element&, const xml::lite::AttributeNode&);  // addAttribute()

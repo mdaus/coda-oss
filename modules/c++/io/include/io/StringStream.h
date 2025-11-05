@@ -39,7 +39,7 @@
 #include "io/BidirectionalStream.h"
 #include "sys/Conf.h"
 #include "io/SeekableStreams.h"
-#include "coda_oss/string.h"
+#include <string>
 #include "str/Encoding.h"
 
 namespace io
@@ -165,7 +165,7 @@ private:
 };
 
 using StringStream = StringStreamT<std::string::value_type>;
-using U8StringStream = StringStreamT<coda_oss::u8string::value_type>;
+using U8StringStream = StringStreamT<std::u8string::value_type>;
 using W1252StringStream = StringStreamT<str::W1252string::value_type>;
 
 }

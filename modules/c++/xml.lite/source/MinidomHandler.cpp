@@ -21,7 +21,7 @@
  */
 
 #include <stdexcept>
-#include <std/string>
+#include <string>
 #include <utility>
 
 #include "str/Manip.h"

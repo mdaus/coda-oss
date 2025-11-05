@@ -34,15 +34,13 @@
 #define CODA_OSS_cplusplus __cplusplus
 
 // https://en.cppreference.com/w/cpp/preprocessor/replace#Predefined_macros
-#define CODA_OSS_cplusplus20 202002L
 #define CODA_OSS_cplusplus23 202302L
 
 // Define a few macros as that's less verbose than testing against a version number
-#define CODA_OSS_cpp20 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus20)
 #define CODA_OSS_cpp23 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus23)
 
-#if !CODA_OSS_cpp20
-    #error "Must compile with C++20 or greater."
+#if !CODA_OSS_cpp23
+    #error "Must compile with C++23 or greater."
 #endif
 
 #endif // CODA_OSS_coda_oss_CPlusPlus_h_INCLUDED_

@@ -157,7 +157,7 @@ class OutputStream(_object):
     def writeln(self, *args) -> "void":
         """
         writeln(OutputStream self, std::string const & str)
-        writeln(OutputStream self, coda_oss::u8string const & str)
+        writeln(OutputStream self, std::u8string const & str)
         """
         return _coda_io.OutputStream_writeln(self, *args)
 
@@ -167,7 +167,7 @@ class OutputStream(_object):
         write(OutputStream self, sys::byte b)
         write(OutputStream self, std::byte b)
         write(OutputStream self, std::string const & str)
-        write(OutputStream self, coda_oss::u8string const & str)
+        write(OutputStream self, std::u8string const & str)
         write(OutputStream self, void const * buffer, size_t len)
         """
         return _coda_io.OutputStream_write(self, *args)

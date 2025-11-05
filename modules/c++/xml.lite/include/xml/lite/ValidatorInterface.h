@@ -35,7 +35,7 @@
 
 #include <string>
 #include <vector>
-#include <coda_oss/string.h>
+#include <string>
 
 #include <config/Exports.h>
 #include <io/InputStream.h>
@@ -174,7 +174,7 @@ public:
     virtual bool validate(const std::string& xml,
                           const std::string& xmlID,
                           std::vector<ValidationInfo>& errors) const = 0;
-    virtual bool validate(const coda_oss::u8string&, const std::string& /*xmlID*/, std::vector<ValidationInfo>&) const = 0;
+    virtual bool validate(const std::u8string&, const std::string& /*xmlID*/, std::vector<ValidationInfo>&) const = 0;
     virtual bool validate(const str::W1252string&, const std::string& /*xmlID*/, std::vector<ValidationInfo>&) const = 0;
 };
 

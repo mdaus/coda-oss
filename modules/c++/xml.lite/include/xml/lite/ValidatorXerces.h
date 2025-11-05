@@ -26,7 +26,7 @@
 
 #include <memory>
 #include <vector>
-#include <coda_oss/string.h>
+#include <string>
 
 #include "config/Exports.h"
 
@@ -122,7 +122,7 @@ struct CODA_OSS_API ValidatorXerces : public ValidatorInterface
     virtual bool validate(const std::string& xml,
                           const std::string& xmlID,
                           std::vector<ValidationInfo>& errors) const override;
-    bool validate(const coda_oss::u8string&, const std::string& xmlID, std::vector<ValidationInfo>&) const override;
+    bool validate(const std::u8string&, const std::string& xmlID, std::vector<ValidationInfo>&) const override;
     bool validate(const str::W1252string&, const std::string& xmlID, std::vector<ValidationInfo>&) const override;
 
     // Search each directory for XSD files
@@ -131,7 +131,7 @@ struct CODA_OSS_API ValidatorXerces : public ValidatorInterface
 private:
     XercesContext mCtxt;
 
-    bool validate_(const coda_oss::u8string& xml, 
+    bool validate_(const std::u8string& xml, 
                    const std::string& xmlID,
                    std::vector<ValidationInfo>& errors) const;
 

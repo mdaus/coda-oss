@@ -103,11 +103,11 @@ std::string trim(const std::string& str)
     trim(retval);
     return retval;
 }
-void trim(coda_oss::u8string& s)
+void trim(std::u8string& s)
 {
     trim_(s);
 }
-coda_oss::u8string trim(const coda_oss::u8string& str)
+std::u8string trim(const std::u8string& str)
 {
     auto retval = str;
     trim(retval);
@@ -341,32 +341,32 @@ inline char to_w1252_upper_(char ch)
     // See chart at: https://en.wikipedia.org/wiki/Windows-1252
     const auto u8 = static_cast<uint8_t>(ch);
 
-    constexpr uint8_t s_with_caron = 0x9a /* š */;
-    constexpr uint8_t oe = 0x9c /* œ */;
-    constexpr uint8_t z_with_caron = 0x9e /* ž */;
+    constexpr uint8_t s_with_caron = 0x9a /* ï¿½ */;
+    constexpr uint8_t oe = 0x9c /* ï¿½ */;
+    constexpr uint8_t z_with_caron = 0x9e /* ï¿½ */;
     if ((u8 == s_with_caron) || (u8 == oe) || (u8 == z_with_caron))
     {
         return ch ^ 0x10;    
     }
 
-    constexpr uint8_t a_with_grave = 0xe0 /* à */;
-    constexpr uint8_t o_with_diaeresis = 0xf6 /* ö */;
+    constexpr uint8_t a_with_grave = 0xe0 /* ï¿½ */;
+    constexpr uint8_t o_with_diaeresis = 0xf6 /* ï¿½ */;
     if ((u8 >= a_with_grave) && (u8 <= o_with_diaeresis))
     {
         return ch ^ 0x20;
     }
-    // U+00F7 ÷ DIVISION SIGN
-    constexpr uint8_t o_with_slash = 0xf8 /* ø */;
-    constexpr uint8_t small_thorn = 0xfe /* þ */;
+    // U+00F7 ï¿½ DIVISION SIGN
+    constexpr uint8_t o_with_slash = 0xf8 /* ï¿½ */;
+    constexpr uint8_t small_thorn = 0xfe /* ï¿½ */;
     if ((u8 >= o_with_slash) && (u8 <= small_thorn))
     {
         return ch ^ 0x20;
     }
 
-    constexpr uint8_t y_with_diaeresis = 0xff /* ÿ */;
+    constexpr uint8_t y_with_diaeresis = 0xff /* ï¿½ */;
     if (u8 == y_with_diaeresis)
     {
-        constexpr uint8_t Y_with_diaeresis = 0x9f /* Ÿ */;
+        constexpr uint8_t Y_with_diaeresis = 0x9f /* ï¿½ */;
         return Y_with_diaeresis;
     }
 
@@ -388,30 +388,30 @@ inline char to_w1252_lower_(char ch)
     // See chart at: https://en.wikipedia.org/wiki/Windows-1252
     const auto u8 = static_cast<uint8_t>(ch);
 
-    constexpr uint8_t S_with_caron = 0x8a /* Š */;
-    constexpr uint8_t OE = 0x8c /*Œ */;
-    constexpr uint8_t Z_with_caron = 0x8e /* Ž */;
+    constexpr uint8_t S_with_caron = 0x8a /* ï¿½ */;
+    constexpr uint8_t OE = 0x8c /*ï¿½ */;
+    constexpr uint8_t Z_with_caron = 0x8e /* ï¿½ */;
     if ((u8 == S_with_caron) || (u8 == OE) || (u8 == Z_with_caron))
     {
         return ch | 0x10;
     }
 
-    constexpr uint8_t Y_with_diaeresis = 0x9f /* Ÿ */;
+    constexpr uint8_t Y_with_diaeresis = 0x9f /* ï¿½ */;
     if (u8 == Y_with_diaeresis)
     {
-        constexpr uint8_t y_with_diaeresis = 0xff /* ÿ */;
+        constexpr uint8_t y_with_diaeresis = 0xff /* ï¿½ */;
         return y_with_diaeresis;
     }
 
-    constexpr uint8_t A_with_grave = 0xc0 /* À */;
-    constexpr uint8_t O_with_diaeresis = 0xd6 /* Ö */;
+    constexpr uint8_t A_with_grave = 0xc0 /* ï¿½ */;
+    constexpr uint8_t O_with_diaeresis = 0xd6 /* ï¿½ */;
     if ((u8 >= A_with_grave) && (u8 <= O_with_diaeresis))
     {
         return ch | 0x20;
     }
-    // U+00D7 × MULTIPLICATION SIGN 
-    constexpr uint8_t O_with_slash = 0xd8 /* Ø */;
-    constexpr uint8_t capital_thorn = 0xde /* Þ */;
+    // U+00D7 ï¿½ MULTIPLICATION SIGN 
+    constexpr uint8_t O_with_slash = 0xd8 /* ï¿½ */;
+    constexpr uint8_t capital_thorn = 0xde /* ï¿½ */;
     if ((u8 >= O_with_slash) && (u8 <= capital_thorn))
     {
         return ch | 0x20;
@@ -464,7 +464,7 @@ inline auto utf8_convert(str::W1252string& w1252, void (*convert)(str::W1252stri
 }
 inline void utf8_convert(std::string& strUtf8, void (*convert)(str::W1252string&))
 {
-    auto w1252 = to_w1252string(str::str<coda_oss::u8string>(strUtf8));
+    auto w1252 = to_w1252string(str::str<std::u8string>(strUtf8));
     const auto utf8 = utf8_convert(w1252, convert);
     strUtf8 = str::str<std::string>(utf8);
 }
@@ -477,16 +477,16 @@ void utf8_lower(std::string& strUtf8)
     utf8_convert(strUtf8, lower);
 }
 
-inline void utf8_convert(coda_oss::u8string& s, void (*convert)(str::W1252string&))
+inline void utf8_convert(std::u8string& s, void (*convert)(str::W1252string&))
 {
     auto w1252 = to_w1252string(s);
     s = utf8_convert(w1252, convert);
 }
-void lower(coda_oss::u8string& s)
+void lower(std::u8string& s)
 {
     utf8_convert(s, lower);
 }
-void upper(coda_oss::u8string& s)
+void upper(std::u8string& s)
 {
     utf8_convert(s, upper);
 }

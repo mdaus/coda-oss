@@ -50,7 +50,7 @@ CODA_OSS_disable_warning_pop
 
 // Need to look up characters from \x80 (EURO SIGN) to \x9F (LATIN CAPITAL LETTER Y WITH DIAERESIS)
 // in a map: http://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT
-static inline coda_oss::u8string utf8_(char32_t i)
+static inline std::u8string utf8_(char32_t i)
 {
     const auto ch = gsl::narrow<std::u32string::value_type>(i);
     return str::to_u8string(std::u32string{ch});
@@ -63,7 +63,7 @@ static inline coda_oss::u8string utf8_(char32_t i)
 // > C1 control codes. The "best fit" mapping documents this behavior, too.
 static const auto& Windows1252_x80_x9F_to_u8string_()
 {
-    static const std::map<char32_t, coda_oss::u8string> retval{
+    static const std::map<char32_t, std::u8string> retval{
           {U'\x80', utf8_(U'\x20AC') } // EURO SIGN
         , {U'\x81', utf8_(U'\x0081') } // UNDEFINED; _bstr_t just preserves these values, do the same  // , {U'\x81', replacement_character } // UNDEFINED
         , {U'\x82', utf8_(U'\x201A') } // SINGLE LOW-9 QUOTATION MARK
@@ -103,7 +103,7 @@ static auto Windows1252_to_u8string()
 {
     auto retval = Windows1252_x80_x9F_to_u8string_();
 
-    using value_type = coda_oss::u8string::value_type;
+    using value_type = std::u8string::value_type;
     // Add the ASCII values to the map too.  1) We're already looking
     // in the map anyway for Windows-1252 characters. 2) Need map
     // entires for conversion from UTF-8 to Windows-1252.
@@ -111,7 +111,7 @@ static auto Windows1252_to_u8string()
     {
         assert(retval.find(ch) == retval.end()); // be sure we're not clobbering anything!
 
-        coda_oss::u8string s {static_cast<value_type>(ch)};
+        std::u8string s {static_cast<value_type>(ch)};
         retval[ch] = std::move(s);    
     }
 
@@ -126,29 +126,29 @@ static auto Windows1252_to_u8string()
         // *out++=0xc2+(*in>0xbf), *out++=(*in++&0x3f)+0x80;
         const auto b1 = 0xc2 + (ch > 0xbf);
         const auto b2 = (ch & 0x3f) + 0x80;
-        coda_oss::u8string s{static_cast<value_type>(b1)};
-        s += coda_oss::u8string{static_cast<value_type>(b2)};
+        std::u8string s{static_cast<value_type>(b1)};
+        s += std::u8string{static_cast<value_type>(b2)};
         retval[ch] = std::move(s);    
     }
 
     return retval;
 }
 
-inline void append(std::string& result, const coda_oss::u8string& utf8)
+inline void append(std::string& result, const std::u8string& utf8)
 {
     result += str::str<std::string>(utf8);
 }
-inline void append(coda_oss::u8string& result, const coda_oss::u8string& utf8)
+inline void append(std::u8string& result, const std::u8string& utf8)
 {
     result += utf8;
 }
 template<typename CharT>
-inline void append(std::basic_string<CharT>& result, const coda_oss::u8string& utf8)
+inline void append(std::basic_string<CharT>& result, const std::u8string& utf8)
 {
     auto p = str::c_str<std::string>(utf8);
     utf8::utf8to16(p, p + utf8.size(), std::back_inserter(result));
 }
-inline void append(std::u32string& result, const coda_oss::u8string& utf8)
+inline void append(std::u32string& result, const std::u8string& utf8)
 {
     auto p = str::c_str<std::string>(utf8);
     utf8::utf8to32(p, p + utf8.size(), std::back_inserter(result));
@@ -233,8 +233,8 @@ static inline void w1252to32(str::W1252string::const_pointer p, size_t sz, std::
     w1252_to_basic_string(p, sz, result);
 }
 
-static void get_next_utf8_byte(coda_oss::u8string::const_pointer p, size_t sz,
-    size_t& i,  coda_oss::u8string& utf8)
+static void get_next_utf8_byte(std::u8string::const_pointer p, size_t sz,
+    size_t& i,  std::u8string& utf8)
 {
     if (!(i + 1 < sz))
     {
@@ -248,9 +248,9 @@ static void get_next_utf8_byte(coda_oss::u8string::const_pointer p, size_t sz,
     {
         throw std::invalid_argument("Invalid next byte in UTF-8 encoding.");
     }
-    utf8 += coda_oss::u8string{static_cast<coda_oss::u8string::value_type>(b)};
+    utf8 += std::u8string{static_cast<std::u8string::value_type>(b)};
 }
-static void get_utf8_string(coda_oss::u8string::const_pointer p, size_t sz, size_t& i, coda_oss::u8string& utf8)
+static void get_utf8_string(std::u8string::const_pointer p, size_t sz, size_t& i, std::u8string& utf8)
 {
     const auto b1 = gsl::narrow<uint8_t>(p[i]);
     if (b1 >= 0x80)  // 0xxxxxxx
@@ -313,7 +313,7 @@ class Utf_to_Windows1252 final
         static const auto map = make_u16_map();
 
         // Convert UTF-16 to UTF-8
-        std::map<coda_oss::u8string, TChar> retval;
+        std::map<std::u8string, TChar> retval;
         for (auto&& kv : map)
         {
             retval[utf8_(kv.first)] = kv.second;
@@ -337,14 +337,14 @@ public:
         return retval;
     }
 
-    auto operator()(coda_oss::u8string::const_pointer p, size_t sz) const
+    auto operator()(std::u8string::const_pointer p, size_t sz) const
     {
         static const auto map = make_utf8_map();
 
         std::basic_string<TChar> retval;
         for (size_t i = 0; i < sz; i++)
         {
-            auto utf8 = coda_oss::u8string{p[i]};
+            auto utf8 = std::u8string{p[i]};
             get_utf8_string(p, sz, i, utf8);
 
             utf_to_1252(map, utf8, retval);
@@ -354,7 +354,7 @@ public:
 };
 
 template<typename TChar>
-static inline void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
+static inline void utf8to1252(std::u8string::const_pointer p, size_t sz, std::basic_string<TChar>& result)
 {
     static const Utf_to_Windows1252<TChar> convert;
     result = convert(p, sz);
@@ -368,12 +368,12 @@ static inline void utf16to1252(std::u16string::const_pointer p, size_t sz, std::
 
 struct back_inserter final
 { 
-    coda_oss::u8string* container = nullptr; // pointer instead of reference for copy
-    explicit back_inserter(coda_oss::u8string& s) noexcept : container(&s) { }
+    std::u8string* container = nullptr; // pointer instead of reference for copy
+    explicit back_inserter(std::u8string& s) noexcept : container(&s) { }
 
     back_inserter& operator=(uint8_t v)
     {
-        container->push_back(static_cast<coda_oss::u8string::value_type>(v));
+        container->push_back(static_cast<std::u8string::value_type>(v));
         return *this;
     }
     back_inserter& operator*() noexcept { return *this; }
@@ -398,7 +398,7 @@ struct basic_string_to_uXXstring_<CharT, true /*is_utf8*/> final
 {
     auto operator()(const std::basic_string<CharT>& s) const
     {
-        return to_uXXstring<coda_oss::u8string>(s);
+        return to_uXXstring<std::u8string>(s);
     }
 };
 template <typename CharT>
@@ -419,7 +419,7 @@ inline auto to_wstring_(const std::basic_string<CharT>&s)
 
 /***********************************************************************************/
 
-std::string str::details::to_string(const coda_oss::u8string& s)
+std::string str::details::to_string(const std::u8string& s)
 {
     #if _WIN32
     std::string retval;
@@ -463,7 +463,7 @@ std::wstring str::details::to_wstring(const std::string& s)
      return to_wstring_<true /*is_utf8*/>(s); // Input is UTF-8 everywhere except Windows
     #endif
 }
-std::wstring str::details::to_wstring(const coda_oss::u8string& s)
+std::wstring str::details::to_wstring(const std::u8string& s)
 {
     return to_wstring_<true /*is_utf8*/>(s);
 }
@@ -487,21 +487,21 @@ std::u32string str::to_u32string(str::W1252string::const_pointer p, size_t sz)
     return retval;
 }
 
-str::W1252string str::to_w1252string(coda_oss::u8string::const_pointer p, size_t sz)
+str::W1252string str::to_w1252string(std::u8string::const_pointer p, size_t sz)
 {
     str::W1252string retval;
     utf8to1252(p, sz, retval);
     return retval;
 }
 
-coda_oss::u8string str::to_u8string(std::u16string::const_pointer p, size_t sz)
+std::u8string str::to_u8string(std::u16string::const_pointer p, size_t sz)
 {
-    coda_oss::u8string retval;
+    std::u8string retval;
     utf8::utf16to8(p, p + sz, back_inserter(retval));
     return retval;
 }
 
-std::u16string str::to_u16string(coda_oss::u8string::const_pointer p_, size_t sz)
+std::u16string str::to_u16string(std::u8string::const_pointer p_, size_t sz)
 {
     auto p = details::cast<std::string::const_pointer>(p_);
     std::u16string retval;
@@ -509,7 +509,7 @@ std::u16string str::to_u16string(coda_oss::u8string::const_pointer p_, size_t sz
     return retval;
 }
 
-std::u32string str::to_u32string(coda_oss::u8string::const_pointer p_, size_t sz)
+std::u32string str::to_u32string(std::u8string::const_pointer p_, size_t sz)
 {
     auto p = details::cast<std::string::const_pointer>(p_);
     std::u32string retval;
@@ -517,16 +517,16 @@ std::u32string str::to_u32string(coda_oss::u8string::const_pointer p_, size_t sz
     return retval;
 }
 
-coda_oss::u8string str::to_u8string(std::u32string::const_pointer p, size_t sz)
+std::u8string str::to_u8string(std::u32string::const_pointer p, size_t sz)
 {
-    coda_oss::u8string retval;
+    std::u8string retval;
     utf8::utf32to8(p, p + sz, back_inserter(retval));
     return retval;
 }
 
-coda_oss::u8string str::to_u8string(W1252string::const_pointer p, size_t sz)
+std::u8string str::to_u8string(W1252string::const_pointer p, size_t sz)
 {
-    coda_oss::u8string retval;
+    std::u8string retval;
     w1252_to_basic_string(p, sz, retval);
     return retval;
 }
