@@ -36,9 +36,6 @@
     <ClInclude Include="coda_oss\include\coda_oss\string.h">
       <Filter>coda_oss</Filter>
     </ClInclude>
-    <ClInclude Include="coda_oss\include\coda_oss\type_traits.h">
-      <Filter>coda_oss</Filter>
-    </ClInclude>
     <ClInclude Include="except\include\except\Backtrace.h">
       <Filter>except</Filter>
     </ClInclude>
@@ -1519,28 +1516,10 @@
     <None Include="gsl\include\gsl\util">
       <Filter>gsl</Filter>
     </None>
-    <None Include="std\include\std\bit">
-      <Filter>std</Filter>
-    </None>
-    <None Include="std\include\std\cstddef">
-      <Filter>std</Filter>
-    </None>
-    <None Include="std\include\std\filesystem">
-      <Filter>std</Filter>
-    </None>
-    <None Include="std\include\std\memory">
-      <Filter>std</Filter>
-    </None>
     <None Include="std\include\std\optional">
       <Filter>std</Filter>
     </None>
-    <None Include="std\include\std\span">
-      <Filter>std</Filter>
-    </None>
     <None Include="std\include\std\string">
-      <Filter>std</Filter>
-    </None>
-    <None Include="std\include\std\type_traits">
       <Filter>std</Filter>
     </None>
     <None Include="sys\include\sys\sys_config.h.cmake.in">

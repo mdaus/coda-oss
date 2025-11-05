@@ -21,8 +21,6 @@
  *
  */
 
-#include <std/memory>
-
 #include <mem/ScopedCloneablePtr.h>
 
 #include "TestCase.h"
