@@ -24,7 +24,7 @@
 #include <filesystem>
 
 #include <sys/Path.h>
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 #include <filesystem>
 
@@ -47,18 +47,18 @@ static std::string find_directory(const std::vector<std::string>& paths)
     return "";
 }
 
-TEST_CASE(testPathMerge)
+TEST_CASE("testPathMerge")
 {
     const sys::OS os;
 
     // PATH is usually set to multiple directories on both Windows and *nix
     std::vector<std::string> paths;
     const auto splitResult = os.splitEnv("PATH", paths);
-    TEST_ASSERT_TRUE(splitResult);
-    TEST_ASSERT_FALSE(paths.empty());
+    CHECK(splitResult);
+    CHECK_FALSE(paths.empty());
 
     auto path = find_directory(paths);
-    TEST_ASSERT_TRUE(std::filesystem::is_directory(path));
+    CHECK(std::filesystem::is_directory(path));
     // add trailing '/'
     if (!str::endsWith(path, sys::Path::delimiter()))
     {
@@ -67,10 +67,10 @@ TEST_CASE(testPathMerge)
 
     bool isAbsolute;
     auto components = sys::Path::separate(path, isAbsolute);
-    TEST_ASSERT_FALSE(components.empty());
+    CHECK_FALSE(components.empty());
     auto result = sys::Path::merge(components, isAbsolute);
-    TEST_ASSERT_EQ(result, path);
-    TEST_ASSERT_TRUE(std::filesystem::is_directory(result));
+    CHECK(result == path);
+    CHECK(std::filesystem::is_directory(result));
 
     #if _WIN32
     path = R"(C:\dir\file.txt)";
@@ -78,12 +78,12 @@ TEST_CASE(testPathMerge)
     path = R"(/dir1/dir2/file.txt)";
     #endif
     components = sys::Path::separate(path, isAbsolute);
-    TEST_ASSERT_EQ(components.size(), static_cast<size_t>(3));
+    CHECK(components.size() == static_cast<size_t>(3));
     result = sys::Path::merge(components, isAbsolute);
-    TEST_ASSERT_EQ(result, path);
+    CHECK(result == path);
 }
 
-TEST_CASE(test_std_filesystem_is_absolute)
+TEST_CASE("test_std_filesystem_is_absolute")
 {
     std::filesystem::path path
 #ifdef _WIN32
@@ -91,128 +91,128 @@ TEST_CASE(test_std_filesystem_is_absolute)
 #else
             ("/a/b/c");
 #endif
-    TEST_ASSERT_TRUE(path.is_absolute());
+    CHECK(path.is_absolute());
     path =
 #ifdef _WIN32
             R"(a\b\c)";
 #else
             "a/b/c";
 #endif
-    TEST_ASSERT_FALSE(path.is_absolute());
-    TEST_ASSERT_TRUE(path.is_relative());
+    CHECK_FALSE(path.is_absolute());
+    CHECK(path.is_relative());
 
     const std::filesystem::path slash("/");
     // https://en.cppreference.com/w/cpp/filesystem/path/is_absrel
     // "The path "/" is absolute on a POSIX OS, but is relative on Windows."
 #ifdef _WIN32
-    TEST_ASSERT_TRUE(slash.is_relative());
-    TEST_ASSERT_FALSE(slash.is_absolute());
+    CHECK(slash.is_relative());
+    CHECK_FALSE(slash.is_absolute());
 #else
-    TEST_ASSERT_TRUE(slash.is_absolute());
-    TEST_ASSERT_FALSE(slash.is_relative());
+    CHECK(slash.is_absolute());
+    CHECK_FALSE(slash.is_relative());
 #endif
 
     std::filesystem::path url("x://example.com"); // 1 letter
 #ifdef _WIN32
-    TEST_ASSERT_TRUE(url.is_absolute()); // looks like a drive letter on Windows
-    TEST_ASSERT_FALSE(url.is_relative());
+    CHECK(url.is_absolute()); // looks like a drive letter on Windows
+    CHECK_FALSE(url.is_relative());
 #else
-    TEST_ASSERT_FALSE(url.is_absolute());
-    TEST_ASSERT_TRUE(url.is_relative());
+    CHECK_FALSE(url.is_absolute());
+    CHECK(url.is_relative());
 #endif
 
     url = "s3://example.com";  // 2 letters
-    TEST_ASSERT_FALSE(url.is_absolute());
-    TEST_ASSERT_TRUE(url.is_relative());  // Should this be false?
+    CHECK_FALSE(url.is_absolute());
+    CHECK(url.is_relative());  // Should this be false?
 
     url = "ftp://example.com"; // 3 letters
-    TEST_ASSERT_FALSE(url.is_absolute());
+    CHECK_FALSE(url.is_absolute());
 
     url = "http://example.com"; // 4 letters
-    TEST_ASSERT_FALSE(url.is_absolute());
+    CHECK_FALSE(url.is_absolute());
     
     url = "https://example.com"; // 5 letters
-    TEST_ASSERT_FALSE(url.is_absolute());
+    CHECK_FALSE(url.is_absolute());
 
     url = "mailto:nobody@example.com";  // 6 letters
-    TEST_ASSERT_FALSE(url.is_absolute());
-    TEST_ASSERT_TRUE(url.is_relative());  // Should this be false?
+    CHECK_FALSE(url.is_absolute());
+    CHECK(url.is_relative());  // Should this be false?
 }
 
-TEST_CASE(testExpandEnvTilde)
+TEST_CASE("testExpandEnvTilde")
 {
     auto path = sys::Path::expandEnvironmentVariables("~");
-    TEST_ASSERT_TRUE(std::filesystem::is_directory(path));
+    CHECK(std::filesystem::is_directory(path));
 
     path = sys::Path::expandEnvironmentVariables("~", std::filesystem::file_type::directory);
-    TEST_ASSERT_TRUE(std::filesystem::is_directory(path));
+    CHECK(std::filesystem::is_directory(path));
 
     path = sys::Path::expandEnvironmentVariables("~", std::filesystem::file_type::regular);
-    TEST_ASSERT_TRUE(path.empty());
+    CHECK(path.empty());
 }
 
-TEST_CASE(testExpandEnvTildePath)
+TEST_CASE("testExpandEnvTildePath")
 {
     sys::OS os;
     const std::vector<std::string> exts{"NTUSER.DAT", ".login", ".cshrc", ".bashrc"};
     os.prependEnv("exts", exts, true /*overwrite*/);
 
     const auto path = sys::Path::expandEnvironmentVariables("~/$(exts)", std::filesystem::file_type::regular);
-    TEST_ASSERT_TRUE(std::filesystem::is_regular_file(path));
+    CHECK(std::filesystem::is_regular_file(path));
 }
 
-TEST_CASE(testExpandEnv)
+TEST_CASE("testExpandEnv")
 {
     sys::OS os;
     os.setEnv("CODA_OSS_test", "CODA_OSS_test", true /*overwrite*/);
 
     const auto test = sys::Path::expandEnvironmentVariables("$CODA_OSS_test", false);
-    TEST_ASSERT_FALSE(test.empty());
+    CHECK_FALSE(test.empty());
 
     #if _WIN32  // %FOO% only on Windows
     const auto win32_test = sys::Path::expandEnvironmentVariables("%CODA_OSS_test%", false);
-    TEST_ASSERT_EQ(win32_test, test);
+    CHECK(win32_test == test);
     #endif
 
     auto result = sys::Path::expandEnvironmentVariables("$(CODA_OSS_test)", false);
-    TEST_ASSERT_EQ(result, test);
+    CHECK(result == test);
 
     result = sys::Path::expandEnvironmentVariables("${CODA_OSS_test}", false);
-    TEST_ASSERT_EQ(result, test);
+    CHECK(result == test);
 
     result = sys::Path::expandEnvironmentVariables("foo${CODA_OSS_test}", false);
-    TEST_ASSERT_EQ(result, "foo" + test);
+    CHECK(result == "foo" + test);
 
     result = sys::Path::expandEnvironmentVariables("${CODA_OSS_test}foo", false);
-    TEST_ASSERT_EQ(result, test + "foo");
+    CHECK(result == test + "foo");
 
     result = sys::Path::expandEnvironmentVariables("foo${CODA_OSS_test}bar", false);
-    TEST_ASSERT_EQ(result, "foo" + test + "bar");
+    CHECK(result == "foo" + test + "bar");
 
     result = sys::Path::expandEnvironmentVariables("foo$CODA_OSS_test-bar", false);
-    TEST_ASSERT_EQ(result, "foo" + test + "-bar");
+    CHECK(result == "foo" + test + "-bar");
 
     result = sys::Path::expandEnvironmentVariables("foo$CODA_OSS_test(bar)", false);
-    TEST_ASSERT_EQ(result, "foo" + test + "(bar)");
+    CHECK(result == "foo" + test + "(bar)");
 
     result = sys::Path::expandEnvironmentVariables("foo$CODA_OSS_test)bar(", false);
-    TEST_ASSERT_EQ(result, "foo" + test + ")bar(");
+    CHECK(result == "foo" + test + ")bar(");
 
     result = sys::Path::expandEnvironmentVariables("foo$(CODA_OSS_test)BAR)", false);
-    TEST_ASSERT_EQ(result, "foo" + test + "BAR)");
+    CHECK(result == "foo" + test + "BAR)");
 
     result = sys::Path::expandEnvironmentVariables("$CODA_OSS_test$CODA_OSS_test", false);
-    TEST_ASSERT_EQ(result, test + test);
+    CHECK(result == test + test);
     #if _WIN32  // %FOO% only on Windows
     result = sys::Path::expandEnvironmentVariables("%CODA_OSS_test%%CODA_OSS_test%", false);
-    TEST_ASSERT_EQ(result, test + test);
+    CHECK(result == test + test);
     #endif
 
     result = sys::Path::expandEnvironmentVariables("foo$CODA_OSS_test-bar$(CODA_OSS_test)BAR)", false);
-    TEST_ASSERT_EQ(result, "foo" + test + "-bar" + test + "BAR)");
+    CHECK(result == "foo" + test + "-bar" + test + "BAR)");
 }
 
-TEST_CASE(testExpandEnvPathExists)
+TEST_CASE("testExpandEnvPathExists")
 {
     sys::OS os;
     #ifdef _WIN32
@@ -224,21 +224,21 @@ TEST_CASE(testExpandEnvPathExists)
     os.prependEnv("PATH", values, true /*overwrite*/);
 
     const auto path = sys::Path::expandEnvironmentVariables("$PATH");
-    TEST_ASSERT_FALSE(path.empty());
+    CHECK_FALSE(path.empty());
 
     #if _WIN32  // %FOO% only on Windows
     const auto win32_path = sys::Path::expandEnvironmentVariables("%PATH%");
-    TEST_ASSERT_EQ(win32_path, path);
+    CHECK(win32_path == path);
     #endif
 
     const auto path2 = sys::Path::expandEnvironmentVariables("$(PATH)");
-    TEST_ASSERT_EQ(path2, path);
+    CHECK(path2 == path);
 
     const auto path3 = sys::Path::expandEnvironmentVariables("${PATH}");
-    TEST_ASSERT_EQ(path3, path);
+    CHECK(path3 == path);
 }
 
-TEST_CASE(testExpandEnvPathMultiple)
+TEST_CASE("testExpandEnvPathMultiple")
 {
     sys::OS os;
 
@@ -250,9 +250,9 @@ TEST_CASE(testExpandEnvPathMultiple)
     {
         home += sys::Path::delimiter();
     }
-    TEST_ASSERT_EQ(expanded_path, home);
+    CHECK(expanded_path == home);
     auto expanded_paths = sys::Path::expandedEnvironmentVariables("$(paths)");
-    TEST_ASSERT_EQ(expanded_paths.size(), static_cast<size_t>(3));
+    CHECK(expanded_paths.size() == static_cast<size_t>(3));
 
     const std::vector<std::string> apps{"apps"};
     os.prependEnv("apps", apps, true /*overwrite*/);
@@ -273,29 +273,29 @@ TEST_CASE(testExpandEnvPathMultiple)
     const std::vector<std::string> expected{path_to_expand_root, paths[0], apps[0], app[0], libs[0], exts[0]};
     auto expected_path = sys::Path::merge(expected, true /*isAbsolute*/);
     expanded_path = sys::Path::expandEnvironmentVariables(path_to_expand, false /*checkIfExists*/);
-    TEST_ASSERT_EQ(expanded_path, expected_path);
+    CHECK(expanded_path == expected_path);
 
     expanded_paths = sys::Path::expandedEnvironmentVariables(path_to_expand);
-    TEST_ASSERT_EQ(expanded_paths.size(), paths.size() * apps.size() * app.size() * libs.size() * exts.size());
+    CHECK(expanded_paths.size() == paths.size() * apps.size() * app.size() * libs.size() * exts.size());
     const std::vector<std::string> expected_back{path_to_expand_root, paths.back(), apps.back(), app.back(), libs.back(), exts.back()};
     expected_path = sys::Path::merge(expected_back, true /*isAbsolute*/);
-    TEST_ASSERT_EQ(expanded_paths.back(), expected_path);
+    CHECK(expanded_paths.back() == expected_path);
 }
 
 
-TEST_CASE(testModifyVar)
+TEST_CASE("testModifyVar")
 {
     const sys::OS os;
 
     const auto argv0_t = sys::Path::expandEnvironmentVariables("${ARGV0@t}", false /*checkIfExists*/);
-    TEST_ASSERT_FALSE(argv0_t.empty());
+    CHECK_FALSE(argv0_t.empty());
 
     const auto result = os.getSpecialEnv("0");  // i.e., ${0}
-    TEST_ASSERT_FALSE(result.empty());
+    CHECK_FALSE(result.empty());
     const std::filesystem::path fsresult(result);
     //const std::filesystem::path this_file(__FILE__);
     //TEST_ASSERT_EQ(fsresult.stem(), this_file.stem());
-    TEST_ASSERT_EQ(argv0_t, fsresult.filename());
+    CHECK(argv0_t == fsresult.filename());
 }
 
 static std::string modifyEnv(const std::string& envVar, char op)
@@ -303,7 +303,7 @@ static std::string modifyEnv(const std::string& envVar, char op)
   const auto strExpand = "${" + envVar + "@" + op + "}";
   return sys::Path::expandEnvironmentVariables(strExpand, false /*checkIfExists*/);
 }
-TEST_CASE(testModifyVar2)
+TEST_CASE("testModifyVar2")
 {
     sys::OS os;
 
@@ -367,26 +367,13 @@ TEST_CASE(testModifyVar2)
     os.setEnv(envVar, path, true /*overwrite*/);
 
     const auto h = modifyEnv(envVar, 'h');
-    TEST_ASSERT_EQ(h, "/dir1/dir2");
+    CHECK(h == "/dir1/dir2");
     const auto t = modifyEnv(envVar, 't');
-    TEST_ASSERT_EQ(t, "file.txt");
+    CHECK(t == "file.txt");
     const auto r = modifyEnv(envVar, 'r');
     // TEST_ASSERT_EQ(r, "/dir1/dir2/file"); // TODO: fix on Windows
     const auto e = modifyEnv(envVar, 'e');
-    TEST_ASSERT_EQ(e, "txt");
+    CHECK(e == "txt");
     const auto s = modifyEnv(envVar, 's');
-    TEST_ASSERT_EQ(s, "file");
+    CHECK(s == "file");
 }
-
-TEST_MAIN(
-    TEST_CHECK(testPathMerge);
-    TEST_CHECK(test_std_filesystem_is_absolute);
-    TEST_CHECK(testExpandEnvTilde);
-    TEST_CHECK(testExpandEnv);
-    TEST_CHECK(testExpandEnvTildePath);
-    TEST_CHECK(testExpandEnvPathExists);
-    TEST_CHECK(testExpandEnvPathMultiple);
-    TEST_CHECK(testModifyVar);
-    TEST_CHECK(testModifyVar2);
- )
-

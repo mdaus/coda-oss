@@ -21,9 +21,9 @@
  */
 
 #include <math/linear/Matrix2D.h>
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
-TEST_CASE(testLeftRealProperties)
+TEST_CASE("testLeftRealProperties")
 {
     math::linear::Matrix2D<double> matrix(4, 2);
     matrix(0, 0) = 2;
@@ -37,9 +37,9 @@ TEST_CASE(testLeftRealProperties)
     const auto inverse = math::linear::leftInverse(matrix);
 
     // Identities that should hold
-    TEST_ASSERT_EQ(matrix, matrix * inverse * matrix);
-    TEST_ASSERT_EQ(inverse, inverse * matrix * inverse);
-    TEST_ASSERT_EQ(matrix, math::linear::rightInverse(inverse));
+    CHECK(matrix == matrix * inverse * matrix);
+    CHECK(inverse == inverse * matrix * inverse);
+    CHECK(matrix == math::linear::rightInverse(inverse));
 
     // We want this to be able to solve linear equations
     math::linear::Matrix2D<double> xx(2, 1);
@@ -47,10 +47,10 @@ TEST_CASE(testLeftRealProperties)
     xx(1, 0) = 5;
 
     const auto yy = matrix * xx;
-    TEST_ASSERT_EQ(inverse * yy, xx);
+    CHECK(inverse * yy == xx);
 }
 
-TEST_CASE(testRightRealProperties)
+TEST_CASE("testRightRealProperties")
 {
     math::linear::Matrix2D<double> matrix(4, 2);
     matrix(0, 0) = 2;
@@ -67,9 +67,9 @@ TEST_CASE(testRightRealProperties)
 
     // Identities that should hold
     const auto inverse = math::linear::rightInverse(matrix);
-    TEST_ASSERT_EQ(matrix, matrix * inverse * matrix);
-    TEST_ASSERT_EQ(inverse, inverse * matrix * inverse);
-    TEST_ASSERT_EQ(matrix, math::linear::leftInverse(inverse));
+    CHECK(matrix == matrix * inverse * matrix);
+    CHECK(inverse == inverse * matrix * inverse);
+    CHECK(matrix == math::linear::leftInverse(inverse));
 
      math::linear::Matrix2D<double> xx(1, 2);
     xx(0, 0) = 1;
@@ -77,11 +77,6 @@ TEST_CASE(testRightRealProperties)
 
     // We want this to be able to solve linear equations
     const auto yy = xx * matrix;
-    TEST_ASSERT_EQ(yy * inverse, xx);
+    CHECK(yy * inverse == xx);
 }
-
-TEST_MAIN(
-    TEST_CHECK(testLeftRealProperties);
-    TEST_CHECK(testRightRealProperties);
-    )
 

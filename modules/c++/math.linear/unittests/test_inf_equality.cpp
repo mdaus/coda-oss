@@ -20,30 +20,23 @@
 *
 */
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 #include <math/linear/MatrixMxN.h>
 
-TEST_CASE(positiveInfinityEq)
+TEST_CASE("positiveInfinityEq")
 {
-    TEST_ASSERT(math::linear::equals(std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity()));
-    TEST_ASSERT(math::linear::equals(std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()));
+    CHECK(math::linear::equals(std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity()));
+    CHECK(math::linear::equals(std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity()));
 }
 
-TEST_CASE(negativeInfinityEq)
+TEST_CASE("negativeInfinityEq")
 {
-    TEST_ASSERT(math::linear::equals(-std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()));
-    TEST_ASSERT(math::linear::equals(-std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity()));
+    CHECK(math::linear::equals(-std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()));
+    CHECK(math::linear::equals(-std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity()));
 }
 
-TEST_CASE(differentSignsNe)
+TEST_CASE("differentSignsNe")
 {
-    TEST_ASSERT(!math::linear::equals(std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()));
-    TEST_ASSERT(!math::linear::equals(std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity()));
+    CHECK(!math::linear::equals(std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()));
+    CHECK(!math::linear::equals(std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity()));
 }
-
-TEST_MAIN(
-    TEST_CHECK(positiveInfinityEq);
-    TEST_CHECK(negativeInfinityEq);
-    TEST_CHECK(differentSignsNe);
-    )
-

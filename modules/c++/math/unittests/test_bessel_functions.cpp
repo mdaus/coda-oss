@@ -20,33 +20,29 @@
  *
  */
 
-#include <TestCase.h>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <math/Bessel.h>
 
-TEST_CASE(orderZero)
+constexpr double eps = static_cast<double>(std::numeric_limits<float>::epsilon());
+
+TEST_CASE("orderZero")
 {
-    TEST_ASSERT_ALMOST_EQ(math::besselI(0, 1), 1.266065878);
-    TEST_ASSERT_ALMOST_EQ(math::besselI(0, 2), 2.279585302);
-    TEST_ASSERT_ALMOST_EQ(math::besselI(0, 3), 4.88079259);
+    CHECK_THAT(math::besselI(0, 1), Catch::Matchers::WithinRel(1.266065878, eps));
+    CHECK_THAT(math::besselI(0, 2), Catch::Matchers::WithinRel(2.279585302, eps));
+    CHECK_THAT(math::besselI(0, 3), Catch::Matchers::WithinRel(4.88079259, eps));
 }
 
-TEST_CASE(orderOne)
+TEST_CASE("orderOne")
 {
-    TEST_ASSERT_ALMOST_EQ(math::besselI(1, 4), 9.759465154);
-    TEST_ASSERT_ALMOST_EQ_EPS(math::besselI(1, 5), 24.33564214, 1e-5);
-    TEST_ASSERT_ALMOST_EQ_EPS(math::besselI(1, 5.6), 42.32828803, 1e-5);
+    CHECK_THAT(math::besselI(1, 4), Catch::Matchers::WithinRel(9.759465154, eps));
+    CHECK_THAT(math::besselI(1, 5), Catch::Matchers::WithinRel(24.33564214, 1e-5));
+    CHECK_THAT(math::besselI(1, 5.6), Catch::Matchers::WithinRel(42.32828803, 1e-5));
 }
 
-TEST_CASE(orderFive)
+TEST_CASE("orderFive")
 {
-    TEST_ASSERT_ALMOST_EQ(math::besselI(5, -1), -2.71463156e-4);
-    TEST_ASSERT_ALMOST_EQ(math::besselI(5, 0), 0);
-    TEST_ASSERT_ALMOST_EQ(math::besselI(5, 1), 2.71463156e-4);
+    CHECK_THAT(math::besselI(5, -1), Catch::Matchers::WithinRel(-2.71463156e-4, eps));
+    CHECK_THAT(math::besselI(5, 0), Catch::Matchers::WithinRel(0, eps));
+    CHECK_THAT(math::besselI(5, 1), Catch::Matchers::WithinRel(2.71463156e-4, eps));
 }
-
-TEST_MAIN(
-    TEST_CHECK(orderZero);
-    TEST_CHECK(orderOne);
-    TEST_CHECK(orderFive);
-    )
-

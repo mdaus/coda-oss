@@ -25,13 +25,13 @@
 #include <optional>
 #include <span>
 
-#include "io/StringStream.h"
-#include "io/FileInputStream.h"
-#include "str/Convert.h"
-#include "str/Encoding.h"
-#include "sys/OS.h"
-#include "sys/FileFinder.h"
-#include <TestCase.h>
+#include <io/StringStream.h>
+#include <io/FileInputStream.h>
+#include <str/Convert.h>
+#include <str/Encoding.h>
+#include <sys/OS.h>
+#include <sys/FileFinder.h>
+#include <catch2/catch_test_macros.hpp>
 
 #include "xml/lite/MinidomParser.h"
 #include "xml/lite/Validator.h"
@@ -102,37 +102,41 @@ static std::filesystem::path find_unittest_file(const std::filesystem::path& nam
     return sys::test::findGITModuleFile("coda-oss", unittests, name);
 }
 
-static void test_a_element(const std::string& testName, const xml::lite::Element& root)
-{
-    const auto aElements = root.getElementsByTagName("a", true /*recurse*/);
-    TEST_ASSERT_EQ(std::ssize(aElements), 1);
-    const auto& a = *(aElements[0]);
-
-    const auto characterData = a.getCharacterData();
-    TEST_ASSERT_EQ(characterData, text());
-}
-TEST_CASE(testXmlParseSimple)
+TEST_CASE("testXmlParseSimple")
 {
     io::StringStream ss;
     ss.stream() << strXml();
-    TEST_ASSERT_EQ(ss.stream().str(), strXml());
+    CHECK(ss.stream().str() == strXml());
 
     xml::lite::MinidomParser xmlParser;
     xmlParser.parse(ss);
-    const auto& root = getRootElement(getDocument(xmlParser));
-    test_a_element(testName, root);
-        
+    auto& root = getRootElement(getDocument(xmlParser));
+
+    auto aElements = root.getElementsByTagName("a", true /*recurse*/);
+    CHECK(std::ssize(aElements) == 1);
+    auto& a = *(aElements[0]);
+    auto characterData = a.getCharacterData();
+    CHECK(characterData == text());
+
     const auto docElements = root.getElementsByTagName("doc");
-    TEST_ASSERT_FALSE(docElements.empty());
-    TEST_ASSERT_EQ(std::ssize(docElements), 1);
-    test_a_element(testName, *docElements[0]);
+    CHECK_FALSE(docElements.empty());
+    CHECK(std::ssize(docElements) == 1);
+
+    root = *docElements[0];
+    aElements = root.getElementsByTagName("a", true /*recurse*/);
+    CHECK(std::ssize(aElements) == 1);
+    a = *(aElements[0]);
+
+    characterData = a.getCharacterData();
+    CHECK(characterData == text());
+
 }
 
-TEST_CASE(testXmlPreserveCharacterData)
+TEST_CASE("testXmlPreserveCharacterData")
 {
     io::StringStream stream;
     stream.stream() << strUtf8Xml();
-    TEST_ASSERT_EQ(stream.stream().str(), strUtf8Xml());
+    CHECK(stream.stream().str() == strUtf8Xml());
 
     xml::lite::MinidomParser xmlParser;
     // This is needed in Windows, because the default locale is *.1252 (more-or-less ISO8859-1)
@@ -141,7 +145,7 @@ TEST_CASE(testXmlPreserveCharacterData)
     // _set_error_mode(_OUT_TO_STDERR) so there's no way to use TEST_EXCEPTION
     xmlParser.preserveCharacterData(true);
     xmlParser.parse(stream);
-    TEST_ASSERT_TRUE(true);
+    CHECK(true);
 }
 
 static xml::lite::Element& testXmlUtf8_(xml::lite::MinidomParser& xmlParser)
@@ -157,31 +161,31 @@ static xml::lite::Element& testXmlUtf8_(xml::lite::MinidomParser& xmlParser)
     return a;
 }
 
-TEST_CASE(testXmlUtf8_u8string)
+TEST_CASE("testXmlUtf8_u8string")
 {
     xml::lite::MinidomParser xmlParser;
     const auto& a = testXmlUtf8_(xmlParser);
 
     const auto actual = getCharacterData(a);
-    TEST_ASSERT_EQ(actual, utf8Text8());
+    CHECK(actual == utf8Text8());
 }
 
-TEST_CASE(testXmlUtf8)
+TEST_CASE("testXmlUtf8")
 {
     xml::lite::MinidomParser xmlParser;
     const auto& a = testXmlUtf8_(xmlParser);
 
     auto actual = a.getCharacterData();
     const auto expected = platfromText_();
-    TEST_ASSERT_EQ(actual, expected);
+    CHECK(actual == expected);
 }
 
-TEST_CASE(testXml_setCharacterData)
+TEST_CASE("testXml_setCharacterData")
 {
     xml::lite::MinidomParser xmlParser;
     auto& a = testXmlUtf8_(xmlParser);
     a.setCharacterData(utf8Text8());
-    TEST_ASSERT_TRUE(true); // need to use hidden "testName" parameter
+    CHECK(true); // need to use hidden "testName" parameter
 }
 
 static std::string testXmlPrint_(std::string& expected, const std::string& characterData)
@@ -196,11 +200,11 @@ static std::string testXmlPrint_(std::string& expected, const std::string& chara
     expected = "<root>" + characterData + "</root>";
     return output.stream().str();
 }
-TEST_CASE(testXmlPrintSimple)
+TEST_CASE("testXmlPrintSimple")
 {
     std::string expected;
     const auto actual = testXmlPrint_(expected, text());
-    TEST_ASSERT_EQ(actual, expected);
+    CHECK(actual == expected);
 }
 
 static auto from_windows1252(const std::string& w1252)
@@ -208,7 +212,7 @@ static auto from_windows1252(const std::string& w1252)
     return to_u8string(str::str<str::W1252string>(w1252));
 }
 
-TEST_CASE(testXmlPrintUtf8)
+TEST_CASE("testXmlPrintUtf8")
 {
     static const xml::lite::QName root(xml::lite::Uri(), "root");
 
@@ -223,7 +227,7 @@ TEST_CASE(testXmlPrintUtf8)
         io::StringStream output;
         pRootElement->print(output);
         const auto actual = output.stream().str();
-        TEST_ASSERT_EQ(actual, expected);
+        CHECK(actual == expected);
     }
     {
         xml::lite::MinidomParser xmlParser;
@@ -234,7 +238,7 @@ TEST_CASE(testXmlPrintUtf8)
         io::StringStream output;
         pRootElement->print(output);
         const auto actual = output.stream().str();
-        TEST_ASSERT_EQ(actual, expected);
+        CHECK(actual == expected);
     }
     {
         xml::lite::MinidomParser xmlParser;
@@ -245,11 +249,11 @@ TEST_CASE(testXmlPrintUtf8)
         io::StringStream output;
         pRootElement->print(output);
         const auto actual = output.stream().str();
-        TEST_ASSERT_EQ(actual, expected);
+        CHECK(actual == expected);
     }
 }
 
-TEST_CASE(testXmlConsoleOutput)
+TEST_CASE("testXmlConsoleOutput")
 {
     static const xml::lite::QName root(xml::lite::Uri(), "root");
 
@@ -264,7 +268,7 @@ TEST_CASE(testXmlConsoleOutput)
         io::StringStream output;
         pRootElement->consoleOutput_(output);
         const auto actual = output.stream().str();
-        TEST_ASSERT_EQ(actual, expected);
+        CHECK(actual == expected);
     }
     {
         xml::lite::MinidomParser xmlParser;
@@ -275,7 +279,7 @@ TEST_CASE(testXmlConsoleOutput)
         io::StringStream output;
         pRootElement->consoleOutput_(output);
         const auto actual = output.stream().str();
-        TEST_ASSERT_EQ(actual, expected);
+        CHECK(actual == expected);
     }
     {
         xml::lite::MinidomParser xmlParser;
@@ -286,11 +290,11 @@ TEST_CASE(testXmlConsoleOutput)
         io::StringStream output;
         pRootElement->consoleOutput_(output);
         const auto actual = output.stream().str();
-        TEST_ASSERT_EQ(actual, expected);
+        CHECK(actual == expected);
     }
 }
 
-TEST_CASE(testXmlParseAndPrintUtf8)
+TEST_CASE("testXmlParseAndPrintUtf8")
 {
     io::StringStream input;
     input.stream() << strUtf8Xml();
@@ -303,13 +307,16 @@ TEST_CASE(testXmlParseAndPrintUtf8)
     io::StringStream output;
     pRootElement->print(output);
     const auto actual = output.stream().str();
-    TEST_ASSERT_EQ(actual, strUtf8Xml());
+    CHECK(actual == strUtf8Xml());
 }
 
-static void testReadEncodedXmlFile(const std::string& testName, const std::string& xmlFile, bool preserveCharacterData,
-    const std::string& platformText, const std::u8string& text8_)
+TEST_CASE("testReadEncodedXmlFileEncoding_utf-8_0")
 {
     using namespace xml::lite::literals;  // _q and _u for QName and Uri
+    auto xmlFile = "encoding_utf-8.xml";
+    auto preserveCharacterData = true;
+    auto platformText = platfromText_();
+    auto text8_ = utf8Text8();
 
     const auto path = find_unittest_file(xmlFile);
     io::FileInputStream input(path.string());
@@ -321,40 +328,220 @@ static void testReadEncodedXmlFile(const std::string& testName, const std::strin
 
     const auto& a = root("a"_q, true /*recurse*/);
     auto characterData = a.getCharacterData();
-    TEST_ASSERT_EQ(characterData, platformText);
+    CHECK(characterData == platformText);
 
     const auto u8_characterData = getCharacterData(a);
-    TEST_ASSERT_EQ(text8_, u8_characterData);     
+    CHECK(text8_ == u8_characterData);     
 
     const auto& textXML = root("text"_q, true /*recurse*/);
     characterData = textXML.getCharacterData();
     const auto expectedText = preserveCharacterData ? "\tt\te\tx\tt\t" : "t\te\tx\tt";
-    TEST_ASSERT_EQ(characterData, expectedText);
+    CHECK(characterData == expectedText);
 
     const auto& whitespaceXML = root("whitespace"_q, true /*recurse*/);
     characterData = whitespaceXML.getCharacterData();
     const auto expectedWhitespace = preserveCharacterData ? "             " : "";
-    TEST_ASSERT_EQ(characterData, expectedWhitespace);
+    CHECK(characterData == expectedWhitespace);
 
     const auto& emptyXML = root("empty"_q, true /*recurse*/);
     characterData = emptyXML.getCharacterData();
-    TEST_ASSERT_EQ(characterData, "");
+    CHECK(characterData == "");
 }
-TEST_CASE(testReadEncodedXmlFiles)
-{
-    // these have "<?xml version="1.0" encoding="..." ?>"
-    testReadEncodedXmlFile(testName, "encoding_utf-8.xml", true /*preserveCharacterData*/, platfromText_() , utf8Text8());
-    testReadEncodedXmlFile(testName, "encoding_utf-8.xml", false /*preserveCharacterData*/, platfromText_(), utf8Text8());
-    testReadEncodedXmlFile(testName, "encoding_windows-1252.xml", true /*preserveCharacterData*/, platfromText_(), utf8Text8());
-    testReadEncodedXmlFile(testName, "encoding_windows-1252.xml", false /*preserveCharacterData*/, platfromText_(), utf8Text8());
-    testReadEncodedXmlFile(testName, "ascii_encoding_utf-8.xml", true /*preserveCharacterData*/, text() , text8());
-    testReadEncodedXmlFile(testName, "ascii_encoding_utf-8.xml", false /*preserveCharacterData*/, text(), text8());
-}
-
-static void testReadXmlFile(const std::string& testName, const std::string& xmlFile, bool preserveCharacterData,
-        const std::string& platformText, const std::u8string& text8_)
+TEST_CASE("testReadEncodedXmlFileEncoding_utf-8_1")
 {
     using namespace xml::lite::literals;  // _q and _u for QName and Uri
+    auto xmlFile = "encoding_utf-8.xml";
+    auto preserveCharacterData = false;
+    auto platformText = platfromText_();
+    auto text8_ = utf8Text8();
+
+    const auto path = find_unittest_file(xmlFile);
+    io::FileInputStream input(path.string());
+
+    xml::lite::MinidomParser xmlParser;
+    xmlParser.preserveCharacterData(preserveCharacterData);
+    xmlParser.parse(input);
+    const auto& root = getRootElement(getDocument(xmlParser));
+
+    const auto& a = root("a"_q, true /*recurse*/);
+    auto characterData = a.getCharacterData();
+    CHECK(characterData == platformText);
+
+    const auto u8_characterData = getCharacterData(a);
+    CHECK(text8_ == u8_characterData);     
+
+    const auto& textXML = root("text"_q, true /*recurse*/);
+    characterData = textXML.getCharacterData();
+    const auto expectedText = preserveCharacterData ? "\tt\te\tx\tt\t" : "t\te\tx\tt";
+    CHECK(characterData == expectedText);
+
+    const auto& whitespaceXML = root("whitespace"_q, true /*recurse*/);
+    characterData = whitespaceXML.getCharacterData();
+    const auto expectedWhitespace = preserveCharacterData ? "             " : "";
+    CHECK(characterData == expectedWhitespace);
+
+    const auto& emptyXML = root("empty"_q, true /*recurse*/);
+    characterData = emptyXML.getCharacterData();
+    CHECK(characterData == "");
+}
+TEST_CASE("testReadEncodedXmlFileEncoding_windows-1252_0")
+{
+    using namespace xml::lite::literals;  // _q and _u for QName and Uri
+    auto xmlFile = "encoding_windows-1252.xml";
+    auto preserveCharacterData = true;
+    auto platformText = platfromText_();
+    auto text8_ = utf8Text8();
+
+    const auto path = find_unittest_file(xmlFile);
+    io::FileInputStream input(path.string());
+
+    xml::lite::MinidomParser xmlParser;
+    xmlParser.preserveCharacterData(preserveCharacterData);
+    xmlParser.parse(input);
+    const auto& root = getRootElement(getDocument(xmlParser));
+
+    const auto& a = root("a"_q, true /*recurse*/);
+    auto characterData = a.getCharacterData();
+    CHECK(characterData == platformText);
+
+    const auto u8_characterData = getCharacterData(a);
+    CHECK(text8_ == u8_characterData);     
+
+    const auto& textXML = root("text"_q, true /*recurse*/);
+    characterData = textXML.getCharacterData();
+    const auto expectedText = preserveCharacterData ? "\tt\te\tx\tt\t" : "t\te\tx\tt";
+    CHECK(characterData == expectedText);
+
+    const auto& whitespaceXML = root("whitespace"_q, true /*recurse*/);
+    characterData = whitespaceXML.getCharacterData();
+    const auto expectedWhitespace = preserveCharacterData ? "             " : "";
+    CHECK(characterData == expectedWhitespace);
+
+    const auto& emptyXML = root("empty"_q, true /*recurse*/);
+    characterData = emptyXML.getCharacterData();
+    CHECK(characterData == "");
+}
+TEST_CASE("testReadEncodedXmlFileEncoding_windows-1252_1")
+{
+    using namespace xml::lite::literals;  // _q and _u for QName and Uri
+    auto xmlFile = "encoding_windows-1252.xml";
+    auto preserveCharacterData = false;
+    auto platformText = platfromText_();
+    auto text8_ = utf8Text8();
+
+    const auto path = find_unittest_file(xmlFile);
+    io::FileInputStream input(path.string());
+
+    xml::lite::MinidomParser xmlParser;
+    xmlParser.preserveCharacterData(preserveCharacterData);
+    xmlParser.parse(input);
+    const auto& root = getRootElement(getDocument(xmlParser));
+
+    const auto& a = root("a"_q, true /*recurse*/);
+    auto characterData = a.getCharacterData();
+    CHECK(characterData == platformText);
+
+    const auto u8_characterData = getCharacterData(a);
+    CHECK(text8_ == u8_characterData);     
+
+    const auto& textXML = root("text"_q, true /*recurse*/);
+    characterData = textXML.getCharacterData();
+    const auto expectedText = preserveCharacterData ? "\tt\te\tx\tt\t" : "t\te\tx\tt";
+    CHECK(characterData == expectedText);
+
+    const auto& whitespaceXML = root("whitespace"_q, true /*recurse*/);
+    characterData = whitespaceXML.getCharacterData();
+    const auto expectedWhitespace = preserveCharacterData ? "             " : "";
+    CHECK(characterData == expectedWhitespace);
+
+    const auto& emptyXML = root("empty"_q, true /*recurse*/);
+    characterData = emptyXML.getCharacterData();
+    CHECK(characterData == "");
+}
+TEST_CASE("testReadEncodedXmlFileEscii_encoding_utf-8_0")
+{
+    using namespace xml::lite::literals;  // _q and _u for QName and Uri
+    auto xmlFile = "ascii_encoding_utf-8.xml";
+    auto preserveCharacterData = true;
+    auto platformText = text();
+    auto text8_ = text8();
+
+    const auto path = find_unittest_file(xmlFile);
+    io::FileInputStream input(path.string());
+
+    xml::lite::MinidomParser xmlParser;
+    xmlParser.preserveCharacterData(preserveCharacterData);
+    xmlParser.parse(input);
+    const auto& root = getRootElement(getDocument(xmlParser));
+
+    const auto& a = root("a"_q, true /*recurse*/);
+    auto characterData = a.getCharacterData();
+    CHECK(characterData == platformText);
+
+    const auto u8_characterData = getCharacterData(a);
+    CHECK(text8_ == u8_characterData);     
+
+    const auto& textXML = root("text"_q, true /*recurse*/);
+    characterData = textXML.getCharacterData();
+    const auto expectedText = preserveCharacterData ? "\tt\te\tx\tt\t" : "t\te\tx\tt";
+    CHECK(characterData == expectedText);
+
+    const auto& whitespaceXML = root("whitespace"_q, true /*recurse*/);
+    characterData = whitespaceXML.getCharacterData();
+    const auto expectedWhitespace = preserveCharacterData ? "             " : "";
+    CHECK(characterData == expectedWhitespace);
+
+    const auto& emptyXML = root("empty"_q, true /*recurse*/);
+    characterData = emptyXML.getCharacterData();
+    CHECK(characterData == "");
+}
+TEST_CASE("testReadEncodedXmlFileEscii_encoding_utf-8_1")
+{
+    using namespace xml::lite::literals;  // _q and _u for QName and Uri
+    auto xmlFile = "ascii_encoding_utf-8.xml";
+    auto preserveCharacterData = false;
+    auto platformText = text();
+    auto text8_ = text8();
+
+    const auto path = find_unittest_file(xmlFile);
+    io::FileInputStream input(path.string());
+
+    xml::lite::MinidomParser xmlParser;
+    xmlParser.preserveCharacterData(preserveCharacterData);
+    xmlParser.parse(input);
+    const auto& root = getRootElement(getDocument(xmlParser));
+
+    const auto& a = root("a"_q, true /*recurse*/);
+    auto characterData = a.getCharacterData();
+    CHECK(characterData == platformText);
+
+    const auto u8_characterData = getCharacterData(a);
+    CHECK(text8_ == u8_characterData);     
+
+    const auto& textXML = root("text"_q, true /*recurse*/);
+    characterData = textXML.getCharacterData();
+    const auto expectedText = preserveCharacterData ? "\tt\te\tx\tt\t" : "t\te\tx\tt";
+    CHECK(characterData == expectedText);
+
+    const auto& whitespaceXML = root("whitespace"_q, true /*recurse*/);
+    characterData = whitespaceXML.getCharacterData();
+    const auto expectedWhitespace = preserveCharacterData ? "             " : "";
+    CHECK(characterData == expectedWhitespace);
+
+    const auto& emptyXML = root("empty"_q, true /*recurse*/);
+    characterData = emptyXML.getCharacterData();
+    CHECK(characterData == "");
+}
+
+
+
+TEST_CASE("testReadXmlFilesUtf-8_0")
+{
+    using namespace xml::lite::literals;  // _q and _u for QName and Uri
+    auto xmlFile = "utf-8.xml";
+    auto preserveCharacterData = true;
+    auto platformText = platfromText_();
+    auto text8_ = utf8Text8();
 
     const auto path = find_unittest_file(xmlFile);
     io::FileInputStream input(path.string());
@@ -365,39 +552,234 @@ static void testReadXmlFile(const std::string& testName, const std::string& xmlF
     const auto& root = getRootElement(getDocument(xmlParser));
 
     const auto aElements = root.getElementsByTagName("a", true /*recurse*/);
-    TEST_ASSERT_EQ(std::ssize(aElements), 1);
+    CHECK(std::ssize(aElements) == 1);
     const auto& a = *(aElements[0]);
 
     auto characterData = a.getCharacterData();
-    TEST_ASSERT_EQ(characterData, platformText);
+    CHECK(characterData == platformText);
 
     std::u8string u8_characterData;
     a.getCharacterData(u8_characterData);
-    TEST_ASSERT_EQ(text8_, u8_characterData);
+    CHECK(text8_ == u8_characterData);
 
     const auto& textXML = root("text"_q, true /*recurse*/);
     characterData = textXML.getCharacterData();
     const auto expectedText = preserveCharacterData ? "\tt\te\tx\tt\t" : "t\te\tx\tt";
-    TEST_ASSERT_EQ(characterData, expectedText);
+    CHECK(characterData == expectedText);
 
     const auto& whitespaceXML = root("whitespace"_q, true /*recurse*/);
     characterData = whitespaceXML.getCharacterData();
     const auto expectedWhitespace = preserveCharacterData ? "             " : "";
-    TEST_ASSERT_EQ(characterData, expectedWhitespace);
+    CHECK(characterData == expectedWhitespace);
 
     const auto& emptyXML = root("empty"_q, true /*recurse*/);
     characterData = emptyXML.getCharacterData();
-    TEST_ASSERT_EQ(characterData, "");
+    CHECK(characterData == "");
 }
-TEST_CASE(testReadXmlFiles)
+TEST_CASE("testReadXmlFilesUtf-8_1")
 {
-    // These do NOT have "<?xml version="1.0" encoding="..." ?>"
-    testReadXmlFile(testName, "utf-8.xml", true /*preserveCharacterData*/, platfromText_() , utf8Text8());
-    testReadXmlFile(testName, "utf-8.xml", false /*preserveCharacterData*/, platfromText_(), utf8Text8());
-    testReadXmlFile(testName, "windows-1252.xml", true /*preserveCharacterData*/, platfromText_(), utf8Text8());
-    testReadXmlFile(testName, "windows-1252.xml", false /*preserveCharacterData*/, platfromText_(), utf8Text8());
-    testReadXmlFile(testName, "ascii.xml", true /*preserveCharacterData*/, text(), text8());
-    testReadXmlFile(testName, "ascii.xml", false /*preserveCharacterData*/, text(), text8());
+    using namespace xml::lite::literals;  // _q and _u for QName and Uri
+    auto xmlFile = "utf-8.xml";
+    auto preserveCharacterData = false;
+    auto platformText = platfromText_();
+    auto text8_ = utf8Text8();
+
+    const auto path = find_unittest_file(xmlFile);
+    io::FileInputStream input(path.string());
+
+    xml::lite::MinidomParser xmlParser;
+    xmlParser.preserveCharacterData(preserveCharacterData);
+    xmlParser.parse(input);
+    const auto& root = getRootElement(getDocument(xmlParser));
+
+    const auto aElements = root.getElementsByTagName("a", true /*recurse*/);
+    CHECK(std::ssize(aElements) == 1);
+    const auto& a = *(aElements[0]);
+
+    auto characterData = a.getCharacterData();
+    CHECK(characterData == platformText);
+
+    std::u8string u8_characterData;
+    a.getCharacterData(u8_characterData);
+    CHECK(text8_ == u8_characterData);
+
+    const auto& textXML = root("text"_q, true /*recurse*/);
+    characterData = textXML.getCharacterData();
+    const auto expectedText = preserveCharacterData ? "\tt\te\tx\tt\t" : "t\te\tx\tt";
+    CHECK(characterData == expectedText);
+
+    const auto& whitespaceXML = root("whitespace"_q, true /*recurse*/);
+    characterData = whitespaceXML.getCharacterData();
+    const auto expectedWhitespace = preserveCharacterData ? "             " : "";
+    CHECK(characterData == expectedWhitespace);
+
+    const auto& emptyXML = root("empty"_q, true /*recurse*/);
+    characterData = emptyXML.getCharacterData();
+    CHECK(characterData == "");
+}
+TEST_CASE("testReadXmlFilesWindows-1252_0")
+{
+    using namespace xml::lite::literals;  // _q and _u for QName and Uri
+    auto xmlFile = "windows-1252.xml";
+    auto preserveCharacterData = true;
+    auto platformText = platfromText_();
+    auto text8_ = utf8Text8();
+
+    const auto path = find_unittest_file(xmlFile);
+    io::FileInputStream input(path.string());
+
+    xml::lite::MinidomParser xmlParser;
+    xmlParser.preserveCharacterData(preserveCharacterData);
+    xmlParser.parse(input);
+    const auto& root = getRootElement(getDocument(xmlParser));
+
+    const auto aElements = root.getElementsByTagName("a", true /*recurse*/);
+    CHECK(std::ssize(aElements) == 1);
+    const auto& a = *(aElements[0]);
+
+    auto characterData = a.getCharacterData();
+    CHECK(characterData == platformText);
+
+    std::u8string u8_characterData;
+    a.getCharacterData(u8_characterData);
+    CHECK(text8_ == u8_characterData);
+
+    const auto& textXML = root("text"_q, true /*recurse*/);
+    characterData = textXML.getCharacterData();
+    const auto expectedText = preserveCharacterData ? "\tt\te\tx\tt\t" : "t\te\tx\tt";
+    CHECK(characterData == expectedText);
+
+    const auto& whitespaceXML = root("whitespace"_q, true /*recurse*/);
+    characterData = whitespaceXML.getCharacterData();
+    const auto expectedWhitespace = preserveCharacterData ? "             " : "";
+    CHECK(characterData == expectedWhitespace);
+
+    const auto& emptyXML = root("empty"_q, true /*recurse*/);
+    characterData = emptyXML.getCharacterData();
+    CHECK(characterData == "");
+}
+TEST_CASE("testReadXmlFilesWindows-1252_1")
+{
+    using namespace xml::lite::literals;  // _q and _u for QName and Uri
+    auto xmlFile = "windows-1252.xml";
+    auto preserveCharacterData = false;
+    auto platformText = platfromText_();
+    auto text8_ = utf8Text8();
+
+    const auto path = find_unittest_file(xmlFile);
+    io::FileInputStream input(path.string());
+
+    xml::lite::MinidomParser xmlParser;
+    xmlParser.preserveCharacterData(preserveCharacterData);
+    xmlParser.parse(input);
+    const auto& root = getRootElement(getDocument(xmlParser));
+
+    const auto aElements = root.getElementsByTagName("a", true /*recurse*/);
+    CHECK(std::ssize(aElements) == 1);
+    const auto& a = *(aElements[0]);
+
+    auto characterData = a.getCharacterData();
+    CHECK(characterData == platformText);
+
+    std::u8string u8_characterData;
+    a.getCharacterData(u8_characterData);
+    CHECK(text8_ == u8_characterData);
+
+    const auto& textXML = root("text"_q, true /*recurse*/);
+    characterData = textXML.getCharacterData();
+    const auto expectedText = preserveCharacterData ? "\tt\te\tx\tt\t" : "t\te\tx\tt";
+    CHECK(characterData == expectedText);
+
+    const auto& whitespaceXML = root("whitespace"_q, true /*recurse*/);
+    characterData = whitespaceXML.getCharacterData();
+    const auto expectedWhitespace = preserveCharacterData ? "             " : "";
+    CHECK(characterData == expectedWhitespace);
+
+    const auto& emptyXML = root("empty"_q, true /*recurse*/);
+    characterData = emptyXML.getCharacterData();
+    CHECK(characterData == "");
+}
+TEST_CASE("testReadXmlFilesAscii_0")
+{
+    using namespace xml::lite::literals;  // _q and _u for QName and Uri
+    auto xmlFile = "ascii.xml";
+    auto preserveCharacterData = true;
+    auto platformText = text();
+    auto text8_ = text8();
+
+    const auto path = find_unittest_file(xmlFile);
+    io::FileInputStream input(path.string());
+
+    xml::lite::MinidomParser xmlParser;
+    xmlParser.preserveCharacterData(preserveCharacterData);
+    xmlParser.parse(input);
+    const auto& root = getRootElement(getDocument(xmlParser));
+
+    const auto aElements = root.getElementsByTagName("a", true /*recurse*/);
+    CHECK(std::ssize(aElements) == 1);
+    const auto& a = *(aElements[0]);
+
+    auto characterData = a.getCharacterData();
+    CHECK(characterData == platformText);
+
+    std::u8string u8_characterData;
+    a.getCharacterData(u8_characterData);
+    CHECK(text8_ == u8_characterData);
+
+    const auto& textXML = root("text"_q, true /*recurse*/);
+    characterData = textXML.getCharacterData();
+    const auto expectedText = preserveCharacterData ? "\tt\te\tx\tt\t" : "t\te\tx\tt";
+    CHECK(characterData == expectedText);
+
+    const auto& whitespaceXML = root("whitespace"_q, true /*recurse*/);
+    characterData = whitespaceXML.getCharacterData();
+    const auto expectedWhitespace = preserveCharacterData ? "             " : "";
+    CHECK(characterData == expectedWhitespace);
+
+    const auto& emptyXML = root("empty"_q, true /*recurse*/);
+    characterData = emptyXML.getCharacterData();
+    CHECK(characterData == "");
+}
+TEST_CASE("testReadXmlFilesAscii_1")
+{
+    using namespace xml::lite::literals;  // _q and _u for QName and Uri
+    auto xmlFile = "ascii.xml";
+    auto preserveCharacterData = false;
+    auto platformText = text();
+    auto text8_ = text8();
+
+    const auto path = find_unittest_file(xmlFile);
+    io::FileInputStream input(path.string());
+
+    xml::lite::MinidomParser xmlParser;
+    xmlParser.preserveCharacterData(preserveCharacterData);
+    xmlParser.parse(input);
+    const auto& root = getRootElement(getDocument(xmlParser));
+
+    const auto aElements = root.getElementsByTagName("a", true /*recurse*/);
+    CHECK(std::ssize(aElements) == 1);
+    const auto& a = *(aElements[0]);
+
+    auto characterData = a.getCharacterData();
+    CHECK(characterData == platformText);
+
+    std::u8string u8_characterData;
+    a.getCharacterData(u8_characterData);
+    CHECK(text8_ == u8_characterData);
+
+    const auto& textXML = root("text"_q, true /*recurse*/);
+    characterData = textXML.getCharacterData();
+    const auto expectedText = preserveCharacterData ? "\tt\te\tx\tt\t" : "t\te\tx\tt";
+    CHECK(characterData == expectedText);
+
+    const auto& whitespaceXML = root("whitespace"_q, true /*recurse*/);
+    characterData = whitespaceXML.getCharacterData();
+    const auto expectedWhitespace = preserveCharacterData ? "             " : "";
+    CHECK(characterData == expectedWhitespace);
+
+    const auto& emptyXML = root("empty"_q, true /*recurse*/);
+    characterData = emptyXML.getCharacterData();
+    CHECK(characterData == "");
 }
 
 static bool find_string(io::FileInputStream& stream, const std::string& s)
@@ -428,13 +810,13 @@ static std::string as_utf8(const std::u8string& s)
     return str::str<std::string>(s);
 }
 
-TEST_CASE(testReadEmbeddedXml)
+TEST_CASE("testReadEmbeddedXml")
 {
     // This is a binary file with XML burried in it somewhere
     static const auto path = find_unittest_file("embedded_xml.bin");
     io::FileInputStream input(path.string());
     const auto result = find_string(input, "<SICD ");
-    TEST_ASSERT_TRUE(result);
+    CHECK(result);
     
     xml::lite::MinidomParser xmlParser;
     xmlParser.parse(input);
@@ -446,19 +828,19 @@ TEST_CASE(testReadEmbeddedXml)
     const std::string classificationText_utf_8("NON CLASSIFI\xc3\x89 / UNCLASSIFIED");  // UTF-8 "NON CLASSIFI� / UNCLASSIFIED"
     const auto classificationText_platform = sys::Platform == sys::PlatformType::Linux ? classificationText_utf_8 : classificationText_iso8859_1;
     const auto characterData = classificationXML.getCharacterData();
-    TEST_ASSERT_EQ(characterData, classificationText_platform);
+    CHECK(characterData == classificationText_platform);
 
     const auto expected = from_utf8(classificationText_utf_8);
     std::u8string u8_characterData;
     classificationXML.getCharacterData(u8_characterData);
-    TEST_ASSERT_EQ(u8_characterData, expected);
+    CHECK(u8_characterData == expected);
     const auto u8_characterData_ = as_utf8(u8_characterData);
-    TEST_ASSERT_EQ(classificationText_utf_8, u8_characterData_);
+    CHECK(classificationText_utf_8 == u8_characterData_);
 }
 
-template <typename TStringStream>
-static void testValidateXmlFile_(const std::string& testName, const std::string& xmlFile, TStringStream* pStringStream)
+TEST_CASE("testValidateXmlFileAscii")
 {
+    const std::string xmlFile("ascii.xml");
     static const auto xsd = find_unittest_file("doc.xsd");
     const auto path = find_unittest_file(xmlFile);
 
@@ -467,58 +849,186 @@ static void testValidateXmlFile_(const std::string& testName, const std::string&
 
     io::FileInputStream fis(path);
     std::vector<xml::lite::ValidationInfo> errors;
-    const auto result = (pStringStream == nullptr) ? validator.validate(fis, path.string() /*xmlID*/, errors) :
-        validator.vallidateT(fis, *pStringStream, path.string() /*xmlID*/, errors);
+    const auto result = validator.validate(fis, path.string() /*xmlID*/, errors);
     for (const auto& error : errors)
     {
         std::clog << error.toString() << "\n";
     }
-    TEST_ASSERT_FALSE(result);
-    TEST_ASSERT_TRUE(errors.empty());
+    CHECK_FALSE(result);
+    CHECK(errors.empty());
 }
-static void testValidateXmlFile(const std::string& testName, const std::string& xmlFile)
+TEST_CASE("testValidateXmlFileAsciiEncUtf8")
 {
-    testValidateXmlFile_<io::StringStream>(testName, xmlFile, nullptr /*pStringStream*/);
+    const std::string xmlFile("ascii_encoding_utf-8.xml");
+    static const auto xsd = find_unittest_file("doc.xsd");
+    const auto path = find_unittest_file(xmlFile);
+
+    const std::vector<std::filesystem::path> schemaPaths{xsd.parent_path()};
+    const xml::lite::Validator validator(schemaPaths);
+
+    io::FileInputStream fis(path);
+    std::vector<xml::lite::ValidationInfo> errors;
+    const auto result = validator.validate(fis, path.string() /*xmlID*/, errors);
+    for (const auto& error : errors)
+    {
+        std::clog << error.toString() << "\n";
+    }
+    CHECK_FALSE(result);
+    CHECK(errors.empty());
 }
-template <typename TStringStream>
-static void testValidateXmlFile(const std::string& testName, const std::string& xmlFile, TStringStream&& oss)
+TEST_CASE("testValidateXmlFileUtf8")
 {
-    testValidateXmlFile_(testName, xmlFile, &oss);
+    const std::string xmlFile("utf-8.xml");
+    static const auto xsd = find_unittest_file("doc.xsd");
+    const auto path = find_unittest_file(xmlFile);
+
+    const std::vector<std::filesystem::path> schemaPaths{xsd.parent_path()};
+    const xml::lite::Validator validator(schemaPaths);
+
+    io::FileInputStream fis(path);
+    std::vector<xml::lite::ValidationInfo> errors;
+    const auto result = validator.validate(fis, path.string() /*xmlID*/, errors);
+    for (const auto& error : errors)
+    {
+        std::clog << error.toString() << "\n";
+    }
+    CHECK_FALSE(result);
+    CHECK(errors.empty());
 }
-TEST_CASE(testValidateXmlFile)
+TEST_CASE("testValidateXmlFileEncUtf8")
 {
-    testValidateXmlFile(testName, "ascii.xml");
-    testValidateXmlFile(testName, "ascii_encoding_utf-8.xml");
+    const std::string xmlFile("encoding_utf-8.xml");
+    static const auto xsd = find_unittest_file("doc.xsd");
+    const auto path = find_unittest_file(xmlFile);
 
-    // legacy validate() API, new string conversion
-    testValidateXmlFile(testName, "utf-8.xml");
-    testValidateXmlFile(testName, "encoding_utf-8.xml");
-    testValidateXmlFile(testName, "encoding_windows-1252.xml");
-    testValidateXmlFile(testName, "windows-1252.xml");
+    const std::vector<std::filesystem::path> schemaPaths{xsd.parent_path()};
+    const xml::lite::Validator validator(schemaPaths);
 
-    // new validate() API
-    testValidateXmlFile(testName, "utf-8.xml", io::U8StringStream());
-    testValidateXmlFile(testName, "encoding_utf-8.xml", io::U8StringStream());
-    testValidateXmlFile(testName, "windows-1252.xml", io::W1252StringStream());
-    testValidateXmlFile(testName, "encoding_windows-1252.xml", io::W1252StringStream());
+    io::FileInputStream fis(path);
+    std::vector<xml::lite::ValidationInfo> errors;
+    const auto result = validator.validate(fis, path.string() /*xmlID*/, errors);
+    for (const auto& error : errors)
+    {
+        std::clog << error.toString() << "\n";
+    }
+    CHECK_FALSE(result);
+    CHECK(errors.empty());
 }
-
-int main(int, char**)
+TEST_CASE("testValidateXmlFileEncW1252")
 {
-    TEST_CHECK(testXmlParseSimple);
-    TEST_CHECK(testXmlPreserveCharacterData);
-    TEST_CHECK(testXmlUtf8);
-    TEST_CHECK(testXmlUtf8_u8string);    
-    TEST_CHECK(testXml_setCharacterData);    
+    const std::string xmlFile("encoding_windows-1252.xml");
+    static const auto xsd = find_unittest_file("doc.xsd");
+    const auto path = find_unittest_file(xmlFile);
 
-    TEST_CHECK(testXmlPrintSimple);
-    TEST_CHECK(testXmlParseAndPrintUtf8);
-    TEST_CHECK(testXmlPrintUtf8);
-    TEST_CHECK(testXmlConsoleOutput);
-    
-    TEST_CHECK(testReadEncodedXmlFiles);
-    TEST_CHECK(testReadXmlFiles);
-    TEST_CHECK(testReadEmbeddedXml);
+    const std::vector<std::filesystem::path> schemaPaths{xsd.parent_path()};
+    const xml::lite::Validator validator(schemaPaths);
 
-    TEST_CHECK(testValidateXmlFile);
+    io::FileInputStream fis(path);
+    std::vector<xml::lite::ValidationInfo> errors;
+    const auto result = validator.validate(fis, path.string() /*xmlID*/, errors);
+    for (const auto& error : errors)
+    {
+        std::clog << error.toString() << "\n";
+    }
+    CHECK_FALSE(result);
+    CHECK(errors.empty());
+}
+TEST_CASE("testValidateXmlFileW1252")
+{
+    const std::string xmlFile("windows-1252.xml");
+    static const auto xsd = find_unittest_file("doc.xsd");
+    const auto path = find_unittest_file(xmlFile);
+
+    const std::vector<std::filesystem::path> schemaPaths{xsd.parent_path()};
+    const xml::lite::Validator validator(schemaPaths);
+
+    io::FileInputStream fis(path);
+    std::vector<xml::lite::ValidationInfo> errors;
+    const auto result = validator.validate(fis, path.string() /*xmlID*/, errors);
+    for (const auto& error : errors)
+    {
+        std::clog << error.toString() << "\n";
+    }
+    CHECK_FALSE(result);
+    CHECK(errors.empty());
+}
+TEST_CASE("testValidateXmlFileNewUtf8")
+{
+    const std::string xmlFile("utf-8.xml");
+    auto pStringStream = io::U8StringStream();
+    static const auto xsd = find_unittest_file("doc.xsd");
+    const auto path = find_unittest_file(xmlFile);
+
+    const std::vector<std::filesystem::path> schemaPaths{xsd.parent_path()};
+    const xml::lite::Validator validator(schemaPaths);
+
+    io::FileInputStream fis(path);
+    std::vector<xml::lite::ValidationInfo> errors;
+    const auto result = validator.vallidateT(fis, pStringStream, path.string() /*xmlID*/, errors);
+    for (const auto& error : errors)
+    {
+        std::clog << error.toString() << "\n";
+    }
+    CHECK_FALSE(result);
+    CHECK(errors.empty());
+}
+TEST_CASE("testValidateXmlFileNewEncUtf8")
+{
+    const std::string xmlFile("encoding_utf-8.xml");
+    auto pStringStream = io::U8StringStream();
+    static const auto xsd = find_unittest_file("doc.xsd");
+    const auto path = find_unittest_file(xmlFile);
+
+    const std::vector<std::filesystem::path> schemaPaths{xsd.parent_path()};
+    const xml::lite::Validator validator(schemaPaths);
+
+    io::FileInputStream fis(path);
+    std::vector<xml::lite::ValidationInfo> errors;
+    const auto result = validator.vallidateT(fis, pStringStream, path.string() /*xmlID*/, errors);
+    for (const auto& error : errors)
+    {
+        std::clog << error.toString() << "\n";
+    }
+    CHECK_FALSE(result);
+    CHECK(errors.empty());
+}
+TEST_CASE("testValidateXmlFileNewW1252")
+{
+    const std::string xmlFile("windows-1252.xml");
+    auto pStringStream = io::W1252StringStream();
+    static const auto xsd = find_unittest_file("doc.xsd");
+    const auto path = find_unittest_file(xmlFile);
+
+    const std::vector<std::filesystem::path> schemaPaths{xsd.parent_path()};
+    const xml::lite::Validator validator(schemaPaths);
+
+    io::FileInputStream fis(path);
+    std::vector<xml::lite::ValidationInfo> errors;
+    const auto result = validator.vallidateT(fis, pStringStream, path.string() /*xmlID*/, errors);
+    for (const auto& error : errors)
+    {
+        std::clog << error.toString() << "\n";
+    }
+    CHECK_FALSE(result);
+    CHECK(errors.empty());
+}
+TEST_CASE("testValidateXmlFileNewEncW1252")
+{
+    const std::string xmlFile("encoding_windows-1252.xml");
+    auto pStringStream = io::W1252StringStream();
+    static const auto xsd = find_unittest_file("doc.xsd");
+    const auto path = find_unittest_file(xmlFile);
+
+    const std::vector<std::filesystem::path> schemaPaths{xsd.parent_path()};
+    const xml::lite::Validator validator(schemaPaths);
+
+    io::FileInputStream fis(path);
+    std::vector<xml::lite::ValidationInfo> errors;
+    const auto result = validator.vallidateT(fis, pStringStream, path.string() /*xmlID*/, errors);
+    for (const auto& error : errors)
+    {
+        std::clog << error.toString() << "\n";
+    }
+    CHECK_FALSE(result);
+    CHECK(errors.empty());
 }

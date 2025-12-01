@@ -14,7 +14,7 @@ coda_add_tests(
 coda_add_tests(
     MODULE_NAME ${MODULE_NAME}
     DIRECTORY "unittests"
-    DEPS mt-c++ std-c++
+    DEPS mt-c++
     UNITTEST)
 
 # Aligned alloc test throws -Werror=use-after-free

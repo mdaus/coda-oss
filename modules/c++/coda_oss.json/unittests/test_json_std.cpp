@@ -19,7 +19,7 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 #include <nlohmann/json.hpp>
 
@@ -29,76 +29,66 @@
 using json = nlohmann::json;
 using namespace std;
 
-TEST_CASE(TestStdComplex)
+TEST_CASE("TestStdComplex")
 {
     complex<float> startVal(-1, 1);
     json expected = {{"real", startVal.real()}, {"imag", startVal.imag()}};
     json serialized = startVal;
     auto deserialized = serialized.template get<complex<float>>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-TEST_CASE(TestStdSharedVal)
+TEST_CASE("TestStdSharedVal")
 {
     shared_ptr<complex<float>> startVal(new complex<float>(-1, 1));
     json expected = {{"real", startVal->real()}, {"imag", startVal->imag()}};
     json serialized = startVal;
     auto deserialized = serialized.template get<shared_ptr<complex<float>>>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(*startVal == *deserialized);
+    CHECK(serialized == expected);
+    CHECK(*startVal == *deserialized);
 }
-TEST_CASE(TestStdSharedNull)
+TEST_CASE("TestStdSharedNull")
 {
     shared_ptr<complex<float>> startVal;
     json expected = nullptr;
     json serialized = startVal;
     auto deserialized = serialized.template get<shared_ptr<complex<float>>>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-TEST_CASE(TestStdUniqueVal)
+TEST_CASE("TestStdUniqueVal")
 {
     unique_ptr<complex<double>> startVal(new complex<double>(-1, 1));
     json expected = {{"real", startVal->real()}, {"imag", startVal->imag()}};
     json serialized = startVal;
     auto deserialized = serialized.template get<unique_ptr<complex<double>>>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(*startVal == *deserialized);
+    CHECK(serialized == expected);
+    CHECK(*startVal == *deserialized);
 }
-TEST_CASE(TestStdUniqueNull)
+TEST_CASE("TestStdUniqueNull")
 {
     unique_ptr<complex<double>> startVal;
     json expected = nullptr;
     json serialized = startVal;
     auto deserialized = serialized.template get<unique_ptr<complex<double>>>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-TEST_CASE(TestStdOptionVal)
+TEST_CASE("TestStdOptionVal")
 {
     optional<int> startVal(0);
     json expected = 0;
     json serialized = startVal;
     auto deserialized = serialized.template get<optional<int>>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-TEST_CASE(TestStdOptionEmpty)
+TEST_CASE("TestStdOptionEmpty")
 {
     optional<int> startVal;
     json expected = nullptr;
     json serialized = startVal;
     auto deserialized = serialized.template get<optional<int>>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-
-TEST_MAIN(
-    TEST_CHECK(TestStdComplex);
-    TEST_CHECK(TestStdSharedVal);
-    TEST_CHECK(TestStdSharedNull);
-    TEST_CHECK(TestStdUniqueVal);
-    TEST_CHECK(TestStdUniqueNull);
-    TEST_CHECK(TestStdOptionVal);
-    TEST_CHECK(TestStdOptionEmpty);
-)

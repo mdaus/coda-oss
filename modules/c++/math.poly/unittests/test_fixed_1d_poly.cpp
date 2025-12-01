@@ -24,7 +24,12 @@
 #include <tuple>
 
 #include <math/poly/Fixed1D.h>
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
+
+#define TEST_ASSERT_ALMOST_EQ_EPS(X, Y, Z) CHECK_THAT(X, Catch::Matchers::WithinRel(Y, Z));
+#define TEST_ASSERT_EQ(X, Y) CHECK(X == Y);
+
 
 template<size_t ORDER>
 using Fixed1D = math::poly::Fixed1D<ORDER, double>;
@@ -58,7 +63,7 @@ void getRandValues(std::vector<double>& value)
     }
 }
 
-TEST_CASE(testScaleVariable)
+TEST_CASE("testScaleVariable")
 {
     std::vector<double> value;
     getRandValues(value);
@@ -75,13 +80,11 @@ TEST_CASE(testScaleVariable)
         // of the expected value
         const double val(value[ii]);
         const double expectedValue(poly(val * scale));
-        TEST_ASSERT_ALMOST_EQ_EPS(transformedPoly(val),
-                                  expectedValue,
-                                  std::abs(.01 * expectedValue));
+        TEST_ASSERT_ALMOST_EQ_EPS(transformedPoly(val), expectedValue, .01);
     }
 }
 
-TEST_CASE(testVelocity)
+TEST_CASE("testVelocity")
 {
     std::vector<double> values;
     getRandValues(values);
@@ -114,7 +117,7 @@ TEST_CASE(testVelocity)
     }
 }
 
-TEST_CASE(testAcceleration)
+TEST_CASE("testAcceleration")
 {
     std::vector<double> values;
     getRandValues(values);
@@ -152,9 +155,3 @@ TEST_CASE(testAcceleration)
         TEST_ASSERT_EQ(quarticPoly.acceleration(val), quarticPoly.derivative().derivative()(val));
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testScaleVariable);
-    TEST_CHECK(testVelocity);
-    TEST_CHECK(testAcceleration);
-)

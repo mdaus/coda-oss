@@ -34,7 +34,7 @@
  */
 
 #include <sstream>
-
+#include <string>
 #include "gsl/gsl.h"
 #include "io/BidirectionalStream.h"
 #include "sys/Conf.h"

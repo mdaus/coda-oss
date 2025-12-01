@@ -22,7 +22,12 @@
 
 #include <import/math/linear.h>
 #include <import/math/poly.h>
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
+
+#define TEST_ASSERT_ALMOST_EQ_EPS(X, Y, Z) CHECK_THAT(X, Catch::Matchers::WithinAbs(Y, Z));
+#define TEST_ASSERT_ALMOST_EQ(X, Y) CHECK_THAT(X, Catch::Matchers::WithinAbs(Y, 0.0001));
+#define TEST_ASSERT_EQ(X, Y) CHECK(X == Y);
 
 
 inline
@@ -32,7 +37,7 @@ double diffSq(double lhs, double rhs)
     return (diff * diff);
 }
 
-TEST_CASE(test1DPolyfit)
+TEST_CASE("test1DPolyfit")
 {
     using namespace math::linear;
     using namespace math::poly;
@@ -48,7 +53,7 @@ TEST_CASE(test1DPolyfit)
     const OneD<double> polyFromRaw = fit(4, xObs, yObs, 3);
 
     // should fail with not enough points (order>=npoints)
-    TEST_EXCEPTION(fit(4, xObs, yObs, 4));
+    CHECK_THROWS(fit(4, xObs, yObs, 4));
     
     // Now call the other one
     const Vector<double> xv(4, xObs);
@@ -64,12 +69,12 @@ TEST_CASE(test1DPolyfit)
     TEST_ASSERT_EQ(polyFromRaw, polyFromVec);
     TEST_ASSERT_EQ(polyFromRaw, truth);
     //TEST_ASSERT_EQ(polyFromRaw, fixed);
-    TEST_ASSERT(polyFromRaw == fixed);
-    assert(polyFromRaw == truthSTLVec);
+    CHECK(polyFromRaw == fixed);
+    CHECK(polyFromRaw == truthSTLVec);
     TEST_ASSERT_EQ(polyFromSTL, truth);
 }
 
-TEST_CASE(test1DPolyfitLarge)
+TEST_CASE("test1DPolyfitLarge")
 {
     using namespace math::linear;
     using namespace math::poly;
@@ -129,7 +134,7 @@ TEST_CASE(test1DPolyfitLarge)
     TEST_ASSERT_ALMOST_EQ_EPS(meanResidualErrorShifted, 0.0, 2e-7);
 }
 
-TEST_CASE(test2DPolyfit)
+TEST_CASE("test2DPolyfit")
 {
     using namespace math::linear;
     using namespace math::poly;
@@ -159,13 +164,13 @@ TEST_CASE(test2DPolyfit)
     z(0, 2) = 0;   z(1, 2) = 0;  z(2, 2) = .85;
 
     // should fail with not enough points: (orderX+1)*(orderY+1) > npoints
-    TEST_EXCEPTION(fit(x, y, z, 3, 3));
+    CHECK_THROWS(fit(x, y, z, 3, 3));
 
     TwoD<double> poly = fit(x, y, z, 1, 1);
     TEST_ASSERT_EQ(poly, truth);
 }
 
-TEST_CASE(test2DPolyfitLarge)
+TEST_CASE("test2DPolyfitLarge")
 {
     using namespace math::linear;
     using namespace math::poly;
@@ -239,7 +244,7 @@ TEST_CASE(test2DPolyfitLarge)
     TEST_ASSERT_ALMOST_EQ(meanResidualError, 0.0);
 }
 
-TEST_CASE(testVectorValuedOrderChange)
+TEST_CASE("testVectorValuedOrderChange")
 {
     using namespace math::linear;
     using namespace math::poly;
@@ -347,11 +352,3 @@ TEST_CASE(testVectorValuedOrderChange)
         TEST_ASSERT_ALMOST_EQ(poly[2][2], 0.0);
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(test1DPolyfit);
-    TEST_CHECK(test1DPolyfitLarge);
-    TEST_CHECK(test2DPolyfit);
-    TEST_CHECK(test2DPolyfitLarge);
-    TEST_CHECK(testVectorValuedOrderChange);
-    )

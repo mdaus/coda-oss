@@ -20,14 +20,15 @@
  *
  */
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <math/linear/Eigenvalue.h>
 
 typedef math::linear::Matrix2D<double> Matrix;
 typedef math::linear::Vector<double> Vector;
 typedef math::linear::Eigenvalue<double> Eigenvalue;
 
-TEST_CASE(testNonSymmetric)
+TEST_CASE("testNonSymmetric")
 {
     Matrix A(4, 4);
     A[0][0] = 28;  A[0][1] = 69;  A[0][2] = 44;  A[0][3] = 19;
@@ -45,19 +46,19 @@ TEST_CASE(testNonSymmetric)
     const Matrix AV = A * V;
     const Matrix VD = V * D;
 
-    TEST_ASSERT_EQ(AV.rows(), VD.rows());
-    TEST_ASSERT_EQ(AV.cols(), VD.cols());
+    CHECK(AV.rows() == VD.rows());
+    CHECK(AV.cols() == VD.cols());
 
     for (size_t row = 0; row < AV.rows(); ++row)
     {
         for (size_t col = 0; col < VD.cols(); ++col)
         {
-            TEST_ASSERT_ALMOST_EQ(AV[row][col], VD[row][col]);
+            CHECK_THAT(AV[row][col], Catch::Matchers::WithinRel(VD[row][col], 0.0001L));
         }
     }
 }
 
-TEST_CASE(testSymmetric)
+TEST_CASE("testSymmetric")
 {
     Matrix A(4, 4);
     A[0][0] = 28;  A[0][1] = 69;  A[0][2] = 44;  A[0][3] = 82;
@@ -75,19 +76,14 @@ TEST_CASE(testSymmetric)
     const Matrix AV = A * V;
     const Matrix VD = V * D;
 
-    TEST_ASSERT_EQ(AV.rows(), VD.rows());
-    TEST_ASSERT_EQ(AV.cols(), VD.cols());
+    CHECK(AV.rows() == VD.rows());
+    CHECK(AV.cols() == VD.cols());
 
     for (size_t row = 0; row < AV.rows(); ++row)
     {
         for (size_t col = 0; col < VD.cols(); ++col)
         {
-            TEST_ASSERT_ALMOST_EQ(AV[row][col], VD[row][col]);
+            CHECK_THAT(AV[row][col], Catch::Matchers::WithinRel(VD[row][col], 0.0001L));
         }
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testNonSymmetric);
-    TEST_CHECK(testSymmetric);
-    )

@@ -354,9 +354,6 @@
     <ClInclude Include="config\include\config\Exports.h">
       <Filter>config</Filter>
     </ClInclude>
-    <ClInclude Include="include\TestCase.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="cli\include\cli\Argument.h">
       <Filter>cli</Filter>
     </ClInclude>
@@ -690,9 +687,6 @@
     <ClInclude Include="mem\include\mem\ComplexView.h">
       <Filter>mem</Filter>
     </ClInclude>
-    <ClInclude Include="std\include\import\std.h">
-      <Filter>std</Filter>
-    </ClInclude>
     <ClInclude Include="config\include\config\disable_compiler_warnings.h">
       <Filter>config</Filter>
     </ClInclude>
@@ -914,12 +908,6 @@
     </ClInclude>
     <ClInclude Include="str\include\str\W1252string.h">
       <Filter>str</Filter>
-    </ClInclude>
-    <ClInclude Include="coda_oss\include\coda_oss\mdspan.h">
-      <Filter>coda_oss</Filter>
-    </ClInclude>
-    <ClInclude Include="coda_oss\include\coda_oss\mdspan_.h">
-      <Filter>coda_oss</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1492,9 +1480,6 @@
     <None Include="coda-oss.ruleset" />
     <None Include="sys\source\CppUnitTestAssert_.cpp_">
       <Filter>sys</Filter>
-    </None>
-    <None Include="std\include\std\mdspan">
-      <Filter>std</Filter>
     </None>
   </ItemGroup>
 </Project>

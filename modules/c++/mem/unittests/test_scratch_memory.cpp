@@ -28,9 +28,15 @@
 #include <algorithm>
 #include <vector>
 #include <set>
-#include "TestCase.h"
 
-TEST_CASE(testReleaseSingleEndBuffer)
+#include <catch2/catch_test_macros.hpp>
+
+#define TEST_ASSERT_EQ(X, Y) CHECK(X == Y);
+#define TEST_ASSERT_NOT_EQ(X, Y) CHECK(X != Y);
+#define TEST_EXCEPTION(X) CHECK_THROWS(X);
+
+
+TEST_CASE("testReleaseSingleEndBuffer")
 {
     //A single release of the last element. Tests with different scratch templates.
     mem::ScratchMemory scratch;
@@ -66,7 +72,7 @@ TEST_CASE(testReleaseSingleEndBuffer)
     TEST_ASSERT_NOT_EQ(pBuf0, pBuf2);
 }
 
-TEST_CASE(testReleaseMultipleEndBuffers)
+TEST_CASE("testReleaseMultipleEndBuffers")
 {
     //Tests multiple releases of the current last element
     //Also tests releases two concurrent segments
@@ -123,7 +129,7 @@ TEST_CASE(testReleaseMultipleEndBuffers)
     TEST_ASSERT_EQ(pBuf7, pBuf6);
 }
 
-TEST_CASE(testReleaseNonEndBuffers)
+TEST_CASE("testReleaseNonEndBuffers")
 {
     //Test putting then releasing then putting again and releasing again
     mem::ScratchMemory scratch;
@@ -160,7 +166,7 @@ TEST_CASE(testReleaseNonEndBuffers)
     TEST_ASSERT_EQ(pBuf5, pBuf7);
 }
 
-TEST_CASE(testReleaseInteriorBuffers)
+TEST_CASE("testReleaseInteriorBuffers")
 {
     //Tests released with filled in buffers for analysis
     mem::ScratchMemory scratch;
@@ -252,7 +258,7 @@ struct Operation
     unsigned char name;
 };
 
-TEST_CASE(testReleaseConcurrentKeys)
+TEST_CASE("testReleaseConcurrentKeys")
 {
     srand((unsigned)time(nullptr));
     mem::ScratchMemory scratch;
@@ -342,7 +348,7 @@ TEST_CASE(testReleaseConcurrentKeys)
     }
 }
 
-TEST_CASE(testReleaseConnectedKeys)
+TEST_CASE("testReleaseConnectedKeys")
 {
     srand((unsigned)time(nullptr));
     mem::ScratchMemory scratch;
@@ -432,7 +438,7 @@ TEST_CASE(testReleaseConnectedKeys)
     }
 }
 
-TEST_CASE(testGenerateBuffersForRelease)
+TEST_CASE("testGenerateBuffersForRelease")
 {
     srand((unsigned)time(nullptr));
 
@@ -507,7 +513,7 @@ TEST_CASE(testGenerateBuffersForRelease)
     }
 }
 
-TEST_CASE(testScratchMemory)
+TEST_CASE("testScratchMemory")
 {
     mem::ScratchMemory scratch;
 
@@ -598,12 +604,12 @@ TEST_CASE(testScratchMemory)
         TEST_ASSERT_EQ(reinterpret_cast<size_t>(pBuf3) % sys::SSE_INSTRUCTION_ALIGNMENT, static_cast<size_t>(0));
 
         // verify no overlap between buffers
-        TEST_ASSERT_TRUE(pBuf1 - pBuf0 >= static_cast<ptrdiff_t>(11));
-        TEST_ASSERT_TRUE(pBuf2_0 - pBuf1 >=
+        CHECK(pBuf1 - pBuf0 >= static_cast<ptrdiff_t>(11));
+        CHECK(pBuf2_0 - pBuf1 >=
                 static_cast<ptrdiff_t>(17 * sizeof(int)));
-        TEST_ASSERT_TRUE(pBuf2_1 - pBuf2_0 >= static_cast<ptrdiff_t>(29));
-        TEST_ASSERT_TRUE(pBuf2_2 - pBuf2_1 >= static_cast<ptrdiff_t>(29));
-        TEST_ASSERT_TRUE(pBuf3 - pBuf2_2 >= static_cast<ptrdiff_t>(29));
+        CHECK(pBuf2_1 - pBuf2_0 >= static_cast<ptrdiff_t>(29));
+        CHECK(pBuf2_2 - pBuf2_1 >= static_cast<ptrdiff_t>(29));
+        CHECK(pBuf3 - pBuf2_2 >= static_cast<ptrdiff_t>(29));
     }
 
     // put should invalidate the scratch memory until setup is called again
@@ -620,14 +626,3 @@ TEST_CASE(testScratchMemory)
     mem::BufferView<sys::ubyte> invalidBuffer(nullptr, buffer.size);
     TEST_EXCEPTION(scratch.setup(invalidBuffer));
 }
-
-TEST_MAIN(
-    TEST_CHECK(testScratchMemory);
-    TEST_CHECK(testReleaseSingleEndBuffer);
-    TEST_CHECK(testReleaseMultipleEndBuffers);
-    TEST_CHECK(testReleaseNonEndBuffers);
-    TEST_CHECK(testReleaseInteriorBuffers);
-    TEST_CHECK(testReleaseConcurrentKeys);
-    TEST_CHECK(testReleaseConnectedKeys);
-    TEST_CHECK(testGenerateBuffersForRelease);
-    )

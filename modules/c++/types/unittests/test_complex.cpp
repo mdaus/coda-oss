@@ -20,11 +20,11 @@
  *
  */
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 #include <types/Complex.h>
 
-TEST_CASE(TestCxShort_abs)
+TEST_CASE("TestCxShort_abs")
 {
     constexpr auto real = 123;
     constexpr auto imag = -321;
@@ -44,16 +44,12 @@ TEST_CASE(TestCxShort_abs)
     const types::Complex<int16_t> types_zint16(cx_short);
     CODA_OSS_disable_warning_pop
     auto actual = abs(types_zint16);
-    TEST_ASSERT_EQ(actual, expected);
+    CHECK(actual == expected);
 
     const types::ComplexInteger<int16_t> types_cx_int16(cx_short);
     actual = abs(types_cx_int16);
-    TEST_ASSERT_EQ(actual, expected);
+    CHECK(actual == expected);
 
     // This intentionally doesn't compile.
     //const auto types::ComplexReal<short> ComplexReal_short;
 }
-
-TEST_MAIN(
-    TEST_CHECK(TestCxShort_abs);
-    )

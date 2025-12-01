@@ -20,21 +20,13 @@
  *
  */
 
-#include <TestCase.h>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <units/Angles.h>
 #include <units/Lengths.h>
 
-template <typename T>
-static void test_degrees_(const std::string& testName)
-{
-    (void)testName;
-    T sin, cos;
-    constexpr units::Degrees<T> degrees_180 = 180;
-    SinCos(degrees_180, sin, cos);
-    TEST_ASSERT_ALMOST_EQ(static_cast<T>(0.0), sin);
-    TEST_ASSERT_ALMOST_EQ(static_cast<T>(-1.0), cos);
-}
-TEST_CASE(test_degrees)
+
+TEST_CASE("test_degrees")
 {
     constexpr units::Degrees<double> degrees_0 = 0;
     constexpr units::Degrees<double> degrees_90 = 90;
@@ -42,51 +34,66 @@ TEST_CASE(test_degrees)
     constexpr units::Degrees<double> degrees_270 = 270;
     constexpr units::Degrees<double> degrees_360 = 360;
 
-    TEST_ASSERT_ALMOST_EQ(0.0, sin(degrees_0));
-    TEST_ASSERT_ALMOST_EQ(1.0, sin(degrees_90));
-    TEST_ASSERT_ALMOST_EQ(0.0, sin(degrees_180));
-    TEST_ASSERT_ALMOST_EQ(-1.0, sin(degrees_270));
-    TEST_ASSERT_ALMOST_EQ(0.0, sin(degrees_360));
+    CHECK_THAT(0.0, Catch::Matchers::WithinAbs(sin(degrees_0), 0.0001));
+    CHECK_THAT(1.0, Catch::Matchers::WithinAbs(sin(degrees_90), 0.0001));
+    CHECK_THAT(0.0, Catch::Matchers::WithinAbs(sin(degrees_180), 0.0001));
+    CHECK_THAT(-1.0, Catch::Matchers::WithinAbs(sin(degrees_270), 0.0001));
+    CHECK_THAT(0.0, Catch::Matchers::WithinAbs(sin(degrees_360), 0.0001));
 
-    TEST_ASSERT_ALMOST_EQ(1.0, cos(degrees_0));
-    TEST_ASSERT_ALMOST_EQ(0.0, cos(degrees_90));
-    TEST_ASSERT_ALMOST_EQ(-1.0, cos(degrees_180));
-    TEST_ASSERT_ALMOST_EQ(0.0, cos(degrees_270));
-    TEST_ASSERT_ALMOST_EQ(1.0, cos(degrees_360));
+    CHECK_THAT(1.0, Catch::Matchers::WithinAbs(cos(degrees_0), 0.0001));
+    CHECK_THAT(0.0, Catch::Matchers::WithinAbs(cos(degrees_90), 0.0001));
+    CHECK_THAT(-1.0, Catch::Matchers::WithinAbs(cos(degrees_180), 0.0001));
+    CHECK_THAT(0.0, Catch::Matchers::WithinAbs(cos(degrees_270), 0.0001));
+    CHECK_THAT(1.0, Catch::Matchers::WithinAbs(cos(degrees_360), 0.0001));
 
-    test_degrees_<float>(testName);
-    test_degrees_<double>(testName);
-    test_degrees_<long double>(testName);
+    {
+        using T = float;
+        T sin, cos;
+        const units::Degrees<T> deg_180 = 180;
+        SinCos(deg_180, sin, cos);
+        CHECK_THAT(static_cast<T>(0.0), Catch::Matchers::WithinAbs(sin, 0.0001f));
+        CHECK_THAT(static_cast<T>(-1.0), Catch::Matchers::WithinAbs(cos, 0.0001f));
+    }
+    {
+        using T = double;
+        T sin, cos;
+        const units::Degrees<T> deg_180 = 180;
+        SinCos(deg_180, sin, cos);
+        CHECK_THAT(static_cast<T>(0.0), Catch::Matchers::WithinAbs(sin, 0.0001));
+        CHECK_THAT(static_cast<T>(-1.0), Catch::Matchers::WithinAbs(cos, 0.0001));
+    }
+    {
+        using T = long double;
+        T sin, cos;
+        const units::Degrees<T> deg_180 = 180;
+        SinCos(deg_180, sin, cos);
+        CHECK_THAT(static_cast<T>(0.0), Catch::Matchers::WithinAbs(sin, 0.0001));
+        CHECK_THAT(static_cast<T>(-1.0), Catch::Matchers::WithinAbs(cos, 0.0001));
+    }
 }
 
-TEST_CASE(test_lengths)
+TEST_CASE("test_lengths")
 {
     {
         constexpr units::Feet<double> feet_3 = 3;
         const auto same = feet_3.to();
-        TEST_ASSERT_EQ(same.value(), feet_3.value());
+        CHECK(same.value() == feet_3.value());
 
         units::Meters<double> meters{0};
         convert(feet_3, meters);  // convert ...
-        TEST_ASSERT_ALMOST_EQ(meters.value(), 0.9144);
+        CHECK_THAT(meters.value(), Catch::Matchers::WithinAbs(0.9144, std::numeric_limits<float>::epsilon()));
         const auto feet = meters.to<units::tags::Feet>();  // ...and back
-        TEST_ASSERT_ALMOST_EQ(feet.value(), feet_3.value());
+        CHECK_THAT(feet.value(), Catch::Matchers::WithinAbs(feet_3.value(), std::numeric_limits<float>::epsilon()));
     }
     {
         constexpr auto meters_1 = units::make_Unit<units::tags::Meters>(1.0);
         const auto same = meters_1.to();
-        TEST_ASSERT_EQ(same.value(), meters_1.value());
+        CHECK(same.value() == meters_1.value());
 
         units::Feet<double> feet{0};
         convert(meters_1, feet);  // convert ...
-        TEST_ASSERT_ALMOST_EQ(feet.value(), 3.2808398);
+        CHECK_THAT(feet.value(), Catch::Matchers::WithinAbs(3.2808398, std::numeric_limits<float>::epsilon()));
         const auto meters = feet.to<units::tags::Meters>();  // ...and back
-        TEST_ASSERT_ALMOST_EQ(meters.value(), meters_1.value());
+        CHECK_THAT(meters.value(), Catch::Matchers::WithinAbs(meters_1.value(), std::numeric_limits<float>::epsilon()));
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(test_degrees);
-    TEST_CHECK(test_lengths);
-)
-

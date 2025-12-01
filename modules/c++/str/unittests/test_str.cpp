@@ -27,16 +27,17 @@
 #include <config/compiler_extensions.h>
 #include <import/str.h>
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 
-TEST_CASE(testTrim)
+TEST_CASE("testTrim")
 {
     std::string s = "  test   ";
     str::trim( s);
-    TEST_ASSERT_EQ(s, "test");
+    CHECK(s == "test");
 }
 
-TEST_CASE(testData)
+TEST_CASE("testData")
 {
     std::string s;
     // https://en.cppreference.com/w/cpp/string/basic_string/resize
@@ -52,16 +53,16 @@ TEST_CASE(testData)
     std::ignore = strcpy(str::data(s), "abc"); 
     
     CODA_OSS_disable_warning_pop
-    TEST_ASSERT_EQ(s, "abc");
+    CHECK(s == "abc");
 }
 
-TEST_CASE(testUpper)
+TEST_CASE("testUpper")
 {
     const std::string s_ = "test-something1";
     std::string s = s_;
-    TEST_ASSERT(str::eq(s, "TEST-SOMETHING1"));
+    CHECK(str::eq(s, "TEST-SOMETHING1"));
     str::upper( s);
-    TEST_ASSERT_EQ(s, "TEST-SOMETHING1");
+    CHECK(s == "TEST-SOMETHING1");
 
     //#if _WIN32
     //s = "<��a`�o\"�o/�b�>";
@@ -70,7 +71,7 @@ TEST_CASE(testUpper)
     //#endif
 }
 
-TEST_CASE(test_toupper)
+TEST_CASE("test_toupper")
 {
     for (uint16_t i = 0x20; i <= 0xff; i++) // uint16_t to avoid wrap-around
     {
@@ -78,28 +79,28 @@ TEST_CASE(test_toupper)
         const auto w1252_upper = str::to_w1252_upper(w1252);
 
         const auto w1252_lower = w1252 == w1252_upper ? w1252 : str::to_w1252_lower(w1252_upper); // round-trip
-        TEST_ASSERT_EQ(static_cast<uint8_t>(w1252), static_cast<uint8_t>(w1252_lower));
+        CHECK(static_cast<uint8_t>(w1252) == static_cast<uint8_t>(w1252_lower));
 
         if (i <= 0x7f) // ASCII
         {
             const auto ch = static_cast<char>(i);
             const auto upper = toupper(ch);
-            TEST_ASSERT_EQ(static_cast<uint8_t>(upper), static_cast<uint8_t>(w1252_upper));
+            CHECK(static_cast<uint8_t>(upper) == static_cast<uint8_t>(w1252_upper));
 
             const auto lower = ch == upper ? ch : tolower(upper); // round-trip
-            TEST_ASSERT_EQ(ch, lower);
-            TEST_ASSERT_EQ(static_cast<uint8_t>(lower), static_cast<uint8_t>(w1252_lower));
+            CHECK(ch == lower);
+            CHECK(static_cast<uint8_t>(lower) == static_cast<uint8_t>(w1252_lower));
         }
     }
 }
 
-TEST_CASE(testLower)
+TEST_CASE("testLower")
 {
     const std::string s_ = "TEST1";
     std::string s = s_;
-    TEST_ASSERT(str::eq(s, "test1"));
+    CHECK(str::eq(s, "test1"));
     str::lower(s);
-    TEST_ASSERT_EQ(s, "test1");
+    CHECK(s == "test1");
 
     //#if _WIN32
     //s = "[������]";
@@ -108,7 +109,7 @@ TEST_CASE(testLower)
     //#endif
 }
 
-TEST_CASE(test_tolower)
+TEST_CASE("test_tolower")
 {
     for (uint16_t i = 0x20; i <= 0xff; i++) // uint16_t to avoid wrap-around
     {
@@ -116,134 +117,134 @@ TEST_CASE(test_tolower)
         const auto w1252_lower = str::to_w1252_lower(w1252);
 
         const auto w1252_upper = w1252 == w1252_lower ? w1252 : str::to_w1252_upper(w1252_lower); // round-trip
-        TEST_ASSERT_EQ(static_cast<uint8_t>(w1252), static_cast<uint8_t>(w1252_upper));
+        CHECK(static_cast<uint8_t>(w1252) == static_cast<uint8_t>(w1252_upper));
 
         if (i <= 0x7f) // ASCII
         {
             const auto ch = static_cast<char>(i);
             const auto lower = tolower(ch);
-            TEST_ASSERT_EQ(static_cast<uint8_t>(lower), static_cast<uint8_t>(w1252_lower));
+            CHECK(static_cast<uint8_t>(lower) == static_cast<uint8_t>(w1252_lower));
 
             const auto upper = ch == lower ? ch : toupper(lower); // round-trip
-            TEST_ASSERT_EQ(ch, upper);
-            TEST_ASSERT_EQ(static_cast<uint8_t>(upper), static_cast<uint8_t>(w1252_upper));
+            CHECK(ch == upper);
+            CHECK(static_cast<uint8_t>(upper) == static_cast<uint8_t>(w1252_upper));
         }
     }
 }
 
-TEST_CASE(test_eq_ne)
+TEST_CASE("test_eq_ne")
 {
     const auto s1 = "TEST1";
     const auto s2 = "test1";
     const auto s3 = "T2";
 
-    TEST_ASSERT_TRUE(str::eq(s1, s1));
-    TEST_ASSERT_FALSE(str::ne(s1, s1));
+    CHECK(str::eq(s1, s1));
+    CHECK_FALSE(str::ne(s1, s1));
 
-    TEST_ASSERT_TRUE(str::eq(s1, s2));
-    TEST_ASSERT_FALSE(str::ne(s1, s2));
-    TEST_ASSERT_TRUE(str::eq(s2, s1));
-    TEST_ASSERT_FALSE(str::ne(s2, s1));
+    CHECK(str::eq(s1, s2));
+    CHECK_FALSE(str::ne(s1, s2));
+    CHECK(str::eq(s2, s1));
+    CHECK_FALSE(str::ne(s2, s1));
 
-    TEST_ASSERT_FALSE(str::eq(s1, s3));
-    TEST_ASSERT_TRUE(str::ne(s1, s3));
-    TEST_ASSERT_FALSE(str::eq(s3, s1));
-    TEST_ASSERT_TRUE(str::ne(s3, s1));
+    CHECK_FALSE(str::eq(s1, s3));
+    CHECK(str::ne(s1, s3));
+    CHECK_FALSE(str::eq(s3, s1));
+    CHECK(str::ne(s3, s1));
 }
 
-TEST_CASE(testReplace)
+TEST_CASE("testReplace")
 {
     std::string s = "helo world";
     str::replace(s, "l", "ll");
-    TEST_ASSERT_EQ(s, "hello world");
+    CHECK(s == "hello world");
 }
 
-TEST_CASE(testReplaceAllInfinite)
+TEST_CASE("testReplaceAllInfinite")
 {
     std::string s = "helo hello";
     str::replaceAll(s, "l", "ll");
-    TEST_ASSERT_EQ(s, "hello hellllo");
+    CHECK(s == "hello hellllo");
 }
 
-TEST_CASE(testReplaceAllRecurse)
+TEST_CASE("testReplaceAllRecurse")
 {
     std::string s = "Mississippi";
     str::replaceAll(s, "i", " ");
-    TEST_ASSERT_EQ(s, "M ss ss pp ");
+    CHECK(s == "M ss ss pp ");
 }
 
-TEST_CASE(testContains)
+TEST_CASE("testContains")
 {
     std::string s = "Mississippi";
-    TEST_ASSERT_TRUE(str::contains(s, "ssiss"));
+    CHECK(str::contains(s, "ssiss"));
 }
 
-TEST_CASE(testNotContains)
+TEST_CASE("testNotContains")
 {
     std::string s = "Mississippi";
-    TEST_ASSERT_FALSE(str::contains(s, "miss"));
+    CHECK_FALSE(str::contains(s, "miss"));
 }
 
-TEST_CASE(testSplit)
+TEST_CASE("testSplit")
 {
     std::string s = "space delimited values are the best!";
     std::vector<std::string> parts = str::split(s, " ");
-    TEST_ASSERT_EQ(std::ssize(parts), 6);
+    CHECK(std::ssize(parts) == 6);
     parts = str::split(s, " ", 3);
-    TEST_ASSERT_EQ(std::ssize(parts), 3);
-    TEST_ASSERT_EQ(parts[2], "values are the best!");
+    CHECK(std::ssize(parts) == 3);
+    CHECK(parts[2] == "values are the best!");
 }
 
-TEST_CASE(testIsAlpha)
+TEST_CASE("testIsAlpha")
 {
-    TEST_ASSERT(str::isAlpha("abcdefghijklmnopqrstuvwxyz"));
-    TEST_ASSERT_FALSE(str::isAlpha("abc123"));
-    TEST_ASSERT_FALSE(str::isAlpha("abcs with spaces"));
+    CHECK(str::isAlpha("abcdefghijklmnopqrstuvwxyz"));
+    CHECK_FALSE(str::isAlpha("abc123"));
+    CHECK_FALSE(str::isAlpha("abcs with spaces"));
 }
-TEST_CASE(testIsAlphaSpace)
+TEST_CASE("testIsAlphaSpace")
 {
-    TEST_ASSERT(str::isAlphaSpace("abcdefghijklmnopqrstuvwxyz"));
-    TEST_ASSERT_FALSE(str::isAlphaSpace("abc123"));
-    TEST_ASSERT(str::isAlphaSpace("abcs with spaces"));
+    CHECK(str::isAlphaSpace("abcdefghijklmnopqrstuvwxyz"));
+    CHECK_FALSE(str::isAlphaSpace("abc123"));
+    CHECK(str::isAlphaSpace("abcs with spaces"));
 }
-TEST_CASE(testIsNumeric)
+TEST_CASE("testIsNumeric")
 {
-    TEST_ASSERT_FALSE(str::isNumeric("abcdefghijklmnopqrstuvwxyz"));
-    TEST_ASSERT_FALSE(str::isNumeric("abc123"));
-    TEST_ASSERT_FALSE(str::isNumeric("abcs with spaces"));
-    TEST_ASSERT(str::isNumeric("42"));
+    CHECK_FALSE(str::isNumeric("abcdefghijklmnopqrstuvwxyz"));
+    CHECK_FALSE(str::isNumeric("abc123"));
+    CHECK_FALSE(str::isNumeric("abcs with spaces"));
+    CHECK(str::isNumeric("42"));
 }
-TEST_CASE(testIsNumericSpace)
+TEST_CASE("testIsNumericSpace")
 {
-    TEST_ASSERT_FALSE(str::isNumericSpace("lotto47"));
-    TEST_ASSERT(str::isNumericSpace("42"));
-    TEST_ASSERT(str::isNumericSpace("42 15 23 5 12"));
+    CHECK_FALSE(str::isNumericSpace("lotto47"));
+    CHECK(str::isNumericSpace("42"));
+    CHECK(str::isNumericSpace("42 15 23 5 12"));
 }
-TEST_CASE(testIsAlphanumeric)
+TEST_CASE("testIsAlphanumeric")
 {
-    TEST_ASSERT(str::isAlphanumeric("lotto47"));
-    TEST_ASSERT(str::isAlphanumeric("42"));
-    TEST_ASSERT_FALSE(str::isAlphanumeric("42 15 23 5 12"));
-    TEST_ASSERT(str::isAlphanumeric("justtext"));
+    CHECK(str::isAlphanumeric("lotto47"));
+    CHECK(str::isAlphanumeric("42"));
+    CHECK_FALSE(str::isAlphanumeric("42 15 23 5 12"));
+    CHECK(str::isAlphanumeric("justtext"));
 }
-TEST_CASE(testIsWhitespace)
+TEST_CASE("testIsWhitespace")
 {
-    TEST_ASSERT_FALSE(str::isWhitespace("lotto47"));
-    TEST_ASSERT(str::isWhitespace(""));
-    TEST_ASSERT(str::isWhitespace(" "));
-    TEST_ASSERT(str::isWhitespace("                          "));
-    TEST_ASSERT(str::isWhitespace("\t"));
-    TEST_ASSERT(str::isWhitespace("\t \n"));
+    CHECK_FALSE(str::isWhitespace("lotto47"));
+    CHECK(str::isWhitespace(""));
+    CHECK(str::isWhitespace(" "));
+    CHECK(str::isWhitespace("                          "));
+    CHECK(str::isWhitespace("\t"));
+    CHECK(str::isWhitespace("\t \n"));
 }
-TEST_CASE(testContainsOnly)
+TEST_CASE("testContainsOnly")
 {
-    TEST_ASSERT(str::containsOnly("abc", "abcdefghijklmnopqrstuvwxyz"));
-    TEST_ASSERT_FALSE(str::containsOnly("abc!", "abcdefghijklmnopqrstuvwxyz"));
-    TEST_ASSERT(str::containsOnly("some-cool-id", "-abcdefghijklmnopqrstuvwxyz"));
-    TEST_ASSERT(str::containsOnly("\n\r\t ", " \t\n\r0123456789"));
-    TEST_ASSERT(str::containsOnly("1-2-3", " \t\n\r0123456789-"));
+    CHECK(str::containsOnly("abc", "abcdefghijklmnopqrstuvwxyz"));
+    CHECK_FALSE(str::containsOnly("abc!", "abcdefghijklmnopqrstuvwxyz"));
+    CHECK(str::containsOnly("some-cool-id", "-abcdefghijklmnopqrstuvwxyz"));
+    CHECK(str::containsOnly("\n\r\t ", " \t\n\r0123456789"));
+    CHECK(str::containsOnly("1-2-3", " \t\n\r0123456789-"));
 }
-TEST_CASE(testRoundDouble)
+TEST_CASE("testRoundDouble")
 {
     double eps = std::numeric_limits<double>::epsilon();
     double numerator = 10005.0;
@@ -253,24 +254,24 @@ TEST_CASE(testRoundDouble)
     std::cout << s << std::endl;
 
     double nv = str::toType<double>(s);
-    TEST_ASSERT_ALMOST_EQ_EPS(nv, v, eps);
+    CHECK_THAT(nv, Catch::Matchers::WithinRel(v, eps));
     nv *= denom;
-    TEST_ASSERT_ALMOST_EQ_EPS(nv, numerator, eps);
+    CHECK_THAT(nv, Catch::Matchers::WithinRel(numerator, eps));
     std::cout << nv << std::endl;
     std::cout << (nv - static_cast<int>(nv)) << std::endl;
     std::cout << std::numeric_limits<double>::epsilon() << std::endl;
-    TEST_ASSERT_EQ(static_cast<int>(std::ceil(nv)), static_cast<int>(numerator));
+    CHECK(static_cast<int>(std::ceil(nv)) == static_cast<int>(numerator));
 }
 
-TEST_CASE(testEscapeForXMLNoReplace)
+TEST_CASE("testEscapeForXMLNoReplace")
 {
     const std::string origMessage("This is a perfectly fine string");
     std::string message(origMessage);
     str::escapeForXML(message);
-    TEST_ASSERT_EQ(message, origMessage);
+    CHECK(message == origMessage);
 }
 
-TEST_CASE(testEscapeForXMLKitchenSink)
+TEST_CASE("testEscapeForXMLKitchenSink")
 {
     std::string message(
             "This & that with <angles> and \"quotes\" & single 'quotes' & "
@@ -282,43 +283,43 @@ TEST_CASE(testEscapeForXMLKitchenSink)
             "&#13;carriage return at the end?");
 
     str::escapeForXML(message);
-    TEST_ASSERT_EQ(message, expectedMessage);
+    CHECK(message == expectedMessage);
 }
 
-TEST_CASE(test_toStringComplexFloat)
+TEST_CASE("test_toStringComplexFloat")
 {
     const std::string expected("(1,-2)");
 
     const std::complex<float> std_cx_float(1.0f, -2.0f);
     auto actual = str::toString(std_cx_float);
-    TEST_ASSERT_EQ(actual, expected);
+    CHECK(actual == expected);
 
     const types::ComplexReal<float> types_cx_float(1.0f, -2.0f);
     actual = str::toString(types_cx_float);
-    TEST_ASSERT_EQ(actual, expected);
+    CHECK(actual == expected);
 
     const types::zfloat zfloat(1.0f, -2.0f);
     actual = str::toString(zfloat);
-    TEST_ASSERT_EQ(actual, expected);
+    CHECK(actual == expected);
 }
-TEST_CASE(test_toTypeComplexFloat)
+TEST_CASE("test_toTypeComplexFloat")
 {
     const std::string strValue("(1,-2)");
 
     auto actual = str::toType<std::complex<float>>(strValue);
     auto strActual = str::toString(actual);
-    TEST_ASSERT_EQ(strActual, strValue);
+    CHECK(strActual == strValue);
 
     actual = str::toType<types::ComplexReal<float>>(strValue);
     strActual = str::toString(actual);
-    TEST_ASSERT_EQ(strActual, strValue);
+    CHECK(strActual == strValue);
 
     actual = str::toType<types::zfloat>(strValue);
     strActual = str::toString(actual);
-    TEST_ASSERT_EQ(strActual, strValue);
+    CHECK(strActual == strValue);
 }
 
-TEST_CASE(test_toStringComplexShort)
+TEST_CASE("test_toStringComplexShort")
 {
     const std::string expected("(1,-2)");
 
@@ -329,17 +330,17 @@ TEST_CASE(test_toStringComplexShort)
     const std::complex<short> std_cx_short(1, -2);
     CODA_OSS_disable_warning_pop
     auto actual = str::toString(std_cx_short);
-    TEST_ASSERT_EQ(actual, expected);
+    CHECK(actual == expected);
 
     const types::ComplexInteger<short> types_cx_short(std_cx_short);  // "copy constructor" or overload
     actual = str::toString(types_cx_short);
-    TEST_ASSERT_EQ(actual, expected);
+    CHECK(actual == expected);
 
     const types::Complex<int16_t> zint16(1, -2);
     actual = str::toString(zint16);
-    TEST_ASSERT_EQ(actual, expected);
+    CHECK(actual == expected);
 }
-TEST_CASE(test_toTypeComplexShort)
+TEST_CASE("test_toTypeComplexShort")
 {
     const std::string strValue("(1,-2)");
 
@@ -350,7 +351,7 @@ TEST_CASE(test_toTypeComplexShort)
     const auto cx_actual = str::toType<std::complex<short>>(strValue);
     CODA_OSS_disable_warning_pop
     auto strActual = str::toString(cx_actual);
-    TEST_ASSERT_EQ(strActual, strValue);
+    CHECK(strActual == strValue);
 
     CODA_OSS_disable_warning_push
     #if _MSC_VER
@@ -359,40 +360,9 @@ TEST_CASE(test_toTypeComplexShort)
     auto zactual = str::toType<types::ComplexInteger<short>>(strValue);
     CODA_OSS_disable_warning_pop
     strActual = str::toString(zactual);
-    TEST_ASSERT_EQ(strActual, strValue);
+    CHECK(strActual == strValue);
 
     zactual = str::toType<types::Complex<int16_t>>(strValue);
     strActual = str::toString(zactual);
-    TEST_ASSERT_EQ(strActual, strValue);
+    CHECK(strActual == strValue);
 }
-
-
-TEST_MAIN(
-    TEST_CHECK(testTrim);
-    TEST_CHECK(testData);
-    TEST_CHECK(testUpper);
-    TEST_CHECK(test_toupper);
-    TEST_CHECK(testLower);
-    TEST_CHECK(test_tolower);
-    TEST_CHECK(test_eq_ne);
-    TEST_CHECK(testReplace);
-    TEST_CHECK(testReplaceAllInfinite);
-    TEST_CHECK(testReplaceAllRecurse);
-    TEST_CHECK(testContains);
-    TEST_CHECK(testNotContains);
-    TEST_CHECK(testSplit);
-    TEST_CHECK(testIsAlpha);
-    TEST_CHECK(testIsAlphaSpace);
-    TEST_CHECK(testIsNumeric);
-    TEST_CHECK(testIsNumericSpace);
-    TEST_CHECK(testIsAlphanumeric);
-    TEST_CHECK(testIsWhitespace);
-    TEST_CHECK(testContainsOnly);
-    TEST_CHECK(testRoundDouble);
-    TEST_CHECK(testEscapeForXMLNoReplace);
-    TEST_CHECK(testEscapeForXMLKitchenSink);
-    TEST_CHECK(test_toStringComplexFloat);
-    TEST_CHECK(test_toTypeComplexFloat);
-    TEST_CHECK(test_toStringComplexShort);
-    TEST_CHECK(test_toTypeComplexShort);
-    )

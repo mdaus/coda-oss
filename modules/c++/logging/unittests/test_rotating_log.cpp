@@ -22,7 +22,7 @@
 
 #include <import/logging.h>
 #include <import/mem.h>
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 void cleanupFiles(std::string base)
 {
@@ -42,7 +42,7 @@ void cleanupFiles(std::string base)
         os.remove(base);
 }
 
-TEST_CASE(testRotate)
+TEST_CASE("testRotate")
 {
     std::string outFile = "test_rotate.txt";
     int maxFiles = 1;
@@ -59,18 +59,18 @@ TEST_CASE(testRotate)
         log.addHandler(std::move(logHandler));
 
         log.debug("0123456789");
-        TEST_ASSERT(os.exists(outFile));
+        CHECK(os.exists(outFile));
         const auto outFile1 = outFile + ".1";
-        TEST_ASSERT_FALSE(os.isFile(outFile1));
+        CHECK_FALSE(os.isFile(outFile1));
 
         log.debug("1");
-        TEST_ASSERT(os.isFile(outFile1));
+        CHECK(os.isFile(outFile1));
     }
 
     cleanupFiles( outFile);
 }
 
-TEST_CASE(testNeverRotate)
+TEST_CASE("testNeverRotate")
 {
     std::string outFile = "test_rotate.txt";
     cleanupFiles( outFile);
@@ -84,14 +84,14 @@ TEST_CASE(testNeverRotate)
         {
             log.debug("test");
         }
-        TEST_ASSERT(os.exists(outFile));
-        TEST_ASSERT_FALSE(os.isFile(outFile + ".1"));
+        CHECK(os.exists(outFile));
+        CHECK_FALSE(os.isFile(outFile + ".1"));
     }
 
     cleanupFiles( outFile);
 }
 
-TEST_CASE(testRotateReset)
+TEST_CASE("testRotateReset")
 {
     std::string outFile = "test_rotate.txt";
     cleanupFiles( outFile);
@@ -101,19 +101,14 @@ TEST_CASE(testRotateReset)
         logging::Logger log("test");
         logging::RotatingFileHandler logHandler(outFile, 10);
         log.debug("01234567890");
-        TEST_ASSERT(os.exists(outFile));
-        TEST_ASSERT_FALSE(os.isFile(outFile + ".1"));
+        CHECK(os.exists(outFile));
+        CHECK_FALSE(os.isFile(outFile + ".1"));
 
         log.debug("0");
-        TEST_ASSERT(os.exists(outFile));
-        TEST_ASSERT_FALSE(os.isFile(outFile + ".1"));
+        CHECK(os.exists(outFile));
+        CHECK_FALSE(os.isFile(outFile + ".1"));
     }
 
     cleanupFiles( outFile);
 }
 
-TEST_MAIN(
-    TEST_CHECK( testNeverRotate);
-    TEST_CHECK( testRotateReset);
-    TEST_CHECK( testRotate);
-    )

@@ -24,7 +24,11 @@
 #include <tuple>
 
 #include <math/poly/TwoD.h>
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
+
+#define TEST_ASSERT_ALMOST_EQ_EPS(X, Y, Z) CHECK_THAT(X, Catch::Matchers::WithinRel(Y, Z));
+#define TEST_ASSERT_EQ(X, Y) CHECK(X == Y);
 
 double getRand()
 {
@@ -60,7 +64,7 @@ void getRandValues(std::vector<double>& xValues,
     }
 }
 
-TEST_CASE(testScaleVariable)
+TEST_CASE("testScaleVariable")
 {
     std::vector<double> xValues;
     std::vector<double> yValues;
@@ -81,7 +85,7 @@ TEST_CASE(testScaleVariable)
         const double expectedValue(poly(xx * scale, yy * scale));
         TEST_ASSERT_ALMOST_EQ_EPS(transformedPoly(xx, yy),
                                   expectedValue,
-                                  std::abs(.01 * expectedValue));
+                                  .01);
     }
 
     // transformedPoly = poly(x * scaleX, y * scaleY)
@@ -96,11 +100,11 @@ TEST_CASE(testScaleVariable)
         const double expectedValue(poly(xx * scaleX, yy * scaleY));
         TEST_ASSERT_ALMOST_EQ_EPS(transformedPoly(xx, yy),
                                   expectedValue,
-                                  std::abs(.01 * expectedValue));
+                                  .01);
     }
 }
 
-TEST_CASE(testTruncateTo)
+TEST_CASE("testTruncateTo")
 {
     math::poly::TwoD<double> poly(4, 5);
     for (size_t ii = 0, coeff = 10; ii <= poly.orderX(); ++ii)
@@ -122,7 +126,7 @@ TEST_CASE(testTruncateTo)
     TEST_ASSERT_EQ(truncatedPoly[1][3], 100.0);
 }
 
-TEST_CASE(testTruncateToNonZeros)
+TEST_CASE("testTruncateToNonZeros")
 {
     math::poly::TwoD<double> poly(4, 5);
     for (size_t ii = 0, coeff = 10; ii <= poly.orderX(); ++ii)
@@ -212,7 +216,7 @@ TEST_CASE(testTruncateToNonZeros)
     TEST_ASSERT_EQ(truncatedPoly[0][0], 0.0);
 }
 
-TEST_CASE(testTransformInput)
+TEST_CASE("testTransformInput")
 {
     std::vector<double> xValues;
     std::vector<double> yValues;
@@ -233,7 +237,7 @@ TEST_CASE(testTransformInput)
         const double expectedValue(poly(gx(xx, yy), gy(xx, yy)));
         TEST_ASSERT_ALMOST_EQ_EPS(transformedPoly(xx, yy),
                                   expectedValue,
-                                  std::abs(.01 * expectedValue));
+                                  .01);
     }
 
     transformedPoly = poly.transformInput(gx);
@@ -246,11 +250,11 @@ TEST_CASE(testTransformInput)
         const double expectedValue(poly(gx(xx, yy), yy));
         TEST_ASSERT_ALMOST_EQ_EPS(transformedPoly(xx, yy),
                                   expectedValue,
-                                  std::abs(.01 * expectedValue));
+                                  .01);
     }
 }
 
-TEST_CASE(testOperators)
+TEST_CASE("testOperators")
 {
     math::poly::TwoD<double> p1(2, 2);
     math::poly::TwoD<double> p2(1, 3);
@@ -418,11 +422,11 @@ TEST_CASE(testOperators)
         }
     }
 
-    TEST_ASSERT_TRUE(op == opEquals);
-    TEST_ASSERT_FALSE(op != opEquals);
+    CHECK(op == opEquals);
+    CHECK_FALSE(op != opEquals);
 }
 
-TEST_CASE(testIsScalar)
+TEST_CASE("testIsScalar")
 {
     math::poly::TwoD<double> p1(2, 2);
 
@@ -437,15 +441,15 @@ TEST_CASE(testIsScalar)
         }
     }
 
-    TEST_ASSERT_FALSE(p1.isScalar());
+    CHECK_FALSE(p1.isScalar());
 
 
     math::poly::TwoD<double> p2(1, 3);
     p2[0][0] = 1;
-    TEST_ASSERT(p2.isScalar());
+    CHECK(p2.isScalar());
 }
 
-TEST_CASE(testAtY)
+TEST_CASE("testAtY")
 {
     math::poly::TwoD<double> p1(2, 2);
     // x^0*(1*y^0 2*y^1 3*y^2 )
@@ -488,14 +492,3 @@ TEST_CASE(testAtY)
     TEST_ASSERT_EQ(p4.atY(3)(2), p4(2, 3));
     TEST_ASSERT_EQ(p4.flipXY().atY(4)(5), p4(4, 5));
 }
-
-TEST_MAIN(
-    TEST_CHECK(testScaleVariable);
-    TEST_CHECK(testTruncateTo);
-    TEST_CHECK(testTruncateToNonZeros);
-    TEST_CHECK(testTransformInput);
-    TEST_CHECK(testOperators);
-    TEST_CHECK(testIsScalar);
-    TEST_CHECK(testAtY);
-    )
-

@@ -21,26 +21,20 @@
  */
 
 #include <limits.h>
-#include <TestCase.h>
+#include <catch2/catch_test_macros.hpp>
 #include <math/Utilities.h>
 
-TEST_CASE(testIsNaNOnWeirdNumbers)
+TEST_CASE("testIsNaNOnWeirdNumbers")
 {
-    TEST_ASSERT(!math::isNaN(std::numeric_limits<double>::infinity()));
-    TEST_ASSERT(!math::isNaN(std::numeric_limits<double>::epsilon()));
-    TEST_ASSERT(!math::isNaN(std::numeric_limits<double>::max()));
-    TEST_ASSERT(!math::isNaN(std::numeric_limits<double>::min()));
+    CHECK(!math::isNaN(std::numeric_limits<double>::infinity()));
+    CHECK(!math::isNaN(std::numeric_limits<double>::epsilon()));
+    CHECK(!math::isNaN(std::numeric_limits<double>::max()));
+    CHECK(!math::isNaN(std::numeric_limits<double>::min()));
 }
 
-TEST_CASE(testNaNs)
+TEST_CASE("testNaNs")
 {
-    TEST_ASSERT(math::isNaN(std::numeric_limits<double>::quiet_NaN()));
-    TEST_ASSERT(math::isNaN(std::numeric_limits<double>::signaling_NaN()));
+    CHECK(math::isNaN(std::numeric_limits<double>::quiet_NaN()));
+    CHECK(math::isNaN(std::numeric_limits<double>::signaling_NaN()));
 }
-
-
-TEST_MAIN(
-    TEST_CHECK(testIsNaNOnWeirdNumbers);
-    TEST_CHECK(testNaNs);
-    )
 

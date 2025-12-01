@@ -24,13 +24,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <TestCase.h>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <math/linear/Vector.h>
 #include <math/linear/VectorN.h>
 
-namespace
-{
-TEST_CASE(testAngleVN)
+TEST_CASE("testAngleVN")
 {
     math::linear::VectorN<3> v1;
     v1[0] = 383; v1[1] = 886; v1[2] = 777;
@@ -38,7 +37,7 @@ TEST_CASE(testAngleVN)
     v2[0] = 915; v2[1] = 793; v2[2] = 335;
     double expected1 = 0.566725971742884;
     double actual1 = v1.angle(v2);
-    TEST_ASSERT_ALMOST_EQ(actual1, expected1);
+    CHECK_THAT(actual1, Catch::Matchers::WithinRel(expected1, 0.0001));
 
     math::linear::VectorN<3> v3;
     v3[0] = 386; v3[1] = 492; v3[2] = 649;
@@ -46,7 +45,7 @@ TEST_CASE(testAngleVN)
     v4[0] = 421; v4[1] = 362; v4[2] = 27;
     double expected2 = 0.774404308906766;
     double actual2 = v3.angle(v4);
-    TEST_ASSERT_ALMOST_EQ(actual2, expected2);
+    CHECK_THAT(actual2, Catch::Matchers::WithinRel(expected2, 0.0001));
 
     math::linear::VectorN<3> v5;
     v5[0] = 690; v5[1] = 59; v5[2] = 763;
@@ -54,7 +53,7 @@ TEST_CASE(testAngleVN)
     v6[0] = 926; v6[1] = 540; v6[2] = 426;
     double expected3 = 0.57747993638172;
     double actual3 = v5.angle(v6);
-    TEST_ASSERT_ALMOST_EQ(actual3, expected3);
+    CHECK_THAT(actual3, Catch::Matchers::WithinRel(expected3, 0.0001));
 
     math::linear::VectorN<3> v7;
     v7[0] = 172; v7[1] = 736; v7[2] = 211;
@@ -62,7 +61,7 @@ TEST_CASE(testAngleVN)
     v8[0] = 368; v8[1] = 567; v8[2] = 429;
     double expected4 = 0.429741111954024;
     double actual4 = v7.angle(v8);
-    TEST_ASSERT_ALMOST_EQ(actual4, expected4);
+    CHECK_THAT(actual4, Catch::Matchers::WithinRel(expected4, 0.0001));
 
     math::linear::VectorN<3> v9;
     v9[0] = 782; v9[1] = 530; v9[2] = 862;
@@ -70,7 +69,7 @@ TEST_CASE(testAngleVN)
     v10[0] = 123; v10[1] = 67; v10[2] = 135;
     double expected5 = 0.0757306621542832;
     double actual5 = v9.angle(v10);
-    TEST_ASSERT_ALMOST_EQ(actual5, expected5);
+    CHECK_THAT(actual5, Catch::Matchers::WithinRel(expected5, 0.0001));
 
     math::linear::VectorN<3> v11;
     v11[0] = 929; v11[1] = 802; v11[2] = 22;
@@ -78,7 +77,7 @@ TEST_CASE(testAngleVN)
     v12[0] = 58; v12[1] = 69; v12[2] = 167;
     double expected6 = 1.0648468726463;
     double actual6 = v11.angle(v12);
-    TEST_ASSERT_ALMOST_EQ(actual6, expected6);
+    CHECK_THAT(actual6, Catch::Matchers::WithinRel(expected6, 0.0001));
 
     math::linear::VectorN<3> v13;
     v13[0] = 393; v13[1] = 456; v13[2] = 11;
@@ -86,7 +85,7 @@ TEST_CASE(testAngleVN)
     v14[0] = 42; v14[1] = 229; v14[2] = 373;
     double expected7 = 1.07890417806091;
     double actual7 = v13.angle(v14);
-    TEST_ASSERT_ALMOST_EQ(actual7, expected7);
+    CHECK_THAT(actual7, Catch::Matchers::WithinRel(expected7, 0.0001));
 
     math::linear::VectorN<3> v15;
     v15[0] = 421; v15[1] = 919; v15[2] = 784;
@@ -94,7 +93,7 @@ TEST_CASE(testAngleVN)
     v16[0] = 537; v16[1] = 198; v16[2] = 324;
     double expected8 = 0.665014174279145;
     double actual8 = v15.angle(v16);
-    TEST_ASSERT_ALMOST_EQ(actual8, expected8);
+    CHECK_THAT(actual8, Catch::Matchers::WithinRel(expected8, 0.0001));
 
     math::linear::VectorN<3> v17;
     v17[0] = 315; v17[1] = 370; v17[2] = 413;
@@ -102,7 +101,7 @@ TEST_CASE(testAngleVN)
     v18[0] = 526; v18[1] = 91; v18[2] = 980;
     double expected9 = 0.557001110850508;
     double actual9 = v17.angle(v18);
-    TEST_ASSERT_ALMOST_EQ(actual9, expected9);
+    CHECK_THAT(actual9, Catch::Matchers::WithinRel(expected9, 0.0001));
 
     math::linear::VectorN<3> v19;
     v19[0] = 956; v19[1] = 873; v19[2] = 862;
@@ -110,9 +109,9 @@ TEST_CASE(testAngleVN)
     v20[0] = 170; v20[1] = 996; v20[2] = 281;
     double expected10 = 0.67423184139059;
     double actual10 = v19.angle(v20);
-    TEST_ASSERT_ALMOST_EQ(actual10, expected10);
+    CHECK_THAT(actual10, Catch::Matchers::WithinRel(expected10, 0.0001));
 }
-TEST_CASE(testAngleV)
+TEST_CASE("testAngleV")
 {
     math::linear::Vector<double> v1(3);
     v1[0] = 383; v1[1] = 886; v1[2] = 777;
@@ -120,7 +119,7 @@ TEST_CASE(testAngleV)
     v2[0] = 915; v2[1] = 793; v2[2] = 335;
     double expected1 = 0.566725971742884;
     double actual1 = v1.angle(v2);
-    TEST_ASSERT_ALMOST_EQ(actual1, expected1);
+    CHECK_THAT(actual1, Catch::Matchers::WithinRel(expected1, 0.0001));
 
     math::linear::Vector<double> v3(3);
     v3[0] = 386; v3[1] = 492; v3[2] = 649;
@@ -128,7 +127,7 @@ TEST_CASE(testAngleV)
     v4[0] = 421; v4[1] = 362; v4[2] = 27;
     double expected2 = 0.774404308906766;
     double actual2 = v3.angle(v4);
-    TEST_ASSERT_ALMOST_EQ(actual2, expected2);
+    CHECK_THAT(actual2, Catch::Matchers::WithinRel(expected2, 0.0001));
 
     math::linear::Vector<double> v5(3);
     v5[0] = 690; v5[1] = 59; v5[2] = 763;
@@ -136,7 +135,7 @@ TEST_CASE(testAngleV)
     v6[0] = 926; v6[1] = 540; v6[2] = 426;
     double expected3 = 0.57747993638172;
     double actual3 = v5.angle(v6);
-    TEST_ASSERT_ALMOST_EQ(actual3, expected3);
+    CHECK_THAT(actual3, Catch::Matchers::WithinRel(expected3, 0.0001));
 
     math::linear::Vector<double> v7(3);
     v7[0] = 172; v7[1] = 736; v7[2] = 211;
@@ -144,7 +143,7 @@ TEST_CASE(testAngleV)
     v8[0] = 368; v8[1] = 567; v8[2] = 429;
     double expected4 = 0.429741111954024;
     double actual4 = v7.angle(v8);
-    TEST_ASSERT_ALMOST_EQ(actual4, expected4);
+    CHECK_THAT(actual4, Catch::Matchers::WithinRel(expected4, 0.0001));
 
     math::linear::Vector<double> v9(3);
     v9[0] = 782; v9[1] = 530; v9[2] = 862;
@@ -152,7 +151,7 @@ TEST_CASE(testAngleV)
     v10[0] = 123; v10[1] = 67; v10[2] = 135;
     double expected5 = 0.0757306621542832;
     double actual5 = v9.angle(v10);
-    TEST_ASSERT_ALMOST_EQ(actual5, expected5);
+    CHECK_THAT(actual5, Catch::Matchers::WithinRel(expected5, 0.0001));
 
     math::linear::Vector<double> v11(3);
     v11[0] = 929; v11[1] = 802; v11[2] = 22;
@@ -160,7 +159,7 @@ TEST_CASE(testAngleV)
     v12[0] = 58; v12[1] = 69; v12[2] = 167;
     double expected6 = 1.0648468726463;
     double actual6 = v11.angle(v12);
-    TEST_ASSERT_ALMOST_EQ(actual6, expected6);
+    CHECK_THAT(actual6, Catch::Matchers::WithinRel(expected6, 0.0001));
 
     math::linear::Vector<double> v13(3);
     v13[0] = 393; v13[1] = 456; v13[2] = 11;
@@ -168,7 +167,7 @@ TEST_CASE(testAngleV)
     v14[0] = 42; v14[1] = 229; v14[2] = 373;
     double expected7 = 1.07890417806091;
     double actual7 = v13.angle(v14);
-    TEST_ASSERT_ALMOST_EQ(actual7, expected7);
+    CHECK_THAT(actual7, Catch::Matchers::WithinRel(expected7, 0.0001));
 
     math::linear::Vector<double> v15(3);
     v15[0] = 421; v15[1] = 919; v15[2] = 784;
@@ -176,7 +175,7 @@ TEST_CASE(testAngleV)
     v16[0] = 537; v16[1] = 198; v16[2] = 324;
     double expected8 = 0.665014174279145;
     double actual8 = v15.angle(v16);
-    TEST_ASSERT_ALMOST_EQ(actual8, expected8);
+    CHECK_THAT(actual8, Catch::Matchers::WithinRel(expected8, 0.0001));
 
     math::linear::Vector<double> v17(3);
     v17[0] = 315; v17[1] = 370; v17[2] = 413;
@@ -184,7 +183,7 @@ TEST_CASE(testAngleV)
     v18[0] = 526; v18[1] = 91; v18[2] = 980;
     double expected9 = 0.557001110850508;
     double actual9 = v17.angle(v18);
-    TEST_ASSERT_ALMOST_EQ(actual9, expected9);
+    CHECK_THAT(actual9, Catch::Matchers::WithinRel(expected9, 0.0001));
 
     math::linear::Vector<double> v19(3);
     v19[0] = 956; v19[1] = 873; v19[2] = 862;
@@ -192,12 +191,6 @@ TEST_CASE(testAngleV)
     v20[0] = 170; v20[1] = 996; v20[2] = 281;
     double expected10 = 0.67423184139059;
     double actual10 = v19.angle(v20);
-    TEST_ASSERT_ALMOST_EQ(actual10, expected10);
+    CHECK_THAT(actual10, Catch::Matchers::WithinRel(expected10, 0.0001));
 }
-}
-int main()
-{
-    TEST_CHECK(testAngleVN);
-    TEST_CHECK(testAngleV);
-    return 0;
-}
+

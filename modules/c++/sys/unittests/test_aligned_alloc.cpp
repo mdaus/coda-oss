@@ -26,7 +26,7 @@
 #include <sys/Path.h>
 #include <except/Exception.h>
 #include <str/Convert.h>
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 bool testAlignedAlloc(const size_t numBytes_, const size_t alignment)
 {
@@ -46,36 +46,29 @@ bool testAlignedAlloc(const size_t numBytes_, const size_t alignment)
     return isAligned;
 }
 
-TEST_CASE(testAlignedAlloc8)
+TEST_CASE("testAlignedAlloc8")
 {
     constexpr size_t numBytes = 16384;
-    TEST_ASSERT(testAlignedAlloc(numBytes, 8));
+    CHECK(testAlignedAlloc(numBytes, 8));
 }
-TEST_CASE(testAlignedAlloc16)
+TEST_CASE("testAlignedAlloc16")
 {
     constexpr size_t numBytes = 16384;
-    TEST_ASSERT(testAlignedAlloc(numBytes, 16));
+    CHECK(testAlignedAlloc(numBytes, 16));
 }
-TEST_CASE(testAlignedAlloc32)
+TEST_CASE("testAlignedAlloc32")
 {
     constexpr size_t numBytes = 16384;
-    TEST_ASSERT(testAlignedAlloc(numBytes, 32));
+    CHECK(testAlignedAlloc(numBytes, 32));
 }
-TEST_CASE(testAlignedAlloc64)
+TEST_CASE("testAlignedAlloc64")
 {
     constexpr size_t numBytes = 16384;
-    TEST_ASSERT(testAlignedAlloc(numBytes, 64));
+    CHECK(testAlignedAlloc(numBytes, 64));
 }
-TEST_CASE(testAlignedAlloc128)
+TEST_CASE("testAlignedAlloc128")
 {
     constexpr size_t numBytes = 16384;
-    TEST_ASSERT(testAlignedAlloc(numBytes, 128));
+    CHECK(testAlignedAlloc(numBytes, 128));
 }
 
-TEST_MAIN(
-    TEST_CHECK(testAlignedAlloc8);
-    TEST_CHECK(testAlignedAlloc16);
-    TEST_CHECK(testAlignedAlloc32);
-    TEST_CHECK(testAlignedAlloc64);
-    TEST_CHECK(testAlignedAlloc128);
-)

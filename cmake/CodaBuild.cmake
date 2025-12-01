@@ -411,7 +411,7 @@ function(coda_add_tests)
             add_custom_target(${test_group_tgt})
         endif()
 
-        list(APPEND ARG_DEPS ${ARG_MODULE_NAME}-${TARGET_LANGUAGE} TestCase)
+        list(APPEND ARG_DEPS ${ARG_MODULE_NAME}-${TARGET_LANGUAGE} Catch2::Catch2WithMain)
 
         # get all interface libraries and include directories from the dependencies
         foreach(dep ${ARG_DEPS})
@@ -573,8 +573,8 @@ function(coda_add_module MODULE_NAME)
 
     # Set up install destination for headers
     if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${CODA_STD_PROJECT_INCLUDE_DIR}")
-        install(DIRECTORY "${CODA_STD_PROJECT_INCLUDE_DIR}/"
-                DESTINATION "${CODA_STD_PROJECT_INCLUDE_DIR}/"
+        install(DIRECTORY "${CODA_STD_PROJECT_INCLUDE_DIR}"
+                DESTINATION "${CODA_STD_PROJECT_INCLUDE_DIR}"
                 ${CODA_INSTALL_OPTION}
                 FILES_MATCHING
                     PATTERN "*.in" EXCLUDE

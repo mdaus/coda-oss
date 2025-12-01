@@ -30,7 +30,7 @@
 
 #include "import/sys.h"
 #include "import/mt.h"
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 struct AddOp final
 {
@@ -63,16 +63,15 @@ private:
     mutable size_t mValue = 0;
 };
 
-TEST_CASE(DoRunnable1DTest)
+TEST_CASE("DoRunnable1DTest")
 {
     std::cout << "Running test case\n";
     const AddOp op;
     std::cout << "Calling run1D\n";
     mt::run1D(10, 16, op);
-    TEST_ASSERT_TRUE(true); // need to use hidden "testName" parameter
 }
 
-TEST_CASE(Runnable1DWithCopiesTest)
+TEST_CASE("Runnable1DWithCopiesTest")
 {
     // TODO: Have LocalStorage actually store its values off in a vector, then
     //       show we got all those values.
@@ -80,10 +79,4 @@ TEST_CASE(Runnable1DWithCopiesTest)
     const LocalStorage op;
     std::cout << "Calling run1D\n";
     mt::run1DWithCopies(47, 16, op);
-    TEST_ASSERT_TRUE(true); // need to use hidden "testName" parameter
 }
-
-TEST_MAIN(
-    TEST_CHECK(DoRunnable1DTest);
-    TEST_CHECK(Runnable1DWithCopiesTest);
-    )

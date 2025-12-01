@@ -27,7 +27,7 @@
 #include <import/zip.h>
 #include <io/ReadUtils.h>
 
-#include <TestCase.h>
+#include <catch2/catch_test_macros.hpp>
 
 static std::filesystem::path find_unittest_file(const std::filesystem::path& name)
 {
@@ -47,7 +47,7 @@ static std::string gz_to_txt(const std::filesystem::path& gz_path)
     return gz_path.stem().string() + pid + gz_path.extension().string() + ".txt";
 }
 
-TEST_CASE(gzip)
+TEST_CASE("gzip")
 {
     static const auto inputPath = find_unittest_file("text.txt");
 
@@ -68,7 +68,7 @@ TEST_CASE(gzip)
     
     std::vector<std::byte> buffer;
     io::readFileContents(outputPath, buffer);
-    TEST_ASSERT_EQ(32, buffer.size());
+    CHECK(32 == buffer.size());
     {
         zip::GZipInputStream input(outputPath.string());
         outputPath = outputDir / gz_to_txt(outputPath);
@@ -79,14 +79,14 @@ TEST_CASE(gzip)
         output.close();
 
         const auto str = io::readFileContents(outputPath.string());
-        TEST_ASSERT_EQ("Hello World!", str);
+        CHECK("Hello World!" == str);
     }
 
     remove(origOutputPath);
     remove(outputPath);
 }
 
-TEST_CASE(gunzip)
+TEST_CASE("gunzip")
 {
     static const auto inputPath = find_unittest_file("test.gz");
 
@@ -102,12 +102,7 @@ TEST_CASE(gunzip)
     output.close();
 
     const auto str = io::readFileContents(outputPath.string());
-    TEST_ASSERT_EQ("Hello World!", str);
+    CHECK("Hello World!" == str);
     
     remove(outputPath);
 }
-
-TEST_MAIN(
-    TEST_CHECK(gzip);
-    TEST_CHECK(gunzip);
-)

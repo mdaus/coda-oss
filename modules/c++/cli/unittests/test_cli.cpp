@@ -29,16 +29,17 @@
 #include <import/cli.h>
 #include <import/mem.h>
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 
-TEST_CASE(testValue)
+TEST_CASE("testValue")
 {
     cli::Value v("data");
-    TEST_ASSERT_EQ("data", v.get<std::string>());
+    CHECK("data" == v.get<std::string>());
 
     v.set(3.14f);
-    TEST_ASSERT_ALMOST_EQ(3.14f, v.get<float>());
-    TEST_ASSERT_EQ(3, v.get<int>());
+    CHECK_THAT(3.14f, Catch::Matchers::WithinRel(v.get<float>(), std::numeric_limits<float>::epsilon()));
+    CHECK(3 == v.get<int>());
 
     std::vector<float> floats;
     std::vector<std::string> strings;
@@ -52,20 +53,20 @@ TEST_CASE(testValue)
     v.setContainer(floats);
     for(int i = 0; i < 10; ++i)
     {
-        TEST_ASSERT_ALMOST_EQ(v.at<float>(i), 10.0f * i);
+        CHECK_THAT(v.at<float>(i), Catch::Matchers::WithinRel(10.0f * i, std::numeric_limits<float>::epsilon()));
     }
-    TEST_ASSERT_EQ(std::ssize(v), 10);
+    CHECK(std::ssize(v) == 10);
 
     // strings
     v.setContainer(strings);
     for(int i = 0; i < 10; ++i)
     {
-        TEST_ASSERT_EQ(v.at<std::string>(i), std::to_string(i));
+        CHECK(v.at<std::string>(i) == std::to_string(i));
     }
-    TEST_ASSERT_EQ(std::ssize(v), 10);
+    CHECK(std::ssize(v) == 10);
 }
 
-TEST_CASE(testChoices)
+TEST_CASE("testChoices")
 {
     cli::ArgumentParser parser;
     parser.setProgram("tester");
@@ -82,47 +83,41 @@ TEST_CASE(testChoices)
     parser.printHelp(buf);
 
     std::unique_ptr<cli::Results> results(parser.parse(str::split("-v", " ")));
-    TEST_ASSERT(results->hasValue("verbose"));
-    TEST_ASSERT(results->get<bool>("verbose", 0));
+    CHECK(results->hasValue("verbose"));
+    CHECK(results->get<bool>("verbose", 0));
 
     results.reset(parser.parse(str::split("", " ")));
-    TEST_ASSERT_EQ(results->get<bool>("verbose", 0), false);
+    CHECK_FALSE(results->get<bool>("verbose", 0));
 
     results.reset(parser.parse(str::split("-t type2", " ")));
-    TEST_ASSERT_EQ(results->get<std::string>("type", 0), std::string("type2"));
+    CHECK(results->get<std::string>("type", 0) == std::string("type2"));
 
-    try
-    {
-        results.reset(parser.parse(str::split("-t type2 -t type1", " ")));
-        TEST_FAIL_MSG("Shouldn't allow multiple types");
-    }
-    catch(except::Exception&)
-    {
-    }
+    CHECK_THROWS_AS(results.reset(parser.parse(str::split("-t type2 -t type1", " "))), except::Exception);
+
     results.reset(parser.parse(str::split("-t type2", " ")));
 
     results.reset(parser.parse(str::split("-m type2 --many type1 -m type3", " ")));
 }
 
-TEST_CASE(testMultiple)
+TEST_CASE("testMultiple")
 {
     cli::ArgumentParser parser;
     parser.setProgram("tester");
     parser.addArgument("-v --verbose --loud -l", "Toggle verbose", cli::STORE_TRUE);
 
     std::unique_ptr<cli::Results> results(parser.parse(str::split("-v")));
-    TEST_ASSERT(results->hasValue("verbose"));
-    TEST_ASSERT(results->get<bool>("verbose"));
+    CHECK(results->hasValue("verbose"));
+    CHECK(results->get<bool>("verbose"));
 
     results.reset(parser.parse(str::split("-l")));
-    TEST_ASSERT(results->get<bool>("verbose"));
+    CHECK(results->get<bool>("verbose"));
     results.reset(parser.parse(str::split("--loud")));
-    TEST_ASSERT(results->get<bool>("verbose"));
+    CHECK(results->get<bool>("verbose"));
     results.reset(parser.parse(str::split("")));
-    TEST_ASSERT_FALSE(results->get<bool>("verbose"));
+    CHECK_FALSE(results->get<bool>("verbose"));
 }
 
-TEST_CASE(testSubOptions)
+TEST_CASE("testSubOptions")
 {
     cli::ArgumentParser parser;
     parser.setProgram("tester");
@@ -134,23 +129,23 @@ TEST_CASE(testSubOptions)
     parser.printHelp(buf);
 
     std::unique_ptr<cli::Results> results(parser.parse(str::split("-x:special")));
-    TEST_ASSERT(results->hasSubResults("extra"));
-    TEST_ASSERT(results->getSubResults("extra")->get<bool>("special"));
+    CHECK(results->hasSubResults("extra"));
+    CHECK(results->getSubResults("extra")->get<bool>("special"));
 
     results.reset(parser.parse(str::split("--extra:arg=something -x:arg2 1")));
-    TEST_ASSERT(results->hasSubResults("extra"));
-    TEST_ASSERT_EQ(results->getSubResults("extra")->get<std::string>("arg"), "something");
-    TEST_ASSERT_EQ(results->getSubResults("extra")->get<int>("arg2"), 1);
+    CHECK(results->hasSubResults("extra"));
+    CHECK(results->getSubResults("extra")->get<std::string>("arg") == "something");
+    CHECK(results->getSubResults("extra")->get<int>("arg2") == 1);
 
     results.reset(parser.parse(str::split("--config /path/to/file --config:flag1 -c:flag2=true --config:flag3 false")));
-    TEST_ASSERT_EQ(results->get<std::string>("config"), "/path/to/file");
-    TEST_ASSERT(results->hasSubResults("config"));
-    TEST_ASSERT(results->getSubResults("config")->get<bool>("flag1"));
-    TEST_ASSERT(results->getSubResults("config")->get<bool>("flag2"));
-    TEST_ASSERT_FALSE(results->getSubResults("config")->get<bool>("flag3"));
+    CHECK(results->get<std::string>("config") == "/path/to/file");
+    CHECK(results->hasSubResults("config"));
+    CHECK(results->getSubResults("config")->get<bool>("flag1"));
+    CHECK(results->getSubResults("config")->get<bool>("flag2"));
+    CHECK_FALSE(results->getSubResults("config")->get<bool>("flag3"));
 }
 
-TEST_CASE(testIterate)
+TEST_CASE("testIterate")
 {
     cli::ArgumentParser parser;
     parser.setProgram("tester");
@@ -162,36 +157,36 @@ TEST_CASE(testIterate)
     std::vector<std::string> keys;
     for(auto it = results->begin(); it != results->end(); ++it)
         keys.push_back(it->first);
-    TEST_ASSERT_EQ(std::ssize(keys), 2);
+    CHECK(std::ssize(keys) == 2);
     // std::map returns keys in alphabetical order...
-    TEST_ASSERT_EQ(keys[0], "config");
-    TEST_ASSERT_EQ(keys[1], "verbose");
+    CHECK(keys[0] == "config");
+    CHECK(keys[1] == "verbose");
 }
 
-TEST_CASE(testRequired)
+TEST_CASE("testRequired")
 {
     cli::ArgumentParser parser;
     parser.setProgram("tester");
     parser.addArgument("-c --config", "Specify a config file", cli::STORE)->setRequired(true);
 
-    const std::string program(testName);
+    const std::string program("test");
     const auto results = parser.parse(program, str::split("-c configFile"));
-    TEST_ASSERT_EQ(results->get<std::string>("config"), "configFile");
+    CHECK(results->get<std::string>("config") == "configFile");
 }
 
-TEST_CASE(testRequiredThrows)
+TEST_CASE("testRequiredThrows")
 {
     cli::ArgumentParser parser;
     parser.setProgram("tester");
     parser.addArgument("-c --config", "Specify a config file", cli::STORE)
             ->setRequired(true);
 
-    const std::string program(testName);
-    TEST_EXCEPTION(parser.parse(program, str::split("")));
-    TEST_EXCEPTION(parser.parse(program, str::split("-c")));
+    const std::string program("test");
+    CHECK_THROWS(parser.parse(program, str::split("")));
+    CHECK_THROWS(parser.parse(program, str::split("-c")));
 }
 
-TEST_CASE(testUnknownArgumentsOptions)
+TEST_CASE("testUnknownArgumentsOptions")
 {
     std::ostringstream outStream;
     cli::ArgumentParser parser(true, &outStream);
@@ -201,14 +196,14 @@ TEST_CASE(testUnknownArgumentsOptions)
 
     // Use a flag that is incorrect
     std::unique_ptr<cli::Results> results(parser.parse(str::split("-z")));
-    TEST_ASSERT_FALSE(results->get<bool>("verbose"));
-    TEST_ASSERT_EQ(outStream.str(), std::string("Unknown arg: -z\n"));
+    CHECK_FALSE(results->get<bool>("verbose"));
+    CHECK(outStream.str() == std::string("Unknown arg: -z\n"));
 
     std::ostringstream outStream2;
     parser.setIgnoreUnknownArgumentsOutputStream(&outStream2);
     results.reset(parser.parse(str::split("-z")));
-    TEST_ASSERT_FALSE(results->get<bool>("verbose"));
-    TEST_ASSERT_EQ(outStream2.str(), std::string("Unknown arg: -z\n"));
+    CHECK_FALSE(results->get<bool>("verbose"));
+    CHECK(outStream2.str() == std::string("Unknown arg: -z\n"));
 
     // Test a file
     std::string testFilename = "test_failed_parser_arg.log";
@@ -222,7 +217,7 @@ TEST_CASE(testUnknownArgumentsOptions)
     if (inFStream.is_open())
     {
         std::getline(inFStream, line);
-        TEST_ASSERT(line.compare("Unknown arg: -z") == 0);
+        CHECK(line.compare("Unknown arg: -z") == 0);
     }
     // Close the stream and remove the file.
     inFStream.close();
@@ -233,13 +228,13 @@ TEST_CASE(testUnknownArgumentsOptions)
 
     // Test setting flag
     parser.setIgnoreUnknownArgumentsFlag(false);
-    TEST_EXCEPTION(results.reset(parser.parse(str::split("-z"))));
+    CHECK_THROWS(results.reset(parser.parse(str::split("-z"))));
 
     // Test default with more complex arguments
     cli::ArgumentParser parser2;
     parser2.setProgram("tester");
     parser2.addArgument("-v --verbose", "Toggle verbose", cli::STORE_TRUE);
-    TEST_EXCEPTION(results.reset(parser2.parse(str::split("-f C:/Data/File.txt"))));
+    CHECK_THROWS(results.reset(parser2.parse(str::split("-f C:/Data/File.txt"))));
 
     // Test ignoreUnknownArguments with more complex arguments
     std::ostringstream outStream3;
@@ -248,26 +243,13 @@ TEST_CASE(testUnknownArgumentsOptions)
     parser3.addArgument("-v --verbose", "Toggle verbose", cli::STORE_TRUE);
     parser3.addArgument("-c --config", "Specify a config file", cli::STORE);
     parser3.addArgument("-t --type", "Type", cli::STORE_TRUE);
-    results.reset(parser3.parse(str::split(
-            "-v --badarg1 -c config.txt --filename=file.txt -z")));
-    TEST_ASSERT_TRUE(results->get<bool>("verbose"));
-    TEST_ASSERT_FALSE(results->get<bool>("type"));
-    TEST_ASSERT_EQ(results->get<std::string>("config"), "config.txt");
-    TEST_ASSERT_EQ(outStream3.str(), std::string(
-            "Unknown arg: --badarg1\nUnknown arg: --filename\nUnknown arg: -z\n"));
-    TEST_ASSERT_TRUE(results->get<bool>("verbose"));
-    TEST_ASSERT_FALSE(results->get<bool>("type"));
-    TEST_ASSERT_EQ(results->get<std::string>("config"), "config.txt");
+    results.reset(parser3.parse(str::split("-v --badarg1 -c config.txt --filename=file.txt -z")));
+    CHECK(results->get<bool>("verbose"));
+    CHECK_FALSE(results->get<bool>("type"));
+    CHECK(results->get<std::string>("config") == "config.txt");
+    CHECK(outStream3.str() == std::string("Unknown arg: --badarg1\nUnknown arg: --filename\nUnknown arg: -z\n"));
+    CHECK(results->get<bool>("verbose"));
+    CHECK_FALSE(results->get<bool>("type"));
+    CHECK(results->get<std::string>("config") == "config.txt");
 }
-
-TEST_MAIN(
-    TEST_CHECK( testValue);
-    TEST_CHECK( testChoices);
-    TEST_CHECK( testMultiple);
-    TEST_CHECK( testSubOptions);
-    TEST_CHECK( testIterate);
-    TEST_CHECK( testRequired);
-    TEST_CHECK( testRequiredThrows);
-    TEST_CHECK( testUnknownArgumentsOptions);
-)
 

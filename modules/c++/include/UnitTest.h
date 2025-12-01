@@ -3,8 +3,6 @@
 #include <stdint.h>
 #include <string>
 
-#include "TestCase.h"
-
 #if !_MSC_VER
 #error "This file is for use with a Visual Studio 'UnitTest' project."
 #endif

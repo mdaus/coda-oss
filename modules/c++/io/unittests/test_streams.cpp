@@ -26,93 +26,93 @@
 #include <import/io.h>
 #include <mem/BufferView.h>
 #include <sys/Conf.h>
-#include <TestCase.h>
+#include <catch2/catch_test_macros.hpp>
 #include <string.h>
 
-TEST_CASE(testStringStream)
+TEST_CASE("testStringStream")
 {
     io::StringStream stream;
     stream.writeln("test");
     stream.writeln("test");
-    TEST_ASSERT_EQ(stream.available(), 10);
+    CHECK(stream.available() == 10);
     stream.seek(1, io::Seekable::START);
-    TEST_ASSERT_EQ(stream.available(), 9);
+    CHECK(stream.available() == 9);
 
     stream.write("0123456789");
 
-    TEST_ASSERT_EQ(stream.available(), 19);
-    TEST_ASSERT_EQ(stream.tell(), 1);
+    CHECK(stream.available() == 19);
+    CHECK(stream.tell() == 1);
 
     stream.seek(22, io::Seekable::CURRENT);
     stream.seek(0, io::Seekable::START);
 
     stream.reset();
-    TEST_ASSERT_EQ(stream.available(), 0);
+    CHECK(stream.available() == 0);
     stream.write("test");
-    TEST_ASSERT_EQ(stream.available(), 4);
+    CHECK(stream.available() == 4);
     sys::byte buf[255];
     stream.read(buf, 4);
     buf[4] = 0;
-    TEST_ASSERT_EQ(std::string(buf), "test");
+    CHECK(std::string(buf) == "test");
 }
 
-TEST_CASE(testByteStream)
+TEST_CASE("testByteStream")
 {
     io::ByteStream stream;
     stream.writeln("test");
     stream.writeln("test");
 
-    TEST_ASSERT_EQ(stream.available(), 0);
+    CHECK(stream.available() == 0);
     stream.seek(0, io::Seekable::START);
-    TEST_ASSERT_EQ(stream.available(), 10);
+    CHECK(stream.available() == 10);
 
     stream.seek(10, io::Seekable::START);
     stream.write("0123456789");
-    TEST_ASSERT_EQ(stream.tell(), 20);
-    TEST_ASSERT_EQ(stream.available(), 0);
+    CHECK(stream.tell() == 20);
+    CHECK(stream.available() == 0);
 
     stream.seek(22, io::Seekable::CURRENT);
-    TEST_ASSERT_EQ(stream.tell(), -1);
+    CHECK(stream.tell() == -1);
     stream.reset();
-    TEST_ASSERT_EQ(stream.tell(), 0);
+    CHECK(stream.tell() == 0);
     stream.seek(0, io::Seekable::START);
-    TEST_ASSERT_EQ(stream.tell(), 0);
+    CHECK(stream.tell() == 0);
 
     stream.seek(2, io::Seekable::END);
-    TEST_ASSERT_EQ(stream.tell(), 18);
-    TEST_ASSERT_EQ(std::ssize(stream), 20);
+    CHECK(stream.tell() == 18);
+    CHECK(std::ssize(stream) == 20);
 
     stream.write("abcdef");
-    TEST_ASSERT_EQ(std::ssize(stream), 24);
+    CHECK(std::ssize(stream) == 24);
 
      const std::string test("test");
     {
         stream.clear();
-        TEST_ASSERT_EQ(stream.available(), 0);
+        CHECK(stream.available() == 0);
         stream.write(test);
         stream.seek(0, io::Seekable::START);
-        TEST_ASSERT_EQ(stream.available(), 4);
+        CHECK(stream.available() == 4);
         sys::byte buf[255];
         stream.read(buf, 4);
         buf[4] = 0;
-        TEST_ASSERT_EQ(std::string(buf), test);
+        CHECK(std::string(buf) == test);
     }
     {
         stream.clear();
         const std::span<const std::string::value_type> test_span(test.data(), test.size());
         stream.write(test_span);
         stream.seek(0, io::Seekable::START);
-        TEST_ASSERT_EQ(stream.available(), 4);
+        CHECK(stream.available() == 4);
         std::byte buf[255];
         stream.read(std::span<std::byte>(buf, 4));
         buf[4] = std::byte(0);
         const void* pBuf = buf;
         auto pStrBuf = static_cast<std::string::const_pointer>(pBuf);
-        TEST_ASSERT_EQ(pStrBuf, test);
+        CHECK(pStrBuf == test);
     }
 }
 
-TEST_CASE(testProxyOutputStream)
+TEST_CASE("testProxyOutputStream")
 {
     io::StringStream stream;
     io::ProxyOutputStream proxy(&stream);
@@ -120,25 +120,25 @@ TEST_CASE(testProxyOutputStream)
     sys::byte buf[255];
     stream.read(buf, 5);
     buf[5] = 0;
-    TEST_ASSERT_EQ(std::string(buf), "test1");
+    CHECK(std::string(buf) == "test1");
 }
 
-TEST_CASE(testCountingOutputStream)
+TEST_CASE("testCountingOutputStream")
 {
     io::ByteStream stream;
     io::CountingOutputStream counter(&stream);
     counter.write("test1");
-    TEST_ASSERT_EQ(counter.getCount(), 5);
+    CHECK(counter.getCount() == 5);
 }
 
-TEST_CASE(testBufferViewStream)
+TEST_CASE("testBufferViewStream")
 {
     {
         mem::BufferView<sys::ubyte> bufferView(nullptr, 0);
         io::BufferViewStream<sys::ubyte> stream(bufferView);
-        TEST_ASSERT_EQ(stream.tell(), 0);
-        TEST_ASSERT_EQ(stream.available(), 0);
-        TEST_ASSERT_NULL(stream.get());
+        CHECK(stream.tell() == 0);
+        CHECK(stream.available() == 0);
+        CHECK(stream.get() == nullptr);
     }
     {
         std::vector<sys::ubyte> data(4);
@@ -148,38 +148,38 @@ TEST_CASE(testBufferViewStream)
         data[3] = 9;
         mem::BufferView<sys::ubyte> bufferView(&data[0], data.size());
         io::BufferViewStream<sys::ubyte> stream(bufferView);
-        TEST_ASSERT_EQ(stream.tell(), 0);
-        TEST_ASSERT_EQ(stream.available(), 4);
+        CHECK(stream.tell() == 0);
+        CHECK(stream.available() == 4);
 
         std::vector<sys::ubyte> output(3);
         auto result = stream.read(&output[0], 2);
-        TEST_ASSERT_EQ(result, 2);
-        TEST_ASSERT_EQ(stream.tell(), 2);
-        TEST_ASSERT_EQ(stream.available(), 2);
+        CHECK(result == 2);
+        CHECK(stream.tell() == 2);
+        CHECK(stream.available() == 2);
         stream.seek(1, io::Seekable::CURRENT);
         result = stream.read(&output[2], 1);
-        TEST_ASSERT_EQ(result, 1);
-        TEST_ASSERT_EQ(output[0], 2);
-        TEST_ASSERT_EQ(output[1], 4);
-        TEST_ASSERT_EQ(output[2], 9);
+        CHECK(result == 1);
+        CHECK(output[0] == 2);
+        CHECK(output[1] == 4);
+        CHECK(output[2] == 9);
 
         stream.seek(1, io::Seekable::START);
         stream.write(&output[0], output.size());
 
-        TEST_ASSERT_EQ(data[0], 2);
-        TEST_ASSERT_EQ(data[1], 2);
-        TEST_ASSERT_EQ(data[2], 4);
-        TEST_ASSERT_EQ(data[3], 9);
+        CHECK(data[0] == 2);
+        CHECK(data[1] == 2);
+        CHECK(data[2] == 4);
+        CHECK(data[3] == 9);
 
-        TEST_ASSERT_EQ(stream.available(), 0);
-        TEST_EXCEPTION(stream.write(&data[0], data.size()));
+        CHECK(stream.available() == 0);
+        CHECK_THROWS(stream.write(&data[0], data.size()));
 
-        TEST_EXCEPTION(stream.seek(-1, io::Seekable::START));
-        TEST_EXCEPTION(stream.seek(-1, io::Seekable::END));
+        CHECK_THROWS(stream.seek(-1, io::Seekable::START));
+        CHECK_THROWS(stream.seek(-1, io::Seekable::END));
     }
 }
 
-TEST_CASE(testBufferViewIntStream)
+TEST_CASE("testBufferViewIntStream")
 {
     // Test for datatype with size > 1 to make sure copies are done correctly
     std::vector<int> data(4);
@@ -192,32 +192,32 @@ TEST_CASE(testBufferViewIntStream)
     std::vector<int> output(3);
 
     auto result = stream.read(&output[0], 2);
-    TEST_ASSERT_EQ(result, 2);
-    TEST_ASSERT_EQ(stream.tell(), static_cast<sys::Off_T>(2 * sizeof(int)));
-    TEST_ASSERT_EQ(stream.available(), static_cast<sys::Off_T>(2 * sizeof(int)));
+    CHECK(result == 2);
+    CHECK(stream.tell() == static_cast<sys::Off_T>(2 * sizeof(int)));
+    CHECK(stream.available() == static_cast<sys::Off_T>(2 * sizeof(int)));
     stream.seek(1 * sizeof(int), io::Seekable::CURRENT);
     result = stream.read(&output[2], 1);
-    TEST_ASSERT_EQ(result, 1);
-    TEST_ASSERT_EQ(output[0], 2);
-    TEST_ASSERT_EQ(output[1], 4);
-    TEST_ASSERT_EQ(output[2], 9);
+    CHECK(result == 1);
+    CHECK(output[0] == 2);
+    CHECK(output[1] == 4);
+    CHECK(output[2] == 9);
 
     stream.seek(1 * sizeof(int), io::Seekable::START);
     stream.write(&output[0], output.size());
 
-    TEST_ASSERT_EQ(data[0], 2);
-    TEST_ASSERT_EQ(data[1], 2);
-    TEST_ASSERT_EQ(data[2], 4);
-    TEST_ASSERT_EQ(data[3], 9);
+    CHECK(data[0] == 2);
+    CHECK(data[1] == 2);
+    CHECK(data[2] == 4);
+    CHECK(data[3] == 9);
 
     // Truncate properly if we ask for more elements than there are
     ::memset(&output[0], 0, output.size() * sizeof(output[0]));
     stream.seek(3 * sizeof(int), io::Seekable::START);
     result = stream.read(&output[0], 2);
-    TEST_ASSERT_EQ(result, 1);
-    TEST_ASSERT_EQ(stream.tell(), static_cast<sys::Off_T>(4 * sizeof(int)));
-    TEST_ASSERT_EQ(output[0], 9);
-    TEST_ASSERT_EQ(output[1], 0);
+    CHECK(result == 1);
+    CHECK(stream.tell() == static_cast<sys::Off_T>(4 * sizeof(int)));
+    CHECK(output[0] == 9);
+    CHECK(output[1] == 0);
 }
 
 void cleanupFiles(std::string base)
@@ -238,7 +238,7 @@ void cleanupFiles(std::string base)
         os.remove(base);
 }
 
-TEST_CASE(testRotate)
+TEST_CASE("testRotate")
 {
     std::string outFile = "test_rotate.txt";
     size_t maxFiles = 5;
@@ -250,30 +250,30 @@ TEST_CASE(testRotate)
     {
         io::RotatingFileOutputStream out(outFile, 10, maxFiles);
         out.write("0123456789");
-        TEST_ASSERT(os.exists(outFile));
-        TEST_ASSERT_FALSE(os.isFile(outFile + ".1"));
+        CHECK(os.exists(outFile));
+        CHECK_FALSE(os.isFile(outFile + ".1"));
 
         out.write("1");
-        TEST_ASSERT(os.isFile(outFile + ".1"));
-        TEST_ASSERT_EQ(out.getCount(), 1);
+        CHECK(os.isFile(outFile + ".1"));
+        CHECK(out.getCount() == 1);
 
         for(size_t i = 0; i < maxFiles - 1; ++i)
         {
             std::string fname = outFile + "." + std::to_string(i + 1);
             std::string next = outFile + "." + std::to_string(i + 2);
 
-            TEST_ASSERT(os.isFile(fname));
-            TEST_ASSERT_FALSE(os.isFile(next));
+            CHECK(os.isFile(fname));
+            CHECK_FALSE(os.isFile(next));
 
             out.write("0123456789");
-            TEST_ASSERT(os.isFile(next));
+            CHECK(os.isFile(next));
         }
     }
 
     cleanupFiles( outFile);
 }
 
-TEST_CASE(testNeverRotate)
+TEST_CASE("testNeverRotate")
 {
     std::string outFile = "test_rotate.txt";
     cleanupFiles( outFile);
@@ -283,14 +283,14 @@ TEST_CASE(testNeverRotate)
         io::RotatingFileOutputStream out(outFile);
         for(size_t i = 0; i < 1024; ++i)
         out.write("0");
-        TEST_ASSERT(os.exists(outFile));
-        TEST_ASSERT_FALSE(os.isFile(outFile + ".1"));
-        TEST_ASSERT_EQ(out.getCount(), 1024);
+        CHECK(os.exists(outFile));
+        CHECK_FALSE(os.isFile(outFile + ".1"));
+        CHECK(out.getCount() == 1024);
     }
     cleanupFiles( outFile);
 }
 
-TEST_CASE(testRotateReset)
+TEST_CASE("testRotateReset")
 {
     std::string outFile = "test_rotate.txt";
     cleanupFiles( outFile);
@@ -298,36 +298,17 @@ TEST_CASE(testRotateReset)
     sys::OS os;
     io::RotatingFileOutputStream out(outFile, 10);
     out.write("01234567890");
-    TEST_ASSERT(os.exists(outFile));
-    TEST_ASSERT_FALSE(os.isFile(outFile + ".1"));
-    TEST_ASSERT_EQ(out.getCount(), 11);
+    CHECK(os.exists(outFile));
+    CHECK_FALSE(os.isFile(outFile + ".1"));
+    CHECK(out.getCount() == 11);
 
     out.write("0");
-    TEST_ASSERT(os.exists(outFile));
-    TEST_ASSERT_FALSE(os.isFile(outFile + ".1"));
-    TEST_ASSERT_EQ(out.getCount(), 1);
+    CHECK(os.exists(outFile));
+    CHECK_FALSE(os.isFile(outFile + ".1"));
+    CHECK(out.getCount() == 1);
 
     out.close();
-    try
-    {
-        out.write("0");
-        TEST_FAIL_MSG("Stream is closed; should throw.");
-    }
-    catch(except::Exception&)
-    {
-    }
+    CHECK_THROWS(out.write("0"));
 
     cleanupFiles( outFile);
 }
-
-TEST_MAIN(
-    TEST_CHECK(testStringStream);
-    TEST_CHECK(testByteStream);
-    TEST_CHECK(testProxyOutputStream);
-    TEST_CHECK(testCountingOutputStream);
-    TEST_CHECK(testBufferViewStream);
-    TEST_CHECK(testBufferViewIntStream);
-    TEST_CHECK(testRotate);
-    TEST_CHECK(testNeverRotate);
-    TEST_CHECK(testRotateReset);
-    )

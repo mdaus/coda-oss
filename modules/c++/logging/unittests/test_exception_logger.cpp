@@ -24,7 +24,7 @@
 #include <memory>
 #include <span>
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 #include <sys/Mutex.h>
 #include <mem/SharedPtr.h>
@@ -63,7 +63,7 @@ public:
     }
 };
 
-TEST_CASE(testExceptionLogger)
+TEST_CASE("testExceptionLogger")
 {
     logging::Logger log("test");
 
@@ -85,62 +85,58 @@ TEST_CASE(testExceptionLogger)
     pool.addAndWaitGroup(runs);
     runs.clear();
 
-    TEST_ASSERT(counter == 1);
+    CHECK(counter == 1);
 }
 
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 4702)  // unreachable code
 #endif
-TEST_CASE(testExceptionWithBacktrace)
+TEST_CASE("testExceptionWithBacktrace")
 {
     const std::string getBacktrace("***** getBacktrace() *****");
     std::string s, what;
     try
     {
         throw except::Exception("Bad run");
-        TEST_FAIL;
+        FAIL();
     }
     catch (const except::Throwable& t)
     {
-        TEST_ASSERT_EQ(std::ssize(t.getBacktrace()), 0);
+        CHECK(std::ssize(t.getBacktrace()) == 0);
         s = t.toString();
         what = t.what();
     }
-    TEST_ASSERT(!s.empty());
-    TEST_ASSERT(!what.empty());
-    TEST_ASSERT_NOT_EQ(s, what);
+    CHECK(!s.empty());
+    CHECK(!what.empty());
+    CHECK(s != what);
     auto getBacktrace_pos = s.find(getBacktrace);
-    TEST_ASSERT_EQ(getBacktrace_pos, std::string::npos);
+    CHECK(getBacktrace_pos == std::string::npos);
     getBacktrace_pos = what.find(getBacktrace);
-    TEST_ASSERT_NOT_EQ(getBacktrace_pos, std::string::npos);
+    CHECK(getBacktrace_pos != std::string::npos);
     
     try
     {
         throw except::Exception("Bad run").backtrace();
-        TEST_FAIL;
+        FAIL();
     }
     catch (const except::Throwable& t)
     {
         const auto backtraceSize = static_cast<int64_t>(t.getBacktrace().size());
-        TEST_ASSERT_GREATER(backtraceSize, 0);
+        CHECK(backtraceSize > 0);
         s = t.toString(true /*includeBacktrace*/);
         what = t.what();
     }
 
-    TEST_ASSERT(!s.empty());
-    TEST_ASSERT(!what.empty());
-    TEST_ASSERT_EQ(s, what);
+    CHECK(!s.empty());
+    CHECK(!what.empty());
+    CHECK(s == what);
     getBacktrace_pos = s.find(getBacktrace);
-    TEST_ASSERT_NOT_EQ(getBacktrace_pos, std::string::npos);
+    CHECK(getBacktrace_pos != std::string::npos);
     getBacktrace_pos = what.find(getBacktrace);
-    TEST_ASSERT_NOT_EQ(getBacktrace_pos, std::string::npos);
+    CHECK(getBacktrace_pos != std::string::npos);
 }
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
 
-TEST_MAIN(
-    TEST_CHECK(testExceptionLogger);
-    TEST_CHECK(testExceptionWithBacktrace);
-)

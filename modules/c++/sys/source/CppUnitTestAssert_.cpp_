@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

@@ -32,7 +32,7 @@
 #include <sys/Dbg.h>
 #include <sys/DateTime.h>
 #include <sys/File.h>
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 void createFile(const std::string& pathname)
 {
@@ -41,20 +41,20 @@ void createFile(const std::string& pathname)
     oss.close();
 }
 
-TEST_CASE(testRecursiveRemove)
+TEST_CASE("testRecursiveRemove")
 {
     // This assumes the user has write permissions in their current directory
     const sys::OS os;
     const sys::Path subdir1("subdir1");
-    TEST_ASSERT( os.makeDirectory(subdir1) );
+    CHECK( os.makeDirectory(subdir1) );
     createFile(subdir1.join("tempFile1"));
     createFile(subdir1.join("tempFile2"));
 
     const sys::Path subdir2(subdir1.join("subdir2"));
-    TEST_ASSERT( os.makeDirectory(subdir2) );
+    CHECK( os.makeDirectory(subdir2) );
 
     const sys::Path subdir3(subdir2.join("subdir3"));
-    TEST_ASSERT( os.makeDirectory(subdir3) );
+    CHECK( os.makeDirectory(subdir3) );
     createFile(subdir3.join("tempFile3"));
     createFile(subdir3.join("tempFile4"));
     createFile(subdir3.join("tempFile5"));
@@ -66,34 +66,34 @@ TEST_CASE(testRecursiveRemove)
     }
     catch (...)
     {
-        TEST_ASSERT(false);
+        CHECK(false);
     }
-    TEST_ASSERT( !os.exists(subdir1) );
+    CHECK( !os.exists(subdir1) );
 }
 
-TEST_CASE(testForcefulMove)
+TEST_CASE("testForcefulMove")
 {
     // This assumes the user has write permissions in their current directory
     const sys::OS os;
     const sys::Path subdir1("subdir1");
-    TEST_ASSERT( os.makeDirectory(subdir1) );
+    CHECK( os.makeDirectory(subdir1) );
     createFile(subdir1.join("tempFile1"));
     createFile(subdir1.join("tempFile2"));
     createFile(subdir1.join("tempFile3"));
 
     const sys::Path subdir2(subdir1.join("subdir2"));
-    TEST_ASSERT( os.makeDirectory(subdir2) );
+    CHECK( os.makeDirectory(subdir2) );
 
     // regular move
     if (!os.move(subdir1.join("tempFile2"), subdir2.join("tempFile2")))
     {
-        TEST_ASSERT(false);
+        CHECK(false);
     }
 
     // forceful move
     if (!os.move(subdir1.join("tempFile3"), subdir1.join("tempFile1")))
     {
-        TEST_ASSERT(false);
+        CHECK(false);
     }
 
     // Try to recursively remove from the top level
@@ -103,12 +103,12 @@ TEST_CASE(testForcefulMove)
     }
     catch (...)
     {
-        TEST_ASSERT(false);
+        CHECK(false);
     }
-    TEST_ASSERT( !os.exists(subdir1) );
+    CHECK( !os.exists(subdir1) );
 }
 
-TEST_CASE(testEnvVariables)
+TEST_CASE("testEnvVariables")
 {
     sys::OS os;
     const std::string testvar = "TESTVARIABLE";
@@ -117,43 +117,43 @@ TEST_CASE(testEnvVariables)
 
     // Start by clearing the environment variable, if set.
     os.unsetEnv(testvar);
-    TEST_ASSERT_FALSE(os.isEnvSet(testvar));
+    CHECK_FALSE(os.isEnvSet(testvar));
 
     // Check getEnv throws an sys::SystemException exception when trying unset var
 
-    TEST_SPECIFIC_EXCEPTION(os.getEnv(testvar),sys::SystemException);
+    CHECK_THROWS_AS(os.getEnv(testvar), sys::SystemException);
 
     // Test getEnvIfSet doesn't update value and returns false on unset var.
     std::string candidatevalue="Unset";
 
-    TEST_ASSERT_FALSE(os.getEnvIfSet(testvar, candidatevalue));
-    TEST_ASSERT_EQ(candidatevalue,"Unset");
+    CHECK_FALSE(os.getEnvIfSet(testvar, candidatevalue));
+    CHECK(candidatevalue == "Unset");
 
     // Set the environment variable
     os.setEnv(testvar, testvalue, true);
 
-    TEST_ASSERT(os.isEnvSet(testvar));
+    CHECK(os.isEnvSet(testvar));
 
-    TEST_ASSERT(os.getEnvIfSet(testvar, candidatevalue));
-    TEST_ASSERT_EQ(candidatevalue,testvalue);
+    CHECK(os.getEnvIfSet(testvar, candidatevalue));
+    CHECK(candidatevalue == testvalue);
     std::string getEnvVar = os.getEnv(testvar);
-    TEST_ASSERT_EQ(getEnvVar,testvalue);
+    CHECK(getEnvVar == testvalue);
 
     // Set the environment variable without overwrite. (Should not update).
     os.setEnv(testvar, testvalue2,  false);
 
-    TEST_ASSERT(os.getEnvIfSet(testvar, candidatevalue));
-    TEST_ASSERT_EQ(candidatevalue,testvalue);
+    CHECK(os.getEnvIfSet(testvar, candidatevalue));
+    CHECK(candidatevalue == testvalue);
     getEnvVar = os.getEnv(testvar);
-    TEST_ASSERT_EQ(getEnvVar,testvalue);
+    CHECK(getEnvVar == testvalue);
 
     // Finally unset the variable again.
     os.unsetEnv(testvar);
 
-    TEST_ASSERT_FALSE(os.isEnvSet(testvar));
+    CHECK_FALSE(os.isEnvSet(testvar));
 }
 
-TEST_CASE(testSplitEnv)
+TEST_CASE("testSplitEnv")
 {
     sys::OS os;
 
@@ -161,11 +161,11 @@ TEST_CASE(testSplitEnv)
     const std::string pathEnvVar = "PATH";
     std::vector<std::string> paths;
     bool result = os.splitEnv(pathEnvVar, paths);
-    TEST_ASSERT_TRUE(result);
-    TEST_ASSERT_FALSE(paths.empty());
+    CHECK(result);
+    CHECK_FALSE(paths.empty());
     for (const auto& path : paths)
     {
-        TEST_ASSERT_TRUE(std::filesystem::exists(path));
+        CHECK(std::filesystem::exists(path));
     }
 
     // create an environemnt variable with a known bogus path
@@ -173,97 +173,79 @@ TEST_CASE(testSplitEnv)
     paths.clear();
     const std::string bogusEnvVar = "CODA_OSS_TEST_PATH";
     std::string value;
-    TEST_ASSERT_FALSE(os.getEnvIfSet(bogusEnvVar, value));
+    CHECK_FALSE(os.getEnvIfSet(bogusEnvVar, value));
     os.setEnv(bogusEnvVar, bogusValue, false /*overwrite*/);
     result = os.splitEnv(bogusEnvVar, paths);
-    TEST_ASSERT_TRUE(result);
-    TEST_ASSERT_EQ(paths.size(), static_cast<size_t>(1));
+    CHECK(result);
+    CHECK(paths.size() == static_cast<size_t>(1));
 
     // PATHs are directories, not files
     paths.clear();
     result = os.splitEnv(pathEnvVar, paths, std::filesystem::file_type::directory);
-    TEST_ASSERT_TRUE(result);
-    TEST_ASSERT_FALSE(paths.empty());
+    CHECK(result);
+    CHECK_FALSE(paths.empty());
     paths.clear();
     result = os.splitEnv(pathEnvVar, paths, std::filesystem::file_type::regular);
-    TEST_ASSERT_FALSE(result);
-    TEST_ASSERT_TRUE(paths.empty());
+    CHECK_FALSE(result);
+    CHECK(paths.empty());
 
     const std::string notFoundEnvVar = "CODA_OSS_SOME_VAR_THAT_WE_KNOW_WONT_BE_SET";
     paths.clear();
     result = os.splitEnv(notFoundEnvVar, paths);
-    TEST_ASSERT_FALSE(result);
-    TEST_ASSERT_TRUE(paths.empty());
+    CHECK_FALSE(result);
+    CHECK(paths.empty());
 }
 
-template <typename TPath>
-static void testFsExtension_(const std::string& testName)
+TEST_CASE("testFsExtension")
 {
-    using fs_path = TPath;
+    using fs_path = std::filesystem::path;
 
     // https://en.cppreference.com/w/cpp/filesystem/path/extension
 
     // "If the pathname is either . or .., ... then empty path is returned."
     const fs_path dot(".");
-    TEST_ASSERT_EQ("", dot.extension());
+    CHECK("" == dot.extension());
     const fs_path dotdot("..");
-    TEST_ASSERT_EQ("", dotdot.extension());
+    CHECK("" == dotdot.extension());
 
     // "If the first character in the filename is a period, that period is ignored
     // (a filename like '.profile' is not treated as an extension)"
     fs_path dotprofile("/path/to/.profile");
-    TEST_ASSERT_EQ("", dotprofile.extension());
+    CHECK("" == dotprofile.extension());
     dotprofile = ".profile";
-    TEST_ASSERT_EQ("", dotprofile.extension());
+    CHECK("" == dotprofile.extension());
     dotprofile = "/path/to/.profile.user";
-    TEST_ASSERT_EQ(".user", dotprofile.extension());
+    CHECK(".user" == dotprofile.extension());
     dotprofile = "/path.to/.profile.user";
-    TEST_ASSERT_EQ(".user", dotprofile.extension());
+    CHECK(".user" == dotprofile.extension());
     dotprofile = ".profile.user";
-    TEST_ASSERT_EQ(".user", dotprofile.extension());
+    CHECK(".user" == dotprofile.extension());
 
     fs_path filedottext("/path/to/file.txt");
-    TEST_ASSERT_EQ(".txt", filedottext.extension());
+    CHECK(".txt" == filedottext.extension());
     filedottext = "file.txt";
-    TEST_ASSERT_EQ(".txt", filedottext.extension());
+    CHECK(".txt" == filedottext.extension());
 
     // "If ... filename() does not contain the . character, then empty path is returned."
     filedottext = "/path/to/file";
-    TEST_ASSERT_EQ("", filedottext.extension());
+    CHECK("" == filedottext.extension());
     filedottext = "file";
-    TEST_ASSERT_EQ("", filedottext.extension());
+    CHECK("" == filedottext.extension());
     filedottext = "/path.to/file";
-    TEST_ASSERT_EQ("", filedottext.extension());
-}
-TEST_CASE(testFsExtension)
-{
-    testFsExtension_<std::filesystem::path>(testName);
-    testFsExtension_<std::filesystem::path>(testName);
-    #if CODA_OSS_lib_filesystem
-    testFsExtension_<std::filesystem::path>(testName);
-    #endif
+    CHECK("" == filedottext.extension());
+
 }
 
-template <typename TPath>
-static void testFsOutput_(const std::string& testName)
+TEST_CASE("testFsOutput")
 {
-    using fs_path = TPath;
-
-    const fs_path path("/path/to/file.txt");
+    const std::filesystem::path path("/path/to/file.txt");
     const std::string expected = "\"" + path.string() + "\"";
 
     std::stringstream ss;
     ss << path;
     const auto actual = ss.str();
-    TEST_ASSERT_EQ(expected, actual);
-}
-TEST_CASE(testFsOutput)
-{
-    testFsOutput_<std::filesystem::path>(testName);
-    testFsOutput_<std::filesystem::path>(testName);
-    #if CODA_OSS_lib_filesystem
-    testFsOutput_<std::filesystem::path>(testName);
-    #endif
+    CHECK(expected == actual);
+
 }
 
 static std::string f(bool& supported, std::vector<std::string>& frames)
@@ -278,18 +260,18 @@ static std::string h(bool& supported, std::vector<std::string>& frames)
 {
     return g(supported, frames);
 }
-TEST_CASE(testBacktrace)
+TEST_CASE("testBacktrace")
 {
     // These don't **have** to be the same; but it would be unusual for build scripts pass
     // different flags to these pieces ... and likely cause all kinds of weird problems.
-    TEST_ASSERT_EQ(sys::debug_build(), sys::debug);
+    CHECK(sys::debug_build() == sys::debug);
 
     bool supported;
     std::vector<std::string> frames;
     const auto result = h(supported, frames);
-    TEST_ASSERT_TRUE(!result.empty());
+    CHECK(!result.empty());
     const auto failed_pos = result.find(" failed.");
-    TEST_ASSERT_EQ(failed_pos, std::string::npos);
+    CHECK(failed_pos == std::string::npos);
 
 
     size_t expected = 0;
@@ -297,7 +279,7 @@ TEST_CASE(testBacktrace)
     auto version_sys_backtrace_ = version::sys::backtrace; // "Conditional expression is constant"
     if (version_sys_backtrace_ >= 20210216L)
     {
-        TEST_ASSERT_TRUE(supported);
+        CHECK(supported);
 
         #if _WIN32
         constexpr auto frames_size_RELEASE = 2;
@@ -317,86 +299,86 @@ TEST_CASE(testBacktrace)
     }
     else
     {
-        TEST_ASSERT_FALSE(supported);
+        CHECK_FALSE(supported);
     }
-    TEST_ASSERT_GREATER_EQ(frames.size(), expected);
+    CHECK(frames.size() >= expected);
 
     const auto msg = std::accumulate(frames.begin(), frames.end(), std::string());
     if (supported)
     {
-        TEST_ASSERT_EQ(result, msg);
+        CHECK(result == msg);
     }
     else
     {
-        TEST_ASSERT_TRUE(msg.empty());
+        CHECK(msg.empty());
     }
 }
 
-TEST_CASE(testSpecialEnvVars)
+TEST_CASE("testSpecialEnvVars")
 {
     const sys::OS os;
     const auto argv0 = os.getSpecialEnv("ARGV0");
-    TEST_ASSERT_FALSE(argv0.empty());
+    CHECK_FALSE(argv0.empty());
     auto result = os.getSpecialEnv("0"); // i.e., ${0)
-    TEST_ASSERT_FALSE(result.empty());
-    TEST_ASSERT_EQ(result, argv0);
+    CHECK_FALSE(result.empty());
+    CHECK(result == argv0);
     //const std::filesystem::path fsresult(result);
     //const std::filesystem::path this_file(__FILE__);
     //TEST_ASSERT_EQ(fsresult.stem(), this_file.stem());
 
     const auto pid = os.getSpecialEnv("PID");
-    TEST_ASSERT_FALSE(pid.empty());
+    CHECK_FALSE(pid.empty());
     result = os.getSpecialEnv("$"); // i.e., ${$}
-    TEST_ASSERT_FALSE(result.empty());
-    TEST_ASSERT_EQ(result, pid);
+    CHECK_FALSE(result.empty());
+    CHECK(result == pid);
     const auto strPid = std::to_string(os.getProcessId());
-    TEST_ASSERT_EQ(result, strPid);
+    CHECK(result == strPid);
 
     result = os.getSpecialEnv("PWD");
-    TEST_ASSERT_FALSE(result.empty());
+    CHECK_FALSE(result.empty());
 
     result = os.getSpecialEnv("USER");
-    TEST_ASSERT_FALSE(result.empty());
+    CHECK_FALSE(result.empty());
     const auto username = os.getSpecialEnv("USERNAME");
-    TEST_ASSERT_FALSE(result.empty());
-    TEST_ASSERT_EQ(username, result);
+    CHECK_FALSE(result.empty());
+    CHECK(username == result);
 
     result = os.getSpecialEnv("HOSTNAME");
-    TEST_ASSERT_FALSE(result.empty());
+    CHECK_FALSE(result.empty());
 
     result = os.getSpecialEnv("SECONDS");
-    TEST_ASSERT_FALSE(result.empty());
+    CHECK_FALSE(result.empty());
     const auto seconds = std::stoll(result);
-    TEST_ASSERT_GREATER_EQ(seconds, 0);
+    CHECK(seconds >= 0);
 
     const auto epochSeconds = sys::DateTime::getEpochSeconds();
     result = os.getSpecialEnv("EPOCHSECONDS");
-    TEST_ASSERT_FALSE(result.empty());
+    CHECK_FALSE(result.empty());
     const auto resultEpochSeconds = std::stoll(result);
-    TEST_ASSERT_GREATER_EQ(resultEpochSeconds, epochSeconds);
+    CHECK(resultEpochSeconds >= epochSeconds);
 
     result = os.getSpecialEnv("OSTYPE");
-    TEST_ASSERT_FALSE(result.empty());
+    CHECK_FALSE(result.empty());
 
     result = os.getSpecialEnv("Configuration");
-    TEST_ASSERT_FALSE(result.empty());
+    CHECK_FALSE(result.empty());
     result = os.getSpecialEnv("Platform");
-    TEST_ASSERT_FALSE(result.empty());
+    CHECK_FALSE(result.empty());
 }
 
-TEST_CASE(testFsFileSize)
+TEST_CASE("testFsFileSize")
 {
     const sys::OS os;
     {
         const std::filesystem::path argv0(os.getSpecialEnv("ARGV0"));
 	const int64_t size = static_cast<int64_t>(file_size(argv0));
-        TEST_ASSERT_GREATER(size, 0);
+        CHECK(size > 0);
     }
     {
         // We always have  std::filesystem, even if it's not used.
         const std::filesystem::path argv0(os.getSpecialEnv("ARGV0"));
         const int64_t size = static_cast<int64_t>(file_size(argv0));
-        TEST_ASSERT_GREATER(size, 0);
+        CHECK(size > 0);
     }
 }
 
@@ -418,10 +400,10 @@ static sys::File makeFile_()
     return sys::make_File("$HOME" / dot_bashrc);
 #endif
 }
-TEST_CASE(test_makeFile)
+TEST_CASE("test_makeFile")
 {
   auto file = makeFile_();
-  TEST_ASSERT_TRUE(file.isOpen());
+  CHECK(file.isOpen());
 }
 
 static FILE* sys_fopen()
@@ -444,19 +426,19 @@ static FILE* sys_fopen()
     return sys::fopen("$HOME" / dot_bashrc, mode);
 #endif
 }
-TEST_CASE(test_sys_fopen)
+TEST_CASE("test_sys_fopen")
 {
     auto fp = sys_fopen();
-    TEST_ASSERT_NOT_NULL(fp);
+    CHECK(fp != nullptr);
     fclose(fp);
 }
 
-TEST_CASE(test_sys_fopen_failure)
+TEST_CASE("test_sys_fopen_failure")
 {
     static const std::string mode("r");
     static const std::filesystem::path name("does not exist . txt");
     const auto fp = sys::fopen("$ENV_VAR_NOT_SET" / name, mode);
-    TEST_ASSERT_NULL(fp);
+    CHECK(fp == nullptr);
 }
 
 static int sys_open()
@@ -479,10 +461,10 @@ static int sys_open()
     return sys::open("$HOME" / dot_bashrc, flags);
 #endif
 }
-TEST_CASE(test_sys_open)
+TEST_CASE("test_sys_open")
 {
     auto fd = sys_open();
-    TEST_ASSERT(fd > -1);
+    CHECK(fd > -1);
     sys::close(fd);
 }
 
@@ -504,13 +486,13 @@ static std::ifstream make_ifstream_()
     return sys::make_ifstream("$HOME" / dot_bashrc);
 #endif
 }
-TEST_CASE(test_make_ifstream)
+TEST_CASE("test_make_ifstream")
 {
     const auto ifs = make_ifstream_();
-    TEST_ASSERT_TRUE(ifs.is_open());
+    CHECK(ifs.is_open());
 }
 
-TEST_CASE(test_SIMD_Instructions)
+TEST_CASE("test_SIMD_Instructions")
 {
     const sys::OS os;
     const auto simdInstructionSet = os.getSIMDInstructionSet();
@@ -518,24 +500,6 @@ TEST_CASE(test_SIMD_Instructions)
     const auto isSSE2 = simdInstructionSet == sys::SIMDInstructionSet::SSE2;
     const auto isAVX2 = simdInstructionSet == sys::SIMDInstructionSet::AVX2;
     const auto isAVX512F = simdInstructionSet == sys::SIMDInstructionSet::AVX512F;
-    TEST_ASSERT(isSSE2 || isAVX2 || isAVX512F);
+    CHECK((isSSE2 || isAVX2 || isAVX512F));
 }
 
-TEST_MAIN(
-    //sys::AbstractOS::setArgvPathname(argv[0]);
-    TEST_CHECK(testRecursiveRemove);
-    TEST_CHECK(testForcefulMove);
-    TEST_CHECK(testEnvVariables);
-    TEST_CHECK(testSplitEnv);
-    TEST_CHECK(testFsExtension);
-    TEST_CHECK(testFsOutput);
-    TEST_CHECK(testBacktrace);
-    TEST_CHECK(testSpecialEnvVars);
-    TEST_CHECK(testFsFileSize);
-    TEST_CHECK(test_makeFile);
-    TEST_CHECK(test_sys_fopen);
-    TEST_CHECK(test_sys_fopen_failure);
-    TEST_CHECK(test_sys_open);
-    TEST_CHECK(test_make_ifstream);
-    TEST_CHECK(test_SIMD_Instructions);
-    )

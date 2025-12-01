@@ -20,7 +20,7 @@
  *
  */
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 #include <cstddef>
 
@@ -29,7 +29,7 @@
 #include <avx/extractf.h>
 #include <config/compiler_extensions.h>
 
-TEST_CASE(extractf)
+TEST_CASE("extractf")
 {
   /*
     #if defined(__GNUC__)
@@ -49,10 +49,10 @@ TEST_CASE(extractf)
     val = avx::mm256_extractf(ymm, 7);
     if (val) {} // suppress compiler warning about unused "val"
   */
-    TEST_SUCCESS;
+    SKIP();
 }
 
-TEST_CASE(test_getSIMDInstructionSet)
+TEST_CASE("test_getSIMDInstructionSet")
 {
     // This is the reverse of getSIMDInstructionSet(): it uses the macros to generate a value.
     constexpr auto simdInstructionSet = sys::getSIMDInstructionSet();
@@ -77,38 +77,33 @@ TEST_CASE(test_getSIMDInstructionSet)
     {
     case sys::SIMDInstructionSet::SSE2:
     {
-        TEST_ASSERT(simdInstructionSet == sys::SIMDInstructionSet::SSE2);
+        CHECK(simdInstructionSet == sys::SIMDInstructionSet::SSE2);
         break;
     }
     case sys::SIMDInstructionSet::AVX2:
     {
-        TEST_ASSERT(simdInstructionSet == sys::SIMDInstructionSet::AVX2);
+        CHECK(simdInstructionSet == sys::SIMDInstructionSet::AVX2);
         break;
     }
     case sys::SIMDInstructionSet::AVX512F:
     {
-        TEST_ASSERT(simdInstructionSet == sys::SIMDInstructionSet::AVX512F);
+        CHECK(simdInstructionSet == sys::SIMDInstructionSet::AVX512F);
         break;
     }
     case sys::SIMDInstructionSet::Disabled:
     {
-        TEST_ASSERT(simdInstructionSet == sys::SIMDInstructionSet::Disabled);
+        CHECK(simdInstructionSet == sys::SIMDInstructionSet::Disabled);
         break;
     }
     case sys::SIMDInstructionSet::Unknown:
     {
-        TEST_ASSERT(simdInstructionSet == sys::SIMDInstructionSet::Unknown);
+        CHECK(simdInstructionSet == sys::SIMDInstructionSet::Unknown);
         break;
     }
     default:
     {
-        TEST_FAIL;
+        FAIL();
     }
     }
     CODA_OSS_disable_warning_pop
 }
-
-TEST_MAIN(
-    TEST_CHECK(extractf);
-    TEST_CHECK(test_getSIMDInstructionSet);
-)

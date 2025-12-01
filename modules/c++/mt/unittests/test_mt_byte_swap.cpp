@@ -20,7 +20,7 @@
  *
  */
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 #include <stdint.h>
 
@@ -57,7 +57,7 @@ static const std::vector<uint64_t>& make_origValues()
     return retval;
 }
 
-TEST_CASE(testThreadedByteSwap)
+TEST_CASE("testThreadedByteSwap")
 {
     const auto& origValues = make_origValues();
 
@@ -73,11 +73,11 @@ TEST_CASE(testThreadedByteSwap)
 
     for (size_t ii = 0; ii < NUM_PIXELS; ++ii)  // Everything should match
     {
-        TEST_ASSERT_EQ(values1[ii], swappedValues2[ii]);
+        CHECK(values1[ii] == swappedValues2[ii]);
     }
 }
 
-TEST_CASE(test_transform_ByteSwap)
+TEST_CASE("test_transform_ByteSwap")
 {
     const auto& origValues = make_origValues();
 
@@ -99,11 +99,11 @@ TEST_CASE(test_transform_ByteSwap)
     std::transform(origValues.begin(), origValues.end(), actual.begin(), byteSwap);
     for (size_t ii = 0; ii < NUM_PIXELS; ++ii)     // Everything should match
     {
-        TEST_ASSERT_EQ(expected[ii], actual[ii]);
+        CHECK(expected[ii] == actual[ii]);
     }
 }
 
-TEST_CASE(test_Transform_par_ByteSwap)
+TEST_CASE("test_Transform_par_ByteSwap")
 {
     const auto& origValues = make_origValues();
 
@@ -128,13 +128,6 @@ TEST_CASE(test_Transform_par_ByteSwap)
     mt::Transform_par(origValues.begin(), origValues.end(), actual.begin(), byteSwap, settings);
     for (size_t ii = 0; ii < NUM_PIXELS; ++ii)  // Everything should match
     {
-        TEST_ASSERT_EQ(expected[ii], actual[ii]);
+        CHECK(expected[ii] == actual[ii]);
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testThreadedByteSwap);
-    TEST_CHECK(test_transform_ByteSwap);
-    TEST_CHECK(test_Transform_par_ByteSwap);
-    )
-     

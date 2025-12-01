@@ -22,7 +22,7 @@
 #include <mt/BalancedRunnable1D.h>
 #include <sys/OS.h>
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 class IncOp
 {
@@ -41,7 +41,7 @@ private:
     std::vector<size_t>& mGlobalWorkDone;
 };
 
-TEST_CASE(BalancedRunnable1DTestWorkDone)
+TEST_CASE("BalancedRunnable1DTestWorkDone")
 {
     const size_t numElements = 100000;
     const size_t initValue = 0;
@@ -53,17 +53,13 @@ TEST_CASE(BalancedRunnable1DTestWorkDone)
 
         mt::runBalanced1D(numElements, numThreads, op);
 
-        TEST_ASSERT_EQ(workVec.size(), numElements);
+        CHECK(workVec.size() == numElements);
 
         const size_t targetValue = 1;
         for (size_t jj = 0; jj < numElements; ++jj)
         {
             const size_t value = workVec[jj];
-            TEST_ASSERT_EQ(value, targetValue);
+            CHECK(value == targetValue);
         }
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(BalancedRunnable1DTestWorkDone);
-)
