@@ -21,16 +21,12 @@ elseif (UNIX)
     add_compile_options(-w) # "Inhibit all warning messages"
 endif()
 
-#add_subdirectory("curl") # this is handled in coda_find_system_dependencies
-#add_subdirectory("numpy") # this is handled in coda_find_system_dependencies
 if(NOT CONAN_PACKAGE_NAME)
     set(XML_HOME "" CACHE PATH "path to XML library installation")
     if(ENABLE_XML OR XML_HOME)
         add_subdirectory("xml")
     endif()
 endif()
-
-#add_subdirectory("gsl") # nothing to do
 
 if(NOT CONAN_PACKAGE_NAME)
     set(J2K_HOME "" CACHE PATH "path to J2K installation")

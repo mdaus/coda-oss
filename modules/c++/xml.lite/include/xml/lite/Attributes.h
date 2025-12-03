@@ -32,7 +32,7 @@
 #include "sys/Conf.h"
 #include "except/Exception.h"
 #include "str/Convert.h"
-#include "gsl/gsl.h"
+#include "gsl/gsl"
 
 #include "xml/lite/QName.h"
 /*!

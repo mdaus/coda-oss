@@ -33,7 +33,7 @@
 #include <config/compiler_extensions.h>
 #include <import/str.h>
 #include <str/Encoding.h>
-#include <gsl/gsl.h>
+#include <gsl/gsl>
 #include <sys/OS.h>
 
 #include <catch2/catch_test_macros.hpp>

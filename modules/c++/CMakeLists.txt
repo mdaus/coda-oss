@@ -66,7 +66,6 @@ add_subdirectory("tiff")
 add_subdirectory("polygon")
 add_subdirectory("math.linear")
 add_subdirectory("math.poly")
-add_subdirectory("gsl")
 
 if(ENABLE_NLOHMANN)
     add_subdirectory("coda_oss.json")

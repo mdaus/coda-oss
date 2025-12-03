@@ -29,7 +29,7 @@
 #include <cstddef>
 
 #include <import/sys.h>
-#include <import/gsl.h>
+#include <gsl/gsl>
 #include <mem/ScopedArray.h>
 #include <mem/SharedPtr.h>
 #include <math/linear/MatrixMxN.h>

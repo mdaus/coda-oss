@@ -30,7 +30,7 @@
 #include <limits>
 #include <array>
 
-#include "gsl/gsl.h"
+#include "gsl/gsl"
 
 namespace types
 {

@@ -26,7 +26,7 @@
 
 #include <sstream>
 
-#include <import/gsl.h>
+#include <gsl/gsl>
 
 #include "config/Exports.h"
 

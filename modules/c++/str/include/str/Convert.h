@@ -40,7 +40,7 @@
 #include <cstddef>
 #include "types/Complex.h"
 #include "import/except.h"
-#include "gsl/gsl.h"
+#include "gsl/gsl"
 #include "str/Encoding.h"
 
 namespace str

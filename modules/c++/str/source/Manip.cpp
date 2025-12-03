@@ -34,7 +34,7 @@
 #include <cctype>
 #include <array>
 
-#include "gsl/gsl.h"
+#include "gsl/gsl"
 
 #include "str/Convert.h"
 #include "str/Encoding.h"

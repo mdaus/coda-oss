@@ -45,22 +45,9 @@ if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
     write_basic_package_version_file(${version_file} VERSION ${CMAKE_PROJECT_VERSION} COMPATIBILITY SameMajorVersion)
     install(FILES ${version_file} DESTINATION "lib/cmake")
 
-    if(CODA_BUILD_TESTS)
-        # Catch2 for unittests
-        find_package(Catch2 3 QUIET)
-        if(NOT catch2_FOUND)
-            message(STATUS "Couldn't find Catch2 installed. Pulling from Github")
-            include(FetchContent)
+    # As opposed to drivers, these are "required" third-party packages
+    add_subdirectory(externals)
 
-            FetchContent_Declare(
-                Catch2
-                GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-                GIT_TAG v3.11.0
-            )
-            FetchContent_MakeAvailable(Catch2)
-        endif()
-    endif()
-    
 endif()
 
 add_subdirectory("modules")

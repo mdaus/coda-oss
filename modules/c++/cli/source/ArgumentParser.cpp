@@ -28,7 +28,7 @@
 
 #include <import/str.h>
 #include <import/mem.h>
-#include <gsl/gsl.h>
+#include <gsl/gsl>
 
 namespace
 {

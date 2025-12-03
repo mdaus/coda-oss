@@ -31,3 +31,5 @@ set(CODA-OSS_JARS_DIR @PACKAGE_JARS_DIR@ CACHE INTERNAL "path to CODA-OSS jars")
 if (@CODA_BUILD_TESTS@)
     find_dependency(Catch2)  
 endif()
+
+find_dependency(GSL)

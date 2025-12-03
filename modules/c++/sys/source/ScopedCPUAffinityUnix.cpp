@@ -26,7 +26,7 @@
 
 #include <sys/Conf.h>
 #include <except/Exception.h>
-#include <gsl/gsl.h>
+#include <gsl/gsl>
 
 #include <sys/ScopedCPUAffinityUnix.h>
 

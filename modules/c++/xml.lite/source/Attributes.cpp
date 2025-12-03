@@ -21,7 +21,7 @@
  */
 
 #include "xml/lite/Attributes.h"
-#include "gsl/gsl.h"
+#include "gsl/gsl"
 
 xml::lite::AttributeNode::AttributeNode(const xml::lite::AttributeNode& node)
 {

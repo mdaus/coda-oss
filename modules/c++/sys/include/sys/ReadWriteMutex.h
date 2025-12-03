@@ -24,7 +24,7 @@
 #ifndef __SYS_READ_WRITE_MUTEX_INTERFACE_H__
 #define __SYS_READ_WRITE_MUTEX_INTERFACE_H__
 
-#include <import/gsl.h>
+#include <gsl/gsl>
 
 #if !defined(__APPLE_CC__)
 

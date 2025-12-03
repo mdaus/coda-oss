@@ -23,7 +23,7 @@
 #ifndef __ZIP_ZIP_FILE_H__
 #define __ZIP_ZIP_FILE_H__
 
-#include "gsl/gsl.h"
+#include "gsl/gsl"
 
 #include "zip/ZipEntry.h"
 

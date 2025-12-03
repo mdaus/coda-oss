@@ -34,7 +34,7 @@
 #include <iterator>
 #include <string>
 
-#include "gsl/gsl.h"
+#include "gsl/gsl"
 #include "config/compiler_extensions.h"
 
 #include "str/Manip.h"
