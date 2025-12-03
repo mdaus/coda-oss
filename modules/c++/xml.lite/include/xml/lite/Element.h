@@ -87,7 +87,6 @@ struct CODA_OSS_API Element  // SOAPElement derives :-(
     static std::unique_ptr<Element> create(const std::string& qname, const std::string& uri = "", const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const std::u8string&);
-    #endif // SWIG
     
     //! Destructor
     virtual ~Element() noexcept(false)

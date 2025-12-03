@@ -104,7 +104,6 @@ struct CODA_OSS_API Document  // SOAPDocument derives :-(
     virtual Element *createElement(const std::string & qname, const std::string & uri, std::string characterData = "");
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const std::string& characterData) const;
     std::unique_ptr<Element> createElement(const xml::lite::QName&, const std::u8string& characterData) const;
-    #endif // SWIG
 
     /*!
      * Blanket destructor.  This thing deletes everything
