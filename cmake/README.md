@@ -74,17 +74,18 @@ These options may be passed in the cmake configure step as `-DOPTION_NAME="optio
 |CODA_BUILD_TESTS| ON      |build tests if on|
 |CODA_INSTALL_TESTS| ON      |install tests if on|
 |CODA_PARTIAL_INSTALL|OFF|make the install target not depend on all defined targets, only the targets which have already been built will be installed; cmake/CodaBuild.cmake for further information and caveats|
+|coda-oss_AUTO_UNITTEST|OFF|Run unittests during the build step when a library is compiled|
 |MT_DEFAULT_PINNING|OFF|use affinity-based CPU pinning by default in MT|
 |ENABLE_JARS|ON|include jars with the install|
-|ENABLE_JPEG|ON|build libjpeg driver and modules depending on it|
-|ENABLE_J2K|ON|build openjpeg (jpeg2000) driver and modules depending on it|
-|ENABLE_PCRE|ON|build PCRE (PERL Compatible Regular Expressions) library and modules dependent on it|
-|ENABLE_UUID|ON|build uuid library and modules dependent on it|
-|ENABLE_ZIP|ON|build zlib and modules dependent on it|
 |ENABLE_NLOHMANN|ON|enable `nlohmann` json and modules dependent on it|
+|ENABLE_JPEG|ON|build libjpeg driver and modules depending on it|
 |JPEG_HOME||path to existing libjpeg installation; if not provided, it will be built from source (implies ENABLE_JPEG=ON)|
+|ENABLE_J2K|ON|build openjpeg (jpeg2000) driver and modules depending on it|
 |J2K_HOME||path to existing openjpeg installation; if not provided, it will be built from source (implies ENABLE_J2K=ON)|
+|ENABLE_PCRE|ON|build PCRE (PERL Compatible Regular Expressions) library and modules dependent on it|
 |PCRE_HOME||path to existing pcre installation; if not provided, it will be built from source (implies ENABLE_PCRE=ON)|
-|XML_HOME||path to existing Xerces installation; if not provided, it will be built from source|
+|ENABLE_UUID|ON|build uuid library and modules dependent on it|
 |UUID_HOME||path to existing uuid library installation; if not provided, it will be built from source (Linux only)|
+|ENABLE_ZIP|ON|build zlib and modules dependent on it|
 |ZIP_HOME||path to existing zlib installation; if not provided, it will be built from source|
+|XML_HOME||path to existing Xerces installation; if not provided, it will be built from source|

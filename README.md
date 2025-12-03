@@ -23,7 +23,7 @@ mkdir build
 cd build
 
 # configure
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=[install path]
+cmake .. -DCMAKE_INSTALL_PREFIX=[install path]
 
 # build and install in parallel
 cmake --build . -t install -j
@@ -43,3 +43,4 @@ To print all available options (accessible via `cmake -D<option>=<val>`)
 mkdir build && cd build
 cmake .. -LH
 ```
+See the [CMake README](cmake/README.md) for some notable options
