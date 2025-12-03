@@ -1,9 +1,12 @@
 ﻿# coda-oss Release Notes
 
-## Release 2.0.0 (WIP)
-- Require C++23
-- Remove std module
-
+## Release [2.0.0](https://github.com/mdaus/coda-oss/releases/tag/2.0.0) (WIP)
+- Removed the following modules.
+    - `coda_oss`
+    - `std`
+    - `hdf5.lite`
+- Require C++23 (enabled removing the `std` module).
+- Removed Visual Studio solution files and associated code.
 
 ## [Release 2024-03-18](https://github.com/mdaus/coda-oss/releases/tag/2024-03-18)
 * Update to [HighFive 2.8.0](https://github.com/BlueBrain/HighFive/releases/tag/v2.8.0).
