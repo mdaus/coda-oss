@@ -74,7 +74,6 @@ These options may be passed in the cmake configure step as `-DOPTION_NAME="optio
 |CODA_BUILD_TESTS| ON      |build tests if on|
 |CODA_INSTALL_TESTS| ON      |install tests if on|
 |CODA_PARTIAL_INSTALL|OFF|make the install target not depend on all defined targets, only the targets which have already been built will be installed; cmake/CodaBuild.cmake for further information and caveats|
-|coda-oss_AUTO_UNITTEST|OFF|Run unittests during the build step when a library is compiled|
 |MT_DEFAULT_PINNING|OFF|use affinity-based CPU pinning by default in MT|
 |ENABLE_JARS|ON|include jars with the install|
 |ENABLE_NLOHMANN|ON|enable `nlohmann` json and modules dependent on it|

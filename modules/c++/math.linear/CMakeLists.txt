@@ -3,7 +3,7 @@ set(MODULE_NAME math.linear)
 coda_add_module(
     ${MODULE_NAME}
     VERSION 0.2
-    DEPS sys-c++ mem-c++ types-c++ Microsoft.GSL::GSL)
+    DEPS sys-c++ mem-c++ types-c++ GSL)
 
 coda_add_tests(
     MODULE_NAME ${MODULE_NAME}

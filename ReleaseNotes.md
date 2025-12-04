@@ -1,12 +1,16 @@
 ﻿# coda-oss Release Notes
 
-## Release [2.0.0](https://github.com/mdaus/coda-oss/releases/tag/2.0.0) (WIP)
-- Removed the following modules.
-    - `coda_oss`
-    - `std`
-    - `hdf5.lite`
+## Release 2.0.0 (WIP)
+- Removed:
+    - `coda_oss-c++` module
+    - `gsl-c++` module
+    - `std-c++` module
+    - `hdf5.lite-c++` module
+    - HDF5 driver code ([HDF5](https://github.com/HDFGroup/hdf5) and [HighFive](https://github.com/highfive-devs/highfive))
+    - Visual Studio solution and project files
 - Require C++23 (enabled removing the `std` module).
-- Removed Visual Studio solution files and associated code.
+- Use [GSL version 4.2](https://github.com/microsoft/GSL/tree/v4.2.0) instead of internal module
+- Use [Catch2](https://github.com/catchorg/Catch2/tree/v3.11.0) for unittests
 
 ## [Release 2024-03-18](https://github.com/mdaus/coda-oss/releases/tag/2024-03-18)
 * Update to [HighFive 2.8.0](https://github.com/BlueBrain/HighFive/releases/tag/v2.8.0).

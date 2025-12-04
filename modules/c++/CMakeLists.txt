@@ -33,8 +33,7 @@ elseif (UNIX)
     add_compile_options(-Wno-array-bounds) # TODO: fix the code!
     add_compile_options(-Wno-maybe-uninitialized) # TODO: fix the code!
 
-    # Need a newer compiler than GCC 9
-    #add_compile_options(-Wnrvo)
+    # add_compile_options(-Wnrvo)
 endif()
 
 # common configuration checks, used by config and sys modules
