@@ -23,11 +23,9 @@
 //#include "/data2/u/muller/coda-oss/modules/c++/math.poly/include/math/poly/OneD.h"
 //#include "/data2/u/muller/coda-oss/modules/c++/math.linear/include/math/linear/VectorN.h"
 #include <math/poly/OneD.h>
-#include <TestCase.h>
+#include <catch2/catch_test_macros.hpp>
 
-namespace
-{
-TEST_CASE(testInt)
+TEST_CASE("testInt")
 {
     math::poly::OneD<int> poly(2);
     poly[0] = 3;
@@ -35,19 +33,19 @@ TEST_CASE(testInt)
     poly[2] = 5;
 
     int integral = poly.integrate(0,1);
-    TEST_ASSERT_EQ(integral, 6);
+    CHECK(integral == 6);
 
     math::poly::OneD<int> derivative = poly.derivative();
-    TEST_ASSERT_EQ(derivative[0], 4);
-    TEST_ASSERT_EQ(derivative[1], 10);
+    CHECK(derivative[0] == 4);
+    CHECK(derivative[1] == 10);
 
     poly[2] = 0;
     poly = poly.truncateToNonZeros();
     const auto order = poly.order();
-    TEST_ASSERT_EQ(order, static_cast<size_t>(1));
+    CHECK(order == static_cast<size_t>(1));
 }
 
-TEST_CASE(testDouble)
+TEST_CASE("testDouble")
 {
     math::poly::OneD<double> poly(2);
     poly[0] = 3.1;
@@ -55,19 +53,19 @@ TEST_CASE(testDouble)
     poly[2] = 5.3;
 
     double integral = poly.integrate(0,1);
-    TEST_ASSERT_EQ(integral, 209.0/30.0);
+    CHECK(integral == 209.0/30.0);
 
     math::poly::OneD<double> derivative = poly.derivative();
-    TEST_ASSERT_EQ(derivative[0], 4.2);
-    TEST_ASSERT_EQ(derivative[1], 10.6);
+    CHECK(derivative[0] == 4.2);
+    CHECK(derivative[1] == 10.6);
 
     poly[2] = 0;
     poly = poly.truncateToNonZeros();
     const auto order = poly.order();
-    TEST_ASSERT_EQ(order, static_cast<size_t>(1));
+    CHECK(order == static_cast<size_t>(1));
 }
 
-TEST_CASE(testVector3)
+TEST_CASE("testVector3")
 {
     math::poly::OneD< math::linear::VectorN< 3, double > > poly(2);
     math::linear::VectorN< 3, double >& polyCoeffs0 = poly[0];
@@ -84,33 +82,24 @@ TEST_CASE(testVector3)
     polyCoeffs2[2] = 8.0;
 
     math::linear::VectorN< 3, double > integral = poly.integrate(0,1);
-    TEST_ASSERT_EQ(integral[0], 3.5);
-    TEST_ASSERT_EQ(integral[1], 16.0/3.0);
-    TEST_ASSERT_EQ(integral[2], 7.166666666666666);
+    CHECK(integral[0] == 3.5);
+    CHECK(integral[1] == 16.0/3.0);
+    CHECK(integral[2] == 7.166666666666666);
 
     math::poly::OneD< math::linear::VectorN< 3, double > > derivative = poly.derivative();
     math::linear::VectorN< 3, double >& derivativeCoeffs0 = derivative[0];
     math::linear::VectorN< 3, double >& derivativeCoeffs1 = derivative[1];
-    TEST_ASSERT_EQ(derivativeCoeffs0[0], 3);
-    TEST_ASSERT_EQ(derivativeCoeffs0[1], 4);
-    TEST_ASSERT_EQ(derivativeCoeffs0[2], 5);
-    TEST_ASSERT_EQ(derivativeCoeffs1[0], 12);
-    TEST_ASSERT_EQ(derivativeCoeffs1[1], 14);
-    TEST_ASSERT_EQ(derivativeCoeffs1[2], 16);
+    CHECK(derivativeCoeffs0[0] == 3);
+    CHECK(derivativeCoeffs0[1] == 4);
+    CHECK(derivativeCoeffs0[2] == 5);
+    CHECK(derivativeCoeffs1[0] == 12);
+    CHECK(derivativeCoeffs1[1] == 14);
+    CHECK(derivativeCoeffs1[2] == 16);
 
     polyCoeffs2[0] = 0.0;
     polyCoeffs2[1] = 0.0;
     polyCoeffs2[2] = 0.0;
     poly = poly.truncateToNonZeros();
     const auto order = poly.order();
-    TEST_ASSERT_EQ(order, static_cast<size_t>(1));
-}
-}
-
-int main()
-{
-    TEST_CHECK(testInt);
-    TEST_CHECK(testDouble);
-    TEST_CHECK(testVector3);
-    return 0;
+    CHECK(order == static_cast<size_t>(1));
 }

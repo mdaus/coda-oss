@@ -23,7 +23,7 @@
 #ifndef __IO_INPUT_STREAM_H__
 #define __IO_INPUT_STREAM_H__
 
-#include "coda_oss/span.h"
+#include <span>
 
 #include "config/Exports.h"
 #include "sys/Dbg.h"
@@ -89,7 +89,7 @@ struct CODA_OSS_API InputStream
                       size_t len,
                       bool verifyFullRead = false);
     template<typename T>
-    sys::SSize_T read(coda_oss::span<T> buffer, bool verifyFullRead = false)
+    sys::SSize_T read(std::span<T> buffer, bool verifyFullRead = false)
     {
         return read(buffer.data(), buffer.size_bytes(), verifyFullRead);
     }

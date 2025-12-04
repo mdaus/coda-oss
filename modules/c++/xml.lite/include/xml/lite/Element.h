@@ -27,7 +27,7 @@
 #include <memory>
 #include <string>
 #include <new> // std::nothrow_t
-#include <coda_oss/string.h>
+#include <string>
 #include <tuple>
 
 #include <config/Exports.h>
@@ -79,16 +79,14 @@ struct CODA_OSS_API Element  // SOAPElement derives :-(
     {
         setCharacterData(characterData);
     }
-    Element(const xml::lite::QName& qname, const coda_oss::u8string& characterData) : mName(qname)
+    Element(const xml::lite::QName& qname, const std::u8string& characterData) : mName(qname)
     {
         setCharacterData(characterData);
     }
 
-    #ifndef SWIG // SWIG doesn't like std::unique_ptr
     static std::unique_ptr<Element> create(const std::string& qname, const std::string& uri = "", const std::string& characterData = "");
     static std::unique_ptr<Element> create(const xml::lite::QName&, const std::string& characterData = "");
-    static std::unique_ptr<Element> create(const xml::lite::QName&, const coda_oss::u8string&);
-    #endif // SWIG
+    static std::unique_ptr<Element> create(const xml::lite::QName&, const std::u8string&);
     
     //! Destructor
     virtual ~Element() noexcept(false)
@@ -100,15 +98,8 @@ struct CODA_OSS_API Element  // SOAPElement derives :-(
     void destroyChildren();
 
     // use clone() to duplicate an Element
-    #if !(defined(SWIG) || defined(SWIGPYTHON) || defined(HAVE_PYTHON_H))  // SWIG needs these
-    //private: // encoded as part of the C++ name mangling by some compilers
-    #endif
     Element(const Element&);
     Element& operator=(const Element&);
-    #if !(defined(SWIG) || defined(SWIGPYTHON) || defined(HAVE_PYTHON_H))
-    public:
-    #endif
-
     Element(Element&&) = default;
     Element& operator=(Element&&) = default;
 
@@ -319,10 +310,10 @@ struct CODA_OSS_API Element  // SOAPElement derives :-(
      *  \return the charater data
      */
     std::string getCharacterData() const;
-    const coda_oss::u8string& getCharacterData(coda_oss::u8string& result) const;
-    //explicit operator coda_oss::u8string() const
+    const std::u8string& getCharacterData(std::u8string& result) const;
+    //explicit operator std::u8string() const
     //{
-    //    coda_oss::u8string result;
+    //    std::u8string result;
     //    std::ignore = getCharacterData(result); // result will be copy-elided
     //    return result;
     //}
@@ -334,7 +325,7 @@ struct CODA_OSS_API Element  // SOAPElement derives :-(
     void setCharacterData(const std::string&);
     Element& operator=(const std::string&);  // setCharacterData()
     Element& operator=(const char*);  // setCharacterData()
-    void setCharacterData(coda_oss::u8string s)
+    void setCharacterData(std::u8string s)
     {
         // See Item #41 in "Effective Modern C++" by Scott Meyers.
         // std::basic_string<T> is "cheap to move" and "always copied"
@@ -437,9 +428,7 @@ struct CODA_OSS_API Element  // SOAPElement derives :-(
      *  Adds a child element to this element
      *  \param node the child element to add
      */
-    #ifndef SWIG // SWIG doesn't like std::unique_ptr
     virtual Element& addChild(std::unique_ptr<Element>&& node);
-    #endif // SWIG
 
     /*!
      *  Returns all of the children of this element
@@ -496,13 +485,10 @@ private:
     Element* mParent = nullptr;
     //! The attributes for this element
     xml::lite::Attributes mAttributes;
-    coda_oss::u8string mCharacterData;
+    std::u8string mCharacterData;
 };
 
 CODA_OSS_API Element& add(const xml::lite::QName&, const std::string& value, Element& parent);
-
-#ifndef SWIG
-// The (old) version of SWIG we're using doesn't like certain C++11 features.
 
 /*!
  *  Returns the character data of this element converted to the specified type.
@@ -573,29 +559,27 @@ inline Element& addNewElement(const xml::lite::QName& name, const T& value, Elem
 }
 
 template <typename T, typename ToString>
-inline Element& addNewElement(const xml::lite::QName& name, const coda_oss::optional<T>& v, Element& parent,
+inline Element& addNewElement(const xml::lite::QName& name, const std::optional<T>& v, Element& parent,
     ToString toString)
 {
     return addNewElement(name, v.value(), parent, toString);
 }
 template<typename T>
-inline Element& addNewElement(const xml::lite::QName& name, const coda_oss::optional<T>& v, Element& parent)
+inline Element& addNewElement(const xml::lite::QName& name, const std::optional<T>& v, Element& parent)
 {
     return addNewElement(name, v.value(), parent);
 }
 template <typename T, typename ToString>
-inline Element* addNewOptionalElement(const xml::lite::QName& name, const coda_oss::optional<T>& v, Element& parent,
+inline Element* addNewOptionalElement(const xml::lite::QName& name, const std::optional<T>& v, Element& parent,
         ToString toString)
 {
     return v.has_value() ? &addNewElement(name, v, parent, toString) : nullptr;
 }
 template<typename T>
-inline Element* addNewOptionalElement(const xml::lite::QName& name, const coda_oss::optional<T>& v, Element& parent)
+inline Element* addNewOptionalElement(const xml::lite::QName& name, const std::optional<T>& v, Element& parent)
 {
     return v.has_value() ? &addNewElement(name, v, parent) : nullptr;
 }
-
-#endif // SWIG
 
 
 CODA_OSS_API Element& setChild(Element&, std::unique_ptr<Element>&&);  // destroyChildren() + addChild()
@@ -606,14 +590,14 @@ CODA_OSS_API Element& addChild(Element&, const std::string& qname);
 CODA_OSS_API void operator+=(Element&, const std::string& qname);  // addChild()
 CODA_OSS_API Element& addChild(Element&, const xml::lite::QName&); // there is also a QName in the xerces namespace
 CODA_OSS_API void operator+=(Element&, const xml::lite::QName&);  // addChild()
-CODA_OSS_API Element& addChild(Element&, const std::string& qname, const coda_oss::u8string& characterData);
+CODA_OSS_API Element& addChild(Element&, const std::string& qname, const std::u8string& characterData);
 Element& addChild(Element&, const std::string&, const std::string&) = delete; // NO, order matters!
-CODA_OSS_API Element& addChild(Element&, const xml::lite::QName&, const coda_oss::u8string& characterData);
+CODA_OSS_API Element& addChild(Element&, const xml::lite::QName&, const std::u8string& characterData);
 CODA_OSS_API Element& addChild(Element&, const xml::lite::QName&, const std::string& characterData);
 CODA_OSS_API Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&);
-CODA_OSS_API Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&, const coda_oss::u8string& characterData);
+CODA_OSS_API Element& addChild(Element&, const std::string& qname, const xml::lite::Uri&, const std::u8string& characterData);
 
-CODA_OSS_API coda_oss::u8string getCharacterData(const Element&);
+CODA_OSS_API std::u8string getCharacterData(const Element&);
 
 CODA_OSS_API xml::lite::AttributeNode& addAttribute(Element&, const xml::lite::AttributeNode&);
 CODA_OSS_API void operator+=(Element&, const xml::lite::AttributeNode&);  // addAttribute()

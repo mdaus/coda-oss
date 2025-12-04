@@ -25,7 +25,7 @@
 
 #include <stdexcept>
 #include <tuple>
-#include <std/string>
+#include <string>
 
 #include <import/str.h>
 #include <import/mem.h>
@@ -41,7 +41,7 @@ std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const QName& qnam
 {
     return create(qname.getName(), qname.getUri().value, characterData);
 }
-std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const QName& qname, const coda_oss::u8string& characterData)
+std::unique_ptr<xml::lite::Element> xml::lite::Element::create(const QName& qname, const std::u8string& characterData)
 {
     return std::make_unique<Element>(qname,  characterData);
 }
@@ -261,14 +261,14 @@ std::string xml::lite::Element::getCharacterData() const
 {
     return str::to_native(mCharacterData);
 }
-const coda_oss::u8string& xml::lite::Element::getCharacterData(coda_oss::u8string& result) const
+const std::u8string& xml::lite::Element::getCharacterData(std::u8string& result) const
 {
     result = mCharacterData;
     return result;
 }
-coda_oss::u8string xml::lite::getCharacterData(const Element& e)
+std::u8string xml::lite::getCharacterData(const Element& e)
 {
-    coda_oss::u8string retval;
+    std::u8string retval;
     return e.getCharacterData(retval);
 }
 
@@ -491,7 +491,7 @@ void xml::lite::operator+=(Element& e, std::unique_ptr<xml::lite::Element>&& chi
     std::ignore = e.addChild(std::move(child));
 }
 
-xml::lite::Element& xml::lite::addChild(Element& e, const std::string& qname, const Uri& uri, const coda_oss::u8string& characterData)
+xml::lite::Element& xml::lite::addChild(Element& e, const std::string& qname, const Uri& uri, const std::u8string& characterData)
 {
     return e.addChild(Element::create(QName(qname, uri), characterData));
 }
@@ -500,7 +500,7 @@ xml::lite::Element& xml::lite::addChild(Element& e, const std::string& qname, co
     return e.addChild(Element::create(QName(qname, uri)));
 }
 
-xml::lite::Element& xml::lite::addChild(Element& e, const QName& qname, const coda_oss::u8string& characterData)
+xml::lite::Element& xml::lite::addChild(Element& e, const QName& qname, const std::u8string& characterData)
 {
     return e.addChild(Element::create(qname, characterData));
 }
@@ -517,7 +517,7 @@ void xml::lite::operator+=(Element& e, const QName& qname)
     std::ignore = addChild(e, qname);
 }
 
-xml::lite::Element& xml::lite::addChild(Element& e, const std::string& qname, const coda_oss::u8string& characterData)
+xml::lite::Element& xml::lite::addChild(Element& e, const std::string& qname, const std::u8string& characterData)
 {
     return addChild(e, QName(qname), characterData);
 }

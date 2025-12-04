@@ -19,14 +19,14 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 #include <nlohmann/json.hpp>
 #include <coda_oss/json/Math.h>
 
 using json = nlohmann::json;
 
-TEST_CASE(TestVectorN)
+TEST_CASE("TestVectorN")
 {
     using VecI = math::linear::VectorN<2, int>;
     using VecD = math::linear::VectorN<3, double>;
@@ -38,18 +38,18 @@ TEST_CASE(TestVectorN)
     json expected = v0;
     json serialized = startVal0;
     auto deserialized0 = serialized.template get<VecI>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal0 == deserialized0);
+    CHECK(serialized == expected);
+    CHECK(startVal0 == deserialized0);
     
     std::vector<double> v1 = {10., 20., 30.};
     VecD startVal1(v1);
     expected = v1;
     serialized = startVal1;
     auto deserialized1 = serialized.template get<VecD>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal1 == deserialized1);
+    CHECK(serialized == expected);
+    CHECK(startVal1 == deserialized1);
 }
-TEST_CASE(TestMatrixMxN)
+TEST_CASE("TestMatrixMxN")
 {
     using TwoXTwo = math::linear::MatrixMxN<2, 2, int>;
     using ThreeXTwo = math::linear::MatrixMxN<3, 2, int>;
@@ -59,24 +59,24 @@ TEST_CASE(TestMatrixMxN)
     json expected = std::vector<std::vector<int>>{{0, 1}, {2, 3}};
     json serialized = startVal0;
     auto deserialized0 = serialized.template get<TwoXTwo>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal0 == deserialized0);
+    CHECK(serialized == expected);
+    CHECK(startVal0 == deserialized0);
 
     ThreeXTwo startVal1({0, 1, 2, 3, 4, 5});
     expected = std::vector<std::vector<int>>{{0, 1}, {2, 3}, {4, 5}};
     serialized = startVal1;
     auto deserialized1 = serialized.template get<ThreeXTwo>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal1 == deserialized1);
+    CHECK(serialized == expected);
+    CHECK(startVal1 == deserialized1);
 
     TwoXThree startVal2({0., 1., 2., 3., 4., 5.});
     expected = std::vector<std::vector<double>>{{0., 1., 2.}, {3., 4., 5.}}; 
     serialized = startVal2;
     auto deserialized2 = serialized.template get<TwoXThree>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal2 == deserialized2);
+    CHECK(serialized == expected);
+    CHECK(startVal2 == deserialized2);
 }
-TEST_CASE(TestPolyOneD)
+TEST_CASE("TestPolyOneD")
 {
     using OneD = math::poly::OneD<int>;
     std::vector<int> coeffs{0, 1, 2, 3};
@@ -84,10 +84,10 @@ TEST_CASE(TestPolyOneD)
     json serialized = startVal;
     json expected = coeffs;
     OneD deserialized = serialized.template get<OneD>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-TEST_CASE(TestPolyTwoD)
+TEST_CASE("TestPolyTwoD")
 {
     using OneD = math::poly::OneD<double>;
     using TwoD = math::poly::TwoD<double>;
@@ -99,10 +99,10 @@ TEST_CASE(TestPolyTwoD)
     json serialized = startVal;
     json expected = std::vector<std::vector<double>>{c0, c1};
     auto deserialized = serialized.template get<TwoD>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-TEST_CASE(TestPolyXYZ)
+TEST_CASE("TestPolyXYZ")
 {
     using XYZ = math::linear::VectorN<3>;
     using OneDXYZ = math::poly::OneD<XYZ>;
@@ -112,10 +112,10 @@ TEST_CASE(TestPolyXYZ)
     json serialized = startVal;
     json expected = {c0, c1};
     auto deserialized = serialized.template get<OneDXYZ>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-TEST_CASE(TestPolyFixed1D)
+TEST_CASE("TestPolyFixed1D")
 {
     using Fixed1D = math::poly::Fixed1D<3, int>;
     std::vector<int> coeffs{0, 1, 2, 3};
@@ -123,10 +123,10 @@ TEST_CASE(TestPolyFixed1D)
     json serialized = startVal;
     json expected = coeffs;
     Fixed1D deserialized = serialized.template get<Fixed1D>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-TEST_CASE(TestPolyFixed2D)
+TEST_CASE("TestPolyFixed2D")
 {
     using Fixed1D = math::poly::Fixed1D<2, double>;
     using Fixed2D = math::poly::Fixed2D<1, 2, double>;
@@ -138,15 +138,8 @@ TEST_CASE(TestPolyFixed2D)
     json serialized = startVal;
     json expected = std::vector<std::vector<double>>{c0, c1};
     auto deserialized = serialized.template get<Fixed2D>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
 
 
-TEST_MAIN(
-    TEST_CHECK(TestVectorN);
-    TEST_CHECK(TestMatrixMxN);
-    TEST_CHECK(TestPolyOneD);
-    TEST_CHECK(TestPolyTwoD);
-    TEST_CHECK(TestPolyXYZ);
-)

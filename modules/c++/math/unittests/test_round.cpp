@@ -24,160 +24,156 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <TestCase.h>
 #include <math/Round.h>
 
-TEST_CASE(testFix)
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
+
+TEST_CASE("testFix")
 {
     float v1 = 12.3f;
     float expected1 = 12.0f;
     float actual1 = math::fix(v1);
-    TEST_ASSERT_ALMOST_EQ(actual1, expected1);
+    CHECK_THAT(actual1, Catch::Matchers::WithinRel(expected1, 0.0001L));
 
     float v2 = 42.9999f;
     float expected2 = 42.0f;
     float actual2 = math::fix(v2);
-    TEST_ASSERT_ALMOST_EQ(actual2, expected2);
+    CHECK_THAT(actual2, Catch::Matchers::WithinRel(expected2, 0.0001L));
 
     float v3 = -532.0101f;
     float expected3 = -532.0f;
     float actual3 = math::fix(v3);
-    TEST_ASSERT_ALMOST_EQ(actual3, expected3);
+    CHECK_THAT(actual3, Catch::Matchers::WithinRel(expected3, 0.0001L));
 
     float v4 = -23.9999f;
     float expected4 = -23.0f;
     float actual4 = math::fix(v4);
-    TEST_ASSERT_ALMOST_EQ(actual4, expected4);
+    CHECK_THAT(actual4, Catch::Matchers::WithinRel(expected4, 0.0001L));
 
     double v5 = 12.3;
     double expected5 = 12.0;
     double actual5 = math::fix(v5);
-    TEST_ASSERT_ALMOST_EQ(actual5, expected5);
+    CHECK_THAT(actual5, Catch::Matchers::WithinRel(expected5, 0.0001L));
 
     double v6 = 42.9999;
     double expected6 = 42.0;
     double actual6 = math::fix(v6);
-    TEST_ASSERT_ALMOST_EQ(actual6, expected6);
+    CHECK_THAT(actual6, Catch::Matchers::WithinRel(expected6, 0.0001L));
 
     double v7 = -532.0101;
     double expected7 = -532.0;
     double actual7 = math::fix(v7);
-    TEST_ASSERT_ALMOST_EQ(actual7, expected7);
+    CHECK_THAT(actual7, Catch::Matchers::WithinRel(expected7, 0.0001L));
 
     double v8 = -23.9999;
     double expected8 = -23.0;
     double actual8 = math::fix(v8);
-    TEST_ASSERT_ALMOST_EQ(actual8, expected8);
+    CHECK_THAT(actual8, Catch::Matchers::WithinRel(expected8, 0.0001L));
 }
 
-TEST_CASE(testRound)
+TEST_CASE("testRound")
 {
     float v1 = 12.49999f;
     float expected1 = 12.0f;
     float actual1 = math::round(v1);
-    TEST_ASSERT_ALMOST_EQ(actual1, expected1);
+    CHECK_THAT(actual1, Catch::Matchers::WithinRel(expected1, 0.0001L));
 
     float v2 = 42.5f;
     float expected2 = 43.0f;
     float actual2 = math::round(v2);
-    TEST_ASSERT_ALMOST_EQ(actual2, expected2);
+    CHECK_THAT(actual2, Catch::Matchers::WithinRel(expected2, 0.0001L));
 
     float v3 = -532.4999f;
     float expected3 = -532.0f;
     float actual3 = math::round(v3);
-    TEST_ASSERT_ALMOST_EQ(actual3, expected3);
+    CHECK_THAT(actual3, Catch::Matchers::WithinRel(expected3, 0.0001L));
 
     float v4 = -23.5f;
     float expected4 = -24.0f;
     float actual4 = math::round(v4);
-    TEST_ASSERT_ALMOST_EQ(actual4, expected4);
+    CHECK_THAT(actual4, Catch::Matchers::WithinRel(expected4, 0.0001L));
 
     double v5 = 12.499999999;
     double expected5 = 12.0;
     double actual5 = math::round(v5);
-    TEST_ASSERT_ALMOST_EQ(actual5, expected5);
+    CHECK_THAT(actual5, Catch::Matchers::WithinRel(expected5, 0.0001L));
 
     double v6 = 42.5;
     double expected6 = 43.0;
     double actual6 = math::round(v6);
-    TEST_ASSERT_ALMOST_EQ(actual6, expected6);
+    CHECK_THAT(actual6, Catch::Matchers::WithinRel(expected6, 0.0001L));
 
     double v7 = -532.499999999;
     double expected7 = -532.0;
     double actual7 = math::round(v7);
-    TEST_ASSERT_ALMOST_EQ(actual7, expected7);
+    CHECK_THAT(actual7, Catch::Matchers::WithinRel(expected7, 0.0001L));
 
     double v8 = -23.5;
     double expected8 = -24.0;
     double actual8 = math::round(v8);
-    TEST_ASSERT_ALMOST_EQ(actual8, expected8);
+    CHECK_THAT(actual8, Catch::Matchers::WithinRel(expected8, 0.0001L));
 }
 
-TEST_CASE(testRoundDigits)
+TEST_CASE("testRoundDigits")
 {
     float v1 = 12.499994f;
     float expected1 = 12.49999f;
     float actual1 = math::round(v1, 5);
-    TEST_ASSERT_ALMOST_EQ(actual1, expected1);
+    CHECK_THAT(actual1, Catch::Matchers::WithinRel(expected1, 0.0001L));
 
     float v2 = 42.234567f;
     float expected2 = 42.235f;
     float actual2 = math::round(v2, 3);
-    TEST_ASSERT_ALMOST_EQ(actual2, expected2);
+    CHECK_THAT(actual2, Catch::Matchers::WithinRel(expected2, 0.0001L));
 
     float v3 = -532.499994f;
     float expected3 = -532.49999f;
     float actual3 = math::round(v3, 5);
-    TEST_ASSERT_ALMOST_EQ(actual3, expected3);
+    CHECK_THAT(actual3, Catch::Matchers::WithinRel(expected3, 0.0001L));
 
     float v4 = -23.123456f;
     float expected4 = -23.1235f;
     float actual4 = math::round(v4, 4);
-    TEST_ASSERT_ALMOST_EQ(actual4, expected4);
+    CHECK_THAT(actual4, Catch::Matchers::WithinRel(expected4, 0.0001L));
 
     double v5 = 12.4999999994;
     double expected5 = 12.499999999;
     double actual5 = math::round(v5, 9);
-    TEST_ASSERT_ALMOST_EQ(actual5, expected5);
+    CHECK_THAT(actual5, Catch::Matchers::WithinRel(expected5, 0.0001L));
 
     double v6 = 42.09182736455463;
     double expected6 = 42.0918273646;
     double actual6 = math::round(v6, 10);
-    TEST_ASSERT_ALMOST_EQ(actual6, expected6);
+    CHECK_THAT(actual6, Catch::Matchers::WithinRel(expected6, 0.0001L));
 
     double v7 = -532.499999999994;
     double expected7 = -532.49999999999;
     double actual7 = math::round(v7, 11);
-    TEST_ASSERT_ALMOST_EQ(actual7, expected7);
+    CHECK_THAT(actual7, Catch::Matchers::WithinRel(expected7, 0.0001L));
 
     double v8 = -23.755;
     double expected8 = -23.76;
     double actual8 = math::round(v8, 2);
-    TEST_ASSERT_ALMOST_EQ(actual8, expected8);
+    CHECK_THAT(actual8, Catch::Matchers::WithinRel(expected8, 0.0001L));
 }
 
-TEST_CASE(testCeilingDivide)
+TEST_CASE("testCeilingDivide")
 {
     size_t n0 = 0;
     size_t d0 = 1;
-    TEST_ASSERT_EQ(math::ceilingDivide(n0, d0), static_cast<size_t>(0));
+    CHECK(math::ceilingDivide(n0, d0) == static_cast<size_t>(0));
 
     size_t n1 = 4;
     size_t d1 = 2;
-    TEST_ASSERT_EQ(math::ceilingDivide(n1, d1), static_cast<size_t>(2));
+    CHECK(math::ceilingDivide(n1, d1) == static_cast<size_t>(2));
 
     size_t n2 = 5;
     size_t d2 = 2;
-    TEST_ASSERT_EQ(math::ceilingDivide(n2, d2), static_cast<size_t>(3));
+    CHECK(math::ceilingDivide(n2, d2) == static_cast<size_t>(3));
 
     size_t n3 = 1;
     size_t d3 = 0;
-    TEST_THROWS(math::ceilingDivide(n3, d3));
+    CHECK_THROWS(math::ceilingDivide(n3, d3));
 }
 
-TEST_MAIN(
-    TEST_CHECK(testFix);
-    TEST_CHECK(testRound);
-    TEST_CHECK(testRoundDigits);
-    TEST_CHECK(testCeilingDivide);
-    )

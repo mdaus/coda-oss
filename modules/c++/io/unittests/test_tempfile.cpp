@@ -24,17 +24,17 @@
 
 #include <sys/OS.h>
 #include <io/TempFile.h>
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
-TEST_CASE(testTempFileCreation)
+TEST_CASE("testTempFileCreation")
 {
     const sys::OS os;
     const io::TempFile tempFile;
     // This should just give us a name to a file that doesn't exist yet
-    TEST_ASSERT(os.exists(tempFile.pathname()));
+    CHECK(os.exists(tempFile.pathname()));
 }
 
-TEST_CASE(testFileDestroyed)
+TEST_CASE("testFileDestroyed")
 {
     const sys::OS os;
     std::string pathname;
@@ -42,16 +42,10 @@ TEST_CASE(testFileDestroyed)
         const io::TempFile tempFile;
         pathname = tempFile.pathname();
         std::ofstream out(pathname);
-        TEST_ASSERT_TRUE(static_cast<bool>(out));
+        CHECK(static_cast<bool>(out));
         out << "Test text";
     }
     // File should be destroyed on destruction
-    TEST_ASSERT(!os.exists(pathname));
+    CHECK(!os.exists(pathname));
 }
-
-TEST_MAIN(
-    TEST_CHECK(testTempFileCreation);
-    TEST_CHECK(testFileDestroyed);
-    )
-
 

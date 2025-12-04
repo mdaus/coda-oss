@@ -32,7 +32,7 @@
 #include "sys/Conf.h"
 #include "str/Convert.h"
 #include "str/Manip.h"
-#include "gsl/gsl.h"
+#include "gsl/gsl"
 
 #if CODA_OSS_POSIX_SOURCE
 #include <sys/time.h>

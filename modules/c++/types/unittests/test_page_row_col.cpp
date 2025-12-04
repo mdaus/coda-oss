@@ -20,101 +20,97 @@
  *
  */
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <cmath>
 #include <limits>
 #include <types/RowCol.h>
 #include <types/PageRowCol.h>
 
-TEST_CASE(TestPageRowColSizeT)
+TEST_CASE("TestPageRowColSizeT")
 {
     // default constructor should initialize all to 0
     const types::PageRowCol<size_t> pageRowColDefault;
-    TEST_ASSERT_EQ(pageRowColDefault.page, static_cast<size_t>(0));
-    TEST_ASSERT_EQ(pageRowColDefault.row, static_cast<size_t>(0));
-    TEST_ASSERT_EQ(pageRowColDefault.col, static_cast<size_t>(0));
+    CHECK(pageRowColDefault.page == static_cast<size_t>(0));
+    CHECK(pageRowColDefault.row == static_cast<size_t>(0));
+    CHECK(pageRowColDefault.col == static_cast<size_t>(0));
 
 
     const types::PageRowCol<size_t> pageRowColA(3,5,11);
     const types::PageRowCol<size_t> pageRowColB(1,2,3);
 
     // test equality operators
-    TEST_ASSERT(pageRowColA == pageRowColA);
-    TEST_ASSERT(!(pageRowColA != pageRowColA));
+    CHECK(pageRowColA == pageRowColA);
+    CHECK(!(pageRowColA != pageRowColA));
 
     // test page + RowCol constructor
     const types::RowCol<size_t> rowCol(5, 11);
     const types::PageRowCol<size_t> pageRowColFromRowCol(3, rowCol);
-    TEST_ASSERT(pageRowColFromRowCol == pageRowColA);
+    CHECK(pageRowColFromRowCol == pageRowColA);
 
     // test copy construction
     const types::PageRowCol<size_t> pageRowColCopy(pageRowColA);
-    TEST_ASSERT(pageRowColCopy == pageRowColA);
+    CHECK(pageRowColCopy == pageRowColA);
 
     // test copy assignment
     types::PageRowCol<size_t> pageRowColAssign;
     pageRowColAssign = pageRowColA;
-    TEST_ASSERT(pageRowColAssign == pageRowColA);
+    CHECK(pageRowColAssign == pageRowColA);
 
-    TEST_ASSERT_EQ(pageRowColA.volume(), static_cast<size_t>(3 * 5 * 11));
+    CHECK(pageRowColA.volume() == static_cast<size_t>(3 * 5 * 11));
 
     // test arithmetic operators
     const types::PageRowCol<size_t> sum = pageRowColA + pageRowColB;
-    TEST_ASSERT(sum == types::PageRowCol<size_t>(4, 7, 14));
+    CHECK(sum == types::PageRowCol<size_t>(4, 7, 14));
 
     const types::PageRowCol<size_t> diff = pageRowColA - pageRowColB;
-    TEST_ASSERT(diff == types::PageRowCol<size_t>(2, 3, 8));
+    CHECK(diff == types::PageRowCol<size_t>(2, 3, 8));
 
     const types::PageRowCol<size_t> prod = pageRowColA * pageRowColB;
-    TEST_ASSERT(prod == types::PageRowCol<size_t>(3, 10, 33));
+    CHECK(prod == types::PageRowCol<size_t>(3, 10, 33));
 
     const types::PageRowCol<size_t> div = pageRowColA / pageRowColB;
-    TEST_ASSERT(div == types::PageRowCol<size_t>(3, 2, 3));
+    CHECK(div == types::PageRowCol<size_t>(3, 2, 3));
 }
 
-TEST_CASE(TestPageRowColDouble)
+TEST_CASE("TestPageRowColDouble")
 {
     const types::PageRowCol<double> pageRowColA(3.1, 5.2, 11.3);
     const types::PageRowCol<double> pageRowColB(1.1, 2.2, 3.3);
 
     // test equality operators
-    TEST_ASSERT(pageRowColA == pageRowColA);
-    TEST_ASSERT(!(pageRowColA != pageRowColA));
+    CHECK(pageRowColA == pageRowColA);
+    CHECK(!(pageRowColA != pageRowColA));
 
     // test copy construction
     const types::PageRowCol<double> pageRowColCopy(pageRowColA);
-    TEST_ASSERT(pageRowColCopy == pageRowColA);
+    CHECK(pageRowColCopy == pageRowColA);
 
     // test copy assignment
     types::PageRowCol<double> pageRowColAssign;
     pageRowColAssign = pageRowColA;
-    TEST_ASSERT(pageRowColAssign == pageRowColA);
+    CHECK(pageRowColAssign == pageRowColA);
 
     // test approximate equality
     pageRowColAssign.page += std::numeric_limits<double>::epsilon() / 2.0;
-    TEST_ASSERT(pageRowColAssign == pageRowColA);
+    CHECK(pageRowColAssign == pageRowColA);
 
     pageRowColAssign.page += std::numeric_limits<double>::epsilon() * 2.0;
-    TEST_ASSERT(pageRowColAssign != pageRowColA);
+    CHECK(pageRowColAssign != pageRowColA);
 
-    TEST_ASSERT_ALMOST_EQ(pageRowColA.volume(), 3.1 * 5.2 * 11.3);
-    TEST_ASSERT_ALMOST_EQ(pageRowColA.normL2(), std::sqrt(3.1 * 3.1 +  5.2 * 5.2 + 11.3 * 11.3));
+    CHECK_THAT(pageRowColA.volume(), Catch::Matchers::WithinRel(3.1 * 5.2 * 11.3, 0.0001));
+    CHECK_THAT(pageRowColA.normL2(), Catch::Matchers::WithinRel(std::sqrt(3.1 * 3.1 +  5.2 * 5.2 + 11.3 * 11.3), 0.0001));
 
     // test arithmetic operators
     const types::PageRowCol<double> sum = pageRowColA + pageRowColB;
-    TEST_ASSERT(sum == types::PageRowCol<double>(3.1 + 1.1, 5.2 + 2.2, 11.3 + 3.3));
+    CHECK(sum == types::PageRowCol<double>(3.1 + 1.1, 5.2 + 2.2, 11.3 + 3.3));
 
     const types::PageRowCol<double> diff = pageRowColA - pageRowColB;
-    TEST_ASSERT(diff == types::PageRowCol<double>(3.1 - 1.1, 5.2 - 2.2, 11.3 - 3.3));
+    CHECK(diff == types::PageRowCol<double>(3.1 - 1.1, 5.2 - 2.2, 11.3 - 3.3));
 
     const types::PageRowCol<double> prod = pageRowColA * pageRowColB;
-    TEST_ASSERT(prod == types::PageRowCol<double>(3.1 * 1.1, 5.2 * 2.2, 11.3 * 3.3));
+    CHECK(prod == types::PageRowCol<double>(3.1 * 1.1, 5.2 * 2.2, 11.3 * 3.3));
 
     const types::PageRowCol<double> div = pageRowColA / pageRowColB;
-    TEST_ASSERT(div == types::PageRowCol<double>(3.1 / 1.1, 5.2 / 2.2, 11.3 / 3.3));
+    CHECK(div == types::PageRowCol<double>(3.1 / 1.1, 5.2 / 2.2, 11.3 / 3.3));
 }
-
-TEST_MAIN(
-    TEST_CHECK(TestPageRowColSizeT);
-    TEST_CHECK(TestPageRowColDouble);
-    )

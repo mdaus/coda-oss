@@ -30,7 +30,7 @@
 #include <except/Error.h>
 #include <except/Exception.h>
 #include <io/SeekableStreams.h>
-#include <gsl/gsl.h>
+#include <gsl/gsl>
 
 /*!
  *  \file

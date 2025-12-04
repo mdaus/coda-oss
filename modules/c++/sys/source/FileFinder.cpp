@@ -29,7 +29,7 @@
 #include "sys/DirectoryEntry.h"
 #include "sys/Path.h"
 
-namespace fs = coda_oss::filesystem;
+namespace fs = std::filesystem;
 
 bool sys::ExistsPredicate::operator()(const std::string& entry) const
 {

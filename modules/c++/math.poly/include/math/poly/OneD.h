@@ -229,17 +229,6 @@ public:
         return !(*this == p);
     }
 
-    // Explicit overload to make SWIG wrap it
-    bool operator==(const OneD<_T>& p)
-    {
-        return equalImpl(p);
-    }
-
-    bool operator!=(const OneD<_T>& p)
-    {
-        return !(*this == p);
-    }
-
     /*!
      *  serialize out to a boost stream
      */

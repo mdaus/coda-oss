@@ -24,7 +24,8 @@
 #include <tuple>
 
 #include <math/poly/OneD.h>
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 
 double getRand()
 {
@@ -55,7 +56,7 @@ void getRandValues(std::vector<double>& values)
     }
 }
 
-TEST_CASE(testScaleVariable)
+TEST_CASE("testScaleVariable")
 {
     std::vector<double> values;
     getRandValues(values);
@@ -72,13 +73,11 @@ TEST_CASE(testScaleVariable)
         // of the expected value
         const double val(values[ii]);
         const double expectedValue(poly(val * scale));
-        TEST_ASSERT_ALMOST_EQ_EPS(transformedPoly(val),
-                                  expectedValue,
-                                  std::abs(.01 * expectedValue));
+        CHECK_THAT(transformedPoly(val), Catch::Matchers::WithinRel(expectedValue, .01));
     }
 }
 
-TEST_CASE(testTruncateTo)
+TEST_CASE("testTruncateTo")
 {
     math::poly::OneD<double> poly(5);
     for (size_t ii = 0, coeff = 10; ii <= poly.order(); ++ii, coeff += 10)
@@ -87,13 +86,13 @@ TEST_CASE(testTruncateTo)
     }
 
     const math::poly::OneD<double> truncatedPoly = poly.truncateTo(2);
-    TEST_ASSERT_EQ(truncatedPoly.order(), static_cast<size_t>(2));
-    TEST_ASSERT_EQ(truncatedPoly[0], 10.0);
-    TEST_ASSERT_EQ(truncatedPoly[1], 20.0);
-    TEST_ASSERT_EQ(truncatedPoly[2], 30.0);
+    CHECK(truncatedPoly.order() == static_cast<size_t>(2));
+    CHECK(truncatedPoly[0] == 10.0);
+    CHECK(truncatedPoly[1] == 20.0);
+    CHECK(truncatedPoly[2] == 30.0);
 }
 
-TEST_CASE(testTruncateToNonZeros)
+TEST_CASE("testTruncateToNonZeros")
 {
     math::poly::OneD<double> poly(5);
     for (size_t ii = 0, coeff = 10; ii <= poly.order(); ++ii, coeff += 10)
@@ -104,10 +103,10 @@ TEST_CASE(testTruncateToNonZeros)
     // Shouldn't truncate anything
     {
         math::poly::OneD<double> truncatedPoly = poly.truncateToNonZeros(0.0);
-        TEST_ASSERT_EQ(truncatedPoly.order(), poly.order());
+        CHECK(truncatedPoly.order() == poly.order());
         for (size_t ii = 0; ii <= poly.order(); ++ii)
         {
-            TEST_ASSERT_EQ(truncatedPoly[ii], poly[ii]);
+            CHECK(truncatedPoly[ii] == poly[ii]);
         }
     }
 
@@ -116,15 +115,15 @@ TEST_CASE(testTruncateToNonZeros)
     {
         poly[ord] = 0.0;
         math::poly::OneD<double> truncatedPoly = poly.truncateToNonZeros(0.0);
-        TEST_ASSERT_EQ(truncatedPoly.order(), static_cast<size_t>(ord - 1));
+        CHECK(truncatedPoly.order() == static_cast<size_t>(ord - 1));
         for (size_t jj = 0; jj < ord; ++jj)
         {
-            TEST_ASSERT_EQ(truncatedPoly[jj], poly[jj]);
+            CHECK(truncatedPoly[jj] == poly[jj]);
         }
     }
 }
 
-TEST_CASE(testTransformInput)
+TEST_CASE("testTransformInput")
 {
     std::vector<double> values;
     getRandValues(values);
@@ -140,13 +139,11 @@ TEST_CASE(testTransformInput)
         // of the expected value
         const double val(values[ii]);
         const double expectedValue(poly(gx(val)));
-        TEST_ASSERT_ALMOST_EQ_EPS(transformedPoly(val),
-                                  expectedValue,
-                                  std::abs(.01 * expectedValue));
+        CHECK_THAT(transformedPoly(val), Catch::Matchers::WithinRel(expectedValue, .01));
     }
 }
 
-TEST_CASE(testVelocity)
+TEST_CASE("testVelocity")
 {
     std::vector<double> values;
     getRandValues(values);
@@ -155,31 +152,31 @@ TEST_CASE(testVelocity)
     math::poly::OneD<double> poly(getRandPoly(0));
     for (const auto& val: values)
     {
-        TEST_ASSERT_EQ(poly.velocity(val), 0.0);
+        CHECK(poly.velocity(val) == 0.0);
     }
 
     // Linear poly should have constant velocity
     poly = getRandPoly(1);
     for (const auto& val: values)
     {
-        TEST_ASSERT_EQ(poly.velocity(val), poly[1]);
+        CHECK(poly.velocity(val) == poly[1]);
     }
 
     // Check quadratic and cubic against the derivative
     poly = getRandPoly(2);
     for (const auto& val: values)
     {
-        TEST_ASSERT_EQ(poly.velocity(val), poly.derivative()(val));
+        CHECK(poly.velocity(val) == poly.derivative()(val));
     }
 
     poly = getRandPoly(3);
     for (const auto& val: values)
     {
-        TEST_ASSERT_EQ(poly.velocity(val), poly.derivative()(val));
+        CHECK(poly.velocity(val) == poly.derivative()(val));
     }
 }
 
-TEST_CASE(testAcceleration)
+TEST_CASE("testAcceleration")
 {
     std::vector<double> values;
     getRandValues(values);
@@ -188,41 +185,32 @@ TEST_CASE(testAcceleration)
     math::poly::OneD<double> poly(getRandPoly(0));
     for (const auto& val: values)
     {
-        TEST_ASSERT_EQ(poly.acceleration(val), 0.0);
+        CHECK(poly.acceleration(val) == 0.0);
     }
 
     poly = getRandPoly(1);
     for (const auto& val: values)
     {
-        TEST_ASSERT_EQ(poly.acceleration(val), 0);
+        CHECK(poly.acceleration(val) == 0);
     }
 
     // Quadratic poly should have constant acceleration
     poly = getRandPoly(2);
     for (const auto& val: values)
     {
-        TEST_ASSERT_EQ(poly.acceleration(val), 2 * poly[2]);
+        CHECK(poly.acceleration(val) == 2 * poly[2]);
     }
     
     // Check cubic and quartic against the 2nd derivative
     poly = getRandPoly(3);
     for (const auto& val: values)
     {
-        TEST_ASSERT_EQ(poly.acceleration(val), poly.derivative().derivative()(val));
+        CHECK(poly.acceleration(val) == poly.derivative().derivative()(val));
     }
 
     poly = getRandPoly(4);
     for (const auto& val: values)
     {
-        TEST_ASSERT_EQ(poly.acceleration(val), poly.derivative().derivative()(val));
+        CHECK(poly.acceleration(val) == poly.derivative().derivative()(val));
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testScaleVariable);
-    TEST_CHECK(testTruncateTo);
-    TEST_CHECK(testTruncateToNonZeros);
-    TEST_CHECK(testTransformInput);
-    TEST_CHECK(testVelocity);
-    TEST_CHECK(testAcceleration);
-)

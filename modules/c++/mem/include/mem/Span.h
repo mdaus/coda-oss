@@ -23,12 +23,12 @@
 #define CODA_OSS_mem_Span_h_INCLUDED_
 #pragma once
 
-#include "coda_oss/span.h"
+#include <span>
 
 namespace mem
 {
 template <typename T>
-using Span = coda_oss::span<T>;
+using Span = std::span<T>;
 
 }
 

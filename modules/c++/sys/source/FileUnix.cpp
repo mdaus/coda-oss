@@ -28,7 +28,7 @@
 #include <string.h>
 #include <errno.h>
 
-_SYS_HANDLE_TYPE sys::File::createFile(const coda_oss::filesystem::path& str_, int accessFlags, int creationFlags) noexcept
+_SYS_HANDLE_TYPE sys::File::createFile(const std::filesystem::path& str_, int accessFlags, int creationFlags) noexcept
 {
     const auto str = str_.string();
 

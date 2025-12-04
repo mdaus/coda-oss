@@ -20,17 +20,32 @@
  *
  */
 
-#include <TestCase.h>
+#include <catch2/catch_test_macros.hpp>
 #include <io/FileInputStreamOS.h>
 
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <filesystem>
 
-std::string thisExecutable;
-
-TEST_CASE(testParallelReads)
+// https://stackoverflow.com/a/55579815
+std::filesystem::path getExePath()
 {
+#ifdef _WIN32
+    wchar_t path[MAX_PATH] = { 0 };
+    GetModuleFileNameW(NULL, path, MAX_PATH);
+    return path;
+#else
+    char result[PATH_MAX];
+    ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+    return std::string(result, (count > 0) ? count : 0);
+#endif
+}
+
+TEST_CASE("testParallelReads")
+{
+    const auto thisExecutable(getExePath());
+   
     // using self is easier than carting around extra files in the repo
     std::cout << "thisExecutable: " << thisExecutable << std::endl;
 
@@ -48,16 +63,16 @@ TEST_CASE(testParallelReads)
     io::FileInputStreamOS fis(thisExecutable);
 
     // ensure threading is disabled by default
-    TEST_ASSERT_EQ(fis.getMaxReadThreads(), 1);
+    CHECK(fis.getMaxReadThreads() == 1);
 
     // single thread read
     size_t avail = fis.available();
-    TEST_ASSERT_EQ(avail, trueLen);
+    CHECK(avail == trueLen);
 
     std::vector<char> singleThreadRead(avail);
     size_t wasRead = fis.read(&singleThreadRead[0], avail);
-    TEST_ASSERT_EQ(wasRead, avail);
-    TEST_ASSERT_TRUE(referenceRead == singleThreadRead);
+    CHECK(wasRead == avail);
+    CHECK(referenceRead == singleThreadRead);
 
     fis.seek(0, io::Seekable::START);
 
@@ -67,19 +82,12 @@ TEST_CASE(testParallelReads)
     fis.setParallelChunkSize(1024);
 
     // check set/get methods
-    TEST_ASSERT_EQ(fis.getMaxReadThreads(), 16);
-    TEST_ASSERT_EQ(fis.getMinimumChunkCount(), 4);
-    TEST_ASSERT_EQ(fis.getParallelChunkSize(), 1024);
+    CHECK(fis.getMaxReadThreads() == 16);
+    CHECK(fis.getMinimumChunkCount() == 4);
+    CHECK(fis.getParallelChunkSize() == 1024);
 
     std::vector<char> multiThreadRead(avail);
     wasRead = fis.read(&multiThreadRead[0], avail);
-    TEST_ASSERT_EQ(wasRead, avail);
-    TEST_ASSERT_TRUE(referenceRead == multiThreadRead);
-}
-
-int main(int, char* argv[])
-{
-    thisExecutable = std::string(argv[0]);
-    TEST_CHECK(testParallelReads);
-    return 0;
+    CHECK(wasRead == avail);
+    CHECK(referenceRead == multiThreadRead);
 }

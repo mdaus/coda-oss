@@ -22,7 +22,7 @@
 
 #include "import/sys.h"
 #include "import/mt.h"
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 struct MyRunTask final : public sys::Runnable
 {
@@ -48,7 +48,7 @@ struct MyRunTask final : public sys::Runnable
     }
 };
 
-TEST_CASE(DoThreadGroupTest)
+TEST_CASE("DoThreadGroupTest")
 {
     auto threads = new mt::ThreadGroup();
     int state = 1, numDeleted = 0;
@@ -62,20 +62,20 @@ TEST_CASE(DoThreadGroupTest)
     state = 2;
     threads->joinAll();
     
-    TEST_ASSERT_EQ(tasks[0]->result, 2);
-    TEST_ASSERT_EQ(tasks[1]->result, 2);
+    CHECK(tasks[0]->result == 2);
+    CHECK(tasks[1]->result == 2);
     
     state = 1;
     threads->createThread(tasks[2]);
     state = 3;
 
-    TEST_ASSERT_EQ(numDeleted, 0);
+    CHECK(numDeleted == 0);
 
     delete threads;
-    TEST_ASSERT_EQ(numDeleted, 3);
+    CHECK(numDeleted == 3);
 }
 
-TEST_CASE(PinToCPUTest)
+TEST_CASE("PinToCPUTest")
 {
     bool defaultValue;
 #if defined(MT_DEFAULT_PINNING)
@@ -84,24 +84,19 @@ TEST_CASE(PinToCPUTest)
     defaultValue = false;
 #endif
     // Check the pinning settings for the default value
-    TEST_ASSERT_EQ(mt::ThreadGroup::getDefaultPinToCPU(), defaultValue);
+    CHECK(mt::ThreadGroup::getDefaultPinToCPU() == defaultValue);
     mt::ThreadGroup threads1;
-    TEST_ASSERT_EQ(threads1.isPinToCPUEnabled(), defaultValue);
+    CHECK(threads1.isPinToCPUEnabled() == defaultValue);
 
     // Check the pinning settings when pinning is enabled
     mt::ThreadGroup::setDefaultPinToCPU(true);
-    TEST_ASSERT_EQ(mt::ThreadGroup::getDefaultPinToCPU(), true);
+    CHECK(mt::ThreadGroup::getDefaultPinToCPU());
     mt::ThreadGroup threads2;
-    TEST_ASSERT_EQ(threads2.isPinToCPUEnabled(), true);
+    CHECK(threads2.isPinToCPUEnabled());
    
     // Check the pinning settings when pinning is disabled
     mt::ThreadGroup::setDefaultPinToCPU(false);
-    TEST_ASSERT_EQ(mt::ThreadGroup::getDefaultPinToCPU(), false);
+    CHECK_FALSE(mt::ThreadGroup::getDefaultPinToCPU());
     mt::ThreadGroup threads3;
-    TEST_ASSERT_EQ(threads3.isPinToCPUEnabled(), false);
+    CHECK_FALSE(threads3.isPinToCPUEnabled());
 }
-
-TEST_MAIN(
-    TEST_CHECK(DoThreadGroupTest);
-    TEST_CHECK(PinToCPUTest);
-    )

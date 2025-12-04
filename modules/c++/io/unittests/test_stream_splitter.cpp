@@ -25,7 +25,7 @@
 #include <vector>
 #include <io/StreamSplitter.h>
 #include <io/StringStream.h>
-#include <TestCase.h>
+#include <catch2/catch_test_macros.hpp>
 
 // return true if the string sequences are the same, false otherwise
 bool compareStringSequence(const std::vector<std::string>& a,
@@ -126,7 +126,7 @@ bool streamSplitterTestRunner(size_t numLines,
     return compareStringSequence(inputLines, outputLines);
 }
 
-TEST_CASE(testStreamSplitter)
+TEST_CASE("testStreamSplitter")
 {
     std::vector<size_t> lineCounts;
     lineCounts.push_back(1);
@@ -188,7 +188,7 @@ TEST_CASE(testStreamSplitter)
                 for (size_t i_bufferSize = 0; i_bufferSize < bufferSizes.size(); ++i_bufferSize)
                 {
                     const size_t bufferSize = bufferSizes[i_bufferSize];
-                    TEST_ASSERT(streamSplitterTestRunner(lineCount, lineLength, delimiter, bufferSize));
+                    CHECK(streamSplitterTestRunner(lineCount, lineLength, delimiter, bufferSize));
                 }
             }
         }
@@ -196,45 +196,37 @@ TEST_CASE(testStreamSplitter)
 
 }
 
-TEST_CASE(testStreamSplitterEmpty)
+TEST_CASE("testStreamSplitterEmpty")
 {
     // empty stream should return 1 empty token
     std::string substring;
     io::StringStream stream;
     io::StreamSplitter splitter(stream);
-    TEST_ASSERT(splitter.getNumSubstringsReturned() == 0);
-    TEST_ASSERT(splitter.getNumBytesReturned() == 0);
-    TEST_ASSERT(splitter.getNumBytesProcessed() == 0);
-    bool success = splitter.getNext(substring);
-    TEST_ASSERT(success);
-    TEST_ASSERT(substring == "");
-    success = splitter.getNext(substring);
-    TEST_ASSERT(!success);
+    CHECK(splitter.getNumSubstringsReturned() == 0);
+    CHECK(splitter.getNumBytesReturned() == 0);
+    CHECK(splitter.getNumBytesProcessed() == 0);
+    CHECK(splitter.getNext(substring));
 
-    TEST_ASSERT(splitter.getNumSubstringsReturned() == 1);
-    TEST_ASSERT(splitter.getNumBytesReturned() == 0);
-    TEST_ASSERT(splitter.getNumBytesProcessed() == 0);
+    CHECK(substring == "");
+    CHECK_FALSE(splitter.getNext(substring));
+
+    CHECK(splitter.getNumSubstringsReturned() == 1);
+    CHECK(splitter.getNumBytesReturned() == 0);
+    CHECK(splitter.getNumBytesProcessed() == 0);
 }
 
-TEST_CASE(testStreamSplitterInputValidation)
+TEST_CASE("testStreamSplitterInputValidation")
 {
     // delimiter must be nonempty string
-    TEST_EXCEPTION(streamSplitterTestRunner(10, 10, "", 2));
+    CHECK_THROWS(streamSplitterTestRunner(10, 10, "", 2));
 
     // buffer too small to support delimiter
-    TEST_EXCEPTION(streamSplitterTestRunner(10, 10, " ", 2));
-    TEST_ASSERT(streamSplitterTestRunner(10, 10, " ", 3));
+    CHECK_THROWS(streamSplitterTestRunner(10, 10, " ", 2));
+    CHECK(streamSplitterTestRunner(10, 10, " ", 3));
 
-    TEST_EXCEPTION(streamSplitterTestRunner(10, 10, "  ", 4));
-    TEST_ASSERT(streamSplitterTestRunner(10, 10, "  ", 5));
+    CHECK_THROWS(streamSplitterTestRunner(10, 10, "  ", 4));
+    CHECK(streamSplitterTestRunner(10, 10, "  ", 5));
 
-    TEST_EXCEPTION(streamSplitterTestRunner(10, 10, "abc", 6));
-    TEST_ASSERT(streamSplitterTestRunner(10, 10, "abc", 7));
-}
-
-int main(int, char**)
-{
-    TEST_CHECK(testStreamSplitterEmpty);
-    TEST_CHECK(testStreamSplitter);
-    TEST_CHECK(testStreamSplitterInputValidation);
+    CHECK_THROWS(streamSplitterTestRunner(10, 10, "abc", 6));
+    CHECK(streamSplitterTestRunner(10, 10, "abc", 7));
 }

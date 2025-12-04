@@ -23,7 +23,7 @@
 #undef min
 #undef max
 
-#include "gsl/gsl.h"
+#include "gsl/gsl"
 
 using namespace io;
 

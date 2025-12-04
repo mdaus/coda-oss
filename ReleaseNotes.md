@@ -1,5 +1,17 @@
 ﻿# coda-oss Release Notes
 
+## Release 2.0.0 (WIP)
+- Removed:
+    - HDF5 driver code ([HDF5](https://github.com/HDFGroup/hdf5) and [HighFive](https://github.com/highfive-devs/highfive))
+    - Visual Studio solution and project files
+    - `std-c++` module (use C++ standard library)
+    - `coda_oss-c++` module (mostly `std-c++` module support)
+    - `gsl-c++` module (use `GSL`)
+    - `hdf5.lite-c++` module (use `HighFive`)
+- Require C++23 (enabled removing the `std` module).
+- Use [GSL version 4.2](https://github.com/microsoft/GSL/tree/v4.2.0) instead of internal module
+- Use [Catch2](https://github.com/catchorg/Catch2/tree/v3.11.0) for unittests
+
 ## [Release 2024-03-18](https://github.com/mdaus/coda-oss/releases/tag/2024-03-18)
 * Update to [HighFive 2.8.0](https://github.com/BlueBrain/HighFive/releases/tag/v2.8.0).
 * Use lookup tables for converting between character encodings and upper/lower-case.

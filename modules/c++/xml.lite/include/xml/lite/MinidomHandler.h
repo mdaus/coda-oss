@@ -47,7 +47,7 @@
 
 #include <stack>
 #include <memory>
-#include "coda_oss/string.h"
+#include <string>
 
 #include <config/Exports.h>
 #include "XMLReader.h"
@@ -158,21 +158,21 @@ private:
      * up the pieces we take as we are taking them.
      * \return The chracter data for the node
      */
-    coda_oss::u8string adjustCharacterData();
+    std::u8string adjustCharacterData();
 
     /*!
      *  Trim the white space off the back and front of a string
      *  \param  s  String to trim
      */
-    static void trim(coda_oss::u8string& s);
+    static void trim(std::u8string& s);
 
-    coda_oss::u8string currentCharacterData;
+    std::u8string currentCharacterData;
     std::stack<int> bytesForElement;
     std::stack<Element *> nodeStack;
     Document* mDocument = nullptr;
     bool mOwnDocument = true;
     bool mPreserveCharData = false;
-    void characters(coda_oss::u8string&&);
+    void characters(std::u8string&&);
 };
 }
 }

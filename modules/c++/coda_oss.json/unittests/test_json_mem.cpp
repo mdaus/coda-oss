@@ -19,7 +19,7 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 #include <mem/ScopedCloneablePtr.h>
 #include <mem/ScopedCopyablePtr.h>
@@ -30,7 +30,7 @@
 
 using json = nlohmann::json;
 
-TEST_CASE(TestCloneablePtr)
+TEST_CASE("TestCloneablePtr")
 {
     using RC = types::RowCol<int>;
     RC val(-1, 1);
@@ -38,32 +38,26 @@ TEST_CASE(TestCloneablePtr)
     json expected = {{"row", val.row}, {"col", val.col}};
     json serialized = startVal;
     auto deserialized = serialized.template get<mem::ScopedCloneablePtr<RC>>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
 
-TEST_CASE(TestCopyablePtr)
+TEST_CASE("TestCopyablePtr")
 {
     int val = 42;
     mem::ScopedCopyablePtr<int> startVal(new int(val));
     json expected = val;
     json serialized = startVal;
     auto deserialized = serialized.template get<mem::ScopedCopyablePtr<int>>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-TEST_CASE(TestNullPtr)
+TEST_CASE("TestNullPtr")
 {
     mem::ScopedCopyablePtr<size_t> startVal;
     json expected = nullptr;
     json serialized = startVal;
     auto deserialized = serialized.template get<mem::ScopedCopyablePtr<size_t>>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-
-TEST_MAIN(
-    TEST_CHECK(TestCloneablePtr);
-    TEST_CHECK(TestCopyablePtr);
-    TEST_CHECK(TestNullPtr);
-)

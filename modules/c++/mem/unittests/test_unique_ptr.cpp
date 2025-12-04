@@ -25,7 +25,12 @@
 #include <mem/SharedPtr.h>
 #include <mem/AutoPtr.h>
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
+
+#define TEST_ASSERT_EQ(X, Y) CHECK(X == Y);
+#define TEST_ASSERT_NOT_EQ(X, Y) CHECK(X != Y);
+#define TEST_ASSERT_NULL(X) CHECK(X == nullptr);
+#define TEST_ASSERT_NOT_NULL(X) CHECK(X != nullptr);
 
 struct Foo final
 {
@@ -38,7 +43,7 @@ struct Foo final
     int mVal = 0;
 };
 
-TEST_CASE(testStdUniquePtr)
+TEST_CASE("testStdUniquePtr")
 {
     {
         std::unique_ptr<Foo> fooCtor;
@@ -61,7 +66,7 @@ TEST_CASE(testStdUniquePtr)
     }
 }
 
-TEST_CASE(test_make_unique)
+TEST_CASE("test_make_unique")
 {
     {
         auto fooCtor = std::make_unique<Foo>(123);
@@ -88,12 +93,8 @@ TEST_CASE(test_make_unique)
     }
 }
 
-static void f(const std::string& testName, mem::AutoPtr<Foo> p)
-{
-    TEST_ASSERT_NOT_NULL(p.get());
-    TEST_ASSERT_EQ(123, p->mVal);
-}
-TEST_CASE(memAutoPtr)
+
+TEST_CASE("memAutoPtr")
 {
     {
         mem::AutoPtr<Foo> fooCtor;
@@ -116,19 +117,20 @@ TEST_CASE(memAutoPtr)
     }
     {
         mem::AutoPtr<Foo> fooCtor(new Foo(123));
-        f(testName, fooCtor);
+        {
+            mem::AutoPtr<Foo> p(fooCtor);
+            TEST_ASSERT_NOT_NULL(p.get());
+            TEST_ASSERT_EQ(123, p->mVal);
+        }
         TEST_ASSERT_NULL(fooCtor.get());
     }
     {
         std::unique_ptr<Foo> fooCtor(new Foo(123));
-        f(testName, std::move(fooCtor));
+        {
+            mem::AutoPtr<Foo> p(std::move(fooCtor));
+            TEST_ASSERT_NOT_NULL(p.get());
+            TEST_ASSERT_EQ(123, p->mVal);
+        }
         TEST_ASSERT_NULL(fooCtor.get());
     }
 }
-
-
-TEST_MAIN(
-   TEST_CHECK(testStdUniquePtr);
-   TEST_CHECK(test_make_unique);
-   TEST_CHECK(memAutoPtr);
-   )

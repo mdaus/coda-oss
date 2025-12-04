@@ -35,13 +35,13 @@
 
 #include <string>
 #include <vector>
-#include <coda_oss/string.h>
+#include <string>
 
 #include <config/Exports.h>
 #include <io/InputStream.h>
 #include <str/Convert.h>
 #include <logging/Logger.h>
-#include <sys/filesystem.h>
+#include <filesystem>
 #include <str/Encoding.h>
 
 #include <xml/lite/Element.h>
@@ -119,7 +119,7 @@ public:
     ValidatorInterface(const std::vector<std::string>& /*schemaPaths*/,
                        logging::Logger* /*log*/,
                        bool /*recursive*/ = true) {}
-    ValidatorInterface(const std::vector<coda_oss::filesystem::path>&,
+    ValidatorInterface(const std::vector<std::filesystem::path>&,
                        logging::Logger* /*log*/,
                        bool /*recursive*/ = true) { }
 
@@ -174,7 +174,7 @@ public:
     virtual bool validate(const std::string& xml,
                           const std::string& xmlID,
                           std::vector<ValidationInfo>& errors) const = 0;
-    virtual bool validate(const coda_oss::u8string&, const std::string& /*xmlID*/, std::vector<ValidationInfo>&) const = 0;
+    virtual bool validate(const std::u8string&, const std::string& /*xmlID*/, std::vector<ValidationInfo>&) const = 0;
     virtual bool validate(const str::W1252string&, const std::string& /*xmlID*/, std::vector<ValidationInfo>&) const = 0;
 };
 

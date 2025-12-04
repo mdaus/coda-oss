@@ -30,7 +30,7 @@
 #include <utility>
 
 #include "config/Exports.h"
-#include "sys/filesystem.h"
+#include <filesystem>
 
 namespace sys
 {
@@ -168,36 +168,36 @@ struct CODA_OSS_API FileFinder final
 // until either the file is found or we stop at a ".git" directory.
 //
 // This (obviously) might take a while, so consider whether the result should be cached.
-CODA_OSS_API coda_oss::filesystem::path findFirstFile(const coda_oss::filesystem::path& startingDirectory, const coda_oss::filesystem::path& filename);
-coda_oss::filesystem::path findFirstDirectory(const coda_oss::filesystem::path& startingDirectory, const coda_oss::filesystem::path& dir);
+CODA_OSS_API std::filesystem::path findFirstFile(const std::filesystem::path& startingDirectory, const std::filesystem::path& filename);
+std::filesystem::path findFirstDirectory(const std::filesystem::path& startingDirectory, const std::filesystem::path& dir);
 
 // This is here most to avoid creating a new module for a few utility routines
 namespace test // i.e., sys::test
 {
     // Try to find the specified "root" directory starting at the given path.
     // Used by unittest to find sample files.
-    CODA_OSS_API coda_oss::filesystem::path findRootDirectory(const coda_oss::filesystem::path& p, const std::string& rootName,
-        std::function<bool(const coda_oss::filesystem::path&)> isRoot);
+    CODA_OSS_API std::filesystem::path findRootDirectory(const std::filesystem::path& p, const std::string& rootName,
+        std::function<bool(const std::filesystem::path&)> isRoot);
 
-    CODA_OSS_API coda_oss::filesystem::path findCMakeBuildRoot(const coda_oss::filesystem::path& p);
-    bool CODA_OSS_API isCMakeBuild(const coda_oss::filesystem::path& p);
+    CODA_OSS_API std::filesystem::path findCMakeBuildRoot(const std::filesystem::path& p);
+    bool CODA_OSS_API isCMakeBuild(const std::filesystem::path& p);
 
-    coda_oss::filesystem::path findCMakeInstallRoot(const coda_oss::filesystem::path& p);
-    bool isCMakeInstall(const coda_oss::filesystem::path& p);
+    std::filesystem::path findCMakeInstallRoot(const std::filesystem::path& p);
+    bool isCMakeInstall(const std::filesystem::path& p);
 
     // Walk up the directory tree until a .git/ directory is found
-    coda_oss::filesystem::path find_dotGITDirectory(const coda_oss::filesystem::path& p);
+    std::filesystem::path find_dotGITDirectory(const std::filesystem::path& p);
 
     // Starting at "root", find the file: root / modulePath / file
     // If that's not found, insert other "known locations" between "root" and "modulePath"
     // e.g., root / "externals" / [name] / path / file
     //
     // Once modulePath is found, the result is cached to avoid searching again.
-    coda_oss::filesystem::path findModuleFile(
-            const coda_oss::filesystem::path& root,
-            const std::string& externalsName, const coda_oss::filesystem::path& modulePath, const coda_oss::filesystem::path& moduleFile);
-    CODA_OSS_API coda_oss::filesystem::path findGITModuleFile(  // use current_directory() to find_dotGITDirectory()
-            const std::string& externalsName, const coda_oss::filesystem::path& modulePath, const coda_oss::filesystem::path& moduleFile);
+    std::filesystem::path findModuleFile(
+            const std::filesystem::path& root,
+            const std::string& externalsName, const std::filesystem::path& modulePath, const std::filesystem::path& moduleFile);
+    CODA_OSS_API std::filesystem::path findGITModuleFile(  // use current_directory() to find_dotGITDirectory()
+            const std::string& externalsName, const std::filesystem::path& modulePath, const std::filesystem::path& moduleFile);
 }
 }
 #endif

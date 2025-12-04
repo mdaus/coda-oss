@@ -21,7 +21,7 @@
  *
  */
 
-#include <TestCase.h>
+#include <catch2/catch_test_macros.hpp>
 #include "xml/lite/Document.h"
 #include "xml/lite/Element.h"
 #include "xml/lite/QName.h"
@@ -54,18 +54,12 @@ struct SOAP final : public xml::lite::Document
     }
 };
 
-TEST_CASE(test_overrideCreateElement)
+TEST_CASE("test_overrideCreateElement")
 {
     SOAP soap_test;
     std::unique_ptr<xml::lite::Element> a(soap_test.createElement("a","b","Not SOAP Test"));
     auto b = dynamic_cast<const SOAPBody*>(a.get());
-    TEST_ASSERT_NOT_NULL(b);
-    TEST_ASSERT_EQ(a->getCharacterData(), test_text());
-    TEST_ASSERT_EQ(b->getCharacterData(), test_text());
+    CHECK(b != nullptr);
+    CHECK(a->getCharacterData() == test_text());
+    CHECK(b->getCharacterData() == test_text());
 }
-
-TEST_MAIN
-(
-    TEST_CHECK(test_overrideCreateElement);
-)
-

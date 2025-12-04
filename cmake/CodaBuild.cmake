@@ -9,7 +9,6 @@
 #   coda_generate_module_config_header  - generate headers for C or C++ modules
 #   coda_add_module                     - C or C++ modules
 #   coda_add_plugin                     - dynamic library plugins
-#   coda_add_swig_python_module         - SWIG Python modules
 
 include(CheckCXXSourceCompiles)
 include(CheckIncludeFile)
@@ -36,8 +35,6 @@ function(coda_show_compile_options)
         message("CMAKE_C_FLAGS${suffix}=${CMAKE_C_FLAGS${suffix}}")
         message("CMAKE_CXX_FLAGS${suffix}=${CMAKE_CXX_FLAGS${suffix}}")
     endforeach()
-
-    message("CMAKE_SWIG_FLAGS=${CMAKE_SWIG_FLAGS}")
 endfunction()
 
 # set the appropriate CRT link flags for MSVC builds
@@ -45,7 +42,7 @@ macro(coda_setup_msvc_crt)
     if (CONAN_PACKAGE_NAME)
         # conan handles this
     else()
-        set(STATIC_CRT OFF CACHE BOOL "use static CRT library /MT, or /MTd for Debug (/MD or /MDd if off)")
+        option(STATIC_CRT "use static CRT library /MT, or /MTd for Debug (/MD or /MDd if off)" OFF)
         if (STATIC_CRT)
             set(CODA_MSVC_RUNTIME "/MT")
         else()
@@ -167,8 +164,10 @@ macro(coda_initialize_build)
         string(REGEX REPLACE "/EHsc" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
         add_compile_options(/EHs /bigobj)
 
+        # https://learn.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-170
+        add_compile_options(/Zc:__cplusplus) # updated __cplusplus macro
+
         add_definitions(
-            -DWIN32_LEAN_AND_MEAN
             -DNOMINMAX
             -D_USE_MATH_DEFINES
         )
@@ -332,12 +331,13 @@ function(coda_fetch_driver)
         FetchContent_Declare(${target_name}
             URL "${CMAKE_CURRENT_SOURCE_DIR}/${ARG_ARCHIVE}"
             URL_HASH ${ARG_HASH}
+            EXCLUDE_FROM_ALL
         )
         FetchContent_GetProperties(${target_name})
         # The returned properties use the lower-cased name
         string(TOLOWER ${target_name} target_name_lc)
         if (NOT ${target_name_lc}_POPULATED) # This makes sure we only fetch once.
-            message("Populating content for external dependency ${driver_name}")
+            message("Populating content for external dependency ${ARG_NAME}")
             # Now (at configure time) unpack the content.
             FetchContent_Populate(${target_name})
             # Remember where we put stuff
@@ -382,6 +382,7 @@ function(coda_add_tests)
             "DEPS;SOURCES;ARGS;FILTER_LIST"  # multi args
             "${ARGN}"
         )
+
         if (ARG_UNPARSED_ARGUMENTS)
             message(FATAL_ERROR "received unexpected argument(s): ${ARG_UNPARSED_ARGUMENTS}")
         endif()
@@ -411,7 +412,7 @@ function(coda_add_tests)
             add_custom_target(${test_group_tgt})
         endif()
 
-        list(APPEND ARG_DEPS ${ARG_MODULE_NAME}-${TARGET_LANGUAGE} TestCase)
+        list(APPEND ARG_DEPS ${ARG_MODULE_NAME}-${TARGET_LANGUAGE} Catch2::Catch2WithMain)
 
         # get all interface libraries and include directories from the dependencies
         foreach(dep ${ARG_DEPS})
@@ -573,8 +574,8 @@ function(coda_add_module MODULE_NAME)
 
     # Set up install destination for headers
     if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${CODA_STD_PROJECT_INCLUDE_DIR}")
-        install(DIRECTORY "${CODA_STD_PROJECT_INCLUDE_DIR}/"
-                DESTINATION "${CODA_STD_PROJECT_INCLUDE_DIR}/"
+        install(DIRECTORY "${CODA_STD_PROJECT_INCLUDE_DIR}"
+                DESTINATION "${CODA_STD_PROJECT_INCLUDE_DIR}"
                 ${CODA_INSTALL_OPTION}
                 FILES_MATCHING
                     PATTERN "*.in" EXCLUDE
@@ -594,118 +595,4 @@ function(coda_add_module MODULE_NAME)
     #    install(FILES ${PROJECT_BINARY_DIR}/${target_name}_export.h
     #            DESTINATION ${CODA_STD_PROJECT_INCLUDE_DIR})
     #endif()
-endfunction()
-
-
-# Add a SWIG Python module to the build
-#
-# Single value arguments:
-#   TARGET          - Name of the CMake target to build the Python module
-#   MODULE_NAME     - Name of the module within Python
-#   INPUT           - Source file (.i) from which to generate the SWIG bindings
-#   PACKAGE         - Name of the package to which this module is added
-#
-# Multi value arguments:
-#   MODULE_DEPS     - List of compiled module dependencies for the library
-#   PYTHON_DEPS     - List of Python module dependencies for the library
-#
-function(coda_add_swig_python_module)
-    cmake_parse_arguments(
-        "ARG"                               # prefix
-        ""                                  # options
-        "TARGET;MODULE_NAME;INPUT;PACKAGE"  # single args
-        "MODULE_DEPS;PYTHON_DEPS"           # multi args
-        "${ARGN}"
-    )
-    if (NOT ARG_PACKAGE)
-        message(FATAL_ERROR "package must be specified for Python module ${ARG_TARGET}")
-    endif()
-
-    set(swig_include_dirs
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/source>"
-        "$<BUILD_INTERFACE:${CODA-OSS_SWIG_INCLUDE_DIR}>" # this one is for downstream projects
-    )
-    # determine the necessary SWIG include directories from the Python dependencies
-    foreach(dep ${ARG_PYTHON_DEPS})
-        get_property(dep_swig_include_dirs TARGET ${dep}
-                     PROPERTY SWIG_INCLUDE_DIRECTORIES)
-        list(APPEND swig_include_dirs ${dep_swig_include_dirs})
-    endforeach()
-
-    if (WIN32)
-        set(swig_compile_defs WIN32=1 _WIN32=1)
-        if (CMAKE_GENERATOR_PLATFORM STREQUAL x64)
-            list(APPEND swig_compile_defs _WIN64=1)
-        endif()
-    elseif (UNIX)
-        set(swig_compile_defs _POSIX_C_SOURCE=200809L)
-    endif()
-
-    set_property(SOURCE ${ARG_INPUT}
-                 PROPERTY GENERATED_COMPILE_DEFINITIONS ${swig_compile_defs})
-    set_property(SOURCE ${ARG_INPUT} PROPERTY USE_TARGET_INCLUDE_DIRECTORIES ON)
-    set_property(SOURCE ${ARG_INPUT} PROPERTY CPLUSPLUS ON)
-    set_property(SOURCE ${ARG_INPUT} PROPERTY SWIG_MODULE_NAME ${ARG_MODULE_NAME})
-    # where the generated Python files are written
-    set(CMAKE_SWIG_OUTDIR "${CMAKE_CURRENT_SOURCE_DIR}/source/generated")
-    # where the generated C/C++ files are written
-    set(SWIG_OUTFILE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source/generated")
-
-    if (SWIG_FOUND)
-        swig_add_library(${ARG_TARGET} LANGUAGE python SOURCES ${ARG_INPUT})
-        set_property(TARGET ${ARG_TARGET} PROPERTY
-            SWIG_INCLUDE_DIRECTORIES ${swig_include_dirs})
-        set_property(TARGET ${ARG_TARGET} PROPERTY
-            SWIG_GENERATED_INCLUDE_DIRECTORIES ${Python_INCLUDE_DIRS})
-        set_property(TARGET ${ARG_TARGET} PROPERTY
-            SWIG_COMPILE_DEFINITIONS ${swig_compile_defs})
-    else()
-        # use saved SWIG outputs in repo
-
-        # this is the naming convention for waf, use for now since the
-        # waf generated sources are committed to the repo
-        set(source "source/generated/${ARG_MODULE_NAME}_wrap.cxx")
-        if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${source}")
-            # this is the naming convention for CMake
-            # maybe switch this to the default in the future
-            string(REPLACE "-python" "" source ${ARG_TARGET})
-            string(REPLACE "." "_" source ${source})
-            set(source "source/generated/${source}PYTHON_wrap.cxx")
-        endif()
-        message("using pre-generated SWIG source for ${ARG_TARGET}: ${source}")
-        add_library(${ARG_TARGET} MODULE ${source})
-        target_include_directories(${ARG_TARGET} PRIVATE ${Python_INCLUDE_DIRS})
-
-        # extra settings from UseSWIG.cmake
-        set_target_properties(${ARG_TARGET} PROPERTIES NO_SONAME ON)
-        set_target_properties(${ARG_TARGET} PROPERTIES PREFIX "_")
-        if(WIN32 AND NOT CYGWIN)
-            set_target_properties(${ARG_TARGET} PROPERTIES SUFFIX ".pyd")
-        endif()
-    endif()
-
-    target_link_libraries(${ARG_TARGET} PRIVATE
-        ${ARG_MODULE_DEPS}
-        ${Python_LIBRARIES})
-    set_property(TARGET ${ARG_TARGET} PROPERTY
-        LIBRARY_OUTPUT_NAME ${ARG_MODULE_NAME})
-
-    # install the compiled extension library
-    install(TARGETS ${ARG_TARGET}
-            EXPORT ${CODA_EXPORT_SET_NAME}
-            DESTINATION "${CODA_PYTHON_SITE_PACKAGES}/${ARG_PACKAGE}"
-            ${CODA_INSTALL_OPTION})
-
-    # install the python scripts
-    file(GLOB sources_py
-        "${CMAKE_CURRENT_SOURCE_DIR}/source/*.py"
-        "${CMAKE_CURRENT_SOURCE_DIR}/source/generated/*.py")
-    install(FILES ${sources_py}
-            DESTINATION "${CODA_PYTHON_SITE_PACKAGES}/${ARG_PACKAGE}"
-            ${CODA_INSTALL_OPTION})
-
-    # install the swig interface file, may be needed by downstream projects
-    install(FILES ${ARG_INPUT}
-            DESTINATION "${CODA_STD_PROJECT_INCLUDE_DIR}/swig"
-            ${CODA_INSTALL_OPTION})
 endfunction()

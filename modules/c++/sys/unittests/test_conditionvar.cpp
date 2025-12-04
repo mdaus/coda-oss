@@ -23,49 +23,49 @@
 #include <sys/ConditionVar.h>
 #include <mt/CriticalSection.h>
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 typedef mt::CriticalSection<sys::Mutex> CriticalSection;
 
-TEST_CASE(testDefaultConstructor)
+TEST_CASE("testDefaultConstructor")
 {
     sys::ConditionVar cond;
-    TEST_SUCCESS;
+    SUCCEED();
 
     cond.acquireLock();
-    TEST_SUCCESS;
+    SUCCEED();
 
     cond.dropLock();
-    TEST_SUCCESS;
+    SUCCEED();
 }
 
-TEST_CASE(testParameterizedConstructor)
+TEST_CASE("testParameterizedConstructor")
 {
     sys::Mutex mutex;
-    TEST_SUCCESS;
+    SUCCEED();
 
     sys::ConditionVar cond(mutex);
-    TEST_SUCCESS;
+    SUCCEED();
 
     cond.acquireLock();
-    TEST_SUCCESS;
+    SUCCEED();
 
     cond.dropLock();
-    TEST_SUCCESS;
+    SUCCEED();
 }
 
-TEST_CASE(testMultipleTimeouts)
+TEST_CASE("testMultipleTimeouts")
 {
     sys::Mutex mutex;
-    TEST_SUCCESS;
+    SUCCEED();
 
     sys::ConditionVar cond(mutex);
-    TEST_SUCCESS;
+    SUCCEED();
 
     for (size_t ii = 0; ii < 5; ++ii)
     {
         CriticalSection scopedLock(mutex);
-        TEST_SUCCESS;
+        SUCCEED();
         try
         {
             cond.wait(0.001);
@@ -76,16 +76,9 @@ TEST_CASE(testMultipleTimeouts)
     }
     {
         CriticalSection scopedLock(mutex);
-        TEST_SUCCESS;
+        SUCCEED();
 
         cond.broadcast();
-        TEST_SUCCESS;
+        SUCCEED();
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testDefaultConstructor);
-    TEST_CHECK(testParameterizedConstructor);
-    TEST_CHECK(testMultipleTimeouts);
-    )
-

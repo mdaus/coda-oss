@@ -22,9 +22,9 @@
 
 #include <algorithm>
 #include <iterator>
-#include <std/filesystem>
-#include <std/memory>
-#include <std/string>
+#include <filesystem>
+
+#include <string>
 #include <regex>
 #include <tuple> // std::ignore
 
@@ -178,7 +178,7 @@ ValidatorXerces::ValidatorXerces(
     mSchemaPool->lockPool();
 }
 
-std::vector<coda_oss::filesystem::path> ValidatorXerces::loadSchemas(const std::vector<coda_oss::filesystem::path>& schemaPaths, bool recursive)
+std::vector<std::filesystem::path> ValidatorXerces::loadSchemas(const std::vector<std::filesystem::path>& schemaPaths, bool recursive)
 {
     // load our schemas --
     // search each directory for schemas
@@ -252,7 +252,7 @@ bool ValidatorXerces::validate_(const std::u8string& xml,
     return (!mErrorHandler->getErrorLog().empty());
 }
 
-static coda_oss::u8string encodeXml(const std::string& xml)
+static std::u8string encodeXml(const std::string& xml)
 {
     // The XML might contain a specific encoding, if it does;
     // we want to use it, otherwise we'll corrupt the data.
@@ -262,7 +262,7 @@ static coda_oss::u8string encodeXml(const std::string& xml)
     std::cmatch m;
     if (std::regex_search(xml.c_str(), m, reUtf8))
     {
-        return str::str<coda_oss::u8string>(xml);
+        return str::str<std::u8string>(xml);
     }
 
     // Maybe this is poor XML with Windows-1252 encoding :-(
@@ -291,7 +291,7 @@ bool ValidatorXerces::validate(const std::string& xml,
     // Must be Windows-1252 on Linux.
     return validate(str::str<str::W1252string>(xml), xmlID, errors);
 }
-bool ValidatorXerces::validate(const coda_oss::u8string& xml,
+bool ValidatorXerces::validate(const std::u8string& xml,
                                const std::string& xmlID,
                                std::vector<ValidationInfo>& errors) const
 {

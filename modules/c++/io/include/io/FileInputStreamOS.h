@@ -29,7 +29,7 @@
 
 #include "except/Exception.h"
 #include "sys/File.h"
-#include "sys/filesystem.h"
+#include <filesystem>
 #include "io/InputStream.h"
 #include "io/SeekableStreams.h"
 
@@ -83,7 +83,7 @@ public:
                      sys::File::READ_ONLY,
                      sys::File::EXISTING);
     }
-    explicit FileInputStreamOS(const coda_oss::filesystem::path& inputFile) :
+    explicit FileInputStreamOS(const std::filesystem::path& inputFile) :
         FileInputStreamOS(inputFile.string()) { }
     FileInputStreamOS(const char* inputFile) : // "file.txt" could be either std::string or std::filesystem::path
         FileInputStreamOS(std::string(inputFile))  {  }

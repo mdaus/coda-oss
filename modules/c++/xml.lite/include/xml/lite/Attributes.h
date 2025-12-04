@@ -32,7 +32,7 @@
 #include "sys/Conf.h"
 #include "except/Exception.h"
 #include "str/Convert.h"
-#include "gsl/gsl.h"
+#include "gsl/gsl"
 
 #include "xml/lite/QName.h"
 /*!
@@ -417,9 +417,6 @@ private:
     Attributes_T mAttributes;
 };
 
-#ifndef SWIG
-// The (old) version of SWIG we're using doesn't like certain C++11 features.
-
 /*!
  * Look up an attribute's value by an arbitrary key.
  * \param key  The key for the attribute we want
@@ -620,7 +617,6 @@ inline bool setValue(Attributes& attributes, const Uri & uri, const std::string 
 {
     return setValue(attributes, uri, localName, value, details::toString<T>);
 }
-#endif // SWIG
 
 }
 }

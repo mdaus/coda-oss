@@ -3,7 +3,7 @@ set(MODULE_NAME str)
 coda_add_module(
     ${MODULE_NAME}
     VERSION 1.0
-    DEPS types-c++ except-c++ coda_oss-c++)
+    DEPS types-c++ except-c++)
 
 coda_add_tests(
     MODULE_NAME ${MODULE_NAME}
@@ -11,5 +11,5 @@ coda_add_tests(
 coda_add_tests(
     MODULE_NAME ${MODULE_NAME}
     DIRECTORY "unittests"
-    DEPS sys-c++ std-c++
+    DEPS sys-c++
     UNITTEST)

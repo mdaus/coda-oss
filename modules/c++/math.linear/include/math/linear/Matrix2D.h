@@ -25,11 +25,11 @@
 #include <cmath>
 #include <algorithm>
 #include <functional>
-#include <std/memory>
+
 #include <cstddef>
 
 #include <import/sys.h>
-#include <import/gsl.h>
+#include <gsl/gsl>
 #include <mem/ScopedArray.h>
 #include <mem/SharedPtr.h>
 #include <math/linear/MatrixMxN.h>

@@ -20,7 +20,8 @@
  *
  */
 #include <import/math/linear.h>
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 
 typedef math::linear::MatrixMxN<2, 2> Matrix2x2;
 typedef math::linear::MatrixMxN<3, 2> Matrix3x2;
@@ -32,7 +33,7 @@ typedef math::linear::MatrixMxN<5, 5> Matrix5x5;
    for (unsigned int i = 0; i < M; ++i) \
         for (unsigned int j = 0; j < N; ++j)
 
-TEST_CASE(testIdentityMxN)
+TEST_CASE("testIdentityMxN")
 {
     using namespace math::linear;
 
@@ -41,11 +42,11 @@ TEST_CASE(testIdentityMxN)
     {
         if (i == j)
         {
-            TEST_ASSERT_ALMOST_EQ(A(i, j), 1);
+            CHECK_THAT(A(i, j), Catch::Matchers::WithinAbs(1, 0.0001));
         }
         else
         {
-            TEST_ASSERT_ALMOST_EQ(A(i, j), 0);
+            CHECK_THAT(A(i, j), Catch::Matchers::WithinAbs(0, 0.0001));
         }
     }
     Matrix4x4 B = identityMatrix<4, double>();
@@ -53,19 +54,19 @@ TEST_CASE(testIdentityMxN)
     {
         if (i == j)
         {
-            TEST_ASSERT_ALMOST_EQ(B(i, j), 1);
+            CHECK_THAT(B(i, j), Catch::Matchers::WithinAbs(1, 0.0001));
         }
         else
         {
-            TEST_ASSERT_ALMOST_EQ(B(i, j), 0);
+            CHECK_THAT(B(i, j), Catch::Matchers::WithinAbs(0, 0.0001));
         }
     }
     Matrix2D<> A2 = identityMatrix<double>(3);
-    TEST_ASSERT_EQ(A, A2);
+    CHECK(A == A2);
 
 }
 
-TEST_CASE(testScaleMultiplyMxN)
+TEST_CASE("testScaleMultiplyMxN")
 {
     using namespace math::linear;
 
@@ -76,14 +77,14 @@ TEST_CASE(testScaleMultiplyMxN)
 
     foreach_ij(3, 2)
     {
-        TEST_ASSERT_ALMOST_EQ(B(i, j), 0.5);
+        CHECK_THAT(B(i, j), Catch::Matchers::WithinAbs(0.5, 0.0001L));
     }
     
     Matrix3x2 C = A * B;
-    TEST_ASSERT_EQ(B, C);
+    CHECK(B == C);
 }
 
-TEST_CASE(testNegateMxN)
+TEST_CASE("testNegateMxN")
 {
     using namespace math::linear;
 
@@ -97,10 +98,10 @@ TEST_CASE(testNegateMxN)
             C[ii][jj] = -C[ii][jj];
         }
     }
-    TEST_ASSERT_EQ(B, C);
+    CHECK(B == C);
 }
 
-TEST_CASE(testNegate)
+TEST_CASE("testNegate")
 {
     using namespace math::linear;
 
@@ -114,10 +115,10 @@ TEST_CASE(testNegate)
             C[ii][jj] = -C[ii][jj];
         }
     }
-    TEST_ASSERT_EQ(B, C);
+    CHECK(B == C);
 }
 
-TEST_CASE(testInvert2x2Complex)
+TEST_CASE("testInvert2x2Complex")
 {
     using namespace math::linear;
 
@@ -144,10 +145,10 @@ TEST_CASE(testInvert2x2Complex)
 
     foreach_ij(2, 2)
     {
-        TEST_ASSERT_ALMOST_EQ_EPS(std::abs(Qinv(i, j)), std::abs(C(i, j)), .0001);
+        CHECK_THAT(std::abs(Qinv(i, j)), Catch::Matchers::WithinAbs(std::abs(C(i, j)), .0001L));
     }
 }
-TEST_CASE(testInvert2x2)
+TEST_CASE("testInvert2x2")
 {
     using namespace math::linear;
 
@@ -169,10 +170,10 @@ TEST_CASE(testInvert2x2)
 
     foreach_ij(2, 2)
     {
-        TEST_ASSERT_ALMOST_EQ_EPS(Qinv(i, j), C(i, j), .0001);
+        CHECK_THAT(Qinv(i, j), Catch::Matchers::WithinAbs(C(i, j), .0001L));
     }
 }
-TEST_CASE(testInvert3x3)
+TEST_CASE("testInvert3x3")
 {
     using namespace math::linear;
 
@@ -198,12 +199,12 @@ TEST_CASE(testInvert3x3)
 
     foreach_ij(3, 3)
     {
-        TEST_ASSERT_ALMOST_EQ_EPS(Qinv(i, j), C(i, j), .0001);
+        CHECK_THAT(Qinv(i, j), Catch::Matchers::WithinAbs(C(i, j), .0001L));
     }
   
 }
 
-TEST_CASE(testInvert4x4)
+TEST_CASE("testInvert4x4")
 {
     using namespace math::linear;
 
@@ -230,13 +231,13 @@ TEST_CASE(testInvert4x4)
     Matrix2D<> Q2(4, 4, q);
     Matrix2D<> Q2inv = inverse<double>(Q2);
 
-    TEST_ASSERT_EQ(Qinv, Q2inv);
+    CHECK(Qinv == Q2inv);
 
     Matrix4x4 Qtruth(qinv);
 
     foreach_ij(4, 4)
     {
-        TEST_ASSERT_ALMOST_EQ_EPS(Qinv(i, j), Qtruth(i, j), 0.00001);
+        CHECK_THAT(Qinv(i, j), Catch::Matchers::WithinAbs(Qtruth(i, j), 0.00001L));
     }
 
     double m[] =
@@ -258,12 +259,12 @@ TEST_CASE(testInvert4x4)
     MatrixMxN<4, 4> Minv = inverse<4, double>(M);
     foreach_ij(4, 4)
     {
-        TEST_ASSERT_ALMOST_EQ_EPS(Minv(i, j), Mtruth(i, j), 0.0001);
+        CHECK_THAT(Minv(i, j), Catch::Matchers::WithinAbs(Mtruth(i, j), 0.0001L));
     }
 
 }
 
-TEST_CASE(testOrthoTranspose5x5)
+TEST_CASE("testOrthoTranspose5x5")
 {
     using namespace math::linear;
 
@@ -283,10 +284,10 @@ TEST_CASE(testOrthoTranspose5x5)
     Matrix5x5 I = identityMatrix<5, double>();
 
     Matrix5x5 sanitized = tidy(Qt * Q, 0.0001);
-    TEST_ASSERT_EQ(sanitized, I);
+    CHECK(sanitized == I);
    
     sanitized = tidy(Q * Qt, 0.0001);
-    TEST_ASSERT_EQ(sanitized, I);
+    CHECK(sanitized == I);
 
     // Now do the same for the Matrix2D<>
     Matrix2D<> Q2(5, 5, q);
@@ -294,11 +295,11 @@ TEST_CASE(testOrthoTranspose5x5)
 
     Matrix2D<> sanitized2 = tidy(Q2 * Q2t, 0.0001);
 
-    TEST_ASSERT_EQ(sanitized, sanitized2);
+    CHECK(sanitized == sanitized2);
 
 }
 
-TEST_CASE(testInvert5x5)
+TEST_CASE("testInvert5x5")
 {
     using namespace math::linear;
 
@@ -325,28 +326,28 @@ TEST_CASE(testInvert5x5)
     Matrix5x5 Qinv = inverse(Q);
     foreach_ij(5, 5)
     {
-        TEST_ASSERT_ALMOST_EQ_EPS(Qinv(i, j), C(i, j), .00001);
+        CHECK_THAT(Qinv(i, j), Catch::Matchers::WithinAbs(C(i, j), .00001L));
     }
     
     
     Matrix5x5 M = tidy(Q * Qinv, 0.05);
     Matrix5x5 I = identityMatrix<5, double>();
-    TEST_ASSERT_EQ(M, I);
+    CHECK(M == I);
 
     Matrix2D<> Q2(5, 5, q);
     foreach_ij(5, 5)
     {
-        TEST_ASSERT_ALMOST_EQ(Q2(i, j), Q(i, j));
+        CHECK_THAT(Q2(i, j), Catch::Matchers::WithinAbs(Q(i, j), 0.0001L));
     }
     
     Matrix2D<> Q2inv = inverse(Q2);
     foreach_ij(5, 5)
     {
-        TEST_ASSERT_ALMOST_EQ(Q2inv(i, j), Qinv(i, j));
+        CHECK_THAT(Q2inv(i, j), Catch::Matchers::WithinAbs(Qinv(i, j), 0.0001L));
     }
 }
 
-TEST_CASE(testSTLVectorAssign)
+TEST_CASE("testSTLVectorAssign")
 {
     using namespace math::linear;
 
@@ -356,38 +357,38 @@ TEST_CASE(testSTLVectorAssign)
 
     Matrix2x2 A(v);
     
-    TEST_ASSERT_ALMOST_EQ(A(0,0), 2);
-    TEST_ASSERT_ALMOST_EQ(A(0,1), 4);
-    TEST_ASSERT_ALMOST_EQ(A(1,0), 6);
-    TEST_ASSERT_ALMOST_EQ(A(1,1), 8);
+    CHECK_THAT(A(0,0), Catch::Matchers::WithinAbs(2, 0.0001));
+    CHECK_THAT(A(0,1), Catch::Matchers::WithinAbs(4, 0.0001));
+    CHECK_THAT(A(1,0), Catch::Matchers::WithinAbs(6, 0.0001));
+    CHECK_THAT(A(1,1), Catch::Matchers::WithinAbs(8, 0.0001));
     
     Matrix2D<> A2(2, 2, v);
     foreach_ij(2, 2)
     {
-        TEST_ASSERT_ALMOST_EQ(A(i, j), A2(i, j));
+        CHECK_THAT(A(i, j), Catch::Matchers::WithinAbs(A2(i, j), 0.0001L));
     }
 
     Matrix3x3 B(v);
 
-    TEST_ASSERT_ALMOST_EQ(B(0,0), 2);
-    TEST_ASSERT_ALMOST_EQ(B(0,1), 4);
-    TEST_ASSERT_ALMOST_EQ(B(0,2), 6);
-    TEST_ASSERT_ALMOST_EQ(B(1,0), 8);
-    TEST_ASSERT_ALMOST_EQ(B(1,1), 10);
-    TEST_ASSERT_ALMOST_EQ(B(1,2), 12);
-    TEST_ASSERT_ALMOST_EQ(B(2,0), 14);
-    TEST_ASSERT_ALMOST_EQ(B(2,1), 16);
-    TEST_ASSERT_ALMOST_EQ(B(2,2), 18);
+    CHECK_THAT(B(0,0), Catch::Matchers::WithinAbs(2, 0.0001));
+    CHECK_THAT(B(0,1), Catch::Matchers::WithinAbs(4, 0.0001));
+    CHECK_THAT(B(0,2), Catch::Matchers::WithinAbs(6, 0.0001));
+    CHECK_THAT(B(1,0), Catch::Matchers::WithinAbs(8, 0.0001));
+    CHECK_THAT(B(1,1), Catch::Matchers::WithinAbs(10, 0.0001));
+    CHECK_THAT(B(1,2), Catch::Matchers::WithinAbs(12, 0.0001));
+    CHECK_THAT(B(2,0), Catch::Matchers::WithinAbs(14, 0.0001));
+    CHECK_THAT(B(2,1), Catch::Matchers::WithinAbs(16, 0.0001));
+    CHECK_THAT(B(2,2), Catch::Matchers::WithinAbs(18, 0.0001));
 
     Matrix2D<> B2(3, 3, v);
    
     foreach_ij(3, 3)
     {
-        TEST_ASSERT_ALMOST_EQ(B(i, j), B2(i, j));
+        CHECK_THAT(B(i, j), Catch::Matchers::WithinAbs(B2(i, j), 0.0001L));
     }
 }
 
-TEST_CASE(testPtrAssign)
+TEST_CASE("testPtrAssign")
 {
     using namespace math::linear;
 
@@ -395,37 +396,37 @@ TEST_CASE(testPtrAssign)
 
     Matrix2x2 A(d);
     
-    TEST_ASSERT_ALMOST_EQ(A(0,0), 2);
-    TEST_ASSERT_ALMOST_EQ(A(0,1), 4);
-    TEST_ASSERT_ALMOST_EQ(A(1,0), 6);
-    TEST_ASSERT_ALMOST_EQ(A(1,1), 8);
+    CHECK_THAT(A(0,0), Catch::Matchers::WithinAbs(2.0L, 0.0001));
+    CHECK_THAT(A(0,1), Catch::Matchers::WithinAbs(4.0L, 0.0001));
+    CHECK_THAT(A(1,0), Catch::Matchers::WithinAbs(6.0L, 0.0001));
+    CHECK_THAT(A(1,1), Catch::Matchers::WithinAbs(8.0L, 0.0001));
     
     Matrix2D<> A2(2, 2, d);
     foreach_ij(2, 2)
     {
-        TEST_ASSERT_ALMOST_EQ(A(i, j), A2(i, j));
+        CHECK_THAT(A(i, j), Catch::Matchers::WithinAbs(A2(i, j), 0.0001L));
     }
     Matrix3x3 B(d);
 
-    TEST_ASSERT_ALMOST_EQ(B(0,0), 2);
-    TEST_ASSERT_ALMOST_EQ(B(0,1), 4);
-    TEST_ASSERT_ALMOST_EQ(B(0,2), 6);
-    TEST_ASSERT_ALMOST_EQ(B(1,0), 8);
-    TEST_ASSERT_ALMOST_EQ(B(1,1), 10);
-    TEST_ASSERT_ALMOST_EQ(B(1,2), 12);
-    TEST_ASSERT_ALMOST_EQ(B(2,0), 14);
-    TEST_ASSERT_ALMOST_EQ(B(2,1), 16);
-    TEST_ASSERT_ALMOST_EQ(B(2,2), 18);
+    CHECK_THAT(B(0,0), Catch::Matchers::WithinAbs(2.0L, 0.0001));
+    CHECK_THAT(B(0,1), Catch::Matchers::WithinAbs(4.0L, 0.0001));
+    CHECK_THAT(B(0,2), Catch::Matchers::WithinAbs(6.0L, 0.0001));
+    CHECK_THAT(B(1,0), Catch::Matchers::WithinAbs(8.0L, 0.0001));
+    CHECK_THAT(B(1,1), Catch::Matchers::WithinAbs(10.0L, 0.0001));
+    CHECK_THAT(B(1,2), Catch::Matchers::WithinAbs(12.0L, 0.0001));
+    CHECK_THAT(B(2,0), Catch::Matchers::WithinAbs(14.0L, 0.0001));
+    CHECK_THAT(B(2,1), Catch::Matchers::WithinAbs(16.0L, 0.0001));
+    CHECK_THAT(B(2,2), Catch::Matchers::WithinAbs(18.0L, 0.0001));
     Matrix2D<> B2(3, 3, d);
    
     foreach_ij(3, 3)
     {
-        TEST_ASSERT_ALMOST_EQ(B(i, j), B2(i, j));
+        CHECK_THAT(B(i, j), Catch::Matchers::WithinAbs(B2(i, j), 0.0001L));
     }
   
 }
 
-TEST_CASE(testPermuteInvert2x2)
+TEST_CASE("testPermuteInvert2x2")
 {
     using namespace math::linear;
 
@@ -435,30 +436,30 @@ TEST_CASE(testPermuteInvert2x2)
 
     Matrix2x2 I = identityMatrix<2, double>();
     Matrix2x2 G = I.permute(p);
-    TEST_ASSERT_ALMOST_EQ(G(0,0), 0);
-    TEST_ASSERT_ALMOST_EQ(G(0,1), 1);
-    TEST_ASSERT_ALMOST_EQ(G(1,1), 0);
-    TEST_ASSERT_ALMOST_EQ(G(1,0), 1);
+    CHECK_THAT(G(0,0), Catch::Matchers::WithinAbs(0, 0.0001));
+    CHECK_THAT(G(0,1), Catch::Matchers::WithinAbs(1, 0.0001));
+    CHECK_THAT(G(1,1), Catch::Matchers::WithinAbs(0, 0.0001));
+    CHECK_THAT(G(1,0), Catch::Matchers::WithinAbs(1, 0.0001));
     Matrix2x2 H = inverse<2, double>(G);
 
     Matrix2x2 F = H.permute(p);
-    TEST_ASSERT_EQ(I, F);
+    CHECK(I == F);
 
     Matrix2D<> I2 = identityMatrix<double>(2);
-    TEST_ASSERT_EQ(I, I2);
+    CHECK(I == I2);
 
     std::vector<size_t> p2(2, 0);
     p2[0] = 1;
     Matrix2D<> G2 = I2.permute(p2);
-    TEST_ASSERT_EQ(G2, G);
+    CHECK(G2 == G);
 
     Matrix2D<> H2 = inverse<double>(G2);
 
-    TEST_ASSERT_EQ(H, H2);
+    CHECK(H == H2);
 
 }
 
-TEST_CASE(testSetCols)
+TEST_CASE("testSetCols")
 {
     using namespace math::linear;
 
@@ -476,12 +477,12 @@ TEST_CASE(testSetCols)
     A2.col(1, &v[0]);
     foreach_ij(3, 2)
     {
-        TEST_ASSERT_ALMOST_EQ(A(i, j), i + 1);
-        TEST_ASSERT_ALMOST_EQ(A2(i, j), i + 1);
+        CHECK_THAT(A(i, j), Catch::Matchers::WithinAbs(i + 1, 0.0001));
+        CHECK_THAT(A2(i, j), Catch::Matchers::WithinAbs(i + 1, 0.0001));
     }
 }
 
-TEST_CASE(testSetRows)
+TEST_CASE("testSetRows")
 {
     using namespace math::linear;
 
@@ -503,12 +504,12 @@ TEST_CASE(testSetRows)
     
     foreach_ij(3, 2)
     {
-        TEST_ASSERT_ALMOST_EQ(A(i, j), j + 1);
-        TEST_ASSERT_ALMOST_EQ(A2(i, j), j + 1);
+        CHECK_THAT(A(i, j), Catch::Matchers::WithinAbs(j + 1, 0.0001));
+        CHECK_THAT(A2(i, j), Catch::Matchers::WithinAbs(j + 1, 0.0001));
     }
     //std::cout << A << std::endl;
 }
-TEST_CASE(testGrabCols)
+TEST_CASE("testGrabCols")
 {
     using namespace math::linear;
 
@@ -527,12 +528,12 @@ TEST_CASE(testGrabCols)
         
         for (unsigned int i = 0; i < A2.rows(); ++i)
         {
-            TEST_ASSERT_ALMOST_EQ(cols[i], cols2[i]);
+            CHECK_THAT(cols[i], Catch::Matchers::WithinAbs(cols2[i], 0.0001));
         }   
     }
 }
 
-TEST_CASE(testGrabRows)
+TEST_CASE("testGrabRows")
 {
     using namespace math::linear;
 
@@ -547,19 +548,19 @@ TEST_CASE(testGrabRows)
     {
         double* rows = A.row(i);
         double* rows2 = A2.row(i);
-        TEST_ASSERT_EQ(A[i], rows);
-        TEST_ASSERT_EQ(A2[i], rows2);
+        CHECK(A[i] == rows);
+        CHECK(A2[i] == rows2);
 
         for (unsigned int j = 0; j < A2.cols(); ++j)
         {
-            TEST_ASSERT_ALMOST_EQ(rows[j], rows2[j]);
+            CHECK_THAT(rows[j], Catch::Matchers::WithinAbs(rows2[j], 0.0001));
         }   
     }
 }
 
 
 
-TEST_CASE(testArithmeticMxN)
+TEST_CASE("testArithmeticMxN")
 {
     using namespace math::linear;
 
@@ -579,47 +580,24 @@ TEST_CASE(testArithmeticMxN)
 
     Matrix2x2 G = (D * E) - F;
 
-    TEST_ASSERT_ALMOST_EQ(G(0,0), 7);
-    TEST_ASSERT_ALMOST_EQ(G(0,1), 6);
-    TEST_ASSERT_ALMOST_EQ(G(1,1), 7);
-    TEST_ASSERT_ALMOST_EQ(G(1,0), 9);
+    CHECK_THAT(G(0,0), Catch::Matchers::WithinAbs(7, 0.0001));
+    CHECK_THAT(G(0,1), Catch::Matchers::WithinAbs(6, 0.0001));
+    CHECK_THAT(G(1,1), Catch::Matchers::WithinAbs(7, 0.0001));
+    CHECK_THAT(G(1,0), Catch::Matchers::WithinAbs(9, 0.0001));
 
     Matrix2D<> D2(2, 2, 1);
     D2(0, 0) = 2;
     D2(1, 1) = 3;
-    TEST_ASSERT_EQ(D, D2);
+    CHECK(D == D2);
     // 3 2
     // 2 2
     Matrix2D<> E2(2, 2, 2);
     E2(0, 0) = 3;
-    TEST_ASSERT_EQ(E, E2);
+    CHECK(E == E2);
     
     Matrix2D<> F2 = identityMatrix<double>(2);
-    TEST_ASSERT_EQ(F, F2);
+    CHECK(F == F2);
     
     Matrix2D<> G2 = (D2 * E2) - F2;
-    TEST_ASSERT_EQ(G2, G);
-    
-    
+    CHECK(G2 == G);
 }
-
-TEST_MAIN(
-    TEST_CHECK(testIdentityMxN);
-    TEST_CHECK(testScaleMultiplyMxN);
-    TEST_CHECK(testSetRows);
-    TEST_CHECK(testGrabRows);
-    TEST_CHECK(testSetCols);
-    TEST_CHECK(testGrabCols);
-    TEST_CHECK(testArithmeticMxN);
-    TEST_CHECK(testPermuteInvert2x2);
-    TEST_CHECK(testInvert2x2Complex);
-    TEST_CHECK(testInvert2x2);
-    TEST_CHECK(testInvert3x3);
-    TEST_CHECK(testInvert4x4);
-    TEST_CHECK(testInvert5x5);
-    TEST_CHECK(testPtrAssign);
-    TEST_CHECK(testSTLVectorAssign);
-    TEST_CHECK(testOrthoTranspose5x5);
-    TEST_CHECK(testNegateMxN);
-    TEST_CHECK(testNegate);
-    )

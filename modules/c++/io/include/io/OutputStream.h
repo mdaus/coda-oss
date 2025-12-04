@@ -29,9 +29,9 @@
 #include "config/Exports.h"
 #include "sys/Dbg.h"
 #include "sys/Conf.h"
-#include "coda_oss/string.h"
-#include "coda_oss/cstddef.h"
-#include "coda_oss/span.h"
+#include <string>
+#include <cstddef>
+#include <span>
 
 /*!
  * \file OutputStream.h
@@ -64,7 +64,7 @@ struct CODA_OSS_API OutputStream
     {
         write(&b, 1);
     }
-    void write(coda_oss::byte b)
+    void write(std::byte b)
     {
         write(&b, 1);
     }
@@ -75,11 +75,11 @@ struct CODA_OSS_API OutputStream
      */
     void write(const std::string& str)
     {
-        write(coda_oss::span<const std::string::value_type>(str.data(), str.size()));
+        write(std::span<const std::string::value_type>(str.data(), str.size()));
     }
-    void write(const coda_oss::u8string& str)
+    void write(const std::u8string& str)
     {
-        write(coda_oss::span<const coda_oss::u8string::value_type>(str.data(), str.size()));
+        write(std::span<const std::u8string::value_type>(str.data(), str.size()));
     }
 
     /*!
@@ -91,7 +91,7 @@ struct CODA_OSS_API OutputStream
         write(str);
         write('\n');
     }
-    void writeln(const coda_oss::u8string& str)
+    void writeln(const std::u8string& str)
     {
         write(str);
         write('\n');
@@ -107,14 +107,14 @@ struct CODA_OSS_API OutputStream
      */
     virtual void write(const void* buffer, size_t len) = 0;
     template<typename T>
-    void write(coda_oss::span<const T> buffer)
+    void write(std::span<const T> buffer)
     {
         write(buffer.data(), buffer.size_bytes());
     }
     template <typename T>
-    void write(coda_oss::span<T> buffer)
+    void write(std::span<T> buffer)
     {
-        write(coda_oss::span<const T>(buffer.data(), buffer.size()));
+        write(std::span<const T>(buffer.data(), buffer.size()));
     }
 
     /*!

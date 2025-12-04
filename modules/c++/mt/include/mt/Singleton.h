@@ -25,7 +25,7 @@
 #define __MT_SINGLETON_H__
 
 #include <mutex>
-#include <std/memory>
+
 
 #include <import/sys.h>
 #include <config/compiler_extensions.h>

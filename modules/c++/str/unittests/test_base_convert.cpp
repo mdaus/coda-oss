@@ -23,7 +23,7 @@
 #include <wchar.h>
 
 #include <vector>
-#include <std/string>
+#include <string>
 #include <iterator>
 #include <map>
 #if _WIN32
@@ -33,46 +33,39 @@
 #include <config/compiler_extensions.h>
 #include <import/str.h>
 #include <str/Encoding.h>
-#include <gsl/gsl.h>
+#include <gsl/gsl>
 #include <sys/OS.h>
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
-inline static void test_assert_eq(const std::string& testName, const std::u8string& actual, const std::u32string& expected)
+TEST_CASE("testConvert")
 {
-    TEST_ASSERT_EQ(actual, str::to_u8string(expected));
+    CHECK(str::toType<long long>("0x3BC7", 16) == gsl::narrow<long long>(0x3BC7));
+    CHECK(str::toType<long long>("1101", 2) == gsl::narrow<long long>(13));
+    CHECK(str::toType<long long>("231", 5) == gsl::narrow<long long>(66));
+    CHECK(str::toType<unsigned long long>("0xFFFFFFFFFFFFFFFF", 16) == gsl::narrow<unsigned long long>(0xFFFFFFFFFFFFFFFF));
+    CHECK(str::toType<unsigned long long>("-10", 10) == gsl::narrow_cast<unsigned long long>(-10));
+    CHECK(str::toType<short>("13", 4) == gsl::narrow<short>(7));
 }
 
-TEST_CASE(testConvert)
+TEST_CASE("testBadConvert")
 {
-    TEST_ASSERT_EQ(str::toType<long long>("0x3BC7", 16), gsl::narrow<long long>(0x3BC7));
-    TEST_ASSERT_EQ(str::toType<long long>("1101", 2), gsl::narrow<long long>(13));
-    TEST_ASSERT_EQ(str::toType<long long>("231", 5), gsl::narrow<long long>(66));
-    TEST_ASSERT_EQ(str::toType<unsigned long long>("0xFFFFFFFFFFFFFFFF", 16),
-                   gsl::narrow<unsigned long long>(0xFFFFFFFFFFFFFFFF));
-    TEST_ASSERT_EQ(str::toType<unsigned long long>("-10", 10),
-                   gsl::narrow_cast<unsigned long long>(-10));
-    TEST_ASSERT_EQ(str::toType<short>("13", 4), gsl::narrow<short>(7));
+    CHECK_THROWS(str::toType<long long>("Not a number", 10));
+    CHECK_THROWS(str::toType<long long>("0xFFFFFFFFFFFFFFFF", 16));
+    CHECK_THROWS(str::toType<short>("0xFFFFF", 16));
 }
 
-TEST_CASE(testBadConvert)
+TEST_CASE("testEightBitIntToString")
 {
-    TEST_EXCEPTION(str::toType<long long>("Not a number", 10));
-    TEST_EXCEPTION(str::toType<long long>("0xFFFFFFFFFFFFFFFF", 16));
-    TEST_EXCEPTION(str::toType<short>("0xFFFFF", 16));
+    CHECK(std::to_string(static_cast<uint8_t>(1)) == "1");
+    CHECK(std::to_string(static_cast<int8_t>(2)) == "2");
+    CHECK(std::to_string(static_cast<int8_t>(-2)) == "-2");
 }
 
-TEST_CASE(testEightBitIntToString)
+TEST_CASE("testCharToString")
 {
-    TEST_ASSERT_EQ(std::to_string(static_cast<uint8_t>(1)), "1");
-    TEST_ASSERT_EQ(std::to_string(static_cast<int8_t>(2)), "2");
-    TEST_ASSERT_EQ(std::to_string(static_cast<int8_t>(-2)), "-2");
-}
-
-TEST_CASE(testCharToString)
-{
-    TEST_ASSERT_EQ(str::toString('a'), "a");
-    TEST_ASSERT_EQ(str::toString(static_cast<char>(65)), "A");
+    CHECK(str::toString('a') == "a");
+    CHECK(str::toString(static_cast<char>(65)) == "A");
 }
 
 template<typename T>
@@ -83,13 +76,13 @@ static constexpr std::u8string::value_type cast8(T ch)
     return static_cast<u8ch_t>(ch);
 }
 
-TEST_CASE(test_string_to_u8string_ascii)
+TEST_CASE("test_string_to_u8string_ascii")
 {
     {
         const std::string input = "|\x00";  //  ASCII, "|<NULL>"
         const auto actual = str::to_u8string<str::W1252string>(input);
         const std::u8string expected{cast8('|')}; // '\x00' is the end of the string in C/C++
-        TEST_ASSERT_EQ(actual, expected);
+        CHECK(actual == expected);
     }
     constexpr uint8_t start_of_heading = 0x01;
     constexpr uint8_t delete_character = 0x7f;
@@ -98,42 +91,31 @@ TEST_CASE(test_string_to_u8string_ascii)
         const std::string input { '|', static_cast<std::string::value_type>(ch), '|'};
         const auto actual = str::to_u8string<str::W1252string>(input);
         const std::u8string expected8{cast8('|'), cast8(ch), cast8('|')}; 
-        TEST_ASSERT_EQ(actual, expected8);
+        CHECK(actual == expected8);
         const std::u32string expected{U'|', ch, U'|'};
-        test_assert_eq(testName, actual, expected);
+        CHECK(actual == str::to_u8string(expected));
     }
 }
 
-static void test_string_to_u8string_windows_1252_(const std::string& testName, const std::string& input_)
-{
-    const auto input(str::str<str::W1252string>(input_));
-    const auto actual = str::to_u8string(input);
 
-    // No "expected" to test against as the UTF-8 values for these Windows-1252 characters
-    // are mapped one-by-one.  However, we can test that UTF-8 to Windows-1252
-    // works as that walks through a UTF-8 string which can have 1-, 2-, 3- and 4-bytes
-    // for a single code-point.
-    const auto w1252 = str::to_w1252string(actual.data(), actual.size());
-    TEST_ASSERT(input == w1252);
-}
-TEST_CASE(test_string_to_u8string_windows_1252)
+TEST_CASE("test_string_to_u8string_windows_1252")
 {
     // Windows-1252 only characters must be mapped to UTF-8
     {
-        const std::string input = "|\x80|";  // Windows-1252, "|€|"
+        const std::string input = "|\x80|";  // Windows-1252, "|ï¿½|"
         const auto actual = str::to_u8string<str::W1252string>(input);
-        const std::u8string expected8{cast8('|'), cast8('\xE2'), cast8('\x82'), cast8('\xAC'), cast8('|')};  // UTF-8,  "|€|"
-        TEST_ASSERT_EQ(actual, expected8);
-        const std::u32string expected{U"|\u20AC|"};  // UTF-32,  "|€|"
-        test_assert_eq(testName, actual, expected);
+        const std::u8string expected8{cast8('|'), cast8('\xE2'), cast8('\x82'), cast8('\xAC'), cast8('|')};  // UTF-8,  "|ï¿½|"
+        CHECK(actual == expected8);
+        const std::u32string expected{U"|\u20AC|"};  // UTF-32,  "|ï¿½|"
+        CHECK(actual == str::to_u8string(expected));
     }
     {
-        const std::string input = "|\x9F|";  // Windows-1252, "|Ÿ|"
+        const std::string input = "|\x9F|";  // Windows-1252, "|ï¿½|"
         const auto actual = str::to_u8string<str::W1252string>(input);
-        const std::u8string expected8{cast8('|'), cast8('\xC5'), cast8('\xB8'), cast8('|')};  // UTF-8,  "|Ÿ|"
-        TEST_ASSERT_EQ(actual, expected8);
-        const std::u32string expected{U"|\u0178|"};  // UTF-32,  "|Ÿ|"
-        test_assert_eq(testName, actual, expected);
+        const std::u8string expected8{cast8('|'), cast8('\xC5'), cast8('\xB8'), cast8('|')};  // UTF-8,  "|ï¿½|"
+        CHECK(actual == expected8);
+        const std::u32string expected{U"|\u0178|"};  // UTF-32,  "|ï¿½|"
+        CHECK(actual == str::to_u8string(expected));
     }
     {
         const std::vector<char> undefined{ '\x81', '\x8d', '\x8f', '\x90', '\x9d' };
@@ -141,13 +123,13 @@ TEST_CASE(test_string_to_u8string_windows_1252)
         {
             const std::string input{'|', ch, '|'};
             const auto actual = str::to_u8string<str::W1252string>(input);
-            TEST_ASSERT_TRUE(!actual.empty());
+            CHECK(!actual.empty());
             //const std::u8string expected8{cast8('|'), cast8('\xEF'), cast8('\xBF'), cast8('\xBD'), cast8('|')};  // UTF-8,  "|<REPLACEMENT CHARACTER>|"
             const std::u8string expected8{cast8('|'), cast8(194), cast8(ch), cast8('|')};
-            TEST_ASSERT_EQ(actual, expected8);
+            CHECK(actual == expected8);
             //const std::u32string expected{U"|\ufffd|"};  // UTF-32,  "|<REPLACEMENT CHARACTER>|"
             const auto expected = str::to_u32string(expected8);
-            test_assert_eq(testName, actual, expected);
+            CHECK(actual == str::to_u8string(expected));
         }    
     }
     {
@@ -186,106 +168,190 @@ TEST_CASE(test_string_to_u8string_windows_1252)
         {
             const auto ch = static_cast<std::string::value_type>(ch_);
             const std::string input_{'[', ch, ']'};
-            test_string_to_u8string_windows_1252_(testName, input_);
+            {
+                const auto input(str::str<str::W1252string>(input_));
+                const auto actual = str::to_u8string(input);
+
+                // No "expected" to test against as the UTF-8 values for these Windows-1252 characters
+                // are mapped one-by-one.  However, we can test that UTF-8 to Windows-1252
+                // works as that walks through a UTF-8 string which can have 1-, 2-, 3- and 4-bytes
+                // for a single code-point.
+                const auto w1252 = str::to_w1252string(actual.data(), actual.size());
+                CHECK(input == w1252);
+            }
 
             runningInput1 += ch;
-            test_string_to_u8string_windows_1252_(testName, runningInput1);
+            {
+                const auto input(str::str<str::W1252string>(runningInput1));
+                const auto actual = str::to_u8string(input);
+
+                // No "expected" to test against as the UTF-8 values for these Windows-1252 characters
+                // are mapped one-by-one.  However, we can test that UTF-8 to Windows-1252
+                // works as that walks through a UTF-8 string which can have 1-, 2-, 3- and 4-bytes
+                // for a single code-point.
+                const auto w1252 = str::to_w1252string(actual.data(), actual.size());
+                CHECK(input == w1252);
+            }
 
             runningInput2 += input_;
-            test_string_to_u8string_windows_1252_(testName, runningInput2);
-            test_string_to_u8string_windows_1252_(testName, runningInput1+runningInput2);
-            test_string_to_u8string_windows_1252_(testName, runningInput2+runningInput1);
+            {
+                const auto input(str::str<str::W1252string>(runningInput2));
+                const auto actual = str::to_u8string(input);
+
+                // No "expected" to test against as the UTF-8 values for these Windows-1252 characters
+                // are mapped one-by-one.  However, we can test that UTF-8 to Windows-1252
+                // works as that walks through a UTF-8 string which can have 1-, 2-, 3- and 4-bytes
+                // for a single code-point.
+                const auto w1252 = str::to_w1252string(actual.data(), actual.size());
+                CHECK(input == w1252);
+            }
+            {
+                const auto input(str::str<str::W1252string>(runningInput1+runningInput2));
+                const auto actual = str::to_u8string(input);
+
+                // No "expected" to test against as the UTF-8 values for these Windows-1252 characters
+                // are mapped one-by-one.  However, we can test that UTF-8 to Windows-1252
+                // works as that walks through a UTF-8 string which can have 1-, 2-, 3- and 4-bytes
+                // for a single code-point.
+                const auto w1252 = str::to_w1252string(actual.data(), actual.size());
+                CHECK(input == w1252);
+            }
+            {
+                const auto input(str::str<str::W1252string>(runningInput2+runningInput1));
+                const auto actual = str::to_u8string(input);
+
+                // No "expected" to test against as the UTF-8 values for these Windows-1252 characters
+                // are mapped one-by-one.  However, we can test that UTF-8 to Windows-1252
+                // works as that walks through a UTF-8 string which can have 1-, 2-, 3- and 4-bytes
+                // for a single code-point.
+                const auto w1252 = str::to_w1252string(actual.data(), actual.size());
+                CHECK(input == w1252);
+            }
         }    
     }
 }
 
-TEST_CASE(test_string_to_u8string_iso8859_1)
+TEST_CASE("test_string_to_u8string_iso8859_1")
 {
     constexpr uint8_t nobreak_space = 0xa0;
-    constexpr uint8_t latin_small_letter_y_with_diaeresis = 0xff;  // 'ÿ'
+    constexpr uint8_t latin_small_letter_y_with_diaeresis = 0xff;  // 'ï¿½'
     for (uint32_t ch = nobreak_space; ch <= latin_small_letter_y_with_diaeresis; ch++)  // ISO8859-1
     {
         const std::string input_ { '|', static_cast<std::string::value_type>(ch), '|'};
         const auto input(str::str<str::W1252string>(input_));
         const auto actual = to_u8string(input);
         const std::u32string expected{U'|', ch, U'|'};
-        test_assert_eq(testName, actual, expected);
+        CHECK(actual == str::to_u8string(expected));
 
-        TEST_ASSERT(str::to_u8string(input) == actual);
-        TEST_ASSERT(input == str::to_w1252string(actual));
+        CHECK(str::to_u8string(input) == actual);
+        CHECK(input == str::to_w1252string(actual));
     }
 }
 
-template<typename TChar>
-static void test_change_case_(const std::string& testName,
-    const std::basic_string<TChar>& lower, const  std::basic_string<TChar>& upper)
-{
-    auto s = str::lower(upper);
-    TEST_ASSERT(s == lower);
-    s = str::upper(lower);
-    TEST_ASSERT(s == upper);
-
-    s = str::upper(upper);
-    TEST_ASSERT(s == upper);
-    s = str::lower(lower);
-    TEST_ASSERT(s == lower);
-}
-TEST_CASE(test_change_case)
+TEST_CASE("test_change_case")
 {
     const std::string ABC = "ABC";
     const std::string abc = "abc";
-    test_change_case_(testName, abc, ABC);
+    {
+        const auto lower = abc;
+        const auto upper = ABC;
+        std::string s = str::lower(upper);
+        CHECK(s == lower);
+        s = str::upper(lower);
+        CHECK(s == upper);
 
-    //const std::wstring ABC_w = L"ABC";
-    //const std::wstring abc_w = L"abc";
-    //test_change_case_(testName, abc_w, ABC_w);
+        s = str::upper(upper);
+        CHECK(s == upper);
+        s = str::lower(lower);
+        CHECK(s == lower);
+    }
 
-    // Yes, this can really come up, "non classifié" is French (Canadian) for "unclassified".
-    const std::string DEF_1252_{'D', '\xc9', 'F'}; // "DÉF" Windows-1252
+    // const std::wstring ABC_w = L"ABC";
+    // const std::wstring abc_w = L"abc";
+    // {
+    //     const auto lower = abc_w;
+    //     const auto upper = ABC_w;
+    //     std::wstring s = str::lower(upper);
+    //     CHECK(s == lower);
+    //     s = str::upper(lower);
+    //     CHECK(s == upper);
+
+    //     s = str::upper(upper);
+    //     CHECK(s == upper);
+    //     s = str::lower(lower);
+    //     CHECK(s == lower);
+    // }
+
+    // Yes, this can really come up, "non classifiï¿½" is French (Canadian) for "unclassified".
+    const std::string DEF_1252_{'D', '\xc9', 'F'}; // "Dï¿½F" Windows-1252
     const auto DEF_1252 = str::str<str::W1252string>(DEF_1252_);
     const auto DEF8 = str::to_u8string(DEF_1252);
 
-    const std::string def_1252_{'d', '\xe9', 'f'};  // "déf" Windows-1252
+    const std::string def_1252_{'d', '\xe9', 'f'};  // "dï¿½f" Windows-1252
     const auto def_1252 = str::str<str::W1252string>(def_1252_);
     const auto def8 = str::to_u8string(def_1252);
 
-    //test_change_case_(testName, def8, DEF8);
-    //test_change_case_(testName, def_1252, DEF_1252);
+    // {
+    //     const auto lower = def8;
+    //     const auto upper = DEF8;
+    //     std::u8string s = str::lower(upper);
+    //     CHECK(s == lower);
+    //     s = str::upper(lower);
+    //     CHECK(s == upper);
+
+    //     s = str::upper(upper);
+    //     CHECK(s == upper);
+    //     s = str::lower(lower);
+    //     CHECK(s == lower);
+    // }
+    // {
+    //     const auto lower = def_1252;
+    //     const auto upper = DEF_1252;
+    //     str::W1252string s = str::lower(upper);
+    //     CHECK(s == lower);
+    //     s = str::upper(lower);
+    //     CHECK(s == upper);
+
+    //     s = str::upper(upper);
+    //     CHECK(s == upper);
+    //     s = str::lower(lower);
+    //     CHECK(s == lower);
+    // }
 }
 
 // https://en.wikipedia.org/wiki/%C3%89#Character_mappings
-static const coda_oss::u8string& classificationText_u8()
+static const std::u8string& classificationText_u8()
 {
-    static const auto retval(str::make_string<std::u8string>("A\xc3\x89IOU")); // UTF-8 "AÉIOU"
+    static const auto retval(str::make_string<std::u8string>("A\xc3\x89IOU")); // UTF-8 "Aï¿½IOU"
     return retval;
  }
 
 static const str::W1252string& classificationText_w1252()
  {
-    static const auto retval(str::make_string<str::W1252string>("A\xc9IOU"));  // ISO8859-1 "AÉIOU"    
+    static const auto retval(str::make_string<str::W1252string>("A\xc9IOU"));  // ISO8859-1 "Aï¿½IOU"    
     return retval;
  }
 
- static auto toString(const coda_oss::u8string& s)
+ static auto toString(const std::u8string& s)
  {
      return str::to_native(s);
  }
 
 // UTF-16 on Windows, UTF-32 on Linux
-static const wchar_t* classificationText_wide_() { return L"A\x00c9IOU"; } // "wide characters" "AÉIOU"
-static std::u16string classificationText_u16() { return u"A\u00c9IOU"; } // UTF-16 "AÉIOU"
-static std::u32string classificationText_u32() { return U"A\u00c9IOU"; } // UTF-32 "AÉIOU"
+static const wchar_t* classificationText_wide_() { return L"A\x00c9IOU"; } // "wide characters" "Aï¿½IOU"
+static std::u16string classificationText_u16() { return u"A\u00c9IOU"; } // UTF-16 "Aï¿½IOU"
+static std::u32string classificationText_u32() { return U"A\u00c9IOU"; } // UTF-32 "Aï¿½IOU"
 
 static std::string classificationText_platform() { return 
     sys::Platform == sys::PlatformType::Linux ? toString(classificationText_u8()) : str::testing::to_string(classificationText_w1252()); }
 
-TEST_CASE(test_u8string_to_string)
+TEST_CASE("test_u8string_to_string")
 {
     auto actual = toString(classificationText_u8());
-    TEST_ASSERT_EQ(classificationText_platform(), actual);
+    CHECK(classificationText_platform() == actual);
 
     actual = str::testing::to_string(classificationText_w1252()); 
-    TEST_ASSERT_EQ(classificationText_platform(), actual);
+    CHECK(classificationText_platform() == actual);
 }
 
 static auto w1252FromNative(const std::wstring& s)
@@ -296,51 +362,51 @@ static auto toWString(const str::W1252string& s)
 {
     return str::testing::to_wstring(s);
 }
-static auto toWString(const coda_oss::u8string& s)
+static auto toWString(const std::u8string& s)
 {
     return str::details::to_wstring(s);
 }
 
-TEST_CASE(test_u8string_to_u16string)
+TEST_CASE("test_u8string_to_u16string")
 {
     const auto actual = classificationText_u16();
     const std::wstring wide(classificationText_wide_());
     #if _WIN32
     const auto s = str::str<std::wstring>(actual); // Windows: std::wstring == std::u16string
-    TEST_ASSERT(wide == s);  // _EQ wants to do toString()
+    CHECK(wide == s);  // _EQ wants to do toString()
     #endif
 
     const auto u8 = classificationText_u8();
-    TEST_ASSERT(str::u8FromNative(wide) == u8);
-    TEST_ASSERT(wide == toWString(u8));
+    CHECK(str::u8FromNative(wide) == u8);
+    CHECK(wide == toWString(u8));
     
     const auto w1252 = str::c_str<str::W1252string>(classificationText_w1252());
-    TEST_ASSERT(w1252FromNative(wide) == w1252);
-    TEST_ASSERT(wide == toWString(w1252));
+    CHECK(w1252FromNative(wide) == w1252);
+    CHECK(wide == toWString(w1252));
 
-    TEST_ASSERT(classificationText_u16() == actual);  // _EQ wants to do toString()
-    TEST_ASSERT(classificationText_u16() == to_u16string(w1252)); // _EQ wants to do toString()
+    CHECK(classificationText_u16() == actual);  // _EQ wants to do toString()
+    CHECK(classificationText_u16() == to_u16string(w1252)); // _EQ wants to do toString()
 }
 
-TEST_CASE(test_u8string_to_u32string)
+TEST_CASE("test_u8string_to_u32string")
 {
     const auto actual = classificationText_u32();
 #if !_WIN32
     const auto s  = str::str<std::wstring>(actual); // Linux: std::wstring == std::u32string
-    TEST_ASSERT(classificationText_wide_() == s); // _EQ wants to do toString()
-    #endif
+    CHECK(classificationText_wide_() == s); // _EQ wants to do toString()
+#endif
     
     const std::wstring wide(classificationText_wide_());
     const auto u8 = classificationText_u8();
-    TEST_ASSERT(str::u8FromNative(wide) == u8);
-    TEST_ASSERT(wide == toWString(u8));
+    CHECK(str::u8FromNative(wide) == u8);
+    CHECK(wide == toWString(u8));
 
     const auto w1252 = str::c_str<str::W1252string>(classificationText_w1252());
-    TEST_ASSERT(w1252FromNative(wide) == w1252);
-    TEST_ASSERT(wide == toWString(w1252));
+    CHECK(w1252FromNative(wide) == w1252);
+    CHECK(wide == toWString(w1252));
 
-    TEST_ASSERT(classificationText_u32() == actual);  // _EQ wants to do toString()
-    TEST_ASSERT(classificationText_u32() == to_u32string(w1252)); // _EQ wants to do toString()
+    CHECK(classificationText_u32() == actual);  // _EQ wants to do toString()
+    CHECK(classificationText_u32() == to_u32string(w1252)); // _EQ wants to do toString()
 }
 
 static auto toWString(const std::u16string& s)
@@ -356,74 +422,237 @@ static auto toString(const std::u16string& s)
     return str::details::to_string(str::to_u8string(s));
 }
 
-static void test_wide_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16,
-    const std::wstring& wstring, const std::string& native, const str::W1252string& w1252)
+TEST_CASE("test_ASCII_0")
 {
-    // from UTF-16 back to Windows-1252
-    const auto str_w1252 = str::str<std::string>(w1252);
-    TEST_ASSERT_EQ(str_w1252, pStr);
-
-    #if _WIN32
-    // Since we're using UTF-16, on Windows that can be cast to wchar_t
-    const auto wide = str::make_string<std::wstring>(pUtf16);
-
-    const _bstr_t str(pStr);
-    const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
-    TEST_ASSERT(wstring == std_wstr);
-    TEST_ASSERT(std_wstr == wide);
-
-    const _bstr_t wide_str(wide.c_str());
-    const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
-    TEST_ASSERT_EQ(native, std_str);
-    TEST_ASSERT_EQ(std_str, pStr);
-    #else
-    CODA_OSS_mark_symbol_unused(pUtf16);
-    CODA_OSS_mark_symbol_unused(wstring);
-    CODA_OSS_mark_symbol_unused(native);
-    #endif
-}
-static void test_Windows1252_ascii(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16)
-{
-    // For both UTF-8 and Windows-1252, ASCII is the same (they only differ for 0x80-0xff).
-    const auto u8 =  str::str<std::string>(str::to_u8string<coda_oss::u8string>(pStr));
-    TEST_ASSERT_EQ(pStr, u8); // native() is the same on all platforms/encodings for ASCII
-    {
-        const auto w1252 = str::make_string<str::W1252string>(pStr);
-        const auto str1252 = str::testing::to_string(w1252);
-        TEST_ASSERT_EQ(pStr, str1252);  // native() is the same on all platforms/encodings for ASCII
-    }
-
-    const auto u16 = str::to_u16string(str::u8FromNative(pStr));
-    TEST_ASSERT(u16 == pUtf16);
-    auto wstring = toWString(pStr);
-    std::string native = pStr;
-    auto w1252 = str::make_string<str::W1252string>(pStr);
-    test_wide_(testName, pStr, pUtf16, wstring, native, w1252);
-
-    native = toString(pUtf16);
-    TEST_ASSERT_EQ(native, pStr); // native() is the same on all platforms/encodings for ASCII
-    wstring = toWString(pUtf16);
-    test_wide_(testName, pStr, pUtf16, wstring, native, w1252);
-}
-TEST_CASE(test_ASCII)
-{
-    // https://en.cppreference.com/w/cpp/language/escape
+   // https://en.cppreference.com/w/cpp/language/escape
     constexpr auto escapes = "|\'|\"|\?|\\|\a|\b|\f|\n|\r|\t|\v|";
     constexpr auto u16_escapes = u"|\'|\"|\?|\\|\a|\b|\f|\n|\r|\t|\v|";
-    test_Windows1252_ascii(testName, escapes, u16_escapes);
+    const char* LpStr = escapes;
+    std::u16string::const_pointer LpUtf16 = u16_escapes;
+    // For both UTF-8 and Windows-1252, ASCII is the same (they only differ for 0x80-0xff).
+    const auto u8 =  str::str<std::string>(str::to_u8string<std::u8string>(LpStr));
+    CHECK(LpStr == u8); // native() is the same on all platforms/encodings for ASCII
+    {
+        const auto w1252 = str::make_string<str::W1252string>(LpStr);
+        const auto str1252 = str::testing::to_string(w1252);
+        CHECK(LpStr == str1252);  // native() is the same on all platforms/encodings for ASCII
+    }
 
+    const auto u16 = str::to_u16string(str::u8FromNative(LpStr));
+    CHECK(u16 == LpUtf16);
+    auto wstring = toWString(LpStr);
+    std::string native = LpStr;
+    auto w1252 = str::make_string<str::W1252string>(LpStr);
+    {
+        const char* lpStr = LpStr;
+        const str::W1252string lw1252 = w1252;
+        // from UTF-16 back to Windows-1252
+        const auto str_w1252 = str::str<std::string>(lw1252);
+        CHECK(str_w1252 == lpStr);
+
+        #if _WIN32
+            // Since we're using UTF-16, on Windows that can be cast to wchar_t
+            std::u16string::const_pointer lpUtf16 = LpUtf16;
+            const std::wstring lwstring = wstring;
+            const std::string lnative = native;
+            const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+            const _bstr_t str(lpStr);
+            const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+            CHECK(lwstring == std_wstr);
+            CHECK(std_wstr == wide);
+
+            const _bstr_t wide_str(wide.c_str());
+            const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+            CHECK(lnative == std_str);
+            CHECK(std_str == lpStr);
+        #endif
+    }
+
+    native = toString(LpUtf16);
+    CHECK(native == LpStr); // native() is the same on all platforms/encodings for ASCII
+    wstring = toWString(LpUtf16);
+    {
+        const char* lpStr = LpStr;
+        const str::W1252string lw1252 = w1252;
+        // from UTF-16 back to Windows-1252
+        const auto str_w1252 = str::str<std::string>(lw1252);
+        CHECK(str_w1252 == lpStr);
+
+        #if _WIN32
+            // Since we're using UTF-16, on Windows that can be cast to wchar_t
+            std::u16string::const_pointer lpUtf16 = LpUtf16;
+            const std::wstring lwstring = wstring;
+            const std::string lnative = native;
+            const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+            const _bstr_t str(lpStr);
+            const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+            CHECK(lwstring == std_wstr);
+            CHECK(std_wstr == wide);
+
+            const _bstr_t wide_str(wide.c_str());
+            const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+            CHECK(lnative == std_str);
+            CHECK(std_str == lpStr);
+        #endif
+    }
+}
+TEST_CASE("test_ASCII_1")
+{
     // https://en.cppreference.com/w/cpp/language/escape
     constexpr auto controls = "|\x01|\x02|\x03|\x04|\x05|\x06|\x07|\x08|\x09|\x0a|\x0b|\x0c|\x0d|\x0e|\x0f"
                               "|\x10|\x11|\x12|\x13|\x14|\x15|\x16|\x17|\x18|\x19|\x1a|\x1b|\x1c|\x1d|\x1e|\x1f";
     constexpr auto u16_controls = u"|\x01|\x02|\x03|\x04|\x05|\x06|\x07|\x08|\x09|\x0a|\x0b|\x0c|\x0d|\x0e|\x0f"
                                   u"|\x10|\x11|\x12|\x13|\x14|\x15|\x16|\x17|\x18|\x19|\x1a|\x1b|\x1c|\x1d|\x1e|\x1f";
-    test_Windows1252_ascii(testName, controls, u16_controls);
+    const char* LpStr = controls;
+    std::u16string::const_pointer LpUtf16 = u16_controls;
+    // For both UTF-8 and Windows-1252, ASCII is the same (they only differ for 0x80-0xff).
+    const auto u8 =  str::str<std::string>(str::to_u8string<std::u8string>(LpStr));
+    CHECK(LpStr == u8); // native() is the same on all platforms/encodings for ASCII
+    {
+        const auto w1252 = str::make_string<str::W1252string>(LpStr);
+        const auto str1252 = str::testing::to_string(w1252);
+        CHECK(LpStr == str1252);  // native() is the same on all platforms/encodings for ASCII
+    }
 
+    const auto u16 = str::to_u16string(str::u8FromNative(LpStr));
+    CHECK(u16 == LpUtf16);
+    auto wstring = toWString(LpStr);
+    std::string native = LpStr;
+    auto w1252 = str::make_string<str::W1252string>(LpStr);
+    {
+        const char* lpStr = LpStr;
+        const str::W1252string lw1252 = w1252;
+        // from UTF-16 back to Windows-1252
+        const auto str_w1252 = str::str<std::string>(lw1252);
+        CHECK(str_w1252 == lpStr);
+
+        #if _WIN32
+            // Since we're using UTF-16, on Windows that can be cast to wchar_t
+            std::u16string::const_pointer lpUtf16 = LpUtf16;
+            const std::wstring lwstring = wstring;
+            const std::string lnative = native;
+            const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+            const _bstr_t str(lpStr);
+            const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+            CHECK(lwstring == std_wstr);
+            CHECK(std_wstr == wide);
+
+            const _bstr_t wide_str(wide.c_str());
+            const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+            CHECK(lnative == std_str);
+            CHECK(std_str == lpStr);
+        #endif
+    }
+
+    native = toString(LpUtf16);
+    CHECK(native == LpStr); // native() is the same on all platforms/encodings for ASCII
+    wstring = toWString(LpUtf16);
+    {
+        const char* lpStr = LpStr;
+        const str::W1252string lw1252 = w1252;
+        // from UTF-16 back to Windows-1252
+        const auto str_w1252 = str::str<std::string>(lw1252);
+        CHECK(str_w1252 == lpStr);
+
+        #if _WIN32
+            // Since we're using UTF-16, on Windows that can be cast to wchar_t
+            std::u16string::const_pointer lpUtf16 = LpUtf16;
+            const std::wstring lwstring = wstring;
+            const std::string lnative = native;
+            const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+            const _bstr_t str(lpStr);
+            const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+            CHECK(lwstring == std_wstr);
+            CHECK(std_wstr == wide);
+
+            const _bstr_t wide_str(wide.c_str());
+            const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+            CHECK(lnative == std_str);
+            CHECK(std_str == lpStr);
+        #endif
+    }
+}
+TEST_CASE("test_ASCII_2")
+{
     // https://en.cppreference.com/w/cpp/language/ascii
     constexpr auto ascii = " !\"#0@AZaz~\x7f";
     constexpr auto u16_ascii = u" !\"#0@AZaz~\x7f";
-    test_Windows1252_ascii(testName, ascii, u16_ascii);
+    const char* LpStr = ascii;
+    std::u16string::const_pointer LpUtf16 = u16_ascii;
+    // For both UTF-8 and Windows-1252, ASCII is the same (they only differ for 0x80-0xff).
+    const auto u8 =  str::str<std::string>(str::to_u8string<std::u8string>(LpStr));
+    CHECK(LpStr == u8); // native() is the same on all platforms/encodings for ASCII
+    {
+        const auto w1252 = str::make_string<str::W1252string>(LpStr);
+        const auto str1252 = str::testing::to_string(w1252);
+        CHECK(LpStr == str1252);  // native() is the same on all platforms/encodings for ASCII
+    }
+
+    const auto u16 = str::to_u16string(str::u8FromNative(LpStr));
+    CHECK(u16 == LpUtf16);
+    auto wstring = toWString(LpStr);
+    std::string native = LpStr;
+    auto w1252 = str::make_string<str::W1252string>(LpStr);
+    {
+        const char* lpStr = LpStr;
+        const str::W1252string lw1252 = w1252;
+        // from UTF-16 back to Windows-1252
+        const auto str_w1252 = str::str<std::string>(lw1252);
+        CHECK(str_w1252 == lpStr);
+
+        #if _WIN32
+            // Since we're using UTF-16, on Windows that can be cast to wchar_t
+            std::u16string::const_pointer lpUtf16 = LpUtf16;
+            const std::wstring lwstring = wstring;
+            const std::string lnative = native;
+            const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+            const _bstr_t str(lpStr);
+            const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+            CHECK(lwstring == std_wstr);
+            CHECK(std_wstr == wide);
+
+            const _bstr_t wide_str(wide.c_str());
+            const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+            CHECK(lnative == std_str);
+            CHECK(std_str == lpStr);
+        #endif
+    }
+
+    native = toString(LpUtf16);
+    CHECK(native == LpStr); // native() is the same on all platforms/encodings for ASCII
+    wstring = toWString(LpUtf16);
+    {
+        const char* lpStr = LpStr;
+        const str::W1252string lw1252 = w1252;
+        // from UTF-16 back to Windows-1252
+        const auto str_w1252 = str::str<std::string>(lw1252);
+        CHECK(str_w1252 == lpStr);
+
+        #if _WIN32
+            // Since we're using UTF-16, on Windows that can be cast to wchar_t
+            std::u16string::const_pointer lpUtf16 = LpUtf16;
+            const std::wstring lwstring = wstring;
+            const std::string lnative = native;
+            const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+            const _bstr_t str(lpStr);
+            const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+            CHECK(lwstring == std_wstr);
+            CHECK(std_wstr == wide);
+
+            const _bstr_t wide_str(wide.c_str());
+            const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+            CHECK(lnative == std_str);
+            CHECK(std_str == lpStr);
+        #endif
+    }
 }
+
 
 static auto to_w1252string(const std::u16string& s)
 {
@@ -434,47 +663,228 @@ inline static auto toString(const std::wstring& s)
     return str::details::to_string(s);
 }
 
-static void test_Windows1252_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16)
+// https://en.wikipedia.org/wiki/Windows-1252
+TEST_CASE("test_Windows1252_0")
 {
-    const auto u16 = str::to_u16string(str::to_u8string<str::W1252string>(pStr));
-    TEST_ASSERT(u16 == pUtf16);
-    auto wstring = toWString(str::to_u8string<str::W1252string>(pStr));
-    auto s = toString(str::to_u8string<str::W1252string>(pStr));
-    auto w1252 = str::make_string<str::W1252string>(pStr);
-    test_wide_(testName, pStr, pUtf16, wstring, s, w1252);
-
-    wstring = toWString(pUtf16);
-    s = toString(pUtf16);
-    w1252 = to_w1252string(pUtf16);
-    test_wide_(testName, pStr, pUtf16, wstring, s, w1252);
-}
-TEST_CASE(test_Windows1252_WIN32)
-{
-    // https://en.wikipedia.org/wiki/Windows-1252
-    #if _WIN32
+#if _WIN32
     // can convert with bit-twiddling
-    constexpr auto w1252_a1_ff = "¡¢þÿ"; // <INVERTED EXCLAMATION MARK><CENT SIGN><LATIN SMALL LETTER THORN><LATIN SMALL LETTER Y WITH DIAERESIS>
-    //constexpr auto w1252_a1_ff = "\xa1\xa2\xfe\xff"; 
+    constexpr auto w1252_a1_ff = "\xa1\xa2\xfe\xff"; 
     constexpr auto u16_w1252_a1_ff = u"\u00a1\u00a2\u00fe\u00ff";
-    test_Windows1252_(testName, w1252_a1_ff, u16_w1252_a1_ff);
+    {
+        const char* LpStr = w1252_a1_ff;
+        std::u16string::const_pointer LpUtf16 = u16_w1252_a1_ff;
+        const auto u16 = str::to_u16string(str::to_u8string<str::W1252string>(LpStr));
+        CHECK(u16 == LpUtf16);
+        auto wstring = toWString(str::to_u8string<str::W1252string>(LpStr));
+        auto s = toString(str::to_u8string<str::W1252string>(LpStr));
+        auto w1252 = str::make_string<str::W1252string>(LpStr);
+        {
+            const char* lpStr = LpStr;
+            std::u16string::const_pointer lpUtf16 = LpUtf16;
+            const std::wstring lwstring = wstring;
+            const std::string lnative = s;
+            const str::W1252string lw1252 = w1252;
+            // from UTF-16 back to Windows-1252
+            const auto str_w1252 = str::str<std::string>(lw1252);
+            CHECK(str_w1252 == lpStr);
 
-    constexpr auto w1252 = "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ"; // these values must be mapped
-    //constexpr auto w1252 = "\x80\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8e" // these values must be mapped
-    //    "\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9e\x9f";
+            #if _WIN32
+                // Since we're using UTF-16, on Windows that can be cast to wchar_t
+                const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+                const _bstr_t str(lpStr);
+                const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+                CHECK(lwstring == std_wstr);
+                CHECK(std_wstr == wide);
+
+                const _bstr_t wide_str(wide.c_str());
+                const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+                CHECK(lnative == std_str);
+                CHECK(std_str == lpStr);
+            #endif
+        }
+
+        wstring = toWString(LpUtf16);
+        s = toString(LpUtf16);
+        w1252 = to_w1252string(LpUtf16);
+        {
+            const char* lpStr = LpStr;
+            std::u16string::const_pointer lpUtf16 = LpUtf16;
+            const std::wstring lwstring = wstring;
+            const std::string lnative = s;
+            const str::W1252string lw1252 = w1252;
+            // from UTF-16 back to Windows-1252
+            const auto str_w1252 = str::str<std::string>(lw1252);
+            CHECK(str_w1252 == lpStr);
+
+            #if _WIN32
+                // Since we're using UTF-16, on Windows that can be cast to wchar_t
+                const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+                const _bstr_t str(lpStr);
+                const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+                CHECK(lwstring == std_wstr);
+                CHECK(std_wstr == wide);
+
+                const _bstr_t wide_str(wide.c_str());
+                const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+                CHECK(lnative == std_str);
+                CHECK(std_str == lpStr);
+            #endif
+        }
+    }
+#else
+    SKIP("Only runs on Windows");
+#endif
+}
+TEST_CASE("test_Windows1252_1")
+{
+#if _WIN32
+    constexpr auto w1252 = "\x80\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8e\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9e\x9f";
     constexpr auto u16_utf8 = u"\u20ac\u201a\u0192\u201e\u2026\u2020\u2021\u02c6\u2030\u0160\u2039\u0152\u017d"
         "\u2018\u2019\u201c\u201d\u2022\u2013\u2014\u02dc\u2122\u0161\u203a\u0153\u017e\u0178";
-    test_Windows1252_(testName, w1252, u16_utf8);
-    
+    {
+        const char* LpStr = w1252;
+        std::u16string::const_pointer LpUtf16 = u16_utf8;
+        const auto u16 = str::to_u16string(str::to_u8string<str::W1252string>(LpStr));
+        CHECK(u16 == LpUtf16);
+        auto wstring = toWString(str::to_u8string<str::W1252string>(LpStr));
+        auto s = toString(str::to_u8string<str::W1252string>(LpStr));
+        auto w1252 = str::make_string<str::W1252string>(LpStr);
+        {
+            const char* lpStr = LpStr;
+            std::u16string::const_pointer lpUtf16 = LpUtf16;
+            const std::wstring lwstring = wstring;
+            const std::string lnative = s;
+            const str::W1252string lw1252 = w1252;
+            // from UTF-16 back to Windows-1252
+            const auto str_w1252 = str::str<std::string>(lw1252);
+            CHECK(str_w1252 == lpStr);
+
+            #if _WIN32
+                // Since we're using UTF-16, on Windows that can be cast to wchar_t
+                const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+                const _bstr_t str(lpStr);
+                const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+                CHECK(lwstring == std_wstr);
+                CHECK(std_wstr == wide);
+
+                const _bstr_t wide_str(wide.c_str());
+                const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+                CHECK(lnative == std_str);
+                CHECK(std_str == lpStr);
+            #endif
+        }
+
+        wstring = toWString(LpUtf16);
+        s = toString(LpUtf16);
+        w1252 = to_w1252string(LpUtf16);
+        {
+            const char* lpStr = LpStr;
+            std::u16string::const_pointer lpUtf16 = LpUtf16;
+            const std::wstring lwstring = wstring;
+            const std::string lnative = s;
+            const str::W1252string lw1252 = w1252;
+            // from UTF-16 back to Windows-1252
+            const auto str_w1252 = str::str<std::string>(lw1252);
+            CHECK(str_w1252 == lpStr);
+
+            #if _WIN32
+                // Since we're using UTF-16, on Windows that can be cast to wchar_t
+                const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+                const _bstr_t str(lpStr);
+                const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+                CHECK(lwstring == std_wstr);
+                CHECK(std_wstr == wide);
+
+                const _bstr_t wide_str(wide.c_str());
+                const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+                CHECK(lnative == std_str);
+                CHECK(std_str == lpStr);
+            #endif
+        }
+    }
+#else
+    SKIP("Only runs on Windows");
+#endif
+}
+TEST_CASE("test_Windows1252_2")
+{
+#if _WIN32
     // This only works with "relaxed" (i.e., not "strict") conversion; which is what _bstr_t does
     constexpr auto w1252_unassigned = "\x81\x8d\x8f\x90\x9d";
     constexpr auto u16_w1252_unassigned = u"\x81\x8d\x8f\x90\x9d";
-    test_Windows1252_(testName, w1252_unassigned, u16_w1252_unassigned);
-    #else
-    TEST_ASSERT_TRUE(true); // need to use hidden "testName" parameter
-    #endif
+    {
+        const char* LpStr = w1252_unassigned;
+        std::u16string::const_pointer LpUtf16 = u16_w1252_unassigned;
+        const auto u16 = str::to_u16string(str::to_u8string<str::W1252string>(LpStr));
+        CHECK(u16 == LpUtf16);
+        auto wstring = toWString(str::to_u8string<str::W1252string>(LpStr));
+        auto s = toString(str::to_u8string<str::W1252string>(LpStr));
+        auto w1252 = str::make_string<str::W1252string>(LpStr);
+        {
+            const char* lpStr = LpStr;
+            std::u16string::const_pointer lpUtf16 = LpUtf16;
+            const std::wstring lwstring = wstring;
+            const std::string lnative = s;
+            const str::W1252string lw1252 = w1252;
+            // from UTF-16 back to Windows-1252
+            const auto str_w1252 = str::str<std::string>(lw1252);
+            CHECK(str_w1252 == lpStr);
+
+            #if _WIN32
+                // Since we're using UTF-16, on Windows that can be cast to wchar_t
+                const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+                const _bstr_t str(lpStr);
+                const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+                CHECK(lwstring == std_wstr);
+                CHECK(std_wstr == wide);
+
+                const _bstr_t wide_str(wide.c_str());
+                const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+                CHECK(lnative == std_str);
+                CHECK(std_str == lpStr);
+            #endif
+        }
+
+        wstring = toWString(LpUtf16);
+        s = toString(LpUtf16);
+        w1252 = to_w1252string(LpUtf16);
+        {
+            const char* lpStr = LpStr;
+            std::u16string::const_pointer lpUtf16 = LpUtf16;
+            const std::wstring lwstring = wstring;
+            const std::string lnative = s;
+            const str::W1252string lw1252 = w1252;
+            // from UTF-16 back to Windows-1252
+            const auto str_w1252 = str::str<std::string>(lw1252);
+            CHECK(str_w1252 == lpStr);
+
+            #if _WIN32
+                // Since we're using UTF-16, on Windows that can be cast to wchar_t
+                const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+                const _bstr_t str(lpStr);
+                const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+                CHECK(lwstring == std_wstr);
+                CHECK(std_wstr == wide);
+
+                const _bstr_t wide_str(wide.c_str());
+                const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+                CHECK(lnative == std_str);
+                CHECK(std_str == lpStr);
+            #endif
+        }
+    }
+#else
+    SKIP("Only runs on Windows");
+#endif
 }
 
-TEST_CASE(test_Windows1252)
+TEST_CASE("test_Windows1252")
 {
     // https://en.wikipedia.org/wiki/Windows-1252
     const std::map<std::string::value_type, std::u16string::value_type>
@@ -523,16 +933,138 @@ TEST_CASE(test_Windows1252)
     std::u16string running_utf16;
     for (auto&& ch : w1252_to_utf16)
     {
-        TEST_ASSERT_LESSER_EQ(static_cast<int>(ch.first), 0xff);
-        TEST_ASSERT_LESSER_EQ(static_cast<int>(ch.second), 0xffff);
+        CHECK(static_cast<int>(ch.first) <= 0xff);
+        CHECK(static_cast<int>(ch.second) <= 0xffff);
 
         const std::string w1252{ch.first};
         const std::u16string utf16{ch.second};
-        test_Windows1252_(testName, w1252.c_str(), utf16.c_str());
+        {
+            const char* LpStr = w1252.c_str();
+            std::u16string::const_pointer LpUtf16 = utf16.c_str();
+            const auto u16 = str::to_u16string(str::to_u8string<str::W1252string>(LpStr));
+            CHECK(u16 == LpUtf16);
+            auto wstring = toWString(str::to_u8string<str::W1252string>(LpStr));
+            auto s = toString(str::to_u8string<str::W1252string>(LpStr));
+            auto Lw1252 = str::make_string<str::W1252string>(LpStr);
+            {
+                const char* lpStr = LpStr;
+                // from UTF-16 back to Windows-1252
+                const auto str_w1252 = str::str<std::string>(Lw1252);
+                CHECK(str_w1252 == lpStr);
+
+                #if _WIN32
+                    // Since we're using U
+                    std::u16string::const_pointer lpUtf16 = LpUtf16;
+                    const std::wstring lwstring = wstring;
+                    const std::string lnative = s; // TF-16, on Windows that can be cast to wchar_t
+                    const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+                    const _bstr_t str(lpStr);
+                    const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+                    CHECK(lwstring == std_wstr);
+                    CHECK(std_wstr == wide);
+
+                    const _bstr_t wide_str(wide.c_str());
+                    const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+                    CHECK(lnative == std_str);
+                    CHECK(std_str == lpStr);
+                #endif
+            }
+
+            wstring = toWString(LpUtf16);
+            s = toString(LpUtf16);
+            Lw1252 = to_w1252string(LpUtf16);
+            {
+                const char* lpStr = LpStr;
+                // from UTF-16 back to Windows-1252
+                const auto str_w1252 = str::str<std::string>(Lw1252);
+                CHECK(str_w1252 == lpStr);
+
+                #if _WIN32
+                    // Since we're using U
+                        std::u16string::const_pointer lpUtf16 = LpUtf16;
+                    const std::wstring lwstring = wstring;
+                    const std::string lnative = s; // TF-16, on Windows that can be cast to wchar_t
+                    const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+                    const _bstr_t str(lpStr);
+                    const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+                    CHECK(lwstring == std_wstr);
+                    CHECK(std_wstr == wide);
+
+                    const _bstr_t wide_str(wide.c_str());
+                    const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+                    CHECK(lnative == std_str);
+                    CHECK(std_str == lpStr);
+                #endif
+            }
+        }
 
         running_w1252 += w1252;
         running_utf16 += utf16;
-        test_Windows1252_(testName, running_w1252.c_str(), running_utf16.c_str());
+        {
+            const char* LpStr = running_w1252.c_str();
+            std::u16string::const_pointer LpUtf16 = running_utf16.c_str();
+            const auto u16 = str::to_u16string(str::to_u8string<str::W1252string>(LpStr));
+            CHECK(u16 == LpUtf16);
+            auto wstring = toWString(str::to_u8string<str::W1252string>(LpStr));
+            auto s = toString(str::to_u8string<str::W1252string>(LpStr));
+            auto Lw1252 = str::make_string<str::W1252string>(LpStr);
+            {
+                const char* lpStr = LpStr;
+                const str::W1252string lw1252 = Lw1252;
+                // from UTF-16 back to Windows-1252
+                const auto str_w1252 = str::str<std::string>(lw1252);
+                CHECK(str_w1252 == lpStr);
+
+                #if _WIN32
+                    std::u16string::const_pointer lpUtf16 = LpUtf16;
+                    const std::wstring lwstring = wstring;
+                    const std::string lnative = s;
+                    // Since we're using UTF-16, on Windows that can be cast to wchar_t
+                    const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+                    const _bstr_t str(lpStr);
+                    const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+                    CHECK(lwstring == std_wstr);
+                    CHECK(std_wstr == wide);
+
+                    const _bstr_t wide_str(wide.c_str());
+                    const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+                    CHECK(lnative == std_str);
+                    CHECK(std_str == lpStr);
+                #endif
+            }
+
+            wstring = toWString(LpUtf16);
+            s = toString(LpUtf16);
+            Lw1252 = to_w1252string(LpUtf16);
+            {
+                const char* lpStr = LpStr;
+                const str::W1252string lw1252 = Lw1252;
+                // from UTF-16 back to Windows-1252
+                const auto str_w1252 = str::str<std::string>(lw1252);
+                CHECK(str_w1252 == lpStr);
+
+                #if _WIN32
+                    std::u16string::const_pointer lpUtf16 = LpUtf16;
+                    const std::wstring lwstring = wstring;
+                    const std::string lnative = s;
+                    // Since we're using UTF-16, on Windows that can be cast to wchar_t
+                    const auto wide = str::make_string<std::wstring>(lpUtf16);
+
+                    const _bstr_t str(lpStr);
+                    const std::wstring std_wstr(static_cast<const wchar_t*>(str)); // Windows-1252 -> UTF-16
+                    CHECK(lwstring == std_wstr);
+                    CHECK(std_wstr == wide);
+
+                    const _bstr_t wide_str(wide.c_str());
+                    const std::string std_str(static_cast<const char*>(wide_str)); //  UTF-16 -> Windows-1252
+                    CHECK(lnative == std_str);
+                    CHECK(std_str == lpStr);
+                #endif
+            }
+        }
     }
 
     #if _WIN32
@@ -542,28 +1074,12 @@ TEST_CASE(test_Windows1252)
         const std::string expected(1, ch.first);
         const std::wstring input(1, ch.second); // `std::wstring` is UTF-16 on Windows
         const auto actual = toString(input);
-        TEST_ASSERT_EQ(expected, actual);
+        CHECK(expected == actual);
     }
     #endif
 }
 
-static void test_Encodeding_(const std::string& testName, const coda_oss::u8string& classificationText_u8,
-    const std::string& utf_8, const std::string& iso8859_1,
-    const coda_oss::u8string& utf_8_u8, const coda_oss::u8string& iso8859_1_u8,
-    const std::string& utf_8_view, const std::string& iso8859_1_view)
-{
-    TEST_ASSERT_EQ(iso8859_1, utf_8);
-    static const auto s = classificationText_platform();
-    TEST_ASSERT_EQ(iso8859_1, s);
-    TEST_ASSERT_EQ(utf_8, s);
-
-    TEST_ASSERT(iso8859_1_u8 == utf_8_u8);
-
-    const auto expected = str::c_str<std::string>(classificationText_u8);
-    TEST_ASSERT_EQ(utf_8_view, expected);
-    TEST_ASSERT_EQ(iso8859_1_view, expected);
-}
-TEST_CASE(test_Encoding)
+TEST_CASE("test_Encoding")
 {
     const auto utf_8 = toString(classificationText_u8());
     const auto iso8859_1 = str::testing::to_string(classificationText_w1252());
@@ -572,30 +1088,28 @@ TEST_CASE(test_Encoding)
     const auto utf_8_view = str::str<std::string>(classificationText_u8());
     const auto iso8859_1_view =  str::str<std::string>(str::to_u8string(classificationText_w1252()));
 
-    test_Encodeding_(testName, classificationText_u8(),
-        utf_8, iso8859_1,
-        utf_8_u8, iso8859_1_u8,
-        utf_8_view, iso8859_1_view);
-    test_Encodeding_(testName, classificationText_u8(),
-        iso8859_1, utf_8,
-        iso8859_1_u8, utf_8_u8,
-        iso8859_1_view, utf_8_view);
-}
+    {
+        CHECK(iso8859_1 == utf_8);
+        static const auto s = classificationText_platform();
+        CHECK(iso8859_1 == s);
+        CHECK(utf_8 == s);
 
-TEST_MAIN(
-    TEST_CHECK(testConvert);
-    TEST_CHECK(testBadConvert);
-    TEST_CHECK(testEightBitIntToString);
-    TEST_CHECK(testCharToString);
-    TEST_CHECK(test_string_to_u8string_ascii);
-    TEST_CHECK(test_string_to_u8string_windows_1252);
-    TEST_CHECK(test_string_to_u8string_iso8859_1);
-    TEST_CHECK(test_change_case);
-    TEST_CHECK(test_u8string_to_string);
-    TEST_CHECK(test_u8string_to_u16string);
-    TEST_CHECK(test_u8string_to_u32string);
-    TEST_CHECK(test_ASCII);
-    TEST_CHECK(test_Windows1252_WIN32);
-    TEST_CHECK(test_Windows1252);
-    TEST_CHECK(test_Encoding);
-    )
+        CHECK(iso8859_1_u8 == utf_8_u8);
+
+        const auto expected = str::c_str<std::string>(classificationText_u8());
+        CHECK(utf_8_view == expected);
+        CHECK(iso8859_1_view == expected);
+    }
+    {
+        CHECK(utf_8 == iso8859_1);
+        static const auto s = classificationText_platform();
+        CHECK(iso8859_1 == s);
+        CHECK(utf_8 == s);
+
+        CHECK(utf_8_u8 == iso8859_1_u8);
+
+        const auto expected = str::c_str<std::string>(classificationText_u8());
+        CHECK(utf_8_view == expected);
+        CHECK(iso8859_1_view == expected);
+    }
+}

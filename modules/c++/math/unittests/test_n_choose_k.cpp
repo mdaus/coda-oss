@@ -20,33 +20,18 @@
  *
  */
 
-#include <TestCase.h>
+#include <catch2/catch_test_macros.hpp>
 #include <math/Utilities.h>
 
-TEST_CASE(testNChooseK)
+TEST_CASE("testNChooseK")
 {
-  TEST_ASSERT_EQ(math::nChooseK(0, 0), static_cast<size_t>(1));
-  TEST_ASSERT_EQ(math::nChooseK(1, 1), static_cast<size_t>(1));
-  TEST_ASSERT_EQ(math::nChooseK(3, 2), static_cast<size_t>(3));
-  TEST_ASSERT_EQ(math::nChooseK(10, 3), static_cast<size_t>(120));
+  CHECK(math::nChooseK(0, 0) == static_cast<size_t>(1));
+  CHECK(math::nChooseK(1, 1) == static_cast<size_t>(1));
+  CHECK(math::nChooseK(3, 2) == static_cast<size_t>(3));
+  CHECK(math::nChooseK(10, 3) == static_cast<size_t>(120));
 }
 
-TEST_CASE(testNLessThanK)
-{
-    bool exceptionCaught = false;
-    try
-    {
-        math::nChooseK(3, 10);
-    }
-    catch(const except::Exception& /*exception*/)
-    {
-       exceptionCaught = true;
-    }
-    TEST_ASSERT(exceptionCaught);
+TEST_CASE("testNLessThanK")
+{ 
+    CHECK_THROWS(math::nChooseK(3, 10));
 }
-
-TEST_MAIN(
-    TEST_CHECK(testNChooseK);
-    TEST_CHECK(testNLessThanK);
-    )
-

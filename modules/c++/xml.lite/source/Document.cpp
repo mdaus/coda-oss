@@ -71,7 +71,7 @@ xml::lite::Element* xml::lite::Document::createElement(const std::string& qname,
     return elem.release();
 }
 std::unique_ptr<xml::lite::Element> xml::lite::Document::createElement(const QName& qname,
-                                   const coda_oss::u8string& characterData) const
+                                   const std::u8string& characterData) const
 {
     auto elem = newElement(qname);
     elem->setCharacterData(characterData);

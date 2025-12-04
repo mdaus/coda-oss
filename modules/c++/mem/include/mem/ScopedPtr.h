@@ -28,7 +28,6 @@
 #include <assert.h>
 
 #include <cstddef>
-#include <std/memory>
 #include <type_traits>
 
 #include "sys/Conf.h"

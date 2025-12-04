@@ -24,10 +24,14 @@
 #include <tuple>
 
 #include <math/poly/Fixed2D.h>
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 
-static const size_t ORDER_X = 4;
-static const size_t ORDER_Y = 5;
+#define TEST_ASSERT_ALMOST_EQ_EPS(X, Y, Z) CHECK_THAT(X, Catch::Matchers::WithinRel(Y, Z));
+#define TEST_ASSERT_EQ(X, Y) CHECK(X == Y);
+
+constexpr size_t ORDER_X = 4;
+constexpr size_t ORDER_Y = 5;
 typedef math::poly::Fixed2D<ORDER_X, ORDER_Y, double> TestFixed2D;
 
 double getRand()
@@ -64,7 +68,7 @@ void getRandValues(std::vector<double>& xValues,
     }
 }
 
-TEST_CASE(testScaleVariable)
+TEST_CASE("testScaleVariable")
 {
     std::vector<double> xValues;
     std::vector<double> yValues;
@@ -83,9 +87,7 @@ TEST_CASE(testScaleVariable)
         const double xx(xValues[ii]);
         const double yy(yValues[ii]);
         const double expectedValue(poly(xx * scale, yy * scale));
-        TEST_ASSERT_ALMOST_EQ_EPS(transformedPoly(xx, yy),
-                                  expectedValue,
-                                  std::abs(.01 * expectedValue));
+        TEST_ASSERT_ALMOST_EQ_EPS(transformedPoly(xx, yy), expectedValue, .01);
     }
 
     // transformedPoly = poly(x * scaleX, y * scaleY)
@@ -98,12 +100,6 @@ TEST_CASE(testScaleVariable)
         const double xx(xValues[ii]);
         const double yy(yValues[ii]);
         const double expectedValue(poly(xx * scaleX, yy * scaleY));
-        TEST_ASSERT_ALMOST_EQ_EPS(transformedPoly(xx, yy),
-                                  expectedValue,
-                                  std::abs(.01 * expectedValue));
+        TEST_ASSERT_ALMOST_EQ_EPS(transformedPoly(xx, yy), expectedValue, .01);
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testScaleVariable);
-)

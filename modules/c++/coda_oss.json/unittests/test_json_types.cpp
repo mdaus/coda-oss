@@ -19,22 +19,22 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 #include <coda_oss/json/Types.h>
 
 using json = nlohmann::json;
 
-TEST_CASE(TestComplex)
+TEST_CASE("TestComplex")
 {
     types::Complex<int32_t> startVal(1, 2);
     json expected = {{"real", startVal.real()}, {"imag", startVal.imag()}};
     json serialized = startVal;
     auto deserialized = serialized.template get<types::Complex<int32_t>>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-TEST_CASE(TestRange)
+TEST_CASE("TestRange")
 {
     types::Range startVal(0, 10);
     json expected = {
@@ -42,10 +42,10 @@ TEST_CASE(TestRange)
         {"mNumElements", startVal.mNumElements}};
     json serialized = startVal;
     auto deserialized = serialized.template get<types::Range>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-TEST_CASE(TestRangeList)
+TEST_CASE("TestRangeList")
 {
     types::RangeList startVal;
     types::Range r0(0, 10);
@@ -65,28 +65,28 @@ TEST_CASE(TestRangeList)
     };
     json serialized = startVal;
     auto deserialized = serialized.template get<types::RangeList>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-TEST_CASE(TestRgAz)
+TEST_CASE("TestRgAz")
 {
     types::RgAz<double> startVal(0.0, 1.0);
     json expected = {{"rg", startVal.rg}, {"az", startVal.az}};
     json serialized = startVal;
     auto deserialized = serialized.template get<types::RgAz<double>>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-TEST_CASE(TestRowCol)
+TEST_CASE("TestRowCol")
 {
     types::RowCol<float> startVal(0.0, 1.0);
     json expected = {{"row", startVal.row}, {"col", startVal.col}};
     json serialized = startVal;
     auto deserialized = serialized.template get<types::RowCol<float>>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
-TEST_CASE(TestPageRowCol)
+TEST_CASE("TestPageRowCol")
 {
     types::PageRowCol<uint32_t> startVal(0, 1, 2);
     json expected = {
@@ -96,15 +96,7 @@ TEST_CASE(TestPageRowCol)
     };
     json serialized = startVal;
     auto deserialized = serialized.template get<types::PageRowCol<uint32_t>>();
-    TEST_ASSERT(serialized == expected);
-    TEST_ASSERT(startVal == deserialized);
+    CHECK(serialized == expected);
+    CHECK(startVal == deserialized);
 }
 
-TEST_MAIN(
-    TEST_CHECK(TestComplex);
-    TEST_CHECK(TestRange);
-    TEST_CHECK(TestRangeList);
-    TEST_CHECK(TestRgAz);
-    TEST_CHECK(TestRowCol);
-    TEST_CHECK(TestPageRowCol);
-)

@@ -22,9 +22,9 @@
 
 #include <math/ConvexHull.h>
 #include <sys/Conf.h>
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
-TEST_CASE(testConvexHull)
+TEST_CASE("testConvexHull")
 {
     // Add in all the points
     std::vector<types::RowCol<sys::Int64_T> > inputPoints;
@@ -67,14 +67,10 @@ TEST_CASE(testConvexHull)
     expectedConvexHull.push_back(types::RowCol<sys::Int64_T>(21, 16));
 
     // Check that they match
-    TEST_ASSERT_EQ(convexHull.size(), expectedConvexHull.size());
+    CHECK(convexHull.size() == expectedConvexHull.size());
     for (size_t ii = 0; ii < convexHull.size(); ++ii)
     {
-        TEST_ASSERT_EQ(convexHull[ii].row, expectedConvexHull[ii].row);
-        TEST_ASSERT_EQ(convexHull[ii].col, expectedConvexHull[ii].col);
+        CHECK(convexHull[ii].row == expectedConvexHull[ii].row);
+        CHECK(convexHull[ii].col == expectedConvexHull[ii].col);
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testConvexHull);
-)

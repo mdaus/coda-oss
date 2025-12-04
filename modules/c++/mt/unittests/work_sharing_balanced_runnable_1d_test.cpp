@@ -22,7 +22,7 @@
 #include <mt/WorkSharingBalancedRunnable1D.h>
 #include <sys/OS.h>
 
-#include "TestCase.h"
+#include <catch2/catch_test_macros.hpp>
 
 struct IncOp final
 {
@@ -40,7 +40,7 @@ private:
     std::vector<size_t>& mGlobalWorkDone;
 };
 
-TEST_CASE(WorkSharingBalancedRunnable1DTestWorkDone)
+TEST_CASE("WorkSharingBalancedRunnable1DTestWorkDone")
 {
     const size_t numElements = 100000;
     const size_t initValue = 0;
@@ -52,17 +52,17 @@ TEST_CASE(WorkSharingBalancedRunnable1DTestWorkDone)
 
         mt::runWorkSharingBalanced1D(numElements, numThreads, op);
 
-        TEST_ASSERT_EQ(workVec.size(), numElements);
+        CHECK(workVec.size() == numElements);
 
         const size_t targetValue = 1;
         for (const auto& value : workVec)
         {
-            TEST_ASSERT_EQ(value, targetValue);
+            CHECK(value == targetValue);
         }
     }
 }
 
-TEST_CASE(WorkSharingBalancedRunnable1DTestWorkDoneLessWorkThanThreads)
+TEST_CASE("WorkSharingBalancedRunnable1DTestWorkDoneLessWorkThanThreads")
 {
     const size_t numElements = 6;
     const size_t initValue = 0;
@@ -74,17 +74,12 @@ TEST_CASE(WorkSharingBalancedRunnable1DTestWorkDoneLessWorkThanThreads)
 
         mt::runWorkSharingBalanced1D(numElements, numThreads, op);
 
-        TEST_ASSERT_EQ(workVec.size(), numElements);
+        CHECK(workVec.size() == numElements);
 
         const size_t targetValue = 1;
         for (const auto& value : workVec)
         {
-            TEST_ASSERT_EQ(value, targetValue);
+            CHECK(value == targetValue);
         }
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(WorkSharingBalancedRunnable1DTestWorkDone);
-    TEST_CHECK(WorkSharingBalancedRunnable1DTestWorkDoneLessWorkThanThreads);
-)

@@ -26,7 +26,7 @@
 #include <cmath>
 #include <import/except.h>
 
-#include "gsl/gsl.h"
+#include "gsl/gsl"
 
 #include "tiff/Common.h"
 #include "tiff/GenericType.h"
