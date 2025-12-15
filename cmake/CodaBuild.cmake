@@ -270,13 +270,22 @@ function(coda_generate_package_config)
 
         # create a wrapper module for the above to allow additional configuration
         include(CMakePackageConfigHelpers)
+        set(config_file "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake")
         configure_package_config_file(
             "cmake/${CMAKE_PROJECT_NAME}Config.cmake.in"
-            "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
+            ${config_file}
             INSTALL_DESTINATION "lib/cmake"
             PATH_VARS ${ARGN})
-        install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
-                DESTINATION "lib/cmake")
+        install(FILES ${config_file} DESTINATION "lib/cmake")
+        
+        if(NOT "${PROJECT_VERSION}" STREQUAL "")
+            set(version_file "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}ConfigVersion.cmake")
+            write_basic_package_version_file(
+                ${version_file}
+                VERSION ${CMAKE_PROJECT_VERSION}
+                COMPATIBILITY SameMajorVersion)
+            install(FILES ${version_file} DESTINATION "lib/cmake")
+        endif()
     endif()
 endfunction()
 
