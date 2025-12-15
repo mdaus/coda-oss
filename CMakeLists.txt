@@ -19,8 +19,6 @@ endif()
 
 if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
     # this is the top level project
-
-    # Only set std if not used as library
     set(CMAKE_CXX_STANDARD 23)
     set(CXX_STANDARD_REQUIRED true)
 
@@ -39,24 +37,14 @@ if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
     coda_initialize_build()
 
     # install our cmake build modules for downstream use
-    install(DIRECTORY "cmake/"
-            DESTINATION "${CODA_STD_PROJECT_LIB_DIR}/cmake/"
-            FILES_MATCHING PATTERN "*.cmake")
-
-    # If the package version is defined, write a version file for find_package
-    set(version_file "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}ConfigVersion.cmake")
-    include(CMakePackageConfigHelpers)
-    write_basic_package_version_file(${version_file} VERSION ${CMAKE_PROJECT_VERSION} COMPATIBILITY SameMajorVersion)
-    install(FILES ${version_file} DESTINATION "lib/cmake")
-
-    # As opposed to drivers, these are "required" third-party packages
-    add_subdirectory(externals)
+    install(DIRECTORY "cmake" DESTINATION "lib" FILES_MATCHING PATTERN "*.cmake")
 
 endif()
 
+# As opposed to drivers, these are "required" third-party packages
+add_subdirectory("externals")
 add_subdirectory("modules")
 
 # generate package config, with the following paths exported
-set(JARS_DIR ${CODA_STD_PROJECT_LIB_DIR} CACHE INTERNAL
-    "path to installed jars, needed by downstream projects")
+set(JARS_DIR lib CACHE INTERNAL "path to installed jars, needed by downstream projects")
 coda_generate_package_config(JARS_DIR)

@@ -32,11 +32,8 @@
 // C++20 changed the type of u8 to char8_t* https://en.cppreference.com/w/cpp/language/string_literal
 // Not putting this everywhere because (1) well, it's a macro, and (2) it's mostly
 // only test code that uses string literals.
-#if CODA_OSS_cpp20
 #define U8(s) u8##s
-#else
-#define U8(s) static_cast<const std::char8_t*>(static_cast<const void*>(s))
-#endif
+
 
 static const std::string& text()
 {

@@ -28,13 +28,8 @@
 
 #include "config/compiler_extensions.h"
 #include "config/CPlusPlus.h"
-#if CODA_OSS_cpp17
-	// <execution> is broken with the older version of GCC we're using
-	#if (__GNUC__ >= 10) || _MSC_VER
-	#include <execution>
-	#define CODA_OSS_mt_Algorithm_has_execution 1
-	#endif
-#endif
+#include <execution>
+
 
 namespace mt
 {
@@ -83,17 +78,13 @@ template <typename InputIt, typename OutputIt, typename UnaryOperation>
 inline OutputIt Transform_par(InputIt first1, InputIt last1, OutputIt d_first, UnaryOperation unary_op,
     Transform_par_settings settings = Transform_par_settings{})
 {
-#if CODA_OSS_mt_Algorithm_has_execution
-    #if __GNUC__
-        // std::execution::par is dramatically slower w/GCC than using our own ... ???
-        return Transform_par_(first1, last1, d_first, unary_op, settings); // TODO: std::execution::par
-    #else
-        CODA_OSS_mark_symbol_unused(settings);
-        return std::transform(std::execution::par, first1, last1, d_first, unary_op);
-    #endif // __GNUC__
+#if __GNUC__
+    // std::execution::par is dramatically slower w/GCC than using our own ... ???
+    return Transform_par_(first1, last1, d_first, unary_op, settings); // TODO: std::execution::par
 #else
-    return Transform_par_(first1, last1, d_first, unary_op, settings);
-#endif // CODA_OSS_mt_Algorithm_has_execution
+    CODA_OSS_mark_symbol_unused(settings);
+    return std::transform(std::execution::par, first1, last1, d_first, unary_op);
+#endif // __GNUC__
 }
 
 }

@@ -368,6 +368,8 @@ endfunction()
 #                     the current source directory. All source files beneath
 #                     this directory will be used. Each source file is assumed
 #                     to create a separate executable.
+#   TEST_LIB        - If present, use this library to supply unit test macros,
+#                     otherwise default to Catch2WithMain from coda-oss externals
 #
 # Multi value arguments:
 #   DEPS            - Modules that the tests are dependent upon.
@@ -387,7 +389,7 @@ function(coda_add_tests)
         cmake_parse_arguments(
             ARG                         # prefix
             "UNITTEST"                  # options
-            "MODULE_NAME;DIRECTORY"     # single args
+            "MODULE_NAME;DIRECTORY;TEST_LIB"     # single args
             "DEPS;SOURCES;ARGS;FILTER_LIST"  # multi args
             "${ARGN}"
         )
@@ -421,7 +423,12 @@ function(coda_add_tests)
             add_custom_target(${test_group_tgt})
         endif()
 
-        list(APPEND ARG_DEPS ${ARG_MODULE_NAME}-${TARGET_LANGUAGE} Catch2::Catch2WithMain)
+        set(test_lib Catch2::Catch2WithMain)
+        if(ARG_TEST_LIB)
+            set(test_lib ${ARG_TEST_LIB})
+        endif()
+
+        list(APPEND ARG_DEPS ${ARG_MODULE_NAME}-${TARGET_LANGUAGE} ${test_lib})
 
         # get all interface libraries and include directories from the dependencies
         foreach(dep ${ARG_DEPS})

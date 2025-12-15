@@ -7,6 +7,7 @@ coda_add_module(
     VERSION 1.2
     DEPS config-c++ except-c++ str-c++ GSL)
 
+add_compile_options($<$<CXX_COMPILER_ID:GNU,Clang,AppleClang>:-Wno-use-after-free>)
 coda_add_tests(
     MODULE_NAME ${MODULE_NAME}
     DIRECTORY "tests"
@@ -16,6 +17,3 @@ coda_add_tests(
     DIRECTORY "unittests"
     DEPS mt-c++
     UNITTEST)
-
-# Aligned alloc test throws -Werror=use-after-free
-target_compile_options(sys_test_aligned_alloc PRIVATE $<$<CXX_COMPILER_ID:GNU,Clang,AppleClang>:-Wno-use-after-free>)
