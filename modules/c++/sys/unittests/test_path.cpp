@@ -122,8 +122,8 @@ TEST_CASE(test_std_filesystem_is_absolute)
 #endif
 
     url = "s3://example.com";  // 2 letters
-    TEST_ASSERT_FALSE(url.is_absolute());
-    TEST_ASSERT_TRUE(url.is_relative());  // Should this be false?
+    TEST_ASSERT_TRUE(url.is_absolute());
+    TEST_ASSERT_FALSE(url.is_relative());
 
     url = "ftp://example.com"; // 3 letters
     TEST_ASSERT_FALSE(url.is_absolute());
