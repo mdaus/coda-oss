@@ -142,6 +142,13 @@ struct CODA_OSS_API Logger : public Filterer
         return mName;
     }
 
+    /*!
+     * This gets the current log level.  Each handler has a log level
+     * but, they should be the same as the setLevel sets the level
+     * the same for all of the Handlers for this Logger
+     */
+    LogLevel getLevel();
+
     //! Removes all handlers
     void reset();
 

@@ -34,6 +34,7 @@ int main(int, char**)
     try
     {
         sys::LocalDateTime now;
+        std::cout << "Epoch seconds: " << sys::DateTime::getEpochSeconds() << std::endl;
         std::cout << "Today is: " << now.getMonth() << "/"
                 << now.getDayOfMonth() << "/" << now.getYear() << std::endl;
         std::cout << "Time is: " << now.getHour() << ":" << now.getMinute()

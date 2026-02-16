@@ -57,7 +57,7 @@ bool Handler::handle(const LogRecord* record)
     if (filter(record))
     {
         //acquire lock
-        mt::CriticalSection<sys::Mutex> lock(&mHandlerLock);
+        mt::CriticalSection<decltype(mHandlerLock)> lock(&mHandlerLock);
         try
         {
             emitRecord(record);

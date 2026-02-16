@@ -28,6 +28,8 @@
 #define CODA_OSS_logging_Handler_h_INCLUDED_
 
 #include <string>
+#include <mutex>
+
 #include "config/Exports.h"
 #include "logging/LogRecord.h"
 #include "logging/Formatter.h"
@@ -94,7 +96,7 @@ protected:
     virtual void emitRecord(const LogRecord* record) = 0;
 
     LogLevel mLevel = LogLevel::LOG_NOTSET;
-    sys::Mutex mHandlerLock;
+    std::recursive_mutex mHandlerLock;
     Formatter* mFormatter = nullptr;
     StandardFormatter mDefaultFormatter; 
 };

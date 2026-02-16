@@ -239,3 +239,16 @@ void logging::Logger::reset()
     }
     mHandlers.clear();
 }
+
+logging::LogLevel logging::Logger::getLevel()
+{
+    LogLevel level = LogLevel::LOG_NOTSET;
+    if (!mHandlers.empty())
+    {
+        Handler_T handler = mHandlers.front();
+        level = handler.first->getLevel();
+    }
+
+    return level;
+}
+
