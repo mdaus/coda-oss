@@ -3,8 +3,9 @@ set(MODULE_NAME mt)
 set(MT_DEFAULT_PINNING OFF CACHE BOOL
     "Use affinity-based CPU pinning by default in MT")
 coda_generate_module_config_header(${MODULE_NAME})
-add_compile_options(-Wno-unused-parameter)
-
+if (CMAKE_CXX_COMPILER_ID MATCHES "CLANG|GNU")
+    add_compile_options(-Wno-unused-parameter)
+endif()
 coda_add_module(
     ${MODULE_NAME}
     VERSION 1.1

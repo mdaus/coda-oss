@@ -1,7 +1,9 @@
 set(MODULE_NAME sys)
 
 coda_generate_module_config_header(${MODULE_NAME})
-add_compile_options(-Wno-unused-parameter)
+if (CMAKE_CXX_COMPILER_ID MATCHES "CLANG|GNU")
+    add_compile_options(-Wno-unused-parameter)
+endif()
 
 coda_add_module(
     ${MODULE_NAME}
