@@ -46,10 +46,10 @@ jobs:
     - name: test # should run w/o install
       run: |
         cd target-Release
-        ctest -C Release --output-on-failure
+        ctest -C Release --output-on-failure --timeout 120
         cd ..
         cd target-Debug
-        ctest -C Debug --output-on-failure
+        ctest -C Debug --output-on-failure --timeout 120
     - name: install
       run: |
         cd target-Release
@@ -132,7 +132,7 @@ jobs:
     # should run w/o install
       run: |
         cd target
-        ctest --output-on-failure
+        ctest --output-on-failure --timeout 120
     - name: install
       run: |
         cd target
@@ -163,7 +163,7 @@ jobs:
     # should run w/o install
       run: |
         cd out
-        ctest --output-on-failure
+        ctest --output-on-failure --timeout 120
 
   build-waf:
     strategy:
