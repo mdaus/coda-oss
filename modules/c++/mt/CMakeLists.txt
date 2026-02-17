@@ -5,7 +5,10 @@ set(MT_DEFAULT_PINNING OFF CACHE BOOL
 coda_generate_module_config_header(${MODULE_NAME})
 if (CMAKE_CXX_COMPILER_ID MATCHES "CLANG|GNU")
     add_compile_options(-Wno-unused-parameter)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    add_compile_options(/wd4100)
 endif()
+
 coda_add_module(
     ${MODULE_NAME}
     VERSION 1.1
