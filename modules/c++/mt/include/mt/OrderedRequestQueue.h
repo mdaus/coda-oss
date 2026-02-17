@@ -37,7 +37,7 @@ class AbstractComparator
  public:
     virtual bool operator()(const T& lhs, const T& rhs) const
     {
-        return false;
+        return lhs < rhs;
     }
 };
 
