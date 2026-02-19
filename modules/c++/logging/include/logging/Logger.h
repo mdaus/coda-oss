@@ -143,9 +143,10 @@ struct CODA_OSS_API Logger : public Filterer
     }
 
     /*!
-     * This gets the current log level.  Each handler has a log level
-     * but, they should be the same as the setLevel sets the level
-     * the same for all of the Handlers for this Logger
+     * Returns the current log level of the first handler, if any.  Otherwise
+     * returns LogLevel::LOG_NOTSET.  Note that each handler may have a
+     * different log level.  However, the setLevel function changes the level
+     * of all handlers attached to this logger.
      */
     LogLevel getLevel();
 
