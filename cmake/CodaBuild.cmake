@@ -277,12 +277,8 @@ function(coda_generate_package_config)
             INSTALL_DESTINATION "lib/cmake"
             PATH_VARS ${ARGN}
         )
-        #write_basic_package_version_file(
-        #    ${CMAKE_CURRENT_BINARY_DIR}/FooConfigVersion.cmake
-        #    VERSION 1.2.3
-        #    COMPATIBILITY SameMajorVersion )
+
         install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
-                #"${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}ConfigVersion.cmake"
                 DESTINATION "lib/cmake")
     endif()
 endfunction()

@@ -2,7 +2,7 @@
  * This file is part of mt-c++ 
  * =========================================================================
  * 
- * (C) Copyright 2004 - 2014, MDA Information Systems LLC
+ * (C) Copyright 2004 - 2026, MDA Information Systems LLC
  *
  * mt-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -43,17 +43,12 @@ class AbstractComparator
 
 /*!
  *
- *  \class RequestQueue
- *  \brief Locked, dual condition request queue
+ *  \class OrderedRequestQueue
+ *  \brief Thread-safe altenrative to request queue
  *
- *  This is a generic class for locked buffers.  Stick
- *  anything in T and it will be protected by a queue lock 
- *  and two condition variables.  When you call dequeue, this
- *  class blocks until there is data (there is a critical section).
- *
- *  This class is the basis for the two provided thread pool APIs,
- *  AbstractThreadPool<Request_T> and BasicThreadPool<RequestHandler_T>
- *
+ *  std::set inserts an element into a thread lock request queue
+ *  that orders its elements based off of the provided operator. 
+ *  Dequeue blocks the thread until an element is avaliable. 
  *
  */
 
