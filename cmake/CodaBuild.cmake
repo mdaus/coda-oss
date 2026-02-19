@@ -596,6 +596,7 @@ function(coda_add_module MODULE_NAME)
     #endif()
 endfunction()
 
+
 # Add a SWIG Python module to the build
 #
 # Single value arguments:
