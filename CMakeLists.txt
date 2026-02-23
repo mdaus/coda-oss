@@ -27,6 +27,7 @@ if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
        add_compile_options(/MP) # multi-processor compile
     elseif (UNIX)
        add_compile_options(-Werror) # warnings as errors
+       add_compile_options(-Wno-error=c++20-compat)
     endif()
 
     list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
