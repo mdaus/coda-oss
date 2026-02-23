@@ -49,10 +49,10 @@ jobs:
     - name: test # should run w/o install
       run: |
         cd target-Release
-        ctest -C Release --output-on-failure --timeout $CTEST_TIMEOUT
+        ctest -C Release --output-on-failure --timeout $env:CTEST_TIMEOUT
         cd ..
         cd target-Debug
-        ctest -C Debug --output-on-failure --timeout $CTEST_TIMEOUT
+        ctest -C Debug --output-on-failure --timeout $env:CTEST_TIMEOUT
     - name: install
       run: |
         cd target-Release
