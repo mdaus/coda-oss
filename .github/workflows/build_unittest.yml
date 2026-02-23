@@ -1,3 +1,6 @@
+env:
+  CTEST_TIMEOUT: 120
+
 name: build_unittest
 
 on:
@@ -46,10 +49,10 @@ jobs:
     - name: test # should run w/o install
       run: |
         cd target-Release
-        ctest -C Release --output-on-failure --timeout 120
+        ctest -C Release --output-on-failure --timeout $CTEST_TIMEOUT
         cd ..
         cd target-Debug
-        ctest -C Debug --output-on-failure --timeout 120
+        ctest -C Debug --output-on-failure --timeout $CTEST_TIMEOUT
     - name: install
       run: |
         cd target-Release
@@ -132,7 +135,7 @@ jobs:
     # should run w/o install
       run: |
         cd target
-        ctest --output-on-failure --timeout 120
+        ctest --output-on-failure --timeout $CTEST_TIMEOUT
     - name: install
       run: |
         cd target
@@ -163,7 +166,7 @@ jobs:
     # should run w/o install
       run: |
         cd out
-        ctest --output-on-failure --timeout 120
+        ctest --output-on-failure --timeout $CTEST_TIMEOUT
 
   build-waf:
     strategy:

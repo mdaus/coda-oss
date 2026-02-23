@@ -142,6 +142,8 @@ public:
     }
 
     //! Lets the n'th request from the front cut in line and dequeue
+    //! NOTE: The RequestQueue does not prevent changes to the queue between
+    //! when peak() and cutAndDequeue() are called
     void cutAndDequeue(size_t n, T& request)
     {
 #ifdef THREAD_DEBUG

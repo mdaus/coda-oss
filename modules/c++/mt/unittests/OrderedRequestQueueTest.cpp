@@ -43,6 +43,10 @@ public:
 
 namespace
 {
+/**
+ * Tests priority enqueue and dequeue via the OrderedRequestQueues
+ * standard numerical ordering and a custom even first comparator
+ */
 TEST_CASE(PriorityEnqueue)
 {
     mt::OrderedRequestQueue<int> testSubject;
