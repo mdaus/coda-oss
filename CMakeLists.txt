@@ -25,7 +25,7 @@ if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
     if (MSVC)
        add_compile_options(/WX) # warnings as errors
        add_compile_options(/MP) # multi-processor compile
-    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
        add_compile_options(-Werror) # warnings as errors
        add_compile_options(-Wno-error=c++20-compat)
     endif()
