@@ -167,44 +167,44 @@ jobs:
       run: |
         cd out
         ctest --output-on-failure --timeout $CTEST_TIMEOUT
-
-  build-waf:
-    strategy:
-      matrix:
-        os: [
-            # BROKEN: windows-latest, 
-            ubuntu-22.04]
-        python-version: ['3.7']
-        debugging: ['--enable-debugging', '']
-    name: ${{ matrix.os }}-${{ matrix.python-version }}-waf${{ matrix.debugging }}
-    runs-on: ${{ matrix.os }}
-    steps:
-    - name: Skip Duplicate Actions
-      uses: fkirc/skip-duplicate-actions@v5.3.1
-    - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
-    - name: Set up Python
-      uses: actions/setup-python@v5 # https://github.com/marketplace/actions/setup-python
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: configure_with_swig
-      if: ${{ matrix.os == 'ubuntu-22.04' }}
-      run: |
-        pip install numpy
-        mkdir install${{ matrix.os }}Waf-Github
-        python waf configure --prefix="$PWD/install${{ matrix.os }}Waf-Github" --enable-swig ${{ matrix.debugging }}
-    - name: configure_without_swig
-      if: ${{ matrix.os == 'windows-latest' }}
-      run: |
-        pip install numpy
-        mkdir install${{ matrix.os }}Waf-Github
-        python waf configure --prefix="$PWD/install${{ matrix.os }}Waf-Github" ${{ matrix.debugging }}
-    - name: build
-      run: |
-        python waf build
-    - name: install
-      run: |
-        python waf install
-    - name: test
-      run: |
-        python waf install --alltests
+# Plan to remove waf soon - disable build and see who complains
+#   build-waf:
+#     strategy:
+#       matrix:
+#         os: [
+#             # BROKEN: windows-latest, 
+#             ubuntu-22.04]
+#         python-version: ['3.7']
+#         debugging: ['--enable-debugging', '']
+#     name: ${{ matrix.os }}-${{ matrix.python-version }}-waf${{ matrix.debugging }}
+#     runs-on: ${{ matrix.os }}
+#     steps:
+#     - name: Skip Duplicate Actions
+#       uses: fkirc/skip-duplicate-actions@v5.3.1
+#     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
+#     - name: Set up Python
+#       uses: actions/setup-python@v5 # https://github.com/marketplace/actions/setup-python
+#       with:
+#         python-version: ${{ matrix.python-version }}
+#     - name: configure_with_swig
+#       if: ${{ matrix.os == 'ubuntu-22.04' }}
+#       run: |
+#         pip install numpy
+#         mkdir install${{ matrix.os }}Waf-Github
+#         python waf configure --prefix="$PWD/install${{ matrix.os }}Waf-Github" --enable-swig ${{ matrix.debugging }}
+#     - name: configure_without_swig
+#       if: ${{ matrix.os == 'windows-latest' }}
+#       run: |
+#         pip install numpy
+#         mkdir install${{ matrix.os }}Waf-Github
+#         python waf configure --prefix="$PWD/install${{ matrix.os }}Waf-Github" ${{ matrix.debugging }}
+#     - name: build
+#       run: |
+#         python waf build
+#     - name: install
+#       run: |
+#         python waf install
+#     - name: test
+#       run: |
+#         python waf install --alltests
 
