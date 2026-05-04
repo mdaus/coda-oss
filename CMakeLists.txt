@@ -2,7 +2,7 @@
 #
 # Author:  Scott A. Colcord
 
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.20)
 project(coda-oss VERSION 2.0.0 LANGUAGES C CXX)
 
 if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
@@ -13,13 +13,11 @@ if (EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
     include("${CMAKE_BINARY_DIR}/conan_paths.cmake")
 endif()
 
-if (CMAKE_COMPILER_IS_GNUCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 14)
-    message(FATAL_ERROR "CODA-OSS require at least gcc-14")
-endif()
+
 
 if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
     # this is the top level project
-    set(CMAKE_CXX_STANDARD 23)
+    set(CMAKE_CXX_STANDARD 20)
     set(CXX_STANDARD_REQUIRED true)
 
     # Always turn on "warnings as errors" to avoid lots of (meaningless?) build output;
