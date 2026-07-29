@@ -66,7 +66,7 @@ struct CODA_OSS_API FileWriter
     }
 
     //! Destructor
-    ~FileWriter() noexcept;
+    ~FileWriter();
 
     void openFile(const std::string& fileName);
     void close();

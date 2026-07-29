@@ -57,7 +57,7 @@ public:
     IFD() = default;
 
     //! Deconstructor
-    ~IFD() noexcept
+    ~IFD()
     {
         for (auto& kv : mIFD)
             delete kv.second;

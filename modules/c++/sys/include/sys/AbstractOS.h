@@ -118,7 +118,7 @@ struct CODA_OSS_API AbstractOS
 {
     AbstractOS();
 
-    virtual ~AbstractOS() noexcept;
+    virtual ~AbstractOS();
 
     /*!
      *  Get the name of the platform this was compiled for
