@@ -3,7 +3,7 @@
  * =========================================================================
  *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
- * (C) Copyright 2023, Maxar Technologies, Inc.
+ * © Copyright 2023, Maxar Technologies, Inc.
  *
  * coda_oss-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,7 +32,7 @@
 // https://en.cppreference.com/w/cpp/container/mdspan
 //
 // Why? Our (current) needs are much more limited than all the use-cases for `std::mdspan`:
-// dynamic (not static) extents, rank of 2 (rows x cols), contiguous memory, ...
+// dynamic (not static) extents, rank of 2 (rows × cols), contiguous memory, ...
 // By the time we really need more features, maybe we'll be using C++23? 
 namespace coda_oss
 {

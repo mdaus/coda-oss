@@ -25,7 +25,7 @@
 #include "tiff/ImageWriter.h"
 #include "tiff/FileWriter.h"
 
-tiff::FileWriter::~FileWriter() noexcept
+tiff::FileWriter::~FileWriter()
 {
     for (size_t ii = 0; ii < mImages.size(); ++ii)
     {

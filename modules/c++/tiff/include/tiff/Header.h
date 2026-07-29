@@ -87,7 +87,7 @@ public:
     }
 
     //! Destructor
-    ~Header() noexcept
+    ~Header()
     {
     }
 

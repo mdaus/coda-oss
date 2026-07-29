@@ -64,7 +64,7 @@ struct CODA_OSS_API FileReader
     }
 
     //! Destructor
-    ~FileReader() noexcept
+    ~FileReader()
     {
         close();
     }

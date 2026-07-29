@@ -59,7 +59,7 @@ public:
     }
 
     //! Destructor
-    ~ImageReader() noexcept
+    ~ImageReader()
     {
     }
 

@@ -29,7 +29,7 @@
 short tiff::Const::mTypeSizes[tiff::Const::Type::MAX] =
 { 0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8 };
 
-std::string tiff::RationalPrintStrategy::toString(const sys::Uint64_T data)
+std::string tiff::RationalPrintStrategy::toString(const sys::Uint32_T data)
 {
     std::ostringstream tempStream;
     sys::Uint32_T numerator = *((sys::Uint32_T *)(&data));
@@ -37,6 +37,10 @@ std::string tiff::RationalPrintStrategy::toString(const sys::Uint64_T data)
     tempStream << numerator << "/" << denominator;
 
     return tempStream.str();
+}
+std::string tiff::RationalPrintStrategy::toString(const sys::Uint64_T data)
+{
+    return toString(static_cast<sys::Uint32_T>(data));
 }
 
 template<typename T>
