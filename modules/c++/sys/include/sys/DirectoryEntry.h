@@ -67,7 +67,7 @@ struct DirectoryEntry
         mFirst.reset(this);
         mLast.reset(nullptr);
     }
-    virtual ~DirectoryEntry() = default;
+    virtual ~DirectoryEntry() noexcept(false) = default;
     virtual void next()
     {
         mCurrent = mDir.findNextFile();
