@@ -67,7 +67,8 @@ struct DirectoryEntry
         mFirst.reset(this);
         mLast.reset(nullptr);
     }
-    virtual ~DirectoryEntry() = default;
+    virtual ~DirectoryEntry() noexcept = default;
+    
     virtual void next()
     {
         mCurrent = mDir.findNextFile();
@@ -137,11 +138,7 @@ private:
     std::string mDirName;
     Directory mDir;
     //   DirectoryEntry mDirLast;
-
-
 };
-
-
 
 }
 

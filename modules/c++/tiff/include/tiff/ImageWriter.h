@@ -67,7 +67,7 @@ public:
     {
     }
 
-    ~ImageWriter() = default;
+    ~ImageWriter() noexcept = default;
 
     /**
      *****************************************************************
