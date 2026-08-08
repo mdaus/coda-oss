@@ -1,7 +1,6 @@
 set(MODULE_NAME mt)
 
-set(MT_DEFAULT_PINNING OFF CACHE BOOL
-    "Use affinity-based CPU pinning by default in MT")
+option(MT_DEFAULT_PINNING "Use affinity-based CPU pinning by default in MT" OFF)
 coda_generate_module_config_header(${MODULE_NAME})
 
 coda_add_module(
