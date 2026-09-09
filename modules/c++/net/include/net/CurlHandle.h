@@ -28,6 +28,7 @@
 #ifdef NET_CURL_SUPPORT
 #include <curl/curl.h>
 #include <string>
+#include <vector>
 
 namespace net
 {
@@ -100,6 +101,20 @@ public:
     void setProxyPort(size_t port);
 
     /*
+     * \func setHttpHeaders
+     * \brief Sets custom HTTP headers for the request.
+     * 
+     * \param headers Vector of header strings in the "Header: Value" format.
+     */
+    void setHttpHeaders(const std::vector<std::string>& headers);
+
+    /*
+     * \func setPutRequest
+     * \brief Configures the handle to make PUT request.
+     */
+    void setPutRequest();
+
+    /*
      *  \func perform
      *  \brief Performs the underlying CURL call. Before call this, at a
      *         minimum you must also call setURL and setWriteBuffer.
@@ -125,6 +140,7 @@ private:
                                size_t nmemb,
                                std::string* writerData);
     CURL* const mHandle;
+    curl_slist* mHeaders;
 };
 }
 
