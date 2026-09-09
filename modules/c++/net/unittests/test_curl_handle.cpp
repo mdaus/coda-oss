@@ -79,7 +79,6 @@ TEST_CASE(testSetHttpHeaders)
     TEST_ASSERT_FALSE(headerExists(headers, "Content-Type: application/json"));
     TEST_ASSERT_FALSE(headerExists(headers, "Authorization: Bearer token123"));
     
-    TEST_SUCCESS;
 }
 
 // Test that setPutRequest doesn't throw
@@ -111,7 +110,6 @@ TEST_CASE(testSetPutRequestWithHeaders)
     // Headers should still be set after setPutRequest
     retrievedHeaders = handle.getHeaders();
     TEST_ASSERT_EQ(retrievedHeaders.size(), 2);
-    
 }
 
 // Test that multiple handles can be configured independently
@@ -138,8 +136,6 @@ TEST_CASE(testMultipleHandlesIndependent)
     TEST_ASSERT_EQ(h2Headers.size(), 1);
     TEST_ASSERT_TRUE(headerExists(h2Headers, "X-Handle: 2"));
     TEST_ASSERT_FALSE(headerExists(h2Headers, "X-Handle: 1"));
-    
-    TEST_SUCCESS;
 }
 
 // Test that calling setHttpHeaders multiple times properly replaces headers
