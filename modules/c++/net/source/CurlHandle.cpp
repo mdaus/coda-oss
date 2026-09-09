@@ -115,6 +115,18 @@ void CurlHandle::setPutRequest()
             "Setting PUT request");
 }
 
+std::vector<std::string> CurlHandle::getHeaders() const
+{
+    std::vector<std::string> result;
+    curl_slist* current = mHeaders;
+    while (current != nullptr)
+    {
+        result.push_back(std::string(current->data));
+        current = current->next;
+    }
+    return result;
+}
+
 void CurlHandle::perform()
 {
     verify(curl_easy_perform(mHandle), "curl_easy_perform()");

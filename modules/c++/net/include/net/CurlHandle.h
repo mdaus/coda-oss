@@ -115,6 +115,14 @@ public:
     void setPutRequest();
 
     /*
+     * \func getHeaders
+     * \brief Gets the current HTTP headers list.
+     * 
+     * \return Vector of header strings. Empty vector if no headers are set.
+     */
+    std::vector<std::string> getHeaders() const;
+
+    /*
      *  \func perform
      *  \brief Performs the underlying CURL call. Before call this, at a
      *         minimum you must also call setURL and setWriteBuffer.

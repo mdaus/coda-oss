@@ -28,30 +28,56 @@
 #include <net/CurlHandle.h>
 #include <vector>
 #include <string>
+#include <algorithm>
+
+
+namespace
+{
+static bool headerExists(const std::vector<std::string>& headers, const std::string& header)
+{
+    return std::find(headers.begin(), headers.end(), header) != headers.end();
+}
+}
 
 TEST_CASE(testSetHttpHeaders)
 {
     net::CurlHandle handle;
     
-    // Test with empty headers - should not throw
+    // Test with empty headers - should result in empty vector
     std::vector<std::string> emptyHeaders;
     handle.setHttpHeaders(emptyHeaders);
+    std::vector<std::string> headers = handle.getHeaders();
+    TEST_ASSERT_TRUE(headers.empty());
     
-    // Test with single header - should not throw
+    // Test with single header
     std::vector<std::string> singleHeader{"Content-Type: application/json"};
     handle.setHttpHeaders(singleHeader);
+    headers = handle.getHeaders();
+    TEST_ASSERT_EQ(headers.size(), static_cast<size_t>(1));
+    TEST_ASSERT_TRUE(headerExists(headers, "Content-Type: application/json"));
     
-    // Test with multiple headers - should not throw
+    // Test with multiple headers
     std::vector<std::string> multipleHeaders{
         "Content-Type: application/json",
         "Authorization: Bearer token123",
         "User-Agent: TestClient/1.0"
     };
     handle.setHttpHeaders(multipleHeaders);
+    headers = handle.getHeaders();
+    TEST_ASSERT_EQ(headers.size(), static_cast<size_t>(3));
+    TEST_ASSERT_TRUE(headerExists(headers, "Content-Type: application/json"));
+    TEST_ASSERT_TRUE(headerExists(headers, "Authorization: Bearer token123"));
+    TEST_ASSERT_TRUE(headerExists(headers, "User-Agent: TestClient/1.0"));
     
-    // Test that headers can be replaced - should not throw
+    // Test that headers can be replaced
     std::vector<std::string> newHeaders{"X-Custom-Header: value"};
     handle.setHttpHeaders(newHeaders);
+    headers = handle.getHeaders();
+    TEST_ASSERT_EQ(headers.size(), static_cast<size_t>(1));
+    TEST_ASSERT_TRUE(headerExists(headers, "X-Custom-Header: value"));
+    // Old headers should not exist
+    TEST_ASSERT_FALSE(headerExists(headers, "Content-Type: application/json"));
+    TEST_ASSERT_FALSE(headerExists(headers, "Authorization: Bearer token123"));
     
     TEST_SUCCESS;
 }
@@ -65,7 +91,7 @@ TEST_CASE(testSetPutRequest)
     TEST_SUCCESS;
 }
 
-// Test combining setPutRequest with setHttpHeaders - should not throw
+// Test combining setPutRequest with setHttpHeaders
 TEST_CASE(testSetPutRequestWithHeaders)
 {
     net::CurlHandle handle;
@@ -75,9 +101,17 @@ TEST_CASE(testSetPutRequestWithHeaders)
     };
     
     handle.setHttpHeaders(headers);
+    std::vector<std::string> retrievedHeaders = handle.getHeaders();
+    TEST_ASSERT_EQ(retrievedHeaders.size(), 2);
+    TEST_ASSERT_TRUE(headerExists(retrievedHeaders, "Content-Type: text/plain"));
+    TEST_ASSERT_TRUE(headerExists(retrievedHeaders, "Content-Length: 0"));
+    
     handle.setPutRequest();
     
-    TEST_SUCCESS;
+    // Headers should still be set after setPutRequest
+    retrievedHeaders = handle.getHeaders();
+    TEST_ASSERT_EQ(retrievedHeaders.size(), 2);
+    
 }
 
 // Test that multiple handles can be configured independently
@@ -93,6 +127,18 @@ TEST_CASE(testMultipleHandlesIndependent)
     handle2.setHttpHeaders(headers2);
     handle1.setPutRequest();
     
+    // Verify handle1 headers
+    std::vector<std::string> h1Headers = handle1.getHeaders();
+    TEST_ASSERT_EQ(h1Headers.size(), 1);
+    TEST_ASSERT_TRUE(headerExists(h1Headers, "X-Handle: 1"));
+    TEST_ASSERT_FALSE(headerExists(h1Headers, "X-Handle: 2"));
+    
+    // Verify handle2 headers
+    std::vector<std::string> h2Headers = handle2.getHeaders();
+    TEST_ASSERT_EQ(h2Headers.size(), 1);
+    TEST_ASSERT_TRUE(headerExists(h2Headers, "X-Handle: 2"));
+    TEST_ASSERT_FALSE(headerExists(h2Headers, "X-Handle: 1"));
+    
     TEST_SUCCESS;
 }
 
@@ -100,16 +146,28 @@ TEST_CASE(testMultipleHandlesIndependent)
 TEST_CASE(testSetHeadersMultipleTimes)
 {
     net::CurlHandle handle;
+    
     std::vector<std::string> firstHeaders{"X-First: 1"};
     handle.setHttpHeaders(firstHeaders);
+    std::vector<std::string> headers = handle.getHeaders();
+    TEST_ASSERT_EQ(headers.size(), 1);
+    TEST_ASSERT_TRUE(headerExists(headers, "X-First: 1"));
     
     std::vector<std::string> secondHeaders{"X-Second: 2"};
     handle.setHttpHeaders(secondHeaders);
+    headers = handle.getHeaders();
+    TEST_ASSERT_EQ(headers.size(), 1);
+    TEST_ASSERT_TRUE(headerExists(headers, "X-Second: 2"));
+    TEST_ASSERT_FALSE(headerExists(headers, "X-First: 1"));
     
     std::vector<std::string> thirdHeaders{"X-Third: 3", "X-Fourth: 4"};
     handle.setHttpHeaders(thirdHeaders);
-    
-    TEST_SUCCESS;
+    headers = handle.getHeaders();
+    TEST_ASSERT_EQ(headers.size(), 2);
+    TEST_ASSERT_TRUE(headerExists(headers, "X-Third: 3"));
+    TEST_ASSERT_TRUE(headerExists(headers, "X-Fourth: 4"));
+    TEST_ASSERT_FALSE(headerExists(headers, "X-Second: 2"));
+    TEST_ASSERT_FALSE(headerExists(headers, "X-First: 1"));
 }
 
 TEST_MAIN(
