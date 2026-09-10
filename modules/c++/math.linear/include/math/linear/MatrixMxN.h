@@ -304,7 +304,7 @@ public:
         {
             for (size_t j = 0; j < cols(); j++)
             {
-                mRaw[i][0] = sv;
+                mRaw[i][j] = sv;
             }
         }
         return *this;
