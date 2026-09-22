@@ -2,8 +2,8 @@
  * This file is part of coda_oss-c++
  * =========================================================================
  *
- * (C) Copyright 2004 - 2014, MDA Information Systems LLC
- * (C) Copyright 2023, Maxar Technologies, Inc.
+ * Copyright 2004 - 2014, MDA Information Systems LLC
+ * Copyright 2023, Maxar Technologies, Inc.
  *
  * coda_oss-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
