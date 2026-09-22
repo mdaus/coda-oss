@@ -445,7 +445,18 @@ public:
         }
     }
 
-  
+    /*!
+     *  Set the matrix row i to a copy of 
+     *  the row vector
+
+     *  \param i The row index
+     *  \param vec The row vector to copy from
+     */
+    inline void row(size_t i, const MatrixMxN<1, _ND, _T>& vec)
+    {
+        row(i, vec.mRaw[0]); 
+    }
+
     /*!
      *  Get back the column vector at index j
      *  
@@ -540,7 +551,7 @@ public:
      *
      *  \return _MD
      */
-    constexpr size_t rows() const noexcept { return _MD; }
+    static constexpr size_t rows() noexcept { return _MD; }
     
     /*!
      *  This function is not really necessary, but
@@ -552,14 +563,14 @@ public:
      *
      *  \return _ND
      */
-    constexpr size_t cols() const noexcept { return _ND; }
+    static constexpr size_t cols() noexcept { return _ND; }
 
     /*!
      *  Gives back the value full size of the matrix
      *
      *  \return _MD * cols()
      */
-    constexpr size_t size() const noexcept { return rows() * cols(); }
+    static constexpr size_t size() noexcept { return rows() * cols(); }
 
 
 
