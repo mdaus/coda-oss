@@ -83,16 +83,6 @@ public:
     }
 
     /*!
-     *  Initialize from a one dimensional row vector matrix
-     *
-     *  This might be sketchy, as we're implicitly swapping a dimension 
-     */
-    VectorN(const MatrixMxN<1, _ND, _T>& mx)
-    {
-        mRaw = mx.transpose();   
-    }
-    
-    /*!
      *  Copy a vector from a raw STL vector
      *  which must be sized with at least _ND
      *  elements (the rest will be ignored)
