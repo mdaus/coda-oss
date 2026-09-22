@@ -4,6 +4,7 @@
  *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  * (C) Copyright 2021, Maxar Technologies, Inc.
+ * (C) Copyright 2025, Arka Group, L.P.
  *
  * sys-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,7 +34,7 @@
 // POSIX is more-or-less "Unix"
 // https://linux.die.net/man/7/feature_test_macros
 // "If no feature test macros are explicitly defined, then the following feature test macros
-// are defined by default: ... _POSIX_SOURCE, and _POSIX_C_SOURCE=200809L. [...] 
+// are defined by default: ... _POSIX_SOURCE, and _POSIX_C_SOURCE=200809L. [...]
 // _POSIX_SOURCE Defining this obsolete macro ... is equivalent to defining _POSIX_C_SOURCE ..."
 #ifndef _WIN32
 #include <features.h>
@@ -159,7 +160,7 @@ namespace sys
 #define SYS_FUNC NativeLayer_func__
 
 #define Ctxt(MESSAGE) except::Context(__FILE__, __LINE__, SYS_FUNC, \
-        sys::TimeStamp().local(), MESSAGE)
+        sys::TimeStamp(true).local(), MESSAGE)
 
 namespace sys
 {
