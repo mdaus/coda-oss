@@ -27,16 +27,14 @@
 
 #include "cli/ArgumentParser.h"
 
-cli::Argument::Argument(const std::string& nameOrFlags, cli::ArgumentParser* parser):
-    mParser(parser)
+cli::Argument::Argument(const std::string &nameOrFlags, cli::ArgumentParser *parser) : mParser(parser)
 {
-    std::vector < std::string > vars = str::split(nameOrFlags, " ");
+    std::vector<std::string> vars = str::split(nameOrFlags, " ");
     if (vars.size() == 1 && !str::startsWith(vars[0], "-"))
         mName = vars[0];
     else
     {
-        for (std::vector<std::string>::iterator it = vars.begin(); it
-                != vars.end(); ++it)
+        for (std::vector<std::string>::iterator it = vars.begin(); it != vars.end(); ++it)
         {
             addFlag(*it);
         }
@@ -51,7 +49,7 @@ cli::Argument::~Argument()
         delete mConstValue;
 }
 
-cli::Argument* cli::Argument::addFlag(const std::string& flag)
+cli::Argument *cli::Argument::addFlag(const std::string &flag)
 {
     char p = mParser->mPrefixChar;
     std::string p2 = str::Format("%c%c", p, p);
@@ -61,23 +59,20 @@ cli::Argument* cli::Argument::addFlag(const std::string& flag)
         mShortFlags.push_back(validateFlag(flag.substr(1)));
     return this;
 }
-std::string cli::Argument::validateFlag(const std::string& flag) const
+std::string cli::Argument::validateFlag(const std::string &flag) const
 {
-    const static std::string idChars =
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
+    const static std::string idChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
     std::string firstChar(flag.substr(0, 1));
     std::string rest = flag.substr(1);
-    if ((!str::isAlphanumeric(firstChar) && firstChar[0] != '_')
-            || (!str::containsOnly(rest, idChars)))
+    if ((!str::isAlphanumeric(firstChar) && firstChar[0] != '_') || (!str::containsOnly(rest, idChars)))
         throw except::Exception(Ctxt("invalid flag"));
     return flag;
 }
 
-cli::Argument* cli::Argument::setAction(cli::Action action)
+cli::Argument *cli::Argument::setAction(cli::Action action)
 {
     mAction = action;
-    if (action == cli::STORE_TRUE || action == cli::STORE_FALSE || action
-            == cli::STORE_CONST || action == cli::VERSION)
+    if (action == cli::STORE_TRUE || action == cli::STORE_FALSE || action == cli::STORE_CONST || action == cli::VERSION)
     {
         // the flag, const or version are stored as the single argument
         setMinArgs(1);
@@ -85,61 +80,60 @@ cli::Argument* cli::Argument::setAction(cli::Action action)
     }
     return this;
 }
-cli::Argument* cli::Argument::setMinArgs(int num)
+cli::Argument *cli::Argument::setMinArgs(int num)
 {
     mMinArgs = num;
     return this;
 }
-cli::Argument* cli::Argument::setMaxArgs(int num)
+cli::Argument *cli::Argument::setMaxArgs(int num)
 {
     mMaxArgs = num;
     return this;
 }
-cli::Argument* cli::Argument::setDefault(Value* val, bool own)
+cli::Argument *cli::Argument::setDefault(Value *val, bool own)
 {
     mDefaultValue = val;
     mOwnDefault = own;
     return this;
 }
-cli::Argument* cli::Argument::setChoices(
-    const std::vector<std::string>& choices)
+cli::Argument *cli::Argument::setChoices(const std::vector<std::string> &choices)
 {
     mChoices.clear();
     mChoices = choices;
     return this;
 }
-cli::Argument* cli::Argument::addChoice(const std::string& choice)
+cli::Argument *cli::Argument::addChoice(const std::string &choice)
 {
     mChoices.push_back(choice);
     return this;
 }
-cli::Argument* cli::Argument::setHelp(const std::string& help)
+cli::Argument *cli::Argument::setHelp(const std::string &help)
 {
     mHelp = help;
     return this;
 }
-cli::Argument* cli::Argument::setMetavar(const std::string& metavar)
+cli::Argument *cli::Argument::setMetavar(const std::string &metavar)
 {
     mMetavar = metavar;
     return this;
 }
-cli::Argument* cli::Argument::setDestination(const std::string& dest)
+cli::Argument *cli::Argument::setDestination(const std::string &dest)
 {
     mDestination = dest;
     return this;
 }
-cli::Argument* cli::Argument::setConst(Value* val, bool own)
+cli::Argument *cli::Argument::setConst(Value *val, bool own)
 {
     mConstValue = val;
     mOwnConst = own;
     return this;
 }
-cli::Argument* cli::Argument::setRequired(bool flag)
+cli::Argument *cli::Argument::setRequired(bool flag)
 {
     mRequired = flag;
     return this;
 }
-cli::Argument* cli::Argument::setShowsHelp(bool flag)
+cli::Argument *cli::Argument::setShowsHelp(bool flag)
 {
     mShowsHelp = flag;
     return this;
