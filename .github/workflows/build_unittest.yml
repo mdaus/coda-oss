@@ -10,12 +10,12 @@ on:
       - main
 
 jobs:
-  build-windows-cmake:
+  build-windows:
     strategy:
       matrix:
         os: [windows-latest]
         config: [Release, Debug]
-    name: ${{ matrix.os }}-${{ matrix.config }}-CMake
+    name: ${{ matrix.os }}-${{ matrix.config }}
     runs-on: ${{ matrix.os }}
     steps:
     - name: Skip Duplicate Actions
@@ -34,13 +34,13 @@ jobs:
 
 # Since MSBUILD solutions can be generated from CMake within VS, no point testing in build.
 
-  build-ubuntu-cmake:
+  build-ubuntu:
     strategy:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04]
         configuration: [Debug, Release]
         avx: [AVX512F]
-    name: ${{ matrix.os }}-${{ matrix.configuration }}-${{ matrix.avx }}-CMake
+    name: ${{ matrix.os }}-${{ matrix.configuration }}-${{ matrix.avx }}
     runs-on: ${{ matrix.os }}
     steps:
     - name: Skip Duplicate Actions
@@ -57,21 +57,21 @@ jobs:
       run: |
         ctest --test-dir out --output-on-failure --timeout $CTEST_TIMEOUT
 
-  build-rocky-cmake:
+  build-rocky:
     strategy:
       matrix:
         version: [8, 9, 10]
-    name: rockylinux${{ matrix.version }}-Release-CMake
+    name: rockylinux-${{ matrix.version }}-Release
     runs-on: ubuntu-24.04
     container:
       image: rockylinux/rockylinux:${{ matrix.version }}-minimal
     steps:
     - name: Skip Duplicate Actions
       uses: fkirc/skip-duplicate-actions@v5.3.1
-    - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: setup system
       run: |
-        microdnf install gcc gcc-c++
+        microdnf install gcc gcc-c++ tar gzip cmake
+    - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
       run: |
         cmake -B target -DCMAKE_BUILD_TYPE=Release
@@ -81,4 +81,4 @@ jobs:
     - name: test
     # should run w/o install
       run: |
-        ctest --test-dir target --output-on-failure --timeout $CTEST_TIMEOUT
+        ctest --test-dir target --output-on-failure
