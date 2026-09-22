@@ -216,6 +216,7 @@ struct CODA_OSS_API File
      *  If size is < 0, an exception is thrown.
      *  If size is > length of file, an exception occurs.
      *
+     *  \param offset Byte offset from start of file to read from
      *  \param buffer The buffer to put to
      *  \param size The number of bytes
      */
