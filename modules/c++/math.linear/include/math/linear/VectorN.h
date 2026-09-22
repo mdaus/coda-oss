@@ -75,7 +75,7 @@ public:
     }
 
     /*!
-     *  Initialize from a one dimensional row vector matrix
+     *  Initialize from a one dimensional column vector matrix
      */
     VectorN(const MatrixMxN<_ND, 1, _T>& mx)
     {
@@ -83,7 +83,7 @@ public:
     }
 
     /*!
-     *  Initialize from a one dimensional column vector matrix
+     *  Initialize from a one dimensional row vector matrix
      *
      *  This might be sketchy, as we're implicitly swapping a dimension 
      */
