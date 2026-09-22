@@ -97,8 +97,11 @@ static std::string getBacktrace_(bool& supported, std::vector<std::string>& symb
 }
 
 #elif _WIN32
+// Order of these includes matters
+// clang-format off
 #include <windows.h>
 #include <dbghelp.h>
+// clang-format on
 #pragma comment(lib, "dbghelp")
 
 // https://docs.microsoft.com/en-us/windows/win32/api/dbghelp/nf-dbghelp-syminitialize
