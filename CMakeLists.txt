@@ -23,11 +23,16 @@ if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
     # Always turn on "warnings as errors" to avoid lots of (meaningless?) build output;
     # we'll dial-back warnings as necessary.
     if (MSVC)
-       add_compile_options(/WX) # warnings as errors
-       add_compile_options(/MP) # multi-processor compile
+        add_compile_options(/WX) # warnings as errors
+        add_compile_options(/MP) # multi-processor compile
     elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-       add_compile_options(-Werror) # warnings as errors
-       add_compile_options(-Wno-error=c++20-compat)
+        add_compile_options(-Werror) # warnings as errors
+        include(CheckCompilerFlag)
+        check_compiler_flag(CXX "-Wc++2a-compat" HAS_CPP20_FLAG)
+        if (HAS_CPP20_FLAG)
+            add_compile_options(-Wno-error=c++2a-compat)
+        endif()
+    
     endif()
 
     list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")

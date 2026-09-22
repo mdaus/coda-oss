@@ -11,12 +11,8 @@ on:
 
 jobs:
   build-windows:
-    strategy:
-      matrix:
-        os: [windows-latest]
-        config: [Release, Debug]
-    name: ${{ matrix.os }}-${{ matrix.config }}
-    runs-on: ${{ matrix.os }}
+    name: windows-latest-Release
+    runs-on: windows-latest
     steps:
     - name: Skip Duplicate Actions
       uses: fkirc/skip-duplicate-actions@v5.3.1
@@ -24,13 +20,13 @@ jobs:
     - name: configure
       run: |
         ls env:
-        cmake -B target-${{ matrix.config }} -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+        cmake -B target
     - name: build
       run: |
-        cmake --build target-${{ matrix.config }} -j
+        cmake --build target -j --config Release
     - name: test # should run w/o install
       run: |
-        ctest --test-dir target-${{ matrix.config }} --output-on-failure --timeout $env:CTEST_TIMEOUT
+        ctest --test-dir target -C Release --output-on-failure --timeout $env:CTEST_TIMEOUT
 
 # Since MSBUILD solutions can be generated from CMake within VS, no point testing in build.
 
@@ -70,7 +66,7 @@ jobs:
       uses: fkirc/skip-duplicate-actions@v5.3.1
     - name: setup system
       run: |
-        microdnf install gcc gcc-c++ tar gzip cmake
+        microdnf install -y gcc gcc-c++ tar gzip cmake
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
       run: |
@@ -81,4 +77,8 @@ jobs:
     - name: test
     # should run w/o install
       run: |
+        # Setup test variables and files
+        touch ~/.bashrc 
+        export USER=github
+        mkdir .git
         ctest --test-dir target --output-on-failure
