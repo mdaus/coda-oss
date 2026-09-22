@@ -25,8 +25,8 @@
 #include <mem/ScopedCopyablePtr.h>
 #include <nlohmann/json.hpp>
 
-#include <coda_oss/json/Types.h>
 #include <coda_oss/json/Mem.h>
+#include <coda_oss/json/Types.h>
 
 using json = nlohmann::json;
 
@@ -62,8 +62,4 @@ TEST_CASE(TestNullPtr)
     TEST_ASSERT(startVal == deserialized);
 }
 
-TEST_MAIN(
-    TEST_CHECK(TestCloneablePtr);
-    TEST_CHECK(TestCopyablePtr);
-    TEST_CHECK(TestNullPtr);
-)
+TEST_MAIN(TEST_CHECK(TestCloneablePtr); TEST_CHECK(TestCopyablePtr); TEST_CHECK(TestNullPtr);)

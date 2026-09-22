@@ -27,128 +27,120 @@
 
 namespace math
 {
-    namespace linear
+namespace linear
+{
+template <typename BasicJsonType, size_t N, typename T> void to_json(BasicJsonType &j, const VectorN<N, T> &v)
+{
+    std::array<T, N> arr;
+    for (size_t idx = 0; idx < N; idx++)
     {
-        template<typename BasicJsonType, size_t N, typename T>
-        void to_json(BasicJsonType& j, const VectorN<N, T>& v)
-        {
-            std::array<T, N> arr;
-            for (size_t idx = 0; idx < N; idx++)
-            {
-                arr[idx] = v.matrix()[idx][0];
-            } 
-            j = arr;
-        }
-        template<typename BasicJsonType, size_t N, typename T>
-        void from_json(const BasicJsonType& j, VectorN<N, T>& v)
-        { 
-            v = j.template get<std::vector<T>>();
-        }
+        arr[idx] = v.matrix()[idx][0];
+    }
+    j = arr;
+}
+template <typename BasicJsonType, size_t N, typename T> void from_json(const BasicJsonType &j, VectorN<N, T> &v)
+{
+    v = j.template get<std::vector<T>>();
+}
 
-        template<typename BasicJsonType, size_t M, size_t N, typename T>
-        void to_json(BasicJsonType& j, const MatrixMxN<M, N, T>& v)
-        {   
-            std::array<std::array<T, N>, M> arr;
-            for (size_t iRow = 0; iRow < M; iRow++)
-            {
-                for (size_t iCol = 0; iCol < N; iCol++)
-                {
-                    arr[iRow][iCol] = v.mRaw[iRow][iCol];
-                }
-            }
-            j = arr;
-        }
-        template<typename BasicJsonType, size_t M, size_t N, typename T>
-        void from_json(const BasicJsonType& j, MatrixMxN<M, N, T>& v)
-        { 
-            auto temp = j.template get< std::array< std::array<T, N>, M> > ();
-            T arr[M * N];
-            for (size_t iRow = 0; iRow < M; iRow++)
-            {
-                for (size_t iCol = 0; iCol < N; iCol++)
-                {
-                    arr[iRow * N + iCol] = temp[iRow][iCol];
-                }
-            }
-            v = arr;
-        }
-
-    } // namespace linear
-
-    namespace poly
+template <typename BasicJsonType, size_t M, size_t N, typename T>
+void to_json(BasicJsonType &j, const MatrixMxN<M, N, T> &v)
+{
+    std::array<std::array<T, N>, M> arr;
+    for (size_t iRow = 0; iRow < M; iRow++)
     {
-        template<typename BasicJsonType, typename T>
-        void to_json(BasicJsonType& j, const OneD<T>& poly)
+        for (size_t iCol = 0; iCol < N; iCol++)
         {
-            if (poly.empty())
-            {
-                return;
-            }
-            j = poly.coeffs();
+            arr[iRow][iCol] = v.mRaw[iRow][iCol];
         }
-        template<typename BasicJsonType, typename T>
-        void from_json(const BasicJsonType& j, OneD<T>& poly)
+    }
+    j = arr;
+}
+template <typename BasicJsonType, size_t M, size_t N, typename T>
+void from_json(const BasicJsonType &j, MatrixMxN<M, N, T> &v)
+{
+    auto temp = j.template get<std::array<std::array<T, N>, M>>();
+    T arr[M * N];
+    for (size_t iRow = 0; iRow < M; iRow++)
+    {
+        for (size_t iCol = 0; iCol < N; iCol++)
         {
-            if (j.is_null())
-            {
-                poly = OneD<T>();
-                return;
-            }
-            poly = OneD<T>(j.template get<std::vector<T>>());
+            arr[iRow * N + iCol] = temp[iRow][iCol];
         }
+    }
+    v = arr;
+}
 
-        template<typename BasicJsonType, typename T>
-        void to_json(BasicJsonType& j, const TwoD<T>& poly)
-        {
-            if (poly.empty())
-            {
-                return;
-            }
-            std::vector<std::vector<T>> coeffs(poly.orderX() + 1);
-            for (size_t ix = 0; ix <= poly.orderX(); ix++)
-            {
-                coeffs[ix] = poly[ix].coeffs();
-            }
-            j = coeffs;
-        }
-        template<typename BasicJsonType, typename T>
-        void from_json(const BasicJsonType& j, TwoD<T>& poly)
-        {
-            if (j.is_null())
-            {
-                poly = TwoD<T>();
-                return;
-            }
-            poly = TwoD<T>(j.template get<std::vector<OneD<T>>>());
-        }
+} // namespace linear
 
-        template<typename BasicJsonType, size_t O, typename T>
-        void to_json(BasicJsonType& j, const Fixed1D<O, T>& poly)
-        {
-            j = poly.coeffs();
-        }
-        template<typename BasicJsonType, size_t O, typename T>
-        void from_json(const BasicJsonType& j, Fixed1D<O, T>& poly)
-        {
-            poly.coeffs() = j.template get<std::array<T, O + 1>>();
-        }
+namespace poly
+{
+template <typename BasicJsonType, typename T> void to_json(BasicJsonType &j, const OneD<T> &poly)
+{
+    if (poly.empty())
+    {
+        return;
+    }
+    j = poly.coeffs();
+}
+template <typename BasicJsonType, typename T> void from_json(const BasicJsonType &j, OneD<T> &poly)
+{
+    if (j.is_null())
+    {
+        poly = OneD<T>();
+        return;
+    }
+    poly = OneD<T>(j.template get<std::vector<T>>());
+}
 
-        template<typename BasicJsonType, size_t OX, size_t OY, typename T>
-        void to_json(BasicJsonType& j, const Fixed2D<OX, OY, T>& poly)
-        {
-            std::array<std::array<T, OY + 1>, OX + 1> coeffs;
-            for (size_t ix = 0; ix <= poly.orderX(); ix++)
-            {
-                coeffs[ix] = poly[ix].coeffs();
-            }
-            j = coeffs;
-        }
-        template<typename BasicJsonType, size_t OX, size_t OY, typename T>
-        void from_json(const BasicJsonType& j, Fixed2D<OX, OY, T>& poly)
-        {
-            poly = TwoD<T>(j.template get<std::vector<OneD<T>>>());
-        }
-    } // namespace poly
+template <typename BasicJsonType, typename T> void to_json(BasicJsonType &j, const TwoD<T> &poly)
+{
+    if (poly.empty())
+    {
+        return;
+    }
+    std::vector<std::vector<T>> coeffs(poly.orderX() + 1);
+    for (size_t ix = 0; ix <= poly.orderX(); ix++)
+    {
+        coeffs[ix] = poly[ix].coeffs();
+    }
+    j = coeffs;
+}
+template <typename BasicJsonType, typename T> void from_json(const BasicJsonType &j, TwoD<T> &poly)
+{
+    if (j.is_null())
+    {
+        poly = TwoD<T>();
+        return;
+    }
+    poly = TwoD<T>(j.template get<std::vector<OneD<T>>>());
+}
+
+template <typename BasicJsonType, size_t O, typename T> void to_json(BasicJsonType &j, const Fixed1D<O, T> &poly)
+{
+    j = poly.coeffs();
+}
+template <typename BasicJsonType, size_t O, typename T> void from_json(const BasicJsonType &j, Fixed1D<O, T> &poly)
+{
+    poly.coeffs() = j.template get<std::array<T, O + 1>>();
+}
+
+template <typename BasicJsonType, size_t OX, size_t OY, typename T>
+void to_json(BasicJsonType &j, const Fixed2D<OX, OY, T> &poly)
+{
+    std::array<std::array<T, OY + 1>, OX + 1> coeffs;
+    for (size_t ix = 0; ix <= poly.orderX(); ix++)
+    {
+        coeffs[ix] = poly[ix].coeffs();
+    }
+    j = coeffs;
+}
+template <typename BasicJsonType, size_t OX, size_t OY, typename T>
+void from_json(const BasicJsonType &j, Fixed2D<OX, OY, T> &poly)
+{
+    poly = TwoD<T>(j.template get<std::vector<OneD<T>>>());
+}
+} // namespace poly
 } // namespace math
 
 #endif
