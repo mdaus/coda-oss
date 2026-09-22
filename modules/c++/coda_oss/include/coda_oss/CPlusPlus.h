@@ -20,7 +20,6 @@
  *
  */
 
-#pragma once
 #ifndef CODA_OSS_coda_oss_CPlusPlus_h_INCLUDED_
 #define CODA_OSS_coda_oss_CPlusPlus_h_INCLUDED_
 

@@ -19,10 +19,5 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef CODA_OSS_sio_lite_FileWriter_h_INCLUDED_
-#define CODA_OSS_sio_lite_FileWriter_h_INCLUDED_
-#pragma once
 
 #include "sio/lite/SioFileWriter.h"
-
-#endif // CODA_OSS_sio_lite_FileWriter_h_INCLUDED_

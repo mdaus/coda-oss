@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CODA_OSS_unittest_h_INCLUDED_
+#define CODA_OSS_unittest_h_INCLUDED_
 
 #include <stdint.h>
 #include <string>
@@ -140,3 +141,4 @@ inline void assert_almost_eq(const std::string& testName, long double X1, long d
 #define TEST_EXCEPTION(X) (void)testName; try{ (X); TEST_FAIL(#X " should have thrown."); } CODA_OSS_TEST_EXCEPTION_catch_
 #define TEST_THROWS(X) (void)testName; try{ (X); TEST_FAIL(#X " should have thrown."); } catch (...){ TEST_ASSERT_TRUE(true); }
 #define TEST_SPECIFIC_EXCEPTION(X, Y) testName, Microsoft::VisualStudio::CppUnitTestFramework::Assert::ExpectException<Y>([&](){(X);})
+#endif

@@ -20,7 +20,6 @@
  */
 #ifndef CODA_OSS_coda_oss_cstddef_h_INCLUDED_
 #define CODA_OSS_coda_oss_cstddef_h_INCLUDED_
-#pragma once
 
 #include <stdint.h>
 

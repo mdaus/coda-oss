@@ -22,7 +22,6 @@
  */
 #ifndef CODA_OSS_gsl_Gsl__h_INCLUDED_
 #define CODA_OSS_gsl_Gsl__h_INCLUDED_
-#pragma once
 
 #include <utility>
 
