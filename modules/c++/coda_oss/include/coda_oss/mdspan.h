@@ -3,7 +3,7 @@
  * =========================================================================
  *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
- * © Copyright 2023, Maxar Technologies, Inc.
+ * ï¿½ Copyright 2023, Maxar Technologies, Inc.
  *
  * coda_oss-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,7 +20,8 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
+#ifndef CODA_OSS_coda_oss_mdspan_h_INCLUDED_
+#define CODA_OSS_coda_oss_mdspan_h_INCLUDED_
 
 #include "coda_oss/CPlusPlus.h"
 
@@ -70,4 +71,4 @@ namespace coda_oss
         using details::dextents;
     #endif 
 }
-
+#endif

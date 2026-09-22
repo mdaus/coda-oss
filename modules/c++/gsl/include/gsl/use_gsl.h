@@ -21,7 +21,6 @@
  */
 #ifndef CODA_OSS_gsl_use_gsl_h_INCLUDED_
 #define CODA_OSS_gsl_use_gsl_h_INCLUDED_
-#pragma once
 
 // Need a fairly decent C++ compiler to use the real GSL
 #ifndef CODA_OSS_use_real_gsl_

@@ -23,7 +23,6 @@
 
 #ifndef CODA_OSS_sys_AbstractOS_h_INCLUDED_
 #define CODA_OSS_sys_AbstractOS_h_INCLUDED_
-#pragma once
 
 #include <vector>
 #include <string>

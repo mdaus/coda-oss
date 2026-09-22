@@ -22,7 +22,6 @@
  */
 #ifndef CODA_OSS_gsl_Gsl_narrow_h_INCLUDED_
 #define CODA_OSS_gsl_Gsl_narrow_h_INCLUDED_
-#pragma once
 
 #include <assert.h>
 

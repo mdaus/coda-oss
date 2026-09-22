@@ -21,7 +21,6 @@
  */
 #ifndef CODA_OSS_coda_oss_span__h_INCLUDED_
 #define CODA_OSS_coda_oss_span__h_INCLUDED_
-#pragma once
 
 #include <assert.h>
 #include <stddef.h>

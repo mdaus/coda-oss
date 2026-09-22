@@ -21,7 +21,6 @@
  *
  */
 
-#pragma once
 #ifndef CODA_OSS_hd5_lite_import_lite_h_INCLUDED_
 #define CODA_OSS_hd5_lite_import_lite_h_INCLUDED_
 
