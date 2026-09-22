@@ -18,7 +18,7 @@
  * License along with this program; If not, http://www.gnu.org/licenses/.
  *
  */
-#pragma once 
+#pragma once
 #ifndef CODA_OSS_coda_oss_numbers_h_INCLUDED_
 #define CODA_OSS_coda_oss_numbers_h_INCLUDED_
 
@@ -54,30 +54,30 @@ template <typename T> constexpr T log2e_v = static_cast<T>(M_LOG2E);
 template <typename T> constexpr T log10e_v = static_cast<T>(M_LOG10E);
 template <typename T> constexpr T pi_v = static_cast<T>(M_PI);
 template <typename T> constexpr T inv_pi_v = static_cast<T>(M_1_PI);
-//template <typename T> constexpr T inv_sqrtpi_v = static_cast<T>();
+// template <typename T> constexpr T inv_sqrtpi_v = static_cast<T>();
 template <typename T> constexpr T ln2_v = static_cast<T>(M_LN2);
 template <typename T> constexpr T ln10_v = static_cast<T>(M_LN10);
 template <typename T> constexpr T sqrt2_v = static_cast<T>(M_SQRT2);
-//template <typename T> constexpr T sqrt3_v = static_cast<T>();
-//template <typename T> constexpr T inv_sqrt3_v = static_cast<T>();
-//template <typename T> constexpr T egamma_v = static_cast<T>();
-//template <typename T> constexpr T phi_v  = static_cast<T>();
+// template <typename T> constexpr T sqrt3_v = static_cast<T>();
+// template <typename T> constexpr T inv_sqrt3_v = static_cast<T>();
+// template <typename T> constexpr T egamma_v = static_cast<T>();
+// template <typename T> constexpr T phi_v  = static_cast<T>();
 
 constexpr double e = e_v<double>;
 constexpr double log2e = log2e_v<double>;
 constexpr double log10e = log10e_v<double>;
 constexpr double pi = pi_v<double>;
 constexpr double inv_pi = inv_pi_v<double>;
-//constexpr double inv_sqrtpi = inv_sqrtpi_v<double>;
+// constexpr double inv_sqrtpi = inv_sqrtpi_v<double>;
 constexpr double ln2 = ln2_v<double>;
 constexpr double ln10 = ln10_v<double>;
 constexpr double sqrt2 = sqrt2_v<double>;
-//constexpr double sqrt3 = sqrt3_v<double>;
-//constexpr double inv_sqrt3 = inv_sqrt3_v<double>;
-//constexpr double egamma = egamma_v<double>;
-//constexpr double phi = phi_v<double>;
-}
+// constexpr double sqrt3 = sqrt3_v<double>;
+// constexpr double inv_sqrt3 = inv_sqrt3_v<double>;
+// constexpr double egamma = egamma_v<double>;
+// constexpr double phi = phi_v<double>;
+} // namespace numbers
 
-}
+} // namespace coda_oss
 
-#endif  // CODA_OSS_coda_oss_numbers_h_INCLUDED_
+#endif // CODA_OSS_coda_oss_numbers_h_INCLUDED_

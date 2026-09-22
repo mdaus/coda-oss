@@ -26,19 +26,21 @@
 #include <cstddef>
 #include <type_traits>
 
-// Need a fairly decent C++ compiler to use the real GSL.  This brings in more than 
+// Need a fairly decent C++ compiler to use the real GSL.  This brings in more than
 // we really need for span (e.g., gsl::narrow()), but it keeps things simple.
-#include "gsl/gsl.h"  // not gsl/byte; need #pragma here to turn off warnings
+#include "gsl/gsl.h" // not gsl/byte; need #pragma here to turn off warnings
 
 namespace coda_oss
 {
-	#if defined(GSL_BYTE_H) // the above #include'd gsl/byte
-		using gsl::byte;
-	#else // no gsl::byte, use our own
-        // https://en.cppreference.com/w/cpp/types/byte
-        enum class byte : unsigned char {};
-	#endif  // GSL_BYTE_H
-}
+#if defined(GSL_BYTE_H) // the above #include'd gsl/byte
+using gsl::byte;
+#else  // no gsl::byte, use our own
+// https://en.cppreference.com/w/cpp/types/byte
+enum class byte : unsigned char
+{
+};
+#endif // GSL_BYTE_H
+} // namespace coda_oss
 static_assert(!std::is_same<coda_oss::byte, uint8_t>::value, "'coda_oss::byte' should be a unique type.");
 
-#endif  // CODA_OSS_coda_oss_cstddef_h_INCLUDED_
+#endif // CODA_OSS_coda_oss_cstddef_h_INCLUDED_

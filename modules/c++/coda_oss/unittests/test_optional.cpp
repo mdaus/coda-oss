@@ -29,17 +29,15 @@
 
 namespace str
 {
-template <typename T>
-std::string toString(const coda_oss::optional<T>& value)
+template <typename T> std::string toString(const coda_oss::optional<T> &value)
 {
     return std::to_string(value.value());
 }
-}
+} // namespace str
 
 namespace
 {
-template <typename T>
-std::ostream& operator<<(std::ostream& s, const coda_oss::optional<T>& opt)
+template <typename T> std::ostream &operator<<(std::ostream &s, const coda_oss::optional<T> &opt)
 {
     if (opt.has_value())
     {
@@ -52,8 +50,7 @@ std::ostream& operator<<(std::ostream& s, const coda_oss::optional<T>& opt)
     return s;
 }
 
-template<typename TOptional>
-static void testOptional_(const std::string& testName, const TOptional& opt)
+template <typename TOptional> static void testOptional_(const std::string &testName, const TOptional &opt)
 {
     const coda_oss::optional<int> null;
     TEST_ASSERT_FALSE(null.has_value());
@@ -132,9 +129,9 @@ TEST_CASE(test_coda_oss_optional)
         testOptional_(testName, opt);
     }
 }
-}
+} // namespace
 
-int main(int /*argc*/, char** /*argv*/)
+int main(int /*argc*/, char ** /*argv*/)
 {
     TEST_CHECK(test_sys_Optional);
     TEST_CHECK(test_coda_oss_optional);
