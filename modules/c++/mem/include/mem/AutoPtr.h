@@ -38,91 +38,91 @@ namespace mem
 // Thus, this class to help make the transition easier.
 // Using (very) sparingly!
 
-template<typename T>
-class AutoPtr final
+template <typename T> class AutoPtr final
 {
     std::unique_ptr<T> ptr_;
 
-public:
+  public:
     // https://en.cppreference.com/w/cpp/memory/auto_ptr/auto_ptr
-    explicit AutoPtr(T* p = nullptr) noexcept : ptr_(p)
+    explicit AutoPtr(T *p = nullptr) noexcept : ptr_(p)
     {
     }
 
-    AutoPtr& operator=(AutoPtr& r) noexcept
+    AutoPtr &operator=(AutoPtr &r) noexcept
     {
         reset(r.release());
         return *this;
     }
-    AutoPtr(AutoPtr& r) noexcept
+    AutoPtr(AutoPtr &r) noexcept
     {
         *this = r;
     }
-    AutoPtr& operator=(const AutoPtr&) = delete; // can't change a "const" object
-    AutoPtr(const AutoPtr&) = delete;
+    AutoPtr &operator=(const AutoPtr &) = delete; // can't change a "const" object
+    AutoPtr(const AutoPtr &) = delete;
 
     ~AutoPtr() = default;
-    AutoPtr(AutoPtr&&) = default;
-    AutoPtr& operator=(AutoPtr&&) = default;
+    AutoPtr(AutoPtr &&) = default;
+    AutoPtr &operator=(AutoPtr &&) = default;
 
-    template<typename U>
-    AutoPtr& operator=(std::unique_ptr<U>&& p) noexcept
+    template <typename U> AutoPtr &operator=(std::unique_ptr<U> &&p) noexcept
     {
         ptr_ = std::move(p);
         return *this;
     }
-    template <typename U>
-    AutoPtr(std::unique_ptr<U>&& p) noexcept
+    template <typename U> AutoPtr(std::unique_ptr<U> &&p) noexcept
     {
         *this = std::move(p);
     }
 
-    template<typename TAutoPtr> // std::auto_ptr can cause deprecated warnings
-    AutoPtr& assign(TAutoPtr p) noexcept
+    template <typename TAutoPtr> // std::auto_ptr can cause deprecated warnings
+    AutoPtr &assign(TAutoPtr p) noexcept
     {
         ptr_.reset(p.release());
         return *this;
     }
-    template<typename TAutoPtr> // std::auto_ptr can cause deprecated warnings
-    AutoPtr& operator=(TAutoPtr p) noexcept
+    template <typename TAutoPtr> // std::auto_ptr can cause deprecated warnings
+    AutoPtr &operator=(TAutoPtr p) noexcept
     {
         return assign(p);
     }
-    template<typename TAutoPtr> // std::auto_ptr can cause deprecated warnings
+    template <typename TAutoPtr> // std::auto_ptr can cause deprecated warnings
     AutoPtr(TAutoPtr p) noexcept
     {
         *this = assign(p);
     }
 
-
-    T* get() const noexcept
+    T *get() const noexcept
     {
         return ptr_.get();
     }
 
-    T* release() noexcept
+    T *release() noexcept
     {
         return ptr_.release();
     }
 
-    template<typename U>
-    void reset(U* p = nullptr) noexcept
+    template <typename U> void reset(U *p = nullptr) noexcept
     {
         ptr_.reset(p);
     }
 
-    T& operator*() const noexcept
+    T &operator*() const noexcept
     {
         return *get();
     }
-    T* operator->() const noexcept
+    T *operator->() const noexcept
     {
         return get();
     }
 
-    operator std::unique_ptr<T>& () { return ptr_; }
-    operator const std::unique_ptr<T>& () const { return ptr_; }
-    
+    operator std::unique_ptr<T> &()
+    {
+        return ptr_;
+    }
+    operator const std::unique_ptr<T> &() const
+    {
+        return ptr_;
+    }
 };
 
 } // namespace mem

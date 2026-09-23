@@ -29,89 +29,83 @@
 
 namespace mem
 {
-    /*!
-     *  \class ScopedAlignedArray
-     *  \brief This class provides RAII for alignedAlloc() and alignedFree()
-     */
-    template <class T>
-    struct ScopedAlignedArray
+/*!
+ *  \class ScopedAlignedArray
+ *  \brief This class provides RAII for alignedAlloc() and alignedFree()
+ */
+template <class T> struct ScopedAlignedArray
+{
+    typedef T ElementType;
+
+    explicit ScopedAlignedArray(size_t numElements = 0, size_t alignment = sys::SSE_INSTRUCTION_ALIGNMENT)
+        : mArray(allocate(numElements, alignment))
     {
-        typedef T ElementType;
+    }
 
-        explicit ScopedAlignedArray(
-            size_t numElements = 0,
-            size_t alignment = sys::SSE_INSTRUCTION_ALIGNMENT) :
-            mArray(allocate(numElements, alignment))
+    ~ScopedAlignedArray()
+    {
+        if (mArray)
         {
-        }
-
-        ~ScopedAlignedArray()
-        {
-            if (mArray)
-            {
-                // Don't expect sys::alignedFree() would ever throw, but just
-                // in case...
-                try
-                {
-                    sys::alignedFree(mArray);
-                }
-                catch (...)
-                {
-                }
-            }
-        }
-
-        void reset(size_t numElements = 0, 
-                   size_t alignment = sys::SSE_INSTRUCTION_ALIGNMENT)
-        {
-            if (mArray)
+            // Don't expect sys::alignedFree() would ever throw, but just
+            // in case...
+            try
             {
                 sys::alignedFree(mArray);
-                mArray = nullptr;
             }
-
-            mArray = allocate(numElements, alignment);
+            catch (...)
+            {
+            }
         }
+    }
 
-        T& operator[](std::ptrdiff_t idx) const
+    void reset(size_t numElements = 0, size_t alignment = sys::SSE_INSTRUCTION_ALIGNMENT)
+    {
+        if (mArray)
         {
-            return mArray[idx];
-        }
-
-        T* get() const
-        {
-            return mArray;
-        }
-
-        T* release()
-        {
-            T* const array = mArray;
+            sys::alignedFree(mArray);
             mArray = nullptr;
-            return array;
         }
 
-        ScopedAlignedArray(const ScopedAlignedArray&) = delete;
-        ScopedAlignedArray& operator=(const ScopedAlignedArray&) = delete;
+        mArray = allocate(numElements, alignment);
+    }
 
-    private:
-        static
-        T* allocate(size_t numElements, size_t alignment)
+    T &operator[](std::ptrdiff_t idx) const
+    {
+        return mArray[idx];
+    }
+
+    T *get() const
+    {
+        return mArray;
+    }
+
+    T *release()
+    {
+        T *const array = mArray;
+        mArray = nullptr;
+        return array;
+    }
+
+    ScopedAlignedArray(const ScopedAlignedArray &) = delete;
+    ScopedAlignedArray &operator=(const ScopedAlignedArray &) = delete;
+
+  private:
+    static T *allocate(size_t numElements, size_t alignment)
+    {
+        if (numElements > 0)
         {
-            if (numElements > 0)
-            {
-                const size_t numBytes(numElements * sizeof(T));
-                return static_cast<T *>(sys::alignedAlloc(numBytes, 
-                                                          alignment));
-            }
-            else
-            {
-                return nullptr;
-            }
+            const size_t numBytes(numElements * sizeof(T));
+            return static_cast<T *>(sys::alignedAlloc(numBytes, alignment));
         }
+        else
+        {
+            return nullptr;
+        }
+    }
 
-    private:
-        T* mArray;
-    };
-}
+  private:
+    T *mArray;
+};
+} // namespace mem
 
 #endif

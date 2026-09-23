@@ -20,13 +20,13 @@
  *
  */
 
-#include <vector>
 #include <complex>
 #include <std/span>
 #include <type_traits>
+#include <vector>
 
-#include <mem/VectorOfPointers.h>
 #include <mem/ComplexView.h>
+#include <mem/VectorOfPointers.h>
 
 #include "TestCase.h"
 
@@ -104,24 +104,23 @@ TEST_CASE(testVecOfSharedPointers)
     TEST_ASSERT_TRUE(myVec.empty());
 
     {
-        mem::VectorOfSharedPointers<int> myVec2 = mem_VectorOfSharedPointers_int();  // copy
-        myVec = mem_VectorOfSharedPointers_int();  // assignment
+        mem::VectorOfSharedPointers<int> myVec2 = mem_VectorOfSharedPointers_int(); // copy
+        myVec = mem_VectorOfSharedPointers_int();                                   // assignment
     }
     {
-        mem::VectorOfSharedPointers<int> myVec2 = std_vector_shared_ptr_int();  // copy
-        myVec = std_vector_shared_ptr_int();  // assignment
+        mem::VectorOfSharedPointers<int> myVec2 = std_vector_shared_ptr_int(); // copy
+        myVec = std_vector_shared_ptr_int();                                   // assignment
     }
 
     {
-       std::vector<std::shared_ptr<int>> myVec2 = mem_VectorOfSharedPointers_int();  // copy
+        std::vector<std::shared_ptr<int>> myVec2 = mem_VectorOfSharedPointers_int(); // copy
     }
     {
-       std::vector<std::shared_ptr<int>> myVec2 = std_vector_shared_ptr_int();  // copy
+        std::vector<std::shared_ptr<int>> myVec2 = std_vector_shared_ptr_int(); // copy
     }
 }
 
-template<typename TView>
-static void test_cx_view(const std::string& testName, const TView& view)
+template <typename TView> static void test_cx_view(const std::string &testName, const TView &view)
 {
     TEST_ASSERT_EQ(4, view.size());
     TEST_ASSERT_EQ(view[0].real(), 1.0f);
@@ -133,8 +132,7 @@ static void test_cx_view(const std::string& testName, const TView& view)
     TEST_ASSERT_EQ(view[3].real(), 7.0f);
     TEST_ASSERT_EQ(view[3].imag(), 8.0f);
 }
-template <typename TView>
-static void test_mem_ComplexParallelView(const std::string& testName, const TView& view)
+template <typename TView> static void test_mem_ComplexParallelView(const std::string &testName, const TView &view)
 {
     test_cx_view(testName, view);
 
@@ -162,9 +160,9 @@ static void test_mem_ComplexParallelView(const std::string& testName, const TVie
 }
 
 using cx_float = std::complex<float>;
-static const std::vector<cx_float>& cx_data()
+static const std::vector<cx_float> &cx_data()
 {
-    static const std::vector<cx_float> retval {{1, 2}, {3, 4}, {5, 6}, {7, 8}};
+    static const std::vector<cx_float> retval{{1, 2}, {3, 4}, {5, 6}, {7, 8}};
     return retval;
 }
 
@@ -195,8 +193,8 @@ TEST_CASE(testComplexParallelViewFloat)
     }
 }
 
-static void test_mem_ComplexViewConstIterator(const std::string& testName,
-    mem::ComplexViewConstIterator<float> begin, mem::ComplexViewConstIterator<float> end)
+static void test_mem_ComplexViewConstIterator(const std::string &testName, mem::ComplexViewConstIterator<float> begin,
+                                              mem::ComplexViewConstIterator<float> end)
 {
     TEST_ASSERT(begin != end);
 
@@ -219,14 +217,13 @@ static void test_mem_ComplexViewConstIterator(const std::string& testName,
     TEST_ASSERT_EQ(it->real(), 7.0f);
     TEST_ASSERT_EQ(it->imag(), 8.0f);
 }
-template <typename TView>
-static void test_mem_ComplexViewConstIterator(const std::string& testName, TView view)
+template <typename TView> static void test_mem_ComplexViewConstIterator(const std::string &testName, TView view)
 {
     test_mem_ComplexViewConstIterator(testName, view.begin(), view.end());
 
     using cxvalue_t = typename decltype(view.begin())::value_type; // i.e., std::complex<float>
     cxvalue_t cx{1.0f, 2.0f};
-    for (auto&& v : view)
+    for (auto &&v : view)
     {
         TEST_ASSERT_EQ(v.real(), cx.real());
         TEST_ASSERT_EQ(v.imag(), cx.imag());
@@ -251,11 +248,7 @@ TEST_CASE(testComplexParallelViewFloatIterator)
     }
 }
 
-TEST_MAIN(
-    TEST_CHECK(testVecOfRawPointers);
-    TEST_CHECK(testVecOfSharedPointers);
+TEST_MAIN(TEST_CHECK(testVecOfRawPointers); TEST_CHECK(testVecOfSharedPointers);
 
-    TEST_CHECK(testSpanCxFloat);
-    TEST_CHECK(testComplexParallelViewFloat);
-    TEST_CHECK(testComplexParallelViewFloatIterator);
-    )
+          TEST_CHECK(testSpanCxFloat); TEST_CHECK(testComplexParallelViewFloat);
+          TEST_CHECK(testComplexParallelViewFloatIterator);)

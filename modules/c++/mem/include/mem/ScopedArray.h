@@ -30,13 +30,12 @@
 
 namespace mem
 {
-    /*!
-     *  \class ScopedArray
-     *  \brief This class provides RAII for array allocations via new[].
-     *         It is based on boost::scoped_array.
-     */
-    template <class T>
-    using  ScopedArray = std::unique_ptr<T[]>;
-}
+/*!
+ *  \class ScopedArray
+ *  \brief This class provides RAII for array allocations via new[].
+ *         It is based on boost::scoped_array.
+ */
+template <class T> using ScopedArray = std::unique_ptr<T[]>;
+} // namespace mem
 
 #endif

@@ -32,13 +32,13 @@ struct Foo final
     int val1 = 0;
     int val2 = 0;
     Foo() = default;
-    Foo(int v1, int v2) : val1(v1), val2(v2){};
-    Foo(const Foo&) = delete;
-    Foo& operator=(const Foo&) = delete;
+    Foo(int v1, int v2) : val1(v1), val2(v2) {};
+    Foo(const Foo &) = delete;
+    Foo &operator=(const Foo &) = delete;
     std::unique_ptr<Foo> clone() const
     {
         // compiler has a hard time resolving overload ... probably because =deletes
-        //return std::make_unique<Foo>(val1, val2);
+        // return std::make_unique<Foo>(val1, val2);
         return std::unique_ptr<Foo>(new Foo(val1, val2));
     }
 };
@@ -57,9 +57,7 @@ struct Baz final
 
 struct AssignOnDestruct final
 {
-    AssignOnDestruct(int &ref, int finalVal) :
-        mRef(ref),
-        mFinalVal(finalVal)
+    AssignOnDestruct(int &ref, int finalVal) : mRef(ref), mFinalVal(finalVal)
     {
     }
 
@@ -68,8 +66,8 @@ struct AssignOnDestruct final
         mRef = mFinalVal;
     }
 
-private:
-    int&      mRef;
+  private:
+    int &mRef;
     const int mFinalVal;
 };
 
@@ -169,8 +167,7 @@ TEST_CASE(testDestructor)
     // 'val'
     int val(0);
     {
-        const mem::ScopedCloneablePtr<AssignOnDestruct> ptr(
-            new AssignOnDestruct(val, 334));
+        const mem::ScopedCloneablePtr<AssignOnDestruct> ptr(new AssignOnDestruct(val, 334));
         TEST_ASSERT_EQ(val, 0);
     }
 
@@ -179,7 +176,7 @@ TEST_CASE(testDestructor)
 
 TEST_CASE(testSyntax)
 {
-    Foo* const rawPtr(new Foo());
+    Foo *const rawPtr(new Foo());
     const mem::ScopedCloneablePtr<Foo> ptr(rawPtr);
 
     TEST_ASSERT_EQ(ptr.get(), rawPtr);
@@ -192,7 +189,7 @@ TEST_CASE(testEqualityOperator)
     mem::ScopedCloneablePtr<int> ptr1;
     mem::ScopedCloneablePtr<int> ptr2;
 
-    //Null smart pointers are equal
+    // Null smart pointers are equal
     TEST_ASSERT(ptr1 == ptr2);
 
     ptr1.reset(new int(4));
@@ -208,12 +205,6 @@ TEST_CASE(testEqualityOperator)
     TEST_ASSERT_FALSE(ptr1 != ptr2);
 }
 
-TEST_MAIN(
-    TEST_CHECK(testCopyConstructor);
-    TEST_CHECK(testSharedCopyConstructor);
-    TEST_CHECK(testAssignmentOperator);
-    TEST_CHECK(testSharedAssignmentOperator);    
-    TEST_CHECK(testDestructor);
-    TEST_CHECK(testSyntax);
-    TEST_CHECK(testEqualityOperator);
-    )
+TEST_MAIN(TEST_CHECK(testCopyConstructor); TEST_CHECK(testSharedCopyConstructor); TEST_CHECK(testAssignmentOperator);
+          TEST_CHECK(testSharedAssignmentOperator); TEST_CHECK(testDestructor); TEST_CHECK(testSyntax);
+          TEST_CHECK(testEqualityOperator);)

@@ -34,8 +34,7 @@
 // as part of a SWIG interface will result in a missing template type error.
 namespace mem
 {
-template <typename T>
-using SharedPtr = std::shared_ptr<T>;
+template <typename T> using SharedPtr = std::shared_ptr<T>;
 }
 
 #include <mem/SharedPtrCpp11.h>

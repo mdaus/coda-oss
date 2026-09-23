@@ -22,16 +22,15 @@
 
 #include <memory>
 
-#include <mem/SharedPtr.h>
 #include <mem/AutoPtr.h>
+#include <mem/SharedPtr.h>
 
 #include "TestCase.h"
 
 struct Foo final
 {
     Foo() = default;
-    Foo(int val) :
-        mVal(val)
+    Foo(int val) : mVal(val)
     {
     }
 
@@ -54,7 +53,7 @@ TEST_CASE(testStdUniquePtr)
         TEST_ASSERT_EQ(123, fooCtor->mVal);
     }
     {
-        auto pFoos = std::make_unique<Foo[]>(123);  // 123 instances of Foo
+        auto pFoos = std::make_unique<Foo[]>(123); // 123 instances of Foo
         TEST_ASSERT_NOT_NULL(pFoos.get());
         TEST_ASSERT_EQ(0, pFoos[0].mVal);
         TEST_ASSERT_EQ(0, pFoos[122].mVal);
@@ -69,7 +68,7 @@ TEST_CASE(test_make_unique)
         TEST_ASSERT_EQ(123, fooCtor->mVal);
     }
     {
-        auto pFoos = std::make_unique<Foo[]>(123);  // 123 instances of Foo
+        auto pFoos = std::make_unique<Foo[]>(123); // 123 instances of Foo
         TEST_ASSERT_NOT_NULL(pFoos.get());
         TEST_ASSERT_EQ(0, pFoos[0].mVal);
         TEST_ASSERT_EQ(0, pFoos[122].mVal);
@@ -81,14 +80,14 @@ TEST_CASE(test_make_unique)
         TEST_ASSERT_EQ(123, fooCtor->mVal);
     }
     {
-        auto pFoos = std::make_unique<Foo[]>(123);  // 123 instances of Foo
+        auto pFoos = std::make_unique<Foo[]>(123); // 123 instances of Foo
         TEST_ASSERT_NOT_NULL(pFoos.get());
         TEST_ASSERT_EQ(0, pFoos[0].mVal);
         TEST_ASSERT_EQ(0, pFoos[122].mVal);
     }
 }
 
-static void f(const std::string& testName, mem::AutoPtr<Foo> p)
+static void f(const std::string &testName, mem::AutoPtr<Foo> p)
 {
     TEST_ASSERT_NOT_NULL(p.get());
     TEST_ASSERT_EQ(123, p->mVal);
@@ -126,9 +125,4 @@ TEST_CASE(memAutoPtr)
     }
 }
 
-
-TEST_MAIN(
-   TEST_CHECK(testStdUniquePtr);
-   TEST_CHECK(test_make_unique);
-   TEST_CHECK(memAutoPtr);
-   )
+TEST_MAIN(TEST_CHECK(testStdUniquePtr); TEST_CHECK(test_make_unique); TEST_CHECK(memAutoPtr);)

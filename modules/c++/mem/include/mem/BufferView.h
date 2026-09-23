@@ -23,11 +23,11 @@
 #ifndef __MEM_BUFFER_VIEW_H__
 #define __MEM_BUFFER_VIEW_H__
 
-#include <vector>
-#include <sys/Conf.h>
-#include <sstream>
 #include <except/Exception.h>
+#include <sstream>
 #include <stddef.h>
+#include <sys/Conf.h>
+#include <vector>
 
 namespace mem
 {
@@ -42,36 +42,37 @@ namespace mem
  *  a small set of memory pools
  *
  */
-template <typename T>
-struct BufferView
+template <typename T> struct BufferView
 {
-    explicit BufferView(T* buffer = nullptr, size_t bufferSize = 0) : data(buffer), size(bufferSize) { } // yes, this is a bit goofy; but legacy code does it
+    explicit BufferView(T *buffer = nullptr, size_t bufferSize = 0) : data(buffer), size(bufferSize)
+    {
+    } // yes, this is a bit goofy; but legacy code does it
 
-    T* data = nullptr;
+    T *data = nullptr;
     size_t size = 0;
 
     /**
       Returns a new bufferView that "takes" sectionSize T from the bufferView
-      For instance, if the current bufferView had 100 ints, and you called 
+      For instance, if the current bufferView had 100 ints, and you called
       section with sectionSize = 10, section() would return a new BufferView
       of size 10 and the original BufferView would be left with 90 ints.
 
       @sectionSize size of the new section
-    
-      @throws except::Exception if there is not enough space 
+
+      @throws except::Exception if there is not enough space
 
      */
     BufferView<T> section(size_t sectionSize)
     {
-        if(size < sectionSize)
-        {   
+        if (size < sectionSize)
+        {
             std::ostringstream oss;
 
             oss << "BufferView::section() called with sectionSize: " << sectionSize << " when";
             oss << " there were only " << size << " elements in the BufferView";
-            
+
             throw except::Exception(Ctxt(oss));
-        } 
+        }
 
         BufferView<T> newSection(data, sectionSize);
 
@@ -95,16 +96,15 @@ struct BufferView
         const size_t lastSize = size - (n - 1) * newSize;
         T *head = data;
 
-        std::vector<BufferView> buffers(n); 
+        std::vector<BufferView> buffers(n);
         for (size_t ii = 0, last_ii = n - 1; ii < n; ++ii, head += newSize)
         {
             buffers[ii] = BufferView(head, (ii == last_ii) ? lastSize : newSize);
-        }             
+        }
         return buffers;
     }
-
 };
 
-}
+} // namespace mem
 
 #endif

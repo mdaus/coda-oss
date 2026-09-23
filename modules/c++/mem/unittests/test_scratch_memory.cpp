@@ -22,17 +22,17 @@
 
 #include <mem/ScratchMemory.h>
 
-#include <mem/BufferView.h>
-#include <sys/Conf.h>
-#include <cstdlib>
-#include <algorithm>
-#include <vector>
-#include <set>
 #include "TestCase.h"
+#include <algorithm>
+#include <cstdlib>
+#include <mem/BufferView.h>
+#include <set>
+#include <sys/Conf.h>
+#include <vector>
 
 TEST_CASE(testReleaseSingleEndBuffer)
 {
-    //A single release of the last element. Tests with different scratch templates.
+    // A single release of the last element. Tests with different scratch templates.
     mem::ScratchMemory scratch;
 
     scratch.put<sys::ubyte>("buf0", 11, 1, 13);
@@ -58,9 +58,9 @@ TEST_CASE(testReleaseSingleEndBuffer)
     TEST_ASSERT_EQ(scratch.getNumBytes(), numBytes0 + numBytes2 + numBytes3 + numBytes4);
 
     scratch.setup();
-    sys::ubyte* pBuf0 = scratch.get<sys::ubyte>("buf0");
-    sys::ubyte* pBuf1 = scratch.get<sys::ubyte>("buf1");
-    sys::ubyte* pBuf2 = scratch.get<sys::ubyte>("buf2");
+    sys::ubyte *pBuf0 = scratch.get<sys::ubyte>("buf0");
+    sys::ubyte *pBuf1 = scratch.get<sys::ubyte>("buf1");
+    sys::ubyte *pBuf2 = scratch.get<sys::ubyte>("buf2");
 
     TEST_ASSERT_EQ(pBuf1, pBuf2);
     TEST_ASSERT_NOT_EQ(pBuf0, pBuf2);
@@ -68,8 +68,8 @@ TEST_CASE(testReleaseSingleEndBuffer)
 
 TEST_CASE(testReleaseMultipleEndBuffers)
 {
-    //Tests multiple releases of the current last element
-    //Also tests releases two concurrent segments
+    // Tests multiple releases of the current last element
+    // Also tests releases two concurrent segments
     mem::ScratchMemory scratch;
 
     scratch.put<sys::ubyte>("buf0", 3, 1, 2);
@@ -109,12 +109,12 @@ TEST_CASE(testReleaseMultipleEndBuffers)
     TEST_ASSERT_EQ(scratch.getNumBytes(), static_cast<size_t>(14));
 
     scratch.setup();
-    sys::ubyte* pBuf1 = scratch.get<sys::ubyte>("buf1");
-    sys::ubyte* pBuf2 = scratch.get<sys::ubyte>("buf2");
-    sys::ubyte* pBuf3 = scratch.get<sys::ubyte>("buf3");
-    sys::ubyte* pBuf4 = scratch.get<sys::ubyte>("buf4");
-    sys::ubyte* pBuf6 = scratch.get<sys::ubyte>("buf6");
-    sys::ubyte* pBuf7 = scratch.get<sys::ubyte>("buf7");
+    sys::ubyte *pBuf1 = scratch.get<sys::ubyte>("buf1");
+    sys::ubyte *pBuf2 = scratch.get<sys::ubyte>("buf2");
+    sys::ubyte *pBuf3 = scratch.get<sys::ubyte>("buf3");
+    sys::ubyte *pBuf4 = scratch.get<sys::ubyte>("buf4");
+    sys::ubyte *pBuf6 = scratch.get<sys::ubyte>("buf6");
+    sys::ubyte *pBuf7 = scratch.get<sys::ubyte>("buf7");
 
     TEST_ASSERT_EQ(pBuf1, pBuf2);
     TEST_ASSERT_EQ(pBuf3, pBuf4);
@@ -125,7 +125,7 @@ TEST_CASE(testReleaseMultipleEndBuffers)
 
 TEST_CASE(testReleaseNonEndBuffers)
 {
-    //Test putting then releasing then putting again and releasing again
+    // Test putting then releasing then putting again and releasing again
     mem::ScratchMemory scratch;
 
     scratch.put<sys::ubyte>("buf0", 2, 1, 2);
@@ -148,12 +148,12 @@ TEST_CASE(testReleaseNonEndBuffers)
     scratch.put<sys::ubyte>("buf7", 3, 1, 2);
 
     scratch.setup();
-    sys::ubyte* pBuf1 = scratch.get<sys::ubyte>("buf1");
-    sys::ubyte* pBuf4 = scratch.get<sys::ubyte>("buf4");
-    sys::ubyte* pBuf3 = scratch.get<sys::ubyte>("buf3");
-    sys::ubyte* pBuf5 = scratch.get<sys::ubyte>("buf5");
-    sys::ubyte* pBuf6 = scratch.get<sys::ubyte>("buf6");
-    sys::ubyte* pBuf7 = scratch.get<sys::ubyte>("buf7");
+    sys::ubyte *pBuf1 = scratch.get<sys::ubyte>("buf1");
+    sys::ubyte *pBuf4 = scratch.get<sys::ubyte>("buf4");
+    sys::ubyte *pBuf3 = scratch.get<sys::ubyte>("buf3");
+    sys::ubyte *pBuf5 = scratch.get<sys::ubyte>("buf5");
+    sys::ubyte *pBuf6 = scratch.get<sys::ubyte>("buf6");
+    sys::ubyte *pBuf7 = scratch.get<sys::ubyte>("buf7");
     TEST_ASSERT_EQ(pBuf1, pBuf4);
     TEST_ASSERT_EQ(pBuf4, pBuf6);
     TEST_ASSERT_EQ(pBuf3, pBuf5);
@@ -162,7 +162,7 @@ TEST_CASE(testReleaseNonEndBuffers)
 
 TEST_CASE(testReleaseInteriorBuffers)
 {
-    //Tests released with filled in buffers for analysis
+    // Tests released with filled in buffers for analysis
     mem::ScratchMemory scratch;
 
     scratch.put<unsigned char>("a", 2, 1, 2);
@@ -482,7 +482,7 @@ TEST_CASE(testGenerateBuffersForRelease)
             std::string key = std::string(1, currentOp.name);
 
             if (currentOp.op == "put" &&
-                    std::find(notReleased.begin(), notReleased.end(), currentOp.name) != notReleased.end())
+                std::find(notReleased.begin(), notReleased.end(), currentOp.name) != notReleased.end())
             {
                 mem::BufferView<unsigned char> bufView = scratch.getBufferView<sys::ubyte>(key);
                 for (size_t i = 0; i < bufView.size; ++i)
@@ -522,8 +522,7 @@ TEST_CASE(testScratchMemory)
     size_t numBytes1 = 17 * sizeof(int) + 23 - 1;
     size_t numBytes2 = 3 * (29 + 31 - 1);
     size_t numBytes3 = 8 * sizeof(double) + sys::SSE_INSTRUCTION_ALIGNMENT - 1;
-    TEST_ASSERT_EQ(scratch.getNumBytes(),
-                   static_cast<size_t>(numBytes0 + numBytes1 + numBytes2 + numBytes3));
+    TEST_ASSERT_EQ(scratch.getNumBytes(), static_cast<size_t>(numBytes0 + numBytes1 + numBytes2 + numBytes3));
 
     // trying to get scratch before setting up should throw
     TEST_EXCEPTION(scratch.get<sys::ubyte>("buf0"));
@@ -547,22 +546,18 @@ TEST_CASE(testScratchMemory)
         // trying to get nonexistent key should throw
         TEST_EXCEPTION(scratch.get<char>("buf999"));
 
-        sys::ubyte* pBuf0 = scratch.get<sys::ubyte>("buf0");
-        sys::ubyte* pBuf1 = scratch.get<sys::ubyte>("buf1");
-        sys::ubyte* pBuf2_0 = scratch.get<sys::ubyte>("buf2", 0);
-        sys::ubyte* pBuf2_1 = scratch.get<sys::ubyte>("buf2", 1);
-        sys::ubyte* pBuf2_2 = scratch.get<sys::ubyte>("buf2", 2);
-        sys::ubyte* pBuf3 = scratch.get<sys::ubyte>("buf3");
+        sys::ubyte *pBuf0 = scratch.get<sys::ubyte>("buf0");
+        sys::ubyte *pBuf1 = scratch.get<sys::ubyte>("buf1");
+        sys::ubyte *pBuf2_0 = scratch.get<sys::ubyte>("buf2", 0);
+        sys::ubyte *pBuf2_1 = scratch.get<sys::ubyte>("buf2", 1);
+        sys::ubyte *pBuf2_2 = scratch.get<sys::ubyte>("buf2", 2);
+        sys::ubyte *pBuf3 = scratch.get<sys::ubyte>("buf3");
 
         // verify getBufferView matches get
-        mem::BufferView<sys::ubyte> bufView0 =
-                scratch.getBufferView<sys::ubyte>("buf0");
-        mem::BufferView<sys::ubyte> bufView1 =
-                scratch.getBufferView<sys::ubyte>("buf1");
-        mem::BufferView<sys::ubyte> bufView2_0 =
-                scratch.getBufferView<sys::ubyte>("buf2", 0);
-        mem::BufferView<sys::ubyte> bufView2_1 =
-                scratch.getBufferView<sys::ubyte>("buf2", 1);
+        mem::BufferView<sys::ubyte> bufView0 = scratch.getBufferView<sys::ubyte>("buf0");
+        mem::BufferView<sys::ubyte> bufView1 = scratch.getBufferView<sys::ubyte>("buf1");
+        mem::BufferView<sys::ubyte> bufView2_0 = scratch.getBufferView<sys::ubyte>("buf2", 0);
+        mem::BufferView<sys::ubyte> bufView2_1 = scratch.getBufferView<sys::ubyte>("buf2", 1);
         TEST_ASSERT_EQ(pBuf0, bufView0.data);
         TEST_ASSERT_EQ(pBuf1, bufView1.data);
         TEST_ASSERT_EQ(pBuf2_0, bufView2_0.data);
@@ -575,13 +570,12 @@ TEST_CASE(testScratchMemory)
         TEST_ASSERT_EQ(bufView2_1.size, static_cast<size_t>(29));
 
         // verify get works with const reference to ScratchMemory
-        const mem::ScratchMemory& constScratch = scratch;
-        const sys::ubyte* pConstBuf0 = constScratch.get<sys::ubyte>("buf0");
+        const mem::ScratchMemory &constScratch = scratch;
+        const sys::ubyte *pConstBuf0 = constScratch.get<sys::ubyte>("buf0");
         TEST_ASSERT_EQ(pBuf0, pConstBuf0);
 
         // verify getBufferView works with const reference to ScratchMemory
-        mem::BufferView<const sys::ubyte> constBufView0 =
-                constScratch.getBufferView<sys::ubyte>("buf0");
+        mem::BufferView<const sys::ubyte> constBufView0 = constScratch.getBufferView<sys::ubyte>("buf0");
         TEST_ASSERT_EQ(bufView0.data, constBufView0.data);
 
         // trying to get buffer index out of range should throw
@@ -599,8 +593,7 @@ TEST_CASE(testScratchMemory)
 
         // verify no overlap between buffers
         TEST_ASSERT_TRUE(pBuf1 - pBuf0 >= static_cast<ptrdiff_t>(11));
-        TEST_ASSERT_TRUE(pBuf2_0 - pBuf1 >=
-                static_cast<ptrdiff_t>(17 * sizeof(int)));
+        TEST_ASSERT_TRUE(pBuf2_0 - pBuf1 >= static_cast<ptrdiff_t>(17 * sizeof(int)));
         TEST_ASSERT_TRUE(pBuf2_1 - pBuf2_0 >= static_cast<ptrdiff_t>(29));
         TEST_ASSERT_TRUE(pBuf2_2 - pBuf2_1 >= static_cast<ptrdiff_t>(29));
         TEST_ASSERT_TRUE(pBuf3 - pBuf2_2 >= static_cast<ptrdiff_t>(29));
@@ -621,13 +614,7 @@ TEST_CASE(testScratchMemory)
     TEST_EXCEPTION(scratch.setup(invalidBuffer));
 }
 
-TEST_MAIN(
-    TEST_CHECK(testScratchMemory);
-    TEST_CHECK(testReleaseSingleEndBuffer);
-    TEST_CHECK(testReleaseMultipleEndBuffers);
-    TEST_CHECK(testReleaseNonEndBuffers);
-    TEST_CHECK(testReleaseInteriorBuffers);
-    TEST_CHECK(testReleaseConcurrentKeys);
-    TEST_CHECK(testReleaseConnectedKeys);
-    TEST_CHECK(testGenerateBuffersForRelease);
-    )
+TEST_MAIN(TEST_CHECK(testScratchMemory); TEST_CHECK(testReleaseSingleEndBuffer);
+          TEST_CHECK(testReleaseMultipleEndBuffers); TEST_CHECK(testReleaseNonEndBuffers);
+          TEST_CHECK(testReleaseInteriorBuffers); TEST_CHECK(testReleaseConcurrentKeys);
+          TEST_CHECK(testReleaseConnectedKeys); TEST_CHECK(testGenerateBuffersForRelease);)

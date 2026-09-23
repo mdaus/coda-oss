@@ -32,13 +32,12 @@ namespace mem
 // compile with all the different compilers; let somebody else worry about that
 // via std::shared_ptr.  The only code change is use_count() instead of getCount(),
 // and that's mostly used in unit-tests.
-template<typename T>
-using SharedPtr = std::shared_ptr<T>;
+template <typename T> using SharedPtr = std::shared_ptr<T>;
 } // namespace mem
 
 // try to make code changes a tiny bit easier?
-template<typename T>
-inline long getCount(const std::shared_ptr<T>& p) noexcept // be sure const& so that calling doesn't increment!
+template <typename T>
+inline long getCount(const std::shared_ptr<T> &p) noexcept // be sure const& so that calling doesn't increment!
 {
     return p.use_count();
 }

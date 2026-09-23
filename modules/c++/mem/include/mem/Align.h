@@ -34,8 +34,7 @@ namespace mem
  *                 alignment
  * \param alignment The alignment to use
  */
-void align(sys::ubyte* __restrict* data,
-           size_t alignment = sys::SSE_INSTRUCTION_ALIGNMENT);
-}
+void align(sys::ubyte *__restrict *data, size_t alignment = sys::SSE_INSTRUCTION_ALIGNMENT);
+} // namespace mem
 
 #endif

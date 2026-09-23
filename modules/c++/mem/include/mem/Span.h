@@ -26,9 +26,8 @@
 
 namespace mem
 {
-template <typename T>
-using Span = coda_oss::span<T>;
+template <typename T> using Span = coda_oss::span<T>;
 
 }
 
-#endif  // CODA_OSS_mem_Span_h_INCLUDED_
+#endif // CODA_OSS_mem_Span_h_INCLUDED_

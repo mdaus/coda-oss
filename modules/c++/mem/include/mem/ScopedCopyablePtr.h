@@ -46,9 +46,8 @@ namespace mem
  *         (if all the other member variables are POD or have correct
  *         copy constructors / assignment operators).
  */
-template <typename T>
-using ScopedCopyablePtr = ScopedPtr<T, std::false_type /*CopyIsClone*/>;
+template <typename T> using ScopedCopyablePtr = ScopedPtr<T, std::false_type /*CopyIsClone*/>;
 
-}
+} // namespace mem
 
 #endif // CODA_OSS_mem_ScopedCopyablePtr_h_INCLUDED_
