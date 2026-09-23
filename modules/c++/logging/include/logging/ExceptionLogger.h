@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2013 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -29,8 +29,8 @@
 
 #include "logging/Logger.h"
 #include "logging/StreamHandler.h"
-#include <sys/Mutex.h>
 #include <mt/CriticalSection.h>
+#include <sys/Mutex.h>
 
 namespace logging
 {
@@ -38,26 +38,27 @@ namespace logging
 /*!
  * \class ExceptionLogger
  *
- * \brief ExceptionLogger owns a Logger and logs exceptions passed to it. 
+ * \brief ExceptionLogger owns a Logger and logs exceptions passed to it.
  */
 class ExceptionLogger
 {
-protected:
+  protected:
     mutable sys::Mutex mLock;
 
-    Logger* mLogger = nullptr;
+    Logger *mLogger = nullptr;
 
     bool mHasLogged = false;
 
-public:
-    ExceptionLogger(Logger* logger) : mLogger(logger)
-    {}
+  public:
+    ExceptionLogger(Logger *logger) : mLogger(logger)
+    {
+    }
 
     virtual ~ExceptionLogger() = default;
-    ExceptionLogger(const ExceptionLogger&) = delete;
-    ExceptionLogger& operator=(const ExceptionLogger&) = delete;
-    ExceptionLogger(ExceptionLogger&&) = delete;
-    ExceptionLogger& operator=(ExceptionLogger&&) = delete;  
+    ExceptionLogger(const ExceptionLogger &) = delete;
+    ExceptionLogger &operator=(const ExceptionLogger &) = delete;
+    ExceptionLogger(ExceptionLogger &&) = delete;
+    ExceptionLogger &operator=(ExceptionLogger &&) = delete;
 
     //! Tells whether it has logged at least one exception
     bool hasLogged() const
@@ -67,7 +68,7 @@ public:
     }
 
     //! Log the exception/throwable
-    void log(const except::Throwable& t, LogLevel logLevel)
+    void log(const except::Throwable &t, LogLevel logLevel)
     {
         mt::CriticalSection<sys::Mutex> crit(&mLock);
         mLogger->log(logLevel, t);
@@ -75,5 +76,5 @@ public:
     }
 };
 
-}
+} // namespace logging
 #endif

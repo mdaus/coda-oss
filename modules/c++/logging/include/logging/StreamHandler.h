@@ -27,12 +27,12 @@
 #ifndef __LOGGING_STREAM_HANDLER_H__
 #define __LOGGING_STREAM_HANDLER_H__
 
-#include <memory>
 #include "config/Exports.h"
-#include "logging/LogRecord.h"
 #include "logging/Handler.h"
+#include "logging/LogRecord.h"
 #include <import/io.h>
 #include <mem/SharedPtr.h>
+#include <memory>
 
 namespace logging
 {
@@ -47,38 +47,41 @@ struct CODA_OSS_API StreamHandler : public Handler
     StreamHandler(LogLevel level = LogLevel::LOG_NOTSET);
 
     //! Constructs a StreamHandler using the specified OutputStream
-    StreamHandler(io::OutputStream* stream, LogLevel level = LogLevel::LOG_NOTSET);
-    StreamHandler(std::unique_ptr<io::OutputStream>&& stream, LogLevel level = LogLevel::LOG_NOTSET) : StreamHandler(stream.release(), level) { }
+    StreamHandler(io::OutputStream *stream, LogLevel level = LogLevel::LOG_NOTSET);
+    StreamHandler(std::unique_ptr<io::OutputStream> &&stream, LogLevel level = LogLevel::LOG_NOTSET)
+        : StreamHandler(stream.release(), level)
+    {
+    }
 
     virtual ~StreamHandler();
 
-    StreamHandler(const StreamHandler&) = delete;
-    StreamHandler& operator=(const StreamHandler&) = delete;
+    StreamHandler(const StreamHandler &) = delete;
+    StreamHandler &operator=(const StreamHandler &) = delete;
 
     //! adds the need to write epilogue before deleting formatter
     //  and then writing the prologue with the new formatter
-    virtual void setFormatter(Formatter* formatter) override;
-    virtual void setFormatter(std::unique_ptr<Formatter>&&) override;
+    virtual void setFormatter(Formatter *formatter) override;
+    virtual void setFormatter(std::unique_ptr<Formatter> &&) override;
 
     virtual void close() override;
 
-protected:
+  protected:
     // This is necessary so this class and an inherited class can call a
     // non-virtual version of close in its destructor.
     void closeImpl();
 
     //! for general string write
-    virtual void write(const std::string&) override;
+    virtual void write(const std::string &) override;
 
     //! for writing directly to stream,
     // used for the bulk of the logging for speed
-    void emitRecord(const LogRecord* record) override;
+    void emitRecord(const LogRecord *record) override;
 
     std::unique_ptr<io::OutputStream> mStream;
 
-private:
+  private:
     bool mClosed;
 };
 
-}
+} // namespace logging
 #endif

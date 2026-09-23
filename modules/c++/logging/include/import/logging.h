@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -25,14 +25,15 @@
 
 #include "logging/DefaultLogger.h"
 #include "logging/Enums.h"
+#include "logging/ExceptionLogger.h"
 #include "logging/FileHandler.h"
 #include "logging/Filter.h"
 #include "logging/Filterer.h"
 #include "logging/Formatter.h"
 #include "logging/Handler.h"
+#include "logging/LogRecord.h"
 #include "logging/Logger.h"
 #include "logging/LoggerFactory.h"
-#include "logging/LogRecord.h"
 #include "logging/MemoryHandler.h"
 #include "logging/NullLogger.h"
 #include "logging/RotatingFileHandler.h"
@@ -40,6 +41,5 @@
 #include "logging/StandardFormatter.h"
 #include "logging/StreamHandler.h"
 #include "logging/XMLFormatter.h"
-#include "logging/ExceptionLogger.h"
 
 #endif

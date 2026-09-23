@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,42 +14,41 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <import/logging.h>
 #include <import/io.h>
+#include <import/logging.h>
 #include <import/sys.h>
 
 using namespace logging;
 using namespace std;
 
-int main(int, char**)
+int main(int, char **)
 {
     std::cout << LoggerFactory::getInstance().getLogger("test")->getName() << std::endl;
 
-    Logger* logger = LoggerFactory::getInstance().getLogger("tomsLogger");
+    Logger *logger = LoggerFactory::getInstance().getLogger("tomsLogger");
     logger->error("This should get logged to stdout");
 
     LoggerFactory::getInstance().getLogger()->info("A message from the root logger.");
-    
-    //by default, the loglevel is WARN, so these won't get logged
+
+    // by default, the loglevel is WARN, so these won't get logged
     logger->info("Info message 1");
     logger->info("Debug message 1");
-    
-    //you can set the loglevel of a particular logger like this:
-    //keep in mind that this will set the level for all handlers of this Logger
+
+    // you can set the loglevel of a particular logger like this:
+    // keep in mind that this will set the level for all handlers of this Logger
     logger->setLevel(LogLevel::LOG_DEBUG);
     logger->info("Info message 2");
     logger->info("Debug message 2");
-    
-    
-    //we can also set the default logging level, which is set statically
-    //It will be used for any future loggers that get created on the fly
-    //via the factory
+
+    // we can also set the default logging level, which is set statically
+    // It will be used for any future loggers that get created on the fly
+    // via the factory
     DefaultLogger::setDefaultLogLevel(LogLevel::LOG_DEBUG);
     logger = LoggerFactory::getInstance().getLogger("anotherLogger");
     logger->info("Info message 3");

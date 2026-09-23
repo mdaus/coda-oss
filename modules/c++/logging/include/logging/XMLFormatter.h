@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging 
+ * This file is part of logging
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,18 +14,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 #ifndef __LOGGING_XML_FORMATTER_H__
 #define __LOGGING_XML_FORMATTER_H__
 
-#include <string>
-#include <str/Manip.h>
 #include "logging/Formatter.h"
 #include "logging/LogRecord.h"
+#include <str/Manip.h>
+#include <string>
 
 namespace logging
 {
@@ -50,22 +50,19 @@ namespace logging
  *      <File>%F</FileName>
  *      <Message>%m</Message>
  *  </Record>
- *  
+ *
  */
 struct XMLFormatter : public logging::Formatter
 {
     static const char DEFAULT_FORMAT[];
 
     XMLFormatter();
-    XMLFormatter(const std::string& fmt, 
-                 const std::string& prologue = "<Log>",
-                 const std::string& epilogue = "</Log>");
+    XMLFormatter(const std::string &fmt, const std::string &prologue = "<Log>", const std::string &epilogue = "</Log>");
 
-    XMLFormatter& operator=(const XMLFormatter&) = delete;
+    XMLFormatter &operator=(const XMLFormatter &) = delete;
 
-    virtual void format(const logging::LogRecord* record, io::OutputStream& os) const override;
-
+    virtual void format(const logging::LogRecord *record, io::OutputStream &os) const override;
 };
 
-}
+} // namespace logging
 #endif

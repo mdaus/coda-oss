@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -27,36 +27,33 @@ namespace logging
 {
 MemoryHandler::MemoryHandler(LogLevel level) : Handler(level)
 {
-    //might as well setup the map -- we could let emit take care of it,
-    //but this would allow for less chance of an exception getting thrown
+    // might as well setup the map -- we could let emit take care of it,
+    // but this would allow for less chance of an exception getting thrown
     for (int logLevel = 0; logLevel <= LogLevel::LOG_CRITICAL; ++logLevel)
     {
         mLogMap[logLevel];
     }
 }
 
-const std::vector<std::string>& MemoryHandler::getLogs(LogLevel level) const
+const std::vector<std::string> &MemoryHandler::getLogs(LogLevel level) const
 {
     const LogMap::const_iterator iter = mLogMap.find(level);
     if (iter == mLogMap.end())
     {
-        throw except::NoSuchKeyException(Ctxt(
-                "LogLevel: " + level.toString()));
+        throw except::NoSuchKeyException(Ctxt("LogLevel: " + level.toString()));
     }
     return iter->second;
 }
 
-void MemoryHandler::write(const std::string& str)
+void MemoryHandler::write(const std::string &str)
 {
-    for (LogMap::iterator iter = mLogMap.begin();
-         iter != mLogMap.end();
-         ++iter)
+    for (LogMap::iterator iter = mLogMap.begin(); iter != mLogMap.end(); ++iter)
     {
         iter->second.push_back(str);
     }
 }
 
-void MemoryHandler::emitRecord(const LogRecord* record)
+void MemoryHandler::emitRecord(const LogRecord *record)
 {
     io::StringStream ostr;
     mFormatter->format(record, ostr);
@@ -68,4 +65,4 @@ void MemoryHandler::emitRecord(const LogRecord* record)
         mLogMap[LogLevel::LOG_NOTSET].push_back(recordStr);
     }
 }
-}
+} // namespace logging

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,24 +24,22 @@
 //  StandardFormatter.cpp
 ///////////////////////////////////////////////////////////
 
-#include <sstream>
-#include <iostream>
-#include <import/sys.h>
-#include <import/str.h>
 #include "logging/StandardFormatter.h"
+#include <import/str.h>
+#include <import/sys.h>
+#include <iostream>
+#include <sstream>
 
 using namespace logging;
 
 const char StandardFormatter::DEFAULT_FORMAT[] = "[%c] %p [%t] %d ==> %m";
 
-StandardFormatter::StandardFormatter(const std::string& fmt, 
-                                     const std::string& prologue,
-                                     const std::string& epilogue) :
-    Formatter((fmt.empty()) ? DEFAULT_FORMAT : fmt, prologue, epilogue)
+StandardFormatter::StandardFormatter(const std::string &fmt, const std::string &prologue, const std::string &epilogue)
+    : Formatter((fmt.empty()) ? DEFAULT_FORMAT : fmt, prologue, epilogue)
 {
 }
 
-void StandardFormatter::format(const LogRecord* record, io::OutputStream& os) const
+void StandardFormatter::format(const LogRecord *record, io::OutputStream &os) const
 {
     std::string name = (record->getName().empty()) ? ("DEFAULT") : record->getName();
 
@@ -49,7 +47,7 @@ void StandardFormatter::format(const LogRecord* record, io::OutputStream& os) co
     long threadId = sys::getThreadID();
     std::string format = mFmt;
     str::replace(format, THREAD_ID, std::to_string(threadId));
-    str::replace(format, LOG_NAME,  name);
+    str::replace(format, LOG_NAME, name);
     str::replace(format, LOG_LEVEL, record->getLevelName());
     str::replace(format, TIMESTAMP, record->getTimeStamp());
     if (record->getLineNum() >= 0)
@@ -60,12 +58,11 @@ void StandardFormatter::format(const LogRecord* record, io::OutputStream& os) co
     else
     {
         str::replace(format, FILE_NAME, "");
-        str::replace(format, LINE_NUM,  "");
+        str::replace(format, LINE_NUM, "");
     }
     str::replace(format, FUNCTION, record->getFunction());
-    str::replace(format, MESSAGE,  record->getMessage());
+    str::replace(format, MESSAGE, record->getMessage());
 
     // write to stream
     os.write(format + "\n");
 }
-

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -34,9 +34,8 @@
 namespace logging
 {
 
-
 /*!
- *  \struct LogLevel 
+ *  \struct LogLevel
  *
  *  Enumeration used to represent LogLevels
  */
@@ -54,7 +53,10 @@ struct LogLevel final
     };
 
     //! Default constructor
-    LogLevel(){ value = LOG_NOTSET; }
+    LogLevel()
+    {
+        value = LOG_NOTSET;
+    }
 
     //! string constructor
     LogLevel(std::string s)
@@ -98,7 +100,7 @@ struct LogLevel final
     //! int constructor
     LogLevel(int i)
     {
-        switch(i)
+        switch (i)
         {
         case 0:
             value = LOG_NOTSET;
@@ -129,7 +131,7 @@ struct LogLevel final
     //! Returns string representation of the value
     std::string toString() const
     {
-        switch(value)
+        switch (value)
         {
         case 0:
             return std::string("NOTSET");
@@ -149,30 +151,62 @@ struct LogLevel final
     }
 
     //! assignment operator
-    LogLevel& operator=(const LogLevel&) = default;
-    LogLevel(const LogLevel&) = default;
-    LogLevel& operator=(LogLevel&&) = default;
-    LogLevel(LogLevel&&) = default;
+    LogLevel &operator=(const LogLevel &) = default;
+    LogLevel(const LogLevel &) = default;
+    LogLevel &operator=(LogLevel &&) = default;
+    LogLevel(LogLevel &&) = default;
 
-    bool operator==(const LogLevel& o) const { return value == o.value; }
-    bool operator!=(const LogLevel& o) const { return value != o.value; }
-    bool operator==(const int& o) const { return value == o; }
-    bool operator!=(const int& o) const { return value != o; }
-    LogLevel& operator=(const int& o) { value = o; return *this; }
-    bool operator<(const LogLevel& o) const { return value < o.value; }
-    bool operator>(const LogLevel& o) const { return value > o.value; }
-    bool operator<=(const LogLevel& o) const { return value <= o.value; }
-    bool operator>=(const LogLevel& o) const { return value >= o.value; }
-    operator int() const { return value; }
-    operator std::string() const { return toString(); }
+    bool operator==(const LogLevel &o) const
+    {
+        return value == o.value;
+    }
+    bool operator!=(const LogLevel &o) const
+    {
+        return value != o.value;
+    }
+    bool operator==(const int &o) const
+    {
+        return value == o;
+    }
+    bool operator!=(const int &o) const
+    {
+        return value != o;
+    }
+    LogLevel &operator=(const int &o)
+    {
+        value = o;
+        return *this;
+    }
+    bool operator<(const LogLevel &o) const
+    {
+        return value < o.value;
+    }
+    bool operator>(const LogLevel &o) const
+    {
+        return value > o.value;
+    }
+    bool operator<=(const LogLevel &o) const
+    {
+        return value <= o.value;
+    }
+    bool operator>=(const LogLevel &o) const
+    {
+        return value >= o.value;
+    }
+    operator int() const
+    {
+        return value;
+    }
+    operator std::string() const
+    {
+        return toString();
+    }
 
     int value;
-
 };
 
 // code auto-generated 2011-03-15 13:25:08.574563
 
-}
+} // namespace logging
 
 #endif
-

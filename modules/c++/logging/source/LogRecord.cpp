@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -28,10 +28,12 @@
 #include "sys/TimeStamp.h"
 
 logging::LogRecord::LogRecord(std::string name, std::string msg, logging::LogLevel level)
-        : mName(name), mMsg(msg), mLevel(level), mFile(""), mFunction(""), mLineNum(-1)
+    : mName(name), mMsg(msg), mLevel(level), mFile(""), mFunction(""), mLineNum(-1)
 {
     mTimestamp = sys::TimeStamp(true).local();
 }
 
-
-std::string logging::LogRecord::getLevelName() const { return mLevel.toString(); }
+std::string logging::LogRecord::getLevelName() const
+{
+    return mLevel.toString();
+}

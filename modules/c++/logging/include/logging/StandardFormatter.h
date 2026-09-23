@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -27,11 +27,11 @@
 #ifndef __LOGGING_STANDARD_FORMATTER_H__
 #define __LOGGING_STANDARD_FORMATTER_H__
 
-#include <string>
-#include <str/Manip.h>
 #include "config/Exports.h"
 #include "logging/Formatter.h"
 #include "logging/LogRecord.h"
+#include <str/Manip.h>
+#include <string>
 
 namespace logging
 {
@@ -55,21 +55,22 @@ namespace logging
  */
 class CODA_OSS_API StandardFormatter : public Formatter
 {
-public:
+  public:
     static const char DEFAULT_FORMAT[];
 
-    StandardFormatter() : Formatter(DEFAULT_FORMAT) {}
-    StandardFormatter(const std::string& fmt, 
-                      const std::string& prologue = "",
-                      const std::string& epilogue = "");
+    StandardFormatter() : Formatter(DEFAULT_FORMAT)
+    {
+    }
+    StandardFormatter(const std::string &fmt, const std::string &prologue = "", const std::string &epilogue = "");
 
-    virtual ~StandardFormatter() {}
+    virtual ~StandardFormatter()
+    {
+    }
 
-    StandardFormatter& operator=(const StandardFormatter&) = delete;
+    StandardFormatter &operator=(const StandardFormatter &) = delete;
 
-    virtual void format(const LogRecord* record, io::OutputStream& os) const override;
-
+    virtual void format(const LogRecord *record, io::OutputStream &os) const override;
 };
 
-}
+} // namespace logging
 #endif

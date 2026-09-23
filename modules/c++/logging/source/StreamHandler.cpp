@@ -29,9 +29,7 @@
 
 namespace logging
 {
-StreamHandler::StreamHandler(LogLevel level) :
-    Handler(level),
-    mClosed(false)
+StreamHandler::StreamHandler(LogLevel level) : Handler(level), mClosed(false)
 {
     mStream.reset(new io::StandardOutStream());
 
@@ -39,10 +37,7 @@ StreamHandler::StreamHandler(LogLevel level) :
     write(mFormatter->getPrologue());
 }
 
-StreamHandler::StreamHandler(io::OutputStream* stream,
-                             LogLevel level) :
-    Handler(level),
-    mClosed(false)
+StreamHandler::StreamHandler(io::OutputStream *stream, LogLevel level) : Handler(level), mClosed(false)
 {
     mStream.reset(stream);
 
@@ -61,7 +56,7 @@ StreamHandler::~StreamHandler()
     }
 }
 
-void StreamHandler::setFormatter(Formatter* formatter)
+void StreamHandler::setFormatter(Formatter *formatter)
 {
     // end log with formatter injection
     write(mFormatter->getEpilogue());
@@ -72,7 +67,7 @@ void StreamHandler::setFormatter(Formatter* formatter)
     // start log with formatter injection
     write(mFormatter->getPrologue());
 }
-void StreamHandler::setFormatter(std::unique_ptr<Formatter>&& formatter)
+void StreamHandler::setFormatter(std::unique_ptr<Formatter> &&formatter)
 {
     // end log with formatter injection
     write(mFormatter->getEpilogue());
@@ -107,11 +102,11 @@ void StreamHandler::closeImpl()
     }
 }
 
-void StreamHandler::write(const std::string& str)
+void StreamHandler::write(const std::string &str)
 {
     if (!str.empty())
     {
-        //acquire lock
+        // acquire lock
         mt::CriticalSection<decltype(mHandlerLock)> lock(&mHandlerLock);
 
         // write to stream
@@ -119,9 +114,9 @@ void StreamHandler::write(const std::string& str)
         mStream->flush();
     }
 }
-void StreamHandler::emitRecord(const LogRecord* record)
+void StreamHandler::emitRecord(const LogRecord *record)
 {
     mFormatter->format(record, *mStream);
     mStream->flush();
 }
-}
+} // namespace logging

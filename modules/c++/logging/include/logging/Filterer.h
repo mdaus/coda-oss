@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -27,8 +27,8 @@
 #ifndef CODA_OSS_logging_Filterer_h_INCLUDED_
 #define CODA_OSS_logging_Filterer_h_INCLUDED_
 
-#include <string>
 #include <map>
+#include <string>
 
 #include "config/Exports.h"
 
@@ -53,23 +53,22 @@ struct CODA_OSS_API Filterer
      * Adds a Filter to the managed map of Filters. We do NOT take control of
      * the pointer
      */
-    void addFilter(Filter* filter);
-    void addFilter(Filter&);
+    void addFilter(Filter *filter);
+    void addFilter(Filter &);
 
-    virtual bool filter(const LogRecord* record) const;
-    virtual bool filter(const LogRecord& record) const
+    virtual bool filter(const LogRecord *record) const;
+    virtual bool filter(const LogRecord &record) const
     {
         return filter(&record);
     }
 
     //! Removes the specified Filter
-    void removeFilter(Filter* filter);
-    void removeFilter(Filter&);
+    void removeFilter(Filter *filter);
+    void removeFilter(Filter &);
 
-protected:
-    std::map<std::string, Filter*> filters;
+  protected:
+    std::map<std::string, Filter *> filters;
 };
 
-}
+} // namespace logging
 #endif // CODA_OSS_logging_Filterer_h_INCLUDED_
-

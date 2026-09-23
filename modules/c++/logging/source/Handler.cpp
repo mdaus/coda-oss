@@ -52,29 +52,29 @@ void Handler::setLevel(LogLevel level)
     mLevel = level;
 }
 
-bool Handler::handle(const LogRecord* record)
+bool Handler::handle(const LogRecord *record)
 {
     bool rv = false;
     if (filter(record))
     {
-        //acquire lock
+        // acquire lock
         mt::CriticalSection<decltype(mHandlerLock)> lock(&mHandlerLock);
         try
         {
             emitRecord(record);
             rv = true;
         }
-        catch (const except::Throwable&)
+        catch (const except::Throwable &)
         {
-            //TODO do something here?
-            //std::cout << t.getTrace() << std::endl;
+            // TODO do something here?
+            // std::cout << t.getTrace() << std::endl;
         }
     }
     return rv;
 }
-void Handler::setFormatter(Formatter* formatter)
+void Handler::setFormatter(Formatter *formatter)
 {
-    //check if current formatter
+    // check if current formatter
     if (mFormatter != formatter)
     {
         // delete old formatter
@@ -83,8 +83,8 @@ void Handler::setFormatter(Formatter* formatter)
         mFormatter = formatter;
     }
 }
-void Handler::setFormatter(std::unique_ptr<Formatter>&& formatter)
+void Handler::setFormatter(std::unique_ptr<Formatter> &&formatter)
 {
     setFormatter(formatter.release());
 }
-}
+} // namespace logging

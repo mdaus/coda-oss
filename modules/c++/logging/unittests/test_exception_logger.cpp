@@ -20,37 +20,40 @@
  *
  */
 
-#include <vector>
 #include <memory>
 #include <std/span>
+#include <vector>
 
 #include "TestCase.h"
 
-#include <sys/Mutex.h>
+#include <logging/ExceptionLogger.h>
 #include <mem/SharedPtr.h>
 #include <mt/GenerationThreadPool.h>
-#include <logging/ExceptionLogger.h>
+#include <sys/Mutex.h>
 
 class RunNothing final : public sys::Runnable
 {
-    size_t& counter;
-    logging::ExceptionLogger* exLog;
+    size_t &counter;
+    logging::ExceptionLogger *exLog;
     bool getBacktrace;
 
-    static sys::Mutex* counterLock()
+    static sys::Mutex *counterLock()
     {
         static sys::Mutex lock;
         return &lock;
     }
 
-public:
-    RunNothing(size_t& c, logging::ExceptionLogger* el, bool getBacktrace_=false) : counter(c), exLog(el), getBacktrace(getBacktrace_) {}
+  public:
+    RunNothing(size_t &c, logging::ExceptionLogger *el, bool getBacktrace_ = false)
+        : counter(c), exLog(el), getBacktrace(getBacktrace_)
+    {
+    }
 
     virtual void run() override
     {
-        if(exLog->hasLogged())
+        if (exLog->hasLogged())
             return;
-       
+
         {
             mt::CriticalSection<sys::Mutex> crit(counterLock());
             counter++;
@@ -71,9 +74,9 @@ TEST_CASE(testExceptionLogger)
 
     size_t counter(0);
     uint16_t numThreads(2);
- 
-    std::vector<sys::Runnable*> runs;
-   
+
+    std::vector<sys::Runnable *> runs;
+
     mt::GenerationThreadPool pool(numThreads);
     pool.start();
 
@@ -90,7 +93,7 @@ TEST_CASE(testExceptionLogger)
 
 #ifdef _MSC_VER
 #pragma warning(push)
-#pragma warning(disable : 4702)  // unreachable code
+#pragma warning(disable : 4702) // unreachable code
 #endif
 TEST_CASE(testExceptionWithBacktrace)
 {
@@ -101,7 +104,7 @@ TEST_CASE(testExceptionWithBacktrace)
         throw except::Exception("Bad run");
         TEST_FAIL;
     }
-    catch (const except::Throwable& t)
+    catch (const except::Throwable &t)
     {
         TEST_ASSERT_EQ(std::ssize(t.getBacktrace()), 0);
         s = t.toString();
@@ -114,13 +117,13 @@ TEST_CASE(testExceptionWithBacktrace)
     TEST_ASSERT_EQ(getBacktrace_pos, std::string::npos);
     getBacktrace_pos = what.find(getBacktrace);
     TEST_ASSERT_NOT_EQ(getBacktrace_pos, std::string::npos);
-    
+
     try
     {
         throw except::Exception("Bad run").backtrace();
         TEST_FAIL;
     }
-    catch (const except::Throwable& t)
+    catch (const except::Throwable &t)
     {
         const auto backtraceSize = static_cast<int64_t>(t.getBacktrace().size());
         TEST_ASSERT_GREATER(backtraceSize, 0);
@@ -140,7 +143,4 @@ TEST_CASE(testExceptionWithBacktrace)
 #pragma warning(pop)
 #endif
 
-TEST_MAIN(
-    TEST_CHECK(testExceptionLogger);
-    TEST_CHECK(testExceptionWithBacktrace);
-)
+TEST_MAIN(TEST_CHECK(testExceptionLogger); TEST_CHECK(testExceptionWithBacktrace);)

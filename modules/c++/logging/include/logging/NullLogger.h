@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -27,8 +27,8 @@
 #ifndef __LOGGING_NULL_LOGGER_H__
 #define __LOGGING_NULL_LOGGER_H__
 
-#include "logging/Logger.h"
 #include "logging/Handler.h"
+#include "logging/Logger.h"
 
 namespace logging
 {
@@ -39,22 +39,20 @@ namespace logging
  */
 struct NullHandler : public Handler
 {
-    NullHandler(LogLevel level = LogLevel::LOG_NOTSET) :
-        Handler(level)
+    NullHandler(LogLevel level = LogLevel::LOG_NOTSET) : Handler(level)
     {
     }
     ~NullHandler() = default;
 
-    NullHandler(const NullHandler&) = delete;
-    NullHandler& operator=(const NullHandler&) = delete;
+    NullHandler(const NullHandler &) = delete;
+    NullHandler &operator=(const NullHandler &) = delete;
 
-protected:
-        
-    void write(const std::string&) override
+  protected:
+    void write(const std::string &) override
     {
         // does nothing...
     }
-    void emitRecord(const LogRecord*) override
+    void emitRecord(const LogRecord *) override
     {
         // does nothing...
     }
@@ -68,17 +66,16 @@ class NullLogger final : public Logger
 {
     NullHandler mHandler;
 
-public:
-    NullLogger(const std::string& name = "") :
-        Logger(name)
+  public:
+    NullLogger(const std::string &name = "") : Logger(name)
     {
         addHandler(&mHandler, false /*own*/);
     }
     ~NullLogger() = default;
 
-    NullLogger(const NullLogger&) = delete;
-    NullLogger& operator=(const NullLogger&) = delete;
+    NullLogger(const NullLogger &) = delete;
+    NullLogger &operator=(const NullLogger &) = delete;
 };
 
-}
+} // namespace logging
 #endif

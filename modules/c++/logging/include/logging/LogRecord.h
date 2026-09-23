@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -27,8 +27,8 @@
 #ifndef __LOGGING_LOG_RECORD_H__
 #define __LOGGING_LOG_RECORD_H__
 
-#include <string>
 #include "logging/Enums.h"
+#include <string>
 
 namespace logging
 {
@@ -44,26 +44,48 @@ namespace logging
 class LogRecord
 {
 
-public:
+  public:
     LogRecord(std::string name, std::string msg, LogLevel level = LogLevel::LOG_NOTSET);
-    LogRecord(std::string name, std::string msg, LogLevel level,
-              std::string file, std::string function, int lineNum, std::string timestamp) :
-            mName(name), mMsg(msg), mLevel(level), mFile(file), mFunction(function),
-            mLineNum(lineNum), mTimestamp(timestamp){}
+    LogRecord(std::string name, std::string msg, LogLevel level, std::string file, std::string function, int lineNum,
+              std::string timestamp)
+        : mName(name), mMsg(msg), mLevel(level), mFile(file), mFunction(function), mLineNum(lineNum),
+          mTimestamp(timestamp)
+    {
+    }
     virtual ~LogRecord() = default;
 
-    LogLevel getLevel() const { return mLevel; }
+    LogLevel getLevel() const
+    {
+        return mLevel;
+    }
     std::string getLevelName() const;
 
-    std::string getMessage() const { return mMsg; }
-    std::string getName() const { return mName; }
-    std::string getTimeStamp() const { return mTimestamp; }
-    std::string getFile() const { return mFile; }
-    std::string getFunction() const { return mFunction; }
-    int getLineNum() const { return mLineNum; }
+    std::string getMessage() const
+    {
+        return mMsg;
+    }
+    std::string getName() const
+    {
+        return mName;
+    }
+    std::string getTimeStamp() const
+    {
+        return mTimestamp;
+    }
+    std::string getFile() const
+    {
+        return mFile;
+    }
+    std::string getFunction() const
+    {
+        return mFunction;
+    }
+    int getLineNum() const
+    {
+        return mLineNum;
+    }
 
-
-private:
+  private:
     std::string mName;
     std::string mMsg;
     LogLevel mLevel;
@@ -73,5 +95,5 @@ private:
     std::string mTimestamp;
 };
 
-}
+} // namespace logging
 #endif

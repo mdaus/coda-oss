@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,31 +14,27 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 #include "logging/Setup.h"
 
-#include <stdint.h>
 #include <limits>
- 
+#include <stdint.h>
+
 #include <str/Manip.h>
 
-#include "logging/StreamHandler.h"
 #include "logging/FileHandler.h"
 #include "logging/RotatingFileHandler.h"
 #include "logging/StandardFormatter.h"
+#include "logging/StreamHandler.h"
 #include "logging/XMLFormatter.h"
 
-std::unique_ptr<logging::Logger>
-logging::setupLogger(const path& program_, 
-                     const std::string& logLevel, 
-                     const path& logFile,
-                     const std::string& logFormat,
-                     size_t logCount,
-                     size_t logBytes)
+std::unique_ptr<logging::Logger> logging::setupLogger(const path &program_, const std::string &logLevel,
+                                                      const path &logFile, const std::string &logFormat,
+                                                      size_t logCount, size_t logBytes)
 {
     const auto program = program_.string();
     std::unique_ptr<logging::Logger> log(new logging::Logger(program));
@@ -49,7 +45,7 @@ logging::setupLogger(const path& program_,
     const auto level = lev.empty() ? logging::LogLevel::LOG_WARNING : logging::LogLevel(lev);
 
     // setup logging formatter
-    std::unique_ptr <logging::Formatter> formatter;
+    std::unique_ptr<logging::Formatter> formatter;
     const auto file = str::lower(logFile.string());
     if (str::endsWith(file, ".xml"))
     {
@@ -59,7 +55,7 @@ logging::setupLogger(const path& program_,
     {
         formatter = std::make_unique<logging::StandardFormatter>(logFormat);
     }
-    
+
     // setup logging handler
     std::unique_ptr<logging::Handler> logHandler;
     if (file.empty() || (file == "console") || (file == "-"))
@@ -67,18 +63,19 @@ logging::setupLogger(const path& program_,
     else
     {
         // Existing code was checking whether a 'size_t' was <0; that of course can't
-        // ever happen because 'size_t' is an unsigned type.  But, in the spirit of 
+        // ever happen because 'size_t' is an unsigned type.  But, in the spirit of
         // the existing code, assume that somebody thought such a check was meaningful
         // ... using the value of a 32-bit integer (we now only build on 64-bit platforms).
 
         // create a rotating logger
-        logCount = logCount > std::numeric_limits<uint32_t>::max() ? 0 : logCount; // logCount = (logCount < 0) ? 0 : logCount;
-        logBytes = logBytes > std::numeric_limits<uint32_t>::max() ? 0 : logBytes; // logBytes = (logBytes < 0) ? 0 : logBytes;
+        logCount =
+            logCount > std::numeric_limits<uint32_t>::max() ? 0 : logCount; // logCount = (logCount < 0) ? 0 : logCount;
+        logBytes =
+            logBytes > std::numeric_limits<uint32_t>::max() ? 0 : logBytes; // logBytes = (logBytes < 0) ? 0 : logBytes;
         if (logBytes > 0)
         {
-            logHandler.reset(new logging::RotatingFileHandler(logFile,
-                                                              static_cast<long>(logBytes),
-                                                              static_cast<int>(logCount)));
+            logHandler.reset(
+                new logging::RotatingFileHandler(logFile, static_cast<long>(logBytes), static_cast<int>(logCount)));
         }
         // create regular logging to one file
         else
@@ -86,7 +83,7 @@ logging::setupLogger(const path& program_,
             logHandler.reset(new logging::FileHandler(logFile));
         }
     }
-	
+
     logHandler->setLevel(level);
     logHandler->setFormatter(formatter.release());
     log->addHandler(logHandler.release(), true);

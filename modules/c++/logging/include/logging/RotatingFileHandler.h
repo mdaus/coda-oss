@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -27,13 +27,13 @@
 #ifndef __LOGGING_ROTATING_FILE_HANDLER_H__
 #define __LOGGING_ROTATING_FILE_HANDLER_H__
 
-#include <string>
-#include <iostream>
 #include "config/Exports.h"
 #include "logging/LogRecord.h"
 #include "logging/StreamHandler.h"
 #include <import/io.h>
 #include <import/sys.h>
+#include <iostream>
+#include <string>
 
 namespace logging
 {
@@ -56,13 +56,13 @@ struct CODA_OSS_API RotatingFileHandler : public StreamHandler
      * \param backupCount   The max number of backups
      * \param level         The minimum LogLevel
      */
-    RotatingFileHandler(const coda_oss::filesystem::path& fname, long maxBytes = 0,
-                        int backupCount = 0, LogLevel level = LogLevel::LOG_NOTSET);
+    RotatingFileHandler(const coda_oss::filesystem::path &fname, long maxBytes = 0, int backupCount = 0,
+                        LogLevel level = LogLevel::LOG_NOTSET);
 
     virtual ~RotatingFileHandler();
 
-    RotatingFileHandler(const RotatingFileHandler&) = delete;
-    RotatingFileHandler& operator=(const RotatingFileHandler&) = delete;
+    RotatingFileHandler(const RotatingFileHandler &) = delete;
+    RotatingFileHandler &operator=(const RotatingFileHandler &) = delete;
 };
-}
+} // namespace logging
 #endif

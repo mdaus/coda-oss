@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -28,10 +28,9 @@
 
 using namespace logging;
 
-RotatingFileHandler::RotatingFileHandler(const coda_oss::filesystem::path& fname_,
-                                         long maxBytes, int backupCount,
-                                         LogLevel level) :
-    StreamHandler(level)
+RotatingFileHandler::RotatingFileHandler(const coda_oss::filesystem::path &fname_, long maxBytes, int backupCount,
+                                         LogLevel level)
+    : StreamHandler(level)
 {
     const auto fname = fname_.string();
 
@@ -41,7 +40,7 @@ RotatingFileHandler::RotatingFileHandler(const coda_oss::filesystem::path& fname
     // create directory if one doesn't exist
     if (!os.exists(fname))
     {
-        //see if we need to make the parent directory
+        // see if we need to make the parent directory
         std::string parDir = sys::Path::splitPath(fname).first;
         if (!os.exists(parDir))
             os.makeDirectory(parDir);
@@ -69,11 +68,10 @@ RotatingFileHandler::RotatingFileHandler(const coda_oss::filesystem::path& fname
             os.remove(curName);
         os.move(fname, curName);
     }
-    
+
     // create log file
     creationFlags = sys::File::CREATE | sys::File::TRUNCATE;
-    mStream.reset(new io::RotatingFileOutputStream(fname, maxBytes,
-                                                   backupCount, creationFlags));
+    mStream.reset(new io::RotatingFileOutputStream(fname, maxBytes, backupCount, creationFlags));
 }
 
 RotatingFileHandler::~RotatingFileHandler()

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -27,8 +27,8 @@
 #ifndef CODA_OSS_logging_Filter_h_INCLUDED_
 #define CODA_OSS_logging_Filter_h_INCLUDED_
 
-#include <string>
 #include "logging/LogRecord.h"
+#include <string>
 
 namespace logging
 {
@@ -40,11 +40,13 @@ namespace logging
  */
 struct Filter
 {
-    Filter(std::string name = "") : mName(name){}
+    Filter(std::string name = "") : mName(name)
+    {
+    }
     virtual ~Filter() = default;
 
-    virtual bool filter(const LogRecord* record) const;
-    virtual bool filter(const LogRecord& record) const
+    virtual bool filter(const LogRecord *record) const;
+    virtual bool filter(const LogRecord &record) const
     {
         return filter(&record);
     }
@@ -54,9 +56,9 @@ struct Filter
         return mName;
     }
 
-protected:
+  protected:
     std::string mName;
 };
 
-}
-#endif  // CODA_OSS_logging_Filter_h_INCLUDED_
+} // namespace logging
+#endif // CODA_OSS_logging_Filter_h_INCLUDED_

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of logging-c++ 
+ * This file is part of logging-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * logging-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -26,8 +26,7 @@
 
 #include "logging/Filter.h"
 
-
-bool logging::Filter::filter(const logging::LogRecord* record) const
+bool logging::Filter::filter(const logging::LogRecord *record) const
 {
     std::string recName = record->getName();
     if (mName.empty() || recName == mName)
@@ -36,4 +35,3 @@ bool logging::Filter::filter(const logging::LogRecord* record) const
         return false;
     return recName.length() > mName.length() && recName[mName.length()] == '.';
 }
-
