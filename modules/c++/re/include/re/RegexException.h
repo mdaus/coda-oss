@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of re-c++ 
+ * This file is part of re-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * re-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -30,37 +30,39 @@ namespace re
 /*!
  *  \class RegexException
  *  \brief Error class for pcre
- *  
+ *
  *  Specialized for regular expression errors
  */
 class RegexException : public except::Exception
 {
-public:
-
+  public:
     /*!
      *  The constructor
      *  \param message A message to take
-            *  \param errorId  The error id
+     *  \param errorId  The error id
      */
     RegexException(const char *message, int /*errorId*/ = 0) : except::Exception(message)
-    {}
+    {
+    }
 
     /*!
      *  The constructor
      *  \param message A message to take
-            *  \param errorId  The error id
+     *  \param errorId  The error id
      */
-    RegexException(const std::string& message, int /*errorId*/ = 0) : except::Exception(message)
-    {}
+    RegexException(const std::string &message, int /*errorId*/ = 0) : except::Exception(message)
+    {
+    }
 
     /*!
      *  The constructor
      *  \param c A Context to take
-            *  \param errorId  The error id
+     *  \param errorId  The error id
      */
-    RegexException(const except::Context& c, int /*errorId*/ = 0) : except::Exception(c)
-    {}
+    RegexException(const except::Context &c, int /*errorId*/ = 0) : except::Exception(c)
+    {
+    }
 };
 
-}
+} // namespace re
 #endif

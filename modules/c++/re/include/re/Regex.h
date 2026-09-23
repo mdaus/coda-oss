@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of re-c++ 
+ * This file is part of re-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2016, MDA Information Systems LLC
  *
  * re-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -60,11 +60,11 @@ typedef std::vector<std::string> RegexMatch;
  */
 class CODA_OSS_API Regex
 {
-public:
+  public:
     /*!
      *  The default constructor
      */
-    Regex(const std::string& pattern = "");
+    Regex(const std::string &pattern = "");
 
     //!  Destructor
     ~Regex();
@@ -73,14 +73,14 @@ public:
      *  Copy constructor
      *  \param rhs The Regex to copy from
      */
-    Regex(const Regex& rhs);
+    Regex(const Regex &rhs);
 
     /*!
      *  Assignment operator.  Check for self assignment
      *  \param rhs The Regex to copy from
      *  \return This
      */
-    Regex& operator=(const Regex& rhs);
+    Regex &operator=(const Regex &rhs);
 
     /*!
      *  Destroy all data used for matching.
@@ -92,14 +92,14 @@ public:
      *  \param pattern  A pattern to match
      *  \throw  exception on error
      */
-    Regex& compile(const std::string& pattern);
+    Regex &compile(const std::string &pattern);
 
     /*!
      *  \todo Add non-const reference
      *  A const reference return for the pattern
      *  \return the pattern
      */
-    const std::string& getPattern() const
+    const std::string &getPattern() const
     {
         return mPattern;
     }
@@ -116,10 +116,9 @@ public:
      *  \return  True on success, False otherwise
      *  \throw  RegexException on fatal error
      */
-    bool match(const std::string& str,
-               RegexMatch& matchObject);
+    bool match(const std::string &str, RegexMatch &matchObject);
 
-    bool matches(const std::string& str) const;
+    bool matches(const std::string &str) const;
 
     /*!
      *  Search the matchString
@@ -128,8 +127,7 @@ public:
      *  \return  Matched substring
      *  \throw  RegexException on fatal error
      */
-    std::string search(const std::string& matchString,
-                       size_t startIndex = 0);
+    std::string search(const std::string &matchString, size_t startIndex = 0);
 
     /*!
      *  Search the matchString and get the sub-expressions, by ref
@@ -142,16 +140,14 @@ public:
      *      Each index will contain a match (unlike the matches() method which
      *      uses indices 1+ to provide submatches)
      */
-    void searchAll(const std::string& matchString,
-                   RegexMatch& v);
+    void searchAll(const std::string &matchString, RegexMatch &v);
 
     /*!
      *  Split the string by occurrences of the pattern
      *  \param str  The string to split
      *  \param v    The resulting container of matches split from str
      */
-    void split(const std::string& str,
-               std::vector<std::string>& v);
+    void split(const std::string &str, std::vector<std::string> &v);
 
     /*!
      *  Replace occurrences of the pattern in the string
@@ -159,18 +155,16 @@ public:
      *  \param repl  The replacement
      *  \return  The resulting string
      */
-    std::string sub(const std::string& str,
-                    const std::string& repl);
+    std::string sub(const std::string &str, const std::string &repl);
 
     /*!
      *  Backslash all non-alphanumeric characters
      *  \param str  The string to escape
      *  \return  The escaped string
      */
-    static
-    std::string escape(const std::string& str);
+    static std::string escape(const std::string &str);
 
-private:
+  private:
     std::string mPattern;
 
 #ifdef RE_ENABLE_STD_REGEX
@@ -180,7 +174,7 @@ private:
      *  \param str  The string to modify
      *  \return  The modified string
      */
-    std::string replaceDot(const std::string& str) const;
+    std::string replaceDot(const std::string &str) const;
 
     /*!
      *  Search using std::regex appropriately based on input string:
@@ -197,26 +191,21 @@ private:
      *  \return  True on success, otherwise False
      *  \throw  RegexException on error
      */
-    bool searchWithContext(std::string::const_iterator inputIterBegin,
-                           std::string::const_iterator inputIterEnd,
-                           std::smatch& match,
-                           bool matchBeginning=true) const;
+    bool searchWithContext(std::string::const_iterator inputIterBegin, std::string::const_iterator inputIterEnd,
+                           std::smatch &match, bool matchBeginning = true) const;
 
     //! The regex object
     std::regex mRegex;
 
 #else
     // Internal function for passing flags to pcre2_match()
-    std::string search(const std::string& matchString,
-                       size_t startIndex,
-                       sys::Uint32_T flag,
-                       size_t& begin,
-                       size_t& end);
+    std::string search(const std::string &matchString, size_t startIndex, sys::Uint32_T flag, size_t &begin,
+                       size_t &end);
 
     //! The pcre object
-    pcre2_code* mPCRE = nullptr;
+    pcre2_code *mPCRE = nullptr;
 #endif
 };
-}
+} // namespace re
 
 #endif

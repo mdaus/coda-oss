@@ -21,32 +21,32 @@
  */
 
 #include <assert.h>
+#include <import/except.h>
+#include <import/re.h>
+#include <import/str.h>
 #include <iostream>
-#include <vector>
 #include <map>
 #include <string>
-#include <import/except.h>
-#include <import/str.h>
-#include <import/re.h>
+#include <vector>
 
 using namespace str;
 using namespace except;
 using namespace re;
 using namespace std;
 
-const char
-        *request =
-                "GET http://pluto.beseen.com:1113 HTTP/1.0\r\nProxy-Connection: Keep-Alive\r\nUser-Agent: Mozilla/4.75 [en] (X11; U; SunOS 5.6 sun4u)\r\nAccept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*\r\nAccept-Encoding: gzip\r\nAccept-Language: en\r\nAccept-Charset: iso-8859-1,*,utf-8\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 96\r\n\r\n";
-//const char *request = "HTTP/1.1 200\r\nContent-Length: 200\r\n\r\n";
+const char *request =
+    "GET http://pluto.beseen.com:1113 HTTP/1.0\r\nProxy-Connection: Keep-Alive\r\nUser-Agent: Mozilla/4.75 [en] (X11; "
+    "U; SunOS 5.6 sun4u)\r\nAccept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, "
+    "*/*\r\nAccept-Encoding: gzip\r\nAccept-Language: en\r\nAccept-Charset: iso-8859-1,*,utf-8\r\nContent-Type: "
+    "application/x-www-form-urlencoded\r\nContent-Length: 96\r\n\r\n";
+// const char *request = "HTTP/1.1 200\r\nContent-Length: 200\r\n\r\n";
 
 class HttpParser
 {
-public:
-
+  public:
     HttpParser()
     {
-        mMatchRequest.compile(
-                              "^([^ ]+) (http:[^ ]+) HTTP/([0-9]+\\.[0-9]+)\r\n(.*)");
+        mMatchRequest.compile("^([^ ]+) (http:[^ ]+) HTTP/([0-9]+\\.[0-9]+)\r\n(.*)");
         mMatchPair.compile("^([^:]+):[ ]*([^\r\n]+)\r\n(.*)");
         mMatchEndOfHeader.compile("^\r\n");
         mMatchResponse.compile("^HTTP/([^ ]+) ([^\r\n]+)\r\n(.*)");
@@ -56,7 +56,7 @@ public:
     {
     }
 
-    virtual void parseRest(const std::string& restOfChunk)
+    virtual void parseRest(const std::string &restOfChunk)
     {
         std::string rest = restOfChunk;
 
@@ -96,7 +96,7 @@ public:
         }
     }
 
-    virtual void parse(const char* header, size_t length)
+    virtual void parse(const char *header, size_t length)
     {
         mHeader = std::string(header, length);
         if (!parseRequest())
@@ -152,7 +152,7 @@ public:
         return getAssociatedValue(key);
     }
 
-    string getAssociatedValue(const string& key)
+    string getAssociatedValue(const string &key)
     {
         map<string, string>::const_iterator p = mKeyValuePair.find(key);
         if (p == mKeyValuePair.end())
@@ -162,12 +162,12 @@ public:
         return mKeyValuePair[key];
     }
 
-protected:
+  protected:
     Regex mMatchRequest;
     Regex mMatchPair;
     Regex mMatchEndOfHeader;
     Regex mMatchResponse;
-    map<string, string>mKeyValuePair;
+    map<string, string> mKeyValuePair;
 
     string mReturnVal;
     string mUrl;
@@ -189,12 +189,11 @@ int main()
         cout << "Url: " << p.getUrl() << endl;
         cout << "Version: " << p.getVersion() << endl;
         cout << "User-Agent: " << p.getAssociatedValue("User-Agent") << endl;
-        cout << "Accept-Encoding: " << p.getAssociatedValue("Accept-Encoding")
-                << endl;
+        cout << "Accept-Encoding: " << p.getAssociatedValue("Accept-Encoding") << endl;
         cout << "Content-Type: " << p.getContentType() << endl;
         cout << "Content-Length: " << p.getContentLength() << endl;
     }
-    catch (Throwable& e)
+    catch (Throwable &e)
     {
         cout << e.toString() << endl;
     }

@@ -25,36 +25,34 @@
 
 #ifdef RE_ENABLE_STD_REGEX
 
-#include <sys/Conf.h>
 #include <re/RegexException.h>
+#include <sys/Conf.h>
 
 namespace re
 {
 
 // These are a raw literals, so ignore the R"lit( )lit"
-static const std::regex& badDotRegex()
+static const std::regex &badDotRegex()
 {
-    static const std::regex retval(R"lit(((^|[^\\])(\\\\)*)\.)lit",
+    static const std::regex retval(R"lit(((^|[^\\])(\\\\)*)\.)lit", std::regex::ECMAScript | std::regex::optimize);
+    return retval;
+}
+
+static const std::regex &invalidCaret()
+{
+    static const std::regex retval(R"lit([\s\S]*([^\[\\]|[^\\](\\\\)+)\^)lit",
                                    std::regex::ECMAScript | std::regex::optimize);
     return retval;
 }
 
-static const std::regex& invalidCaret()
+static const std::regex &invalidDollar()
 {
-   static const std::regex retval( R"lit([\s\S]*([^\[\\]|[^\\](\\\\)+)\^)lit",
-                                          std::regex::ECMAScript|std::regex::optimize );
+    static const std::regex retval(R"lit(^([\s\S]*[^\\](\\\\)*)?\$[\s\S]+$)lit",
+                                   std::regex::ECMAScript | std::regex::optimize);
     return retval;
 }
 
-static const std::regex& invalidDollar()
-{
-    static const std::regex retval( R"lit(^([\s\S]*[^\\](\\\\)*)?\$[\s\S]+$)lit",
-                                               std::regex::ECMAScript|std::regex::optimize );
-    return retval;
-}
-    
-Regex::Regex(const std::string& pattern) :
-    mPattern(pattern)
+Regex::Regex(const std::string &pattern) : mPattern(pattern)
 {
     if (!mPattern.empty())
     {
@@ -70,13 +68,13 @@ Regex::~Regex()
 {
 }
 
-Regex::Regex(const Regex& rhs)
+Regex::Regex(const Regex &rhs)
 {
     mPattern = rhs.mPattern;
     compile(mPattern);
 }
 
-Regex& Regex::operator=(const Regex& rhs)
+Regex &Regex::operator=(const Regex &rhs)
 {
     if (this != &rhs)
     {
@@ -88,15 +86,14 @@ Regex& Regex::operator=(const Regex& rhs)
     return *this;
 }
 
-Regex& Regex::compile(const std::string& pattern)
+Regex &Regex::compile(const std::string &pattern)
 {
     // We'll set these first, so that if we throw an exception we'll
     // leave the regex in a compiled state, so if the user REALLY
     // wants to, they can put it in a try/catch block and keep going.
 
     mPattern = replaceDot(pattern);
-    mRegex = std::regex(mPattern, std::regex::ECMAScript|std::regex::optimize);
-
+    mRegex = std::regex(mPattern, std::regex::ECMAScript | std::regex::optimize);
 
     // Because VS2015 and gcc handle ^ and $ differently, we'll throw
     // exceptions if they're in the middle of the pattern somewhere
@@ -104,11 +101,9 @@ Regex& Regex::compile(const std::string& pattern)
     std::smatch tmpmatch;
 
     // Look for ^ in the middle, but ignore \^ and [^
-    if (std::regex_search(mPattern, tmpmatch, invalidCaret(),
-                          std::regex_constants::match_continuous))
+    if (std::regex_search(mPattern, tmpmatch, invalidCaret(), std::regex_constants::match_continuous))
     {
-        std::string msg(
-            "'^' in mid-string is not handled the same by gcc and VS2015!");
+        std::string msg("'^' in mid-string is not handled the same by gcc and VS2015!");
         msg += " So we don't allow it :(";
         throw RegexException(Ctxt(msg));
     }
@@ -116,8 +111,7 @@ Regex& Regex::compile(const std::string& pattern)
     // Look for $ in the middle, but ignore \$
     if (std::regex_match(mPattern, tmpmatch, invalidDollar()))
     {
-        std::string msg(
-            "'$' in mid-string is not handled the same by gcc and VS2015!");
+        std::string msg("'$' in mid-string is not handled the same by gcc and VS2015!");
         msg += " So we don't allow it :(";
         throw RegexException(Ctxt(msg));
     }
@@ -134,13 +128,13 @@ Regex& Regex::compile(const std::string& pattern)
     return *this;
 }
 
-bool Regex::matches(const std::string& str) const
+bool Regex::matches(const std::string &str) const
 {
     std::smatch matches;
     return searchWithContext(str.cbegin(), str.cend(), matches);
 }
 
-bool Regex::match(const std::string& str, RegexMatch& matchObject)
+bool Regex::match(const std::string &str, RegexMatch &matchObject)
 {
     std::smatch matches;
     bool result = searchWithContext(str.cbegin(), str.cend(), matches);
@@ -149,7 +143,7 @@ bool Regex::match(const std::string& str, RegexMatch& matchObject)
     matchObject.resize(matches.size());
 
     // This causes a crash for some reason
-    //std::copy(matches.begin(), matches.end(), matchObject.begin());
+    // std::copy(matches.begin(), matches.end(), matchObject.begin());
 
     for (size_t ii = 0; ii < matches.size(); ++ii)
     {
@@ -159,14 +153,13 @@ bool Regex::match(const std::string& str, RegexMatch& matchObject)
     return result;
 }
 
-std::string Regex::search(const std::string& matchString, size_t startIndex)
+std::string Regex::search(const std::string &matchString, size_t startIndex)
 {
     std::smatch matches;
 
     // search the string starting at index "startIndex"
-    bool result = searchWithContext(matchString.begin() + startIndex,
-                                    matchString.end(), matches);
-    
+    bool result = searchWithContext(matchString.begin() + startIndex, matchString.end(), matches);
+
     // if successful, return the substring matching the regex,
     // otherwise return empty string
     if (result && !matches.empty())
@@ -179,31 +172,30 @@ std::string Regex::search(const std::string& matchString, size_t startIndex)
     }
 }
 
-void Regex::searchAll(const std::string& matchString, RegexMatch& v)
+void Regex::searchAll(const std::string &matchString, RegexMatch &v)
 {
     std::smatch match;
     size_t startIndex = 0;
     bool matchBeginning = true;
 
     // search the string starting at index "startIndex"
-    while (searchWithContext(matchString.begin()+startIndex, 
-                             matchString.end(), match, matchBeginning))
+    while (searchWithContext(matchString.begin() + startIndex, matchString.end(), match, matchBeginning))
     {
         v.push_back(match[0].str());
         startIndex += (match.position(0) + 1); // advance one char beyond this match
-        matchBeginning = false; // don't match BOL after first match
+        matchBeginning = false;                // don't match BOL after first match
     }
 }
 
-void Regex::split(const std::string& str, std::vector<std::string> & v)
+void Regex::split(const std::string &str, std::vector<std::string> &v)
 {
     size_t idx = 0;
     bool matchBeginning = true;
     std::smatch match;
 
-    while (searchWithContext(str.begin()+idx, str.end(), match, matchBeginning))
+    while (searchWithContext(str.begin() + idx, str.end(), match, matchBeginning))
     {
-        v.push_back( str.substr(idx, match.position()) );
+        v.push_back(str.substr(idx, match.position()));
         idx += (match.position() + match.length());
         matchBeginning = false; // don't match BOL after first match
     }
@@ -215,7 +207,7 @@ void Regex::split(const std::string& str, std::vector<std::string> & v)
     }
 }
 
-std::string Regex::sub(const std::string& str, const std::string& repl)
+std::string Regex::sub(const std::string &str, const std::string &repl)
 {
     std::string toReplace = str;
 
@@ -223,8 +215,7 @@ std::string Regex::sub(const std::string& str, const std::string& repl)
     bool matchBeginning = true;
     std::smatch match;
 
-    while (searchWithContext(toReplace.cbegin()+idx, toReplace.cend(), match,
-                             matchBeginning))
+    while (searchWithContext(toReplace.cbegin() + idx, toReplace.cend(), match, matchBeginning))
     {
         toReplace.replace(idx + match.position(), match.length(), repl);
         idx += (match.position() + repl.length());
@@ -234,7 +225,7 @@ std::string Regex::sub(const std::string& str, const std::string& repl)
     return toReplace;
 }
 
-std::string Regex::replaceDot(const std::string& str) const
+std::string Regex::replaceDot(const std::string &str) const
 {
     // Match beginning-of-string or a non-\ character,
     // followed by 0 or more "\\",
@@ -246,10 +237,8 @@ std::string Regex::replaceDot(const std::string& str) const
     return newstr;
 }
 
-bool Regex::searchWithContext(std::string::const_iterator inputIterBegin,
-                              std::string::const_iterator inputIterEnd,
-                              std::smatch& match,
-                              bool matchBeginning) const
+bool Regex::searchWithContext(std::string::const_iterator inputIterBegin, std::string::const_iterator inputIterEnd,
+                              std::smatch &match, bool matchBeginning) const
 {
     bool b(false);
     auto flags = std::regex_constants::match_default;
@@ -267,24 +256,21 @@ bool Regex::searchWithContext(std::string::const_iterator inputIterBegin,
     {
         if (mPattern.length() >= 2 && mPattern.back() == '$')
         {
-            b = std::regex_match(inputIterBegin, inputIterEnd, 
-                                 match, mRegex, flags);
+            b = std::regex_match(inputIterBegin, inputIterEnd, match, mRegex, flags);
         }
         else
         {
             flags |= std::regex_constants::match_continuous;
-            b = std::regex_search(inputIterBegin, inputIterEnd,
-                                  match, mRegex, flags);
+            b = std::regex_search(inputIterBegin, inputIterEnd, match, mRegex, flags);
         }
     }
     else
     {
-        b = std::regex_search(inputIterBegin, inputIterEnd,
-                              match, mRegex, flags);
+        b = std::regex_search(inputIterBegin, inputIterEnd, match, mRegex, flags);
     }
 
     return b;
 }
-}
+} // namespace re
 
 #endif

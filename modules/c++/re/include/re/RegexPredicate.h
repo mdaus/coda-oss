@@ -1,7 +1,7 @@
 /* =========================================================================
  * This file is part of re-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2016, MDA Information Systems LLC
  *
  * re-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,30 +23,28 @@
 #ifndef __RE_REGEX_FILE_PREDICATE_H__
 #define __RE_REGEX_FILE_PREDICATE_H__
 
-#include "sys/FileFinder.h"
 #include "re/Regex.h"
+#include "sys/FileFinder.h"
 
 namespace re
 {
 
 struct RegexPredicate : public sys::FilePredicate
 {
-public:
-    RegexPredicate(const std::string& match)
+  public:
+    RegexPredicate(const std::string &match)
     {
         mRegex.compile(match);
     }
-    
-    bool operator()(const std::string& filename) const override
+
+    bool operator()(const std::string &filename) const override
     {
         return mRegex.matches(filename);
     }
 
-private:
+  private:
     re::Regex mRegex;
-
 };
 
-}
+} // namespace re
 #endif
-

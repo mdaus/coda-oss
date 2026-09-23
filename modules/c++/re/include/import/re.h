@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of re-c++ 
+ * This file is part of re-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * re-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,8 +23,8 @@
 #ifndef __IMPORT_RE_H__
 #define __IMPORT_RE_H__
 
-#include "re/RegexException.h"
 #include "re/Regex.h"
+#include "re/RegexException.h"
 #include "re/RegexPredicate.h"
 
 #endif

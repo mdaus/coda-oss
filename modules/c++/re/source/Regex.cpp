@@ -24,7 +24,7 @@
 
 namespace re
 {
-std::string Regex::escape(const std::string& str)
+std::string Regex::escape(const std::string &str)
 {
     std::string r;
     for (size_t ii = 0; ii < str.length(); ii++)
@@ -37,4 +37,4 @@ std::string Regex::escape(const std::string& str)
     }
     return r;
 }
-}
+} // namespace re

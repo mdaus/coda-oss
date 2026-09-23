@@ -20,8 +20,8 @@
  *
  */
 
-#include <import/re.h>
 #include "TestCase.h"
+#include <import/re.h>
 #include <map>
 
 TEST_CASE(testCompile)
@@ -206,8 +206,7 @@ TEST_CASE(testMultilineBehavior)
 
     re::RegexMatch matches;
     re::Regex rx;
-    std::string inputString = 
-        "3.3 4\n2\nx\r\ns\r\n;sjf sfkgsdkie\n shfihfoisu\nha hosd\nhvfoef\n";
+    std::string inputString = "3.3 4\n2\nx\r\ns\r\n;sjf sfkgsdkie\n shfihfoisu\nha hosd\nhvfoef\n";
 
     // This should match just the beginning
     rx.compile("^.");
@@ -341,24 +340,24 @@ TEST_CASE(testSplit)
 // This was copied out of re/tests/RegexTest3.cpp
 TEST_CASE(testHttpResponse)
 {
-    const char
-        *request =
-        "GET http://pluto.beseen.com:1113 HTTP/1.0\r\nProxy-Connection: Keep-Alive\r\nUser-Agent: Mozilla/4.75 [en] (X11; U; SunOS 5.6 sun4u)\r\nAccept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, */*\r\nAccept-Encoding: gzip\r\nAccept-Language: en\r\nAccept-Charset: iso-8859-1,*,utf-8\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 96\r\n\r\n";
+    const char *request =
+        "GET http://pluto.beseen.com:1113 HTTP/1.0\r\nProxy-Connection: Keep-Alive\r\nUser-Agent: Mozilla/4.75 [en] "
+        "(X11; U; SunOS 5.6 sun4u)\r\nAccept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, image/png, "
+        "*/*\r\nAccept-Encoding: gzip\r\nAccept-Language: en\r\nAccept-Charset: iso-8859-1,*,utf-8\r\nContent-Type: "
+        "application/x-www-form-urlencoded\r\nContent-Length: 96\r\n\r\n";
 
     class HttpParser
     {
-    public:
-
+      public:
         HttpParser()
         {
-            mMatchRequest.compile(
-                "^([^ ]+) (http:[^ ]+) HTTP/([0-9]+\\.[0-9]+)\r\n(.*)");
+            mMatchRequest.compile("^([^ ]+) (http:[^ ]+) HTTP/([0-9]+\\.[0-9]+)\r\n(.*)");
             mMatchPair.compile("^([^:]+):[ ]*([^\r\n]+)\r\n(.*)");
             mMatchEndOfHeader.compile("^\r\n");
             mMatchResponse.compile("^HTTP/([^ ]+) ([^\r\n]+)\r\n(.*)");
         }
 
-        bool parse(const char* header, size_t length)
+        bool parse(const char *header, size_t length)
         {
             mHeader = std::string(header, length);
             if (!parseRequest())
@@ -372,7 +371,7 @@ TEST_CASE(testHttpResponse)
             return true;
         }
 
-        bool parseRest(const std::string& restOfChunk)
+        bool parseRest(const std::string &restOfChunk)
         {
             std::string rest = restOfChunk;
 
@@ -456,10 +455,9 @@ TEST_CASE(testHttpResponse)
             return getAssociatedValue(key);
         }
 
-        std::string getAssociatedValue(const std::string& key) const
+        std::string getAssociatedValue(const std::string &key) const
         {
-            const std::map<std::string, std::string>::const_iterator p =
-                    mKeyValuePair.find(key);
+            const std::map<std::string, std::string>::const_iterator p = mKeyValuePair.find(key);
 
             if (p == mKeyValuePair.end())
             {
@@ -468,12 +466,12 @@ TEST_CASE(testHttpResponse)
             return p->second;
         }
 
-    protected:
+      protected:
         re::Regex mMatchRequest;
         re::Regex mMatchPair;
         re::Regex mMatchEndOfHeader;
         re::Regex mMatchResponse;
-        std::map<std::string, std::string>mKeyValuePair;
+        std::map<std::string, std::string> mKeyValuePair;
 
         std::string mReturnVal;
         std::string mUrl;
@@ -495,17 +493,7 @@ TEST_CASE(testHttpResponse)
     TEST_ASSERT_EQ(p.getContentLength(), "96");
 }
 
-TEST_MAIN(
-    TEST_CHECK(testCompile);
-    TEST_CHECK(testMatches);
-    TEST_CHECK(testMatchOptional);
-    TEST_CHECK(testSearch);
-    TEST_CHECK(testSearchAll);
-    TEST_CHECK(testSearchAllWithOverlap);
-    TEST_CHECK(testSearchAllJokersWild);
-    TEST_CHECK(testDotAllFlag);
-    TEST_CHECK(testMultilineBehavior);
-    TEST_CHECK(testSub);
-    TEST_CHECK(testSplit);
-    TEST_CHECK(testHttpResponse);
-    )
+TEST_MAIN(TEST_CHECK(testCompile); TEST_CHECK(testMatches); TEST_CHECK(testMatchOptional); TEST_CHECK(testSearch);
+          TEST_CHECK(testSearchAll); TEST_CHECK(testSearchAllWithOverlap); TEST_CHECK(testSearchAllJokersWild);
+          TEST_CHECK(testDotAllFlag); TEST_CHECK(testMultilineBehavior); TEST_CHECK(testSub); TEST_CHECK(testSplit);
+          TEST_CHECK(testHttpResponse);)
