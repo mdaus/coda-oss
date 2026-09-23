@@ -20,22 +20,21 @@
  *
  */
 
+#include <io/FileInputStream.h>
 #include <string>
 #include <vector>
 #include <zip/ZipOutputStream.h>
-#include <io/FileInputStream.h>
 
 namespace
 {
-void usage(const std::string& progname)
+void usage(const std::string &progname)
 {
-    std::cerr << "Usage: " << progname
-        << " -i <file #1> <zipPath #1> <file#2> <zipPath #2> ..."
-        << " [-o Output pathname]";
+    std::cerr << "Usage: " << progname << " -i <file #1> <zipPath #1> <file#2> <zipPath #2> ..."
+              << " [-o Output pathname]";
 }
-}
+} // namespace
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     try
     {
@@ -52,8 +51,7 @@ int main(int argc, char** argv)
                 while (index < argc - 1)
                 {
                     if ((::strlen(argv[index]) > 0 && argv[index][0] == '-') ||
-                            (::strlen(argv[index + 1]) > 0 && 
-                                    argv[index + 1][0] == '-'))
+                        (::strlen(argv[index + 1]) > 0 && argv[index + 1][0] == '-'))
                     {
                         break;
                     }
@@ -80,13 +78,12 @@ int main(int argc, char** argv)
         }
         output.close();
     }
-    catch (const except::Exception& ex)
+    catch (const except::Exception &ex)
     {
-        std::cerr << "Caught except::exception: " << ex.getMessage()
-                  << std::endl;
+        std::cerr << "Caught except::exception: " << ex.getMessage() << std::endl;
         return 1;
     }
-    catch (const std::exception& ex)
+    catch (const std::exception &ex)
     {
         std::cerr << "Caught std::exception: " << ex.what() << std::endl;
         return 1;

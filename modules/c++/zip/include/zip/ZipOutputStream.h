@@ -23,10 +23,10 @@
 #ifndef __ZIP_ZIP_OUTPUT_STREAM_H__
 #define __ZIP_ZIP_OUTPUT_STREAM_H__
 
-#include <string>
-#include <zip.h>
-#include <sys/Conf.h>
 #include <io/OutputStream.h>
+#include <string>
+#include <sys/Conf.h>
+#include <zip.h>
 
 namespace zip
 {
@@ -35,16 +35,16 @@ namespace zip
  *  \brief Creates a zip file which can hold a variable amount of files
  *         in a user defined directory structure.
  */
-class ZipOutputStream: public io::OutputStream
+class ZipOutputStream : public io::OutputStream
 {
-public:
+  public:
     /*
      *  \func Constructor
      *  \brief Sets up the internal structure of the class.
      *
      *  \param pathname The path and filename of the zip.
      */
-    ZipOutputStream(const std::string& pathname);
+    ZipOutputStream(const std::string &pathname);
 
     /*
      *  \func createFileInZip
@@ -54,9 +54,8 @@ public:
      *  \comment An optional comment.
      *  \password An optional password for the file.
      */
-    void createFileInZip(const std::string& pathname,
-                         const std::string& comment = "",
-                         const std::string& password = "");
+    void createFileInZip(const std::string &pathname, const std::string &comment = "",
+                         const std::string &password = "");
 
     /*
      *  \func closeFileInZip
@@ -70,19 +69,18 @@ public:
      *  \brief Convenience function which will create, write, and close a file.
      *
      *  \inputPathname The path to the file that you want added to the zip.
-     *  \zipPathname The path and file name you want the inputPathname to 
+     *  \zipPathname The path and file name you want the inputPathname to
      *               appear as in the zip file.
      */
-    void write(const std::string& inputPathname,
-               const std::string& zipPathname);
+    void write(const std::string &inputPathname, const std::string &zipPathname);
 
-    virtual void write(const void* buffer, size_t len) override;
+    virtual void write(const void *buffer, size_t len) override;
 
     virtual void close() override;
 
-private:
+  private:
     zipFile mZip;
 };
-}
+} // namespace zip
 
 #endif

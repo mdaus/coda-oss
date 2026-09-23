@@ -1,7 +1,7 @@
 /* =========================================================================
  * This file is part of zip-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2016, MDA Information Systems LLC
  *
  * zip-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -37,9 +37,10 @@ namespace zip
 class CODA_OSS_API GZipOutputStream : public io::OutputStream
 {
     gzFile mFile;
-public:
+
+  public:
     //!  Constructor requires initialization
-    GZipOutputStream(const std::string& file);
+    GZipOutputStream(const std::string &file);
 
     /*!
      *  Write len (or less) bytes into the gzip stream.
@@ -48,7 +49,7 @@ public:
      *  the call returns.
      *
      */
-    virtual void write(const void* buffer, size_t len) override;
+    virtual void write(const void *buffer, size_t len) override;
 
     /*!
      *  Close the gzip stream.  You must call this
@@ -56,6 +57,6 @@ public:
      */
     virtual void close() override;
 };
-}
+} // namespace zip
 
-#endif  // CODA_OSS_zip_GZipOutputStream_h_INCLUDED_
+#endif // CODA_OSS_zip_GZipOutputStream_h_INCLUDED_

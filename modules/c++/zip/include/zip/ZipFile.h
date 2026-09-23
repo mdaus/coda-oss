@@ -1,7 +1,7 @@
 /* =========================================================================
  * This file is part of zip-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2016, MDA Information Systems LLC
  *
  * zip-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -54,13 +54,13 @@ class ZipFile
 {
 
     //!  This is the container for ZipEntry objects
-    std::vector<ZipEntry*> mEntries;
+    std::vector<ZipEntry *> mEntries;
 
     //!  Zip (apparently) is little-endian
     bool mSwapBytes;
 
     //!  Compressed data buffer (yes we eat the whole file)
-    sys::ubyte* mCompressed;
+    sys::ubyte *mCompressed;
     sys::Size_T mCompressedLength;
 
     sys::Uint16_T mDiskNum;
@@ -72,40 +72,38 @@ class ZipFile
     std::string mComment;
 
     //!  Read an integer (little-endian)
-    sys::Uint32_T readInt(sys::ubyte* buf);
+    sys::Uint32_T readInt(sys::ubyte *buf);
 
     //!  Read a short (little-endian)
-    sys::Uint16_T readShort(sys::ubyte* buf);
+    sys::Uint16_T readShort(sys::ubyte *buf);
 
     //!  Read the top-level zip directory
     void readCentralDir();
 
     //!  Get the ZipEntry for some element
-    ZipEntry* newCentralDirEntry(sys::ubyte** p, sys::SSize_T len);
+    ZipEntry *newCentralDirEntry(sys::ubyte **p, sys::SSize_T len);
 
     //!  Get information for the central dir
-    void readCentralDirValues(sys::ubyte* buf, sys::SSize_T len);
+    void readCentralDirValues(sys::ubyte *buf, sys::SSize_T len);
 
     //!  Copy to a string
-    //void copyString(const sys::ubyte* buf, sys::SSize_T len);
+    // void copyString(const sys::ubyte* buf, sys::SSize_T len);
 
-public:
-
+  public:
     //!  Provide iterator access to the ZipEntry objects
-    typedef std::vector<ZipEntry*>::const_iterator Iterator;
+    typedef std::vector<ZipEntry *>::const_iterator Iterator;
 
     /*!
      *  We require an input stream for initialization
      *  This stream should be already initialized, since we
      *  are planning on reading from it immediately
      */
-    ZipFile(io::InputStream* inputStream) :
-        mCompressed(nullptr)
+    ZipFile(io::InputStream *inputStream) : mCompressed(nullptr)
     {
         mSwapBytes = sys::isBigEndianSystem();
         mCompressedLength = inputStream->available();
         mCompressed = new sys::ubyte[mCompressedLength];
-        inputStream->read((sys::byte*) mCompressed, mCompressedLength);
+        inputStream->read((sys::byte *)mCompressed, mCompressedLength);
 
         readCentralDir();
     }
@@ -150,13 +148,12 @@ public:
     {
         return gsl::narrow<unsigned long>(mEntries.size());
     }
-
 };
 
 /*!
  *  Output stream overload
  */
-std::ostream& operator<<(std::ostream& os, const ZipFile& zf);
-}
+std::ostream &operator<<(std::ostream &os, const ZipFile &zf);
+} // namespace zip
 
 #endif

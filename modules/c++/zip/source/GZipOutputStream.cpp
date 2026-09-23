@@ -1,7 +1,7 @@
 /* =========================================================================
  * This file is part of zip-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2016, MDA Information Systems LLC
  *
  * zip-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,22 +24,20 @@
 
 using namespace zip;
 
-GZipOutputStream::GZipOutputStream(const std::string& file)
+GZipOutputStream::GZipOutputStream(const std::string &file)
 {
     mFile = gzopen(file.c_str(), "wb");
     if (mFile == nullptr)
     {
-        throw except::IOException(Ctxt(
-                "Failed to open gzip stream [" + file + "]"));
+        throw except::IOException(Ctxt("Failed to open gzip stream [" + file + "]"));
     }
-
 }
 
-void GZipOutputStream::write(const void* buffer, size_t len)
+void GZipOutputStream::write(const void *buffer, size_t len)
 {
     size_t written = 0;
     int rv = 0;
-    const sys::byte* const bufferPtr = static_cast<const sys::byte*>(buffer);
+    const sys::byte *const bufferPtr = static_cast<const sys::byte *>(buffer);
     do
     {
         rv = gzwrite(mFile, bufferPtr + written, static_cast<unsigned int>(len - written));
@@ -51,13 +49,11 @@ void GZipOutputStream::write(const void* buffer, size_t len)
         if (!rv)
             break;
         written += rv;
-    }
-    while (written < len);
-
+    } while (written < len);
 }
 
 void GZipOutputStream::close()
 {
-    gzclose( mFile);
+    gzclose(mFile);
     mFile = nullptr;
 }

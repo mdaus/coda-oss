@@ -1,7 +1,7 @@
 /* =========================================================================
  * This file is part of zip-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2016, MDA Information Systems LLC
  *
  * zip-c++ is free software; you can redistribute it and/or modify
@@ -14,16 +14,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "zip/ZipFile.h"
 
-#define Z_READ_SHORT_INC(BUF, OFF) readShort(&BUF[OFF]); OFF += 2
-#define Z_READ_INT_INC(BUF, OFF) readInt(&BUF[OFF]); OFF += 4
+#define Z_READ_SHORT_INC(BUF, OFF)                                                                                     \
+    readShort(&BUF[OFF]);                                                                                              \
+    OFF += 2
+#define Z_READ_INT_INC(BUF, OFF)                                                                                       \
+    readInt(&BUF[OFF]);                                                                                                \
+    OFF += 4
 
 namespace zip
 {
@@ -39,27 +43,26 @@ ZipFile::~ZipFile()
         delete[] mCompressed;
 }
 
-sys::Uint32_T ZipFile::readInt(sys::ubyte* buf)
+sys::Uint32_T ZipFile::readInt(sys::ubyte *buf)
 {
-    sys::ubyte* p;
-    sys::Uint32_T le;// = *((sys::Uint32_T *)buf);
-    p = (sys::ubyte*) &le;
+    sys::ubyte *p;
+    sys::Uint32_T le; // = *((sys::Uint32_T *)buf);
+    p = (sys::ubyte *)&le;
     memcpy(p, buf, 4);
 
-    // Kind of hackish, but we need it like yesterday    
+    // Kind of hackish, but we need it like yesterday
     if (mSwapBytes)
     {
         le = sys::byteSwap(le);
-
     }
     return le;
 }
 
-sys::Uint16_T ZipFile::readShort(sys::ubyte* buf)
+sys::Uint16_T ZipFile::readShort(sys::ubyte *buf)
 {
-    sys::ubyte* p;
-    sys::Uint16_T le;// = *((sys::Uint16_T *)buf);
-    p = (sys::ubyte*) &le;
+    sys::ubyte *p;
+    sys::Uint16_T le; // = *((sys::Uint16_T *)buf);
+    p = (sys::ubyte *)&le;
     memcpy(p, buf, 2);
 
     if (mSwapBytes)
@@ -78,15 +81,13 @@ ZipFile::Iterator ZipFile::lookup(std::string fileName) const
     }
 
     return p;
-
 }
 
 void ZipFile::readCentralDir()
 {
     if (mCompressedLength < EOCD_LEN)
-        throw except::IOException(Ctxt(
-                "stream source too small to be a zip stream"));
-    sys::ubyte* start;
+        throw except::IOException(Ctxt("stream source too small to be a zip stream"));
+    sys::ubyte *start;
 
     if (mCompressedLength > MAX_EOCD_SEARCH)
     {
@@ -96,9 +97,9 @@ void ZipFile::readCentralDir()
     {
         start = mCompressed;
     }
-    sys::ubyte* p = mCompressed + mCompressedLength - 4;
+    sys::ubyte *p = mCompressed + mCompressedLength - 4;
 
-    sys::ubyte* eocd = nullptr;
+    sys::ubyte *eocd = nullptr;
     auto i = mCompressedLength - 4;
     while (p >= start)
     {
@@ -122,21 +123,20 @@ void ZipFile::readCentralDir()
 
     p = mCompressed + mCentralDirOffset;
     const sys::SSize_T len = (mCompressed + mCompressedLength) - p;
-    for (auto& entry : mEntries)
+    for (auto &entry : mEntries)
     {
         entry = newCentralDirEntry(&p, len);
     }
-
 }
 
-ZipEntry* ZipFile::newCentralDirEntry(sys::ubyte** buf, sys::SSize_T len)
+ZipEntry *ZipFile::newCentralDirEntry(sys::ubyte **buf, sys::SSize_T len)
 {
     if (len < ENTRY_LEN)
         throw except::IOException(Ctxt("CDE entry not large enough"));
 
     sys::SSize_T off = 0;
 
-    sys::ubyte* p = *buf;
+    sys::ubyte *p = *buf;
 
     sys::Uint32_T entrySig = Z_READ_INT_INC(p, off);
 
@@ -163,17 +163,17 @@ ZipEntry* ZipFile::newCentralDirEntry(sys::ubyte** buf, sys::SSize_T len)
 
     std::string fileName;
     if (fileNameLength != 0)
-        fileName = std::string((const char*) p, fileNameLength);
+        fileName = std::string((const char *)p, fileNameLength);
 
     p += fileNameLength;
 
-    // I dont know what extra field is, but skip it for now	    
+    // I dont know what extra field is, but skip it for now
     if (extraFieldLength)
         p += extraFieldLength;
 
     std::string fileComment;
     if (fileCommentLength)
-        fileComment = std::string((const char*) p, fileCommentLength);
+        fileComment = std::string((const char *)p, fileCommentLength);
 
     p += fileCommentLength;
 
@@ -183,18 +183,14 @@ ZipEntry* ZipFile::newCentralDirEntry(sys::ubyte** buf, sys::SSize_T len)
 
     extraFieldLength = readShort(&p[0x1c]);
 
-    sys::Size_T dataOffset = localHeaderRelOffset + LFH_SIZE + fileNameLength
-            + extraFieldLength;
+    sys::Size_T dataOffset = localHeaderRelOffset + LFH_SIZE + fileNameLength + extraFieldLength;
 
-    return new ZipEntry(mCompressed + dataOffset, compressedSize,
-            uncompressedSize, fileName, fileComment, versionMadeBy,
-            versionToExtract, generalPurposeBitFlag, compressionMethod,
-            lastModifiedTime, lastModifiedDate, crc32, internalAttrs,
-            externalAttrs);
-
+    return new ZipEntry(mCompressed + dataOffset, compressedSize, uncompressedSize, fileName, fileComment,
+                        versionMadeBy, versionToExtract, generalPurposeBitFlag, compressionMethod, lastModifiedTime,
+                        lastModifiedDate, crc32, internalAttrs, externalAttrs);
 }
 
-void ZipFile::readCentralDirValues(sys::ubyte* buf, sys::SSize_T len)
+void ZipFile::readCentralDirValues(sys::ubyte *buf, sys::SSize_T len)
 {
 
     if (len < EOCD_LEN)
@@ -226,19 +222,19 @@ void ZipFile::readCentralDirValues(sys::ubyte* buf, sys::SSize_T len)
     if (EOCD_LEN + commentLength > len)
         throw except::IOException(Ctxt("Comment line too long"));
 
-    mComment = std::string((const char*) (buf + EOCD_LEN), commentLength);
+    mComment = std::string((const char *)(buf + EOCD_LEN), commentLength);
 }
 
-std::ostream& operator<<(std::ostream& os, const ZipFile& zf)
+std::ostream &operator<<(std::ostream &os, const ZipFile &zf)
 {
     os << "central directory length: " << zf.getCentralDirSize() << std::endl;
     os << "central directory offset: " << zf.getCentralDirOffset() << std::endl;
     os << "comment: " << zf.getComment() << std::endl;
     for (ZipFile::Iterator p = zf.begin(); p != zf.end(); ++p)
     {
-        ZipEntry* entry = *p;
+        ZipEntry *entry = *p;
         os << *entry << std::endl;
     }
     return os;
 }
-}
+} // namespace zip

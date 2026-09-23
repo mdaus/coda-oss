@@ -1,7 +1,7 @@
 /* =========================================================================
  * This file is part of zip-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2016, MDA Information Systems LLC
  *
  * zip-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,23 +24,22 @@
 
 using namespace zip;
 
-GZipInputStream::GZipInputStream(const std::string& file)
+GZipInputStream::GZipInputStream(const std::string &file)
 {
     mFile = gzopen(file.c_str(), "rb");
     if (mFile == nullptr)
     {
-        throw except::IOException(Ctxt(
-                "Failed to open gzip stream [" + file + "]"));
+        throw except::IOException(Ctxt("Failed to open gzip stream [" + file + "]"));
     }
 }
 
 void GZipInputStream::close()
 {
-    gzclose( mFile);
+    gzclose(mFile);
     mFile = nullptr;
 }
 
-sys::SSize_T GZipInputStream::readImpl(void* buffer, size_t len)
+sys::SSize_T GZipInputStream::readImpl(void *buffer, size_t len)
 {
     auto rv = gzread(mFile, buffer, static_cast<unsigned int>(len));
     if (rv == -1)
@@ -51,5 +50,5 @@ sys::SSize_T GZipInputStream::readImpl(void* buffer, size_t len)
     else if (rv == 0)
         return io::InputStream::IS_EOF;
 
-    return (sys::SSize_T) rv;
+    return (sys::SSize_T)rv;
 }

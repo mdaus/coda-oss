@@ -1,7 +1,7 @@
 /* =========================================================================
  * This file is part of zip-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2016, MDA Information Systems LLC
  *
  * zip-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,17 +24,31 @@
 #undef Z_NULL
 #define Z_NULL nullptr
 
-const static char* sZipFileMadeByStr[] = {
-        "MS-DOS and OS/2 (FAT / VFAT / FAT32 file systems)", "Amiga",
-        "OpenVMS", "UNIX", "VM/CMS", "Atari ST", "OS/2 H.P.F.S.", "Macintosh",
-        "Z-System", "CP/M", "Windows NTFS", "MVS (OS/390 - Z/OS)", "VSE",
-        "Acorn Risc", "VFAT", "alternative MVS", "BeOS", "Tandem", "OS/400",
-        "OS/X (Darwin)", nullptr };
+const static char *sZipFileMadeByStr[] = {"MS-DOS and OS/2 (FAT / VFAT / FAT32 file systems)",
+                                          "Amiga",
+                                          "OpenVMS",
+                                          "UNIX",
+                                          "VM/CMS",
+                                          "Atari ST",
+                                          "OS/2 H.P.F.S.",
+                                          "Macintosh",
+                                          "Z-System",
+                                          "CP/M",
+                                          "Windows NTFS",
+                                          "MVS (OS/390 - Z/OS)",
+                                          "VSE",
+                                          "Acorn Risc",
+                                          "VFAT",
+                                          "alternative MVS",
+                                          "BeOS",
+                                          "Tandem",
+                                          "OS/400",
+                                          "OS/X (Darwin)",
+                                          nullptr};
 
 namespace zip
 {
-void ZipEntry::inflate(sys::ubyte* out, sys::Size_T outLen, sys::ubyte* in,
-        sys::Size_T inLen)
+void ZipEntry::inflate(sys::ubyte *out, sys::Size_T outLen, sys::ubyte *in, sys::Size_T inLen)
 {
     z_stream zstream;
     memset(&zstream, 0, sizeof(zstream));
@@ -42,9 +56,9 @@ void ZipEntry::inflate(sys::ubyte* out, sys::Size_T outLen, sys::ubyte* in,
     zstream.zfree = Z_NULL;
     zstream.opaque = Z_NULL;
     zstream.next_in = in;
-    zstream.avail_in = static_cast <uInt>(inLen);
-    zstream.next_out = (Bytef*) out;
-    zstream.avail_out = static_cast <uInt>(outLen);
+    zstream.avail_in = static_cast<uInt>(inLen);
+    zstream.next_out = (Bytef *)out;
+    zstream.avail_out = static_cast<uInt>(outLen);
     zstream.data_type = Z_UNKNOWN;
 
     int zerr = inflateInit2(&zstream, -MAX_WBITS);
@@ -58,14 +72,13 @@ void ZipEntry::inflate(sys::ubyte* out, sys::Size_T outLen, sys::ubyte* in,
 
     if (zerr != Z_STREAM_END)
     {
-        throw except::IOException(Ctxt(str::Format(
-                "inflate failed [%d]: wanted: %d, got: %lu", zerr,
-                Z_STREAM_END, zstream.total_out)));
+        throw except::IOException(
+            Ctxt(str::Format("inflate failed [%d]: wanted: %d, got: %lu", zerr, Z_STREAM_END, zstream.total_out)));
     }
     inflateEnd(&zstream);
 }
 
-const char* ZipEntry::getVersionMadeByString() const
+const char *ZipEntry::getVersionMadeByString() const
 {
 
     if (mVersionMadeBy >= 20)
@@ -74,14 +87,14 @@ const char* ZipEntry::getVersionMadeByString() const
     return sZipFileMadeByStr[mVersionMadeBy];
 }
 
-sys::ubyte* ZipEntry::decompress()
+sys::ubyte *ZipEntry::decompress()
 {
-    sys::ubyte* uncompressed = new sys::ubyte[mUncompressedSize];
+    sys::ubyte *uncompressed = new sys::ubyte[mUncompressedSize];
     decompress(uncompressed, mUncompressedSize);
     return uncompressed;
 }
 
-void ZipEntry::decompress(sys::ubyte* out, sys::Size_T outLen)
+void ZipEntry::decompress(sys::ubyte *out, sys::Size_T outLen)
 {
     if (mCompressionMethod == COMP_STORED)
     {
@@ -93,9 +106,9 @@ void ZipEntry::decompress(sys::ubyte* out, sys::Size_T outLen)
     }
 }
 
-std::ostream& operator<<(std::ostream& os, const zip::ZipEntry& ze)
+std::ostream &operator<<(std::ostream &os, const zip::ZipEntry &ze)
 {
-    const char* madeBy = ze.getVersionMadeByString();
+    const char *madeBy = ze.getVersionMadeByString();
     std::string asStr = "Unknown";
     if (madeBy != nullptr)
     {
@@ -104,8 +117,7 @@ std::ostream& operator<<(std::ostream& os, const zip::ZipEntry& ze)
 
     os << "version made by: " << asStr << std::endl;
     os << "version to extract: " << ze.getVersionToExtract() << std::endl;
-    os << "general purpose bits: " << ze.getGeneralPurposeBitFlag()
-            << std::endl;
+    os << "general purpose bits: " << ze.getGeneralPurposeBitFlag() << std::endl;
     os << "compression method: " << ze.getCompressionMethod() << std::endl;
 
     os << "last modified : " << ze.getLastModifiedTime() << std::endl;
@@ -119,4 +131,4 @@ std::ostream& operator<<(std::ostream& os, const zip::ZipEntry& ze)
     os << "uncompressed: " << ze.getUncompressedSize() << std::endl;
     return os;
 }
-}
+} // namespace zip

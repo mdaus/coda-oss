@@ -1,7 +1,7 @@
 /* =========================================================================
  * This file is part of zip-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2016, MDA Information Systems LLC
  *
  * zip-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -43,10 +43,10 @@ namespace zip
 class CODA_OSS_API GZipInputStream : public io::InputStream
 {
     gzFile mFile;
-public:
 
+  public:
     //!  Constructor requires initialization
-    GZipInputStream(const std::string& file);
+    GZipInputStream(const std::string &file);
 
     /*!
      *  Close the gzip stream.  You must call this
@@ -54,15 +54,14 @@ public:
      */
     virtual void close();
 
-protected:
+  protected:
     /*!
      *  Read len bytes into the buffer from the stream.
      *  This is a little tricky since we do not know the
      *  length of the read.
      */
-    virtual sys::SSize_T readImpl(void* buffer, size_t len) override;
-
+    virtual sys::SSize_T readImpl(void *buffer, size_t len) override;
 };
-}
+} // namespace zip
 
-#endif  // CODA_OSS_zip_GZipInputStream_h_INCLUDED_
+#endif // CODA_OSS_zip_GZipInputStream_h_INCLUDED_
