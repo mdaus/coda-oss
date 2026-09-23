@@ -8,6 +8,10 @@ on:
   pull_request:
     branches:
       - main
+  schedule:
+    # Runs at 09:00 UTC every Saturday
+    - cron: '0 9 * * 6'
+  workflow_dispatch: # Optional: allows manual triggering for testing
 
 jobs:
   build-windows:
@@ -33,7 +37,7 @@ jobs:
   build-ubuntu:
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04]
+        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-26.04]
         configuration: [Debug, Release]
         avx: [AVX512F]
     name: ${{ matrix.os }}-${{ matrix.configuration }}-${{ matrix.avx }}
@@ -57,7 +61,8 @@ jobs:
     strategy:
       matrix:
         version: [8, 9, 10]
-    name: rockylinux-${{ matrix.version }}-Release
+        config: [Release, Debug]
+    name: rockylinux-${{ matrix.version }}-${{ matrix.config }}
     runs-on: ubuntu-24.04
     container:
       image: rockylinux/rockylinux:${{ matrix.version }}-minimal
@@ -70,7 +75,7 @@ jobs:
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
       run: |
-        cmake -B target -DCMAKE_BUILD_TYPE=Release
+        cmake -B target -DCMAKE_BUILD_TYPE=${{ matrix.config }}
     - name: build
       run: |
         cmake --build target -j
