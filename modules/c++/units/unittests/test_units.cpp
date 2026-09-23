@@ -24,8 +24,7 @@
 #include <units/Angles.h>
 #include <units/Lengths.h>
 
-template <typename T>
-static void test_degrees_(const std::string& testName)
+template <typename T> static void test_degrees_(const std::string &testName)
 {
     (void)testName;
     T sin, cos;
@@ -67,9 +66,9 @@ TEST_CASE(test_lengths)
         TEST_ASSERT_EQ(same.value(), feet_3.value());
 
         units::Meters<double> meters{0};
-        convert(feet_3, meters);  // convert ...
+        convert(feet_3, meters); // convert ...
         TEST_ASSERT_ALMOST_EQ(meters.value(), 0.9144);
-        const auto feet = meters.to<units::tags::Feet>();  // ...and back
+        const auto feet = meters.to<units::tags::Feet>(); // ...and back
         TEST_ASSERT_ALMOST_EQ(feet.value(), feet_3.value());
     }
     {
@@ -78,15 +77,11 @@ TEST_CASE(test_lengths)
         TEST_ASSERT_EQ(same.value(), meters_1.value());
 
         units::Feet<double> feet{0};
-        convert(meters_1, feet);  // convert ...
+        convert(meters_1, feet); // convert ...
         TEST_ASSERT_ALMOST_EQ(feet.value(), 3.2808398);
-        const auto meters = feet.to<units::tags::Meters>();  // ...and back
+        const auto meters = feet.to<units::tags::Meters>(); // ...and back
         TEST_ASSERT_ALMOST_EQ(meters.value(), meters_1.value());
     }
 }
 
-TEST_MAIN(
-    TEST_CHECK(test_degrees);
-    TEST_CHECK(test_lengths);
-)
-
+TEST_MAIN(TEST_CHECK(test_degrees); TEST_CHECK(test_lengths);)

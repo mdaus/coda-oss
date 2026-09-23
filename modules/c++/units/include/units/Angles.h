@@ -37,69 +37,65 @@ namespace units
 //
 namespace tags
 {
-struct Radians final { };
-struct Degrees final { };
-//struct Gradians final { };
-}
+struct Radians final
+{
+};
+struct Degrees final
+{
+};
+// struct Gradians final { };
+} // namespace tags
 
-template <typename AngleTag, typename T>
-using Angle = Unit<T, AngleTag>;
+template <typename AngleTag, typename T> using Angle = Unit<T, AngleTag>;
 
-template <typename T>
-using Radians = Angle<tags::Radians, T>;
+template <typename T> using Radians = Angle<tags::Radians, T>;
 
-template <typename T>
-using Degrees = Angle<tags::Degrees, T>;
-//template <typename T>
-//using Gradians = Angle<tags::Gradians, T>;
+template <typename T> using Degrees = Angle<tags::Degrees, T>;
+// template <typename T>
+// using Gradians = Angle<tags::Gradians, T>;
 
 template <typename T, typename TResult = T>
-inline /*constexpr*/ Degrees<TResult>& convert(Radians<T> v, Degrees<TResult>& result) noexcept
+inline /*constexpr*/ Degrees<TResult> &convert(Radians<T> v, Degrees<TResult> &result) noexcept
 {
     result.value() = v.value() * math::Constants::radians_to_degrees<T>();
-    return result;  // ICC doesn't like "constexpr void"
+    return result; // ICC doesn't like "constexpr void"
 }
 template <typename T, typename TResult = T>
-inline /*constexpr*/ Radians<TResult>& convert(Degrees<T> v, Radians<TResult>& result) noexcept
+inline /*constexpr*/ Radians<TResult> &convert(Degrees<T> v, Radians<TResult> &result) noexcept
 {
     result.value() = v.value() * math::Constants::degrees_to_radians<T>();
-    return result;  // ICC doesn't like "constexpr void"
+    return result; // ICC doesn't like "constexpr void"
 }
 
-template<typename Tag, typename T>
-inline Radians<T> toRadians(Angle<Tag, T> v) noexcept
+template <typename Tag, typename T> inline Radians<T> toRadians(Angle<Tag, T> v) noexcept
 {
-  //return v.to<tags::Radians>();
-  Radians<T> retval{ 0 };
-  convert(v, retval);
-  return retval;
+    // return v.to<tags::Radians>();
+    Radians<T> retval{0};
+    convert(v, retval);
+    return retval;
 }
 
-template <typename Tag, typename T>
-inline T sin(Angle<Tag, T> v) noexcept
+template <typename Tag, typename T> inline T sin(Angle<Tag, T> v) noexcept
 {
-  //return std::sin(v.to<tags::Radians>().value());
-  return std::sin(toRadians(v).value());
+    // return std::sin(v.to<tags::Radians>().value());
+    return std::sin(toRadians(v).value());
 }
-template <typename Tag, typename T>
-inline T cos(Angle<Tag, T> v) noexcept
+template <typename Tag, typename T> inline T cos(Angle<Tag, T> v) noexcept
 {
-  //return std::cos(v.to<tags::Radians>().value());
-  return std::cos(toRadians(v).value());
+    // return std::cos(v.to<tags::Radians>().value());
+    return std::cos(toRadians(v).value());
 }
-template <typename Tag, typename T>
-inline T tan(Angle<Tag, T> v) noexcept
+template <typename Tag, typename T> inline T tan(Angle<Tag, T> v) noexcept
 {
-  //return std::tan(v.to<tags::Radians>().value());
-  return std::tan(toRadians(v).value());
+    // return std::tan(v.to<tags::Radians>().value());
+    return std::tan(toRadians(v).value());
 }
 
-template <typename Tag, typename T>
-inline void SinCos(Angle<Tag, T> v, T& sin, T& cos) noexcept
+template <typename Tag, typename T> inline void SinCos(Angle<Tag, T> v, T &sin, T &cos) noexcept
 {
     math::SinCos(toRadians(v).value(), sin, cos);
 }
 
-}
+} // namespace units
 
-#endif  // CODA_OSS_units_Angles_h_INCLUDED_
+#endif // CODA_OSS_units_Angles_h_INCLUDED_
