@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of dbi-c++ 
+ * This file is part of dbi-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * dbi-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,29 +23,23 @@
 #if defined(USE_ORACLE)
 
 #include "dbi/OracleConnection.h"
-#include <sstream>
 #include <algorithm>
-#include <import/sys.h>
 #include <import/str.h>
+#include <import/sys.h>
+#include <sstream>
 
 dbi::OracleConnection::OracleConnection()
 {
     mEnvHandle = nullptr;
     mErrorHandle = nullptr;
-    (void) OCIInitialize((ub4) OCI_DEFAULT, (dvoid *)0,
-                         (dvoid * (*)(dvoid *, size_t)) 0,
-                         (dvoid * (*)(dvoid *, dvoid *, size_t))0,
-                         (void (*)(dvoid *, dvoid *)) 0 );
+    (void)OCIInitialize((ub4)OCI_DEFAULT, (dvoid *)0, (dvoid * (*)(dvoid *, size_t))0,
+                        (dvoid * (*)(dvoid *, dvoid *, size_t))0, (void (*)(dvoid *, dvoid *))0);
 
-    (void) OCIEnvInit( (OCIEnv **) &mEnvHandle, OCI_DEFAULT, (size_t) 0,
-                       (dvoid **) 0 );
+    (void)OCIEnvInit((OCIEnv **)&mEnvHandle, OCI_DEFAULT, (size_t)0, (dvoid **)0);
 
+    (void)OCIHandleAlloc((dvoid *)mEnvHandle, (dvoid **)&mErrorHandle, OCI_HTYPE_ERROR, (size_t)0, (dvoid **)0);
 
-    (void) OCIHandleAlloc( (dvoid *) mEnvHandle, (dvoid **) &mErrorHandle, OCI_HTYPE_ERROR,
-                           (size_t) 0, (dvoid **) 0);
-
-    (void) OCIHandleAlloc( (dvoid *) mEnvHandle, (dvoid **) &mContextHandle, OCI_HTYPE_SVCCTX,
-                           (size_t) 0, (dvoid **) 0);
+    (void)OCIHandleAlloc((dvoid *)mEnvHandle, (dvoid **)&mContextHandle, OCI_HTYPE_SVCCTX, (size_t)0, (dvoid **)0);
 }
 
 dbi::OracleConnection::~OracleConnection()
@@ -55,16 +49,14 @@ dbi::OracleConnection::~OracleConnection()
     OCIHandleFree((dvoid *)mEnvHandle, OCI_HTYPE_ENV);
 }
 
-bool dbi::OracleConnection::connect(const std::string& database,
-                                    const std::string& user,
-                                    const std::string& pass,
-                                    const std::string& host,
-                                    unsigned int port)
+bool dbi::OracleConnection::connect(const std::string &database, const std::string &user, const std::string &pass,
+                                    const std::string &host, unsigned int port)
 {
-    if (port == 0) port = 1521;
-    int rc = OCILogon(mEnvHandle, mErrorHandle, &mContextHandle,
-                      (const OraText*)user.c_str(), user.length(), (const OraText*)pass.c_str(), pass.length(),
-                      (const OraText*)database.c_str(), database.length());
+    if (port == 0)
+        port = 1521;
+    int rc =
+        OCILogon(mEnvHandle, mErrorHandle, &mContextHandle, (const OraText *)user.c_str(), user.length(),
+                 (const OraText *)pass.c_str(), pass.length(), (const OraText *)database.c_str(), database.length());
     if (rc != 0)
         return false;
     return true;
@@ -80,22 +72,21 @@ const std::string dbi::OracleConnection::getLastErrorMessage()
     char errbuf[100];
     memset(errbuf, 0, 100);
     int errcode;
-    OCIErrorGet((dvoid *)mErrorHandle, (ub4) 1, (text *) nullptr, &errcode,
-                (OraText*)errbuf, (ub4) sizeof(errbuf), OCI_HTYPE_ERROR);
+    OCIErrorGet((dvoid *)mErrorHandle, (ub4)1, (text *)nullptr, &errcode, (OraText *)errbuf, (ub4)sizeof(errbuf),
+                OCI_HTYPE_ERROR);
     if (strlen(errbuf) > 0)
         return std::string(errbuf);
     return "";
 }
 
-dbi::pResultSet dbi::OracleConnection::query(const std::string& q)
+dbi::pResultSet dbi::OracleConnection::query(const std::string &q)
 {
     unsigned rowCount = 0;
-    OCIStmt* sqlHandle;
+    OCIStmt *sqlHandle;
     /* Allocate and prepare SQL statement */
-    OCIHandleAlloc( (dvoid *) mEnvHandle, (dvoid **) &sqlHandle,
-                    OCI_HTYPE_STMT, (size_t) 0, (dvoid **) 0);
-    OCIStmtPrepare(sqlHandle, mErrorHandle, (const OraText*)q.c_str(),
-                   (ub4) q.length(), (ub4) OCI_NTV_SYNTAX, (ub4) OCI_DEFAULT);
+    OCIHandleAlloc((dvoid *)mEnvHandle, (dvoid **)&sqlHandle, OCI_HTYPE_STMT, (size_t)0, (dvoid **)0);
+    OCIStmtPrepare(sqlHandle, mErrorHandle, (const OraText *)q.c_str(), (ub4)q.length(), (ub4)OCI_NTV_SYNTAX,
+                   (ub4)OCI_DEFAULT);
 
     // Oracle is ridiculous.  This MUST be 1 for non-SELECT statements
     // but needs to be 0 to avoid prefetching the first row on a SELECT.
@@ -111,22 +102,21 @@ dbi::pResultSet dbi::OracleConnection::query(const std::string& q)
         int one = countq.find("select ");
         int two = countq.find(" from ");
         countq = countq.replace(one, two - one, "select count(*) ");
-        OCIStmt* countHandle;
-        OCIHandleAlloc( (dvoid *) mEnvHandle, (dvoid **)&countHandle,
-                        OCI_HTYPE_STMT, (size_t) 0, (dvoid **) 0);
-        OCIStmtPrepare(countHandle, mErrorHandle, (const OraText*)countq.c_str(),
-                       (ub4)countq.length(), (ub4) OCI_NTV_SYNTAX, (ub4) OCI_DEFAULT);
-        OCIStmtExecute(mContextHandle, countHandle, mErrorHandle, (ub4)val, (ub4)0,
-                       (CONST OCISnapshot *) nullptr, (OCISnapshot *) nullptr, OCI_DEFAULT);
-        OCIDefine * defineHandle = nullptr;
-        OCIDefineByPos(countHandle, &defineHandle, mErrorHandle, 1,
-                       &rowCount, sizeof(rowCount), SQLT_UIN, 0, 0, 0, OCI_DEFAULT);
+        OCIStmt *countHandle;
+        OCIHandleAlloc((dvoid *)mEnvHandle, (dvoid **)&countHandle, OCI_HTYPE_STMT, (size_t)0, (dvoid **)0);
+        OCIStmtPrepare(countHandle, mErrorHandle, (const OraText *)countq.c_str(), (ub4)countq.length(),
+                       (ub4)OCI_NTV_SYNTAX, (ub4)OCI_DEFAULT);
+        OCIStmtExecute(mContextHandle, countHandle, mErrorHandle, (ub4)val, (ub4)0, (CONST OCISnapshot *)nullptr,
+                       (OCISnapshot *)nullptr, OCI_DEFAULT);
+        OCIDefine *defineHandle = nullptr;
+        OCIDefineByPos(countHandle, &defineHandle, mErrorHandle, 1, &rowCount, sizeof(rowCount), SQLT_UIN, 0, 0, 0,
+                       OCI_DEFAULT);
         OCIStmtFetch(countHandle, mErrorHandle, 1, OCI_FETCH_NEXT, OCI_DEFAULT);
     }
 
     /* Execute the SQL statment */
-    OCIStmtExecute(mContextHandle, sqlHandle, mErrorHandle, (ub4) val, (ub4) 0,
-                   (CONST OCISnapshot *) nullptr, (OCISnapshot *) nullptr, OCI_DEFAULT);
+    OCIStmtExecute(mContextHandle, sqlHandle, mErrorHandle, (ub4)val, (ub4)0, (CONST OCISnapshot *)nullptr,
+                   (OCISnapshot *)nullptr, OCI_DEFAULT);
 
     return dbi::pResultSet(new dbi::OracleResultSet(sqlHandle, mErrorHandle, rowCount));
 }
@@ -138,20 +128,19 @@ unsigned int dbi::OracleResultSet::getNumRows()
 
 struct Column
 {
-    char   name[128];
-    ub2    type;
-    ub2    extType;
-    ub4    fieldSize;
-    char   *value;
+    char name[128];
+    ub2 type;
+    ub2 extType;
+    ub4 fieldSize;
+    char *value;
 };
 
 dbi::Row dbi::OracleResultSet::fetchRow()
 {
     dbi::Row row;
     ub4 count = 0;
-    sword result = OCIAttrGet(mSQLHandle, OCI_HTYPE_STMT,
-                              &count, nullptr, OCI_ATTR_PARAM_COUNT, mErrorHandle);
-    Column * fields = new Column[count];
+    sword result = OCIAttrGet(mSQLHandle, OCI_HTYPE_STMT, &count, nullptr, OCI_ATTR_PARAM_COUNT, mErrorHandle);
+    Column *fields = new Column[count];
     if (result == OCI_SUCCESS)
     {
         for (int i = 0; i < (int)count; i++)
@@ -162,32 +151,26 @@ dbi::Row dbi::OracleResultSet::fetchRow()
             fields[i].fieldSize = 0;
             fields[i].value = nullptr;
 
-            OCIParam* param_handle = nullptr;
-            ub4       name_len = 0;
+            OCIParam *param_handle = nullptr;
+            ub4 name_len = 0;
 
-            result = OCIParamGet(mSQLHandle, OCI_HTYPE_STMT,
-                                 mErrorHandle, (dvoid **) & param_handle,
-                                 i + 1);
+            result = OCIParamGet(mSQLHandle, OCI_HTYPE_STMT, mErrorHandle, (dvoid **)&param_handle, i + 1);
             if (result == OCI_SUCCESS)
             {
-                text * temp;
-                result = OCIAttrGet(param_handle, OCI_DTYPE_PARAM,
-                                    &temp, &name_len, OCI_ATTR_NAME,
-                                    mErrorHandle);
-                strncpy(fields[i].name, (const char*)temp, name_len);
+                text *temp;
+                result = OCIAttrGet(param_handle, OCI_DTYPE_PARAM, &temp, &name_len, OCI_ATTR_NAME, mErrorHandle);
+                strncpy(fields[i].name, (const char *)temp, name_len);
             }
 
             if (result == OCI_SUCCESS)
             {
-                result = OCIAttrGet(param_handle, OCI_DTYPE_PARAM,
-                                    &fields[i].type, nullptr, OCI_ATTR_DATA_TYPE,
+                result = OCIAttrGet(param_handle, OCI_DTYPE_PARAM, &fields[i].type, nullptr, OCI_ATTR_DATA_TYPE,
                                     mErrorHandle);
             }
 
             if (result == OCI_SUCCESS)
             {
-                result = OCIAttrGet(param_handle, OCI_DTYPE_PARAM,
-                                    &fields[i].fieldSize, nullptr, OCI_ATTR_DATA_SIZE,
+                result = OCIAttrGet(param_handle, OCI_DTYPE_PARAM, &fields[i].fieldSize, nullptr, OCI_ATTR_DATA_SIZE,
                                     mErrorHandle);
             }
 
@@ -203,17 +186,15 @@ dbi::Row dbi::OracleResultSet::fetchRow()
                 fieldSize = sizeof(OCIDate);
             }
 
-
             if (result == OCI_SUCCESS)
             {
-                //char temp[1];
+                // char temp[1];
                 int indp = -1; // This means that NULL values will not cause an error
                 fields[i].value = new char[fields[i].fieldSize];
                 memset(fields[i].value, '\0', fields[i].fieldSize);
-                OCIDefine* defineHandle = nullptr;
-                result = OCIDefineByPos(mSQLHandle, &defineHandle, mErrorHandle, i + 1,
-                                        fields[i].value, fieldSize, fields[i].extType,
-                                        &indp, 0, 0, OCI_DEFAULT);
+                OCIDefine *defineHandle = nullptr;
+                result = OCIDefineByPos(mSQLHandle, &defineHandle, mErrorHandle, i + 1, fields[i].value, fieldSize,
+                                        fields[i].extType, &indp, 0, 0, OCI_DEFAULT);
             }
         }
         result = OCIStmtFetch(mSQLHandle, mErrorHandle, 1, OCI_FETCH_NEXT, OCI_DEFAULT);
@@ -221,25 +202,24 @@ dbi::Row dbi::OracleResultSet::fetchRow()
         {
             for (int i = 0; i < (int)count; i++)
             {
-                //std::string v = std::string(fields[i].value);
-                //str::trim(v);
+                // std::string v = std::string(fields[i].value);
+                // str::trim(v);
                 if (fields[i].extType == SQLT_ODT)
                 {
                     char buffer[9];
                     ub4 bufferSize = 9;
 
-                    OCIDateToText(mErrorHandle, (const OCIDate*)fields[i].value,
-                                  nullptr, 0,
-                                  nullptr, 0, &bufferSize, (text*)buffer);
+                    OCIDateToText(mErrorHandle, (const OCIDate *)fields[i].value, nullptr, 0, nullptr, 0, &bufferSize,
+                                  (text *)buffer);
                     memset(fields[i].value, '\0', sizeof(OCIDate));
                     strncpy(fields[i].value, buffer, bufferSize);
                 }
-                row.addField((const char*)fields[i].name, fields[i].type, fields[i].fieldSize, fields[i].value);
-                delete [] fields[i].value;
+                row.addField((const char *)fields[i].name, fields[i].type, fields[i].fieldSize, fields[i].value);
+                delete[] fields[i].value;
             }
         }
     }
-    delete [] fields;
+    delete[] fields;
     mRowIndex++;
     return row;
 }

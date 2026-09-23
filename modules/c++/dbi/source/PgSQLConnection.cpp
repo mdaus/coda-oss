@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of dbi-c++ 
+ * This file is part of dbi-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * dbi-c++ is free software; you can redistribute it and/or modify
@@ -14,26 +14,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #if defined(USE_PGSQL)
 
 #include "dbi/PgSQLConnection.h"
-#include <sstream>
 #include <import/sys.h>
+#include <sstream>
 
-bool dbi::PgSQLConnection::connect(const std::string& database,
-                                   const std::string& user,
-                                   const std::string& pass,
-                                   const std::string& host,
-                                   unsigned int port)
+bool dbi::PgSQLConnection::connect(const std::string &database, const std::string &user, const std::string &pass,
+                                   const std::string &host, unsigned int port)
 {
-    if (port == 0) port = 5432;
+    if (port == 0)
+        port = 5432;
     std::stringstream portstream;
 
     portstream << port;
@@ -59,12 +56,12 @@ bool dbi::PgSQLConnection::connect(const std::string& database,
     return true;
 }
 
-dbi::pResultSet dbi::PgSQLConnection::query(const std::string& q)
+dbi::pResultSet dbi::PgSQLConnection::query(const std::string &q)
 {
     std::string errorMessage;
 
     // Execute the query and obtain the result set
-    PGresult* res = PQexec(mDBHandle, q.c_str());
+    PGresult *res = PQexec(mDBHandle, q.c_str());
 
     // If the result set is NULL then there is some kind of problem
     if (!res)
@@ -106,14 +103,12 @@ dbi::Row dbi::PgSQLResultSet::fetchRow()
     int numFields = PQnfields(mResults);
 
     // Create a result set auto pointer and give it to the user
-    //std::unique_ptr< Row > row(new Row);
+    // std::unique_ptr< Row > row(new Row);
     dbi::Row row;
 
     for (int i = 0; i < numFields; i++)
     {
-        row.addField(PQfname(mResults, i),
-                     PQftype(mResults, i),
-                     PQfsize(mResults, i),
+        row.addField(PQfname(mResults, i), PQftype(mResults, i), PQfsize(mResults, i),
                      PQgetvalue(mResults, mRowIndex, i));
     }
     mRowIndex++;

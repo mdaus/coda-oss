@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of dbi-c++ 
+ * This file is part of dbi-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * dbi-c++ is free software; you can redistribute it and/or modify
@@ -14,60 +14,56 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "dbi/DatabaseClientFactory.h"
-#include "dbi/MySQLConnection.h"
-#include "dbi/PgSQLConnection.h"
-#include "dbi/OracleConnection.h"
 #include "config/compiler_extensions.h"
-CODA_OSS_disable_warning_push
-CODA_OSS_DISABLE_UNREACHABLE_CODE
-dbi::DatabaseClientFactory::DatabaseClientFactory()
+#include "dbi/MySQLConnection.h"
+#include "dbi/OracleConnection.h"
+#include "dbi/PgSQLConnection.h"
+CODA_OSS_disable_warning_push CODA_OSS_DISABLE_UNREACHABLE_CODE dbi::DatabaseClientFactory::DatabaseClientFactory()
 {
-#    if defined(USE_PGSQL)
+#if defined(USE_PGSQL)
     mType = dbi::PGSQL;
-#    elif defined(USE_MYSQL)
+#elif defined(USE_MYSQL)
     mType = dbi::MYSQL;
-#    elif defined(USE_ORACLE)
+#elif defined(USE_ORACLE)
     mType = dbi::ORACLE;
-#    else
+#else
     throw except::Exception(Ctxt("No database is defined"));
-#    endif
+#endif
 }
 CODA_OSS_disable_warning_pop
 
-dbi::DatabaseConnection * dbi::DatabaseClientFactory::create(const std::string& database,
-        const std::string& user,
-        const std::string& pass,
-        const std::string& host,
-        unsigned int port)
+    dbi::DatabaseConnection *
+    dbi::DatabaseClientFactory::create(const std::string &database, const std::string &user, const std::string &pass,
+                                       const std::string &host, unsigned int port)
 {
-    dbi::DatabaseConnection * connection = nullptr;
-#   if defined(USE_PGSQL)
+    dbi::DatabaseConnection *connection = nullptr;
+#if defined(USE_PGSQL)
     if (mType == dbi::PGSQL)
     {
         connection = new dbi::PgSQLConnection();
     }
-#   endif
+#endif
 
-#   if defined(USE_MYSQL)
+#if defined(USE_MYSQL)
     if (mType == dbi::MYSQL)
     {
         connection = new dbi::MySQLConnection();
     }
-#   endif
+#endif
 
-#   if defined(USE_ORACLE)
+#if defined(USE_ORACLE)
     if (mType == dbi::ORACLE)
     {
         connection = new dbi::OracleConnection();
     }
-#   endif
+#endif
 
     std::string message("");
 

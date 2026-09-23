@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of dbi-c++ 
+ * This file is part of dbi-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * dbi-c++ is free software; you can redistribute it and/or modify
@@ -14,23 +14,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
-#include <import/io.h>
-#include <import/except.h>
-#include <import/sys.h>
 #include <import/dbi.h>
+#include <import/except.h>
+#include <import/io.h>
+#include <import/sys.h>
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     try
     {
-        if (argc < 4) throw except::Exception(Ctxt(str::Format("Usage %s <database> <user> <password> [host] [port]", argv[0])));
+        if (argc < 4)
+            throw except::Exception(Ctxt(str::Format("Usage %s <database> <user> <password> [host] [port]", argv[0])));
 
         std::string database(argv[1]);
         std::string user(argv[2]);
@@ -52,9 +52,9 @@ int main(int argc, char* argv[])
         dbi::Row myRow;
 
         dbi::DatabaseClientFactory f;
-        dbi::DatabaseConnection * myConn = f.create(database, user, password, host, port);
+        dbi::DatabaseConnection *myConn = f.create(database, user, password, host, port);
 
-        //myConn->query("DROP TABLE MyTable");
+        // myConn->query("DROP TABLE MyTable");
         std::cout << "HELLO" << std::endl;
 
         resultSet = myConn->query("select phone from portal_users");
@@ -72,21 +72,23 @@ int main(int argc, char* argv[])
             for (int j = 0; j < myRow.getNumFields(); j++)
             {
                 std::cout << "\tField " << j << " name is '" << myRow.getFieldName(j) << "'" << std::endl;
-                std::cout << "\tField " << j << " size is '" << myRow.getFieldSize(myRow.getFieldName(j)) <<  "'" << std::endl;
-                std::cout << "\tField " << j << " type is '" << myRow.getFieldType(myRow.getFieldName(j)) <<  "'" << std::endl;
+                std::cout << "\tField " << j << " size is '" << myRow.getFieldSize(myRow.getFieldName(j)) << "'"
+                          << std::endl;
+                std::cout << "\tField " << j << " type is '" << myRow.getFieldType(myRow.getFieldName(j)) << "'"
+                          << std::endl;
                 std::string name = myRow.getFieldName(j);
-                std::string disp = myRow[name].getData<std::string>(); 
-                std::cout << "\tField " << j << " data is '" << disp <<  "'" << std::endl;
+                std::string disp = myRow[name].getData<std::string>();
+                std::cout << "\tField " << j << " data is '" << disp << "'" << std::endl;
             }
         }
 
         f.destroy(myConn);
     }
-    catch (const except::Throwable& t)
+    catch (const except::Throwable &t)
     {
         std::cout << "EXCEPTION: " << t.getTrace() << std::endl;
     }
-    catch (const std::exception& e)
+    catch (const std::exception &e)
     {
         std::cout << "EXECEPTION: " << e.what() << std::endl;
     }

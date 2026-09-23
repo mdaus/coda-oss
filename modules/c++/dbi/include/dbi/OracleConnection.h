@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of dbi-c++ 
+ * This file is part of dbi-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * dbi-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -41,11 +41,11 @@ namespace dbi
  */
 class OracleResultSet : public ResultSet
 {
-public:
+  public:
     /*!
-    *  Default Constructor
-    */
-    OracleResultSet(OCIStmt * sqlHandle, OCIError* errorHandle, unsigned int rowCount) : ResultSet()
+     *  Default Constructor
+     */
+    OracleResultSet(OCIStmt *sqlHandle, OCIError *errorHandle, unsigned int rowCount) : ResultSet()
     {
         mSQLHandle = sqlHandle;
         mErrorHandle = errorHandle;
@@ -74,9 +74,9 @@ public:
      */
     unsigned int getNumRows();
 
-private:
-    OCIStmt* mSQLHandle;
-    OCIError* mErrorHandle;
+  private:
+    OCIStmt *mSQLHandle;
+    OCIError *mErrorHandle;
     unsigned int mRowIndex;
     unsigned int mRowCount;
 };
@@ -86,12 +86,11 @@ private:
  * \brief Oracle database interface
  *
  * This class provides the basis for Oracle connections
- * 
+ *
  */
 class OracleConnection : public DatabaseConnection
 {
-public:
-
+  public:
     /*!
      *  Default Constructor
      */
@@ -106,17 +105,14 @@ public:
     /*!
      *  Connect to the specified database
      *  \param database  The database name
-            *  \param user  The username
-            *  \param pass  The user password 
+     *  \param user  The username
+     *  \param pass  The user password
      *  \param host  The computer host name where the database is located
      *  \param port  The receiving port on the host
      *  \return True if successful, False otherwise
      */
-    bool connect(const std::string& database,
-                 const std::string& user = "",
-                 const std::string& pass = "",
-                 const std::string& host = "localhost",
-                 unsigned int port = 1521);
+    bool connect(const std::string &database, const std::string &user = "", const std::string &pass = "",
+                 const std::string &host = "localhost", unsigned int port = 1521);
 
     /*!
      *  Disconnect connection to the database
@@ -127,9 +123,9 @@ public:
      *  Send a command to the database as a string
      *  \param q  The command as a string
      *  \return The result set of command
-            *  \throw SQLException on error
+     *  \throw SQLException on error
      */
-    pResultSet query(const std::string& q);
+    pResultSet query(const std::string &q);
 
     /*!
      *  Get the last connection error message
@@ -137,12 +133,12 @@ public:
      */
     const std::string getLastErrorMessage();
 
-private:
+  private:
     /*! Handles to the Oracle database connection */
-    OCIEnv* mEnvHandle;
-    OCIError* mErrorHandle;
-    OCISvcCtx* mContextHandle;
+    OCIEnv *mEnvHandle;
+    OCIError *mErrorHandle;
+    OCISvcCtx *mContextHandle;
 };
-}
+} // namespace dbi
 #endif
 #endif

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of dbi-c++ 
+ * This file is part of dbi-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * dbi-c++ is free software; you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifndef __DBI_MYSQLCONNECTION_H__
 #define __DBI_MYSQLCONNECTION_H__
@@ -43,11 +42,11 @@ namespace dbi
  */
 class MySQLResultSet : public ResultSet
 {
-public:
+  public:
     /*!
-    *  Default Constructor
-    */
-    MySQLResultSet(MYSQL_RES* results) : ResultSet()
+     *  Default Constructor
+     */
+    MySQLResultSet(MYSQL_RES *results) : ResultSet()
     {
         mResults = results;
     }
@@ -78,8 +77,8 @@ public:
         return 0;
     }
 
-private:
-    MYSQL_RES* mResults;
+  private:
+    MYSQL_RES *mResults;
 };
 
 /*!
@@ -87,12 +86,11 @@ private:
  * \brief MySQL database interface
  *
  * This class provides the basis for MySQL connections
- * 
+ *
  */
 class MySQLConnection : public DatabaseConnection
 {
-public:
-
+  public:
     /*!
      *  Default Constructor
      */
@@ -106,22 +104,20 @@ public:
      *
      */
     ~MySQLConnection()
-    {}
+    {
+    }
 
     /*!
      *  Connect to the specified database
      *  \param database  The database name
-            *  \param user  The username
-            *  \param pass  The user password
+     *  \param user  The username
+     *  \param pass  The user password
      *  \param host  The computer host name where the database is located
      *  \param port  The receiving port on the host
      *  \return True if successful, False otherwise
      */
-    bool connect(const std::string& database,
-                 const std::string& user = "",
-                 const std::string& pass = "",
-                 const std::string& host = "localhost",
-                 unsigned int port = 3306);
+    bool connect(const std::string &database, const std::string &user = "", const std::string &pass = "",
+                 const std::string &host = "localhost", unsigned int port = 3306);
 
     /*!
      *  Disconnect connection to the database
@@ -135,9 +131,9 @@ public:
      *  Send a command to the database as a string
      *  \param q  The command as a string
      *  \return The result set of command
-            *  \throw  SQLException on error
+     *  \throw  SQLException on error
      */
-    pResultSet query(const std::string& q);
+    pResultSet query(const std::string &q);
 
     /*!
      *  Get the last connection error message
@@ -148,10 +144,10 @@ public:
         return mysql_error(&mDBHandle);
     }
 
-private:
+  private:
     /*! Handle to the MySQL database connection */
     ::MYSQL mDBHandle;
 };
-}
+} // namespace dbi
 #endif
 #endif

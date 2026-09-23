@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of dbi-c++ 
+ * This file is part of dbi-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * dbi-c++ is free software; you can redistribute it and/or modify
@@ -14,23 +14,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
-#include <import/io.h>
-#include <import/except.h>
-#include <import/sys.h>
 #include <import/dbi.h>
+#include <import/except.h>
+#include <import/io.h>
+#include <import/sys.h>
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     try
     {
-        if (argc != 6) throw except::Exception(Ctxt(str::Format("Usage %s <database> <user> <password> <host> <port>", argv[0])));
+        if (argc != 6)
+            throw except::Exception(Ctxt(str::Format("Usage %s <database> <user> <password> <host> <port>", argv[0])));
 
         std::string database(argv[1]);
         std::string host(argv[4]);
@@ -44,11 +44,12 @@ int main(int argc, char* argv[])
         dbi::Row myRow;
 
         dbi::DatabaseClientFactory f;
-        dbi::DatabaseConnection * myConn = f.create(database, user, password, host, port);
+        dbi::DatabaseConnection *myConn = f.create(database, user, password, host, port);
 
         myConn->query("DROP TABLE MyTable");
 
-        resultSet = myConn->query("CREATE TABLE MyTable (id INT NOT NULL PRIMARY KEY, name VARCHAR(25) NOT NULL, description TEXT NOT NULL)");
+        resultSet = myConn->query(
+            "CREATE TABLE MyTable (id INT NOT NULL PRIMARY KEY, name VARCHAR(25) NOT NULL, description TEXT NOT NULL)");
 
         resultSet = myConn->query("SELECT TMODEL_KEY, NAME, OVERVIEW_URL FROM TMODEL");
 
@@ -57,12 +58,12 @@ int main(int argc, char* argv[])
         std::string str = myRow["overview_url"].getData<std::string>();
         std::string y = myRow["name"].getData<std::string>();
 
-        std::cout << "\tChar* is '" << x <<  "'" << std::endl;
+        std::cout << "\tChar* is '" << x << "'" << std::endl;
         std::cout << "\tString is '" << str << "'" << std::endl;
         std::cout << "\tInt is '" << y << "'" << std::endl;
         f.destroy(myConn);
     }
-    catch (except::Throwable& t)
+    catch (except::Throwable &t)
     {
         std::cout << t.getTrace() << std::endl;
     }
