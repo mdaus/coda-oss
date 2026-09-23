@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of unique-c++ 
+ * This file is part of unique-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * unique-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -32,12 +32,11 @@ std::string unique::generateUUID()
 {
 #ifdef _WIN32
     GUID uuid;
-    unsigned char* cResult = nullptr;
-    
-    if ((UuidCreateSequential (&uuid) != RPC_S_OK)
-        || (UuidToString(&uuid, &cResult) != RPC_S_OK))
+    unsigned char *cResult = nullptr;
+
+    if ((UuidCreateSequential(&uuid) != RPC_S_OK) || (UuidToString(&uuid, &cResult) != RPC_S_OK))
         throw unique::UUIDException("Unable to create UUID");
-    std::string sResult((char*)cResult);
+    std::string sResult((char *)cResult);
     RpcStringFree(&cResult);
     return sResult;
 #else
