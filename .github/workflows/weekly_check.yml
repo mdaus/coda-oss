@@ -1,0 +1,85 @@
+name: Weekly builds
+
+on:
+  schedule:
+    # Runs at 09:00 UTC every Saturday
+    - cron: '0 9 * * 6'
+  workflow_dispatch: # Optional: allows manual triggering for testing
+
+jobs:
+  build-windows:
+    strategy:
+      matrix:
+        config: [Release, Debug]
+    name: windows-latest-${{ matrix.config }}
+    runs-on: windows-latest
+    steps:
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v5.3.1
+    - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
+    - name: configure
+      run: |
+        ls env:
+        cmake -B target
+    - name: build
+      run: |
+        cmake --build target -j --config ${{ matrix.config }}
+    - name: test # should run w/o install
+      run: |
+        ctest --test-dir target -C ${{ matrix.config }} --output-on-failure --timeout $env:CTEST_TIMEOUT
+
+# Since MSBUILD solutions can be generated from CMake within VS, no point testing in build.
+
+  build-ubuntu:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-26.04]
+        configuration: [Debug, Release]
+        avx: [AVX512F]
+    name: ${{ matrix.os }}-${{ matrix.configuration }}-${{ matrix.avx }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v5.3.1
+    - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
+    - name: configure
+      run: |
+        cmake -B out -DENABLE_${{ matrix.avx }}=ON
+    - name: build
+      run: |
+        cmake --build out -j
+    - name: test
+    # should run w/o install
+      run: |
+        ctest --test-dir out --output-on-failure --timeout $CTEST_TIMEOUT
+
+  build-rocky:
+    strategy:
+      matrix:
+        version: [8, 9, 10]
+        config: [Debug, Release]
+    name: rockylinux-${{ matrix.version }}-${{ matrix.config }}
+    runs-on: ubuntu-24.04
+    container:
+      image: rockylinux/rockylinux:${{ matrix.version }}-minimal
+    steps:
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v5.3.1
+    - name: setup system
+      run: |
+        microdnf install -y gcc gcc-c++ tar gzip cmake
+    - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
+    - name: configure
+      run: |
+        cmake -B target -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+    - name: build
+      run: |
+        cmake --build target -j
+    - name: test
+    # should run w/o install
+      run: |
+        # Setup test variables and files
+        touch ~/.bashrc 
+        export USER=github
+        mkdir .git
+        ctest --test-dir target --output-on-failure
