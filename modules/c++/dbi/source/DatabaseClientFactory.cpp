@@ -25,7 +25,7 @@
 #include "dbi/MySQLConnection.h"
 #include "dbi/OracleConnection.h"
 #include "dbi/PgSQLConnection.h"
-//clang-format off
+// clang-format off
 CODA_OSS_disable_warning_push
 CODA_OSS_DISABLE_UNREACHABLE_CODE
 dbi::DatabaseClientFactory::DatabaseClientFactory()
