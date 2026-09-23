@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of except-c++ 
+ * This file is part of except-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * except-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -55,7 +55,7 @@ struct CODA_OSS_API Trace final
      * Pushes Context onto the stack
      * \param c The Context
      */
-    void pushContext(const Context& c)
+    void pushContext(const Context &c)
     {
         mStack.push_front(c);
     }
@@ -71,7 +71,7 @@ struct CODA_OSS_API Trace final
     /*!
      * Gets first Context on stack
      */
-    const Context& getContext() const noexcept
+    const Context &getContext() const noexcept
     {
         return mStack.front();
     }
@@ -80,7 +80,7 @@ struct CODA_OSS_API Trace final
      * Get the stack
      * \return The stack (const)
      */
-    const std::list<Context>& getStack() const noexcept
+    const std::list<Context> &getStack() const noexcept
     {
         return mStack;
     }
@@ -89,17 +89,17 @@ struct CODA_OSS_API Trace final
      * Get the stack
      * \return The stack (non-const)
      */
-    std::list<Context>& getStack() noexcept
+    std::list<Context> &getStack() noexcept
     {
         return mStack;
     }
 
-private:
+  private:
     //! The name of the internal stack wrapped by the Trace
     std::list<Context> mStack;
 };
 
-CODA_OSS_API std::ostream& operator<<(std::ostream& os, const Trace& t);
-}
+CODA_OSS_API std::ostream &operator<<(std::ostream &os, const Trace &t);
+} // namespace except
 
 #endif

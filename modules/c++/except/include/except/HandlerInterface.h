@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of except-c++ 
+ * This file is part of except-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * except-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -41,7 +41,7 @@ namespace except
 /*!
  *  \class HandlerInterface
  *  \brief A class for handling notification events
- *  While this class used to service only Throwable events, it was 
+ *  While this class used to service only Throwable events, it was
  *  extended to provide a status message and a warning message.
  *  These events propogate to the HandlerInterface, usual via macro,
  *  and any derivation of this interface will define how to handle
@@ -51,13 +51,15 @@ namespace except
  */
 class HandlerInterface
 {
-public:
+  public:
     //!  Constructor
     HandlerInterface()
-    {}
+    {
+    }
     //!  Destructor
     virtual ~HandlerInterface()
-    {}
+    {
+    }
 
     /*!
      *  Given an error, and a context in which it was produced, handle
@@ -65,7 +67,7 @@ public:
      *  \param c The context in which the error was produced
      *  \param e The error which was generated
      */
-    virtual void onRaise(Context c, const Error& e) = 0;
+    virtual void onRaise(Context c, const Error &e) = 0;
 
     /*!
      *  Given an exception, and a context in which it was produced, handle
@@ -73,7 +75,7 @@ public:
      *  \param c The context in which the exception was produced
      *  \param e The exception which was generated
      */
-    virtual void onRaise(Context c, const Exception& e) = 0;
+    virtual void onRaise(Context c, const Exception &e) = 0;
 
     /*!
      *  Given an status, and a context in which it was produced, handle
@@ -81,7 +83,7 @@ public:
      *  \param c The context in which the status was produced
      *  \param status The status which was generated
      */
-    virtual void onStatus(Context c, const std::string& status) = 0;
+    virtual void onStatus(Context c, const std::string &status) = 0;
 
     /*!
      *  Given an warning, and a context in which it was produced, handle
@@ -89,7 +91,7 @@ public:
      *  \param c The context in which the warning was produced
      *  \param warning The warning which was generated
      */
-    virtual void onWarning(Context c, const std::string& warning) = 0;
+    virtual void onWarning(Context c, const std::string &warning) = 0;
 
     /*!
      *  Given a debug statement, and a context in which it was produced,
@@ -97,10 +99,8 @@ public:
      *  \param c  The context in which the debug statement was produced
      *  \param dbg  The debug statement that was generated
      */
-    virtual void onDebug(Context c, const std::string& dbg) = 0;
-
+    virtual void onDebug(Context c, const std::string &dbg) = 0;
 };
-}
-
+} // namespace except
 
 #endif

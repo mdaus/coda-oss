@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of except-c++ 
+ * This file is part of except-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * except-c++ is free software; you can redistribute it and/or modify
@@ -14,26 +14,26 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
+#include "import/except.h"
 #include <iostream>
 #include <stdlib.h>
-#include "import/except.h"
 
 #define Ctxt(MESSAGE) Context(__FILE__, __LINE__, "Func", "Time", MESSAGE)
 
-using std::endl; using std::cout;
+using std::cout;
+using std::endl;
 using namespace except;
 
 DECLARE_EXCEPTION(DivideByZero);
 typedef DivideByZeroException DivideByZero;
 
 double Divide(double x, double y);
-
 
 double callDivide(double x, double y)
 {
@@ -42,7 +42,7 @@ double callDivide(double x, double y)
     {
         z = Divide(x, y);
     }
-    catch (Throwable& t)
+    catch (Throwable &t)
     {
         throw DivideByZero(t, Ctxt("Hello"));
     }
@@ -58,7 +58,7 @@ double Divide(double x, double y)
     return x / y;
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     if (argc != 3)
     {
@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
         cout << "Dividing " << x << " and " << y << endl;
         cout << "Answer is: " << callDivide(x, y) << endl;
     }
-    catch (Throwable& t)
+    catch (Throwable &t)
     {
         cout << "Why did you do that?" << endl;
         cout << t.toString() << endl;

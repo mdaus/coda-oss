@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of except-c++ 
+ * This file is part of except-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * except-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,7 +24,7 @@
 
 namespace except
 {
-std::ostream& operator<< (std::ostream& os, const except::Context& c)
+std::ostream &operator<<(std::ostream &os, const except::Context &c)
 {
     os << "(" << c.getFile() << ", ";
     os << c.getLine() << ", ";
@@ -33,4 +33,4 @@ std::ostream& operator<< (std::ostream& os, const except::Context& c)
     os << c.getMessage() << "' ";
     return os;
 }
-}
+} // namespace except

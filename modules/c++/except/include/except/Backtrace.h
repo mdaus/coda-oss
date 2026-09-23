@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of except-c++ 
+ * This file is part of except-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  * (C) Copyright 2021, Maxar Technologies, Inc.
  *
@@ -15,8 +15,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -36,34 +36,38 @@
 #define CODA_OSS_except_Backtrace 20210216L
 #else
 #define CODA_OSS_except_Backtrace 0
-#endif 
+#endif
 
-namespace version { namespace except {
+namespace version
+{
+namespace except
+{
 #if _MSC_VER
 #pragma warning(push)
-#pragma warning(disable: 4619) // #pragma warning: there is no warning number '...'
-#pragma warning(disable: 5264) // '...': '...' variable is not used
-#endif // _MSC_VER
+#pragma warning(disable : 4619) // #pragma warning: there is no warning number '...'
+#pragma warning(disable : 5264) // '...': '...' variable is not used
+#endif                          // _MSC_VER
 
 constexpr auto backtrace = CODA_OSS_except_Backtrace;
 
 #if _MSC_VER
 #pragma warning(pop)
-#endif  // _MSC_VER
-} }
+#endif // _MSC_VER
+} // namespace except
+} // namespace version
 
 namespace except
 {
-/*! 
+/*!
  * Returns a human-readable string describing the current stack of
- * function calls. Usefulness and format may vary depending on 
+ * function calls. Usefulness and format may vary depending on
  * your platform and what kind of symbols are compiled in.
  *
  * Currently only supported on *nix with glibc and Windows. This function will
  * return with an error message instead of a backtrace if the current
  * configuration is unsupported.
  */
-std::string getBacktrace(bool& supported, std::vector<std::string>& frames);
-}
+std::string getBacktrace(bool &supported, std::vector<std::string> &frames);
+} // namespace except
 
 #endif // CODA_OSS_except_Backtrace_h_INCLUDED_

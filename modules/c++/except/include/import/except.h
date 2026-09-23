@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of except-c++ 
+ * This file is part of except-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * except-c++ is free software; you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifndef __IMPORT_EXCEPT_H__
 #define __IMPORT_EXCEPT_H__
@@ -62,13 +61,12 @@
  */
 
 #include "except/Context.h"
-#include "except/Trace.h"
-#include "except/Throwable.h"
 #include "except/Error.h"
 #include "except/Exception.h"
+#include "except/Throwable.h"
+#include "except/Trace.h"
 #define EXCEPT_MAJOR_VERSION 0
 #define EXCEPT_MINOR_VERSION 1
 #define EXCEPT_MICRO_VERSION 0
-
 
 #endif

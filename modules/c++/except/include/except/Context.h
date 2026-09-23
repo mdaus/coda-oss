@@ -23,9 +23,9 @@
 #ifndef CODA_OSS_except_Context_h_INCLUDED_
 #define CODA_OSS_except_Context_h_INCLUDED_
 
-#include <string>
 #include <ostream>
 #include <sstream>
+#include <string>
 
 #include "config/Exports.h"
 #include "config/disable_compiler_warnings.h"
@@ -55,43 +55,47 @@ struct CODA_OSS_API Context final
      * \param file The file where the exception occurred
      * \param line The line number where the exception occurred
      */
-    Context(const char* file /*__FILE__*/, int line /*__LINE__*/,
-            const std::string& func,
-            const std::string& time,
-            const std::string& message = "" /*for existing SWIG bindings*/)
-      : mMessage(message), mTime(time), mFunc(func), mFile(file), mLine(line) { }
-    Context(const char* file /*__FILE__*/, int line /*__LINE__*/,
-            const std::string& func,
-            const std::string& time,
-            const std::ostringstream& message) : Context(file, line, func, time, message.str()) { }
-    Context(const std::string& message,
-        const char* file /*__FILE__*/, int line /*__LINE__*/,
-        const std::string& func = "",
-        const std::string& time = "") : Context(file, line, func, time, message) {  }
-    explicit Context(const std::string& file, int line, // old API, needed by SWIG
-            const std::string& func, const std::string& time, const std::string& message) :
-        mMessage(message), mTime(time), mFunc(func), mFile(file), mLine(line) { }
+    Context(const char *file /*__FILE__*/, int line /*__LINE__*/, const std::string &func, const std::string &time,
+            const std::string &message = "" /*for existing SWIG bindings*/)
+        : mMessage(message), mTime(time), mFunc(func), mFile(file), mLine(line)
+    {
+    }
+    Context(const char *file /*__FILE__*/, int line /*__LINE__*/, const std::string &func, const std::string &time,
+            const std::ostringstream &message)
+        : Context(file, line, func, time, message.str())
+    {
+    }
+    Context(const std::string &message, const char *file /*__FILE__*/, int line /*__LINE__*/,
+            const std::string &func = "", const std::string &time = "")
+        : Context(file, line, func, time, message)
+    {
+    }
+    explicit Context(const std::string &file, int line, // old API, needed by SWIG
+                     const std::string &func, const std::string &time, const std::string &message)
+        : mMessage(message), mTime(time), mFunc(func), mFile(file), mLine(line)
+    {
+    }
 
     ~Context() = default;
-    Context(const Context&) = default;
-    Context& operator=(const Context&) = default;
-    Context(Context&&) = default;
-    Context& operator=(Context&&) = default;
+    Context(const Context &) = default;
+    Context &operator=(const Context &) = default;
+    Context(Context &&) = default;
+    Context &operator=(Context &&) = default;
 
     /*!
      * Get the message describing the exception that occurred
      * \return The message
      */
-    const std::string& getMessage() const noexcept
+    const std::string &getMessage() const noexcept
     {
         return mMessage;
     }
 
     /*!
-    * Get the system time
-    * \return The system time
-    */
-    const std::string& getTime() const noexcept
+     * Get the system time
+     * \return The system time
+     */
+    const std::string &getTime() const noexcept
     {
         return mTime;
     }
@@ -100,7 +104,7 @@ struct CODA_OSS_API Context final
      * Get the function where the exception occurred (may not be available
      * \return The function signature
      */
-    const std::string& getFunction() const noexcept
+    const std::string &getFunction() const noexcept
     {
         return mFunc;
     }
@@ -109,7 +113,7 @@ struct CODA_OSS_API Context final
      * Get the file where the exception occurred
      * \return The file
      */
-    const std::string& getFile() const noexcept
+    const std::string &getFile() const noexcept
     {
         return mFile;
     }
@@ -135,7 +139,7 @@ struct CODA_OSS_API Context final
     int mLine;
 };
 
-CODA_OSS_API std::ostream& operator<<(std::ostream& os, const Context& c);
-}
+CODA_OSS_API std::ostream &operator<<(std::ostream &os, const Context &c);
+} // namespace except
 
-#endif  // CODA_OSS_except_Context_h_INCLUDED_
+#endif // CODA_OSS_except_Context_h_INCLUDED_
