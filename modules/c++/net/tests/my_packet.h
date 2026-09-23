@@ -25,6 +25,8 @@
 
 #define DATA_BUF_SZ 1024
 
+#include <ctime>
+
 typedef struct
 {
     int packet_no;
