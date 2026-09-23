@@ -25,12 +25,12 @@
 
 #include <string.h>
 
-#include <mem/BufferView.h>
-#include <sys/Conf.h>
 #include <except/Error.h>
 #include <except/Exception.h>
-#include <io/SeekableStreams.h>
 #include <gsl/gsl.h>
+#include <io/SeekableStreams.h>
+#include <mem/BufferView.h>
+#include <sys/Conf.h>
 
 /*!
  *  \file
@@ -44,21 +44,19 @@ namespace io
  *  \brief  Class for streaming preallocated data, inherits from
  *      SeekableInputStream, SeekableOutputStream
  */
-template <typename T>
-struct BufferViewStream: public SeekableInputStream, public SeekableOutputStream
+template <typename T> struct BufferViewStream : public SeekableInputStream, public SeekableOutputStream
 {
     /*!
      * Default constructor
      * \param bufferView The BufferView to wrap in the stream
      */
-    BufferViewStream(const mem::BufferView<T>& bufferView) :
-        mBufferView(bufferView)
+    BufferViewStream(const mem::BufferView<T> &bufferView) : mBufferView(bufferView)
     {
     }
-    BufferViewStream(const BufferViewStream&) = delete;
-    BufferViewStream& operator=(const BufferViewStream&) = delete;
-    BufferViewStream(BufferViewStream&&) = default;
-    BufferViewStream& operator=(BufferViewStream&&) = delete;
+    BufferViewStream(const BufferViewStream &) = delete;
+    BufferViewStream &operator=(const BufferViewStream &) = delete;
+    BufferViewStream(BufferViewStream &&) = default;
+    BufferViewStream &operator=(BufferViewStream &&) = delete;
 
     //! Returns current location in buffer in bytes
     virtual sys::Off_T tell() override
@@ -83,16 +81,16 @@ struct BufferViewStream: public SeekableInputStream, public SeekableOutputStream
         return gsl::narrow<sys::Off_T>((mBufferView.size - mPosition) * sizeof(T));
     }
 
-    using OutputStream::write;
-    using InputStream::streamTo;
     using InputStream::read;
+    using InputStream::streamTo;
+    using OutputStream::write;
 
     /*
      * Writes the bytes in data to the stream.
      * \param buffer The data to write to the stream
      * \param size The number of bytes to write to the stream
      */
-    virtual void write(const void* buffer, size_t size) override;
+    virtual void write(const void *buffer, size_t size) override;
 
     /*!
      * Get a pointer to the internal buffer.
@@ -100,13 +98,13 @@ struct BufferViewStream: public SeekableInputStream, public SeekableOutputStream
      * after a call to the seek, write, or reset methods
      * \return pointer to the internal buffer
      */
-    T* get()
+    T *get()
     {
         return mBufferView.data;
     }
 
     //! Returns const pointer to internal buffer
-    const T* get() const
+    const T *get() const
     {
         return mBufferView.data;
     }
@@ -116,22 +114,22 @@ struct BufferViewStream: public SeekableInputStream, public SeekableOutputStream
      * \param[out] buffer Buffer to read into
      * \param numElements How many -elements- (not bytes) to read
      */
-    sys::SSize_T read(T* buffer, size_t numElements)
+    sys::SSize_T read(T *buffer, size_t numElements)
     {
         return InputStream::read(buffer, numElements * sizeof(T)) / sizeof(T);
     }
 
     /*!
-    * Overload for writing from a typed buffer
-    * \param buffer Buffer to write from
-    * \param numElements How many -elements- (not bytes) to write
-    */
-    void write(const T* buffer, size_t numElements)
+     * Overload for writing from a typed buffer
+     * \param buffer Buffer to write from
+     * \param numElements How many -elements- (not bytes) to write
+     */
+    void write(const T *buffer, size_t numElements)
     {
-        write(reinterpret_cast<const void*>(buffer), numElements * sizeof(T));
+        write(reinterpret_cast<const void *>(buffer), numElements * sizeof(T));
     }
 
-protected:
+  protected:
     /*!
      * Read up to len bytes of data from this buffer into an array
      * update the mark
@@ -139,39 +137,37 @@ protected:
      * \param len The length to read
      * \return  The number of bytes read
      */
-    virtual sys::SSize_T readImpl(void* buffer, size_t len) override;
+    virtual sys::SSize_T readImpl(void *buffer, size_t len) override;
 
-
-private:
+  private:
     const mem::BufferView<T> mBufferView;
     sys::Off_T mPosition = 0;
 };
 
-template <typename T>
-sys::Off_T BufferViewStream<T>::seek(sys::Off_T offset, Whence whence)
+template <typename T> sys::Off_T BufferViewStream<T>::seek(sys::Off_T offset, Whence whence)
 {
     offset /= sizeof(T);
     // Let's not change anything until we know it will be valid
     sys::Off_T newPos = mPosition;
     switch (whence)
     {
-        case START:
-            newPos = offset;
-            break;
-        case END:
-            if (offset > gsl::narrow<sys::Off_T>(mBufferView.size))
-            {
-                newPos = 0;
-            }
-            else
-            {
-                newPos = gsl::narrow<sys::Off_T>(mBufferView.size - offset);
-            }
-            break;
-        case CURRENT:
-        default:
-            newPos += offset;
-            break;
+    case START:
+        newPos = offset;
+        break;
+    case END:
+        if (offset > gsl::narrow<sys::Off_T>(mBufferView.size))
+        {
+            newPos = 0;
+        }
+        else
+        {
+            newPos = gsl::narrow<sys::Off_T>(mBufferView.size - offset);
+        }
+        break;
+    case CURRENT:
+    default:
+        newPos += offset;
+        break;
     }
 
     if (newPos > gsl::narrow<sys::Off_T>(mBufferView.size) || newPos < 0)
@@ -182,8 +178,7 @@ sys::Off_T BufferViewStream<T>::seek(sys::Off_T offset, Whence whence)
     return tell();
 }
 
-template <typename T>
-void BufferViewStream<T>::write(const void* buffer, size_t numBytes)
+template <typename T> void BufferViewStream<T>::write(const void *buffer, size_t numBytes)
 {
     const size_t numElements = numBytes / sizeof(T);
     const auto newPos = mPosition + numElements;
@@ -198,8 +193,7 @@ void BufferViewStream<T>::write(const void* buffer, size_t numBytes)
     mPosition = gsl::narrow<sys::Off_T>(newPos);
 }
 
-template <typename T>
-sys::SSize_T BufferViewStream<T>::readImpl(void* buffer, size_t numBytes)
+template <typename T> sys::SSize_T BufferViewStream<T>::readImpl(void *buffer, size_t numBytes)
 {
     size_t numElements = numBytes / sizeof(T);
     if (available() < gsl::narrow<sys::Off_T>(numBytes))
@@ -216,5 +210,5 @@ sys::SSize_T BufferViewStream<T>::readImpl(void* buffer, size_t numBytes)
     mPosition += numElements;
     return gsl::narrow<sys::SSize_T>(numBytes);
 }
-}
-#endif  // CODA_OSS_io_BufferViewStream_h_INCLUDED_
+} // namespace io
+#endif // CODA_OSS_io_BufferViewStream_h_INCLUDED_

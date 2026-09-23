@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++ 
+ * This file is part of io-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -32,20 +32,17 @@ namespace io
 /**
  * Serialize an array to/from a stream.
  */
-template<typename T>
-class SerializableArray : public Serializable
+template <typename T> class SerializableArray : public Serializable
 {
-public:
-
+  public:
     /**
      * \param buf       the data buffer
      * \param offset    the offset (in elements, not bytes) into the buffer
      * \param length    the length (in elements, not bytes) of the buffer
      * \param skip      optional stride to use
      */
-    SerializableArray(T* buf, sys::Size_T offset, sys::Size_T length,
-                      sys::Size_T skip = 0) :
-        mBuf(buf), mOffset(offset), mLength(length), mSkip(skip)
+    SerializableArray(T *buf, sys::Size_T offset, sys::Size_T length, sys::Size_T skip = 0)
+        : mBuf(buf), mOffset(offset), mLength(length), mSkip(skip)
     {
     }
 
@@ -53,8 +50,7 @@ public:
      * \param buf       the data buffer
      * \param length    the length (in elements, not bytes) of the buffer
      */
-    SerializableArray(T* buf, sys::Size_T length) :
-        mBuf(buf), mOffset(0), mLength(length), mSkip(0)
+    SerializableArray(T *buf, sys::Size_T length) : mBuf(buf), mOffset(0), mLength(length), mSkip(0)
     {
     }
 
@@ -62,24 +58,24 @@ public:
     {
     }
 
-    void serialize(io::OutputStream& os)
+    void serialize(io::OutputStream &os)
     {
-        T* buf = (T*) (mBuf + mOffset);
+        T *buf = (T *)(mBuf + mOffset);
         if (mSkip == 0)
-            os.write((sys::byte*) buf, sizeof(T) * mLength);
+            os.write((sys::byte *)buf, sizeof(T) * mLength);
         else
         {
             sys::Size_T skip = mSkip + 1;
             for (sys::Size_T i = 0; i < mLength; i += skip, buf += skip)
-                os.write((sys::byte*) buf, sizeof(T));
+                os.write((sys::byte *)buf, sizeof(T));
         }
     }
 
-    void deserialize(io::InputStream& is)
+    void deserialize(io::InputStream &is)
     {
-        T* buf = (T*) (mBuf + mOffset);
+        T *buf = (T *)(mBuf + mOffset);
         if (mSkip == 0)
-            is.read((sys::byte*) buf, sizeof(T) * mLength);
+            is.read((sys::byte *)buf, sizeof(T) * mLength);
         else
         {
             sys::Size_T skip = mSkip + 1;
@@ -87,17 +83,17 @@ public:
             for (sys::Size_T i = 0; i < mLength; ++i)
             {
                 if (i % skip == 0)
-                    is.read((sys::byte*) buf++, sizeof(T));
+                    is.read((sys::byte *)buf++, sizeof(T));
                 else
                     is.read(bytes, sizeof(T));
             }
         }
     }
 
-protected:
-    T* mBuf;
+  protected:
+    T *mBuf;
     sys::Size_T mOffset, mLength, mSkip;
 };
-}
+} // namespace io
 
 #endif

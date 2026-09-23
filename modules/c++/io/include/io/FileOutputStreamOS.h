@@ -53,9 +53,10 @@ namespace io
  */
 class CODA_OSS_API FileOutputStreamOS : public SeekableOutputStream
 {
-protected:
+  protected:
     sys::File mFile;
-public:
+
+  public:
     FileOutputStreamOS() = default;
 
     using path = coda_oss::filesystem::path; // still used in SWIG bindings
@@ -65,13 +66,12 @@ public:
      *  \param outputFile The file name
      *  \param creationFlags  see sys::File
      */
-    FileOutputStreamOS(const path& outputFile,
-                       int creationFlags = sys::File::CREATE | sys::File::TRUNCATE);
+    FileOutputStreamOS(const path &outputFile, int creationFlags = sys::File::CREATE | sys::File::TRUNCATE);
 
     //! Destructor, closes the file stream.
     virtual ~FileOutputStreamOS()
     {
-        if ( isOpen() )
+        if (isOpen())
         {
             close();
         }
@@ -91,8 +91,7 @@ public:
      *  \param file The file to open
      *  \param creationFlags see sys::File
      */
-    virtual void create(const path& str,
-                        int creationFlags = sys::File::CREATE | sys::File::TRUNCATE);
+    virtual void create(const path &str, int creationFlags = sys::File::CREATE | sys::File::TRUNCATE);
 
     //!  Close the file
     void close() override
@@ -116,9 +115,9 @@ public:
      * \param len the length of bytes to write
      * \throw IoException
      */
-    virtual void write(const void* buffer, size_t len) override;
+    virtual void write(const void *buffer, size_t len) override;
 };
-}
+} // namespace io
 
 #endif
 #endif // CODA_OSS_io_FileOutputStreamOS_h_INCLUDED_

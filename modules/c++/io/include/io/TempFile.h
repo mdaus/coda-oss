@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __IO_TEMPFILE_H__
 #define __IO_TEMPFILE_H__
 
@@ -42,24 +41,24 @@ struct CODA_OSS_API TempFile final
      *
      * \param dirname The directory in which to create the file
      */
-    TempFile(const std::string& dirname=".");
+    TempFile(const std::string &dirname = ".");
     ~TempFile();
     /*!
      * Get pathname of temporary file.
      *
      * \return The pathname of the created file
      */
-    const std::string& pathname() const
+    const std::string &pathname() const
     {
         return mPathname;
     }
 
-    TempFile(const TempFile&) = delete;
-    TempFile& operator=(const TempFile&) = delete;
+    TempFile(const TempFile &) = delete;
+    TempFile &operator=(const TempFile &) = delete;
 
-private:
+  private:
     const std::string mPathname;
 };
-}
+} // namespace io
 
 #endif

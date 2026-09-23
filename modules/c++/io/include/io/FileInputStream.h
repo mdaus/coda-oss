@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++ 
+ * This file is part of io-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,16 +24,17 @@
 #define __IO_FILE_INPUT_STREAM_H__
 
 #if defined(USE_IO_STREAMS)
-#    include "io/FileInputStreamIOS.h"
-namespace io {
-  typedef FileInputStreamIOS FileInputStream;
+#include "io/FileInputStreamIOS.h"
+namespace io
+{
+typedef FileInputStreamIOS FileInputStream;
 }
 #else
-#    include "io/FileInputStreamOS.h"
-namespace io {
-  typedef FileInputStreamOS FileInputStream;
+#include "io/FileInputStreamOS.h"
+namespace io
+{
+typedef FileInputStreamOS FileInputStream;
 }
 #endif
-
 
 #endif

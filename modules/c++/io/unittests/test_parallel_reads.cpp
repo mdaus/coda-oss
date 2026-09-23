@@ -77,7 +77,7 @@ TEST_CASE(testParallelReads)
     TEST_ASSERT_TRUE(referenceRead == multiThreadRead);
 }
 
-int main(int, char* argv[])
+int main(int, char *argv[])
 {
     thisExecutable = std::string(argv[0]);
     TEST_CHECK(testParallelReads);
