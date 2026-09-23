@@ -22,12 +22,12 @@
 #ifndef __POLYGON_INTERSECTIONS_H__
 #define __POLYGON_INTERSECTIONS_H__
 
-#include <vector>
 #include <algorithm>
 #include <cmath>
+#include <vector>
 
-#include <types/RowCol.h>
 #include <gsl/gsl.h>
+#include <types/RowCol.h>
 
 namespace polygon
 {
@@ -47,8 +47,7 @@ namespace polygon
  * horizontal-top-edges will typically not be filled in.  For instance, a
  * square will have 1 pixel of its top edge missing.
  */
-template <typename PointT>
-struct Intersections final
+template <typename PointT> struct Intersections final
 {
     /*!
      * \class Intersection
@@ -79,11 +78,9 @@ struct Intersections final
      * positive col value shifts the polygon left (equiv. the frame shifts
      * right).  Defaults to no offset.
      */
-    Intersections(const std::vector<types::RowCol<PointT> >& points,
-                  const types::RowCol<size_t>& dims,
-                  types::RowCol<sys::SSize_T> offset =
-                          types::RowCol<sys::SSize_T>(0, 0)) :
-        mDims(dims)
+    Intersections(const std::vector<types::RowCol<PointT>> &points, const types::RowCol<size_t> &dims,
+                  types::RowCol<sys::SSize_T> offset = types::RowCol<sys::SSize_T>(0, 0))
+        : mDims(dims)
     {
         if (!points.empty())
         {
@@ -96,7 +93,7 @@ struct Intersections final
      * \param[out] intersections Polygon intersections for this row.  If the
      * vector is empty, that means the polygon does not intersect at this row.
      */
-    void get(size_t row, std::vector<Intersection>& intersections) const
+    void get(size_t row, std::vector<Intersection> &intersections) const
     {
         // Clear out any old intersections in the vector we're given
         intersections.clear();
@@ -108,7 +105,7 @@ struct Intersections final
             return;
         }
 
-        const std::vector<PointT>& interRow(mIntersections[row]);
+        const std::vector<PointT> &interRow(mIntersections[row]);
         if (interRow.empty() || interRow.size() % 2 != 0)
         {
             // No intersections on this row
@@ -124,8 +121,7 @@ struct Intersections final
             // If the pair of intersections lies outside of the image,
             // there is no intersection for this pair.
             const auto lastCol = static_cast<double>(mDims.col - 1);
-            if ((first < 0.0 && last < 0.0) ||
-                (first > lastCol && last > lastCol))
+            if ((first < 0.0 && last < 0.0) || (first > lastCol && last > lastCol))
             {
                 continue;
             }
@@ -138,7 +134,7 @@ struct Intersections final
             intersection.first = static_cast<size_t>(std::ceil(first));
             intersection.last = static_cast<size_t>(std::floor(last));
 
-            if(intersection.last > intersection.first)
+            if (intersection.last > intersection.first)
             {
                 intersections.push_back(intersection);
             }
@@ -156,8 +152,8 @@ struct Intersections final
         }
     }
 
-private:
-    void orderPoints(PointT& r0, PointT& c0, PointT& r1, PointT& c1)
+  private:
+    void orderPoints(PointT &r0, PointT &c0, PointT &r1, PointT &c1)
     {
         if (r0 > r1)
         {
@@ -166,13 +162,11 @@ private:
         }
     }
 
-    void computeIntersections(
-            const std::vector<types::RowCol<PointT> >& points,
-            const types::RowCol<size_t>& dims,
-            types::RowCol<sys::SSize_T> offset)
+    void computeIntersections(const std::vector<types::RowCol<PointT>> &points, const types::RowCol<size_t> &dims,
+                              types::RowCol<sys::SSize_T> offset)
     {
-        std::vector<types::RowCol<PointT> > shiftedPoints(points);
-        for (auto&& shiftedPoint : shiftedPoints)
+        std::vector<types::RowCol<PointT>> shiftedPoints(points);
+        for (auto &&shiftedPoint : shiftedPoints)
         {
             // Get the polygon points with respect to the offset
             shiftedPoint -= offset;
@@ -183,7 +177,7 @@ private:
             //       right on a row, we skip drawing some rows
             //       (test_draw_polygon will illustrate this). I wonder if we
             //       could tweak the sl0 and sl1 logic to avoid this.
-            PointT& rowPoint(shiftedPoint.row);
+            PointT &rowPoint(shiftedPoint.row);
             if (std::floor(rowPoint) == rowPoint)
             {
                 // Add small amount to move it off the scan line
@@ -215,11 +209,9 @@ private:
             orderPoints(r0, c0, r1, c1);
 
             // Find first and last scan line that we cross
-            sys::SSize_T sl0 = static_cast<sys::SSize_T>(std::ceil(
-                    static_cast<double>(r0)));
+            sys::SSize_T sl0 = static_cast<sys::SSize_T>(std::ceil(static_cast<double>(r0)));
 
-            sys::SSize_T sl1 = static_cast<sys::SSize_T>(std::floor(
-                    static_cast<double>(r1)));
+            sys::SSize_T sl1 = static_cast<sys::SSize_T>(std::floor(static_cast<double>(r1)));
 
             // Skip rows where the edge intersects scan line outside of image
             // Have to do this carefully though... we can't just restrict both
@@ -265,24 +257,24 @@ private:
         // now
         for (size_t row = 0; row < mIntersections.size(); ++row)
         {
-            std::vector<PointT>& interRow(mIntersections[row]);
+            std::vector<PointT> &interRow(mIntersections[row]);
             if (interRow.size() % 2 == 0)
             {
                 std::sort(interRow.begin(), interRow.end());
             }
         }
     }
-    
-    // `const` member data means copy/move must be implemented
-    Intersections(const Intersections&) = delete;
-    Intersections& operator=(const Intersections&) = delete;
-    Intersections(Intersections&&) = delete;
-    Intersections& operator=(Intersections&&) = delete;
 
-private:
+    // `const` member data means copy/move must be implemented
+    Intersections(const Intersections &) = delete;
+    Intersections &operator=(const Intersections &) = delete;
+    Intersections(Intersections &&) = delete;
+    Intersections &operator=(Intersections &&) = delete;
+
+  private:
     const types::RowCol<size_t> mDims;
-    std::vector<std::vector<PointT> > mIntersections;
+    std::vector<std::vector<PointT>> mIntersections;
 };
-}
+} // namespace polygon
 
 #endif

@@ -19,21 +19,21 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#include <vector>
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
-#include <sys/Conf.h>
 #include <mem/ScopedArray.h>
 #include <sio/lite/FileWriter.h>
+#include <sys/Conf.h>
 
 #include <polygon/DrawPolygon.h>
 
-int main(int, char**)
+int main(int, char **)
 {
     try
     {
-        std::vector<types::RowCol<double> > points;
+        std::vector<types::RowCol<double>> points;
         points.push_back(types::RowCol<double>(400, 100));
         points.push_back(types::RowCol<double>(100, 310));
         points.push_back(types::RowCol<double>(270, 590));
@@ -45,30 +45,24 @@ int main(int, char**)
 
         std::fill_n(out.get(), dims.area(), 0);
         polygon::drawPolygon(points, dims.row, dims.col, 1, out.get());
-        sio::lite::writeSIO(out.get(), dims.row, dims.col, "polygon.sio",
-                            sio::lite::FileHeader::SIGNED);
+        sio::lite::writeSIO(out.get(), dims.row, dims.col, "polygon.sio", sio::lite::FileHeader::SIGNED);
 
         std::fill_n(out.get(), dims.area(), 0);
         polygon::drawPolygon(points, dims.row, dims.col, 1, out.get(), true);
-        sio::lite::writeSIO(out.get(), dims.row, dims.col,
-                            "polygon_inverted.sio",
-                            sio::lite::FileHeader::SIGNED);
+        sio::lite::writeSIO(out.get(), dims.row, dims.col, "polygon_inverted.sio", sio::lite::FileHeader::SIGNED);
 
         const types::RowCol<sys::SSize_T> offset(50, 75);
         std::fill_n(out.get(), dims.area(), 0);
-        polygon::drawPolygon(points, dims.row, dims.col, 1, out.get(), false,
-                             offset);
-        sio::lite::writeSIO(out.get(), dims.row, dims.col,
-                            "polygon_offset.sio",
-                            sio::lite::FileHeader::SIGNED);
+        polygon::drawPolygon(points, dims.row, dims.col, 1, out.get(), false, offset);
+        sio::lite::writeSIO(out.get(), dims.row, dims.col, "polygon_offset.sio", sio::lite::FileHeader::SIGNED);
 
         return 0;
     }
-    catch (const except::Exception& ex)
+    catch (const except::Exception &ex)
     {
         std::cerr << ex.toString() << std::endl;
     }
-    catch (const std::exception& ex)
+    catch (const std::exception &ex)
     {
         std::cerr << ex.what() << std::endl;
     }

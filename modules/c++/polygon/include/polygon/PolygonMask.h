@@ -22,14 +22,14 @@
 #ifndef CODA_OSS_polygon_PolygonMask_h_INCLUDED_
 #define CODA_OSS_polygon_PolygonMask_h_INCLUDED_
 
-#include <vector>
 #include <memory>
+#include <vector>
 
-#include <sys/Conf.h>
-#include <mem/ScopedArray.h>
-#include <types/RowCol.h>
-#include <types/Range.h>
 #include "config/Exports.h"
+#include <mem/ScopedArray.h>
+#include <sys/Conf.h>
+#include <types/Range.h>
+#include <types/RowCol.h>
 
 namespace polygon
 {
@@ -54,8 +54,7 @@ struct CODA_OSS_API PolygonMask final
      * \param dims Dimensions.  Pixels outside of these dimensions will still
      * get reported as outside the polygon.
      */
-    PolygonMask(MarkModesEnum markMode,
-                const types::RowCol<size_t>& dims);
+    PolygonMask(MarkModesEnum markMode, const types::RowCol<size_t> &dims);
 
     /*!
      * \param mask An existing polygon mask where true means a valid pixel
@@ -67,8 +66,7 @@ struct CODA_OSS_API PolygonMask final
      * \param dims Dimensions the polygon should be considered over.  Pixels
      * outside of these dimensions will get reported as outside the polygon.
      */
-    PolygonMask(const bool* mask,
-                const types::RowCol<size_t>& dims);
+    PolygonMask(const bool *mask, const types::RowCol<size_t> &dims);
 
     /*!
      * \param points Vector specifying the convex polygon.
@@ -81,16 +79,13 @@ struct CODA_OSS_API PolygonMask final
      *
      * \throws Exception if polygon is concave
      */
-    PolygonMask(const std::vector<types::RowCol<double> >& points,
-                const types::RowCol<size_t>& dims,
-                types::RowCol<sys::SSize_T> offset =
-                        types::RowCol<sys::SSize_T>(0, 0));
+    PolygonMask(const std::vector<types::RowCol<double>> &points, const types::RowCol<size_t> &dims,
+                types::RowCol<sys::SSize_T> offset = types::RowCol<sys::SSize_T>(0, 0));
 
-
-    PolygonMask(const PolygonMask&) = delete;
-    PolygonMask& operator=(const PolygonMask&) = delete;
-    PolygonMask(PolygonMask&&) = delete;
-    PolygonMask& operator=(PolygonMask&&) = delete;
+    PolygonMask(const PolygonMask &) = delete;
+    PolygonMask &operator=(const PolygonMask &) = delete;
+    PolygonMask(PolygonMask &&) = delete;
+    PolygonMask &operator=(PolygonMask &&) = delete;
 
     /*!
      * \param row Row to query
@@ -121,7 +116,7 @@ struct CODA_OSS_API PolygonMask final
      *
      * \return True if the point is inside the polygon, false otherwise
      */
-    bool isInPolygon(const types::RowCol<size_t>& point) const
+    bool isInPolygon(const types::RowCol<size_t> &point) const
     {
         return getRange(point.row).contains(point.col);
     }
@@ -156,14 +151,14 @@ struct CODA_OSS_API PolygonMask final
         return mDims.area() - getNumMaskedPixels();
     }
 
-private:
+  private:
     void checkForAllTrueOrFalseRanges();
 
-private:
+  private:
     MarkModesEnum mMarkMode;
     std::unique_ptr<types::Range[]> mRanges;
     types::RowCol<size_t> mDims;
 };
-}
+} // namespace polygon
 
 #endif // CODA_OSS_polygon_PolygonMask_h_INCLUDED_
