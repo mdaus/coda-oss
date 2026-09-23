@@ -20,12 +20,12 @@
  *
  */
 
+#include <TestCase.h>
 #include <math.h>
+#include <math/Round.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <TestCase.h>
-#include <math/Round.h>
 
 TEST_CASE(testFix)
 {
@@ -175,9 +175,4 @@ TEST_CASE(testCeilingDivide)
     TEST_THROWS(math::ceilingDivide(n3, d3));
 }
 
-TEST_MAIN(
-    TEST_CHECK(testFix);
-    TEST_CHECK(testRound);
-    TEST_CHECK(testRoundDigits);
-    TEST_CHECK(testCeilingDivide);
-    )
+TEST_MAIN(TEST_CHECK(testFix); TEST_CHECK(testRound); TEST_CHECK(testRoundDigits); TEST_CHECK(testCeilingDivide);)

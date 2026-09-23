@@ -29,4 +29,4 @@
 #include <math/Round.h>
 #include <math/Utilities.h>
 
-#endif  // CODA_OSS_math_import_h_INCLUDED_
+#endif // CODA_OSS_math_import_h_INCLUDED_

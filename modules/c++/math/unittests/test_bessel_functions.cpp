@@ -44,9 +44,4 @@ TEST_CASE(orderFive)
     TEST_ASSERT_ALMOST_EQ(math::besselI(5, 1), 2.71463156e-4);
 }
 
-TEST_MAIN(
-    TEST_CHECK(orderZero);
-    TEST_CHECK(orderOne);
-    TEST_CHECK(orderFive);
-    )
-
+TEST_MAIN(TEST_CHECK(orderZero); TEST_CHECK(orderOne); TEST_CHECK(orderFive);)

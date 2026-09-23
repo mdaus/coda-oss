@@ -36,14 +36,14 @@ double besselI(size_t order, double x)
 {
     switch (order)
     {
-        case 0:
-            return besselIOrderZero(x);
+    case 0:
+        return besselIOrderZero(x);
 
-        case 1:
-            return besselIOrderOne(x);
+    case 1:
+        return besselIOrderOne(x);
 
-        default:
-            return besselIOrderN(order, x);
+    default:
+        return besselIOrderN(order, x);
     }
 }
 
@@ -58,29 +58,23 @@ double besselIOrderZero(double x)
 
     if (ax < 3.75)
     {
-        //Polynomial fit
+        // Polynomial fit
         y = x / 3.75;
         y *= y;
         ans = 1.0 + y * (3.5156229 +
-            y * (3.0899424 +
-                y*(1.2067492 +
-                    y * (0.2659732 +
-                        y * (0.360768e-1 +
-                            y * (0.45813e-2))))));
+                         y * (3.0899424 + y * (1.2067492 + y * (0.2659732 + y * (0.360768e-1 + y * (0.45813e-2))))));
     }
     else
     {
         y = 3.75 / ax;
-        ans = (std::exp(ax) / std::sqrt(ax)) *
+        ans =
+            (std::exp(ax) / std::sqrt(ax)) *
             (0.39894228 +
-                y * (0.1328592e-1 +
-                    y * (0.225319e-2 +
-                        y * (-0.157565e-2 +
-                            y * (0.916281e-2 +
-                                y * (-0.2057706e-1 +
-                                    y * (0.2635537e-1 +
-                                        y * (-0.1647633e-1 +
-                                            y * (0.392377e-2)))))))));
+             y * (0.1328592e-1 +
+                  y * (0.225319e-2 +
+                       y * (-0.157565e-2 +
+                            y * (0.916281e-2 + y * (-0.2057706e-1 +
+                                                    y * (0.2635537e-1 + y * (-0.1647633e-1 + y * (0.392377e-2)))))))));
     }
     return ans;
 }
@@ -99,33 +93,21 @@ double besselIOrderOne(double x)
         // polynomial fit
         y = x / 3.75;
         y *= y;
-        ans = ax * (0.5 +
-            y * (0.87890594 +
-                 y * (0.51498869 +
-                     y * (0.15084934 +
-                         y * (0.2658733e-1 +
-                             y * (0.301532e-2 +
-                                 y * (0.32411e-3)))))));
-     }
-     else
-     {
-         y = 3.75 / ax;
-         ans = 0.2282967e-1 +
-             y * (-0.2895312e-1 +
-                 y * (0.1787654e-1 -
-                     y * 0.420059e-2));
+        ans = ax * (0.5 + y * (0.87890594 +
+                               y * (0.51498869 +
+                                    y * (0.15084934 + y * (0.2658733e-1 + y * (0.301532e-2 + y * (0.32411e-3)))))));
+    }
+    else
+    {
+        y = 3.75 / ax;
+        ans = 0.2282967e-1 + y * (-0.2895312e-1 + y * (0.1787654e-1 - y * 0.420059e-2));
 
-         // Note that ans is a term at the very end of this expression
-         ans = 0.39894228 +
-             y * (-0.3988024e-1 +
-                 y * (-0.362018e-2 +
-                     y * (0.163801e-2 +
-                         y * (-0.1031555e-1 +
-                             y * ans))));
+        // Note that ans is a term at the very end of this expression
+        ans = 0.39894228 + y * (-0.3988024e-1 + y * (-0.362018e-2 + y * (0.163801e-2 + y * (-0.1031555e-1 + y * ans))));
 
-         ans *= (std::exp(ax) / std::sqrt(ax));
-     }
-     return x < 0.0 ? -ans : ans;
+        ans *= (std::exp(ax) / std::sqrt(ax));
+    }
+    return x < 0.0 ? -ans : ans;
 }
 
 /*!
@@ -147,7 +129,7 @@ double besselIOrderN(size_t order, double x)
     double ans = 0;
     double bi = 1.0;
 
-    //Downward recurrence from even n
+    // Downward recurrence from even n
     for (size_t jj = 2 * (order + int(std::sqrt(ACC * static_cast<double>(order)))); jj > 0; jj--)
     {
         double bim = bip + (static_cast<double>(jj) * tox * bi);
@@ -155,7 +137,7 @@ double besselIOrderN(size_t order, double x)
         bi = bim;
         std::ignore = std::frexp(bi, &k);
 
-        //Renormalize to prevent overflow
+        // Renormalize to prevent overflow
         if (k > IEXP)
         {
             ans = std::ldexp(ans, -IEXP);
@@ -167,9 +149,8 @@ double besselIOrderN(size_t order, double x)
             ans = bip;
         }
     }
-    //Normalize
+    // Normalize
     ans *= besselIOrderZero(x) / bi;
     return x < 0 && (order & 1) ? -ans : ans;
 }
-}
-
+} // namespace math

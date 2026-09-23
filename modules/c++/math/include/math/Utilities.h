@@ -23,12 +23,12 @@
 #ifndef __MATH_UTILITIES_H__
 #define __MATH_UTILITIES_H__
 
-#include <stdlib.h>
-#include <math.h>
 #include <cmath>
+#include <math.h>
+#include <stdlib.h>
 
-#include <sys/Conf.h>
 #include "config/Exports.h"
+#include <sys/Conf.h>
 
 namespace math
 {
@@ -37,8 +37,7 @@ namespace math
  * \param val A signed number
  * \return 1 if val is positive, -1 if negative, 0 otherwise
  */
-template <typename T>
-inline constexpr int sign(T val) noexcept
+template <typename T> inline constexpr int sign(T val) noexcept
 {
     return val < 0 ? -1 : val > 0 ? 1 : 0;
 }
@@ -65,9 +64,9 @@ template <typename T> inline bool isNaN(T value) noexcept
 }
 
 // https://man7.org/linux/man-pages/man3/sincos.3.html
-CODA_OSS_API void SinCos(float angle, float& sin, float& cos) noexcept;
-CODA_OSS_API void SinCos(double angle, double& sin, double& cos) noexcept;
-CODA_OSS_API void SinCos(long double angle, long double& sin, long double& cos) noexcept;
+CODA_OSS_API void SinCos(float angle, float &sin, float &cos) noexcept;
+CODA_OSS_API void SinCos(double angle, double &sin, double &cos) noexcept;
+CODA_OSS_API void SinCos(long double angle, long double &sin, long double &cos) noexcept;
 
 /*
  * Calculate the binomial coefficient
@@ -78,7 +77,6 @@ CODA_OSS_API void SinCos(long double angle, long double& sin, long double& cos) 
  * \return n choose k
  */
 CODA_OSS_API sys::Uint64_T nChooseK(size_t n, size_t k);
-}
+} // namespace math
 
 #endif
-

@@ -20,14 +20,14 @@
  *
  */
 
+#include "TestCase.h"
 #include <math/ConvexHull.h>
 #include <sys/Conf.h>
-#include "TestCase.h"
 
 TEST_CASE(testConvexHull)
 {
     // Add in all the points
-    std::vector<types::RowCol<sys::Int64_T> > inputPoints;
+    std::vector<types::RowCol<sys::Int64_T>> inputPoints;
     inputPoints.push_back(types::RowCol<sys::Int64_T>(90, 97));
     inputPoints.push_back(types::RowCol<sys::Int64_T>(10, 27));
     inputPoints.push_back(types::RowCol<sys::Int64_T>(8, 59));
@@ -51,11 +51,11 @@ TEST_CASE(testConvexHull)
 
     // Compute the convex hull
     /// @note  This is destructive to input points
-    std::vector<types::RowCol<sys::Int64_T> > convexHull;
+    std::vector<types::RowCol<sys::Int64_T>> convexHull;
     math::ConvexHull<sys::Int64_T>(inputPoints, convexHull);
 
     // Generate the expected points
-    std::vector<types::RowCol<sys::Int64_T> > expectedConvexHull;
+    std::vector<types::RowCol<sys::Int64_T>> expectedConvexHull;
     expectedConvexHull.push_back(types::RowCol<sys::Int64_T>(21, 16));
     expectedConvexHull.push_back(types::RowCol<sys::Int64_T>(10, 27));
     expectedConvexHull.push_back(types::RowCol<sys::Int64_T>(8, 59));
@@ -75,6 +75,4 @@ TEST_CASE(testConvexHull)
     }
 }
 
-TEST_MAIN(
-    TEST_CHECK(testConvexHull);
-)
+TEST_MAIN(TEST_CHECK(testConvexHull);)

@@ -24,12 +24,12 @@
 #if !_WIN32 // TODO: what about Apple?
 // https://man7.org/linux/man-pages/man3/sincos.3.html
 #if !defined(_GNU_SOURCE)
-#define _GNU_SOURCE         /* See feature_test_macros(7) */
-#endif // _GNU_SOURCE
-#endif // _WIN32
+#define _GNU_SOURCE /* See feature_test_macros(7) */
+#endif              // _GNU_SOURCE
+#endif              // _WIN32
 
-#include <math.h>
 #include <cmath>
+#include <math.h>
 
 #include <except/Exception.h>
 #include <str/Convert.h>
@@ -41,7 +41,8 @@ sys::Uint64_T nChooseK(size_t n, size_t k)
     if (n < k)
     {
         throw except::Exception(Ctxt("n Choose k undefined for n < k.\n"
-                "n: " + std::to_string(n) + " k: " + std::to_string(k)));
+                                     "n: " +
+                                     std::to_string(n) + " k: " + std::to_string(k)));
     }
 
     // Algorithm to compute n Choose k without using factorials found here:
@@ -55,44 +56,44 @@ sys::Uint64_T nChooseK(size_t n, size_t k)
     }
     return coefficient;
 }
-}
+} // namespace math
 
-inline void sincosf_(float x, float& sin, float& cos)
+inline void sincosf_(float x, float &sin, float &cos)
 {
-    #if !_WIN32 // TODO: what about Apple?
+#if !_WIN32 // TODO: what about Apple?
     sincosf(x, &sin, &cos);
-    #else
+#else
     sin = std::sin(x);
     cos = std::cos(x);
-    #endif
+#endif
 }
-inline void sincos_(double x, double& sin, double& cos)
+inline void sincos_(double x, double &sin, double &cos)
 {
-#if !_WIN32  // TODO: what about Apple?
+#if !_WIN32 // TODO: what about Apple?
     sincos(x, &sin, &cos);
 #else
     sin = std::sin(x);
     cos = std::cos(x);
 #endif
 }
-inline void sincosl_(long double x, long double& sin, long double& cos)
+inline void sincosl_(long double x, long double &sin, long double &cos)
 {
-#if !_WIN32  // TODO: what about Apple?
+#if !_WIN32 // TODO: what about Apple?
     sincosl(x, &sin, &cos);
 #else
     sin = std::sin(x);
     cos = std::cos(x);
 #endif
 }
-void math::SinCos(float x, float& sin, float& cos) noexcept
+void math::SinCos(float x, float &sin, float &cos) noexcept
 {
     sincosf_(x, sin, cos);
 }
-void math::SinCos(double x, double& sin, double& cos) noexcept
+void math::SinCos(double x, double &sin, double &cos) noexcept
 {
     sincos_(x, sin, cos);
 }
-void math::SinCos(long double x, long double& sin, long double& cos) noexcept
+void math::SinCos(long double x, long double &sin, long double &cos) noexcept
 {
     sincosl_(x, sin, cos);
 }

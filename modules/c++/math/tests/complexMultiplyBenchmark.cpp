@@ -42,34 +42,32 @@
 */
 
 /*  Results:
-        When using the non looping benchmark, aka for large continuous data 
-    sets, it was approximately the same for both methods 
+        When using the non looping benchmark, aka for large continuous data
+    sets, it was approximately the same for both methods
 */
 
 #include <algorithm>
+#include <complex>
 #include <cstdlib>
 #include <ctime>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
-#include <complex>
-#include <vector>
-#include <sys/StopWatch.h>
 #include <str/Convert.h>
+#include <sys/StopWatch.h>
+#include <vector>
 
 const size_t NUM_TRIALS = 4;
 const size_t MAX_SIZE = SIZE_MAX;
 
-//Limits num so that it is less than 100
-template<typename T>
-void limit(T & num)
+// Limits num so that it is less than 100
+template <typename T> void limit(T &num)
 {
     while (100 < num)
     {
         num /= 10;
     }
 }
-
 
 /*
  *  \purpose
@@ -86,32 +84,29 @@ void limit(T & num)
  *      duration: The amount of time the operation took according to wtch
  *      return value: The mean of the vector
  */
-void getMultWComplex(sys::RealTimeStopWatch& wtch,
-                     const std::vector<std::complex<float> >& in,
-                     size_t sze,
-                     double& duration,
-                     size_t numLoops = 1)
+void getMultWComplex(sys::RealTimeStopWatch &wtch, const std::vector<std::complex<float>> &in, size_t sze,
+                     double &duration, size_t numLoops = 1)
 {
-    //declare starting point
-    std::vector<std::complex<float> > out (sze, 0);
+    // declare starting point
+    std::vector<std::complex<float>> out(sze, 0);
     double dblFactor = 1.23486;
     float factor = static_cast<float>(dblFactor);
     double incFact = .0000001;
-    //start the watch
+    // start the watch
     wtch.start();
 
-    //find the mean
-    for(size_t j = 0; j < numLoops; ++j)
+    // find the mean
+    for (size_t j = 0; j < numLoops; ++j)
     {
         for (size_t i = 0; i < sze; ++i)
         {
-            out[i] = in[i] *  factor;
+            out[i] = in[i] * factor;
             dblFactor += incFact;
             factor = static_cast<float>(dblFactor);
         }
     }
 
-    //stop the watch and record the duration
+    // stop the watch and record the duration
     duration = wtch.stop();
 }
 
@@ -131,24 +126,21 @@ void getMultWComplex(sys::RealTimeStopWatch& wtch,
  *      duration: The amount of time the operation took according to wtch
  *      return value: The mean of the vector
  */
-void getMultWDouble(sys::RealTimeStopWatch& wtch,
-                    const std::vector<std::complex<float> >& in,
-                    size_t sze,
-                    double& duration,
-                    size_t numLoops = 1)
+void getMultWDouble(sys::RealTimeStopWatch &wtch, const std::vector<std::complex<float>> &in, size_t sze,
+                    double &duration, size_t numLoops = 1)
 {
-    //declare starting values
+    // declare starting values
     float I = 0.0;
     float Q = 0.0;
-    std::vector<std::complex<float> > out (sze, 0);
+    std::vector<std::complex<float>> out(sze, 0);
     double dblFactor = 1.23486;
     float factor = static_cast<float>(dblFactor);
     double incFact = .0000001;
 
-    //start the watch
+    // start the watch
     wtch.start();
 
-    //find the mean
+    // find the mean
     for (size_t j = 0; j < numLoops; ++j)
     {
         for (size_t i = 0; i < sze; ++i)
@@ -162,20 +154,15 @@ void getMultWDouble(sys::RealTimeStopWatch& wtch,
         }
     }
 
-    //stop the watch and record the duration;
+    // stop the watch and record the duration;
     duration = wtch.stop();
-
-
 }
 
-//Prints out the results in a table format
-void print(std::ostream& out, size_t sze, double durOne, double durTwo)
+// Prints out the results in a table format
+void print(std::ostream &out, size_t sze, double durOne, double durTwo)
 {
-    out << std::setw(15) << sze
-        << std::setw(15) << durOne/1000
-        << std::setw(25) << durTwo/1000 << std::endl;
+    out << std::setw(15) << sze << std::setw(15) << durOne / 1000 << std::setw(25) << durTwo / 1000 << std::endl;
 }
-
 
 /*
  *  \purpose
@@ -190,15 +177,12 @@ void print(std::ostream& out, size_t sze, double durOne, double durTwo)
  *  \output
  *      out: an ostringstream that stores the output from the simulations
  */
-void loopingBenchmark(size_t size,
-                      size_t growthFactor,
-                      size_t numGrowths,
-                      std::ostringstream& out)
+void loopingBenchmark(size_t size, size_t growthFactor, size_t numGrowths, std::ostringstream &out)
 {
-    //declare the vector
-    std::vector<std::complex<float> > arr(size);
+    // declare the vector
+    std::vector<std::complex<float>> arr(size);
 
-    //fill the vector based on a random number
+    // fill the vector based on a random number
     srand(static_cast<unsigned int>(time(nullptr)));
 
     auto real = static_cast<float>(rand() % 100 + 1);
@@ -207,8 +191,8 @@ void loopingBenchmark(size_t size,
     arr[0] = std::complex<float>(real, imag);
     for (size_t i = 0; i < size; ++i)
     {
-        real += arr[i-1].real() + arr[i-1].imag();
-        imag += arr[i-1].imag() * arr[i-1].real();
+        real += arr[i - 1].real() + arr[i - 1].imag();
+        imag += arr[i - 1].imag() * arr[i - 1].real();
 
         limit(real);
         limit(imag);
@@ -216,7 +200,7 @@ void loopingBenchmark(size_t size,
         arr[i] = std::complex<float>(real, imag);
     }
 
-    //run the simulation
+    // run the simulation
     size_t numLoops = 1;
     for (size_t i = 0; i < numGrowths; ++i)
     {
@@ -226,44 +210,42 @@ void loopingBenchmark(size_t size,
         double cmplxTime;
         double dblTime;
 
-        for(size_t k = 0; k < NUM_TRIALS; ++k)
+        for (size_t k = 0; k < NUM_TRIALS; ++k)
         {
-            //find the complex mean
+            // find the complex mean
             getMultWComplex(cmplxWatch, arr, size, cmplxTime, numLoops);
 
-            //find the mean using doubles
+            // find the mean using doubles
             getMultWDouble(dblWatch, arr, size, dblTime, numLoops);
 
-            //output the results
+            // output the results
             print(out, size * numLoops, cmplxTime, dblTime);
         }
-        //simulate vector size growth
+        // simulate vector size growth
         numLoops *= growthFactor;
 
-        //return if growth simulated would be too large to handle
+        // return if growth simulated would be too large to handle
         if (sizeof(std::complex<float>) * size * numLoops > MAX_SIZE)
         {
             std::cout << "ending early to prevent growth spiraling" << std::endl;
             return;
         }
-
     }
 }
 
-//determines how large the vector will actually grow for preallocation
+// determines how large the vector will actually grow for preallocation
 size_t decideSize(size_t initSize, size_t growthFactor, size_t numGrowths)
 {
-    //setup size calculation variables
-    const size_t MAX_SZE = MAX_SIZE / (sizeof( std::complex<float>));
-    auto largestPosGrowth = static_cast<size_t>(
-        initSize * std::pow(static_cast<double>(growthFactor),
-                            static_cast<double>(numGrowths)));
+    // setup size calculation variables
+    const size_t MAX_SZE = MAX_SIZE / (sizeof(std::complex<float>));
+    auto largestPosGrowth =
+        static_cast<size_t>(initSize * std::pow(static_cast<double>(growthFactor), static_cast<double>(numGrowths)));
     size_t largestPosSize = std::min(largestPosGrowth, MAX_SZE);
 
-    //if growth is too high, find last growth less than MaxSize
+    // if growth is too high, find last growth less than MaxSize
     if (largestPosSize == MAX_SZE)
     {
-        //simulate scaling until scaling would exceed MAX_SIZE
+        // simulate scaling until scaling would exceed MAX_SIZE
         while (largestPosSize * growthFactor < MAX_SZE)
         {
             largestPosSize *= growthFactor;
@@ -285,38 +267,35 @@ size_t decideSize(size_t initSize, size_t growthFactor, size_t numGrowths)
  *  \output
  *      out: an ostringstream that stores the output from the simulations
  */
-void singlePassBenchmark(size_t size,
-                         size_t growthFactor,
-                         size_t numGrowths,
-                         std::ostringstream& out)
+void singlePassBenchmark(size_t size, size_t growthFactor, size_t numGrowths, std::ostringstream &out)
 {
-    //Determine end size of Vector
+    // Determine end size of Vector
     size_t endSize = decideSize(size, growthFactor, numGrowths);
 
-    //Initialize the vector ahead of time and then fill it
-    std::vector<std::complex<float> > arr;
+    // Initialize the vector ahead of time and then fill it
+    std::vector<std::complex<float>> arr;
     arr.reserve(endSize);
 
     srand(static_cast<unsigned int>(time(nullptr)));
 
-    auto real =  static_cast<float>(rand() % 100 + 1);
-    auto imag =  static_cast<float>(rand() % 100 + 1);
+    auto real = static_cast<float>(rand() % 100 + 1);
+    auto imag = static_cast<float>(rand() % 100 + 1);
 
     arr.push_back(std::complex<float>(real, imag));
 
     for (size_t j = 1; j < endSize; ++j)
     {
-        real += (arr[j-1].real() + arr[j-1].imag());
-        imag += (arr[j-1].imag() * arr[j-1].real());
+        real += (arr[j - 1].real() + arr[j - 1].imag());
+        imag += (arr[j - 1].imag() * arr[j - 1].real());
 
-        //limit the range of the variables
+        // limit the range of the variables
         limit(real);
         limit(imag);
 
         arr.push_back(std::complex<float>(real, imag));
     }
 
-    //run the simulation
+    // run the simulation
     for (size_t i = 0; i < numGrowths; ++i)
     {
 
@@ -327,45 +306,42 @@ void singlePassBenchmark(size_t size,
         double dblTime;
         for (size_t k = 0; k < NUM_TRIALS; ++k)
         {
-            //find the mena using complex values
+            // find the mena using complex values
             getMultWComplex(cmplxWatch, arr, size, cmplxTime);
-            
-            //find the mean using doubles
+
+            // find the mean using doubles
             getMultWDouble(dblWatch, arr, size, dblTime);
 
-            //output the results
+            // output the results
             print(out, size, cmplxTime, dblTime);
         }
 
-        //increase size of vector
+        // increase size of vector
         size *= growthFactor;
 
-        //return if growth gets too large
+        // return if growth gets too large
         if (sizeof(std::complex<float>) * size > 10E10)
         {
             std::cout << "ending early to prevent growth spiraling" << std::endl;
             return;
         }
     }
-
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     if (argc != 4 && argc != 5)
     {
         std::cerr << "ERROR, incorrect calling" << std::endl;
         std::cerr << "use ./test <InitialArraySize>  <growthFactor>"
-                  << " <numberOfIterations> [Loop?]"
-                  << std::endl
+                  << " <numberOfIterations> [Loop?]" << std::endl
                   << "a 1 in the Loop? spot means use looping benchmark"
                   << ".  The looping benchmark changes the behavior and"
-                  << " can change the results, but allows for less memory usage"
-                  << std::endl;
+                  << " can change the results, but allows for less memory usage" << std::endl;
         return 1;
     }
 
-    //read in commandline arguements
+    // read in commandline arguements
     size_t sze = str::toType<size_t>(argv[1]);
     size_t growthFactor = str::toType<size_t>(argv[2]);
     size_t numIter = str::toType<size_t>(argv[3]);
@@ -375,13 +351,13 @@ int main(int argc, char** argv)
         toLoop = str::toType<size_t>(argv[4]);
     }
 
-    //setup ostringstream
+    // setup ostringstream
     std::ostringstream out;
     out << std::setprecision(5);
     out.setf(std::ios::fixed);
     out.setf(std::ios::left);
 
-    //run the appropriate simulation
+    // run the appropriate simulation
     if (toLoop == 1)
     {
         loopingBenchmark(sze, growthFactor, numIter, out);
@@ -391,6 +367,6 @@ int main(int argc, char** argv)
         singlePassBenchmark(sze, growthFactor, numIter, out);
     }
 
-    //output the results
+    // output the results
     std::cout << out.str() << std::endl;
 }

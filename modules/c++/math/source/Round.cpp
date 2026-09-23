@@ -34,4 +34,4 @@ size_t ceilingDivide(size_t numerator, size_t denominator)
     }
     return (numerator / denominator) + (numerator % denominator != 0);
 }
-}
+} // namespace math

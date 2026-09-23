@@ -49,7 +49,6 @@ CODA_OSS_API double besselIOrderOne(double x);
  * Modified Bessel function of the first kind, order n > 1
  */
 CODA_OSS_API double besselIOrderN(size_t order, double x);
-}
+} // namespace math
 
 #endif
-
