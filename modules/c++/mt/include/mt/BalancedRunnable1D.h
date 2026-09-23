@@ -22,15 +22,15 @@
 #ifndef __MT_BALANCED_RUNNABLE_1D_H__
 #define __MT_BALANCED_RUNNABLE_1D_H__
 
-#include <vector>
 #include <sstream>
+#include <vector>
 
+#include <except/Exception.h>
+#include <mt/ThreadGroup.h>
+#include <mt/ThreadPlanner.h>
+#include <sys/AtomicCounter.h>
 #include <sys/Conf.h>
 #include <sys/Runnable.h>
-#include <sys/AtomicCounter.h>
-#include <except/Exception.h>
-#include <mt/ThreadPlanner.h>
-#include <mt/ThreadGroup.h>
 
 namespace mt
 {
@@ -49,11 +49,9 @@ namespace mt
  *  terminate earlier than other threads.
  *
  */
-template <typename OpT>
-class BalancedRunnable1D : public sys::Runnable
+template <typename OpT> class BalancedRunnable1D : public sys::Runnable
 {
-public:
-
+  public:
     /*!
      *  Constructor
      *
@@ -65,12 +63,8 @@ public:
      *  \param op Functor to use
      *
      */
-    BalancedRunnable1D(size_t numElements,
-                       sys::AtomicCounter& atomicCounter,
-                       const OpT& op) :
-        mNumElements(numElements),
-        mCounter(atomicCounter),
-        mOp(op)
+    BalancedRunnable1D(size_t numElements, sys::AtomicCounter &atomicCounter, const OpT &op)
+        : mNumElements(numElements), mCounter(atomicCounter), mOp(op)
     {
     }
 
@@ -90,10 +84,10 @@ public:
         }
     }
 
-private:
+  private:
     const size_t mNumElements;
-    sys::AtomicCounter& mCounter;
-    const OpT& mOp;
+    sys::AtomicCounter &mCounter;
+    const OpT &mOp;
 };
 
 /*!
@@ -116,10 +110,7 @@ private:
  *  \param numThreads Number of threads
  *  \param op Functor to use
  */
-template <typename OpT>
-void runBalanced1D(size_t numElements,
-                   size_t numThreads,
-                   const OpT& op)
+template <typename OpT> void runBalanced1D(size_t numElements, size_t numThreads, const OpT &op)
 {
     sys::AtomicCounter counter(0);
     if (numThreads <= 1)
@@ -131,8 +122,7 @@ void runBalanced1D(size_t numElements,
         ThreadGroup threads;
         for (size_t ii = 0; ii < numThreads; ++ii)
         {
-            threads.createThread(new BalancedRunnable1D<OpT>(
-                     numElements, counter, op));
+            threads.createThread(new BalancedRunnable1D<OpT>(numElements, counter, op));
         }
         threads.joinAll();
     }
@@ -148,17 +138,13 @@ void runBalanced1D(size_t numElements,
  *  \param numThreads Number of threads
  *  \param ops Vector of functors to use
  */
-template <typename OpT>
-void runBalanced1D(size_t numElements,
-                   size_t numThreads,
-                   const std::vector<OpT>& ops)
+template <typename OpT> void runBalanced1D(size_t numElements, size_t numThreads, const std::vector<OpT> &ops)
 {
     sys::AtomicCounter counter(0);
     if (ops.size() != numThreads)
     {
         std::ostringstream ostr;
-        ostr << "Got " << numThreads << " threads but " << ops.size()
-             << " functors";
+        ostr << "Got " << numThreads << " threads but " << ops.size() << " functors";
         throw except::Exception(Ctxt(ostr));
     }
 
@@ -171,8 +157,7 @@ void runBalanced1D(size_t numElements,
         ThreadGroup threads;
         for (size_t ii = 0; ii < numThreads; ++ii)
         {
-            threads.createThread(new BalancedRunnable1D<OpT>(
-                    numElements, counter, ops[ii]));
+            threads.createThread(new BalancedRunnable1D<OpT>(numElements, counter, ops[ii]));
         }
 
         threads.joinAll();
@@ -190,14 +175,11 @@ void runBalanced1D(size_t numElements,
  *  \param numThreads Number of threads
  *  \param op Functor to use
  */
-template <typename OpT>
-void runBalanced1DWithCopies(size_t numElements,
-                             size_t numThreads,
-                             const OpT& op)
+template <typename OpT> void runBalanced1DWithCopies(size_t numElements, size_t numThreads, const OpT &op)
 {
     const std::vector<OpT> ops(numThreads, op);
     runBalanced1D(numElements, numThreads, ops);
 }
-}
+} // namespace mt
 
 #endif

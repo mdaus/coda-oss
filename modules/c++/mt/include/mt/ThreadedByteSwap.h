@@ -5,8 +5,8 @@
 
 #include "sys/ByteSwap.h"
 
-#include "ThreadPlanner.h"
 #include "ThreadGroup.h"
+#include "ThreadPlanner.h"
 
 namespace mt
 {
@@ -18,7 +18,7 @@ namespace mt
  * \param numElements Number of elements in 'buffer'
  * \param numThreads Number of threads to use for byte-swapping
  */
-inline void threadedByteSwap(void* buffer, size_t elemSize, size_t numElements, size_t numThreads)
+inline void threadedByteSwap(void *buffer, size_t elemSize, size_t numElements, size_t numThreads)
 {
     if (numThreads <= 1)
     {
@@ -34,11 +34,8 @@ inline void threadedByteSwap(void* buffer, size_t elemSize, size_t numElements, 
         size_t numElementsThisThread(0);
         while (planner.getThreadInfo(threadNum++, startElement, numElementsThisThread))
         {
-            auto thread = std::make_unique<sys::ByteSwapRunnable>(
-                    buffer,
-                    elemSize,
-                    startElement,
-                    numElementsThisThread);
+            auto thread =
+                std::make_unique<sys::ByteSwapRunnable>(buffer, elemSize, startElement, numElementsThisThread);
 
             threads.createThread(thread.release());
         }
@@ -55,7 +52,8 @@ inline void threadedByteSwap(void* buffer, size_t elemSize, size_t numElements, 
  * \param numThreads Number of threads to use for byte-swapping
  * \param outputBuffer buffer to write into
  */
-inline void threadedByteSwap(const void* buffer, size_t elemSize, size_t numElements, size_t numThreads, void* outputBuffer)
+inline void threadedByteSwap(const void *buffer, size_t elemSize, size_t numElements, size_t numThreads,
+                             void *outputBuffer)
 {
     if (numThreads <= 1)
     {
@@ -71,19 +69,14 @@ inline void threadedByteSwap(const void* buffer, size_t elemSize, size_t numElem
         size_t numElementsThisThread(0);
         while (planner.getThreadInfo(threadNum++, startElement, numElementsThisThread))
         {
-            auto thread = std::make_unique<sys::ByteSwapCopyRunnable>(
-                    buffer,
-                    elemSize,
-                    startElement,
-                    numElementsThisThread,
-                    outputBuffer);
+            auto thread = std::make_unique<sys::ByteSwapCopyRunnable>(buffer, elemSize, startElement,
+                                                                      numElementsThisThread, outputBuffer);
 
             threads.createThread(thread.release());
         }
         threads.joinAll();
-
     }
 }
-}
+} // namespace mt
 
-#endif  // CODA_OSS_mt_ThreadedByteSwap_h_INCLUDED_
+#endif // CODA_OSS_mt_ThreadedByteSwap_h_INCLUDED_

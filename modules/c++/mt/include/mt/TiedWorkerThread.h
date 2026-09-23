@@ -20,13 +20,11 @@
  *
  */
 
-
 #ifndef __MT_TIED_WORKER_THREAD_H__
 #define __MT_TIED_WORKER_THREAD_H__
 
-#include "mt/CPUAffinityThreadInitializer.h"
 #include "mem/SharedPtr.h"
-
+#include "mt/CPUAffinityThreadInitializer.h"
 
 namespace mt
 {
@@ -34,16 +32,13 @@ namespace mt
 /**
  * @created 03-Jan-2007 12:51:46
  */
-template <typename Request_T>
-class TiedWorkerThread : public mt::WorkerThread<Request_T>
+template <typename Request_T> class TiedWorkerThread : public mt::WorkerThread<Request_T>
 {
-public:
-    TiedWorkerThread(
-            mt::RequestQueue<Request_T>* requestQueue,
-            std::unique_ptr<CPUAffinityThreadInitializer>&& cpuAffinityInit =
-                    std::unique_ptr<CPUAffinityThreadInitializer>(nullptr)) :
-        mt::WorkerThread<Request_T>(requestQueue),
-        mCPUAffinityInit(std::move(cpuAffinityInit))
+  public:
+    TiedWorkerThread(mt::RequestQueue<Request_T> *requestQueue,
+                     std::unique_ptr<CPUAffinityThreadInitializer> &&cpuAffinityInit =
+                         std::unique_ptr<CPUAffinityThreadInitializer>(nullptr))
+        : mt::WorkerThread<Request_T>(requestQueue), mCPUAffinityInit(std::move(cpuAffinityInit))
     {
     }
 
@@ -55,13 +50,12 @@ public:
         }
     }
 
-    virtual void performTask(Request_T& request) = 0;
+    virtual void performTask(Request_T &request) = 0;
 
-private:
+  private:
     TiedWorkerThread();
     std::unique_ptr<CPUAffinityThreadInitializer> mCPUAffinityInit;
 };
 
-}
+} // namespace mt
 #endif
-

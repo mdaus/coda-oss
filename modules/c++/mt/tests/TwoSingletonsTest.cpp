@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of mt-c++ 
+ * This file is part of mt-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * mt-c++ is free software; you can redistribute it and/or modify
@@ -14,24 +14,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
 #if defined(__APPLE_CC__)
 #include <iostream>
-int main (int, char**)
+int main(int, char **)
 {
     std::cout << "Sorry no semaphores" << std::endl;
     return 0;
 }
 #else
 
-#include <iostream>
-#include <import/sys.h>
 #include <import/mt.h>
+#include <import/sys.h>
+#include <iostream>
 #include <sstream>
 
 using namespace sys;
@@ -39,25 +39,34 @@ using namespace mt;
 
 class Logger
 {
-private:
+  private:
     int num;
     sys::Mutex mutex;
-public:
-    Logger():num(0){ std::cout << "In Logger Constructor." << std::endl; }
-    ~Logger(){ std::cout << "In Logger Destructor." << std::endl; }
+
+  public:
+    Logger() : num(0)
+    {
+        std::cout << "In Logger Constructor." << std::endl;
+    }
+    ~Logger()
+    {
+        std::cout << "In Logger Destructor." << std::endl;
+    }
     void log(std::string msg)
     {
         mt::CriticalSection<sys::Mutex> obtainLock(&mutex);
         std::cout << "INFO[" << num++ << "]: " << msg << std::endl;
     }
 };
-typedef Singleton<Logger, true> LoggerFactory; //this gets deleted at exit
-
+typedef Singleton<Logger, true> LoggerFactory; // this gets deleted at exit
 
 class Counter
 {
-public:
-    Counter() : mCnt(0) { std::cout << "In Counter Constructor." << std::endl; }
+  public:
+    Counter() : mCnt(0)
+    {
+        std::cout << "In Counter Constructor." << std::endl;
+    }
     ~Counter()
     {
         LoggerFactory::getInstance().log("In Counter Destructor.");
@@ -68,13 +77,13 @@ public:
         os << "Count: " << ++mCnt;
         LoggerFactory::getInstance().log(os.str());
     }
-protected:
+
+  protected:
     int mCnt;
 };
-typedef Singleton<Counter> AutoIncrementer; //this does NOT get deleted at exit
+typedef Singleton<Counter> AutoIncrementer; // this does NOT get deleted at exit
 
-
-int main (int, char**)
+int main(int, char **)
 {
     AutoIncrementer::getInstance().sayCount();
     AutoIncrementer::getInstance().sayCount();
@@ -88,4 +97,3 @@ int main (int, char**)
 }
 
 #endif
-

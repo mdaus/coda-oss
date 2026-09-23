@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __MT_CPU_AFFINITY_INITIALIZER_LINUX_H__
 #define __MT_CPU_AFFINITY_INITIALIZER_LINUX_H__
 
@@ -30,17 +29,19 @@
 #include <memory>
 #include <vector>
 
-#include <sys/ScopedCPUAffinityUnix.h>
+#include <mem/SharedPtr.h>
 #include <mt/AbstractCPUAffinityInitializer.h>
 #include <mt/CPUAffinityThreadInitializerLinux.h>
-#include <mem/SharedPtr.h>
+#include <sys/ScopedCPUAffinityUnix.h>
 
 namespace mt
 {
 struct AbstractNextCPUProviderLinux
 {
     virtual std::unique_ptr<const sys::ScopedCPUMaskUnix> nextCPU() = 0;
-    virtual ~AbstractNextCPUProviderLinux() {}
+    virtual ~AbstractNextCPUProviderLinux()
+    {
+    }
 };
 
 /*!
@@ -49,8 +50,7 @@ struct AbstractNextCPUProviderLinux
  */
 class CPUAffinityInitializerLinux : public AbstractCPUAffinityInitializer
 {
-public:
-
+  public:
     /*!
      * Constructor that uses the available CPUs (possibly restricted
      * via taskset) to set affinities
@@ -72,21 +72,19 @@ public:
      */
     std::unique_ptr<CPUAffinityThreadInitializerLinux> newThreadInitializer()
     {
-        return std::unique_ptr<CPUAffinityThreadInitializerLinux>(
-                newThreadInitializerImpl());
+        return std::unique_ptr<CPUAffinityThreadInitializerLinux>(newThreadInitializerImpl());
     }
 
-private:
-    CPUAffinityThreadInitializerLinux* newThreadInitializerImpl() override
+  private:
+    CPUAffinityThreadInitializerLinux *newThreadInitializerImpl() override
     {
         return new CPUAffinityThreadInitializerLinux(mCPUProvider->nextCPU());
     }
 
     std::unique_ptr<AbstractNextCPUProviderLinux> mCPUProvider;
 };
-}
+} // namespace mt
 
 #endif
 #endif
 #endif
-

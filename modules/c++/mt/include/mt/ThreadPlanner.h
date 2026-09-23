@@ -35,7 +35,7 @@ namespace mt
  */
 class CODA_OSS_API ThreadPlanner
 {
-public:
+  public:
     /*!
      * Constructor
      *
@@ -74,9 +74,7 @@ public:
      * this would not have sped up the calculation since we'd still have to
      * wait for one thread to operate on 10 elements.
      */
-    bool getThreadInfo(size_t threadNum,
-                       size_t& startElement,
-                       size_t& numElementsThisThread) const;
+    bool getThreadInfo(size_t threadNum, size_t &startElement, size_t &numElementsThisThread) const;
 
     /*!
      * Provides the number of threads that will actually be used.  For example,
@@ -86,12 +84,11 @@ public:
      */
     size_t getNumThreadsThatWillBeUsed() const;
 
-private:
-   size_t mNumElements;
-   size_t mNumThreads;
-   size_t mNumElementsPerThread;
+  private:
+    size_t mNumElements;
+    size_t mNumThreads;
+    size_t mNumElementsPerThread;
 };
-}
+} // namespace mt
 
 #endif
-

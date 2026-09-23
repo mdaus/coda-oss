@@ -5,9 +5,7 @@
 
 namespace mt
 {
-ThreadPlanner::ThreadPlanner(size_t numElements, size_t numThreads) :
-    mNumElements(numElements),
-    mNumThreads(numThreads)
+ThreadPlanner::ThreadPlanner(size_t numElements, size_t numThreads) : mNumElements(numElements), mNumThreads(numThreads)
 {
     // If we got lucky and the work divides up evenly, every thread simply
     // gets numElements / numThreads elements of work
@@ -17,20 +15,17 @@ ThreadPlanner::ThreadPlanner(size_t numElements, size_t numThreads) :
     mNumElementsPerThread = math::ceilingDivide(mNumElements, mNumThreads);
 }
 
-bool ThreadPlanner::getThreadInfo(size_t threadNum,
-                                  size_t& startElement,
-                                  size_t& numElementsThisThread) const
+bool ThreadPlanner::getThreadInfo(size_t threadNum, size_t &startElement, size_t &numElementsThisThread) const
 {
     startElement = threadNum * mNumElementsPerThread;
-    if(startElement > mNumElements)
+    if (startElement > mNumElements)
     {
         numElementsThisThread = 0;
     }
     else
     {
         size_t numElementsRemaining = mNumElements - startElement;
-        numElementsThisThread =
-                std::min(mNumElementsPerThread, numElementsRemaining);
+        numElementsThisThread = std::min(mNumElementsPerThread, numElementsRemaining);
     }
     return (numElementsThisThread != 0);
 }
@@ -43,10 +38,9 @@ size_t ThreadPlanner::getNumThreadsThatWillBeUsed() const
     }
     else
     {
-        const size_t numThreads =
-                math::ceilingDivide(mNumElements, mNumElementsPerThread);
+        const size_t numThreads = math::ceilingDivide(mNumElements, mNumElementsPerThread);
 
         return numThreads;
     }
 }
-}
+} // namespace mt

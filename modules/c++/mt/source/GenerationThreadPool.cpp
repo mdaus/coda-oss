@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of mt-c++ 
+ * This file is part of mt-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * mt-c++ is free software; you can redistribute it and/or modify
@@ -14,24 +14,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #include "mt/GenerationThreadPool.h"
 #if !defined(__APPLE_CC__)
 
-mt::TiedRequestHandler::~TiedRequestHandler() 
+mt::TiedRequestHandler::~TiedRequestHandler()
 {
     if (mAffinityInit)
     {
-	delete mAffinityInit;
-	mAffinityInit = nullptr;
+        delete mAffinityInit;
+        mAffinityInit = nullptr;
     }
-    
 }
 
 // If we have a thread initializer, tie down our handler to a CPU
@@ -39,7 +37,7 @@ void mt::TiedRequestHandler::initialize()
 {
     if (mAffinityInit)
     {
-	mAffinityInit->initialize();
+        mAffinityInit->initialize();
     }
 }
 void mt::TiedRequestHandler::run()
@@ -48,45 +46,46 @@ void mt::TiedRequestHandler::run()
     initialize();
 
     while (true)
-    {   
-	// Pull a runnable off the queue
-	sys::Runnable *handler = nullptr;
-	
-	mRequestQueue->dequeue(handler);
-	if (!handler) return;
-	
-	// Run the runnable that we pulled off the queue
-	handler->run();
-	
-	// Delete the runnable we pulled off the queue
-	delete handler;
-	
-	// Signal to the thread pool that we are done
-	// This will allow 1 wait() to complete
-	mSem->signal();
+    {
+        // Pull a runnable off the queue
+        sys::Runnable *handler = nullptr;
+
+        mRequestQueue->dequeue(handler);
+        if (!handler)
+            return;
+
+        // Run the runnable that we pulled off the queue
+        handler->run();
+
+        // Delete the runnable we pulled off the queue
+        delete handler;
+
+        // Signal to the thread pool that we are done
+        // This will allow 1 wait() to complete
+        mSem->signal();
     }
 }
 
-// Not set up for multiple producers 
-void mt::GenerationThreadPool::addGroup(const std::vector<sys::Runnable*>& toRun)
+// Not set up for multiple producers
+void mt::GenerationThreadPool::addGroup(const std::vector<sys::Runnable *> &toRun)
 {
-    
+
     if (mGenSize)
-	throw mt::ThreadPoolException(Ctxt("The previous generation has not completed!"));
-    
+        throw mt::ThreadPoolException(Ctxt("The previous generation has not completed!"));
+
     mGenSize = static_cast<int>(toRun.size());
     for (int i = 0; i < mGenSize; ++i)
-	addRequest(toRun[i]);
+        addRequest(toRun[i]);
 }
 
-// Not set up for multiple producers 
+// Not set up for multiple producers
 void mt::GenerationThreadPool::waitGroup()
 {
     while (mGenSize)
     {
-	mGenerationSync.wait();
-	//std::cout << "Waited" << std::endl;
-	--mGenSize;
+        mGenerationSync.wait();
+        // std::cout << "Waited" << std::endl;
+        --mGenSize;
     }
 }
 
@@ -96,9 +95,8 @@ void mt::GenerationThreadPool::waitGroup()
     static sys::Runnable* shutdown = nullptr;
     for(unsigned int i=0; i < size; i++)
     {
-	addRequest(shutdown);
-    }  
+    addRequest(shutdown);
+    }
 }*/
 
 #endif
-

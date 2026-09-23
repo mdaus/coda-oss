@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __MT_ABSTRACT_CPU_AFFINITY_THREAD_INITIALIZER_H__
 #define __MT_ABSTRACT_CPU_AFFINITY_THREAD_INITIALIZER_H__
 
@@ -40,5 +39,5 @@ struct AbstractCPUAffinityThreadInitializer
      */
     virtual void initialize() = 0;
 };
-}
+} // namespace mt
 #endif

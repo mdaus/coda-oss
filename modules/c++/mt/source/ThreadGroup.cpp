@@ -20,22 +20,19 @@
  *
  */
 
-
-#include <mt/ThreadGroup.h>
 #include <mt/CriticalSection.h>
+#include <mt/ThreadGroup.h>
 
 namespace mt
 {
 #if defined(MT_DEFAULT_PINNING)
-    bool ThreadGroup::DEFAULT_PIN_TO_CPU = true;
+bool ThreadGroup::DEFAULT_PIN_TO_CPU = true;
 #else
-    bool ThreadGroup::DEFAULT_PIN_TO_CPU = false;
+bool ThreadGroup::DEFAULT_PIN_TO_CPU = false;
 #endif
 
-
-ThreadGroup::ThreadGroup(bool pinToCPU) :
-    mAffinityInit(pinToCPU ? new CPUAffinityInitializer() : nullptr),
-    mLastJoined(0)
+ThreadGroup::ThreadGroup(bool pinToCPU)
+    : mAffinityInit(pinToCPU ? new CPUAffinityInitializer() : nullptr), mLastJoined(0)
 {
 }
 
@@ -56,15 +53,12 @@ void ThreadGroup::createThread(sys::Runnable *runnable)
     createThread(std::unique_ptr<sys::Runnable>(runnable));
 }
 
-void ThreadGroup::createThread(std::unique_ptr<sys::Runnable>&& runnable)
+void ThreadGroup::createThread(std::unique_ptr<sys::Runnable> &&runnable)
 {
     // Note: If getNextInitializer throws, any previously created
     //       threads may never finish if cross-thread communication is used.
     std::unique_ptr<sys::Runnable> internalRunnable(
-            new ThreadGroupRunnable(
-                    std::move(runnable),
-                    *this,
-                    getNextInitializer()));
+        new ThreadGroupRunnable(std::move(runnable), *this, getNextInitializer()));
 
     auto thread(std::make_shared<sys::Thread>(internalRunnable.get()));
     internalRunnable.release();
@@ -91,7 +85,7 @@ void ThreadGroup::joinAll()
     if (!mExceptions.empty())
     {
         std::string messageString("Exceptions thrown from ThreadGroup in the following order:\n");
-        for (size_t ii=0; ii<mExceptions.size(); ++ii)
+        for (size_t ii = 0; ii < mExceptions.size(); ++ii)
         {
             messageString += mExceptions.at(ii).toString();
         }
@@ -102,14 +96,14 @@ void ThreadGroup::joinAll()
         throw except::Error(Ctxt("ThreadGroup could not be joined"));
 }
 
-void ThreadGroup::addException(const except::Exception& ex)
+void ThreadGroup::addException(const except::Exception &ex)
 {
     try
     {
         CriticalSection<sys::Mutex> pushLock(&mMutex);
         mExceptions.push_back(ex);
     }
-    catch(...)
+    catch (...)
     {
         fprintf(stderr, "Error adding exception from a thread to mExceptions.\n");
     }
@@ -126,13 +120,10 @@ std::unique_ptr<CPUAffinityThreadInitializer> ThreadGroup::getNextInitializer()
     return std::unique_ptr<CPUAffinityThreadInitializer>(threadInit.release());
 }
 
-ThreadGroup::ThreadGroupRunnable::ThreadGroupRunnable(
-        std::unique_ptr<sys::Runnable>&& runnable,
-        ThreadGroup& parentThreadGroup,
-        std::unique_ptr<CPUAffinityThreadInitializer>&& threadInit) :
-        mRunnable(std::move(runnable)),
-        mParentThreadGroup(parentThreadGroup),
-        mCPUInit(std::move(threadInit))
+ThreadGroup::ThreadGroupRunnable::ThreadGroupRunnable(std::unique_ptr<sys::Runnable> &&runnable,
+                                                      ThreadGroup &parentThreadGroup,
+                                                      std::unique_ptr<CPUAffinityThreadInitializer> &&threadInit)
+    : mRunnable(std::move(runnable)), mParentThreadGroup(parentThreadGroup), mCPUInit(std::move(threadInit))
 {
 }
 
@@ -146,18 +137,17 @@ void ThreadGroup::ThreadGroupRunnable::run()
         }
         mRunnable->run();
     }
-    catch(const except::Exception& ex)
+    catch (const except::Exception &ex)
     {
         mParentThreadGroup.addException(ex);
     }
-    catch(const std::exception& ex)
+    catch (const std::exception &ex)
     {
         mParentThreadGroup.addException(except::Exception(Ctxt(ex.what())));
     }
-    catch(...)
+    catch (...)
     {
-        mParentThreadGroup.addException(
-            except::Exception(Ctxt("Unknown ThreadGroup exception.")));
+        mParentThreadGroup.addException(except::Exception(Ctxt("Unknown ThreadGroup exception.")));
     }
 }
 
@@ -175,4 +165,4 @@ void ThreadGroup::setDefaultPinToCPU(bool newDefault)
 {
     DEFAULT_PIN_TO_CPU = newDefault;
 }
-}
+} // namespace mt

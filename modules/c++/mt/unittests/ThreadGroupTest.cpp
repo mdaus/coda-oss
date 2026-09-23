@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of mt-c++ 
+ * This file is part of mt-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * mt-c++ is free software; you can redistribute it and/or modify
@@ -14,22 +14,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "import/sys.h"
-#include "import/mt.h"
 #include "TestCase.h"
+#include "import/mt.h"
+#include "import/sys.h"
 
 struct MyRunTask final : public sys::Runnable
 {
     int result;
     int *state;
     int *num_deleted;
-    
+
     MyRunTask(int *new_state, int *new_num_deleted)
     {
         state = new_state;
@@ -43,7 +43,7 @@ struct MyRunTask final : public sys::Runnable
 
     virtual void run() override
     {
-		while (result == 1)
+        while (result == 1)
             result = *state;
     }
 };
@@ -53,18 +53,18 @@ TEST_CASE(DoThreadGroupTest)
     auto threads = new mt::ThreadGroup();
     int state = 1, numDeleted = 0;
     MyRunTask *tasks[3];
-    
+
     for (int i = 0; i < 3; i++)
         tasks[i] = new MyRunTask(&state, &numDeleted);
-    
+
     threads->createThread(tasks[0]);
     threads->createThread(tasks[1]);
     state = 2;
     threads->joinAll();
-    
+
     TEST_ASSERT_EQ(tasks[0]->result, 2);
     TEST_ASSERT_EQ(tasks[1]->result, 2);
-    
+
     state = 1;
     threads->createThread(tasks[2]);
     state = 3;
@@ -93,7 +93,7 @@ TEST_CASE(PinToCPUTest)
     TEST_ASSERT_EQ(mt::ThreadGroup::getDefaultPinToCPU(), true);
     mt::ThreadGroup threads2;
     TEST_ASSERT_EQ(threads2.isPinToCPUEnabled(), true);
-   
+
     // Check the pinning settings when pinning is disabled
     mt::ThreadGroup::setDefaultPinToCPU(false);
     TEST_ASSERT_EQ(mt::ThreadGroup::getDefaultPinToCPU(), false);
@@ -101,7 +101,4 @@ TEST_CASE(PinToCPUTest)
     TEST_ASSERT_EQ(threads3.isPinToCPUEnabled(), false);
 }
 
-TEST_MAIN(
-    TEST_CHECK(DoThreadGroupTest);
-    TEST_CHECK(PinToCPUTest);
-    )
+TEST_MAIN(TEST_CHECK(DoThreadGroupTest); TEST_CHECK(PinToCPUTest);)

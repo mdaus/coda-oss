@@ -23,17 +23,17 @@
 #ifndef __MT_THREAD_GROUP_H__
 #define __MT_THREAD_GROUP_H__
 
-#include <vector>
-#include <memory>
 #include <exception>
+#include <memory>
+#include <vector>
 
-#include <sys/Conf.h>
+#include <config/Exports.h>
 #include <except/Error.h>
+#include <mem/SharedPtr.h>
+#include <sys/Conf.h>
+#include <sys/Mutex.h>
 #include <sys/Runnable.h>
 #include <sys/Thread.h>
-#include <sys/Mutex.h>
-#include <mem/SharedPtr.h>
-#include <config/Exports.h>
 
 #if !defined(MT_DEFAULT_PINNING)
 #include "mt/mt_config.h"
@@ -66,24 +66,24 @@ struct CODA_OSS_API ThreadGroup
     ThreadGroup(bool pinToCPU = getDefaultPinToCPU());
 
     /*!
-    *  Destructor. Attempts to join all threads.
-    */
+     *  Destructor. Attempts to join all threads.
+     */
     ~ThreadGroup();
 
-    ThreadGroup(const ThreadGroup&) = delete;
-    ThreadGroup& operator=(const ThreadGroup&) = delete;
+    ThreadGroup(const ThreadGroup &) = delete;
+    ThreadGroup &operator=(const ThreadGroup &) = delete;
 
     /*!
-    *  Creates and starts a thread from a sys::Runnable.
-    *  \param runnable pointer to sys::Runnable
-    */
+     *  Creates and starts a thread from a sys::Runnable.
+     *  \param runnable pointer to sys::Runnable
+     */
     void createThread(sys::Runnable *runnable);
 
     /*!
-    *  Creates and starts a thread from a sys::Runnable.
-    *  \param runnable unique_ptr to sys::Runnable
-    */
-    void createThread(std::unique_ptr<sys::Runnable>&& runnable);
+     *  Creates and starts a thread from a sys::Runnable.
+     *  \param runnable unique_ptr to sys::Runnable
+     */
+    void createThread(std::unique_ptr<sys::Runnable> &&runnable);
 
     /*!
      * Waits for all threads to complete.
@@ -111,10 +111,10 @@ struct CODA_OSS_API ThreadGroup
      */
     static void setDefaultPinToCPU(bool newDefault);
 
-private:
+  private:
     std::unique_ptr<CPUAffinityInitializer> mAffinityInit;
     size_t mLastJoined;
-    std::vector<std::shared_ptr<sys::Thread> > mThreads;
+    std::vector<std::shared_ptr<sys::Thread>> mThreads;
     std::vector<except::Exception> mExceptions;
     sys::Mutex mMutex;
 
@@ -128,7 +128,7 @@ private:
     /*!
      * Adds an exception to the mExceptions vector
      */
-    void addException(const except::Exception& ex);
+    void addException(const except::Exception &ex);
 
     /*!
      * \returns the next available thread initializer provided by
@@ -145,7 +145,7 @@ private:
      */
     struct ThreadGroupRunnable : public sys::Runnable
     {
-           /*!
+        /*!
          * Constructor.
          * \param runnable sys::Runnable object that will be executed by
          *                 the current thread
@@ -156,27 +156,25 @@ private:
          *                   to execute on. If NULL, no affinity preferences
          *                   will be enforced.
          */
-        ThreadGroupRunnable(
-                std::unique_ptr<sys::Runnable>&& runnable,
-                mt::ThreadGroup& parentThreadGroup,
-                std::unique_ptr<CPUAffinityThreadInitializer>&& threadInit =
-                        std::unique_ptr<CPUAffinityThreadInitializer>(nullptr));
+        ThreadGroupRunnable(std::unique_ptr<sys::Runnable> &&runnable, mt::ThreadGroup &parentThreadGroup,
+                            std::unique_ptr<CPUAffinityThreadInitializer> &&threadInit =
+                                std::unique_ptr<CPUAffinityThreadInitializer>(nullptr));
 
-        ThreadGroupRunnable(const ThreadGroupRunnable&) = delete;
-        ThreadGroupRunnable& operator=(const ThreadGroupRunnable&) = delete;
+        ThreadGroupRunnable(const ThreadGroupRunnable &) = delete;
+        ThreadGroupRunnable &operator=(const ThreadGroupRunnable &) = delete;
 
         /*!
          *  Call run() on the Runnable passed to createThread
          */
         virtual void run() override;
 
-    private:
+      private:
         std::unique_ptr<sys::Runnable> mRunnable;
-        mt::ThreadGroup& mParentThreadGroup;
+        mt::ThreadGroup &mParentThreadGroup;
         std::unique_ptr<CPUAffinityThreadInitializer> mCPUInit;
     };
 };
 
-}
+} // namespace mt
 
 #endif

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of mt-c++ 
+ * This file is part of mt-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * mt-c++ is free software; you can redistribute it and/or modify
@@ -14,23 +14,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
 #if defined(__APPLE_CC__)
 #include <iostream>
-int main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     std::cout << "Sorry no semaphores" << std::endl;
     return 0;
 }
 
 #else
-#include "mt/GenerationThreadPool.h"
 #include "mt/CriticalSection.h"
+#include "mt/GenerationThreadPool.h"
 
 using namespace mt;
 using namespace sys;
@@ -41,9 +41,9 @@ sys::Mutex gLock;
 class MyRunTask : public sys::Runnable
 {
     int mI;
-public:
-    MyRunTask(int i) :
-        mI(i)
+
+  public:
+    MyRunTask(int i) : mI(i)
     {
     }
     ~MyRunTask()
@@ -55,17 +55,16 @@ public:
         sleep(TO_SLEEP);
 
         // Goes out of scope when we finish printing and return
-        mt::CriticalSection < sys::Mutex > cs(&gLock);
+        mt::CriticalSection<sys::Mutex> cs(&gLock);
         std::cout << "Run " << mI << " completed" << std::endl;
-
     }
 };
 
-void runGeneration(GenerationThreadPool& pool)
+void runGeneration(GenerationThreadPool &pool)
 {
     static int nRunsInGen = 1;
 
-    std::vector<Runnable*> runs;
+    std::vector<Runnable *> runs;
     for (int i = 0; i < nRunsInGen; i++)
     {
         runs.push_back(new MyRunTask(i));
@@ -74,7 +73,6 @@ void runGeneration(GenerationThreadPool& pool)
     pool.addAndWaitGroup(runs);
     std::cout << "Generation done" << std::endl;
     nRunsInGen++;
-
 }
 int main()
 {
@@ -91,7 +89,7 @@ int main()
         pool.shutdown();
         pool.join();
     }
-    catch (except::Exception& ex)
+    catch (except::Exception &ex)
     {
         std::cout << "Caught exception: " << ex.toString() << std::endl;
         std::cout << "\t" << ex.getTrace() << std::endl;

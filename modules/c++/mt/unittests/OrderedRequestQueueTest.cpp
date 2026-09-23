@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of mt-c++ 
+ * This file is part of mt-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  * (C) Copyright 2025-26 ARKA Group, L.P. All rights reserved
  *
@@ -15,22 +15,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <mt/OrderedRequestQueue.h>
 #include "TestCase.h"
+#include <mt/OrderedRequestQueue.h>
 
 class EvenFirst
 {
-public:
+  public:
     bool operator()(int lhs, int rhs) const
     {
         bool result;
-        if ((lhs % 2 && rhs % 2) || (!(lhs%2) && !(rhs%2)) )
+        if ((lhs % 2 && rhs % 2) || (!(lhs % 2) && !(rhs % 2)))
         {
             result = lhs < rhs;
         }
@@ -72,7 +72,7 @@ TEST_CASE(PriorityEnqueue)
     TEST_ASSERT_EQ(request, 4);
     testSubject.dequeue(request);
     TEST_ASSERT_EQ(request, 5);
-    
+
     testSubject.enqueue(1);
 
     testSubject.dequeue(request);
@@ -98,13 +98,11 @@ TEST_CASE(PriorityEnqueue)
     TEST_ASSERT_EQ(request, 3);
     test2.dequeue(request);
     TEST_ASSERT_EQ(request, 5);
-
-
 }
 
-}
+} // namespace
 
-int main(int, char**)
+int main(int, char **)
 {
     TEST_CHECK(PriorityEnqueue);
 

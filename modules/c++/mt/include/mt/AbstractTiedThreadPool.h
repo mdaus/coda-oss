@@ -20,36 +20,34 @@
  *
  */
 
-
 #ifndef __MT_ABSTRACT_TIED_THREAD_POOL_H__
 #define __MT_ABSTRACT_TIED_THREAD_POOL_H__
 
-#include "mt/AbstractThreadPool.h"
-#include "mt/TiedWorkerThread.h"
-#include "mt/CPUAffinityInitializer.h"
 #include "mem/SharedPtr.h"
+#include "mt/AbstractThreadPool.h"
+#include "mt/CPUAffinityInitializer.h"
+#include "mt/TiedWorkerThread.h"
 
 namespace mt
 {
-template <typename Request_T>
-class AbstractTiedThreadPool : public AbstractThreadPool<Request_T>
+template <typename Request_T> class AbstractTiedThreadPool : public AbstractThreadPool<Request_T>
 {
 
-public:
-    AbstractTiedThreadPool(unsigned short numThreads = 0) :
-            AbstractThreadPool<Request_T>(numThreads)
+  public:
+    AbstractTiedThreadPool(unsigned short numThreads = 0) : AbstractThreadPool<Request_T>(numThreads)
     {
     }
 
-    virtual ~AbstractTiedThreadPool(){}
+    virtual ~AbstractTiedThreadPool()
+    {
+    }
 
-    virtual void initialize(CPUAffinityInitializer* affinityInit = nullptr)
+    virtual void initialize(CPUAffinityInitializer *affinityInit = nullptr)
     {
         mAffinityInit = affinityInit;
     }
 
-    virtual std::unique_ptr<CPUAffinityThreadInitializer>
-    getCPUAffinityThreadInitializer()
+    virtual std::unique_ptr<CPUAffinityThreadInitializer> getCPUAffinityThreadInitializer()
     {
         std::unique_ptr<CPUAffinityThreadInitializer> threadInit(nullptr);
 
@@ -62,21 +60,18 @@ public:
         return threadInit;
     }
 
-    virtual mt::WorkerThread<Request_T>* newWorker()
+    virtual mt::WorkerThread<Request_T> *newWorker()
     {
-        return newTiedWorker(&this->mRequestQueue,
-                 getCPUAffinityThreadInitializer());
+        return newTiedWorker(&this->mRequestQueue, getCPUAffinityThreadInitializer());
     }
 
- protected:
-    virtual mt::TiedWorkerThread<Request_T>*
-    newTiedWorker(mt::RequestQueue<Request_T>* q,
-                  std::unique_ptr<CPUAffinityThreadInitializer>&& init) = 0;
+  protected:
+    virtual mt::TiedWorkerThread<Request_T> *newTiedWorker(mt::RequestQueue<Request_T> *q,
+                                                           std::unique_ptr<CPUAffinityThreadInitializer> &&init) = 0;
 
-private:
-    CPUAffinityInitializer* mAffinityInit;
+  private:
+    CPUAffinityInitializer *mAffinityInit;
 };
 
-}
+} // namespace mt
 #endif
-

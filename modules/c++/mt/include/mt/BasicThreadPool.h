@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of mt-c++ 
+ * This file is part of mt-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * mt-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,40 +23,38 @@
 #ifndef __MT_BASIC_THREAD_POOL_H__
 #define __MT_BASIC_THREAD_POOL_H__
 
-#include <vector>
 #include <std/memory>
+#include <vector>
 
 #include "except/Exception.h"
+#include "mem/SharedPtr.h"
+#include "mt/GenericRequestHandler.h"
+#include "mt/RequestQueue.h"
+#include "mt/ThreadPoolException.h"
 #include "sys/Mutex.h"
 #include "sys/Thread.h"
-#include "mt/RequestQueue.h"
-#include "mt/GenericRequestHandler.h"
-#include "mt/ThreadPoolException.h"
-#include "mem/SharedPtr.h"
 
 namespace mt
 {
-template<typename RequestHandler_T>
-struct BasicThreadPool
+template <typename RequestHandler_T> struct BasicThreadPool
 {
     /*! Constructor.  Set up the thread pool.
      *  \param numThreads the number of threads
      */
     BasicThreadPool() = default;
-    BasicThreadPool(size_t numThreads) :
-        mNumThreads(numThreads)
+    BasicThreadPool(size_t numThreads) : mNumThreads(numThreads)
     {
     }
 
     //! Destructor
     virtual ~BasicThreadPool() noexcept(false)
     {
-        //destroy(static_cast<unsigned short>(mPool.size()));
+        // destroy(static_cast<unsigned short>(mPool.size()));
         shutdown();
     }
 
-    BasicThreadPool(const BasicThreadPool&) = delete;
-    BasicThreadPool& operator=(const BasicThreadPool&) = delete;
+    BasicThreadPool(const BasicThreadPool &) = delete;
+    BasicThreadPool &operator=(const BasicThreadPool &) = delete;
 
     void start()
     {
@@ -122,7 +120,7 @@ struct BasicThreadPool
     void shutdown()
     {
         // Add requests that signal the thread should stop
-        static sys::Runnable* stopSignal = nullptr;
+        static sys::Runnable *stopSignal = nullptr;
         for (size_t i = 0; i < mPool.size(); ++i)
         {
             addRequest(stopSignal);
@@ -133,8 +131,7 @@ struct BasicThreadPool
         mHandlerQueue.clear();
     }
 
-protected:
-
+  protected:
     // Derive this to use a new kind of request handler
     // For instance, you may want an IterativeRequestHandler
     virtual RequestHandler_T *newRequestHandler()
@@ -152,7 +149,7 @@ protected:
     std::vector<std::shared_ptr<sys::Thread>> mPool;
     mt::RunnableRequestQueue mHandlerQueue;
 
-private:
+  private:
     void addThread()
     {
         auto thread(std::make_shared<sys::Thread>(newRequestHandler()));
@@ -168,6 +165,6 @@ private:
         }
     }
 };
-}
+} // namespace mt
 
 #endif

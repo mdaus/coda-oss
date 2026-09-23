@@ -24,17 +24,17 @@
 #define CODA_OSS_mt_algorithm_h_INCLUDED_
 
 #include <algorithm>
-#include <iterator>
 #include <future>
+#include <iterator>
 
-#include "config/compiler_extensions.h"
 #include "coda_oss/CPlusPlus.h"
+#include "config/compiler_extensions.h"
 #if CODA_OSS_cpp17
-	// <execution> is broken with the older version of GCC we're using
-	#if (__GNUC__ >= 10) || _MSC_VER
-	#include <execution>
-	#define CODA_OSS_mt_Algorithm_has_execution 1
-	#endif
+// <execution> is broken with the older version of GCC we're using
+#if (__GNUC__ >= 10) || _MSC_VER
+#include <execution>
+#define CODA_OSS_mt_Algorithm_has_execution 1
+#endif
 #endif
 
 namespace mt
@@ -48,24 +48,33 @@ struct Transform_par_settings final
 {
     Transform_par_settings() = default;
 
-    Transform_par_settings(ptrdiff_t cutoff) : cutoff_(cutoff) { }
-    Transform_par_settings(std::launch policy) : policy_(policy) { }
-    Transform_par_settings(ptrdiff_t cutoff, std::launch policy) : cutoff_(cutoff), policy_(policy) { }
-    Transform_par_settings(std::launch policy, ptrdiff_t cutoff) : Transform_par_settings(cutoff, policy) { }
+    Transform_par_settings(ptrdiff_t cutoff) : cutoff_(cutoff)
+    {
+    }
+    Transform_par_settings(std::launch policy) : policy_(policy)
+    {
+    }
+    Transform_par_settings(ptrdiff_t cutoff, std::launch policy) : cutoff_(cutoff), policy_(policy)
+    {
+    }
+    Transform_par_settings(std::launch policy, ptrdiff_t cutoff) : Transform_par_settings(cutoff, policy)
+    {
+    }
 
     // The value of "default_cutoff" was determined by testing; there is nothing
     // special about it, feel free to change it.
     static constexpr ptrdiff_t dimension = 128 * 8;
     static constexpr ptrdiff_t default_cutoff = dimension * dimension;
-    ptrdiff_t cutoff_ =  default_cutoff;
+    ptrdiff_t cutoff_ = default_cutoff;
 
     // https://en.cppreference.com/w/cpp/thread/launch
-    std::launch policy_ = std::launch::async; // "the task is executed on a different thread, potentially by creating and launching it first"
+    std::launch policy_ = std::launch::async; // "the task is executed on a different thread, potentially by creating
+                                              // and launching it first"
 };
 
 template <typename InputIt, typename OutputIt, typename UnaryOperation>
 inline OutputIt Transform_par_(InputIt first1, InputIt last1, OutputIt d_first, UnaryOperation unary_op,
-    const Transform_par_settings& settings)
+                               const Transform_par_settings &settings)
 {
     // https://en.cppreference.com/w/cpp/thread/async
     const auto len = std::distance(first1, last1);
@@ -73,29 +82,30 @@ inline OutputIt Transform_par_(InputIt first1, InputIt last1, OutputIt d_first, 
     {
         return std::transform(first1, last1, d_first, unary_op);
     }
-    
+
     const auto mid1 = first1 + len / 2;
     const auto d_mid = d_first + len / 2;
-    auto handle = std::async(settings.policy_, Transform_par_<InputIt, OutputIt, UnaryOperation>, mid1, last1, d_mid, unary_op, settings);
+    auto handle = std::async(settings.policy_, Transform_par_<InputIt, OutputIt, UnaryOperation>, mid1, last1, d_mid,
+                             unary_op, settings);
     Transform_par_(first1, mid1, d_first, unary_op, settings);
     return handle.get();
 }
 template <typename InputIt, typename OutputIt, typename UnaryOperation>
 inline OutputIt Transform_par(InputIt first1, InputIt last1, OutputIt d_first, UnaryOperation unary_op,
-    Transform_par_settings settings = Transform_par_settings{})
+                              Transform_par_settings settings = Transform_par_settings{})
 {
 #if CODA_OSS_mt_Algorithm_has_execution
-    #if __GNUC__
-        // std::execution::par is dramatically slower w/GCC than using our own ... ???
-        return Transform_par_(first1, last1, d_first, unary_op, settings); // TODO: std::execution::par
-    #else
-        CODA_OSS_mark_symbol_unused(settings);
-        return std::transform(std::execution::par, first1, last1, d_first, unary_op);
-    #endif // __GNUC__
+#if __GNUC__
+    // std::execution::par is dramatically slower w/GCC than using our own ... ???
+    return Transform_par_(first1, last1, d_first, unary_op, settings); // TODO: std::execution::par
+#else
+    CODA_OSS_mark_symbol_unused(settings);
+    return std::transform(std::execution::par, first1, last1, d_first, unary_op);
+#endif // __GNUC__
 #else
     return Transform_par_(first1, last1, d_first, unary_op, settings);
 #endif // CODA_OSS_mt_Algorithm_has_execution
 }
 
-}
+} // namespace mt
 #endif

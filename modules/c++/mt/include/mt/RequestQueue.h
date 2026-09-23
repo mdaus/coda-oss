@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of mt-c++ 
+ * This file is part of mt-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  * (C) Copyright 2025-26 ARKA Group, L.P. All rights reserved
  *
@@ -15,8 +15,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,17 +24,14 @@
 #ifndef __MT_REQUEST_QUEUE_H__
 #define __MT_REQUEST_QUEUE_H__
 
-#include <deque>
-#include "sys/Thread.h"
 #include "sys/ConditionVar.h"
-#include "sys/Mutex.h"
 #include "sys/Dbg.h"
-
+#include "sys/Mutex.h"
+#include "sys/Thread.h"
+#include <deque>
 
 namespace mt
 {
-
-
 
 /*!
  *
@@ -42,7 +39,7 @@ namespace mt
  *  \brief Locked, dual condition request queue
  *
  *  This is a generic class for locked buffers.  Stick
- *  anything in T and it will be protected by a queue lock 
+ *  anything in T and it will be protected by a queue lock
  *  and two condition variables.  When you call dequeue, this
  *  class blocks until there is data (there is a critical section).
  *
@@ -52,14 +49,11 @@ namespace mt
  *
  */
 
-template<typename T>
-struct RequestQueue
+template <typename T> struct RequestQueue
 {
-public:
+  public:
     //! Default constructor
-    RequestQueue() :
-        mAvailableSpace(&mQueueLock),
-        mAvailableItems(&mQueueLock)
+    RequestQueue() : mAvailableSpace(&mQueueLock), mAvailableItems(&mQueueLock)
     {
     }
 
@@ -96,7 +90,7 @@ public:
     }
 
     //! Retrieve (by reference) T from the queue. blocks until ok
-    void dequeue(T& request)
+    void dequeue(T &request)
     {
 #ifdef THREAD_DEBUG
         dbg_printf("Locking (dequeue)\n");
@@ -116,7 +110,7 @@ public:
         mQueueLock.unlock();
         mAvailableSpace.signal();
     }
-    
+
     //! Retrieves a copy of the n'th item from the front of the queue (0 = first item) without removing it
     T peek(size_t n = 0)
     {
@@ -145,7 +139,7 @@ public:
     //! Lets the n'th request from the front cut in line and dequeue
     //! NOTE: The RequestQueue does not prevent changes to the queue between
     //! when peak() and cutAndDequeue() are called
-    void cutAndDequeue(size_t n, T& request)
+    void cutAndDequeue(size_t n, T &request)
     {
 #ifdef THREAD_DEBUG
         dbg_printf("Locking (peek)\n");
@@ -154,7 +148,7 @@ public:
         if (mRequestQueue.size() > n)
         {
             request = mRequestQueue[n];
-            mRequestQueue.erase(mRequestQueue.begin()+n);
+            mRequestQueue.erase(mRequestQueue.begin() + n);
         }
         else
         {
@@ -199,13 +193,11 @@ public:
 
     //! Aggregates ProcFunctor of all of the elements of the queue
     template <typename ProcFunctor, typename AggregateType>
-    AggregateType aggregate(const ProcFunctor& aggregate, const AggregateType& initial)
+    AggregateType aggregate(const ProcFunctor &aggregate, const AggregateType &initial)
     {
         mQueueLock.lock();
         AggregateType cumulative = initial;
-        for (typename std::deque<T>::iterator iter = mRequestQueue.begin();
-             iter != mRequestQueue.end();
-             ++iter)
+        for (typename std::deque<T>::iterator iter = mRequestQueue.begin(); iter != mRequestQueue.end(); ++iter)
         {
             cumulative = aggregate(*iter, cumulative);
         }
@@ -217,13 +209,10 @@ public:
     //! Remove the given request from the queue
     // Does nothing if the given request is not in the queue
     // \return true if an item was removed, false otherwise
-    template <typename CmpFunctor>
-    bool removeRequest(const CmpFunctor& compare)
+    template <typename CmpFunctor> bool removeRequest(const CmpFunctor &compare)
     {
         mQueueLock.lock();
-        for (typename std::deque<T>::iterator iter = mRequestQueue.begin();
-             iter != mRequestQueue.end();
-             ++iter)
+        for (typename std::deque<T>::iterator iter = mRequestQueue.begin(); iter != mRequestQueue.end(); ++iter)
         {
             if (compare(*iter))
             {
@@ -237,11 +226,11 @@ public:
         return false;
     }
 
-private:
-    RequestQueue(const RequestQueue&) = delete;
-    RequestQueue& operator=(const RequestQueue&) = delete;
+  private:
+    RequestQueue(const RequestQueue &) = delete;
+    RequestQueue &operator=(const RequestQueue &) = delete;
 
-private:
+  private:
     //! The internal data structure
     std::deque<T> mRequestQueue;
     //! The synchronizer
@@ -252,7 +241,7 @@ private:
     sys::ConditionVar mAvailableItems;
 };
 
-typedef RequestQueue<sys::Runnable*> RunnableRequestQueue;
-}
+typedef RequestQueue<sys::Runnable *> RunnableRequestQueue;
+} // namespace mt
 
 #endif // __MT_REQUEST_QUEUE_H__

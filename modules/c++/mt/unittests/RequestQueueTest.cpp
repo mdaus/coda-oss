@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of mt-c++ 
+ * This file is part of mt-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  * (C) Copyright 2025-26 ARKA Group, L.P. All rights reserved
  *
@@ -15,14 +15,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <mt/RequestQueue.h>
 #include "TestCase.h"
+#include <mt/RequestQueue.h>
 
 namespace
 {
@@ -53,9 +53,9 @@ TEST_CASE(PriorityEnqueue)
     TEST_ASSERT_EQ(request, 3);
 }
 
-}
+} // namespace
 
-int main(int, char**)
+int main(int, char **)
 {
     TEST_CHECK(PriorityEnqueue);
 

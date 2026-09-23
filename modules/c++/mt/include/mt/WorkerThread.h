@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of mt-c++ 
+ * This file is part of mt-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * mt-c++ is free software; you can redistribute it and/or modify
@@ -14,20 +14,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #ifndef __WORKER_THREAD_H__
 #define __WORKER_THREAD_H__
 
-
-#include "sys/Thread.h"
 #include "mt/RequestQueue.h"
-
+#include "sys/Thread.h"
 
 namespace mt
 {
@@ -35,32 +32,33 @@ namespace mt
  *  \class WorkerThread
  *  \brief Virtual class for thread pool
  *
- *  A WorkerThread object is the basic underlying thread for 
- *  AbstractThreadPool, a partially implemented pool of threads 
- *  operating on a consumer-producer buffer.  This class can be 
- *  implemented by deriving the performTask function.  The thread 
+ *  A WorkerThread object is the basic underlying thread for
+ *  AbstractThreadPool, a partially implemented pool of threads
+ *  operating on a consumer-producer buffer.  This class can be
+ *  implemented by deriving the performTask function.  The thread
  *  runs until the program is stopped.
  */
 template <typename Request_T> class WorkerThread : public sys::Thread
 {
-public:
+  public:
     //! Constructor
-    WorkerThread(mt::RequestQueue<Request_T>* requestQueue) :
-            mRequestQueue(requestQueue), mDone(false)
-    {}
+    WorkerThread(mt::RequestQueue<Request_T> *requestQueue) : mRequestQueue(requestQueue), mDone(false)
+    {
+    }
 
     /*!
      *  Virtual destructor
      */
     virtual ~WorkerThread() = default;
 
-    WorkerThread(const WorkerThread&) = delete;
-    WorkerThread& operator=(const WorkerThread&) = delete;
-    WorkerThread(WorkerThread&&) = delete;
-    WorkerThread& operator=(WorkerThread&&) = delete;
+    WorkerThread(const WorkerThread &) = delete;
+    WorkerThread &operator=(const WorkerThread &) = delete;
+    WorkerThread(WorkerThread &&) = delete;
+    WorkerThread &operator=(WorkerThread &&) = delete;
 
     virtual void initialize()
-    {}
+    {
+    }
     /*!
      *  Run this request
      */
@@ -89,7 +87,7 @@ public:
      *
      *  \param request A request from the queue
      */
-    virtual void performTask(Request_T& request) = 0;
+    virtual void performTask(Request_T &request) = 0;
 
     /*!
      *  Produces the system-named thread ID
@@ -100,11 +98,11 @@ public:
     {
         return std::to_string(sys::getThreadID());
     }
-protected:
 
+  protected:
     mt::RequestQueue<Request_T> *mRequestQueue;
     bool mDone;
 };
-}
+} // namespace mt
 
 #endif

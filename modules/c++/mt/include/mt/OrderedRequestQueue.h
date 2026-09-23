@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of mt-c++ 
+ * This file is part of mt-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2026, MDA Information Systems LLC
  * (C) Copyright 2025-26 ARKA Group, L.P. All rights reserved
  *
@@ -15,8 +15,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,19 +24,18 @@
 #ifndef __MT_ORDERED_REQUEST_QUEUE_H__
 #define __MT_ORDERED_REQUEST_QUEUE_H__
 
-#include <set>
-#include "sys/Thread.h"
 #include "sys/ConditionVar.h"
-#include "sys/Mutex.h"
 #include "sys/Dbg.h"
+#include "sys/Mutex.h"
+#include "sys/Thread.h"
+#include <set>
 
 namespace mt
 {
-template <typename T>
-class AbstractComparator
+template <typename T> class AbstractComparator
 {
- public:
-    virtual bool operator()(const T& lhs, const T& rhs) const
+  public:
+    virtual bool operator()(const T &lhs, const T &rhs) const
     {
         return lhs < rhs;
     }
@@ -48,26 +47,20 @@ class AbstractComparator
  *  \brief Thread-safe altenrative to request queue
  *
  *  std::set inserts an element into a thread lock request queue
- *  that orders its elements based off of the provided operator. 
- *  Dequeue blocks the thread until an element is avaliable. 
+ *  that orders its elements based off of the provided operator.
+ *  Dequeue blocks the thread until an element is avaliable.
  *
  */
 
-template<typename T, typename CmpFtor = AbstractComparator<T>>
-class OrderedRequestQueue
+template <typename T, typename CmpFtor = AbstractComparator<T>> class OrderedRequestQueue
 {
-public:
+  public:
     //! Default constructor
-    OrderedRequestQueue() :
-        mAvailableSpace(&mQueueLock),
-        mAvailableItems(&mQueueLock)
+    OrderedRequestQueue() : mAvailableSpace(&mQueueLock), mAvailableItems(&mQueueLock)
     {
     }
 
-    OrderedRequestQueue(const CmpFtor f) :
-        mRequestQueue(f),
-        mAvailableSpace(&mQueueLock),
-        mAvailableItems(&mQueueLock)
+    OrderedRequestQueue(const CmpFtor f) : mRequestQueue(f), mAvailableSpace(&mQueueLock), mAvailableItems(&mQueueLock)
     {
     }
 
@@ -89,7 +82,7 @@ public:
     }
 
     //! Retrieve (by reference) T from the queue. blocks until ok
-    void dequeue(T& request)
+    void dequeue(T &request)
     {
 #ifdef THREAD_DEBUG
         dbg_printf("Locking (dequeue)\n");
@@ -110,7 +103,7 @@ public:
         mQueueLock.unlock();
         mAvailableSpace.signal();
     }
-    
+
     //! Retrieves a copy of the n'th item from the front of the queue (0 = first item) without removing it
     T peek(size_t n = 0)
     {
@@ -142,7 +135,7 @@ public:
     }
 
     //! Lets the n'th request from the front cut in line and dequeue
-    void cutAndDequeue(size_t n, T& request)
+    void cutAndDequeue(size_t n, T &request)
     {
 #ifdef THREAD_DEBUG
         dbg_printf("Locking (peek)\n");
@@ -199,13 +192,11 @@ public:
 
     //! Aggregates ProcFunctor of all of the elements of the queue
     template <typename ProcFunctor, typename AggregateType>
-    AggregateType aggregate(const ProcFunctor& aggregate, const AggregateType& initial)
+    AggregateType aggregate(const ProcFunctor &aggregate, const AggregateType &initial)
     {
         mQueueLock.lock();
         AggregateType cumulative = initial;
-        for (typename std::set<T>::iterator iter = mRequestQueue.begin();
-             iter != mRequestQueue.end();
-             ++iter)
+        for (typename std::set<T>::iterator iter = mRequestQueue.begin(); iter != mRequestQueue.end(); ++iter)
         {
             cumulative = aggregate(*iter, cumulative);
         }
@@ -217,13 +208,10 @@ public:
     //! Remove the given request from the queue
     // Does nothing if the given request is not in the queue
     // \return true if an item was removed, false otherwise
-    template <typename CmpFunctor>
-    bool removeRequest(const CmpFunctor& compare)
+    template <typename CmpFunctor> bool removeRequest(const CmpFunctor &compare)
     {
         mQueueLock.lock();
-        for (typename std::set<T>::iterator iter = mRequestQueue.begin();
-             iter != mRequestQueue.end();
-             ++iter)
+        for (typename std::set<T>::iterator iter = mRequestQueue.begin(); iter != mRequestQueue.end(); ++iter)
         {
             if (compare(*iter))
             {
@@ -241,13 +229,10 @@ public:
     // Does nothing if the given request is not in the queue
     // \return true if an item was removed, false otherwise
     // request is set the object of the request in the queue
-    template <typename CmpFunctor>
-    bool removeAndGetRequest(const CmpFunctor& compare, T& request)
+    template <typename CmpFunctor> bool removeAndGetRequest(const CmpFunctor &compare, T &request)
     {
         mQueueLock.lock();
-        for (typename std::set<T>::iterator iter = mRequestQueue.begin();
-             iter != mRequestQueue.end();
-             ++iter)
+        for (typename std::set<T>::iterator iter = mRequestQueue.begin(); iter != mRequestQueue.end(); ++iter)
         {
             if (compare(*iter))
             {
@@ -262,12 +247,12 @@ public:
         return false;
     }
 
-private:
+  private:
     // Noncopyable
-    OrderedRequestQueue(const OrderedRequestQueue& );
-    const OrderedRequestQueue& operator=(const OrderedRequestQueue& );
+    OrderedRequestQueue(const OrderedRequestQueue &);
+    const OrderedRequestQueue &operator=(const OrderedRequestQueue &);
 
-private:
+  private:
     //! The internal data structure
     std::set<T, CmpFtor> mRequestQueue;
     //! The synchronizer
@@ -278,8 +263,7 @@ private:
     sys::ConditionVar mAvailableItems;
 };
 
-template <typename OrderingFtor>
-using RunnableOrderedRequestQueue = OrderedRequestQueue<sys::Runnable*, OrderingFtor>;
-}
+template <typename OrderingFtor> using RunnableOrderedRequestQueue = OrderedRequestQueue<sys::Runnable *, OrderingFtor>;
+} // namespace mt
 
 #endif // __MT_REQUEST_QUEUE_H__

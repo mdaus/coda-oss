@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of mt-c++ 
+ * This file is part of mt-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * mt-c++ is free software; you can redistribute it and/or modify
@@ -14,24 +14,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
 #if defined(__APPLE_CC__)
 #include <iostream>
-int main (int, char**)
+int main(int, char **)
 {
     std::cout << "Sorry no semaphores" << std::endl;
     return 0;
 }
 
 #else
-#include <iostream>
-#include <import/sys.h>
 #include <import/mt.h>
+#include <import/sys.h>
+#include <iostream>
 using namespace sys;
 using namespace mt;
 using namespace std;
@@ -41,10 +41,10 @@ const int TO_SLEEP = 2;
 
 class MyRunTask : public Runnable
 {
-    Semaphore& mSem;
-public:
-    MyRunTask(Semaphore& sem) :
-        mSem(sem)
+    Semaphore &mSem;
+
+  public:
+    MyRunTask(Semaphore &sem) : mSem(sem)
     {
     }
     virtual ~MyRunTask()
@@ -58,7 +58,7 @@ public:
     }
 };
 
-int main(int, char**)
+int main(int, char **)
 {
     try
     {
@@ -66,7 +66,7 @@ int main(int, char**)
         Semaphore sem;
 
         // Create a thread pool of size 2
-        BasicThreadPool < GenericRequestHandler > pool(2);
+        BasicThreadPool<GenericRequestHandler> pool(2);
 
         for (int i = 0; i < NUM_TASKS; i++)
         {
@@ -80,10 +80,9 @@ int main(int, char**)
         }
 
         std::cout << "Finished all" << std::endl;
-
     }
 
-    catch (except::Throwable& t)
+    catch (except::Throwable &t)
     {
         cout << "Exception Caught: " << t.toString() << endl;
     }

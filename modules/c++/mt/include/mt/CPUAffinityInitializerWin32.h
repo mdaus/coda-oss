@@ -20,15 +20,14 @@
  *
  */
 
-
 #ifndef __MT_CPU_AFFINITY_INITIALIZER_WIN32_H__
 #define __MT_CPU_AFFINITY_INITIALIZER_WIN32_H__
 
 #ifdef _WIN32
 
+#include <mem/SharedPtr.h>
 #include <mt/AbstractCPUAffinityInitializer.h>
 #include <mt/CPUAffinityThreadInitializerWin32.h>
-#include <mem/SharedPtr.h>
 
 namespace mt
 {
@@ -39,25 +38,23 @@ namespace mt
  */
 class CPUAffinityInitializerWin32 : public AbstractCPUAffinityInitializer
 {
-public:
+  public:
     /*!
      * \todo Not yet implemented
      * \returns NULL
      */
     std::unique_ptr<CPUAffinityThreadInitializerWin32> newThreadInitializer()
     {
-        return std::unique_ptr<CPUAffinityThreadInitializerWin32>(
-                newThreadInitializerImpl());
+        return std::unique_ptr<CPUAffinityThreadInitializerWin32>(newThreadInitializerImpl());
     }
 
-private:
-    CPUAffinityThreadInitializerWin32* newThreadInitializerImpl() override
+  private:
+    CPUAffinityThreadInitializerWin32 *newThreadInitializerImpl() override
     {
         return nullptr;
     }
 };
-}
+} // namespace mt
 
 #endif
 #endif
-

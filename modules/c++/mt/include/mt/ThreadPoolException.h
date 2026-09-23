@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of mt-c++ 
+ * This file is part of mt-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * mt-c++ is free software; you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifndef __MT_THREAD_POOL_EXCEPTION_H__
 #define __MT_THREAD_POOL_EXCEPTION_H__
@@ -36,29 +35,28 @@ struct ThreadPoolException : public except::Exception
      *  User constructor.  Sets the exception message.
      *  \param message the exception message
      */
-    ThreadPoolException(const char *message) :
-            except::Exception(message)
-    {}
+    ThreadPoolException(const char *message) : except::Exception(message)
+    {
+    }
 
     /*!
      *  User constructor.  Sets the exception message.
      *  \param message the exception message
      */
-    ThreadPoolException(const std::string& message) :
-            except::Exception(message)
-    {}
+    ThreadPoolException(const std::string &message) : except::Exception(message)
+    {
+    }
 
     /*!
      *  User constructor.  Sets the exception context.
      *  \param c the exception context
      */
-    ThreadPoolException(const except::Context& c) :
-            except::Exception(c)
-    {}
+    ThreadPoolException(const except::Context &c) : except::Exception(c)
+    {
+    }
 
     virtual ~ThreadPoolException() = default;
-}
-;
-}
+};
+} // namespace mt
 
 #endif

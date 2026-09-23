@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __MT_CPU_AFFINITY_THREAD_INITIALIZER_WIN32_H__
 #define __MT_CPU_AFFINITY_THREAD_INITIALIZER_WIN32_H__
 
@@ -37,10 +36,12 @@ namespace mt
  */
 class CPUAffinityThreadInitializerWin32 : public AbstractCPUAffinityThreadInitializer
 {
-public:
-    virtual void initialize() {}
+  public:
+    virtual void initialize()
+    {
+    }
 };
-}
+} // namespace mt
 
 #endif
 #endif

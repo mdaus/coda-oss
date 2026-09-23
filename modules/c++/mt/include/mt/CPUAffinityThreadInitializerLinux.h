@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __MT_CPU_AFFINITY_THREAD_INITIALIZER_LINUX_H__
 #define __MT_CPU_AFFINITY_THREAD_INITIALIZER_LINUX_H__
 
@@ -29,8 +28,8 @@
 
 #include <memory>
 
-#include <sys/ScopedCPUAffinityUnix.h>
 #include <mt/AbstractCPUAffinityThreadInitializer.h>
+#include <sys/ScopedCPUAffinityUnix.h>
 
 namespace mt
 {
@@ -38,11 +37,9 @@ namespace mt
  * \class CPUAffinityThreadInitializerLinux
  * \brief Linux-specific setting of the CPU affinity of a thread
  */
-class CPUAffinityThreadInitializerLinux :
-        public AbstractCPUAffinityThreadInitializer
+class CPUAffinityThreadInitializerLinux : public AbstractCPUAffinityThreadInitializer
 {
-public:
-
+  public:
     /*!
      * Constructor
      *
@@ -50,8 +47,7 @@ public:
      *            affinity mask for the CPUs that this thread
      *            is allowed to bind to
      */
-    CPUAffinityThreadInitializerLinux(
-            std::unique_ptr<const sys::ScopedCPUMaskUnix>&& cpu);
+    CPUAffinityThreadInitializerLinux(std::unique_ptr<const sys::ScopedCPUMaskUnix> &&cpu);
 
     /*!
      * Attempt to bind to the affinity mask given during construction
@@ -60,10 +56,10 @@ public:
      */
     virtual void initialize() override;
 
-private:
+  private:
     std::unique_ptr<const sys::ScopedCPUMaskUnix> mCPU;
 };
-}
+} // namespace mt
 
 #endif
 #endif

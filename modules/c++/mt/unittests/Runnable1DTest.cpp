@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of mt-c++ 
+ * This file is part of mt-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * mt-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,14 +23,14 @@
 #include <sstream>
 #include <stdio.h>
 
-#include <vector>
+#include <future>
 #include <iterator>
 #include <numeric>
-#include <future>
+#include <vector>
 
-#include "import/sys.h"
-#include "import/mt.h"
 #include "TestCase.h"
+#include "import/mt.h"
+#include "import/sys.h"
 
 struct AddOp final
 {
@@ -59,7 +59,7 @@ struct LocalStorage final
         ::fprintf(stderr, "%s", ostr.str().c_str());
     }
 
-private:
+  private:
     mutable size_t mValue = 0;
 };
 
@@ -83,7 +83,4 @@ TEST_CASE(Runnable1DWithCopiesTest)
     TEST_ASSERT_TRUE(true); // need to use hidden "testName" parameter
 }
 
-TEST_MAIN(
-    TEST_CHECK(DoRunnable1DTest);
-    TEST_CHECK(Runnable1DWithCopiesTest);
-    )
+TEST_MAIN(TEST_CHECK(DoRunnable1DTest); TEST_CHECK(Runnable1DWithCopiesTest);)

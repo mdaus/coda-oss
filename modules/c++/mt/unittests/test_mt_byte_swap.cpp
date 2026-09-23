@@ -30,8 +30,8 @@
 
 #include <sys/ByteSwap.h>
 
-#include <mt/ThreadedByteSwap.h>
 #include <mt/Algorithm.h>
+#include <mt/ThreadedByteSwap.h>
 
 #undef min
 #undef max
@@ -43,15 +43,14 @@ static std::vector<uint64_t> make_origValues_(size_t count)
     std::vector<uint64_t> retval(count);
     for (size_t ii = 0; ii < count; ++ii)
     {
-        const auto value = static_cast<float>(::rand()) / RAND_MAX *
-                std::numeric_limits<uint64_t>::max();
+        const auto value = static_cast<float>(::rand()) / RAND_MAX * std::numeric_limits<uint64_t>::max();
         retval[ii] = static_cast<uint64_t>(value);
     }
     return retval;
 }
 
 static constexpr size_t NUM_PIXELS = 10000;
-static const std::vector<uint64_t>& make_origValues()
+static const std::vector<uint64_t> &make_origValues()
 {
     static const auto retval = make_origValues_(NUM_PIXELS);
     return retval;
@@ -59,7 +58,7 @@ static const std::vector<uint64_t>& make_origValues()
 
 TEST_CASE(testThreadedByteSwap)
 {
-    const auto& origValues = make_origValues();
+    const auto &origValues = make_origValues();
 
     constexpr size_t numThreads = 4;
 
@@ -71,7 +70,7 @@ TEST_CASE(testThreadedByteSwap)
     std::vector<uint64_t> swappedValues2(origValues.size());
     mt::threadedByteSwap(origValues.data(), sizeof(origValues[0]), NUM_PIXELS, numThreads, swappedValues2.data());
 
-    for (size_t ii = 0; ii < NUM_PIXELS; ++ii)  // Everything should match
+    for (size_t ii = 0; ii < NUM_PIXELS; ++ii) // Everything should match
     {
         TEST_ASSERT_EQ(values1[ii], swappedValues2[ii]);
     }
@@ -79,17 +78,18 @@ TEST_CASE(testThreadedByteSwap)
 
 TEST_CASE(test_transform_ByteSwap)
 {
-    const auto& origValues = make_origValues();
+    const auto &origValues = make_origValues();
 
     // Byte swap the old-fashioned way
     constexpr size_t numThreads = 4;
     auto expected_(origValues);
     constexpr auto elemSize = sizeof(expected_[0]);
     mt::threadedByteSwap(expected_.data(), elemSize, NUM_PIXELS, numThreads);
-    const auto& expected = expected_;
+    const auto &expected = expected_;
 
     // Byte swap into output buffer
-    const auto byteSwap = [&](const auto& buffer_) {
+    const auto byteSwap = [&](const auto &buffer_)
+    {
         auto buffer = buffer_;
         sys::byteSwap(&buffer, elemSize, 1 /*numElements*/);
         return buffer;
@@ -97,7 +97,7 @@ TEST_CASE(test_transform_ByteSwap)
 
     std::vector<uint64_t> actual(origValues.size());
     std::transform(origValues.begin(), origValues.end(), actual.begin(), byteSwap);
-    for (size_t ii = 0; ii < NUM_PIXELS; ++ii)     // Everything should match
+    for (size_t ii = 0; ii < NUM_PIXELS; ++ii) // Everything should match
     {
         TEST_ASSERT_EQ(expected[ii], actual[ii]);
     }
@@ -105,36 +105,33 @@ TEST_CASE(test_transform_ByteSwap)
 
 TEST_CASE(test_Transform_par_ByteSwap)
 {
-    const auto& origValues = make_origValues();
+    const auto &origValues = make_origValues();
 
     // Byte swap the old-fashioned way
     constexpr size_t numThreads = 4;
     auto expected_(origValues);
     constexpr auto elemSize = sizeof(expected_[0]);
     mt::threadedByteSwap(expected_.data(), elemSize, NUM_PIXELS, numThreads);
-    const auto& expected = expected_;
+    const auto &expected = expected_;
 
     // Byte swap into output buffer
-    const auto byteSwap = [&](const auto& buffer_) {
+    const auto byteSwap = [&](const auto &buffer_)
+    {
         auto buffer = buffer_;
         sys::byteSwap(&buffer, elemSize, 1 /*numElements*/);
         return buffer;
     };
 
     // be sure we do something more than just call std::transform()
-    const mt::Transform_par_settings settings{ NUM_PIXELS / 4 /*cutoff*/ };
+    const mt::Transform_par_settings settings{NUM_PIXELS / 4 /*cutoff*/};
 
     std::vector<uint64_t> actual(origValues.size());
     mt::Transform_par(origValues.begin(), origValues.end(), actual.begin(), byteSwap, settings);
-    for (size_t ii = 0; ii < NUM_PIXELS; ++ii)  // Everything should match
+    for (size_t ii = 0; ii < NUM_PIXELS; ++ii) // Everything should match
     {
         TEST_ASSERT_EQ(expected[ii], actual[ii]);
     }
 }
 
-TEST_MAIN(
-    TEST_CHECK(testThreadedByteSwap);
-    TEST_CHECK(test_transform_ByteSwap);
-    TEST_CHECK(test_Transform_par_ByteSwap);
-    )
-     
+TEST_MAIN(TEST_CHECK(testThreadedByteSwap); TEST_CHECK(test_transform_ByteSwap);
+          TEST_CHECK(test_Transform_par_ByteSwap);)

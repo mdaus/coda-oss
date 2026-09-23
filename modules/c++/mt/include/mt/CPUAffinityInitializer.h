@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __MT_CPU_AFFINITY_INITIALIZER_H__
 #define __MT_CPU_AFFINITY_INITIALIZER_H__
 

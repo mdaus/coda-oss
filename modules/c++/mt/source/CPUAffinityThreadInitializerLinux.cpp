@@ -20,24 +20,23 @@
  *
  */
 
-
 #if !defined(__APPLE_CC__)
 #if defined(__linux) || defined(__linux__)
 
 #include <sched.h>
-#include <sys/types.h>
 #include <sys/syscall.h>
+#include <sys/types.h>
 
-#include <sys/Conf.h>
 #include <except/Exception.h>
 #include <mem/SharedPtr.h>
 #include <mt/CPUAffinityThreadInitializerLinux.h>
+#include <sys/Conf.h>
 
 namespace mt
 {
 CPUAffinityThreadInitializerLinux::CPUAffinityThreadInitializerLinux(
-        std::unique_ptr<const sys::ScopedCPUMaskUnix>&& cpu) :
-    mCPU(std::move(cpu))
+    std::unique_ptr<const sys::ScopedCPUMaskUnix> &&cpu)
+    : mCPU(std::move(cpu))
 {
 }
 
@@ -46,10 +45,10 @@ void CPUAffinityThreadInitializerLinux::initialize()
     pid_t tid = syscall(SYS_gettid);
     if (::sched_setaffinity(tid, mCPU->getSize(), mCPU->getMask()) == -1)
     {
-	   throw except::Exception(Ctxt("Failed setting processor affinity"));
+        throw except::Exception(Ctxt("Failed setting processor affinity"));
     }
 }
-}
+} // namespace mt
 
 #endif
 #endif

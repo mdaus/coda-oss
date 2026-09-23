@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __MT_ABSTRACT_CPU_AFFINITY_INITIALIZER_H__
 #define __MT_ABSTRACT_CPU_AFFINITY_INITIALIZER_H__
 
@@ -37,8 +36,10 @@ namespace mt
  */
 class AbstractCPUAffinityInitializer
 {
-public:
-    virtual ~AbstractCPUAffinityInitializer() {}
+  public:
+    virtual ~AbstractCPUAffinityInitializer()
+    {
+    }
 
     /*!
      * \returns a new thread initializer. In general, this should return
@@ -46,19 +47,18 @@ public:
      */
     std::unique_ptr<AbstractCPUAffinityThreadInitializer> newThreadInitializer()
     {
-        return std::unique_ptr<AbstractCPUAffinityThreadInitializer>(
-                newThreadInitializerImpl());
+        return std::unique_ptr<AbstractCPUAffinityThreadInitializer>(newThreadInitializerImpl());
     }
 
-private:
+  private:
     // To allow for covariant auto_ptrs, this private function can be
     // implemented in derived classes to return a raw, unmanaged pointer
     // with the override having a covariant return type.
     // Using name hiding, we can define newThreadInitializer() implementations
     // that wrap newThreadInitializerImpl() in the appropriate derived
     // class return type. This should be done in all derived classes.
-    virtual AbstractCPUAffinityThreadInitializer* newThreadInitializerImpl() = 0;
+    virtual AbstractCPUAffinityThreadInitializer *newThreadInitializerImpl() = 0;
 };
-}
+} // namespace mt
 
 #endif

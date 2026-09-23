@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of mt-c++ 
+ * This file is part of mt-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * mt-c++ is free software; you can redistribute it and/or modify
@@ -14,14 +14,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <mt/ThreadPlanner.h>
 #include "TestCase.h"
+#include <mt/ThreadPlanner.h>
 
 TEST_CASE(GetThreadInfoTest)
 {
@@ -34,11 +34,11 @@ TEST_CASE(GetThreadInfoTest)
         planner.getThreadInfo(ii, startElement, numElements);
         if (ii == numThreads - 1)
         {
-	  TEST_ASSERT_EQ(numElements, static_cast<size_t>(20));
+            TEST_ASSERT_EQ(numElements, static_cast<size_t>(20));
         }
         else
         {
-	  TEST_ASSERT_EQ(numElements, static_cast<size_t>(32));
+            TEST_ASSERT_EQ(numElements, static_cast<size_t>(32));
         }
     }
 }
@@ -78,7 +78,4 @@ TEST_CASE(GetNumThreadsThatWillBeUsedTest)
     TEST_ASSERT_EQ(planner7.getNumThreadsThatWillBeUsed(), static_cast<size_t>(100));
 }
 
-TEST_MAIN(
-    TEST_CHECK(GetThreadInfoTest);
-    TEST_CHECK(GetNumThreadsThatWillBeUsedTest);
-)
+TEST_MAIN(TEST_CHECK(GetThreadInfoTest); TEST_CHECK(GetNumThreadsThatWillBeUsedTest);)

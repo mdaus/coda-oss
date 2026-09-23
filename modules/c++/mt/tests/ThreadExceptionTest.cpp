@@ -1,16 +1,16 @@
 
-#include <iostream>
 #include <exception>
 #include <import/mt.h>
 #include <import/sys.h>
+#include <iostream>
 
 sys::Mutex globalMutex;
 
 /*-- except::Exception --*/
 void print(char a)
 {
-	globalMutex.lock();
-    for(int i=0; i<5; ++i)
+    globalMutex.lock();
+    for (int i = 0; i < 5; ++i)
     {
         std::cout << a << std::endl;
     }
@@ -20,9 +20,9 @@ void print(char a)
 
 class PrintChar : public sys::Runnable
 {
-public:
+  public:
     char a;
-    PrintChar(char in): a(in)
+    PrintChar(char in) : a(in)
     {
     }
     virtual ~PrintChar()
@@ -36,25 +36,28 @@ public:
 };
 
 /*-- std::exception --*/
-struct stdExcept: std::exception
+struct stdExcept : std::exception
 {
-	const char* what() const noexcept override { return "std::exception in add"; }
+    const char *what() const noexcept override
+    {
+        return "std::exception in add";
+    }
 };
 
 void add(sys::Uint32_T x, sys::Uint32_T y)
 {
-	globalMutex.lock();
+    globalMutex.lock();
     std::cout << "x: " << x << " y: " << y << std::endl;
-    std::cout << "x + y = " << x+y << std::endl;
+    std::cout << "x + y = " << x + y << std::endl;
     globalMutex.unlock();
     throw stdExcept();
 }
 
 class AddInts : public sys::Runnable
 {
-public:
+  public:
     sys::Uint32_T x, y;
-    AddInts(sys::Uint32_T x_in, sys::Uint32_T y_in): x(x_in), y(y_in)
+    AddInts(sys::Uint32_T x_in, sys::Uint32_T y_in) : x(x_in), y(y_in)
     {
     }
     virtual ~AddInts()
@@ -63,25 +66,25 @@ public:
 
     virtual void run() override
     {
-        add(x,y);
+        add(x, y);
     }
 };
 
 /*-- (...) exception --*/
-void printConcat(const std::string& x, const std::string& y)
+void printConcat(const std::string &x, const std::string &y)
 {
-	globalMutex.lock();
-	std::cout << x+y << std::endl;
-	globalMutex.unlock();
-	throw double();
+    globalMutex.lock();
+    std::cout << x + y << std::endl;
+    globalMutex.unlock();
+    throw double();
 }
 
-class ConcatStr: public sys::Runnable
+class ConcatStr : public sys::Runnable
 {
-public:
-	std::string x;
-	std::string y;
-	ConcatStr(std::string x_in, std::string y_in): x(x_in), y(y_in)
+  public:
+    std::string x;
+    std::string y;
+    ConcatStr(std::string x_in, std::string y_in) : x(x_in), y(y_in)
     {
     }
     virtual ~ConcatStr()
@@ -90,10 +93,9 @@ public:
 
     virtual void run() override
     {
-    	printConcat(x,y);
+        printConcat(x, y);
     }
 };
-
 
 int main()
 {
@@ -101,12 +103,11 @@ int main()
     {
         mt::ThreadGroup threads;
         threads.createThread(new PrintChar('A'));
-        threads.createThread(new AddInts(3,4));
+        threads.createThread(new AddInts(3, 4));
         threads.createThread(new ConcatStr("hello,", "world!"));
         threads.joinAll();
-
     }
-    catch (except::Throwable& t)
+    catch (except::Throwable &t)
     {
         std::cout << "Exception Caught(main): " << t.toString() << std::endl;
     }
