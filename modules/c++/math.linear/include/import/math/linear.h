@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of math.linear-c++ 
+ * This file is part of math.linear-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * math.linear-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,10 +23,9 @@
 #define __MATH_LINEAR_H__
 
 #include "math/linear/Eigenvalue.h"
-#include "math/linear/MatrixMxN.h"
-#include "math/linear/VectorN.h"
 #include "math/linear/Matrix2D.h"
+#include "math/linear/MatrixMxN.h"
 #include "math/linear/Vector.h"
+#include "math/linear/VectorN.h"
 
-#endif  // __MATH_LINEAR_H__
-
+#endif // __MATH_LINEAR_H__

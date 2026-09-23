@@ -25,11 +25,11 @@
 #include <cmath>
 #include <math.h>
 
-#include <sys/Conf.h>
 #include <except/Exception.h>
-#include <str/Convert.h>
 #include <math/linear/Matrix2D.h>
 #include <math/linear/Vector.h>
+#include <str/Convert.h>
+#include <sys/Conf.h>
 
 namespace math
 {
@@ -79,24 +79,19 @@ namespace linear
  *
  *   RealT must be a real (non-complex) type
  */
-template<typename RealT>
-class Eigenvalue
+template <typename RealT> class Eigenvalue
 {
-public:
+  public:
     /*
      * Construct the eigenvalue decomposition
      * \param A Square matrix
      */
-    Eigenvalue(const Matrix2D<RealT>& A) :
-        mN_(static_cast<int>(A.cols())),
-        mD(mN_),
-        mE(mN_),
-        mV(mN_, mN_)
+    Eigenvalue(const Matrix2D<RealT> &A) : mN_(static_cast<int>(A.cols())), mD(mN_), mE(mN_), mV(mN_, mN_)
     {
         if (A.rows() != A.cols())
         {
-            throw except::Exception(Ctxt(
-                "Expected square matrix but got rows = " + std::to_string(A.rows()) + ", cols = " + std::to_string(A.cols())));
+            throw except::Exception(Ctxt("Expected square matrix but got rows = " + std::to_string(A.rows()) +
+                                         ", cols = " + std::to_string(A.cols())));
         }
 
         if (isSymmetric(A))
@@ -125,19 +120,19 @@ public:
     }
 
     // Return the eigenvector matrix
-    const Matrix2D<RealT>& getV() const
+    const Matrix2D<RealT> &getV() const
     {
         return mV;
     }
 
     // Return the real parts of the eigenvalues
-    const Vector<RealT>& getRealEigenvalues() const
+    const Vector<RealT> &getRealEigenvalues() const
     {
         return mD;
     }
 
     // Return the imaginary parts of the eigenvalues
-    const Vector<RealT>& getImagEigenvalues() const
+    const Vector<RealT> &getImagEigenvalues() const
     {
         return mE;
     }
@@ -174,7 +169,7 @@ public:
      \param D: upon return, the matrix is filled with the block diagonal
      eigenvalue matrix.
      */
-    void getD(Matrix2D<RealT>& D) const
+    void getD(Matrix2D<RealT> &D) const
     {
         D = Matrix2D<RealT>(mN_, mN_, static_cast<RealT>(0));
         for (int i = 0; i < mN_; i++)
@@ -191,7 +186,7 @@ public:
         }
     }
 
-private:
+  private:
     // Symmetric Householder reduction to tridiagonal form.
     void tred2()
     {
@@ -436,8 +431,7 @@ private:
 
                     // Check for convergence.
 
-                }
-                while (std::abs(mE[l]) > eps * tst1);
+                } while (std::abs(mE[l]) > eps * tst1);
             }
             mD[l] = mD[l] + f;
             mE[l] = RealT(0.0);
@@ -585,13 +579,7 @@ private:
     }
 
     // Complex scalar division.
-    static
-    void cdiv(RealT xr,
-              RealT xi,
-              RealT yr,
-              RealT yi,
-              RealT& cdivr,
-              RealT& cdivi)
+    static void cdiv(RealT xr, RealT xi, RealT yr, RealT yi, RealT &cdivr, RealT &cdivi)
     {
         RealT r, mD;
         if (std::abs(yr) > std::abs(yi))
@@ -681,7 +669,6 @@ private:
                 iter = 0;
 
                 // Two roots found
-
             }
             else if (l == mN - 1)
             {
@@ -749,7 +736,6 @@ private:
                     }
 
                     // Complex pair
-
                 }
                 else
                 {
@@ -762,7 +748,6 @@ private:
                 iter = 0;
 
                 // No convergence yet
-
             }
             else
             {
@@ -837,9 +822,7 @@ private:
                         break;
                     }
                     if (std::abs(mH[m][m - 1]) * (std::abs(q) + std::abs(r)) <
-                        eps * (std::abs(p) *
-                            (std::abs(mH[m - 1][m - 1]) + std::abs(z) +
-                             std::abs(mH[m + 1][m + 1]))))
+                        eps * (std::abs(p) * (std::abs(mH[m - 1][m - 1]) + std::abs(z) + std::abs(mH[m + 1][m + 1]))))
                     {
                         break;
                     }
@@ -991,7 +974,6 @@ private:
                             }
 
                             // Solve real equations
-
                         }
                         else
                         {
@@ -1024,7 +1006,6 @@ private:
                 }
 
                 // Complex vector
-
             }
             else if (q < 0)
             {
@@ -1041,12 +1022,7 @@ private:
                 {
                     RealT cdivr;
                     RealT cdivi;
-                    cdiv(RealT(0.0),
-                         -mH[mN - 1][mN],
-                         mH[mN - 1][mN - 1] - p,
-                         q,
-                         cdivr,
-                         cdivi);
+                    cdiv(RealT(0.0), -mH[mN - 1][mN], mH[mN - 1][mN - 1] - p, q, cdivr, cdivi);
                     mH[mN - 1][mN - 1] = cdivr;
                     mH[mN - 1][mN] = cdivi;
                 }
@@ -1088,42 +1064,27 @@ private:
 
                             x = mH[i][i + 1];
                             y = mH[i + 1][i];
-                            vr = (mD[i] - p) * (mD[i] - p) + mE[i] * mE[i]
-                                            - q * q;
+                            vr = (mD[i] - p) * (mD[i] - p) + mE[i] * mE[i] - q * q;
                             vi = (mD[i] - p) * 2.0 * q;
                             if ((vr == RealT(0.0)) && (vi == RealT(0.0)))
                             {
-                                vr = eps * norm *
-                                    (std::abs(w) + std::abs(q) + std::abs(x) +
-                                     std::abs(y) + std::abs(z));
+                                vr = eps * norm * (std::abs(w) + std::abs(q) + std::abs(x) + std::abs(y) + std::abs(z));
                             }
 
                             RealT cdivr;
                             RealT cdivi;
-                            cdiv(x * r - z * ra + q * sa,
-                                 x * s - z * sa - q * ra,
-                                 vr,
-                                 vi,
-                                 cdivr,
-                                 cdivi);
+                            cdiv(x * r - z * ra + q * sa, x * s - z * sa - q * ra, vr, vi, cdivr, cdivi);
 
                             mH[i][mN - 1] = cdivr;
                             mH[i][mN] = cdivi;
                             if (std::abs(x) > (std::abs(z) + std::abs(q)))
                             {
-                                mH[i + 1][mN - 1] = (-ra - w * mH[i][mN - 1]
-                                                + q * mH[i][mN]) / x;
-                                mH[i + 1][mN] = (-sa - w * mH[i][mN]
-                                                - q * mH[i][mN - 1]) / x;
+                                mH[i + 1][mN - 1] = (-ra - w * mH[i][mN - 1] + q * mH[i][mN]) / x;
+                                mH[i + 1][mN] = (-sa - w * mH[i][mN] - q * mH[i][mN - 1]) / x;
                             }
                             else
                             {
-                                cdiv(-r - y * mH[i][mN - 1],
-                                     -s - y * mH[i][mN],
-                                     z,
-                                     q,
-                                     cdivr,
-                                     cdivi);
+                                cdiv(-r - y * mH[i][mN - 1], -s - y * mH[i][mN], z, q, cdivr, cdivi);
 
                                 mH[i + 1][mN - 1] = cdivr;
                                 mH[i + 1][mN] = cdivi;
@@ -1132,8 +1093,7 @@ private:
 
                         // Overflow control
 
-                        t = std::max<RealT>(std::abs(mH[i][mN - 1]),
-                                        std::abs(mH[i][mN]));
+                        t = std::max<RealT>(std::abs(mH[i][mN - 1]), std::abs(mH[i][mN]));
                         if ((eps * t) * t > 1)
                         {
                             for (int j = i; j <= mN; j++)
@@ -1176,8 +1136,7 @@ private:
         }
     }
 
-    static
-    bool isSymmetric(const Matrix2D<RealT>& A)
+    static bool isSymmetric(const Matrix2D<RealT> &A)
     {
         for (size_t row = 0; row < A.rows(); ++row)
         {
@@ -1193,7 +1152,7 @@ private:
         return true;
     }
 
-private:
+  private:
     // Row and column dimension (square matrix).
     const int mN_;
 
@@ -1210,7 +1169,7 @@ private:
     // Working storage for nonsymmetric algorithm.
     Vector<RealT> mOrt;
 };
-}
-}
+} // namespace linear
+} // namespace math
 
 #endif

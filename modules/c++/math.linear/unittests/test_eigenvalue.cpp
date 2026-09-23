@@ -30,14 +30,26 @@ typedef math::linear::Eigenvalue<double> Eigenvalue;
 TEST_CASE(testNonSymmetric)
 {
     Matrix A(4, 4);
-    A[0][0] = 28;  A[0][1] = 69;  A[0][2] = 44;  A[0][3] = 19;
-    A[1][0] = 5;   A[1][1] = 32;  A[1][2] = 38;  A[1][3] = 49;
-    A[2][0] = 10;  A[2][1] = 95;  A[2][2] = 77;  A[2][3] = 45;
-    A[3][0] = 82;  A[3][1] = 3;   A[3][2] = 80;  A[3][3] = 65;
+    A[0][0] = 28;
+    A[0][1] = 69;
+    A[0][2] = 44;
+    A[0][3] = 19;
+    A[1][0] = 5;
+    A[1][1] = 32;
+    A[1][2] = 38;
+    A[1][3] = 49;
+    A[2][0] = 10;
+    A[2][1] = 95;
+    A[2][2] = 77;
+    A[2][3] = 45;
+    A[3][0] = 82;
+    A[3][1] = 3;
+    A[3][2] = 80;
+    A[3][3] = 65;
 
     Eigenvalue eig(A);
 
-    const Matrix& V(eig.getV());
+    const Matrix &V(eig.getV());
     Matrix D;
     eig.getD(D);
 
@@ -60,14 +72,26 @@ TEST_CASE(testNonSymmetric)
 TEST_CASE(testSymmetric)
 {
     Matrix A(4, 4);
-    A[0][0] = 28;  A[0][1] = 69;  A[0][2] = 44;  A[0][3] = 82;
-    A[1][0] = 69;  A[1][1] = 32;  A[1][2] = 38;  A[1][3] = 49;
-    A[2][0] = 44;  A[2][1] = 38;  A[2][2] = 77;  A[2][3] = 45;
-    A[3][0] = 82;  A[3][1] = 49;  A[3][2] = 45;  A[3][3] = 65;
+    A[0][0] = 28;
+    A[0][1] = 69;
+    A[0][2] = 44;
+    A[0][3] = 82;
+    A[1][0] = 69;
+    A[1][1] = 32;
+    A[1][2] = 38;
+    A[1][3] = 49;
+    A[2][0] = 44;
+    A[2][1] = 38;
+    A[2][2] = 77;
+    A[2][3] = 45;
+    A[3][0] = 82;
+    A[3][1] = 49;
+    A[3][2] = 45;
+    A[3][3] = 65;
 
     Eigenvalue eig(A);
 
-    const Matrix& V(eig.getV());
+    const Matrix &V(eig.getV());
     Matrix D;
     eig.getD(D);
 
@@ -87,7 +111,4 @@ TEST_CASE(testSymmetric)
     }
 }
 
-TEST_MAIN(
-    TEST_CHECK(testNonSymmetric);
-    TEST_CHECK(testSymmetric);
-    )
+TEST_MAIN(TEST_CHECK(testNonSymmetric); TEST_CHECK(testSymmetric);)

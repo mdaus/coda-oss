@@ -31,45 +31,51 @@ namespace linear
 {
 class Line2D
 {
-public:
+  public:
     typedef types::RowCol<double> Point;
-    enum Line2DType { NORMAL, HORIZONTAL, VERTICAL };
+    enum Line2DType
+    {
+        NORMAL,
+        HORIZONTAL,
+        VERTICAL
+    };
 
-    Line2D(const Point& P1, const Point& P2);
-    Line2D(const Point& P, double slope);
+    Line2D(const Point &P1, const Point &P2);
+    Line2D(const Point &P, double slope);
     double getSlope() const;
     double getYIntercept() const;
     double getXIntercept() const;
-    //Evaluate for y given x:
+    // Evaluate for y given x:
     double y(double x) const;
-    //Evaluate for x given y:
+    // Evaluate for x given y:
     double x(double y) const;
     // Determine intersection of two lines
-    Point intersection(const Line2D& rhs) const;
+    Point intersection(const Line2D &rhs) const;
     // Determines if the current line intersects with the other
     // If the lines do intersect, P is altered to be that intersecting point
-    bool intersection(const Line2D& rhs, Point& P) const;
+    bool intersection(const Line2D &rhs, Point &P) const;
     // Create a new line parallel to this line through point P
-    Line2D parallelToLine(const Point& P) const;
+    Line2D parallelToLine(const Point &P) const;
     // Create a new line perpendicular to this line through point P
-    Line2D perpendicularToLine(const Point& P) const;
+    Line2D perpendicularToLine(const Point &P) const;
     // Compute the distance from this line to a point
-    double distanceToPoint(const Point& P) const;
-    //Return a point that is a distance d from the point P which is on the line
-    Point offsetFromPoint(const Point& P, double distance) const;
+    double distanceToPoint(const Point &P) const;
+    // Return a point that is a distance d from the point P which is on the line
+    Point offsetFromPoint(const Point &P, double distance) const;
     //
-    bool equals(const Line2D& other) const;
+    bool equals(const Line2D &other) const;
 
-    friend bool operator==(const Line2D& lhs, const Line2D& rhs)
+    friend bool operator==(const Line2D &lhs, const Line2D &rhs)
     {
         return lhs.equals(rhs);
     }
-private:
+
+  private:
     Line2DType mType;
     double mSlope;
     double mYIntercept;
     double mXIntercept;
 };
-}
-}
+} // namespace linear
+} // namespace math
 #endif

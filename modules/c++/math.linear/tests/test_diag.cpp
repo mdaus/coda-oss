@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of math.linear-c++ 
+ * This file is part of math.linear-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * math.linear-c++ is free software; you can redistribute it and/or modify
@@ -14,20 +14,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 #include <import/math/linear.h>
 
-namespace mx=math::linear;
+namespace mx = math::linear;
 
 typedef mx::MatrixMxN<2, 2> _2x2;
 typedef mx::MatrixMxN<3, 2> _3x2;
 typedef mx::MatrixMxN<3, 3> _3x3;
 typedef mx::MatrixMxN<4, 4> _4x4;
-
 
 int main()
 {
@@ -36,9 +35,13 @@ int main()
     std::cout << "B: " << B << std::endl;
 
     _3x2 A(0.0);
-    
-    A(0, 0) = 1; A(1, 0) = 3; A(2, 0) = 5;
-    A(0, 1) = 2; A(1, 1) = 4; A(2, 1) = 6;
+
+    A(0, 0) = 1;
+    A(1, 0) = 3;
+    A(2, 0) = 5;
+    A(0, 1) = 2;
+    A(1, 1) = 4;
+    A(2, 1) = 6;
 
     std::cout << "A: " << A << std::endl;
 
@@ -58,6 +61,4 @@ int main()
 
      */
     std::cout << "C: " << C << std::endl;
-    
- 
 }

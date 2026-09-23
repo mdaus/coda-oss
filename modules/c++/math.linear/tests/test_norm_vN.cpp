@@ -21,20 +21,20 @@
  */
 
 #include <TestCase.h>
+#include <math.h>
 #include <math/linear/Vector.h>
 #include <math/linear/VectorN.h>
-#include <math.h>
 
 namespace
 {
-//Vector3D norm()--> normSq()
+// Vector3D norm()--> normSq()
 TEST_CASE(VaryingDimension)
 {
     // Test case1: Control variable--components values
     //               Varying the dimensions
-    math::linear::VectorN<1> v1(2.2); // normSq should be (2.2)^2. norm should be 2.2
-    math::linear::VectorN<2> v2(2.2); // normSq should be 2 * (2.2)^2, norm should be sqrt of that
-    math::linear::VectorN<3> v3(2.2); // normSq should be 3 * (2.2)^2, norm should be sqrt of that
+    math::linear::VectorN<1> v1(2.2);  // normSq should be (2.2)^2. norm should be 2.2
+    math::linear::VectorN<2> v2(2.2);  // normSq should be 2 * (2.2)^2, norm should be sqrt of that
+    math::linear::VectorN<3> v3(2.2);  // normSq should be 3 * (2.2)^2, norm should be sqrt of that
     math::linear::VectorN<50> v4(2.2); // normSq should be 50 * (2.2)^2, norm should be sqrt of that
 
     // normSq:
@@ -81,25 +81,33 @@ TEST_CASE(VaryingComponentVal)
     //             Varying each components value
     // normSq
     math::linear::VectorN<3> v5;
-    v5[0] = 0; v5[1] = 1; v5[2] = 2; // normSq:
+    v5[0] = 0;
+    v5[1] = 1;
+    v5[2] = 2; // normSq:
     double expectedNormSq5 = manualNormSq(v5);
     double actualNormSq5 = v5.normSq();
     TEST_ASSERT_ALMOST_EQ(expectedNormSq5, actualNormSq5);
 
     math::linear::VectorN<3> v6;
-    v6[0] = -3; v6[1] = 39201; v6[2] = 0;
+    v6[0] = -3;
+    v6[1] = 39201;
+    v6[2] = 0;
     double expectedNormSq6 = manualNormSq(v6);
     double actualNormSq6 = v6.normSq();
     TEST_ASSERT_ALMOST_EQ(expectedNormSq6, actualNormSq6);
 
     math::linear::VectorN<3> v7;
-    v7[0] = -8; v7[1] = 54; v7[2] = 92;
+    v7[0] = -8;
+    v7[1] = 54;
+    v7[2] = 92;
     double expectedNormSq7 = manualNormSq(v7);
     double actualNormSq7 = v7.normSq();
     TEST_ASSERT_ALMOST_EQ(expectedNormSq7, actualNormSq7);
 
     math::linear::VectorN<3> v8;
-    v8[0] = 0; v8[1] = 0; v8[2] = 0;
+    v8[0] = 0;
+    v8[1] = 0;
+    v8[2] = 0;
     double expectedNormSq8 = manualNormSq(v8);
     double actualNormSq8 = v8.normSq();
     TEST_ASSERT_ALMOST_EQ(expectedNormSq8, actualNormSq8);
@@ -121,12 +129,11 @@ TEST_CASE(VaryingComponentVal)
     double actualNorm8 = v8.norm();
     TEST_ASSERT_ALMOST_EQ(expectedNorm8, actualNorm8);
 }
-}
+} // namespace
 
-int main ()
+int main()
 {
     TEST_CHECK(VaryingDimension);
     TEST_CHECK(VaryingComponentVal);
     return 0;
 }
-

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of math.linear-c++ 
+ * This file is part of math.linear-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * math.linear-c++ is free software; you can redistribute it and/or modify
@@ -14,14 +14,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#include <import/math/linear.h>
 #include "TestCase.h"
-
+#include <import/math/linear.h>
 
 /*
         mx::VectorN<3> vec = mx::constantVector<3, double>(1);
@@ -46,12 +45,12 @@ TEST_CASE(testEquality)
     std::vector<double> v1(3, 3);
     math::linear::Vector<> v2(3, 3);
     Vector3 v3(3);
-   
+
     if (v2 != v1)
         TEST_ASSERT(false);
     if (v3 != v1)
         TEST_ASSERT(false);
-    
+
     TEST_ASSERT_EQ(v2, v3);
     TEST_ASSERT_EQ(v3, v2);
 }
@@ -107,12 +106,12 @@ TEST_CASE(testPtrAdopt)
 TEST_CASE(testArithmetic)
 {
     auto A = math::linear::identityMatrix<double>(3);
-    Matrix3x3 A2( &(A.get())[0] );
+    Matrix3x3 A2(&(A.get())[0]);
 
     auto x = math::linear::constantVector<double>(3, 1.2);
     x[2] = 2;
     Vector3 x2(x.matrix().row(0));
-    
+
     Vector3 b2 = A2 * x2;
     TEST_ASSERT_EQ(b2, x2);
     TEST_ASSERT_EQ(x, x2);
@@ -124,16 +123,11 @@ TEST_CASE(testArithmetic)
 
 TEST_CASE(testLinear)
 {
-    double q[] = 
-    {
-        0.681759432346851, -0.469118050335902, -0.561366485689289,
-        0.484971425801214,  0.864311190345374, -0.133299971493248,
-        0.547728758202852, -0.181368192064663,  0.816761156241381
-    };
+    double q[] = {0.681759432346851,  -0.469118050335902, -0.561366485689289, 0.484971425801214, 0.864311190345374,
+                  -0.133299971493248, 0.547728758202852,  -0.181368192064663, 0.816761156241381};
 
     math::linear::Matrix2D<> mx1(3, 3, q);
     Matrix3x3 mx2(q);
-
 
     // This one can do a raw pointer assign
     Vector3 u1(mx2.row(0));
@@ -162,60 +156,52 @@ TEST_CASE(testLinear)
 
 TEST_CASE(testNormalize)
 {
-    double d[]  = {0.276922984960890, 0.046171390631154, 0.097131781235848};
-    double n[]  = {0.932169641471869, 0.155420716185689, 0.326962016904922};
+    double d[] = {0.276922984960890, 0.046171390631154, 0.097131781235848};
+    double n[] = {0.932169641471869, 0.155420716185689, 0.326962016904922};
 
     Vector3 v1(d);
     v1.normalize();
-    
+
     math::linear::Vector<> v2(3, d);
     v2.normalize();
 
-    
     TEST_ASSERT_EQ(v1, v2);
     TEST_ASSERT_EQ(v2, v1);
 
     Vector3 truth(n);
-    
+
     TEST_ASSERT_ALMOST_EQ(v1[0], truth[0]);
     TEST_ASSERT_ALMOST_EQ(v1[1], truth[1]);
     TEST_ASSERT_ALMOST_EQ(v1[2], truth[2]);
 }
 
-TEST_MAIN(
-    TEST_CHECK(testEquality);
-    TEST_CHECK(testNormalize);
-    TEST_CHECK(testPtrAssign);
-    TEST_CHECK(testSTLVectorAssign);
-    TEST_CHECK(testEmptyDim);
-    TEST_CHECK(testPtrDecorator);
-    TEST_CHECK(testPtrAdopt);
-    TEST_CHECK(testArithmetic);
-    TEST_CHECK(testLinear);
-    /*
-    Matrix3x3 A = mx::identityMatrix<3, double>();
-    
-    Vector3 v3 = mx::constantVector<3, double>(1.2);
+TEST_MAIN(TEST_CHECK(testEquality); TEST_CHECK(testNormalize); TEST_CHECK(testPtrAssign);
+          TEST_CHECK(testSTLVectorAssign); TEST_CHECK(testEmptyDim); TEST_CHECK(testPtrDecorator);
+          TEST_CHECK(testPtrAdopt); TEST_CHECK(testArithmetic); TEST_CHECK(testLinear);
+          /*
+          Matrix3x3 A = mx::identityMatrix<3, double>();
 
-    v3[2] = 2;
-    
-    std::cout << A * v3 << std::endl;
+          Vector3 v3 = mx::constantVector<3, double>(1.2);
+
+          v3[2] = 2;
+
+          std::cout << A * v3 << std::endl;
 
 
-    std::cout << v3 + v3 << std::endl;
+          std::cout << v3 + v3 << std::endl;
 
-    v3.normalize();
-    std::cout << v3 << std::endl;
-    std::cout << v3.norm() << std::endl;
+          v3.normalize();
+          std::cout << v3 << std::endl;
+          std::cout << v3.norm() << std::endl;
 
-    std::cout << v3 * 4.0 << std::endl;
-    
-    v3 = mx::constantVector<3, double>(0);
-    v3[0] = 1;
+          std::cout << v3 * 4.0 << std::endl;
 
-    _V3 y = mx::constantVector<3, double>(0);
-    y[1] = 1;
+          v3 = mx::constantVector<3, double>(0);
+          v3[0] = 1;
 
-    std::cout << cross(v3, y) << std::endl;
-*/
+          _V3 y = mx::constantVector<3, double>(0);
+          y[1] = 1;
+
+          std::cout << cross(v3, y) << std::endl;
+      */
 )
