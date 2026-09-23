@@ -22,13 +22,12 @@
 
 #include <io/ReadUtils.h>
 
-#include <io/FileInputStream.h>
 #include <coda_oss/span.h>
+#include <io/FileInputStream.h>
 
 namespace io
 {
-template<typename TPath, typename T>
-void readFileContents_(const TPath& pathname, std::vector<T>& buffer)
+template <typename TPath, typename T> void readFileContents_(const TPath &pathname, std::vector<T> &buffer)
 {
     io::FileInputStream inStream(pathname);
     buffer.resize(inStream.available());
@@ -37,17 +36,16 @@ void readFileContents_(const TPath& pathname, std::vector<T>& buffer)
         inStream.read(coda_oss::span<T>(buffer.data(), buffer.size()), true);
     }
 }
-void readFileContents(const std::string& pathname,
-                      std::vector<sys::byte>& buffer)
+void readFileContents(const std::string &pathname, std::vector<sys::byte> &buffer)
 {
     readFileContents_(pathname, buffer);
 }
-void readFileContents(const coda_oss::filesystem::path& pathname, std::vector<coda_oss::byte>& buffer)
+void readFileContents(const coda_oss::filesystem::path &pathname, std::vector<coda_oss::byte> &buffer)
 {
     readFileContents_(pathname, buffer);
 }
 
-void readFileContents(const std::string& pathname, std::string& str)
+void readFileContents(const std::string &pathname, std::string &str)
 {
     std::vector<sys::byte> buffer;
     readFileContents(pathname, buffer);
@@ -58,7 +56,7 @@ void readFileContents(const std::string& pathname, std::string& str)
     }
     else
     {
-        str.assign(reinterpret_cast<char*>(&buffer[0]), buffer.size());
+        str.assign(reinterpret_cast<char *>(&buffer[0]), buffer.size());
     }
 }
-}
+} // namespace io

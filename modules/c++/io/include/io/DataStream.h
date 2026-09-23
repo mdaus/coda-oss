@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++ 
+ * This file is part of io-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,8 +23,8 @@
 #ifndef __DATA_STREAM_H__
 #define __DATA_STREAM_H__
 
-#include "io/StringStream.h"
 #include "io/Serializable.h"
+#include "io/StringStream.h"
 
 /*!
  *  \file DataStream.h
@@ -44,7 +44,7 @@ namespace io
  *  is also considered to be Serializable, meaning that it conforms to
  *  the interface for a SerializableConnection
  */
-struct DataStream: public io::Serializable
+struct DataStream : public io::Serializable
 {
     DataStream() = default;
 
@@ -53,8 +53,8 @@ struct DataStream: public io::Serializable
     {
     }
 
-    DataStream(const DataStream&) = delete;
-    DataStream& operator=(const DataStream&) = delete;
+    DataStream(const DataStream &) = delete;
+    DataStream &operator=(const DataStream &) = delete;
 
     //! Returns the number of bytes available to read.
     virtual sys::Off_T available()
@@ -67,7 +67,7 @@ struct DataStream: public io::Serializable
      *  \param data The data buffer to read from
      *  \param size The size of the data buffer.
      */
-    virtual void write(const void* data, sys::Size_T size)
+    virtual void write(const void *data, sys::Size_T size)
     {
         mStringStream.write(data, size);
     }
@@ -76,7 +76,7 @@ struct DataStream: public io::Serializable
      *  Outputs this object into an output stream.
      *  \param os the OutputStream to write to
      */
-    virtual void serialize(io::OutputStream& os) override
+    virtual void serialize(io::OutputStream &os) override
     {
         mStringStream.streamTo(os);
     }
@@ -85,33 +85,33 @@ struct DataStream: public io::Serializable
      * Unpack this input stream to the object
      * \param is Stream to read object from
      */
-    virtual void deserialize(io::InputStream& is) override
+    virtual void deserialize(io::InputStream &is) override
     {
         is.streamTo(mStringStream);
     }
 
-    io::StringStream& getStream()
+    io::StringStream &getStream()
     {
         return mStringStream;
     }
-    const io::StringStream& getStream() const
+    const io::StringStream &getStream() const
     {
         return mStringStream;
     }
 
-protected:
+  protected:
     /*!
      *  Read bytes from our byte stream into the buffer
      *  \param data The data buffer to read to
      *  \param size The size of the data buffer to read
      */
-    virtual sys::SSize_T readImpl(void* data, sys::Size_T size)
+    virtual sys::SSize_T readImpl(void *data, sys::Size_T size)
     {
         return mStringStream.read(data, size);
     }
 
     io::StringStream mStringStream;
 };
-}
+} // namespace io
 
 #endif

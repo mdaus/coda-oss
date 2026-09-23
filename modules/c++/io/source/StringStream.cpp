@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++ 
+ * This file is part of io-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,27 +14,27 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "io/StringStream.h"
 
-//sys::SSize_T io::StringStream::readImpl(void* buffer, size_t len)
+// sys::SSize_T io::StringStream::readImpl(void* buffer, size_t len)
 //{
-//    sys::Off_T maxSize = available();
-//    if (maxSize <= 0) return io::InputStream::IS_END;
+//     sys::Off_T maxSize = available();
+//     if (maxSize <= 0) return io::InputStream::IS_END;
 //
-//    if (maxSize < (sys::Off_T)len)
-//        len = maxSize;
+//     if (maxSize < (sys::Off_T)len)
+//         len = maxSize;
 //
-//    if (len <= 0) return 0;
+//     if (len <= 0) return 0;
 //
-//    mData.read((char *)buffer, len);
-//    // Could be problem if streams are broken
-//    // alternately could return gcount in else
-//    // case above
-//    return len;
-//}
+//     mData.read((char *)buffer, len);
+//     // Could be problem if streams are broken
+//     // alternately could return gcount in else
+//     // case above
+//     return len;
+// }

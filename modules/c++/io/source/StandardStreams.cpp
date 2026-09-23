@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++ 
+ * This file is part of io-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,17 +24,14 @@
 
 _STDERR_DEFINE_MUTEX_SEMICOLON_
 _STDOUT_DEFINE_MUTEX_SEMICOLON_
-void io::StandardOutStream::write(const void* buffer, sys::Size_T len)
+void io::StandardOutStream::write(const void *buffer, sys::Size_T len)
 {
     _STDSTREAM_BEGIN_CS_SEMICOLON_
-    std::cout.write(static_cast<const char*>(buffer), len);
+    std::cout.write(static_cast<const char *>(buffer), len);
     _STDSTREAM_END_CS_SEMICOLON_
-    //int returnVal = fwrite(b, len, len, stdout);
+    // int returnVal = fwrite(b, len, len, stdout);
     if (!std::cout.good())
-        throw except::IOException(
-            Ctxt(
-                str::Format("std::cout stream is bad after requested write: (%d)",
-                     len)) );
+        throw except::IOException(Ctxt(str::Format("std::cout stream is bad after requested write: (%d)", len)));
 }
 
 void io::StandardOutStream::flush()
@@ -44,17 +41,14 @@ void io::StandardOutStream::flush()
     _STDSTREAM_END_CS_SEMICOLON_
 }
 
-void io::StandardErrStream::write(const void* buffer, sys::Size_T len)
+void io::StandardErrStream::write(const void *buffer, sys::Size_T len)
 {
     _STDSTREAM_BEGIN_CS_SEMICOLON_
-    std::cerr.write(static_cast<const char*>(buffer), len);
-    //int returnVal = fwrite(b, len, len, stderr);
+    std::cerr.write(static_cast<const char *>(buffer), len);
+    // int returnVal = fwrite(b, len, len, stderr);
     _STDSTREAM_END_CS_SEMICOLON_
     if (!std::cerr.good())
-        throw except::IOException(
-            Ctxt(
-                str::Format("std::cerr stream is bad after requested write: (%d)",
-                     len) ) );
+        throw except::IOException(Ctxt(str::Format("std::cerr stream is bad after requested write: (%d)", len)));
 }
 
 void io::StandardErrStream::flush()

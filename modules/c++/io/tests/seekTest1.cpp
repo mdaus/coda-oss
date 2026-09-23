@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++ 
+ * This file is part of io-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,27 +24,23 @@
 
 const int LENGTH_STR = 26;
 
-
-void testSeekCurrent(io::StringStream& oss)
+void testSeekCurrent(io::StringStream &oss)
 {
-    char buffer[ LENGTH_STR + 1 ];
-    buffer[ LENGTH_STR ] = 0;
+    char buffer[LENGTH_STR + 1];
+    buffer[LENGTH_STR] = 0;
     // Simple scan through....
     sys::SSize_T readVal = 0;
     oss.seek(0, io::StringStream::START);
-    
 
-    
-    for (int i = 0; readVal != io::StringStream::IS_END ; i++)
+    for (int i = 0; readVal != io::StringStream::IS_END; i++)
     {
-	oss.seek(0, io::StringStream::CURRENT);
-	readVal = oss.read(&buffer[i], 1);
-	std::cout << i << std::endl;
-	std::cout << readVal << std::endl;
+        oss.seek(0, io::StringStream::CURRENT);
+        readVal = oss.read(&buffer[i], 1);
+        std::cout << i << std::endl;
+        std::cout << readVal << std::endl;
     }
 
     std::cout << "'" << buffer << "'" << std::endl;
-
 }
 
 int main()
@@ -52,74 +48,70 @@ int main()
 
     try
     {
-	
-	const std::string str = "abcdefghijklmnopqrstuvwxyz";
-	std::cout << "Operating on string: '" << str << "'" << std::endl;
-	
-	io::StringStream oss;
-	oss.write(str.c_str(), str.length());
-	
-//	testSeekCurrent(oss);
-	char buffer[ LENGTH_STR + 1 ];
-	buffer[ LENGTH_STR ] = 0;
-	// Simple scan through....
-	sys::SSize_T readVal = 0;
-	oss.seek(0, io::StringStream::START);
-		
-	for (int i = 0; readVal != io::StringStream::IS_END ; i++)
-	{
-	    oss.seek(0, io::StringStream::CURRENT);
-	    readVal = oss.read(&buffer[i], 1);
-	}
-	
-	std::cout << "'" << buffer << "'" << std::endl;
 
-	io::FileOutputStream fos("anything.txt");
-	fos.write(buffer, LENGTH_STR);
-	fos.close();
+        const std::string str = "abcdefghijklmnopqrstuvwxyz";
+        std::cout << "Operating on string: '" << str << "'" << std::endl;
 
+        io::StringStream oss;
+        oss.write(str.c_str(), str.length());
 
-	memset(buffer, 0, LENGTH_STR + 1);
-	
-	io::FileInputStream fis("anything.txt");
-	sys::Off_T avail = fis.available();
-	fis.seek(0, io::FileInputStream::END);
-	readVal = 0;
+        //	testSeekCurrent(oss);
+        char buffer[LENGTH_STR + 1];
+        buffer[LENGTH_STR] = 0;
+        // Simple scan through....
+        sys::SSize_T readVal = 0;
+        oss.seek(0, io::StringStream::START);
 
-	//std::cout << avail << std::endl;
-	for (int i = 0; i != avail ; i++)
-	{
-	    fis.seek(-1, io::FileInputStream::CURRENT);
-	    fis.read(&buffer[i], 1);
-	    fis.seek(-1, io::FileInputStream::CURRENT);
+        for (int i = 0; readVal != io::StringStream::IS_END; i++)
+        {
+            oss.seek(0, io::StringStream::CURRENT);
+            readVal = oss.read(&buffer[i], 1);
+        }
 
-	}
-	std::cout << "'" << buffer << "'" << std::endl;
-	io::StringStream bwd;
-	bwd.write(buffer, LENGTH_STR);
-	avail = bwd.available();
-	if ( avail != LENGTH_STR )
-	    throw except::Exception(Ctxt("Huh??"));
+        std::cout << "'" << buffer << "'" << std::endl;
 
-	
-	memset(buffer, 0, LENGTH_STR + 1);
+        io::FileOutputStream fos("anything.txt");
+        fos.write(buffer, LENGTH_STR);
+        fos.close();
 
-	for (sys::Off_T i = avail; i > 0; --i)
-	{
-	    auto d = avail - i;
-	    bwd.seek(i - 1, io::StringStream::START);
-	    bwd.read(&buffer[d], 1);
-	    //std::cout << "At: " << d << ": " << buffer[d] << std::endl;
-	}
-	
-	std::cout << "'" << buffer << "'" << std::endl;
-	
-	return 0;
+        memset(buffer, 0, LENGTH_STR + 1);
+
+        io::FileInputStream fis("anything.txt");
+        sys::Off_T avail = fis.available();
+        fis.seek(0, io::FileInputStream::END);
+        readVal = 0;
+
+        // std::cout << avail << std::endl;
+        for (int i = 0; i != avail; i++)
+        {
+            fis.seek(-1, io::FileInputStream::CURRENT);
+            fis.read(&buffer[i], 1);
+            fis.seek(-1, io::FileInputStream::CURRENT);
+        }
+        std::cout << "'" << buffer << "'" << std::endl;
+        io::StringStream bwd;
+        bwd.write(buffer, LENGTH_STR);
+        avail = bwd.available();
+        if (avail != LENGTH_STR)
+            throw except::Exception(Ctxt("Huh??"));
+
+        memset(buffer, 0, LENGTH_STR + 1);
+
+        for (sys::Off_T i = avail; i > 0; --i)
+        {
+            auto d = avail - i;
+            bwd.seek(i - 1, io::StringStream::START);
+            bwd.read(&buffer[d], 1);
+            // std::cout << "At: " << d << ": " << buffer[d] << std::endl;
+        }
+
+        std::cout << "'" << buffer << "'" << std::endl;
+
+        return 0;
     }
-    catch (except::Exception& ex)
+    catch (except::Exception &ex)
     {
-	std::cout << "Caught ex: " << ex.getTrace() << std::endl;
-	exit(EXIT_FAILURE);
+        std::cout << "Caught ex: " << ex.getTrace() << std::endl;
+        exit(EXIT_FAILURE);
     }
-
 }

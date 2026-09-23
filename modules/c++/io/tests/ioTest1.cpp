@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++ 
+ * This file is part of io-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,15 +14,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <import/io.h>
-#include <import/except.h>
 #include <assert.h>
+#include <import/except.h>
+#include <import/io.h>
 using namespace io;
 using namespace except;
 using namespace std;
@@ -33,8 +33,7 @@ int main(int argc, char **argv)
     {
         if (argc != 3)
         {
-            throw Exception(Ctxt(str::Format("Usage: %s <input file> <output file>",
-                                      argv[0])));
+            throw Exception(Ctxt(str::Format("Usage: %s <input file> <output file>", argv[0])));
         }
 
         FileInputStream fis(argv[1]);
@@ -44,7 +43,7 @@ int main(int argc, char **argv)
         fis.close();
         fos.close();
     }
-    catch (Throwable& t)
+    catch (Throwable &t)
     {
         cout << "Caught throwable: " << t.toString() << std::endl;
     }

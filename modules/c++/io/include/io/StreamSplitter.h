@@ -27,8 +27,8 @@
 #include <vector>
 
 #include "config/Exports.h"
-#include "sys/Conf.h"
 #include "io/InputStream.h"
+#include "sys/Conf.h"
 
 namespace io
 {
@@ -48,12 +48,11 @@ struct CODA_OSS_API StreamSplitter
      * \param bufferSize Size of internal buffer.
      *        Defaults to 64KiB (2^16 bytes).
      */
-    explicit StreamSplitter(io::InputStream& inputStream,
-                            const std::string& delimiter = std::string("\n"),
+    explicit StreamSplitter(io::InputStream &inputStream, const std::string &delimiter = std::string("\n"),
                             size_t bufferSize = 65536);
 
-    StreamSplitter(const StreamSplitter&) = delete;
-    StreamSplitter& operator=(const StreamSplitter&) = delete;
+    StreamSplitter(const StreamSplitter &) = delete;
+    StreamSplitter &operator=(const StreamSplitter &) = delete;
 
     /*!
      * \brief Get the next substring from the stream.
@@ -63,7 +62,7 @@ struct CODA_OSS_API StreamSplitter
      *             (return value should be checked).
      * \return true if this call succeeded, false if this call failed.
      */
-    bool getNext(std::string& substring);
+    bool getNext(std::string &substring);
 
     /*!
      * \brief Check if the stream has no more substrings to return.
@@ -96,14 +95,12 @@ struct CODA_OSS_API StreamSplitter
      */
     size_t getNumBytesProcessed() const;
 
-private:
+  private:
     /*!
      * \brief Append the buffer section from mBufferBegin to bufferSegmentEnd
      *        to the substring and remove it from the buffer.
      */
-    void transferBufferSegmentToSubstring(std::string& substring,
-                                          size_t& substringSize,
-                                          sys::SSize_T bufferSegmentEnd);
+    void transferBufferSegmentToSubstring(std::string &substring, size_t &substringSize, sys::SSize_T bufferSegmentEnd);
 
     /*!
      * \brief Read from the stream if it has more data and the buffer has space.
@@ -118,10 +115,10 @@ private:
     size_t mNumDelimitersProcessed;
     std::vector<sys::byte> mBufferStorage;
     const sys::SSize_T mBufferCapacity;
-    sys::byte* const mBuffer;
-    io::InputStream& mInputStream;
+    sys::byte *const mBuffer;
+    io::InputStream &mInputStream;
     bool mStreamEmpty;
 };
-}
+} // namespace io
 
 #endif
