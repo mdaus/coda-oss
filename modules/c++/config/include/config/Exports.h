@@ -9,24 +9,24 @@
 //
 // Use Windows naming conventions (DLL, LIB) because this really only matters for _MSC_VER, see below.
 #if !defined(CODA_OSS_LIB_) && !defined(CODA_OSS_DLL_)
-    #if CODA_OSS_LIBRARY_SHARED
-        #if CODA_OSS_LIBRARY_STATIC
-            #error "CODA_OSS_LIBRARY_SHARED already #define'd'"
-        #endif
-        #define CODA_OSS_DLL_ 1  // Symbols must be exported and imported (see below).
-    #else
-        // CODA_OSS_LIBRARY_STATIC doesn't have to be defined
-        #define CODA_OSS_LIB_ 1  // Static library, all symbols visible.
-    #endif
+#if CODA_OSS_LIBRARY_SHARED
+#if CODA_OSS_LIBRARY_STATIC
+#error "CODA_OSS_LIBRARY_SHARED already #define'd'"
+#endif
+#define CODA_OSS_DLL_ 1 // Symbols must be exported and imported (see below).
+#else
+// CODA_OSS_LIBRARY_STATIC doesn't have to be defined
+#define CODA_OSS_LIB_ 1 // Static library, all symbols visible.
+#endif
 #endif
 #if !defined(CODA_OSS_LIB_) && !defined(CODA_OSS_DLL_)
-    #error "One of CODA_OSS_LIB_ pr CODA_OSS_DLL_ must be #define'd'"
+#error "One of CODA_OSS_LIB_ pr CODA_OSS_DLL_ must be #define'd'"
 #endif
 #if defined(CODA_OSS_LIB_) && defined(CODA_OSS_DLL_)
-    #error "Both CODA_OSS_LIB_ and CODA_OSS_DLL_ are #define'd'"
+#error "Both CODA_OSS_LIB_ and CODA_OSS_DLL_ are #define'd'"
 #endif
 #if defined(CODA_OSS_EXPORTS) && defined(CODA_OSS_LIB_)
-    #error "Can't export from a LIB'"
+#error "Can't export from a LIB'"
 #endif
 
 // The following ifdef block is the standard way of creating macros which make exporting
@@ -37,26 +37,26 @@
 // defined with this macro as being exported.
 // https://www.gnu.org/software/gnulib/manual/html_node/Exported-Symbols-of-Shared-Libraries.html
 #ifdef CODA_OSS_EXPORTS
-    #define CODA_OSS_API CODA_OSS_library_export
+#define CODA_OSS_API CODA_OSS_library_export
 #else
-    // Either building a static library (no CODA_OSS_EXPORTS) or
-    // importing (not building) a shared library.
+// Either building a static library (no CODA_OSS_EXPORTS) or
+// importing (not building) a shared library.
 
-    // We need to know whether we're consuming (importing) a DLL or static LIB
-    // The default is a static LIB as that's what existing code/builds expect.
-    #ifdef CODA_OSS_DLL_
-        // Actually, it seems that the linker is able to figure this out from the .LIB, so 
-        // there doesn't seem to be a need for __declspec(dllimport).  Clients don't
-        // need to #define CODA_OSS_DLL_ ... ?  Well, almost ... it looks
-        // like __declspec(dllimport) is needed to get virtual "inline"s (e.g., 
-        // destructors) correct.
-        #define CODA_OSS_API CODA_OSS_library_import
-    #else
-        #define CODA_OSS_API /* "importing" a static LIB */
-    #endif
+// We need to know whether we're consuming (importing) a DLL or static LIB
+// The default is a static LIB as that's what existing code/builds expect.
+#ifdef CODA_OSS_DLL_
+// Actually, it seems that the linker is able to figure this out from the .LIB, so
+// there doesn't seem to be a need for __declspec(dllimport).  Clients don't
+// need to #define CODA_OSS_DLL_ ... ?  Well, almost ... it looks
+// like __declspec(dllimport) is needed to get virtual "inline"s (e.g.,
+// destructors) correct.
+#define CODA_OSS_API CODA_OSS_library_import
+#else
+#define CODA_OSS_API /* "importing" a static LIB */
+#endif
 #endif
 
 #if defined(_MSC_VER)
-#pragma warning(disable: 4251) // '...' : class '...' needs to have dll-interface to be used by clients of struct '...'
+#pragma warning(disable : 4251) // '...' : class '...' needs to have dll-interface to be used by clients of struct '...'
 #endif
 #endif

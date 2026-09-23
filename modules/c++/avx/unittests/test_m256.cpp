@@ -24,31 +24,31 @@
 
 #include <std/cstddef>
 
-#include <sys/Conf.h>
-#include <sys/AbstractOS.h>
 #include <avx/extractf.h>
 #include <config/compiler_extensions.h>
+#include <sys/AbstractOS.h>
+#include <sys/Conf.h>
 
 TEST_CASE(extractf)
 {
-  /*
-    #if defined(__GNUC__)
-        // direct_m256_extract_str
-        __m256 ymm = _mm256_setzero_ps();
-        float val = ymm[7];
-    #elif defined(_MSC_VER)
-        // member_m256_extract_str
-        __m256 ymm = _mm256_setzero_ps();
-        float val = ymm.m256_f32[7];
-    #else
-        float ymm = 0.0;
-        float val = sys::mm256_extractf(ymm, 7);
-        val = sys::mm256_extractf_(ymm, 7);
-#endif
+    /*
+      #if defined(__GNUC__)
+          // direct_m256_extract_str
+          __m256 ymm = _mm256_setzero_ps();
+          float val = ymm[7];
+      #elif defined(_MSC_VER)
+          // member_m256_extract_str
+          __m256 ymm = _mm256_setzero_ps();
+          float val = ymm.m256_f32[7];
+      #else
+          float ymm = 0.0;
+          float val = sys::mm256_extractf(ymm, 7);
+          val = sys::mm256_extractf_(ymm, 7);
+  #endif
 
-    val = avx::mm256_extractf(ymm, 7);
-    if (val) {} // suppress compiler warning about unused "val"
-  */
+      val = avx::mm256_extractf(ymm, 7);
+      if (val) {} // suppress compiler warning about unused "val"
+    */
     TEST_SUCCESS;
 }
 
@@ -56,24 +56,24 @@ TEST_CASE(test_getSIMDInstructionSet)
 {
     // This is the reverse of getSIMDInstructionSet(): it uses the macros to generate a value.
     constexpr auto simdInstructionSet = sys::getSIMDInstructionSet();
-    #if CODA_OSS_ENABLE_SIMD
-        #if __AVX512F__
-        static_assert(simdInstructionSet == sys::SIMDInstructionSet::AVX512F, "getSIMDInstructionSet()");
-        #elif __AVX2__
-        static_assert(simdInstructionSet == sys::SIMDInstructionSet::AVX2, "getSIMDInstructionSet()");
-        #else
-        static_assert(simdInstructionSet == sys::SIMDInstructionSet::SSE2, "getSIMDInstructionSet()");
-        #endif
-    #else
-        static_assert(simdInstructionSet == sys::SIMDInstructionSet::Disabled, "getSIMDInstructionSet()");
-    #endif // CODA_OSS_ENABLE_SIMD
-    
-    CODA_OSS_disable_warning_push
-    #if _MSC_VER
-    #pragma warning(disable: 4127) // conditional expression is constant
-    #endif
+#if CODA_OSS_ENABLE_SIMD
+#if __AVX512F__
+    static_assert(simdInstructionSet == sys::SIMDInstructionSet::AVX512F, "getSIMDInstructionSet()");
+#elif __AVX2__
+    static_assert(simdInstructionSet == sys::SIMDInstructionSet::AVX2, "getSIMDInstructionSet()");
+#else
+    static_assert(simdInstructionSet == sys::SIMDInstructionSet::SSE2, "getSIMDInstructionSet()");
+#endif
+#else
+    static_assert(simdInstructionSet == sys::SIMDInstructionSet::Disabled, "getSIMDInstructionSet()");
+#endif // CODA_OSS_ENABLE_SIMD
 
-    switch (sys::getSIMDInstructionSet()) // run-time value (well, not really, but it could be)
+    CODA_OSS_disable_warning_push
+#if _MSC_VER
+#pragma warning(disable : 4127) // conditional expression is constant
+#endif
+
+        switch (sys::getSIMDInstructionSet()) // run-time value (well, not really, but it could be)
     {
     case sys::SIMDInstructionSet::SSE2:
     {
@@ -108,7 +108,4 @@ TEST_CASE(test_getSIMDInstructionSet)
     CODA_OSS_disable_warning_pop
 }
 
-TEST_MAIN(
-    TEST_CHECK(extractf);
-    TEST_CHECK(test_getSIMDInstructionSet);
-)
+TEST_MAIN(TEST_CHECK(extractf); TEST_CHECK(test_getSIMDInstructionSet);)

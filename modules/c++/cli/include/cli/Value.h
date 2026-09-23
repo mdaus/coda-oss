@@ -23,13 +23,13 @@
 #ifndef CODA_OSS_cli_Value_h_INCLUDED_
 #define CODA_OSS_cli_Value_h_INCLUDED_
 
-#include <string>
 #include <iterator>
 #include <memory>
+#include <string>
 
-#include <import/str.h>
-#include "sys/Conf.h"
 #include "config/Exports.h"
+#include "sys/Conf.h"
+#include <import/str.h>
 
 namespace cli
 {
@@ -42,14 +42,12 @@ struct CODA_OSS_API Value final
 {
     Value() = default;
 
-    template<typename T>
-    explicit Value(std::vector<T> value)
+    template <typename T> explicit Value(std::vector<T> value)
     {
         setContainer<T>(value);
     }
 
-    template<typename T>
-    Value(T value)
+    template <typename T> Value(T value)
     {
         set<T>(value);
     }
@@ -59,15 +57,13 @@ struct CODA_OSS_API Value final
         cleanup();
     }
 
-    template<typename T>
-    void set(T value)
+    template <typename T> void set(T value)
     {
         cleanup();
         mValues.push_back(str::toString(value));
     }
 
-    template<typename T>
-    void setContainer(const std::vector<T>& c)
+    template <typename T> void setContainer(const std::vector<T> &c)
     {
         cleanup();
         mValues.reserve(c.size());
@@ -75,29 +71,24 @@ struct CODA_OSS_API Value final
             add(c[i]);
     }
 
-    template<typename T>
-    T operator [](size_t index) const
+    template <typename T> T operator[](size_t index) const
     {
         return at<T>(index);
     }
 
-    template<typename T>
-    T at(size_t index = 0) const
+    template <typename T> T at(size_t index = 0) const
     {
         if (index >= mValues.size())
-            throw except::IndexOutOfRangeException(
-                                                   Ctxt(str::Format("Invalid index: %d", index)));
+            throw except::IndexOutOfRangeException(Ctxt(str::Format("Invalid index: %d", index)));
         return str::toType<T>(mValues[index]);
     }
 
-    template<typename T>
-    T get(size_t index = 0) const
+    template <typename T> T get(size_t index = 0) const
     {
         return at<T>(index);
     }
 
-    template<typename T>
-    void add(T val)
+    template <typename T> void add(T val)
     {
         mValues.push_back(str::toString(val));
     }
@@ -110,7 +101,7 @@ struct CODA_OSS_API Value final
         return mValues.size();
     }
 
-    Value* clone() const
+    Value *clone() const
     {
         return new Value(mValues);
     }
@@ -127,12 +118,24 @@ struct CODA_OSS_API Value final
     typedef std::vector<std::string>::iterator iterator;
     typedef std::vector<std::string>::const_iterator const_iterator;
 
-    iterator begin() { return mValues.begin(); }
-    const_iterator begin() const { return mValues.begin(); }
-    iterator end() { return mValues.end(); }
-    const_iterator end() const { return mValues.end(); }
+    iterator begin()
+    {
+        return mValues.begin();
+    }
+    const_iterator begin() const
+    {
+        return mValues.begin();
+    }
+    iterator end()
+    {
+        return mValues.end();
+    }
+    const_iterator end() const
+    {
+        return mValues.end();
+    }
 
-protected:
+  protected:
     std::vector<std::string> mValues;
 
     void cleanup()
@@ -141,5 +144,5 @@ protected:
     }
 };
 
-}
-#endif  // CODA_OSS_cli_Value_h_INCLUDED_
+} // namespace cli
+#endif // CODA_OSS_cli_Value_h_INCLUDED_

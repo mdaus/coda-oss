@@ -23,8 +23,8 @@
 #ifndef __CLI_ARGUMENT_H__
 #define __CLI_ARGUMENT_H__
 
-#include <import/str.h>
 #include "config/Exports.h"
+#include <import/str.h>
 
 #include "cli/Value.h"
 
@@ -33,7 +33,12 @@ namespace cli
 
 enum Action
 {
-    STORE, STORE_TRUE, STORE_FALSE, STORE_CONST, SUB_OPTIONS, VERSION
+    STORE,
+    STORE_TRUE,
+    STORE_FALSE,
+    STORE_CONST,
+    SUB_OPTIONS,
+    VERSION
 };
 
 // forward declaration
@@ -46,80 +51,119 @@ class ArgumentParser;
  */
 class CODA_OSS_API Argument
 {
-public:
-
+  public:
     ~Argument();
 
-    Argument* addFlag(const std::string& flag);
-    Argument* setAction(Action action);
-    Argument* setMinArgs(int num);
-    Argument* setMaxArgs(int num);
-    Argument* setDefault(Value* val, bool own = false);
-    Argument* setChoices(const std::vector<std::string>& choices);
-    Argument* addChoice(const std::string& choice);
-    Argument* setHelp(const std::string& help);
-    Argument* setMetavar(const std::string& metavar);
-    Argument* setDestination(const std::string& dest);
-    Argument* setConst(Value* val, bool own = false);
-    Argument* setRequired(bool flag);
-    Argument* setShowsHelp(bool flag);
+    Argument *addFlag(const std::string &flag);
+    Argument *setAction(Action action);
+    Argument *setMinArgs(int num);
+    Argument *setMaxArgs(int num);
+    Argument *setDefault(Value *val, bool own = false);
+    Argument *setChoices(const std::vector<std::string> &choices);
+    Argument *addChoice(const std::string &choice);
+    Argument *setHelp(const std::string &help);
+    Argument *setMetavar(const std::string &metavar);
+    Argument *setDestination(const std::string &dest);
+    Argument *setConst(Value *val, bool own = false);
+    Argument *setRequired(bool flag);
+    Argument *setShowsHelp(bool flag);
 
-    template <typename T>
-    Argument* setConst(const T val)
+    template <typename T> Argument *setConst(const T val)
     {
         setConst(new Value(val), true);
         return this;
     }
 
-    template <typename T>
-    Argument* setDefault(const T val)
+    template <typename T> Argument *setDefault(const T val)
     {
         setDefault(new Value(val), true);
         return this;
     }
 
-    inline const std::string& getName() const { return mName; }
-    inline const std::vector<std::string>& getShortFlags() const { return mShortFlags; }
-    inline const std::vector<std::string>& getLongFlags() const { return mLongFlags; }
-    inline Action getAction() const { return mAction; }
-    inline int getMinArgs() const { return mMinArgs; }
-    inline int getMaxArgs() const { return mMaxArgs; }
-    inline const Value* getDefault() const { return mDefaultValue; }
-    inline const std::vector<std::string>& getChoices() const { return mChoices; }
-    inline bool isRequired() const { return mRequired; }
-    inline const std::string& getHelp() const { return mHelp; }
-    inline const std::string& getMetavar() const { return mMetavar; }
-    inline const std::string& getDestination() const { return mDestination; }
-    inline const Value* getConst() const { return mConstValue; }
-    inline bool showsHelp() const { return mShowsHelp; }
+    inline const std::string &getName() const
+    {
+        return mName;
+    }
+    inline const std::vector<std::string> &getShortFlags() const
+    {
+        return mShortFlags;
+    }
+    inline const std::vector<std::string> &getLongFlags() const
+    {
+        return mLongFlags;
+    }
+    inline Action getAction() const
+    {
+        return mAction;
+    }
+    inline int getMinArgs() const
+    {
+        return mMinArgs;
+    }
+    inline int getMaxArgs() const
+    {
+        return mMaxArgs;
+    }
+    inline const Value *getDefault() const
+    {
+        return mDefaultValue;
+    }
+    inline const std::vector<std::string> &getChoices() const
+    {
+        return mChoices;
+    }
+    inline bool isRequired() const
+    {
+        return mRequired;
+    }
+    inline const std::string &getHelp() const
+    {
+        return mHelp;
+    }
+    inline const std::string &getMetavar() const
+    {
+        return mMetavar;
+    }
+    inline const std::string &getDestination() const
+    {
+        return mDestination;
+    }
+    inline const Value *getConst() const
+    {
+        return mConstValue;
+    }
+    inline bool showsHelp() const
+    {
+        return mShowsHelp;
+    }
 
     std::string getVariable() const;
     bool isPositional() const;
 
-protected:
+  protected:
     std::string mName;
     std::vector<std::string> mShortFlags;
     std::vector<std::string> mLongFlags;
     Action mAction = cli::STORE;
     int mMinArgs = 0;
     int mMaxArgs = 1;
-    Value* mDefaultValue = nullptr;
+    Value *mDefaultValue = nullptr;
     bool mOwnDefault = false;
     std::vector<std::string> mChoices;
     std::string mHelp;
     std::string mMetavar;
     std::string mDestination;
-    Value* mConstValue = nullptr;
+    Value *mConstValue = nullptr;
     bool mOwnConst = false;
     bool mRequired = false;
     bool mShowsHelp = true;
-    ArgumentParser* mParser = nullptr;
+    ArgumentParser *mParser = nullptr;
 
     friend class ArgumentParser;
-    Argument(const std::string& nameOrFlags, ArgumentParser* parser);
+    Argument(const std::string &nameOrFlags, ArgumentParser *parser);
 
-    std::string validateFlag(const std::string& flag) const;
+    std::string validateFlag(const std::string &flag) const;
 };
 
-}
+} // namespace cli
 #endif

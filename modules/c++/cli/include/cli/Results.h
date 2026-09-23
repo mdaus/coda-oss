@@ -25,8 +25,8 @@
 
 #include <map>
 #include <memory>
-#include <utility>
 #include <stdexcept>
+#include <utility>
 
 #include "sys/Conf.h"
 
@@ -40,37 +40,37 @@ class Results final
     typedef std::map<std::string, std::unique_ptr<cli::Value>> ValueStorage_T;
     typedef ValueStorage_T::iterator ValueIter_T;
     typedef ValueStorage_T::const_iterator ConstValueIter_T;
-    typedef std::map<std::string, cli::Results*> ResultsStorage_T;
+    typedef std::map<std::string, cli::Results *> ResultsStorage_T;
     typedef ResultsStorage_T::iterator ResultsIter_T;
     typedef ResultsStorage_T::const_iterator ConstResultsIter_T;
 
-public:
+  public:
     Results() = default;
     ~Results()
     {
         destroy();
     }
-    Results(const Results&) = delete;
-    Results& operator=(const Results&) = delete;
-    Results(Results&&) = default;
-    Results& operator=(Results&&) = default;
+    Results(const Results &) = delete;
+    Results &operator=(const Results &) = delete;
+    Results(Results &&) = default;
+    Results &operator=(Results &&) = default;
 
-    bool hasValue(const std::string& key) const
+    bool hasValue(const std::string &key) const
     {
         return mValues.find(key) != mValues.end();
     }
 
-    bool hasSubResults(const std::string& key) const
+    bool hasSubResults(const std::string &key) const
     {
         return mResults.find(key) != mResults.end();
     }
 
-    const cli::Value* operator[](const std::string& key) const
+    const cli::Value *operator[](const std::string &key) const
     {
         return getValue(key);
     }
 
-    const cli::Value* getValue(const std::string& key) const
+    const cli::Value *getValue(const std::string &key) const
     {
         auto const p = mValues.find(key);
         if (p == mValues.end())
@@ -80,7 +80,7 @@ public:
         }
         return p->second.get();
     }
-    cli::Value* getValue(const std::string& key)
+    cli::Value *getValue(const std::string &key)
     {
         auto const p = mValues.find(key);
         if (p == mValues.end())
@@ -91,19 +91,17 @@ public:
         return p->second.get();
     }
 
-    template<typename T>
-    T get(const std::string& key, unsigned int index = 0) const
+    template <typename T> T get(const std::string &key, unsigned int index = 0) const
     {
         return getValue(key)->get<T>(index);
     }
 
-    template<typename T>
-    T operator()(const std::string& key, unsigned int index = 0) const
+    template <typename T> T operator()(const std::string &key, unsigned int index = 0) const
     {
         return get<T>(key, index);
     }
 
-    cli::Results* getSubResults(const std::string& key) const
+    cli::Results *getSubResults(const std::string &key) const
     {
         ConstResultsIter_T p = mResults.find(key);
         if (p == mResults.end())
@@ -113,7 +111,7 @@ public:
         return p->second;
     }
 
-    void put(const std::string& key, std::unique_ptr<cli::Value> value)
+    void put(const std::string &key, std::unique_ptr<cli::Value> value)
     {
         if (hasValue(key) && (getValue(key) == value.get()))
         {
@@ -121,9 +119,9 @@ public:
         }
         mValues[key] = std::move(value);
     }
-    void put(const std::string& key, cli::Value* value)
+    void put(const std::string &key, cli::Value *value)
     {
-        cli::Value* pExistingValue = hasValue(key) ? getValue(key) : nullptr;
+        cli::Value *pExistingValue = hasValue(key) ? getValue(key) : nullptr;
         if ((pExistingValue == nullptr) || (pExistingValue != value))
         {
             // Either 1) we didn't already have a value or 2) the existing value is different
@@ -131,7 +129,7 @@ public:
         }
     }
 
-    void put(const std::string& key, cli::Results *args)
+    void put(const std::string &key, cli::Results *args)
     {
         if (hasSubResults(key))
         {
@@ -142,25 +140,36 @@ public:
         mResults[key] = args;
     }
 
-    auto begin() { return mValues.begin(); }
-    auto begin() const { return mValues.begin(); }
-    auto end() { return mValues.end(); }
-    auto end() const { return mValues.end(); }
+    auto begin()
+    {
+        return mValues.begin();
+    }
+    auto begin() const
+    {
+        return mValues.begin();
+    }
+    auto end()
+    {
+        return mValues.end();
+    }
+    auto end() const
+    {
+        return mValues.end();
+    }
 
-private:
+  private:
     ValueStorage_T mValues;
     ResultsStorage_T mResults;
 
     void destroy()
     {
         mValues.clear();
-        for (ResultsIter_T it = mResults.begin(), end = mResults.end(); it
-                != end; ++it)
+        for (ResultsIter_T it = mResults.begin(), end = mResults.end(); it != end; ++it)
             delete it->second;
         mResults.clear();
     }
 };
 
-}
+} // namespace cli
 
-#endif  // CODA_OSS_cli_Results_h_INCLUDED_
+#endif // CODA_OSS_cli_Results_h_INCLUDED_

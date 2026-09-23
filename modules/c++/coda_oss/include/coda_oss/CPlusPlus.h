@@ -23,12 +23,12 @@
 #ifndef CODA_OSS_coda_oss_CPlusPlus_h_INCLUDED_
 #define CODA_OSS_coda_oss_CPlusPlus_h_INCLUDED_
 
-#ifdef CODA_OSS_cplusplus 
-    #error "CODA_OSS_cplusplus already #define'd."
+#ifdef CODA_OSS_cplusplus
+#error "CODA_OSS_cplusplus already #define'd."
 #endif
 
 #ifndef __cplusplus
-    #error "Only C++ compilation is supported."
+#error "Only C++ compilation is supported."
 #endif
 #define CODA_OSS_cplusplus __cplusplus
 
@@ -41,35 +41,35 @@
 #define CODA_OSS_cplusplus23 202302L
 
 #if CODA_OSS_cplusplus < CODA_OSS_cplusplus11
-    #undef CODA_OSS_cplusplus  // oops...try to fix
+#undef CODA_OSS_cplusplus // oops...try to fix
 
-    // MSVC only sets __cplusplus >199711L with the /Zc:__cplusplus command-line option.
-    // https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/
-    #if defined(_MSC_VER)
-        #if defined(_MSVC_LANG)
-            // https://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=msvc-160
-            // "Defined as an integer literal that specifies the C++ language standard targeted by the compiler."
-            #define CODA_OSS_cplusplus _MSVC_LANG
-        #else
-	        #error "_MSVC_LANG should be #define'd."
-        #endif
-    #endif // _MSC_VER
+// MSVC only sets __cplusplus >199711L with the /Zc:__cplusplus command-line option.
+// https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/
+#if defined(_MSC_VER)
+#if defined(_MSVC_LANG)
+// https://docs.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=msvc-160
+// "Defined as an integer literal that specifies the C++ language standard targeted by the compiler."
+#define CODA_OSS_cplusplus _MSVC_LANG
+#else
+#error "_MSVC_LANG should be #define'd."
+#endif
+#endif // _MSC_VER
 
-    #if defined(__GNUC__)
-    #endif // __GNUC__
+#if defined(__GNUC__)
+#endif // __GNUC__
 
-    #if defined(__INTEL_COMPILER)
-    #endif  // __INTEL_COMPILER
+#if defined(__INTEL_COMPILER)
+#endif // __INTEL_COMPILER
 #endif // CODA_OSS_cplusplus
 
 #if CODA_OSS_cplusplus < CODA_OSS_cplusplus20
-    #if defined(__GNUC__) && (__cplusplus >= 201709L)  // note > C++ 17 of 201703L
-        // Enough C++20 for our much of our needs ...
-        // at least with std/ and coda_oss/ library support.
-        #undef CODA_OSS_cplusplus
-        #define CODA_OSS_cplusplus CODA_OSS_cplusplus20
-    #endif
-#endif  // CODA_OSS_cplusplus
+#if defined(__GNUC__) && (__cplusplus >= 201709L) // note > C++ 17 of 201703L
+// Enough C++20 for our much of our needs ...
+// at least with std/ and coda_oss/ library support.
+#undef CODA_OSS_cplusplus
+#define CODA_OSS_cplusplus CODA_OSS_cplusplus20
+#endif
+#endif // CODA_OSS_cplusplus
 
 // Define a few macros as that's less verbose than testing against a version number
 #define CODA_OSS_cpp11 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus11)
@@ -84,19 +84,20 @@
 
 // Get feature-testing macros: https://en.cppreference.com/w/cpp/feature_test
 #if CODA_OSS_cpp17 // C++17 for __has_include
-    #if !CODA_OSS_cpp20
-        // "error C4996: '...': warning STL4036: <ciso646> is removed in C++20. You can define _SILENCE_CXX20_CISO646_REMOVED_WARNING or _SILENCE_ALL_CXX20_DEPRECATION_WARNINGS to suppress this warning."
+#if !CODA_OSS_cpp20
+// "error C4996: '...': warning STL4036: <ciso646> is removed in C++20. You can define
+// _SILENCE_CXX20_CISO646_REMOVED_WARNING or _SILENCE_ALL_CXX20_DEPRECATION_WARNINGS to suppress this warning."
 
-        // https://en.cppreference.com/w/cpp/header/version
-        // "Prior to C++20, including <ciso646> is sometimes used for this purpose."
-        #if __has_include(<ciso646>)
-            #include <ciso646>
-        #endif
-    #endif // !CODA_OSS_cpp20
+// https://en.cppreference.com/w/cpp/header/version
+// "Prior to C++20, including <ciso646> is sometimes used for this purpose."
+#if __has_include(<ciso646>)
+#include <ciso646>
+#endif
+#endif // !CODA_OSS_cpp20
 
-    #if __has_include(<version>)
-        #include <version>
-    #endif
+#if __has_include(<version>)
+#include <version>
+#endif
 #endif // CODA_OSS_cpp17
 
 #endif // CODA_OSS_coda_oss_CPlusPlus_h_INCLUDED_

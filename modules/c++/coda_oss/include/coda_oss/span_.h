@@ -31,20 +31,19 @@ namespace details
 {
 // super-simple version of std::span
 // https://en.cppreference.com/w/cpp/container/span
-template <typename T>
-struct span final
+template <typename T> struct span final
 {
     using size_type = size_t;
     using element_type = T;
-    using pointer = T*;
-    using reference = T&;
+    using pointer = T *;
+    using reference = T &;
 
     span() noexcept = default;
     span(pointer p, size_type sz) noexcept : p_(p), sz_(sz)
     {
         assert(p != nullptr);
     }
-    span(const span&) noexcept = default;
+    span(const span &) noexcept = default;
 
     // https://en.cppreference.com/w/cpp/container/span/data
     constexpr pointer data() const noexcept
@@ -55,7 +54,7 @@ struct span final
     // https://en.cppreference.com/w/cpp/container/span/operator_at
     /*constexpr*/ reference operator[](size_type idx) const noexcept
     {
-        assert(idx < size());  // prevents "constexpr" in C++11
+        assert(idx < size()); // prevents "constexpr" in C++11
         return data()[idx];
     }
 
@@ -90,11 +89,11 @@ struct span final
         return begin() + size();
     }
 
-private:
+  private:
     pointer p_ = nullptr;
     size_type sz_ = 0;
 };
-}
-}
+} // namespace details
+} // namespace coda_oss
 
-#endif  // CODA_OSS_coda_oss_span__h_INCLUDED_
+#endif // CODA_OSS_coda_oss_span__h_INCLUDED_

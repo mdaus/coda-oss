@@ -23,80 +23,69 @@
 #ifndef CODA_OSS_json_types_h_INCLUDED_
 #define CODA_OSS_json_types_h_INCLUDED_
 
-#include <nlohmann/json.hpp>
 #include <import/types.h>
+#include <nlohmann/json.hpp>
 #include <types/Complex.h>
 
 // Json definitions for the 'types' module.
 namespace types
 {
-    template<typename T, typename BasicJsonType>
-    void to_json(BasicJsonType& j, const Complex<T>& z)
-    {
-        j["real"] = z.real();
-        j["imag"] = z.imag();
-    }
-    template<typename T, typename BasicJsonType>
-    void from_json(const BasicJsonType& j, Complex<T>& z)
-    {
-        z.real(j["real"].template get<T>());
-        z.imag(j["imag"].template get<T>());
-    }
+template <typename T, typename BasicJsonType> void to_json(BasicJsonType &j, const Complex<T> &z)
+{
+    j["real"] = z.real();
+    j["imag"] = z.imag();
+}
+template <typename T, typename BasicJsonType> void from_json(const BasicJsonType &j, Complex<T> &z)
+{
+    z.real(j["real"].template get<T>());
+    z.imag(j["imag"].template get<T>());
+}
 
-    template<typename T, typename BasicJsonType>
-    void to_json(BasicJsonType& j, const PageRowCol<T>& prc)
-    {
-        j["page"] = prc.page;
-        j["row"] = prc.row;
-        j["col"] = prc.col;
-    }
-    template<typename T, typename BasicJsonType>
-    void from_json(const BasicJsonType& j, PageRowCol<T>& prc)
-    {
-        prc.page = j["page"].template get<T>();
-        prc.row = j["row"].template get<T>();
-        prc.col = j["col"].template get<T>();
-    }
+template <typename T, typename BasicJsonType> void to_json(BasicJsonType &j, const PageRowCol<T> &prc)
+{
+    j["page"] = prc.page;
+    j["row"] = prc.row;
+    j["col"] = prc.col;
+}
+template <typename T, typename BasicJsonType> void from_json(const BasicJsonType &j, PageRowCol<T> &prc)
+{
+    prc.page = j["page"].template get<T>();
+    prc.row = j["row"].template get<T>();
+    prc.col = j["col"].template get<T>();
+}
 
-    template<typename BasicJsonType>
-    void to_json(BasicJsonType& j, const RangeList& list)
-    {
-        j = list.getRanges();
-    }
-    template<typename BasicJsonType>
-    void from_json(const BasicJsonType& j, RangeList& list)
-    {  
-        list.insert(j.template get<std::vector<Range>>());
-    }
+template <typename BasicJsonType> void to_json(BasicJsonType &j, const RangeList &list)
+{
+    j = list.getRanges();
+}
+template <typename BasicJsonType> void from_json(const BasicJsonType &j, RangeList &list)
+{
+    list.insert(j.template get<std::vector<Range>>());
+}
 
-    template<typename T, typename BasicJsonType>
-    void to_json(BasicJsonType& j, const RgAz<T>& ra)
-    {
-        j["rg"] = ra.rg;
-        j["az"] = ra.az;
-    }
-    template<typename T, typename BasicJsonType>
-    void from_json(const BasicJsonType& j, RgAz<T>& ra)
-    {
-        ra.rg = j["rg"].template get<T>();
-        ra.az = j["az"].template get<T>();
-    }
+template <typename T, typename BasicJsonType> void to_json(BasicJsonType &j, const RgAz<T> &ra)
+{
+    j["rg"] = ra.rg;
+    j["az"] = ra.az;
+}
+template <typename T, typename BasicJsonType> void from_json(const BasicJsonType &j, RgAz<T> &ra)
+{
+    ra.rg = j["rg"].template get<T>();
+    ra.az = j["az"].template get<T>();
+}
 
-    template<typename T, typename BasicJsonType>
-    void to_json(BasicJsonType& j, const RowCol<T>& rc)
-    {
-        j["row"] = rc.row;
-        j["col"] = rc.col;
-    }
-    template<typename T, typename BasicJsonType>
-    void from_json(const BasicJsonType& j, RowCol<T>& rc)
-    {
-        rc.row = j["row"].template get<T>();
-        rc.col = j["col"].template get<T>();
-    }
+template <typename T, typename BasicJsonType> void to_json(BasicJsonType &j, const RowCol<T> &rc)
+{
+    j["row"] = rc.row;
+    j["col"] = rc.col;
+}
+template <typename T, typename BasicJsonType> void from_json(const BasicJsonType &j, RowCol<T> &rc)
+{
+    rc.row = j["row"].template get<T>();
+    rc.col = j["col"].template get<T>();
+}
 
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Range, mStartElement, mNumElements)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Range, mStartElement, mNumElements)
 } // namespace types
-
 
 #endif

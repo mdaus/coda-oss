@@ -31,19 +31,22 @@ TEST_CASE(testEndianness)
 {
     /*const*/ auto native = coda_oss::endian::native; // "const" causes "conditional expression is constant."
 
-    if (native == coda_oss::endian::big) { }
-    else if (native == coda_oss::endian::little) { }
+    if (native == coda_oss::endian::big)
+    {
+    }
+    else if (native == coda_oss::endian::little)
+    {
+    }
     else
     {
         TEST_FAIL("Mixed-endian not supported!");
     }
 }
 
-template<typename TEndian>
-static void testEndianness_std_(const std::string& testName)
+template <typename TEndian> static void testEndianness_std_(const std::string &testName)
 {
-    /*const*/ auto native = TEndian::native; // "const" causes "conditional expression is constant."
-    auto endianness = coda_oss::endian::native;  // "conditional expression is constant"
+    /*const*/ auto native = TEndian::native;    // "const" causes "conditional expression is constant."
+    auto endianness = coda_oss::endian::native; // "conditional expression is constant"
     if (native == TEndian::big)
     {
         TEST_ASSERT(endianness == coda_oss::endian::big);
@@ -60,11 +63,10 @@ static void testEndianness_std_(const std::string& testName)
 TEST_CASE(testEndianness_std)
 {
     testEndianness_std_<coda_oss::endian>(testName);
-    //testEndianness_std_<std::endian>(testName);
+    // testEndianness_std_<std::endian>(testName);
 }
 
-template <typename TByte>
-static void test_byte_(const std::string& testName)
+template <typename TByte> static void test_byte_(const std::string &testName)
 {
     std::array<TByte, 256> bytes;
     for (size_t i = 0; i < bytes.size(); i++)
@@ -73,7 +75,7 @@ static void test_byte_(const std::string& testName)
         bytes[i] = value;
     }
 
-    const auto actuals = bytes;  // copy
+    const auto actuals = bytes; // copy
     TEST_ASSERT_EQ(actuals.size(), bytes.size());
     for (size_t i = 0; i < actuals.size(); i++)
     {
@@ -84,12 +86,12 @@ static void test_byte_(const std::string& testName)
 TEST_CASE(testByte)
 {
     test_byte_<coda_oss::byte>(testName);
-    #if defined(__cpp_lib_byte) && (__cpp_lib_byte >= 201603L) // https://en.cppreference.com/w/cpp/utility/feature_test
+#if defined(__cpp_lib_byte) && (__cpp_lib_byte >= 201603L) // https://en.cppreference.com/w/cpp/utility/feature_test
     test_byte_<std::byte>(testName);
-    #endif
+#endif
 }
 
-int main(int /*argc*/, char** /*argv*/)
+int main(int /*argc*/, char ** /*argv*/)
 {
     TEST_CHECK(testEndianness);
     TEST_CHECK(testEndianness_std);
