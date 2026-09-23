@@ -90,6 +90,7 @@
 // Adapted from
 // https://www.fluentcpp.com/2019/08/30/how-to-disable-a-warning-in-cpp/
 #if defined(_MSC_VER)
+
 #define CODA_OSS_disable_warning_push __pragma(warning(push))
 #define CODA_OSS_disable_warning_pop __pragma(warning(pop))
 #define CODA_OSS_disable_warning(warningNumber) __pragma(warning(disable : warningNumber))
@@ -104,7 +105,9 @@
 
 // 4702 Unreachable Code Warning
 #define CODA_OSS_DISABLE_UNREACHABLE_CODE CODA_OSS_disable_warning(4702)
+
 #elif defined(__GNUC__) || defined(__clang__)
+
 #define CODA_OSS_do_pragma(X) _Pragma(#X)
 #define CODA_OSS_disable_warning_push CODA_OSS_do_pragma(GCC diagnostic push)
 #define CODA_OSS_disable_warning_pop CODA_OSS_do_pragma(GCC diagnostic pop)
@@ -117,7 +120,9 @@
 #define CODA_OSS_UNREFERENCED_FORMAL_PARAMETER
 #define CODA_OSS_FUNCTION_CALL_MISSING_ARG_LIST
 #define CODA_OSS_DISABLE_UNREACHABLE_CODE
+
 #else
+
 #define CODA_OSS_disable_warning_push
 #define CODA_OSS_disable_warning_pop
 #define CODA_OSS_disable_warning(warningName)
@@ -131,12 +136,14 @@
 // Fix unused symbol warnings that crash Release build on -Werror
 // (won't work without C-style cast)
 // https://stackoverflow.com/a/777359/5401366
-#define CODA_OSS_mark_symbol_unused(x)                                                                                 \
-    do                                                                                                                 \
-    {                                                                                                                  \
-        CODA_OSS_disable_warning_push CODA_OSS_FUNCTION_CALL_MISSING_ARG_LIST((void)x);                                \
-        CODA_OSS_disable_warning_pop                                                                                   \
+// clang-format off
+#define CODA_OSS_mark_symbol_unused(x) do { \
+    CODA_OSS_disable_warning_push \
+    CODA_OSS_FUNCTION_CALL_MISSING_ARG_LIST \
+    ((void)x); \
+    CODA_OSS_disable_warning_pop \
     } while (0);
+// clang-format on
 #endif
 
 #if !defined(CODA_OSS_library_export) && !defined(CODA_OSS_library_import)
