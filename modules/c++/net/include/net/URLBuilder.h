@@ -31,8 +31,7 @@ namespace net
 
 class URLBuilder
 {
-public:
-
+  public:
     URLBuilder(const std::string url = "") : mURL(url)
     {
     }
@@ -41,37 +40,37 @@ public:
     {
     }
 
-    URLBuilder& setProtocol(const std::string protocol)
+    URLBuilder &setProtocol(const std::string protocol)
     {
         mURL.mProtocol = protocol;
         return *this;
     }
 
-    URLBuilder& addParam(const std::string key, const std::string value)
+    URLBuilder &addParam(const std::string key, const std::string value)
     {
         mURL.getParams().add(key, value);
         return *this;
     }
 
-    URLBuilder& setHost(const std::string host)
+    URLBuilder &setHost(const std::string host)
     {
         mURL.mHost = host;
         return *this;
     }
 
-    URLBuilder& setPort(int port)
+    URLBuilder &setPort(int port)
     {
         mURL.mPort = port;
         return *this;
     }
 
-    URLBuilder& setFragment(const std::string fragment)
+    URLBuilder &setFragment(const std::string fragment)
     {
         mURL.mFragment = fragment;
         return *this;
     }
 
-    URLBuilder& setPath(const std::string path)
+    URLBuilder &setPath(const std::string path)
     {
         mURL.mPath = path;
         return *this;
@@ -87,9 +86,9 @@ public:
         return mURL.toString();
     }
 
-protected:
+  protected:
     net::URL mURL;
 };
 
-}
+} // namespace net
 #endif

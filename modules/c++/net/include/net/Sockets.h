@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,12 +23,11 @@
 #ifndef __NET_SOCKETS_H__
 #define __NET_SOCKETS_H__
 
-
-#  include "sys/Conf.h"
-#    ifdef _WIN32
-#      include "net/SocketsWin32.h"
-#    else
-#      include "net/SocketsUnix.h"
-#  endif
+#include "sys/Conf.h"
+#ifdef _WIN32
+#include "net/SocketsWin32.h"
+#else
+#include "net/SocketsUnix.h"
+#endif
 
 #endif

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -37,13 +37,11 @@ namespace net
  *  requests.  Re-uses the same handler for each request.
  *
  */
-class SingleThreadedAllocStrategy: public AllocStrategy
+class SingleThreadedAllocStrategy : public AllocStrategy
 {
-public:
-
+  public:
     //!  Constructor
-    SingleThreadedAllocStrategy() :
-        mHandler(nullptr)
+    SingleThreadedAllocStrategy() : mHandler(nullptr)
     {
     }
 
@@ -68,14 +66,15 @@ public:
      *
      *  \param conn The network connection
      */
-    void handleConnection(net::NetConnection* conn) override
+    void handleConnection(net::NetConnection *conn) override
     {
         (*mHandler)(conn);
     }
-private:
-    net::RequestHandler* mHandler;
+
+  private:
+    net::RequestHandler *mHandler;
 };
 
-}
+} // namespace net
 
 #endif

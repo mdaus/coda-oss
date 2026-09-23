@@ -15,36 +15,35 @@ namespace net
  */
 class DaemonWin32 : public DaemonInterface
 {
-public:
-    DaemonWin32() : DaemonInterface() {}
+  public:
+    DaemonWin32() : DaemonInterface()
+    {
+    }
 
     void start()
     {
-        throw except::NotImplementedException(
-            Ctxt("Windows service not yet implemented."));
+        throw except::NotImplementedException(Ctxt("Windows service not yet implemented."));
     }
 
     void stop()
     {
-        throw except::NotImplementedException(
-            Ctxt("Windows service not yet implemented."));
+        throw except::NotImplementedException(Ctxt("Windows service not yet implemented."));
     }
 
     void restart()
     {
-        throw except::NotImplementedException(
-            Ctxt("Windows service not yet implemented."));
+        throw except::NotImplementedException(Ctxt("Windows service not yet implemented."));
     }
 
     //! Parse and execute command line option (start/stop/restart)
-    void daemonize(int& argc, char**& argv)
+    void daemonize(int &argc, char **&argv)
     {
         bool foreground = false;
 
-        /*! 
+        /*!
          * Use the --foreground argument to allow running from
-         * within the console. Windows Services may still be the 
-         * best way to daemonize the process, but this will allow 
+         * within the console. Windows Services may still be the
+         * best way to daemonize the process, but this will allow
          * that to be possible.
          *
          * TODO: Implement this class for daemonizing the process
@@ -60,18 +59,27 @@ public:
         }
         if (!foreground)
         {
-            throw except::NotImplementedException(
-                Ctxt("Windows service not yet implemented."));
+            throw except::NotImplementedException(Ctxt("Windows service not yet implemented."));
         }
     }
 
-    void setTracefile(const std::string&) {}
-    void setPidfile(const std::string&) {}
-    std::string getTracefile() const { return ""; }
-    std::string getPidfile() const { return ""; }
+    void setTracefile(const std::string &)
+    {
+    }
+    void setPidfile(const std::string &)
+    {
+    }
+    std::string getTracefile() const
+    {
+        return "";
+    }
+    std::string getPidfile() const
+    {
+        return "";
+    }
 };
 
-}
+} // namespace net
 
 #endif
 #endif

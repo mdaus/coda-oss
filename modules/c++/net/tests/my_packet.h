@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -31,7 +31,6 @@ typedef struct
     time_t time_stamp;
     int n_elems;
     char data[DATA_BUF_SZ];
-}
-my_packet_t;
+} my_packet_t;
 
 #endif

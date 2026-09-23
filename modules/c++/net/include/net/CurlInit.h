@@ -50,7 +50,7 @@ struct CurlInit
      */
     ~CurlInit();
 };
-}
+} // namespace net
 
 #endif
 #endif

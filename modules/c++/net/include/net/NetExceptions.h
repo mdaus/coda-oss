@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -43,12 +43,12 @@ namespace net
  */
 class MalformedURLException : public except::Exception
 {
-public:
+  public:
     /*!
      *  Create a new exception
      *  \param url An incorrectly formed URL
      */
-    MalformedURLException(const char *url): except::Exception(url)
+    MalformedURLException(const char *url) : except::Exception(url)
     {
         if (url != nullptr)
         {
@@ -61,24 +61,22 @@ public:
      *  Create a new exception
      *  \param url An incorrectly formed URL
      */
-    MalformedURLException(const std::string& url) : except::Exception(url)
+    MalformedURLException(const std::string &url) : except::Exception(url)
     {
         mMessage = "In: ";
         mMessage += url;
-
     }
 
     /*!
      *  Create a new exception
      *  \param c The exception context
      */
-    MalformedURLException(const except::Context& c) : except::Exception(c)
+    MalformedURLException(const except::Context &c) : except::Exception(c)
     {
         mMessage = "In: ";
         mMessage += c.getMessage();
     }
-
 };
-}
+} // namespace net
 
 #endif

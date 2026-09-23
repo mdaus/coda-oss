@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net.ssl-c++ 
+ * This file is part of net.ssl-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net.ssl-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -35,49 +35,47 @@ namespace net
 {
 namespace ssl
 {
+/*!
+ *  \class SSLException
+ *  \brief Specialized exception for SSL
+ */
+class SSLException : public sys::SocketException
+{
+  public:
     /*!
-     *  \class SSLException
-     *  \brief Specialized exception for SSL
+     *  Create a new exception
+     *  \param message  The message
      */
-    class SSLException : public sys::SocketException
+    SSLException(const char *message) : sys::SocketException(message)
     {
-    public:
-	/*!
-	 *  Create a new exception
-	 *  \param message  The message
-	 */
-	SSLException(const char *message) : sys::SocketException(message)
-	{
-	    if (message != nullptr)
-	    {
-		mMessage = "SSL: ";
-		mMessage += message;
-	    }
-	}
+        if (message != nullptr)
+        {
+            mMessage = "SSL: ";
+            mMessage += message;
+        }
+    }
 
-	/*!
-	 *  Create a new exception
-	 *  \param message  The message
-	 */
-	SSLException(const std::string& message) : sys::SocketException(message)
-	{
-	    mMessage = "SSL: ";
-	    mMessage += message;
-	
-	}
-	
-	/*!
-	 *  Create a new exception
-	 *  \param c  The context
-	 */
-	SSLException(const except::Context& c) : sys::SocketException(c)
-	{
-	    mMessage = "SSL: ";
-	    mMessage += c.getMessage();
-	}
-	
-    };
-}
-}
+    /*!
+     *  Create a new exception
+     *  \param message  The message
+     */
+    SSLException(const std::string &message) : sys::SocketException(message)
+    {
+        mMessage = "SSL: ";
+        mMessage += message;
+    }
+
+    /*!
+     *  Create a new exception
+     *  \param c  The context
+     */
+    SSLException(const except::Context &c) : sys::SocketException(c)
+    {
+        mMessage = "SSL: ";
+        mMessage += c.getMessage();
+    }
+};
+} // namespace ssl
+} // namespace net
 
 #endif

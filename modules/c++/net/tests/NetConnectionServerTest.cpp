@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,20 +14,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <import/net.h>
-#include <import/io.h>
-#include <import/except.h>
-#include <import/sys.h>
-#include <assert.h>
-#include <stdlib.h>
-#include "net/SingleThreadedAllocStrategy.h"
 #include "net/NetConnectionServer.h"
+#include "net/SingleThreadedAllocStrategy.h"
+#include <assert.h>
+#include <import/except.h>
+#include <import/io.h>
+#include <import/net.h>
+#include <import/sys.h>
+#include <stdlib.h>
 
 using namespace std;
 using namespace io;
@@ -43,18 +43,18 @@ const static std::string SEND_THIS = "Hello, Client";
 
 class EchoHandler : public net::RequestHandler
 {
-public:
+  public:
     EchoHandler()
     {
     }
     ~EchoHandler()
     {
     }
-    void operator()(net::NetConnection* conn) override
+    void operator()(net::NetConnection *conn) override
     {
         char buf[MAX_BUF_SIZE];
         unsigned int length;
-        conn->read((char*) &length, sizeof(unsigned int));
+        conn->read((char *)&length, sizeof(unsigned int));
         assert(length <= (MAX_BUF_SIZE - strlen(RET_STR)));
         conn->read(buf, length);
         buf[length] = 0;
@@ -63,9 +63,8 @@ public:
         memcpy(&buf[length], RET_STR, strlen(RET_STR));
         length = length + static_cast<unsigned int>(strlen(RET_STR));
         buf[length] = 0;
-        conn->write((const char*) &length, 4);
-        conn->write((const char*) buf, length);
-
+        conn->write((const char *)&length, 4);
+        conn->write((const char *)buf, length);
     }
 };
 
@@ -76,7 +75,7 @@ int main(int argc, char **argv)
         if (argc < 2)
             throw Exception(str::Format("Usage: %s <port> (-mt|-st|-tp)", argv[0]));
 
-        net::AllocStrategy* strategy = nullptr;
+        net::AllocStrategy *strategy = nullptr;
 
         if (argc == 3)
         {
@@ -89,13 +88,12 @@ int main(int argc, char **argv)
                 strategy = new net::SingleThreadedAllocStrategy();
         }
         net::NetConnectionServer server;
-        server.initialize(new DefaultRequestHandlerFactory<EchoHandler>(),
-                          strategy);
+        server.initialize(new DefaultRequestHandlerFactory<EchoHandler>(), strategy);
         server.create(atoi(argv[1]));
     }
-    catch (except::Throwable& t)
+    catch (except::Throwable &t)
     {
         cout << t.toString() << endl;
-        exit( EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 }

@@ -12,7 +12,7 @@ void ThreadPoolAllocStrategy::initialize()
     mPool = new ConnectionThreadPool(mNumThreads, mRequestHandlerFactory);
     mPool->start();
 }
-void ThreadPoolAllocStrategy::handleConnection(NetConnection* conn)
+void ThreadPoolAllocStrategy::handleConnection(NetConnection *conn)
 {
     mPool->addRequest(conn);
 }

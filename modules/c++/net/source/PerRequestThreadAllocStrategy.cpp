@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,19 +14,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "net/PerRequestThreadAllocStrategy.h"
 
-void net::PerRequestThreadAllocStrategy::handleConnection(
-        net::NetConnection* conn)
+void net::PerRequestThreadAllocStrategy::handleConnection(net::NetConnection *conn)
 {
-    net::RequestHandler* handler = mRequestHandlerFactory->create();
+    net::RequestHandler *handler = mRequestHandlerFactory->create();
 
-    RequestHandlerThread* thr = new RequestHandlerThread(handler, conn);
+    RequestHandlerThread *thr = new RequestHandlerThread(handler, conn);
     thr->start();
 }

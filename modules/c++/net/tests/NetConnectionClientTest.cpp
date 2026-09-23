@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,15 +14,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <import/net.h>
-#include <import/io.h>
 #include <import/except.h>
+#include <import/io.h>
+#include <import/net.h>
 #include <import/sys.h>
 
 using namespace std;
@@ -47,28 +47,26 @@ int main(int argc, char **argv)
         net::SocketAddress addr(host, port);
 
         NetConnectionClientFactory clientBuilder;
-        NetConnection* toServer = clientBuilder.create(addr);
+        NetConnection *toServer = clientBuilder.create(addr);
 
         cout << "Sending: \"" << SEND_THIS << "\" to server" << endl;
         // Send a block
 
-
         const auto length = static_cast<uint32_t>(SEND_THIS.length());
-        toServer->write((const char*) &length, 4);
+        toServer->write((const char *)&length, 4);
         toServer->write(SEND_THIS.c_str(), length);
 
         // Recv a block
         char recvThis[1024];
-        toServer->read((char*) &length, 4);
+        toServer->read((char *)&length, 4);
         toServer->read(recvThis, length);
 
-        cout << "Received response: \"" << recvThis << "\" Back from server"
-                << endl;
+        cout << "Received response: \"" << recvThis << "\" Back from server" << endl;
         clientBuilder.destroy(toServer);
     }
-    catch (except::Throwable& t)
+    catch (except::Throwable &t)
     {
         cout << t.toString() << endl;
-        exit( EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 }

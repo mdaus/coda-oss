@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -29,13 +29,13 @@
 
 namespace
 {
-net::HostEnt_T* getHostByName(const std::string& hostname)
+net::HostEnt_T *getHostByName(const std::string &hostname)
 {
     return gethostbyname(hostname.c_str());
 }
-}
+} // namespace
 
-net::NetConnection* net::NetConnectionClientFactory::create(const net::URL& url)
+net::NetConnection *net::NetConnectionClientFactory::create(const net::URL &url)
 {
     mUrl = url;
 
@@ -43,32 +43,26 @@ net::NetConnection* net::NetConnectionClientFactory::create(const net::URL& url)
     //       its constructor initializes the necessary socket stuff.
     net::TCPClientSocketFactory factory;
 
-    const net::HostEnt_T* const hostEnt = getHostByName(url.getHost());
+    const net::HostEnt_T *const hostEnt = getHostByName(url.getHost());
     if (!hostEnt)
     {
-        throw sys::SocketException(Ctxt(
-                "net::getHostByName() failed for creation \"" +
-                url.toString() + "\""));
+        throw sys::SocketException(Ctxt("net::getHostByName() failed for creation \"" + url.toString() + "\""));
     }
 
     net::SocketAddress sa;
     sa.setPort(url.getPort());
     // Add this to class???
-    ::memcpy(&(sa.getAddress().sin_addr.s_addr), hostEnt->h_addr,
-             hostEnt->h_length);
+    ::memcpy(&(sa.getAddress().sin_addr.s_addr), hostEnt->h_addr, hostEnt->h_length);
 
     return newConnection(factory.create(sa));
 }
 
-net::NetConnection* net::NetConnectionClientFactory::newConnection(
-        std::unique_ptr<net::Socket>&& toServer)
+net::NetConnection *net::NetConnectionClientFactory::newConnection(std::unique_ptr<net::Socket> &&toServer)
 {
     return new net::NetConnection(std::move(toServer));
 }
 
-net::NetConnection * net::NetConnectionClientFactory::create(
-        const net::SocketAddress& address)
+net::NetConnection *net::NetConnectionClientFactory::create(const net::SocketAddress &address)
 {
     return newConnection(net::TCPClientSocketFactory().create(address));
-
 }

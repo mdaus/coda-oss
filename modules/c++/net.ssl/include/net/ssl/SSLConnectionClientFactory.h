@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net.ssl-c++ 
+ * This file is part of net.ssl-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net.ssl-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -47,8 +47,7 @@ namespace ssl
  */
 class SSLConnectionClientFactory : public NetConnectionClientFactory
 {
-public:
-
+  public:
     /*!
      *  Constructor. Create a TCP factory with SSL
      *  \param clientAuth  Client authentication flag
@@ -58,36 +57,29 @@ public:
      *  \param serverAuth  Server authentication flag
      *  \param ciphers  The list of ciphers to use
      */
-    SSLConnectionClientFactory(bool clientAuth = false,
-                               const std::string& keyfile = "client.pem",
-                               const std::string& password = "password",
-                               const std::string& caList = "root.pem",
-                               bool serverAuth = true, 
-                               char* ciphers = nullptr) : 
-        mClientAuthentication(clientAuth),
-        mKeyfile(keyfile), mPass(password),
-        mCAList(caList), 
-        mServerAuthentication(serverAuth),
-        mCiphers(ciphers)
-    { 
-        initializeContext(); 
+    SSLConnectionClientFactory(bool clientAuth = false, const std::string &keyfile = "client.pem",
+                               const std::string &password = "password", const std::string &caList = "root.pem",
+                               bool serverAuth = true, char *ciphers = nullptr)
+        : mClientAuthentication(clientAuth), mKeyfile(keyfile), mPass(password), mCAList(caList),
+          mServerAuthentication(serverAuth), mCiphers(ciphers)
+    {
+        initializeContext();
     }
-    
+
     /*!
      *  Destructor
      */
-    virtual ~SSLConnectionClientFactory() 
+    virtual ~SSLConnectionClientFactory()
     {
-# if defined(USE_OPENSSL)	
+#if defined(USE_OPENSSL)
         if (mCtx != nullptr)
         {
             SSL_CTX_free(mCtx);
         }
-# endif
+#endif
     }
 
-protected:
-
+  protected:
     /*!
      *  Initializes the context information for SSL
      *  connections.
@@ -99,13 +91,13 @@ protected:
      * \param toServer The socket for the new connection
      * \return A new SSLConnection
      */
-    virtual NetConnection* newConnection(std::unique_ptr<net::Socket>&& toServer) override;
+    virtual NetConnection *newConnection(std::unique_ptr<net::Socket> &&toServer) override;
 
-private:
-#   if defined(USE_OPENSSL)
+  private:
+#if defined(USE_OPENSSL)
     //! The SSL context
-    SSL_CTX* mCtx;
-#   endif
+    SSL_CTX *mCtx;
+#endif
     //! Flag for client authentication
     bool mClientAuthentication;
     //! The key file (.pem)
@@ -120,7 +112,7 @@ private:
     char *mCiphers;
 };
 
-}
-}
+} // namespace ssl
+} // namespace net
 
 #endif

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,27 +14,27 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-//#include <sys/types.h>
-//#include <netinet/in.h>
-//linux/in.h>
+// #include <sys/types.h>
+// #include <netinet/in.h>
+// linux/in.h>
 
-#include <import/net.h>
-#include <import/sys.h>
 #include <import/io.h>
 #include <import/mem.h>
+#include <import/net.h>
+#include <import/sys.h>
 
 using namespace net;
 using namespace sys;
 using namespace io;
 using namespace except;
 
-std::unique_ptr<Socket> createSenderSocket(SocketAddress& address, int loopback = 1)
+std::unique_ptr<Socket> createSenderSocket(SocketAddress &address, int loopback = 1)
 {
     std::unique_ptr<Socket> s(new Socket(UDP_PROTO));
 
@@ -53,12 +53,11 @@ struct Packet
 {
     int number;
     char what[128];
-
 };
 
 #define ACK_CHANNEL 8647
 #define ACK_HOST "127.0.0.1"
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     try
     {
@@ -75,13 +74,10 @@ int main(int argc, char** argv)
         memcpy(packet.what, myMessage.c_str(), myMessage.length());
         packet.what[myMessage.length()] = 0;
         packet.number = 1;
-        socket->sendTo(sa, (const char*) &packet, sizeof(packet));
-
+        socket->sendTo(sa, (const char *)&packet, sizeof(packet));
     }
-    catch (Exception& ex)
+    catch (Exception &ex)
     {
         std::cout << ex.toString() << std::endl;
     }
-
 }
-

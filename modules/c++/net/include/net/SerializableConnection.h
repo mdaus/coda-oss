@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -56,13 +56,13 @@ namespace net
  * and HTML connections, we think of internet connections that handle HTTP
  * documents, SOAP documents, HTML documents, and even tarball data.
  *
- * This also allows us to treat an HTTP message wrapping an object as a 
+ * This also allows us to treat an HTTP message wrapping an object as a
  * different entity than the object itself, and to serialize to files as well
- * as just sockets. 
+ * as just sockets.
  */
 class SerializableConnection
 {
-public:
+  public:
     /*!
      *  This is the default constructor.  Youll certainly want to set it
      *  to an existing connection.
@@ -75,7 +75,7 @@ public:
      *  This is a constructor featuring a TCP/IP connection.
      *  \param connection  A connection to maintain
      */
-    SerializableConnection(const NetConnection& connection)
+    SerializableConnection(const NetConnection &connection)
     {
         mConnection.open(connection);
     }
@@ -95,12 +95,12 @@ public:
 
     /*!
      *  This is a read method for serialization.
-     *  We want to simply read objects from the net, and 
+     *  We want to simply read objects from the net, and
      *  we want them to know how to unpack themselves.
      *  \param objectToRetrieve  This object will retrieve
      *  itself from the internet
      */
-    void read(io::Serializable& objectToRetrieve)
+    void read(io::Serializable &objectToRetrieve)
     {
         objectToRetrieve.deserialize(mConnection);
     }
@@ -112,11 +112,11 @@ public:
      *  \throw IOException
      *  \return  The number of bytes read, or -1 if eof
      */
-    sys::SSize_T read(sys::byte* b, sys::Size_T len)
+    sys::SSize_T read(sys::byte *b, sys::Size_T len)
     {
         return mConnection.read(b, len);
     }
-    sys::SSize_T recv(sys::byte* b, sys::Size_T len)
+    sys::SSize_T recv(sys::byte *b, sys::Size_T len)
     {
         return read(b, len);
     }
@@ -128,7 +128,7 @@ public:
      *  \param objectToSend This object will send itself
      *  over the socket
      */
-    void write(io::Serializable& objectToSend)
+    void write(io::Serializable &objectToSend)
     {
         objectToSend.serialize(mConnection);
     }
@@ -141,20 +141,18 @@ public:
      *  \param len The length of the byte array to write to the stream
      *  \throw IOException
      */
-    void write(const sys::byte* b, sys::Size_T len)
+    void write(const sys::byte *b, sys::Size_T len)
     {
         mConnection.write(b, len);
     }
-    void send(const sys::byte* b, sys::Size_T len)
+    void send(const sys::byte *b, sys::Size_T len)
     {
         write(b, len);
     }
 
-private:
+  private:
     NetConnection mConnection;
-
 };
-}
+} // namespace net
 
 #endif
-

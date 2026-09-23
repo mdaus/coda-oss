@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -35,7 +35,7 @@ SocketAddress::SocketAddress()
     mAddress.sin_family = AF_INET;
 }
 
-SocketAddress::SocketAddress(const std::string& host, int port)
+SocketAddress::SocketAddress(const std::string &host, int port)
 {
     clear();
     set(port, host);
@@ -51,7 +51,6 @@ SocketAddress::SocketAddress(int port)
 void SocketAddress::clear()
 {
     ::memset(&mAddress, 0, sizeof(SockAddrIn_T));
-
 }
 
 void SocketAddress::setPort(int port)
@@ -59,7 +58,7 @@ void SocketAddress::setPort(int port)
     mAddress.sin_port = htons(static_cast<u_short>(port));
 }
 
-void SocketAddress::setHost(const std::string& host)
+void SocketAddress::setHost(const std::string &host)
 {
     if (host.empty())
     {

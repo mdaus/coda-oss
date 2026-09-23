@@ -1,10 +1,10 @@
 #ifndef __NET_THREAD_ALLOC_STRATEGY_H__
 #define __NET_THREAD_ALLOC_STRATEGY_H__
 
-#include <import/mt.h>
-#include "net/NetConnection.h"
 #include "net/AllocStrategy.h"
+#include "net/NetConnection.h"
 #include "net/RequestHandler.h"
+#include <import/mt.h>
 
 namespace net
 {
@@ -24,14 +24,14 @@ namespace net
  *  Also note that, since we are in a server, we will never shut down
  *
  */
-class ConnectionThread: public mt::WorkerThread<NetConnection*>
+class ConnectionThread : public mt::WorkerThread<NetConnection *>
 {
-    RequestHandler* mHandler;
-public:
+    RequestHandler *mHandler;
+
+  public:
     //! Each thread gets 1 unique request handler
-    ConnectionThread(mt::RequestQueue<NetConnection*>* connQueue,
-            net::RequestHandler* handler) :
-        mt::WorkerThread<NetConnection*>(connQueue), mHandler(handler)
+    ConnectionThread(mt::RequestQueue<NetConnection *> *connQueue, net::RequestHandler *handler)
+        : mt::WorkerThread<NetConnection *>(connQueue), mHandler(handler)
     {
     }
 
@@ -41,15 +41,15 @@ public:
         delete mHandler;
     }
 
-    ConnectionThread(const ConnectionThread&) = delete;
-    ConnectionThread& operator=(const ConnectionThread&) = delete;
-    ConnectionThread(ConnectionThread&&) = delete;
-    ConnectionThread& operator=(ConnectionThread&&) = delete;
+    ConnectionThread(const ConnectionThread &) = delete;
+    ConnectionThread &operator=(const ConnectionThread &) = delete;
+    ConnectionThread(ConnectionThread &&) = delete;
+    ConnectionThread &operator=(ConnectionThread &&) = delete;
 
     /*!
      *  Do this in a loop forever.
      */
-    void performTask(net::NetConnection*& request) override
+    void performTask(net::NetConnection *&request) override
     {
         (*mHandler)(request);
     }
@@ -67,15 +67,13 @@ public:
  *  and the RequestHandler implementations are a nod to this,
  *  recognizing that all resources are safe within this thread
  */
-class ConnectionThreadPool: public mt::AbstractThreadPool<net::NetConnection*>
+class ConnectionThreadPool : public mt::AbstractThreadPool<net::NetConnection *>
 {
-    RequestHandlerFactory* mFactory;
+    RequestHandlerFactory *mFactory;
 
-public:
-    ConnectionThreadPool(unsigned short numThreads,
-            net::RequestHandlerFactory* factory) :
-        mt::AbstractThreadPool<net::NetConnection*>(numThreads), mFactory(
-                factory)
+  public:
+    ConnectionThreadPool(unsigned short numThreads, net::RequestHandlerFactory *factory)
+        : mt::AbstractThreadPool<net::NetConnection *>(numThreads), mFactory(factory)
     {
     }
     ~ConnectionThreadPool()
@@ -83,12 +81,12 @@ public:
         delete mFactory;
     }
 
-    ConnectionThreadPool(const ConnectionThreadPool&) = delete;
-    ConnectionThreadPool& operator=(const ConnectionThreadPool&) = delete;
-    ConnectionThreadPool(ConnectionThreadPool&&) = delete;
-    ConnectionThreadPool& operator=(ConnectionThreadPool&&) = delete;
+    ConnectionThreadPool(const ConnectionThreadPool &) = delete;
+    ConnectionThreadPool &operator=(const ConnectionThreadPool &) = delete;
+    ConnectionThreadPool(ConnectionThreadPool &&) = delete;
+    ConnectionThreadPool &operator=(ConnectionThreadPool &&) = delete;
 
-    mt::WorkerThread<net::NetConnection*>* newWorker() override
+    mt::WorkerThread<net::NetConnection *> *newWorker() override
     {
         return new ConnectionThread(&mRequestQueue, mFactory->create());
     }
@@ -122,14 +120,14 @@ public:
  *  picks it up from the queue and hands it to its RequestHandler
  *
  */
-class ThreadPoolAllocStrategy: public AllocStrategy
+class ThreadPoolAllocStrategy : public AllocStrategy
 {
 
-    ConnectionThreadPool* mPool;
+    ConnectionThreadPool *mPool;
     unsigned short mNumThreads;
-public:
-    ThreadPoolAllocStrategy(unsigned short numThreads) :
-        mPool(nullptr), mNumThreads(numThreads)
+
+  public:
+    ThreadPoolAllocStrategy(unsigned short numThreads) : mPool(nullptr), mNumThreads(numThreads)
     {
     }
 
@@ -139,9 +137,8 @@ public:
     // by the time this function is called
     void initialize() override;
 
-    void handleConnection(net::NetConnection* conn) override;
-
+    void handleConnection(net::NetConnection *conn) override;
 };
-}
+} // namespace net
 
 #endif

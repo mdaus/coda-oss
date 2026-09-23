@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,36 +14,35 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "net/NetUtils.h"
 #include "net/NetExceptions.h"
-#include <import/str.h>
 #include <import/re.h>
+#include <import/str.h>
 #include <iostream>
 
 std::vector<std::string> net::urlSplit(std::string url)
 {
     re::Regex regex;
-    regex.compile(
-                  "([A-Za-z]+)://([^/?#:]+)(?::(\\d+))?(/[^?#:]+)?(?:[?]([^&#/]+(?:[&;][^&;#/]+)*)?)?(?:[#](.*))?");
+    regex.compile("([A-Za-z]+)://([^/?#:]+)(?::(\\d+))?(/[^?#:]+)?(?:[?]([^&#/]+(?:[&;][^&;#/]+)*)?)?(?:[#](.*))?");
 
     re::RegexMatch match;
     if (regex.match(url, match))
     {
         size_t matchLen = match.size();
-        std::vector < std::string > parts(6, "");
+        std::vector<std::string> parts(6, "");
         for (size_t i = 1; i <= 6; ++i)
         {
             if (i < matchLen)
                 parts[i - 1] = match[i];
         }
 
-        //unquote the query string
+        // unquote the query string
         parts[4] = net::unquote(parts[4]);
 
         return parts;
@@ -54,8 +53,8 @@ std::vector<std::string> net::urlSplit(std::string url)
     }
 }
 
-std::string net::urlJoin(std::string scheme, std::string location, int port,
-        std::string path, std::string query, std::string fragment)
+std::string net::urlJoin(std::string scheme, std::string location, int port, std::string path, std::string query,
+                         std::string fragment)
 {
     std::ostringstream url;
     url << scheme << "://" << location;
@@ -74,7 +73,7 @@ std::string net::urlJoin(std::string scheme, std::string location, int port,
     return url.str();
 }
 
-std::string net::urlJoin(const std::vector<std::string>& parts)
+std::string net::urlJoin(const std::vector<std::string> &parts)
 {
     size_t numParts = parts.size();
     if (numParts < 2)
@@ -117,7 +116,7 @@ std::string net::quote(std::string s)
         if (regex.matches(c))
             quoted << c[0];
         else
-            quoted << "%" << std::hex << ((int) c[0]) << std::dec;
+            quoted << "%" << std::hex << ((int)c[0]) << std::dec;
     }
     return quoted.str();
 }
@@ -125,7 +124,7 @@ std::string net::quote(std::string s)
 std::string net::unquote(std::string s)
 {
     std::ostringstream unquoted;
-    std::vector < std::string > parts = str::split(s, "%");
+    std::vector<std::string> parts = str::split(s, "%");
     size_t numParts = parts.size();
     if (numParts > 0)
         unquoted << parts[0];
@@ -134,13 +133,12 @@ std::string net::unquote(std::string s)
         std::string part = parts[i];
         std::string hexStr = "0x" + part.substr(0, 2);
         long val = strtol(hexStr.c_str(), nullptr, 16);
-        unquoted << (char) val;
+        unquoted << (char)val;
         if (part.length() > 2)
             unquoted << part.substr(2);
     }
     return unquoted.str();
 }
-
 
 int net::getStandardPort(std::string protocol)
 {

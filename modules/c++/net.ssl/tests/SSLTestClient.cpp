@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net.ssl-c++ 
+ * This file is part of net.ssl-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net.ssl-c++ is free software; you can redistribute it and/or modify
@@ -14,16 +14,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <import/net/ssl.h>
-#include <import/net.h>
-#include <import/io.h>
 #include <import/except.h>
+#include <import/io.h>
+#include <import/net.h>
+#include <import/net/ssl.h>
 #include <import/sys.h>
 
 using namespace std;
@@ -42,10 +42,10 @@ int main(int argc, char **argv)
             throw Exception(str::Format("Usage: %s <url>", argv[0]));
 
         URL url(argv[1]);
-        //int sslOn = atoi(argv[2]);
+        // int sslOn = atoi(argv[2]);
 
         std::string address(url.getProtocol());
-        //url.set(address);
+        // url.set(address);
         cout << url.getHost() << endl;
         cout << url.getPort() << endl;
         cout << url.toString() << endl;
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 
         net::ssl::SSLConnectionClientFactory clientBuilder;
 
-        NetConnection * toUrl = clientBuilder.create(url);
+        NetConnection *toUrl = clientBuilder.create(url);
 
         cout << "Sending this to Url: " << SEND_THIS << endl;
         // Send a block
@@ -65,15 +65,13 @@ int main(int argc, char **argv)
         sys::byte recvThis[128];
         memset(recvThis, 0, 128);
         toUrl->read(recvThis, 128);
-        cout << "Received response: \"" << recvThis << "\" Back from server"
-                << endl;
+        cout << "Received response: \"" << recvThis << "\" Back from server" << endl;
 
         clientBuilder.destroy(toUrl);
     }
-    catch (except::Throwable& t)
+    catch (except::Throwable &t)
     {
         cout << t.toString() << endl;
-        exit( EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 }
-

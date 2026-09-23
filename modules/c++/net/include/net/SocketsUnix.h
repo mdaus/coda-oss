@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -26,25 +26,25 @@
  *  \brief Unix-specific translation layer for sockets.
  */
 
-#include <unistd.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/param.h>
-#include <fcntl.h>
-#include <netinet/in.h>
-#include <errno.h>
 #include "sys/Dbg.h"
+#include <errno.h>
+#include <fcntl.h>
 #include <import/sys.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <sys/param.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #define NATIVE_CLIENTSOCKET_INIT() dbg_printf("Initializing client socket\n")
 #define NATIVE_SERVERSOCKET_INIT() net::UnixServerInit()
 #define NATIVE_SOCKET_DESTROY() dbg_printf("Destroying socket\n")
 #define NATIVE_SOCKET_FAILED(I) (I != 0)
-#define NATIVE_SOCKET_ERROR(ERROR) E ## ERROR
+#define NATIVE_SOCKET_ERROR(ERROR) E##ERROR
 #define NATIVE_SOCKET_GETLASTERROR() errno
 #if !defined(EWOULDBLOCK)
-#  define EWOULDBLOCK EAGAIN
+#define EWOULDBLOCK EAGAIN
 #endif
 
 #define INVALID_SOCKET -1
@@ -52,9 +52,9 @@
 namespace net
 {
 
-typedef struct hostent     HostEnt_T;
-typedef int                Socket_T;
-typedef struct sockaddr    SockAddr_T;
+typedef struct hostent HostEnt_T;
+typedef int Socket_T;
+typedef struct sockaddr SockAddr_T;
 typedef struct sockaddr_in SockAddrIn_T;
 typedef const SockAddr_T ConnParam2_T;
 
@@ -66,8 +66,8 @@ typedef socklen_t SockLen_T;
 typedef int SockLen_T;
 #endif
 
-typedef char* ByteBuf_T;
-typedef int   BufSize_T;
+typedef char *ByteBuf_T;
+typedef int BufSize_T;
 
 //! close socket and throw on failure
 inline void closeSocketOrThrow(net::Socket_T socket)
@@ -75,8 +75,7 @@ inline void closeSocketOrThrow(net::Socket_T socket)
     if (close(socket) != 0)
     {
         sys::SocketErr err;
-        throw except::Exception(
-            Ctxt("Socket close failure: " + err.toString()));
+        throw except::Exception(Ctxt("Socket close failure: " + err.toString()));
     }
 }
 
@@ -92,6 +91,6 @@ inline void UnixServerInit()
     ::signal(SIGPIPE, SIG_IGN);
     //::sigignore(SIGPIPE);
 }
-}
+} // namespace net
 
 #endif

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,13 +23,12 @@
 #ifndef __NET_CONNECTION_SERVER_H__
 #define __NET_CONNECTION_SERVER_H__
 
-#include "net/NetConnection.h"
-#include "net/Sockets.h"
-#include "net/ServerSocketFactory.h"
-#include "sys/SystemException.h"
-#include "net/SingleThreadedAllocStrategy.h"
 #include "mem/SharedPtr.h"
-
+#include "net/NetConnection.h"
+#include "net/ServerSocketFactory.h"
+#include "net/SingleThreadedAllocStrategy.h"
+#include "net/Sockets.h"
+#include "sys/SystemException.h"
 
 /*! \file
  *  \brief Methods for server socket creation.
@@ -49,7 +48,7 @@ typedef SingleThreadedAllocStrategy DefaultAllocStrategy;
  */
 class NetConnectionServer
 {
-public:
+  public:
     const static int DEFAULT_BACKLOG = 5;
 
     //!  Default constructor.
@@ -58,10 +57,10 @@ public:
     //! Destructor.
     virtual ~NetConnectionServer() = default;
 
-    NetConnectionServer(const NetConnectionServer&) = delete;
-    NetConnectionServer& operator=(const NetConnectionServer&) = delete;
-    NetConnectionServer(NetConnectionServer&&) = default;
-    NetConnectionServer& operator=(NetConnectionServer&&) = default;
+    NetConnectionServer(const NetConnectionServer &) = delete;
+    NetConnectionServer &operator=(const NetConnectionServer &) = delete;
+    NetConnectionServer(NetConnectionServer &&) = default;
+    NetConnectionServer &operator=(NetConnectionServer &&) = default;
 
     /*!
      *  Create a server on the port, with a backlog queue given in the
@@ -76,9 +75,8 @@ public:
      *
      *
      */
-    void initialize(net::RequestHandlerFactory* requestHandlerFactory,
-		    net::AllocStrategy* allocStrategy = nullptr);
-    //virtual void handleConnection(NetConnection* connection) = 0;
+    void initialize(net::RequestHandlerFactory *requestHandlerFactory, net::AllocStrategy *allocStrategy = nullptr);
+    // virtual void handleConnection(NetConnection* connection) = 0;
 
     /*!
      * Gets the port number
@@ -99,9 +97,9 @@ public:
      *  Accept an incoming client connection.
      *  \return A Socket_T representing that client.
      */
-    NetConnection* accept();
+    NetConnection *accept();
 
-protected:
+  protected:
     //! The port number we are listening on
     int mPortNumber;
     //! The amount of backlog
@@ -111,6 +109,6 @@ protected:
 
     std::unique_ptr<net::AllocStrategy> mAllocStrategy;
 };
-}
+} // namespace net
 
 #endif

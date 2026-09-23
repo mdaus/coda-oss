@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net.ssl-c++ 
+ * This file is part of net.ssl-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net.ssl-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -30,6 +30,5 @@
 
 #include "net/ssl/SSLConnection.h"
 #include "net/ssl/SSLConnectionClientFactory.h"
-
 
 #endif

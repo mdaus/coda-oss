@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -31,13 +31,13 @@
 #include <stdexcept>
 #include <vector>
 
-#include <str/Convert.h>
-#include <sys/Path.h>
-#include <sys/LocalDateTime.h>
 #include <mem/SharedPtr.h>
 #include <net/ClientSocketFactory.h>
+#include <str/Convert.h>
+#include <sys/LocalDateTime.h>
+#include <sys/Path.h>
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     try
     {
@@ -54,11 +54,10 @@ int main(int argc, char** argv)
         const size_t bytesToSend = str::toType<size_t>(argv[4]) * 1024 * 1024;
 
         net::SocketAddress sa(host, port);
-        std::unique_ptr<net::Socket> socket =
-                net::TCPClientSocketFactory().create(sa);
+        std::unique_ptr<net::Socket> socket = net::TCPClientSocketFactory().create(sa);
 
         std::vector<sys::ubyte> bufferVec(std::min(bufferSize, bytesToSend), 0);
-        sys::ubyte* const buffer = &bufferVec[0];
+        sys::ubyte *const buffer = &bufferVec[0];
 
         // First send the # of bytes we'll be sending
         sys::Uint64_T numBytesMsg(bytesToSend);
@@ -69,8 +68,7 @@ int main(int argc, char** argv)
         size_t numBytesSent(0);
         while (numBytesSent < bytesToSend)
         {
-            const size_t numBytesThisTime =
-                    std::min(bufferSize, bytesToSend - numBytesSent);
+            const size_t numBytesThisTime = std::min(bufferSize, bytesToSend - numBytesSent);
             socket->send(buffer, numBytesThisTime);
             numBytesSent += numBytesThisTime;
         }
@@ -82,21 +80,19 @@ int main(int argc, char** argv)
 
         socket->close();
 
-        const double numSec =
-                (stop.getTimeInMillis() - start.getTimeInMillis()) / 1000;
+        const double numSec = (stop.getTimeInMillis() - start.getTimeInMillis()) / 1000;
         const double numMB = bytesToSend / (1024.0 * 1024);
         const double mbPerSec = numMB / numSec;
-        std::cout << "Sent " << numMB << " MB in " << numSec << " sec ("
-                  << mbPerSec << " MB / s)\n";
+        std::cout << "Sent " << numMB << " MB in " << numSec << " sec (" << mbPerSec << " MB / s)\n";
 
         return 0;
     }
-    catch (const except::Exception& ex)
+    catch (const except::Exception &ex)
     {
         std::cerr << ex.toString() << std::endl;
         return 1;
     }
-    catch (const std::exception& ex)
+    catch (const std::exception &ex)
     {
         std::cerr << ex.what() << std::endl;
         return 1;

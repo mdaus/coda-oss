@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,16 +14,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "net/NetConnectionServer.h"
 
-net::NetConnectionServer::NetConnectionServer() :
-    mPortNumber(0), mBacklog(0), mSocket(nullptr), mAllocStrategy(nullptr)
+net::NetConnectionServer::NetConnectionServer() : mPortNumber(0), mBacklog(0), mSocket(nullptr), mAllocStrategy(nullptr)
 {
 }
 
@@ -35,7 +34,7 @@ void net::NetConnectionServer::create(int portNumber, int backlog)
     mSocket = socketFactory.create(address);
     while (true)
     {
-        net::NetConnection* conn = accept();
+        net::NetConnection *conn = accept();
         mAllocStrategy->handleConnection(conn);
     }
 }
@@ -47,22 +46,19 @@ std::string net::NetConnectionServer::getHostName()
     return std::string(name);
 }
 
-net::NetConnection* net::NetConnectionServer::accept()
+net::NetConnection *net::NetConnectionServer::accept()
 {
     net::SocketAddress sa;
-    std::unique_ptr<net::NetConnection> tmp (
-        new net::NetConnection(mSocket->accept(sa)));
+    std::unique_ptr<net::NetConnection> tmp(new net::NetConnection(mSocket->accept(sa)));
     return tmp.release();
 }
 
-void net::NetConnectionServer::initialize(net::RequestHandlerFactory* factory,
-                                          net::AllocStrategy* newStrategy)
+void net::NetConnectionServer::initialize(net::RequestHandlerFactory *factory, net::AllocStrategy *newStrategy)
 {
-    std::unique_ptr<net::AllocStrategy> tmp ((newStrategy == nullptr) ? 
-        new DefaultAllocStrategy() : newStrategy);
+    std::unique_ptr<net::AllocStrategy> tmp((newStrategy == nullptr) ? new DefaultAllocStrategy() : newStrategy);
 
     tmp->setRequestHandlerFactory(factory);
     tmp->initialize();
 
-    mAllocStrategy.reset( tmp.release() );
+    mAllocStrategy.reset(tmp.release());
 }

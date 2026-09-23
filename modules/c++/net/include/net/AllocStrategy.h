@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -60,14 +60,12 @@ namespace net
  */
 class AllocStrategy
 {
-public:
-
+  public:
     /*!
      *  Constructor.  Set our internal factory to NULL.
      *
      */
-    AllocStrategy() :
-        mRequestHandlerFactory(nullptr)
+    AllocStrategy() : mRequestHandlerFactory(nullptr)
     {
     }
 
@@ -82,19 +80,19 @@ public:
      *  Allow the caller (builder?) to give us the blueprint for
      *  handling a request.  When and how we produce this request
      *  is our derived class' responsibility
-     * 
+     *
      *  \param factory A request handler producer
      */
-    virtual void setRequestHandlerFactory(RequestHandlerFactory* factory)
+    virtual void setRequestHandlerFactory(RequestHandlerFactory *factory)
     {
         mRequestHandlerFactory = factory;
     }
 
     /*!
      *  This is a hook that allows our derived classes one place
-     *  for initialization (which prevents them from needing 
+     *  for initialization (which prevents them from needing
      *  to use static variables in handleRequest to persist info from
-     *  the first call.  This SHOULD NOT be called until the 
+     *  the first call.  This SHOULD NOT be called until the
      *  request handler
      *  factory is set.
      */
@@ -106,14 +104,15 @@ public:
      *  pool, we just add this connection to a synchronized queue.  If
      *  its a single thread strategy, though, this function will block
      *  the caller until the request is satisfied.
-     * 
+     *
      *  \param conn The connection
      */
-    virtual void handleConnection(net::NetConnection* conn) = 0;
-protected:
-    RequestHandlerFactory* mRequestHandlerFactory;
+    virtual void handleConnection(net::NetConnection *conn) = 0;
+
+  protected:
+    RequestHandlerFactory *mRequestHandlerFactory;
 };
 
-}
+} // namespace net
 
 #endif

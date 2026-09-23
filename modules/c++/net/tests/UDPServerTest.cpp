@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -37,15 +37,15 @@
  *  (1).
  */
 
-#include <import/net.h>
-#include <import/sys.h>
+#include "my_packet.h"
 #include <import/except.h>
 #include <import/mem.h>
-#include "my_packet.h"
+#include <import/net.h>
+#include <import/sys.h>
 
 using namespace net;
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 
     if (argc != 2)
@@ -61,13 +61,13 @@ int main(int argc, char** argv)
 
         my_packet_t packet;
         SocketAddress cliAddr(port);
-        socket->recvFrom(cliAddr, (char*)&packet, sizeof(my_packet_t));
+        socket->recvFrom(cliAddr, (char *)&packet, sizeof(my_packet_t));
         std::cout << "(in packet: #" << packet.packet_no << ")" << std::endl;
         int one = 1;
-        socket->sendTo(cliAddr, (const char*)&one, 4);
+        socket->sendTo(cliAddr, (const char *)&one, 4);
         socket->close();
     }
-    catch (except::Exception& ex)
+    catch (except::Exception &ex)
     {
         std::cout << ex.getTrace() << std::endl;
     }

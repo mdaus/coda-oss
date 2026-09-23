@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -38,7 +38,7 @@ namespace net
  */
 class RequestHandler
 {
-public:
+  public:
     //!  Constructor
     RequestHandler()
     {
@@ -55,36 +55,36 @@ public:
      *
      *  \param conn The connection
      */
-    virtual void operator()(net::NetConnection* conn) = 0;
+    virtual void operator()(net::NetConnection *conn) = 0;
 };
 
 class RequestHandlerFactory
 {
-public:
+  public:
     RequestHandlerFactory()
     {
     }
     virtual ~RequestHandlerFactory()
     {
     }
-    virtual net::RequestHandler* create() = 0;
+    virtual net::RequestHandler *create() = 0;
 };
 
-template<typename ReqHandler_T> class DefaultRequestHandlerFactory: public RequestHandlerFactory
+template <typename ReqHandler_T> class DefaultRequestHandlerFactory : public RequestHandlerFactory
 {
-public:
+  public:
     DefaultRequestHandlerFactory()
     {
     }
     virtual ~DefaultRequestHandlerFactory()
     {
     }
-    net::RequestHandler* create() override
+    net::RequestHandler *create() override
     {
         return new ReqHandler_T();
     }
 };
 
-}
+} // namespace net
 
 #endif

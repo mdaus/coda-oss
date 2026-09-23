@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -30,20 +30,20 @@ net::URL::URL(std::string url)
         set(url);
 }
 
-net::URL& net::URL::operator=(const URL& url)
+net::URL &net::URL::operator=(const URL &url)
 {
-  if (this != &url)
-  {
-    mProtocol = url.getProtocol();
-    mHost = url.getHost();
-    setPort(url.getPort());
-    mPath = url.getPath();
-    mFragment = url.getFragment();
-    mParams = net::URLParams(url.getParams().toString());
-  }
-  return *this;
+    if (this != &url)
+    {
+        mProtocol = url.getProtocol();
+        mHost = url.getHost();
+        setPort(url.getPort());
+        mPath = url.getPath();
+        mFragment = url.getFragment();
+        mParams = net::URLParams(url.getParams().toString());
+    }
+    return *this;
 }
-net::URL::URL(const URL& url)
+net::URL::URL(const URL &url)
 {
     *this = url;
 }
@@ -120,11 +120,10 @@ std::string net::URL::getServer() const
 
 std::string net::URL::toString() const
 {
-    return net::urlJoin(getProtocol(), getHost(), getPort(), getPath(),
-                        getQuery(), getFragment());
+    return net::urlJoin(getProtocol(), getHost(), getPort(), getPath(), getQuery(), getFragment());
 }
 
-bool net::URL::operator==(const net::URL& url) const
+bool net::URL::operator==(const net::URL &url) const
 {
     return toString() == url.toString();
 }
@@ -133,9 +132,8 @@ net::URLParams::URLParams(std::string paramString)
 {
     if (!paramString.empty())
     {
-        str::Tokenizer tokenizer(paramString, "&;"); //can be & or ;
-        str::Tokenizer::Tokens& paramParts =
-                (str::Tokenizer::Tokens&) tokenizer;
+        str::Tokenizer tokenizer(paramString, "&;"); // can be & or ;
+        str::Tokenizer::Tokens &paramParts = (str::Tokenizer::Tokens &)tokenizer;
         for (size_t i = 0, size = paramParts.size(); i < size; ++i)
         {
             std::string param = paramParts[i];
@@ -158,7 +156,7 @@ bool net::URLParams::contains(std::string key) const
     return it != mParams.end() && it->second.size() > 0;
 }
 
-net::URLParams::ParamValues& net::URLParams::get(std::string key)
+net::URLParams::ParamValues &net::URLParams::get(std::string key)
 {
     net::URLParams::Params::iterator it = mParams.find(key);
     if (it == mParams.end() || it->second.empty())
@@ -166,7 +164,7 @@ net::URLParams::ParamValues& net::URLParams::get(std::string key)
     return it->second;
 }
 
-const net::URLParams::ParamValues& net::URLParams::get(std::string key) const
+const net::URLParams::ParamValues &net::URLParams::get(std::string key) const
 {
     net::URLParams::Params::const_iterator it = mParams.find(key);
     if (it == mParams.end() || it->second.empty())
@@ -196,13 +194,11 @@ std::string net::URLParams::toString() const
 {
     std::ostringstream s;
     bool firstParam = true;
-    for (net::URLParams::Params::const_iterator it = mParams.begin(); it
-            != mParams.end(); ++it)
+    for (net::URLParams::Params::const_iterator it = mParams.begin(); it != mParams.end(); ++it)
     {
         std::string key = it->first;
-        const net::URLParams::ParamValues& vals = it->second;
-        for (net::URLParams::ParamValues::const_iterator it2 = vals.begin(); it2
-                != vals.end(); ++it2)
+        const net::URLParams::ParamValues &vals = it->second;
+        for (net::URLParams::ParamValues::const_iterator it2 = vals.begin(); it2 != vals.end(); ++it2)
         {
             if (!firstParam)
                 s << "&";

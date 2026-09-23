@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -25,11 +25,11 @@
 
 #include <memory>
 
-#include "net/Socket.h"
-#include "io/BidirectionalStream.h"
-#include "sys/SystemException.h"
 #include "except/Exception.h"
+#include "io/BidirectionalStream.h"
 #include "mem/SharedPtr.h"
+#include "net/Socket.h"
+#include "sys/SystemException.h"
 
 /*!
  *  \file NetConnection.h
@@ -46,29 +46,31 @@ namespace net
  *  \brief The class for reading and writing to a socket
  *
  *  This class takes uses an internal Net handle.
- *  We can write using the OutputStream, and read using 
+ *  We can write using the OutputStream, and read using
  *  the InputStream.  Usually, the developer will prefer to use
  *  the SerializableConnection class, to avoid dealing with the byte
  *  transfer layer.
  */
 class NetConnection : public io::BidirectionalStream
 {
-public:
+  public:
     /*!
      *  Default constructor
      */
     NetConnection()
-    {}
+    {
+    }
 
     //! we own the ptr after this transaction
-    NetConnection(std::unique_ptr<net::Socket>&& socket) : mSocket(socket.release())
-    {}
+    NetConnection(std::unique_ptr<net::Socket> &&socket) : mSocket(socket.release())
+    {
+    }
 
     /*!
      *  Copy constructor
      *  \param connection
      */
-    NetConnection(const NetConnection& connection)
+    NetConnection(const NetConnection &connection)
     {
         mSocket = connection.mSocket;
     }
@@ -77,7 +79,7 @@ public:
      *  Assignment operator
      *  \param connection
      */
-    NetConnection& operator=(const NetConnection& connection)
+    NetConnection &operator=(const NetConnection &connection)
     {
         if (&connection != this)
         {
@@ -95,7 +97,7 @@ public:
         {
             close();
         }
-        catch(...)
+        catch (...)
         {
         }
     }
@@ -103,10 +105,10 @@ public:
     /*!
      *  Method to open a connection.  Copies a handle to its internal
      *  matter.  Connects the handles to their readers and writers.
-     *  \param connection The handle to initialize 
+     *  \param connection The handle to initialize
      *  \throw SocketCreationFailedException
      */
-    virtual void open(const NetConnection& connection)
+    virtual void open(const NetConnection &connection)
     {
         mSocket = connection.mSocket;
     }
@@ -137,12 +139,12 @@ public:
      *  \param len The length of the byte array to write to the stream
      *  \throw IOException
      */
-    virtual void write(const void* buffer, size_t len) override;
+    virtual void write(const void *buffer, size_t len) override;
 
     using io::BidirectionalStream::read;
     using io::BidirectionalStream::write;
 
-protected:
+  protected:
     /*!
      *  Read up to len bytes of data from input stream into an array
      *  \param b   Buffer to read into
@@ -150,12 +152,11 @@ protected:
      *  \throw IOException
      *  \return  The number of bytes read, or -1 if eof
      */
-    virtual sys::SSize_T readImpl(void* buffer, size_t len) override;
+    virtual sys::SSize_T readImpl(void *buffer, size_t len) override;
 
     //! The socket
     std::shared_ptr<net::Socket> mSocket;
 };
 
-}
+} // namespace net
 #endif
-

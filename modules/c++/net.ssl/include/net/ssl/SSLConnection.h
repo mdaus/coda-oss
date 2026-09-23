@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net.ssl-c++ 
+ * This file is part of net.ssl-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net.ssl-c++ is free software; you can redistribute it and/or modify
@@ -14,22 +14,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
- 
 #ifndef __NET_SSL_CONNECTION_H__
 #define __NET_SSL_CONNECTION_H__
 
-#include <net/ssl/net_ssl_config.h>
 #include "sys/Conf.h"
+#include <net/ssl/net_ssl_config.h>
 #if defined(USE_OPENSSL)
 #include <net/NetConnection.h>
-#include <openssl/ssl.h>
 #include <openssl/err.h>
+#include <openssl/ssl.h>
 
 /*!
  *  \file SSLConnection.h
@@ -45,18 +44,18 @@ namespace ssl
 {
 /*!
  *  \class SSLConnection
- *  \brief The class for reading and writing to a socket, 
+ *  \brief The class for reading and writing to a socket,
  *  with SSL
  *
  *  This class takes uses an internal Net handle.
- *  We can write using the OutputStream, and read using 
+ *  We can write using the OutputStream, and read using
  *  the InputStream.  Usually, the developer will prefer to use
  *  the SerializableConnection class, to avoid dealing with the byte
  *  transfer layer.
  */
 class SSLConnection : public NetConnection
 {
-public:
+  public:
     /*!
      *  Default Constructor
      *  \param native  The socket
@@ -64,12 +63,10 @@ public:
      *  \param serverAuth  Flag for server authentication
      *  \param host  The host name in which we are connected
      */
-    SSLConnection(std::unique_ptr<net::Socket>&& socket,
-                  SSL_CTX* ctx,
-                  bool serverAuth = false,
-                  const std::string& host = "");
+    SSLConnection(std::unique_ptr<net::Socket> &&socket, SSL_CTX *ctx, bool serverAuth = false,
+                  const std::string &host = "");
 
-    /*!  
+    /*!
      *  Destructor
      */
     virtual ~SSLConnection();
@@ -77,12 +74,12 @@ public:
     /*!
      *  Close the SSL connection
      */
-    virtual void close() 
-    { 
+    virtual void close()
+    {
         if (mSSL != nullptr)
         {
             SSL_shutdown(mSSL);
-        } 
+        }
         NetConnection::close();
     }
 
@@ -93,7 +90,7 @@ public:
      *  \throw IOException
      *  \return  The number of bytes read, or -1 if eof
      */
-    virtual sys::SSize_T read(sys::byte* b, sys::Size_T len);
+    virtual sys::SSize_T read(sys::byte *b, sys::Size_T len);
 
     /*!
      *  This method defines a given OutputStream. By defining,
@@ -103,39 +100,39 @@ public:
      *  \param len The length of the byte array to write to the stream
      *  \throw IOException
      */
-    virtual void write(const sys::byte* b, sys::Size_T len);
+    virtual void write(const sys::byte *b, sys::Size_T len);
 
-    protected:
-
+  protected:
     /*!
      *  Binds the socket to an SSL object
      *  \param hostName  The host we are connecting to
      */
-    void setupSocket(const std::string& hostName);
+    void setupSocket(const std::string &hostName);
 
     /*!
      *  Authenticates the server by verifying its
      *  certificate
      *  \param hostName  The host we are connecting to
      */
-    void verifyCertificate(const std::string& hostName);
+    void verifyCertificate(const std::string &hostName);
 
     //! The SSL object
-    SSL * mSSL;
+    SSL *mSSL;
 
     //! The BIO error object
-    BIO * mBioErr;
+    BIO *mBioErr;
 
     //! Flag for doing additional server authentication
     bool mServerAuthentication;
 
     //! Default Constructor
-    SSLConnection(){}
-
+    SSLConnection()
+    {
+    }
 };
 
-}
-}
+} // namespace ssl
+} // namespace net
 
 #endif
 #endif

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net.ssl-c++ 
+ * This file is part of net.ssl-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net.ssl-c++ is free software; you can redistribute it and/or modify
@@ -14,16 +14,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
+#include <import/except.h>
+#include <import/io.h>
 #include <import/net.h>
 #include <import/net/ssl.h>
-#include <import/io.h>
-#include <import/except.h>
 #include <import/sys.h>
 
 using namespace std;
@@ -34,13 +34,13 @@ using namespace sys;
 
 const static std::string SEND_THIS = "Hello, Server";
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 #if defined(USE_OPENSSL)
     try
     {
         if (argc != 3)
-        throw Exception(str::Format("Usage: %s <host> <port>", argv[0]));
+            throw Exception(str::Format("Usage: %s <host> <port>", argv[0]));
 
         std::string host(argv[1]);
         int port(atoi(argv[2]));
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
         url.setPort(port);
 
         net::ssl::SSLConnectionClientFactory clientBuilder;
-        NetConnection * toUrl = clientBuilder.create(url);
+        NetConnection *toUrl = clientBuilder.create(url);
 
         cout << "Sending this to Url: " << SEND_THIS << endl;
         // Send a block
@@ -68,7 +68,7 @@ int main(int argc, char** argv)
 
         clientBuilder.destroy(toUrl);
     }
-    catch (except::Throwable& t)
+    catch (except::Throwable &t)
     {
         cout << t.toString() << endl;
         exit(EXIT_FAILURE);
@@ -78,4 +78,3 @@ int main(int argc, char** argv)
     (void)argv;
 #endif
 }
-

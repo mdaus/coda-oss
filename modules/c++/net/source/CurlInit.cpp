@@ -36,6 +36,6 @@ CurlInit::~CurlInit()
 {
     curl_global_cleanup();
 }
-}
+} // namespace net
 
 #endif

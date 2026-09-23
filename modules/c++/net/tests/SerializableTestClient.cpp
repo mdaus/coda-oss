@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,15 +14,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <import/net.h>
-#include <import/io.h>
 #include <import/except.h>
+#include <import/io.h>
+#include <import/net.h>
 #include <import/sys.h>
 
 using namespace std;
@@ -57,22 +57,21 @@ int main(int argc, char **argv)
 
         char buffer[20] = "HELLO WORLD!";
 
-        outData.write((sys::byte*) buffer, sizeof(buffer));
+        outData.write((sys::byte *)buffer, sizeof(buffer));
 
         cout << "Sending this to Url: " << buffer << endl;
         // Send a block
 
         myConn.write(outData);
         myConn.read(inData);
-        inData.read((sys::byte*) buffer, sizeof(buffer));
-        cout << "Received response: \"" << buffer << "\" Back from server"
-                << endl;
+        inData.read((sys::byte *)buffer, sizeof(buffer));
+        cout << "Received response: \"" << buffer << "\" Back from server" << endl;
 
         clientBuilder.destroy(toUrl);
     }
-    catch (except::Throwable& t)
+    catch (except::Throwable &t)
     {
         cout << t.toString() << endl;
-        exit( EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 }

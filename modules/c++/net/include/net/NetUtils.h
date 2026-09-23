@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -31,7 +31,8 @@ namespace net
 
 enum
 {
-    DEFAULT_PORT_HTTP = 80, DEFAULT_PORT_HTTPS = 443
+    DEFAULT_PORT_HTTP = 80,
+    DEFAULT_PORT_HTTPS = 443
 };
 
 /**
@@ -48,14 +49,13 @@ std::vector<std::string> urlSplit(std::string url);
 /**
  * Joins the given url components into a url string
  */
-std::string urlJoin(std::string scheme, std::string location, int port = -1,
-        std::string path = "", std::string query = "", std::string fragment =
-                "");
+std::string urlJoin(std::string scheme, std::string location, int port = -1, std::string path = "",
+                    std::string query = "", std::string fragment = "");
 
 /**
  * Joins the url components given in the vector into a url string
  */
-std::string urlJoin(const std::vector<std::string>& parts);
+std::string urlJoin(const std::vector<std::string> &parts);
 
 /**
  * Quotes the given string - mainly for use in query strings
@@ -72,6 +72,5 @@ std::string unquote(std::string s);
  */
 int getStandardPort(std::string protocol);
 
-}
+} // namespace net
 #endif
-

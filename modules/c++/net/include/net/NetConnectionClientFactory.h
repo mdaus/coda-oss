@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -29,10 +29,10 @@
  *  This class hides the details of client creation.
  */
 
-#include "net/URL.h"
-#include "net/Sockets.h"
-#include "net/NetConnection.h"
 #include "net/ClientSocketFactory.h"
+#include "net/NetConnection.h"
+#include "net/Sockets.h"
+#include "net/URL.h"
 #include "sys/Conf.h"
 
 namespace net
@@ -47,18 +47,20 @@ namespace net
  */
 class NetConnectionClientFactory
 {
-public:
+  public:
     /*!
-            *  Default Constructor
+     *  Default Constructor
      */
     NetConnectionClientFactory()
-    {}
+    {
+    }
 
     /*!
      *  Destructor
      */
     virtual ~NetConnectionClientFactory()
-    {}
+    {
+    }
 
     /*!
      * Create a client connection to the url.
@@ -66,7 +68,7 @@ public:
      * \return A connection to the url
      * \throw SocketCreationException
      */
-    virtual NetConnection * create(const URL& url);
+    virtual NetConnection *create(const URL &url);
 
     /*!
      * Create a client connection to the specified socket address
@@ -76,18 +78,18 @@ public:
      * \throw SocketCreationException
      */
 
-    virtual NetConnection * create(const SocketAddress& address);
+    virtual NetConnection *create(const SocketAddress &address);
 
     /*!
      *
      *
      */
-    virtual NetConnection* newConnection(std::unique_ptr<Socket>&& toServer);
+    virtual NetConnection *newConnection(std::unique_ptr<Socket> &&toServer);
     /*!
      * Destroy a spawned connection.
      * \param connection The connection to destroy
      */
-    virtual void destroy(NetConnection * connection)
+    virtual void destroy(NetConnection *connection)
     {
         if (connection != nullptr)
         {
@@ -95,11 +97,10 @@ public:
         }
     }
 
-protected:
-
+  protected:
     //! The URL for last created connection
     URL mUrl;
 };
-}
+} // namespace net
 
 #endif

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of net-c++ 
+ * This file is part of net-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * net-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -31,29 +31,27 @@
 #include <stdexcept>
 #include <vector>
 
-#include <str/Convert.h>
-#include <sys/Path.h>
-#include <sys/LocalDateTime.h>
 #include <mem/SharedPtr.h>
 #include <net/ServerSocketFactory.h>
+#include <str/Convert.h>
+#include <sys/LocalDateTime.h>
+#include <sys/Path.h>
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     try
     {
         // Parse the command line
         if (argc != 3)
         {
-            std::cerr << "Usage: " << sys::Path::basename(argv[0])
-                      << " <port> <buffer size MB>\n\n";
+            std::cerr << "Usage: " << sys::Path::basename(argv[0]) << " <port> <buffer size MB>\n\n";
             return 1;
         }
         const int port = str::toType<int>(argv[1]);
         const size_t bufferSize = str::toType<size_t>(argv[2]) * 1024 * 1024;
 
         net::SocketAddress address(port);
-        std::unique_ptr<net::Socket> listener =
-                net::TCPServerSocketFactory().create(address);
+        std::unique_ptr<net::Socket> listener = net::TCPServerSocketFactory().create(address);
         net::SocketAddress clientAddress;
         std::unique_ptr<net::Socket> client = listener->accept(clientAddress);
 
@@ -62,15 +60,14 @@ int main(int argc, char** argv)
         client->recv(&numBytes, sizeof(sys::Uint64_T));
 
         std::vector<sys::ubyte> bufferVec(std::min<sys::Uint64_T>(numBytes, bufferSize));
-        sys::ubyte* const buffer = &bufferVec[0];
+        sys::ubyte *const buffer = &bufferVec[0];
 
         // Then receive all the bytes
         const sys::LocalDateTime start;
         size_t numBytesReceived = 0;
         while (numBytesReceived < numBytes)
         {
-            const size_t numBytesToReceive =
-                    std::min<sys::Uint64_T>(bufferSize, numBytesReceived - numBytes);
+            const size_t numBytesToReceive = std::min<sys::Uint64_T>(bufferSize, numBytesReceived - numBytes);
 
             numBytesReceived += client->recv(buffer, numBytesToReceive);
         }
@@ -83,21 +80,19 @@ int main(int argc, char** argv)
         client->close();
         listener->close();
 
-        const double numSec =
-                (stop.getTimeInMillis() - start.getTimeInMillis()) / 1000;
+        const double numSec = (stop.getTimeInMillis() - start.getTimeInMillis()) / 1000;
         const double numMB = numBytes / (1024.0 * 1024);
         const double mbPerSec = numMB / numSec;
-        std::cout << "Received " << numMB << " MB in " << numSec << " sec ("
-                  << mbPerSec << " MB / s)\n";
+        std::cout << "Received " << numMB << " MB in " << numSec << " sec (" << mbPerSec << " MB / s)\n";
 
         return 0;
     }
-    catch (const except::Exception& ex)
+    catch (const except::Exception &ex)
     {
         std::cerr << ex.toString() << std::endl;
         return 1;
     }
-    catch (const std::exception& ex)
+    catch (const std::exception &ex)
     {
         std::cerr << ex.what() << std::endl;
         return 1;
