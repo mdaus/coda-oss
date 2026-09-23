@@ -22,8 +22,8 @@
 #ifndef __TYPES_RANGE_LIST_H__
 #define __TYPES_RANGE_LIST_H__
 
-#include <vector>
 #include <limits>
+#include <vector>
 
 #include <types/Range.h>
 
@@ -54,7 +54,7 @@ namespace types
  */
 class CODA_OSS_API RangeList
 {
-public:
+  public:
     /*!
      * Default constructor initializing an empty list
      */
@@ -65,7 +65,7 @@ public:
      *
      * \param range Initial range
      */
-    RangeList(const types::Range& range);
+    RangeList(const types::Range &range);
 
     /*!
      * Constructor initializing the range list from a vector of ranges.
@@ -76,7 +76,7 @@ public:
      *
      * \param ranges Initial ranges
      */
-    RangeList(const std::vector<types::Range>& ranges);
+    RangeList(const std::vector<types::Range> &ranges);
 
     /*!
      * Insert a range of size 1 at the given point
@@ -115,7 +115,7 @@ public:
      *
      * \param range The range to insert
      */
-    void insert(const types::Range& range);
+    void insert(const types::Range &range);
 
     /*!
      * Insert a vector of ranges.
@@ -127,7 +127,7 @@ public:
      *
      * \param ranges Vector of ranges to insert
      */
-    void insert(const std::vector<types::Range>& ranges);
+    void insert(const std::vector<types::Range> &ranges);
 
     /*!
      * Remove a range of size 1 at the given point
@@ -165,7 +165,7 @@ public:
      *
      * \param range The range to remove
      */
-    void remove(const types::Range& range);
+    void remove(const types::Range &range);
 
     /*!
      * Remove a vector of ranges
@@ -175,7 +175,7 @@ public:
      *
      * \param ranges Vector of ranges to remove
      */
-    void remove(const std::vector<types::Range>& ranges);
+    void remove(const std::vector<types::Range> &ranges);
 
     /*!
      * \returns the number ranges in the list
@@ -207,7 +207,7 @@ public:
      *
      * \return the vector of ranges composing the range list
      */
-    const std::vector<types::Range>& getRanges() const noexcept
+    const std::vector<types::Range> &getRanges() const noexcept
     {
         return mRangeList;
     }
@@ -227,8 +227,7 @@ public:
      *                      go outside of a row or column dimension.
      *                      Default std::numeric_limits<size_t>::max().
      */
-    void expand(size_t expansion,
-                size_t maxEndElement = std::numeric_limits<size_t>::max());
+    void expand(size_t expansion, size_t maxEndElement = std::numeric_limits<size_t>::max());
 
     /*!
      * Determine a new range list that is the intersection of the current
@@ -251,11 +250,11 @@ public:
      * \param other RangeList to intersect with
      * \returns new RangeList that is the intersection of this and other
      */
-    RangeList intersect(const RangeList& other) const;
+    RangeList intersect(const RangeList &other) const;
 
-    bool operator==(const RangeList& rhs) const
+    bool operator==(const RangeList &rhs) const
     {
-        const auto& rhsRanges = rhs.getRanges();
+        const auto &rhsRanges = rhs.getRanges();
 
         if (mRangeList.size() != rhsRanges.size())
         {
@@ -271,16 +270,15 @@ public:
         }
         return true;
     }
-    bool operator!=(const RangeList& rhs) const
+    bool operator!=(const RangeList &rhs) const
     {
         return !(*this == rhs);
     }
 
-
-private:
+  private:
     using List = std::vector<types::Range>;
     List mRangeList;
 };
-}
+} // namespace types
 
 #endif

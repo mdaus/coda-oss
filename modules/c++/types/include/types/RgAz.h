@@ -19,12 +19,12 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
- 
+
 #ifndef __TYPES_RG_AZ_H__
 #define __TYPES_RG_AZ_H__
 
-#include <limits>
 #include <cmath>
+#include <limits>
 #include <utility>
 
 #include "gsl/gsl.h"
@@ -43,109 +43,109 @@ namespace types
  *  sensor independent XML formats, this will pretty much
  *  always be the case.
  */
-template<typename T> class RgAz
+template <typename T> class RgAz
 {
-    template <typename U, typename Other_T>
-    static U cast(const Other_T& t)
+    template <typename U, typename Other_T> static U cast(const Other_T &t)
     {
         // return static_cast<T>(t);
         return gsl::narrow_cast<U>(t);
     }
 
-    public:
+  public:
     T rg{};
     T az{};
 
     RgAz() = default;
-    RgAz(const T& r, const T& c) noexcept : rg(r), az(c) { }
-    RgAz(T&& r, T&& c) noexcept : rg(std::move(r)), az(std::move(c)) { }
-
-    template<typename Other_T> RgAz(const RgAz<Other_T>& p)
+    RgAz(const T &r, const T &c) noexcept : rg(r), az(c)
     {
-        rg = cast<T>(p.rg);
-        az =  cast<T>(p.az);
+    }
+    RgAz(T &&r, T &&c) noexcept : rg(std::move(r)), az(std::move(c))
+    {
     }
 
-    RgAz(const std::pair<T, T>& p)
+    template <typename Other_T> RgAz(const RgAz<Other_T> &p)
+    {
+        rg = cast<T>(p.rg);
+        az = cast<T>(p.az);
+    }
+
+    RgAz(const std::pair<T, T> &p)
     {
         rg = p.first;
         az = p.second;
     }
 
-    template<typename Other_T> RgAz& operator=(const RgAz<Other_T>& p)
+    template <typename Other_T> RgAz &operator=(const RgAz<Other_T> &p)
     {
-        const void* pOther = &p;
-        if (this != static_cast<const RgAz*>(pOther))
+        const void *pOther = &p;
+        if (this != static_cast<const RgAz *>(pOther))
         {
-            rg =  cast<T>(p.rg);
-            az =  cast<T>(p.az);
+            rg = cast<T>(p.rg);
+            az = cast<T>(p.az);
         }
         return *this;
     }
 
-    RgAz& operator=(const std::pair<T, T>& p)
+    RgAz &operator=(const std::pair<T, T> &p)
     {
         rg = p.first;
         az = p.second;
         return *this;
     }
 
-    
-    template<typename Other_T> RgAz& operator+=(const RgAz<Other_T>& p)
+    template <typename Other_T> RgAz &operator+=(const RgAz<Other_T> &p)
     {
-        rg +=  cast<T>(p.rg);
-        az +=  cast<T>(p.az);
+        rg += cast<T>(p.rg);
+        az += cast<T>(p.az);
         return *this;
     }
 
-    template<typename Other_T> RgAz operator+(const RgAz<Other_T>& p) const
+    template <typename Other_T> RgAz operator+(const RgAz<Other_T> &p) const
     {
         RgAz copy(*this);
         return copy += p;
     }
 
-    template<typename Other_T> RgAz& operator*=(const RgAz<Other_T>& p)
+    template <typename Other_T> RgAz &operator*=(const RgAz<Other_T> &p)
     {
-        rg *=  cast<T>(p.rg);
-        az *=  cast<T>(p.az);
+        rg *= cast<T>(p.rg);
+        az *= cast<T>(p.az);
         return *this;
     }
 
-    template<typename Other_T> RgAz operator*(const RgAz<Other_T>& p) const
+    template <typename Other_T> RgAz operator*(const RgAz<Other_T> &p) const
     {
         RgAz copy(*this);
         return copy *= p;
     }
-    
-    
-    template<typename Other_T> RgAz& operator-=(const RgAz<Other_T>& p)
+
+    template <typename Other_T> RgAz &operator-=(const RgAz<Other_T> &p)
     {
-        rg -=  cast<T>(p.rg);
-        az -=  cast<T>(p.az);
+        rg -= cast<T>(p.rg);
+        az -= cast<T>(p.az);
         return *this;
     }
-    
-    template<typename Other_T> RgAz operator-(const RgAz<Other_T>& p) const
+
+    template <typename Other_T> RgAz operator-(const RgAz<Other_T> &p) const
     {
         RgAz copy(*this);
         return copy -= p;
     }
 
-    template<typename Other_T> RgAz& operator/=(const RgAz<Other_T>& p)
+    template <typename Other_T> RgAz &operator/=(const RgAz<Other_T> &p)
     {
-        rg /=  cast<T>(p.rg);
-        az /=  cast<T>(p.az);
+        rg /= cast<T>(p.rg);
+        az /= cast<T>(p.az);
         return *this;
     }
-    
-    template<typename Other_T> RgAz operator/(const RgAz<Other_T>& p) const
+
+    template <typename Other_T> RgAz operator/(const RgAz<Other_T> &p) const
     {
         RgAz copy(*this);
         return copy /= p;
     }
 
-
-    RgAz& operator+=(T scalar)
+    RgAz &operator+=(T scalar)
     {
         rg += scalar;
         az += scalar;
@@ -157,8 +157,8 @@ template<typename T> class RgAz
         RgAz copy(*this);
         return copy += scalar;
     }
-    
-    RgAz& operator-=(T scalar)
+
+    RgAz &operator-=(T scalar)
     {
         rg -= scalar;
         az -= scalar;
@@ -171,7 +171,7 @@ template<typename T> class RgAz
         return copy -= scalar;
     }
 
-    RgAz& operator*=(T scalar)
+    RgAz &operator*=(T scalar)
     {
         rg *= scalar;
         az *= scalar;
@@ -183,8 +183,8 @@ template<typename T> class RgAz
         RgAz copy(*this);
         return copy *= scalar;
     }
-    
-    RgAz& operator/=(T scalar)
+
+    RgAz &operator/=(T scalar)
     {
         rg /= scalar;
         az /= scalar;
@@ -202,32 +202,27 @@ template<typename T> class RgAz
      *  specializations (e.g., double)
      *  are not exact
      */
-    bool operator==(const RgAz<T>& p) const
+    bool operator==(const RgAz<T> &p) const
     {
         return rg == p.rg && az == p.az;
     }
 
-
-    bool operator!=(const RgAz<T>& p) const
+    bool operator!=(const RgAz<T> &p) const
     {
-        return ! (RgAz::operator==(p));
+        return !(RgAz::operator==(p));
     }
 };
 
-template <>
-inline bool RgAz<float>::operator==(const RgAz<float>& p) const
+template <> inline bool RgAz<float>::operator==(const RgAz<float> &p) const
 {
     constexpr auto eps = std::numeric_limits<float>::epsilon();
-    return std::abs(rg - p.rg) < eps &&
-           std::abs(az - p.az) < eps;
+    return std::abs(rg - p.rg) < eps && std::abs(az - p.az) < eps;
 }
-template <>
-inline bool RgAz<double>::operator==(const RgAz<double>& p) const
+template <> inline bool RgAz<double>::operator==(const RgAz<double> &p) const
 {
     constexpr auto eps = std::numeric_limits<double>::epsilon();
-    return std::abs(rg - p.rg) < eps &&
-           std::abs(az - p.az) < eps;
+    return std::abs(rg - p.rg) < eps && std::abs(az - p.az) < eps;
 }
 
-} 
+} // namespace types
 #endif

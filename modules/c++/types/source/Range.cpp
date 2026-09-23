@@ -35,8 +35,7 @@ Range Range::split(size_t numElementsReq) const
     // pull off numElementsReq elements and update the split range
     if (numElementsReq <= mNumElements)
     {
-        return types::Range(endElement() - numElementsReq,
-                            numElementsReq);
+        return types::Range(endElement() - numElementsReq, numElementsReq);
     }
     // Otherwise, if more elements are requested than are in inputRange,
     // set the split range to be input range (denoting that we have taken
@@ -46,4 +45,4 @@ Range Range::split(size_t numElementsReq) const
         return types::Range(mStartElement, mNumElements);
     }
 }
-}
+} // namespace types

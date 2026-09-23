@@ -23,8 +23,8 @@
 #include "TestCase.h"
 #include <cmath>
 #include <limits>
-#include <types/RowCol.h>
 #include <types/PageRowCol.h>
+#include <types/RowCol.h>
 
 TEST_CASE(TestPageRowColSizeT)
 {
@@ -34,9 +34,8 @@ TEST_CASE(TestPageRowColSizeT)
     TEST_ASSERT_EQ(pageRowColDefault.row, static_cast<size_t>(0));
     TEST_ASSERT_EQ(pageRowColDefault.col, static_cast<size_t>(0));
 
-
-    const types::PageRowCol<size_t> pageRowColA(3,5,11);
-    const types::PageRowCol<size_t> pageRowColB(1,2,3);
+    const types::PageRowCol<size_t> pageRowColA(3, 5, 11);
+    const types::PageRowCol<size_t> pageRowColB(1, 2, 3);
 
     // test equality operators
     TEST_ASSERT(pageRowColA == pageRowColA);
@@ -98,7 +97,7 @@ TEST_CASE(TestPageRowColDouble)
     TEST_ASSERT(pageRowColAssign != pageRowColA);
 
     TEST_ASSERT_ALMOST_EQ(pageRowColA.volume(), 3.1 * 5.2 * 11.3);
-    TEST_ASSERT_ALMOST_EQ(pageRowColA.normL2(), std::sqrt(3.1 * 3.1 +  5.2 * 5.2 + 11.3 * 11.3));
+    TEST_ASSERT_ALMOST_EQ(pageRowColA.normL2(), std::sqrt(3.1 * 3.1 + 5.2 * 5.2 + 11.3 * 11.3));
 
     // test arithmetic operators
     const types::PageRowCol<double> sum = pageRowColA + pageRowColB;
@@ -114,7 +113,4 @@ TEST_CASE(TestPageRowColDouble)
     TEST_ASSERT(div == types::PageRowCol<double>(3.1 / 1.1, 5.2 / 2.2, 11.3 / 3.3));
 }
 
-TEST_MAIN(
-    TEST_CHECK(TestPageRowColSizeT);
-    TEST_CHECK(TestPageRowColDouble);
-    )
+TEST_MAIN(TEST_CHECK(TestPageRowColSizeT); TEST_CHECK(TestPageRowColDouble);)

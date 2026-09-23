@@ -27,11 +27,11 @@
 #include <stdint.h>
 
 #include <complex>
-#include <type_traits>
 #include <iostream>
+#include <type_traits>
 
-#include "config/disable_compiler_warnings.h"
 #include "coda_oss/CPlusPlus.h"
+#include "config/disable_compiler_warnings.h"
 
 namespace types
 {
@@ -45,49 +45,54 @@ namespace types
  * SIX (and others) mostly use `std::complex<TInt>` as a convenient
  * package for two values; very little "complex math" is done using integers.
  */
-template <typename T>
-struct Complex final
+template <typename T> struct Complex final
 {
     using value_type = T;
     static_assert(!std::is_floating_point<T>::value, "Use std::complex<T> for floating-point.");
     static_assert(std::is_signed<T>::value, "T should be a signed integer.");
 
-    Complex(value_type re = 0, value_type im = 0) : z{re, im} { }
-    Complex(const Complex&) = default;
-    Complex& operator=(const Complex&) = default;
-    Complex(Complex&&) = default;
-    Complex& operator=(Complex&&) = default;
+    Complex(value_type re = 0, value_type im = 0) : z{re, im}
+    {
+    }
+    Complex(const Complex &) = default;
+    Complex &operator=(const Complex &) = default;
+    Complex(Complex &&) = default;
+    Complex &operator=(Complex &&) = default;
     ~Complex() = default;
 
     // If someone already has a std::complex<value_type>, is there any harm in creating ours?
-    Complex(const std::complex<value_type>& other) : Complex(other.real(), other.imag()) { }
-    Complex& operator=(const std::complex<value_type>& other)
+    Complex(const std::complex<value_type> &other) : Complex(other.real(), other.imag())
+    {
+    }
+    Complex &operator=(const std::complex<value_type> &other)
     {
         real(other.real());
         imag(other.imag());
         return *this;
     }
 
-    #if defined(CODA_OSS_types_Complex_implicit_cast) || defined(_SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING)
+#if defined(CODA_OSS_types_Complex_implicit_cast) || defined(_SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING)
     CODA_OSS_disable_warning_push
-    #ifdef _MSC_VER
-    #pragma warning(disable : 4996)  // '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
-    #endif
+#ifdef _MSC_VER
+#pragma warning(disable : 4996) // '...': warning STL4037: The effect of instantiating the template std::complex for any
+                                // type other than float, double, or long double is unspecified. You can define
+                                // _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
+#endif
     // Better interop with existing code? Creates ambiguities?
-    operator const std::complex<T>&() const
+    operator const std::complex<T> &() const
     {
-        const void* const pThis = this;
-        return *static_cast<const std::complex<T>*>(pThis);
+        const void *const pThis = this;
+        return *static_cast<const std::complex<T> *>(pThis);
     }
-    operator std::complex<T>&()
+    operator std::complex<T> &()
     {
-        void* const pThis = this;
-        return *static_cast<std::complex<T>*>(pThis);
+        void *const pThis = this;
+        return *static_cast<std::complex<T> *>(pThis);
     }
     CODA_OSS_disable_warning_pop
-    #endif // CODA_OSS_types_Complex_implicit_cast || _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING
+#endif // CODA_OSS_types_Complex_implicit_cast || _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING
 
-    value_type real() const
+        value_type real() const
     {
         return z[0];
     }
@@ -105,7 +110,7 @@ struct Complex final
         z[1] = value;
     }
 
-private:
+  private:
     value_type z[2]{0, 0};
 };
 
@@ -113,88 +118,85 @@ namespace details
 {
 CODA_OSS_disable_warning_push
 #ifdef _MSC_VER
-#pragma warning(disable : 4996)  // '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
+#pragma warning(disable : 4996) // '...': warning STL4037: The effect of instantiating the template std::complex for any
+                                // type other than float, double, or long double is unspecified. You can define
+                                // _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
 #endif
-// Getting different results with GCC vs MSVC :-(  So just use
-// std::complex<short> Assume by the time we're actually using C++23 with a
-// compiler that enforces this restriction, "something" will be different.
-template <typename T>
-inline const std::complex<T>& cast(const Complex<T>& z)
+    // Getting different results with GCC vs MSVC :-(  So just use
+    // std::complex<short> Assume by the time we're actually using C++23 with a
+    // compiler that enforces this restriction, "something" will be different.
+    template <typename T>
+    inline const std::complex<T> &cast(const Complex<T> &z)
 {
-    const void* const pZ_ = &z;
-    return *static_cast<const std::complex<T>*>(pZ_);
+    const void *const pZ_ = &z;
+    return *static_cast<const std::complex<T> *>(pZ_);
 }
-template <typename T>
-inline std::complex<T>& cast(Complex<T>& z)
+template <typename T> inline std::complex<T> &cast(Complex<T> &z)
 {
-    void* const pZ_ = &z;
-    return *static_cast<std::complex<T>*>(pZ_);
+    void *const pZ_ = &z;
+    return *static_cast<std::complex<T> *>(pZ_);
 }
 CODA_OSS_disable_warning_pop
-}
+} // namespace details
 
 // https://en.cppreference.com/w/cpp/numeric/complex/operator_ltltgtgt
 template <typename T, typename CharT, typename Traits>
-inline auto& operator<<(std::basic_ostream<CharT, Traits>& o, const Complex<T>& z)
+inline auto &operator<<(std::basic_ostream<CharT, Traits> &o, const Complex<T> &z)
 {
     return o << details::cast(z);
 }
 template <typename T, typename CharT, typename Traits>
-inline auto& operator>>(std::basic_istream<CharT, Traits>& o, Complex<T>& z)
+inline auto &operator>>(std::basic_istream<CharT, Traits> &o, Complex<T> &z)
 {
     return o >> details::cast(z);
 }
 
 // https://en.cppreference.com/w/cpp/numeric/complex/operator_cmp
-template <typename T>
-inline bool operator==(const Complex<T>& lhs, const Complex<T>& rhs)
+template <typename T> inline bool operator==(const Complex<T> &lhs, const Complex<T> &rhs)
 {
     return (lhs.real() == rhs.real()) && (lhs.imag() == rhs.imag());
 }
-template <typename T>
-inline bool operator!=(const Complex<T>& lhs, const Complex<T>& rhs)
+template <typename T> inline bool operator!=(const Complex<T> &lhs, const Complex<T> &rhs)
 {
     return !(lhs == rhs);
 }
 
 // Keep functions like abs() to a minimum; complex math probably shouldn't be done with integers.
-template <typename T>
-inline auto abs(const Complex<T>& z) // https://en.cppreference.com/w/cpp/numeric/complex/abs
+template <typename T> inline auto abs(const Complex<T> &z) // https://en.cppreference.com/w/cpp/numeric/complex/abs
 {
     return abs(details::cast(z));
 }
 
-template<typename T>
-using ComplexInteger = Complex<T>;
+template <typename T> using ComplexInteger = Complex<T>;
 
 namespace details
 {
 // This circumlocution is to prevent clients from doing `ComplexReal<int>`.
 // (And also to use the word "circumlocution." :-) )
-template<typename T> struct ComplexReal
+template <typename T> struct ComplexReal
 {
     static_assert(std::is_floating_point<T>::value, "T must be floating-point.");
     using type = std::complex<T>;
 };
 } // namespace details
-template<typename T>
-using ComplexReal = typename details::ComplexReal<T>::type;
+template <typename T> using ComplexReal = typename details::ComplexReal<T>::type;
 
 // This might be more trouble than it's worth: there really isn't that much code
 // that is generic for both integer and real complex types; recall that the primary
 // use of `std::complex<short>` is a "convenient package" for two values.
-// 
-//Have the compiler pick between std::complex and Complex
-//template<typename T>
-//using complex = std::conditional_t<std::is_floating_point<T>::value, ComplexReal<T>, ComplexInteger<T>>;
-static_assert(sizeof(std::complex<short>) == sizeof(Complex<short>), "sizeof(sizeof(std::complex<short>) != sizeof(Complex<short>)");
+//
+// Have the compiler pick between std::complex and Complex
+// template<typename T>
+// using complex = std::conditional_t<std::is_floating_point<T>::value, ComplexReal<T>, ComplexInteger<T>>;
+static_assert(sizeof(std::complex<short>) == sizeof(Complex<short>),
+              "sizeof(sizeof(std::complex<short>) != sizeof(Complex<short>)");
 static_assert(std::is_same<std::complex<float>, ComplexReal<float>>::value, "should be std::complex<float>");
 
 // Convenient aliases
-using zfloat = ComplexReal<float>; // i.e., std::complex<float>
+using zfloat = ComplexReal<float>;   // i.e., std::complex<float>
 using zdouble = ComplexReal<double>; // i.e., std::complex<double>
-//using zlong_double = ComplexReal<long double>; // i.e., std::complex<long double>
-// No `zint8_t`, etc.; don't want to encourage the use of `types::Complex`.
-}
+// using zlong_double = ComplexReal<long double>; // i.e., std::complex<long double>
+//  No `zint8_t`, etc.; don't want to encourage the use of `types::Complex`.
+} // namespace types
 
-#endif  // CODA_OSS_types_Complex_h_INCLUDED_
+#endif // CODA_OSS_types_Complex_h_INCLUDED_

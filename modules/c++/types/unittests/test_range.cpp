@@ -90,7 +90,7 @@ TEST_CASE(TestTouches)
 
     // Both of the ranges are empty -- touches(...) returns false
     {
-        const types::Range A(10, 0);  // [10, 0)
+        const types::Range A(10, 0); // [10, 0)
         const types::Range B(10, 0); // [10, 20)
         TEST_ASSERT_FALSE(A.touches(B));
         TEST_ASSERT_FALSE(B.touches(A));
@@ -120,8 +120,7 @@ TEST_CASE(TestSplit)
         const types::Range A(5, 10);
         const types::Range splitRange = A.split(0);
         TEST_ASSERT_EQ(splitRange.mNumElements, static_cast<size_t>(0));
-        TEST_ASSERT_EQ(splitRange.mStartElement,
-                       std::numeric_limits<size_t>::max());
+        TEST_ASSERT_EQ(splitRange.mStartElement, std::numeric_limits<size_t>::max());
     }
 
     // Test splitting more elements than are available
@@ -137,13 +136,8 @@ TEST_CASE(TestSplit)
         const types::Range A(0, 0);
         const types::Range splitRange = A.split(10);
         TEST_ASSERT_EQ(splitRange.mNumElements, static_cast<size_t>(0));
-        TEST_ASSERT_EQ(splitRange.mStartElement,
-                       std::numeric_limits<size_t>::max());
+        TEST_ASSERT_EQ(splitRange.mStartElement, std::numeric_limits<size_t>::max());
     }
 }
 
-TEST_MAIN(
-    TEST_CHECK(TestGetNumSharedElements);
-    TEST_CHECK(TestTouches);
-    TEST_CHECK(TestSplit);
-    )
+TEST_MAIN(TEST_CHECK(TestGetNumSharedElements); TEST_CHECK(TestTouches); TEST_CHECK(TestSplit);)

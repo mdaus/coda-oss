@@ -45,9 +45,7 @@ struct CODA_OSS_API Range
      * \param startElement Start of range
      * \param numElements Number of elements in range
      */
-    Range(size_t startElement, size_t numElements) :
-        mStartElement(startElement),
-        mNumElements(numElements)
+    Range(size_t startElement, size_t numElements) : mStartElement(startElement), mNumElements(numElements)
     {
     }
     // TODO: remove "m" prefix since these are public
@@ -81,9 +79,7 @@ struct CODA_OSS_API Range
      */
     bool containsAll(size_t startElement, size_t numElements) const
     {
-        return (numElements == 0 ||
-                (contains(startElement) &&
-                 contains(startElement + numElements - 1)));
+        return (numElements == 0 || (contains(startElement) && contains(startElement + numElements - 1)));
     }
 
     /*!
@@ -91,10 +87,9 @@ struct CODA_OSS_API Range
      *
      * \return True if the ranges overlap, false otherwise
      */
-    bool overlaps(const types::Range& rhs) const
+    bool overlaps(const types::Range &rhs) const
     {
-        return (endElement() > rhs.mStartElement &&
-                mStartElement < rhs.endElement());
+        return (endElement() > rhs.mStartElement && mStartElement < rhs.endElement());
     }
 
     /*!
@@ -104,8 +99,7 @@ struct CODA_OSS_API Range
      *
      * \return True if the ranges overlap, false otherwise
      */
-    bool overlaps(const types::Range& rhs,
-                  types::Range& overlap) const
+    bool overlaps(const types::Range &rhs, types::Range &overlap) const
     {
         if (overlaps(rhs))
         {
@@ -132,15 +126,14 @@ struct CODA_OSS_API Range
      *
      * \return True if the ranges touch, false otherwise
      */
-    bool touches(const types::Range& rhs) const
+    bool touches(const types::Range &rhs) const
     {
         if (empty() || rhs.empty())
         {
             return false;
         }
 
-        return (mStartElement == rhs.endElement()) ||
-               (rhs.mStartElement == endElement());
+        return (mStartElement == rhs.endElement()) || (rhs.mStartElement == endElement());
     }
 
     /*!
@@ -149,8 +142,7 @@ struct CODA_OSS_API Range
      *
      * \return The number of shared elements
      */
-    size_t getNumSharedElements(size_t startElementToTest,
-                                size_t numElementsToTest) const
+    size_t getNumSharedElements(size_t startElementToTest, size_t numElementsToTest) const
     {
         types::Range overlap;
         overlaps(types::Range(startElementToTest, numElementsToTest), overlap);
@@ -182,10 +174,9 @@ struct CODA_OSS_API Range
      *
      * \return True if ranges match, false otherwise
      */
-    bool operator==(const Range& rhs) const
+    bool operator==(const Range &rhs) const
     {
-        return (mStartElement == rhs.mStartElement &&
-                mNumElements == rhs.mNumElements);
+        return (mStartElement == rhs.mStartElement && mNumElements == rhs.mNumElements);
     }
 
     /*!
@@ -193,7 +184,7 @@ struct CODA_OSS_API Range
      *
      * \return False if ranges match, true otherwise
      */
-    bool operator!=(const Range& rhs) const
+    bool operator!=(const Range &rhs) const
     {
         return !(*this == rhs);
     }
@@ -208,7 +199,7 @@ struct CODA_OSS_API Range
      *
      * \return True if this < rhs, false otherwise
      */
-    bool operator<(const Range& rhs) const
+    bool operator<(const Range &rhs) const
     {
         if (mStartElement < rhs.mStartElement)
         {
@@ -224,6 +215,6 @@ struct CODA_OSS_API Range
         }
     }
 };
-}
+} // namespace types
 
 #endif

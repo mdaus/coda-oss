@@ -25,8 +25,7 @@
 
 namespace
 {
-std::vector<types::Range>
-difference(const types::Range& orig, const types::Range& overlap)
+std::vector<types::Range> difference(const types::Range &orig, const types::Range &overlap)
 {
     // If the original range is fully contained by the overlap,
     // the difference is the empty set
@@ -40,34 +39,28 @@ difference(const types::Range& orig, const types::Range& overlap)
     // Create left range
     if (orig.mStartElement < overlap.mStartElement)
     {
-        result.emplace_back(
-                orig.mStartElement,
-                overlap.mStartElement - orig.mStartElement);
+        result.emplace_back(orig.mStartElement, overlap.mStartElement - orig.mStartElement);
     }
 
     // Create right range
     if (orig.endElement() > overlap.endElement())
     {
-        result.emplace_back(
-                overlap.endElement(),
-                orig.endElement() - overlap.endElement());
+        result.emplace_back(overlap.endElement(), orig.endElement() - overlap.endElement());
     }
     return result;
 }
-}
+} // namespace
 
 namespace types
 {
-RangeList::RangeList(const types::Range& range) :
-    mRangeList(0)
+RangeList::RangeList(const types::Range &range) : mRangeList(0)
 {
     insert(range);
 }
 
-RangeList::RangeList(const std::vector<types::Range>& ranges) :
-    mRangeList(0)
+RangeList::RangeList(const std::vector<types::Range> &ranges) : mRangeList(0)
 {
-    for (const auto& inputRange : ranges)
+    for (const auto &inputRange : ranges)
     {
         insert(inputRange);
     }
@@ -76,22 +69,22 @@ RangeList::RangeList(const std::vector<types::Range>& ranges) :
 size_t RangeList::getTotalNumElements() const noexcept
 {
     size_t count = 0;
-    for (const auto& range : mRangeList)
+    for (const auto &range : mRangeList)
     {
         count += range.mNumElements;
     }
     return count;
 }
 
-void RangeList::insert(const std::vector<types::Range>& ranges)
+void RangeList::insert(const std::vector<types::Range> &ranges)
 {
-    for (const auto& range : ranges)
+    for (const auto &range : ranges)
     {
         insert(range);
     }
 }
 
-void RangeList::insert(const types::Range& range)
+void RangeList::insert(const types::Range &range)
 {
     if (range.empty())
     {
@@ -126,16 +119,14 @@ void RangeList::insert(const types::Range& range)
 
     for (; ii < mRangeList.size(); ++ii)
     {
-        const types::Range& oldRange = mRangeList[ii];
-        types::Range& backRange = newList.back();
+        const types::Range &oldRange = mRangeList[ii];
+        types::Range &backRange = newList.back();
 
         if (backRange.overlaps(oldRange) || backRange.touches(oldRange))
         {
-            const size_t start = std::min<size_t>(backRange.mStartElement,
-                                                  oldRange.mStartElement);
+            const size_t start = std::min<size_t>(backRange.mStartElement, oldRange.mStartElement);
 
-            const size_t end = std::max<size_t>(backRange.endElement(),
-                                                oldRange.endElement());
+            const size_t end = std::max<size_t>(backRange.endElement(), oldRange.endElement());
 
             backRange.mStartElement = start;
             backRange.mNumElements = end - start;
@@ -149,15 +140,15 @@ void RangeList::insert(const types::Range& range)
     mRangeList.swap(newList);
 }
 
-void RangeList::remove(const std::vector<types::Range>& ranges)
+void RangeList::remove(const std::vector<types::Range> &ranges)
 {
-    for (const auto& range : ranges)
+    for (const auto &range : ranges)
     {
         remove(range);
     }
 }
 
-void RangeList::remove(const types::Range& range)
+void RangeList::remove(const types::Range &range)
 {
     if (range.empty())
     {
@@ -167,14 +158,14 @@ void RangeList::remove(const types::Range& range)
     std::vector<types::Range> newList;
     newList.reserve(mRangeList.size() + 1);
 
-    for (const auto& oldRange : mRangeList)
+    for (const auto &oldRange : mRangeList)
     {
         types::Range overlap;
         const bool isOverlapping = oldRange.overlaps(range, overlap);
 
         if (isOverlapping)
         {
-            for (const auto& diff : difference(oldRange, overlap))
+            for (const auto &diff : difference(oldRange, overlap))
             {
                 newList.push_back(diff);
             }
@@ -198,20 +189,17 @@ void RangeList::expand(size_t expansion, size_t maxEndElement)
     const List oldRanges = getRanges();
     mRangeList.clear();
 
-    for (const auto& range : oldRanges)
+    for (const auto &range : oldRanges)
     {
-        const size_t start =
-                (range.mStartElement >= expansion) ?
-                range.mStartElement - expansion : 0;
+        const size_t start = (range.mStartElement >= expansion) ? range.mStartElement - expansion : 0;
 
-        const size_t end =
-                std::min(range.endElement() + expansion, maxEndElement);
+        const size_t end = std::min(range.endElement() + expansion, maxEndElement);
 
         insert(types::Range(start, end - start));
     }
 }
 
-RangeList RangeList::intersect(const RangeList& other) const
+RangeList RangeList::intersect(const RangeList &other) const
 {
     RangeList output;
     auto iterA = std::begin(getRanges());
@@ -221,10 +209,8 @@ RangeList RangeList::intersect(const RangeList& other) const
 
     while ((iterA != endIterA) && (iterB != endIterB))
     {
-        const size_t start =
-                std::max<size_t>(iterA->mStartElement, iterB->mStartElement);
-        const size_t end =
-                std::min<size_t>(iterA->endElement(), iterB->endElement());
+        const size_t start = std::max<size_t>(iterA->mStartElement, iterB->mStartElement);
+        const size_t end = std::min<size_t>(iterA->endElement(), iterB->endElement());
 
         if (start < end)
         {
@@ -243,4 +229,4 @@ RangeList RangeList::intersect(const RangeList& other) const
 
     return output;
 }
-}
+} // namespace types

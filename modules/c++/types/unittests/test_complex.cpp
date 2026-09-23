@@ -30,20 +30,24 @@ TEST_CASE(TestCxShort_abs)
     constexpr auto imag = -321;
 
     CODA_OSS_disable_warning_push
-    #ifdef _MSC_VER
-    #pragma warning(disable: 4996) // '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
-    #endif
-    const std::complex<short> cx_short(real, imag);
-    CODA_OSS_disable_warning_pop
-    const auto expected = abs(cx_short);
+#ifdef _MSC_VER
+#pragma warning(disable : 4996) // '...': warning STL4037: The effect of instantiating the template std::complex for any
+                                // type other than float, double, or long double is unspecified. You can define
+                                // _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
+#endif
+        const std::complex<short>
+            cx_short(real, imag);
+    CODA_OSS_disable_warning_pop const auto expected = abs(cx_short);
 
     CODA_OSS_disable_warning_push
-    #ifdef _MSC_VER
-    #pragma warning(disable: 4996) // '...': warning STL4037: The effect of instantiating the template std::complex for any type other than float, double, or long double is unspecified. You can define _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
-    #endif
-    const types::Complex<int16_t> types_zint16(cx_short);
-    CODA_OSS_disable_warning_pop
-    auto actual = abs(types_zint16);
+#ifdef _MSC_VER
+#pragma warning(disable : 4996) // '...': warning STL4037: The effect of instantiating the template std::complex for any
+                                // type other than float, double, or long double is unspecified. You can define
+                                // _SILENCE_NONFLOATING_COMPLEX_DEPRECATION_WARNING to suppress this warning.
+#endif
+        const types::Complex<int16_t>
+            types_zint16(cx_short);
+    CODA_OSS_disable_warning_pop auto actual = abs(types_zint16);
     TEST_ASSERT_EQ(actual, expected);
 
     const types::ComplexInteger<int16_t> types_cx_int16(cx_short);
@@ -51,9 +55,7 @@ TEST_CASE(TestCxShort_abs)
     TEST_ASSERT_EQ(actual, expected);
 
     // This intentionally doesn't compile.
-    //const auto types::ComplexReal<short> ComplexReal_short;
+    // const auto types::ComplexReal<short> ComplexReal_short;
 }
 
-TEST_MAIN(
-    TEST_CHECK(TestCxShort_abs);
-    )
+TEST_MAIN(TEST_CHECK(TestCxShort_abs);)

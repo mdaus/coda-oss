@@ -23,10 +23,10 @@
 #ifndef __IMPORT_TYPES_H__
 #define __IMPORT_TYPES_H__
 
-#include <types/RgAz.h>
-#include <types/RowCol.h>
 #include <types/PageRowCol.h>
 #include <types/Range.h>
 #include <types/RangeList.h>
+#include <types/RgAz.h>
+#include <types/RowCol.h>
 
 #endif
