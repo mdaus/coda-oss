@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of math.poly-c++ 
+ * This file is part of math.poly-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * math.poly-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -50,20 +50,20 @@ namespace poly
  *  notation, and compensate by iterating one extra in all of our loops
  *
  */
-template <size_t _Order, typename _T=double> class Fixed1D
+template <size_t _Order, typename _T = double> class Fixed1D
 {
-protected:
-    std::array<_T, _Order+1> mCoef;
-public:
+  protected:
+    std::array<_T, _Order + 1> mCoef;
 
-   /*!
-    *  Default constructor clears memory
-    *
-    */
+  public:
+    /*!
+     *  Default constructor clears memory
+     *
+     */
     Fixed1D()
     {
         // Initialize coefficents;
-        for (size_t i = 0; i < _Order+1; i++)
+        for (size_t i = 0; i < _Order + 1; i++)
         {
             mCoef[i] = _T{};
         }
@@ -73,7 +73,7 @@ public:
      *  Unlike the non-fixed size poly, this constructor
      *  will truncate higher orders.  This is what we want.
      */
-    Fixed1D(const OneD<_T>& coeff)
+    Fixed1D(const OneD<_T> &coeff)
     {
         size_t sizeC = coeff.order();
         sizeC = std::min<size_t>(sizeC, _Order);
@@ -84,9 +84,9 @@ public:
     }
 
     /*!
-    * Construct from C array
-    */
-    Fixed1D(const _T* coeffs, const size_t nCoeff)
+     * Construct from C array
+     */
+    Fixed1D(const _T *coeffs, const size_t nCoeff)
     {
         size_t sizeC = std::min<size_t>(nCoeff, _Order);
         for (size_t i = 0; i <= sizeC; i++)
@@ -96,9 +96,9 @@ public:
     }
 
     /*!
-    * Construct from std::array
-    */
-    template<size_t O> Fixed1D(const std::array<_T, O>& coeffs)
+     * Construct from std::array
+     */
+    template <size_t O> Fixed1D(const std::array<_T, O> &coeffs)
     {
         size_t sizeC = std::min<size_t>(O, _Order);
         for (size_t i = 0; i <= sizeC; i++)
@@ -108,11 +108,11 @@ public:
     }
 
     /*!
-    * Construct from std::vector
-    */
-    Fixed1D(const std::vector<_T>& coeffs)
+     * Construct from std::vector
+     */
+    Fixed1D(const std::vector<_T> &coeffs)
     {
-        size_t sizeC = std::min<size_t>(coeffs.size()-1, _Order);
+        size_t sizeC = std::min<size_t>(coeffs.size() - 1, _Order);
         for (size_t i = 0; i <= sizeC; i++)
         {
             mCoef[i] = coeffs[i];
@@ -127,7 +127,7 @@ public:
      *  \code
      *
      */
-    template<size_t _OtherOrder> Fixed1D(const Fixed1D<_OtherOrder, _T>& coeff)
+    template <size_t _OtherOrder> Fixed1D(const Fixed1D<_OtherOrder, _T> &coeff)
     {
 
         size_t sizeC = std::min<size_t>(_OtherOrder, _Order);
@@ -137,15 +137,21 @@ public:
         }
     }
 
-    static constexpr inline size_t order() { return _Order; }
-    static constexpr inline size_t size() { return _Order + 1; }
+    static constexpr inline size_t order()
+    {
+        return _Order;
+    }
+    static constexpr inline size_t size()
+    {
+        return _Order + 1;
+    }
 
     /*!
      *
      *  Get a fixed polynomial from a non-fixed one
      *
      */
-    Fixed1D<_Order, _T>& operator=(const OneD<_T>& coeff)
+    Fixed1D<_Order, _T> &operator=(const OneD<_T> &coeff)
     {
         size_t sizeC = coeff.order();
         sizeC = std::min<size_t>(sizeC, _Order);
@@ -156,7 +162,7 @@ public:
         return *this;
     }
 
-    template<size_t _OtherOrder> Fixed1D<_Order, _T>& operator=(const Fixed1D<_OtherOrder, _T>& coeff)
+    template <size_t _OtherOrder> Fixed1D<_Order, _T> &operator=(const Fixed1D<_OtherOrder, _T> &coeff)
     {
 
         unsigned int sizeC = std::min<unsigned int>(_OtherOrder, _Order);
@@ -167,20 +173,18 @@ public:
         return *this;
     }
 
-
-
     /*!
      *  Evaluate our polynomial at 'at'
      *
      */
-    _T operator() (double at) const
+    _T operator()(double at) const
     {
         _T rv{};
         double atPower = 1;
 
         for (size_t i = 0; i <= _Order; i++)
         {
-            rv += mCoef[i]*atPower;
+            rv += mCoef[i] * atPower;
             atPower *= at;
         }
         return rv;
@@ -195,7 +199,7 @@ public:
         double atPower = 1;
         for (size_t i = 1; i <= _Order; i++)
         {
-            rv += static_cast<double>(i) * mCoef[i]*atPower;
+            rv += static_cast<double>(i) * mCoef[i] * atPower;
             atPower *= at;
         }
         return rv;
@@ -210,7 +214,7 @@ public:
         double atPower = 1;
         for (size_t i = 2; i <= _Order; i++)
         {
-            rv += static_cast<double>((i - 1) * i) * mCoef[i]*atPower;
+            rv += static_cast<double>((i - 1) * i) * mCoef[i] * atPower;
             atPower *= at;
         }
         return rv;
@@ -230,7 +234,7 @@ public:
 
         for (size_t i = 0; i <= _Order; i++)
         {
-            div = 1.0/(i + 1);
+            div = 1.0 / (i + 1);
             newCoef = mCoef[i] * div;
             rv += newCoef * endAtPower;
             rv -= newCoef * startAtPower;
@@ -244,15 +248,15 @@ public:
      *  Take the derivative of the polynomial.  This produces an order-
      *  lower polynomial as output.
      */
-    Fixed1D<_Order-1, _T> derivative() const
+    Fixed1D<_Order - 1, _T> derivative() const
     {
         auto order = _Order; // "conditional expression is constant"
-        if (order > 0)  // 0-1 is SIZE_MAX because _Order is size_t
+        if (order > 0)       // 0-1 is SIZE_MAX because _Order is size_t
         {
-            Fixed1D<_Order-1, _T> dv;
-            for (size_t i = 0; i <= _Order-1; i++)
+            Fixed1D<_Order - 1, _T> dv;
+            for (size_t i = 0; i <= _Order - 1; i++)
             {
-                dv[i] = mCoef[i+1] * (i+1);
+                dv[i] = mCoef[i + 1] * (i + 1);
             }
             return dv;
         }
@@ -266,38 +270,35 @@ public:
      *
      *
      */
-     _T& operator [] (size_t i)
+    _T &operator[](size_t i)
     {
         if (i > _Order)
             throw except::IndexOutOfRangeException(Ctxt(str::Format("index [%d] is not in range [0..%d]", i, _Order)));
         return mCoef[i];
-
     }
-    _T operator [] (size_t i) const
+    _T operator[](size_t i) const
     {
         if (i > _Order)
             throw except::IndexOutOfRangeException(Ctxt(str::Format("index [%d] is not in range [0..%d]", i, _Order)));
 
         return mCoef[i];
-
     }
-    inline const std::array<_T, _Order+1>& coeffs() const
+    inline const std::array<_T, _Order + 1> &coeffs() const
     {
         return mCoef;
     }
 
-    inline std::array<_T, _Order+1>& coeffs()
+    inline std::array<_T, _Order + 1> &coeffs()
     {
         return mCoef;
     }
-
 
     /*!
      *  Mult-assign (mutating method)
      *
      */
 
-    Fixed1D<_Order, _T>& operator*=(double cv)
+    Fixed1D<_Order, _T> &operator*=(double cv)
     {
         for (size_t i = 0; i <= _Order; i++)
         {
@@ -323,43 +324,37 @@ public:
      *  If you need to increase the order, you should use the other
      *  method below (non-mutating)
      */
-    template<size_t _OtherOrder>
-        Fixed1D<_Order>& operator *= (const Fixed1D<_OtherOrder>& p)
+    template <size_t _OtherOrder> Fixed1D<_Order> &operator*=(const Fixed1D<_OtherOrder> &p)
     {
         // Multiply another into this and do not increase the order
-        Fixed1D<_Order+_OtherOrder> newPoly = *this * p;
+        Fixed1D<_Order + _OtherOrder> newPoly = *this * p;
 
         // We need to be careful to overload this properly
         *this = newPoly;
         return *this;
     }
 
-    template<size_t _OtherOrder>
-        Fixed1D<_Order+_OtherOrder, _T>
-        operator * (const Fixed1D<_OtherOrder, _T>& p) const
+    template <size_t _OtherOrder> Fixed1D<_Order + _OtherOrder, _T> operator*(const Fixed1D<_OtherOrder, _T> &p) const
     {
         // Multiply this one by another, and increase the order
-        //Fixed1D<_Order+_OtherOrder, _T> copy(*this);
-        Fixed1D<_Order+_OtherOrder, _T> newPoly;
+        // Fixed1D<_Order+_OtherOrder, _T> copy(*this);
+        Fixed1D<_Order + _OtherOrder, _T> newPoly;
 
         for (size_t i = 0; i <= _Order; i++)
         {
             for (size_t j = 0; j <= _OtherOrder; j++)
             {
-                newPoly[i+j] += mCoef[i] * p[j];
+                newPoly[i + j] += mCoef[i] * p[j];
             }
         }
         return newPoly;
-
     }
 
     /* These are the trickiest, since we cant know anything at compile time */
-    template<size_t _OtherOrder>
-        Fixed1D<_Order+_OtherOrder, _T>
-        operator+(const Fixed1D<_OtherOrder, _T>& p) const
+    template <size_t _OtherOrder> Fixed1D<_Order + _OtherOrder, _T> operator+(const Fixed1D<_OtherOrder, _T> &p) const
     {
-        Fixed1D<_Order+_OtherOrder, _T> newPoly;
-        auto order = _Order;  // "conditional expression is constant"
+        Fixed1D<_Order + _OtherOrder, _T> newPoly;
+        auto order = _Order; // "conditional expression is constant"
         if (order > _OtherOrder)
         {
             newPoly = *this;
@@ -377,45 +372,36 @@ public:
             }
         }
         return newPoly;
-
     }
-    template<size_t _OtherOrder>
-        Fixed1D<_Order+_OtherOrder, _T>
-    operator-(const Fixed1D<_OtherOrder, _T>& p) const
+    template <size_t _OtherOrder> Fixed1D<_Order + _OtherOrder, _T> operator-(const Fixed1D<_OtherOrder, _T> &p) const
     {
 
         return *this + (p * -1.0);
-
     }
     // In this one, if you try and mutate, we will not change the order
-    template<size_t _OtherOrder>
-        Fixed1D<_Order, _T>& operator += (const Fixed1D<_OtherOrder, _T>& p)
+    template <size_t _OtherOrder> Fixed1D<_Order, _T> &operator+=(const Fixed1D<_OtherOrder, _T> &p)
     {
         *this = *this + p;
         return *this;
-
     }
     /*!
      *
      *
      */
-    template<size_t _OtherOrder>
-        Fixed1D<_Order, _T>& operator -= (const Fixed1D<_OtherOrder, _T>& p)
+    template <size_t _OtherOrder> Fixed1D<_Order, _T> &operator-=(const Fixed1D<_OtherOrder, _T> &p)
     {
         *this = *this - p;
         return *this;
     }
-
 
     /*!
      *  Mult-assign by the reciprocal
      *
      */
 
-    template<size_t _OtherOrder>
-        Fixed1D<_Order, _T>& operator /= (double cv)
+    template <size_t _OtherOrder> Fixed1D<_Order, _T> &operator/=(double cv)
     {
-        double recip = 1.0/cv;
+        double recip = 1.0 / cv;
         for (size_t i = 0; i <= _Order; i++)
         {
             mCoef[i] *= recip;
@@ -427,19 +413,19 @@ public:
      *  Make a copy of this, and mult-assign it
      *
      */
-    Fixed1D<_Order, _T> operator / (double cv) const
+    Fixed1D<_Order, _T> operator/(double cv) const
     {
         Fixed1D<_Order, _T> copy(*this);
-        copy *= (1.0/cv);
+        copy *= (1.0 / cv);
         return copy;
     }
 
-    bool operator == (const Fixed1D<_Order, _T>& other) const 
+    bool operator==(const Fixed1D<_Order, _T> &other) const
     {
         return (mCoef == other.coeffs());
     }
 
-    bool operator != (const Fixed1D<_Order, _T>& other) const 
+    bool operator!=(const Fixed1D<_Order, _T> &other) const
     {
         return !(*this == other);
     }
@@ -459,7 +445,7 @@ public:
      */
     Fixed1D<_Order, _T> scaleVariable(double scale) const
     {
-        return ::math::poly::scaleVariable<Fixed1D<_Order, _T> >(*this, scale);
+        return ::math::poly::scaleVariable<Fixed1D<_Order, _T>>(*this, scale);
     }
 };
 
@@ -467,26 +453,23 @@ public:
  *  Actually, this is the same as p * cv, so we just reverse it
  *
  */
-template<size_t _Order, typename _T>
-    Fixed1D<_Order, _T> operator*(double cv,
-                                  const Fixed1D<_Order, _T>& p)
+template <size_t _Order, typename _T> Fixed1D<_Order, _T> operator*(double cv, const Fixed1D<_Order, _T> &p)
 {
-    return p*cv;
+    return p * cv;
 }
 
 /*!
  *  Print our poly (y first, so the 2D version looks right)
  */
-template<size_t _Order, typename _T>
-    std::ostream& operator << (std::ostream& out, const Fixed1D<_Order, _T>& p)
+template <size_t _Order, typename _T> std::ostream &operator<<(std::ostream &out, const Fixed1D<_Order, _T> &p)
 {
-    for (size_t i = 0 ; i <= _Order; i++)
+    for (size_t i = 0; i <= _Order; i++)
     {
         out << p[i] << "*y^" << i << " ";
     }
     return out;
 }
-}
-}
+} // namespace poly
+} // namespace math
 
 #endif

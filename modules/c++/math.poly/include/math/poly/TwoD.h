@@ -23,8 +23,8 @@
 #ifndef __MATH_POLY_TWOD_H__
 #define __MATH_POLY_TWOD_H__
 
-#include <math/poly/OneD.h>
 #include <math/linear/Matrix2D.h>
+#include <math/poly/OneD.h>
 
 namespace math
 {
@@ -49,38 +49,44 @@ namespace poly
        X -> line
        Y -> elem
 */
-template<typename _T>
-class TwoD
+template <typename _T> class TwoD
 {
-protected:
+  protected:
     //! using a vector of one-d polynomials simplify the implementation.
-    std::vector<OneD<_T> > mCoef;
+    std::vector<OneD<_T>> mCoef;
 
-public:
-
-    std::vector<OneD<_T> >& coeffs() { return mCoef; }
-    const std::vector<OneD<_T> >& coeffs() const { return mCoef; }
+  public:
+    std::vector<OneD<_T>> &coeffs()
+    {
+        return mCoef;
+    }
+    const std::vector<OneD<_T>> &coeffs() const
+    {
+        return mCoef;
+    }
 
     //! The polynomial is invalid (i.e. orderX() and orderY() will throw)
-    TwoD() {}  // = default; // error w/ICC and "const" member data
-
-    TwoD(size_t orderX, size_t orderY) : mCoef(orderX+1,OneD<_T>(orderY)) {}
-
-    template<typename Vector_T> TwoD(size_t orderX, size_t orderY,
-                                     const Vector_T& coeffs)
+    TwoD()
     {
-        mCoef.resize(orderX+1,OneD<_T>(orderY));
+    } // = default; // error w/ICC and "const" member data
+
+    TwoD(size_t orderX, size_t orderY) : mCoef(orderX + 1, OneD<_T>(orderY))
+    {
+    }
+
+    template <typename Vector_T> TwoD(size_t orderX, size_t orderY, const Vector_T &coeffs)
+    {
+        mCoef.resize(orderX + 1, OneD<_T>(orderY));
         for (size_t i = 0; i <= orderX; ++i)
         {
             for (size_t j = 0; j <= orderY; ++j)
             {
-                mCoef[i][j] = coeffs[i * (orderY+1) + j];
+                mCoef[i][j] = coeffs[i * (orderY + 1) + j];
             }
         }
     }
 
-    TwoD(const std::vector<OneD<_T> >& v) :
-        mCoef(v)
+    TwoD(const std::vector<OneD<_T>> &v) : mCoef(v)
     {
     }
 
@@ -101,19 +107,20 @@ public:
             throw except::IndexOutOfRangeException(Ctxt("Can't have an order less than zero"));
         return mCoef[0].order();
     }
-    _T operator () (double atX, double atY) const;
+    _T operator()(double atX, double atY) const;
     _T integrate(double xStart, double xEnd, double yStart, double yEnd) const;
 
     //! Must check the size of the OneD coming in because
     //  the dimensions of the TwoD is rigid, and all OneD
     //  polys must be of the same size
-    void set(size_t i, const OneD<_T>& p)
+    void set(size_t i, const OneD<_T> &p)
     {
         if (i > orderX())
-            throw except::Exception(Ctxt("Index [" + std::to_string(i) + "] is out of bounds for orderX [" + std::to_string(orderX()) + "]"));
+            throw except::Exception(Ctxt("Index [" + std::to_string(i) + "] is out of bounds for orderX [" +
+                                         std::to_string(orderX()) + "]"));
         else if (p.order() != orderY())
-            throw except::Exception(
-                    Ctxt("OneD poly [" + std::to_string(p.order()) + "] is of the incorrect size for orderY [" + std::to_string(orderY()) + "]"));
+            throw except::Exception(Ctxt("OneD poly [" + std::to_string(p.order()) +
+                                         "] is of the incorrect size for orderY [" + std::to_string(orderY()) + "]"));
         else
             mCoef[i] = p;
     }
@@ -187,8 +194,7 @@ public:
      *
      * \return Fx(Gx(x, y), Gy(x, y))
      */
-    TwoD<_T> transformInput(const math::poly::TwoD<_T>& gx,
-                            const math::poly::TwoD<_T>& gy,
+    TwoD<_T> transformInput(const math::poly::TwoD<_T> &gx, const math::poly::TwoD<_T> &gy,
                             double zeroEpsilon = 0.0) const;
 
     /*!
@@ -203,8 +209,7 @@ public:
      *
      * \return Fx(Gx(x, y), y)
      */
-    TwoD<_T> transformInput(const math::poly::TwoD<_T>& gx,
-                            double zeroEpsilon = 0.0) const;
+    TwoD<_T> transformInput(const math::poly::TwoD<_T> &gx, double zeroEpsilon = 0.0) const;
 
     /*!
      * This evaluates y in the 2D polynomial, leaving a 1D polynomial in x
@@ -213,38 +218,35 @@ public:
      * polynomial in y, you can do poly.flipXY().atY(x)
      */
     OneD<_T> atY(double y) const;
-    OneD<_T> operator [] (size_t i) const;
+    OneD<_T> operator[](size_t i) const;
     /*! In case you are curious about the return value, this guarantees that
       someone can only change the coefficient stored at [x][y], and not the
       polynomial itself. Unfortunately, however, it does not allow one bounds
       checking on the size of the polynomial.
     */
-    _T* operator [] (size_t i);
-    TwoD<_T>& operator *= (double cv) ;
-    TwoD<_T> operator * (double cv) const;
-    template<typename _TT>
-        friend TwoD<_TT> operator * (double cv, const TwoD<_TT>& p);
-    TwoD<_T>& operator *= (const TwoD<_T>& p);
-    TwoD<_T> operator * (const TwoD<_T>& p) const;
-    TwoD<_T>& operator += (const TwoD<_T>& p);
-    TwoD<_T> operator + (const TwoD<_T>& p) const;
-    TwoD<_T>& operator -= (const TwoD<_T>& p);
-    TwoD<_T> operator - (const TwoD<_T>& p) const;
-    TwoD<_T>& operator /= (double cv);
-    TwoD<_T> operator / (double cv) const;
-    bool operator == (const TwoD<_T>& p) const;
-    bool operator != (const TwoD<_T>& p) const;
+    _T *operator[](size_t i);
+    TwoD<_T> &operator*=(double cv);
+    TwoD<_T> operator*(double cv) const;
+    template <typename _TT> friend TwoD<_TT> operator*(double cv, const TwoD<_TT> &p);
+    TwoD<_T> &operator*=(const TwoD<_T> &p);
+    TwoD<_T> operator*(const TwoD<_T> &p) const;
+    TwoD<_T> &operator+=(const TwoD<_T> &p);
+    TwoD<_T> operator+(const TwoD<_T> &p) const;
+    TwoD<_T> &operator-=(const TwoD<_T> &p);
+    TwoD<_T> operator-(const TwoD<_T> &p) const;
+    TwoD<_T> &operator/=(double cv);
+    TwoD<_T> operator/(double cv) const;
+    bool operator==(const TwoD<_T> &p) const;
+    bool operator!=(const TwoD<_T> &p) const;
 
     TwoD<_T> power(size_t toThe) const;
 
-    template<typename _TT>
-        friend std::ostream& operator << (std::ostream& out, const TwoD<_TT>& p);
+    template <typename _TT> friend std::ostream &operator<<(std::ostream &out, const TwoD<_TT> &p);
 
     /*!
      *  serialize out to a boost stream
      */
-    template <class Archive>
-    void serialize(Archive& ar, const unsigned int  /*version*/)
+    template <class Archive> void serialize(Archive &ar, const unsigned int /*version*/)
     {
         ar & mCoef;
     }
@@ -256,7 +258,7 @@ public:
     bool isScalar() const;
 };
 
-} // poly
-} // math
+} // namespace poly
+} // namespace math
 #include "math/poly/TwoD.hpp"
 #endif

@@ -20,10 +20,10 @@
  *
  */
 
-//#include "/data2/u/muller/coda-oss/modules/c++/math.poly/include/math/poly/OneD.h"
-//#include "/data2/u/muller/coda-oss/modules/c++/math.linear/include/math/linear/VectorN.h"
-#include <math/poly/OneD.h>
+// #include "/data2/u/muller/coda-oss/modules/c++/math.poly/include/math/poly/OneD.h"
+// #include "/data2/u/muller/coda-oss/modules/c++/math.linear/include/math/linear/VectorN.h"
 #include <TestCase.h>
+#include <math/poly/OneD.h>
 
 namespace
 {
@@ -34,7 +34,7 @@ TEST_CASE(testInt)
     poly[1] = 4;
     poly[2] = 5;
 
-    int integral = poly.integrate(0,1);
+    int integral = poly.integrate(0, 1);
     TEST_ASSERT_EQ(integral, 6);
 
     math::poly::OneD<int> derivative = poly.derivative();
@@ -54,8 +54,8 @@ TEST_CASE(testDouble)
     poly[1] = 4.2;
     poly[2] = 5.3;
 
-    double integral = poly.integrate(0,1);
-    TEST_ASSERT_EQ(integral, 209.0/30.0);
+    double integral = poly.integrate(0, 1);
+    TEST_ASSERT_EQ(integral, 209.0 / 30.0);
 
     math::poly::OneD<double> derivative = poly.derivative();
     TEST_ASSERT_EQ(derivative[0], 4.2);
@@ -69,28 +69,28 @@ TEST_CASE(testDouble)
 
 TEST_CASE(testVector3)
 {
-    math::poly::OneD< math::linear::VectorN< 3, double > > poly(2);
-    math::linear::VectorN< 3, double >& polyCoeffs0 = poly[0];
+    math::poly::OneD<math::linear::VectorN<3, double>> poly(2);
+    math::linear::VectorN<3, double> &polyCoeffs0 = poly[0];
     polyCoeffs0[0] = 0.0;
     polyCoeffs0[1] = 1.0;
     polyCoeffs0[2] = 2.0;
-    math::linear::VectorN< 3, double >& polyCoeffs1 = poly[1];
+    math::linear::VectorN<3, double> &polyCoeffs1 = poly[1];
     polyCoeffs1[0] = 3.0;
     polyCoeffs1[1] = 4.0;
     polyCoeffs1[2] = 5.0;
-    math::linear::VectorN< 3, double >& polyCoeffs2 = poly[2];
+    math::linear::VectorN<3, double> &polyCoeffs2 = poly[2];
     polyCoeffs2[0] = 6.0;
     polyCoeffs2[1] = 7.0;
     polyCoeffs2[2] = 8.0;
 
-    math::linear::VectorN< 3, double > integral = poly.integrate(0,1);
+    math::linear::VectorN<3, double> integral = poly.integrate(0, 1);
     TEST_ASSERT_EQ(integral[0], 3.5);
-    TEST_ASSERT_EQ(integral[1], 16.0/3.0);
+    TEST_ASSERT_EQ(integral[1], 16.0 / 3.0);
     TEST_ASSERT_EQ(integral[2], 7.166666666666666);
 
-    math::poly::OneD< math::linear::VectorN< 3, double > > derivative = poly.derivative();
-    math::linear::VectorN< 3, double >& derivativeCoeffs0 = derivative[0];
-    math::linear::VectorN< 3, double >& derivativeCoeffs1 = derivative[1];
+    math::poly::OneD<math::linear::VectorN<3, double>> derivative = poly.derivative();
+    math::linear::VectorN<3, double> &derivativeCoeffs0 = derivative[0];
+    math::linear::VectorN<3, double> &derivativeCoeffs1 = derivative[1];
     TEST_ASSERT_EQ(derivativeCoeffs0[0], 3);
     TEST_ASSERT_EQ(derivativeCoeffs0[1], 4);
     TEST_ASSERT_EQ(derivativeCoeffs0[2], 5);
@@ -105,7 +105,7 @@ TEST_CASE(testVector3)
     const auto order = poly.order();
     TEST_ASSERT_EQ(order, static_cast<size_t>(1));
 }
-}
+} // namespace
 
 int main()
 {

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of math.poly-c++ 
+ * This file is part of math.poly-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * math.poly-c++ is free software; you can redistribute it and/or modify
@@ -14,17 +14,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include <stdlib.h>
 
+#include "TestCase.h"
 #include <math/poly/OneD.h>
 #include <serialize/Serialize.h>
-#include "TestCase.h"
 
 namespace
 {
@@ -51,8 +51,7 @@ TEST_CASE(testOneDDoubleSerialize)
     //! verify the result matches
     for (size_t ii = 0; ii < in.order() + 1; ++ii)
     {
-        TEST_ASSERT_ALMOST_EQ_EPS(in[ii], out[ii],
-                                  std::numeric_limits<double>::epsilon());
+        TEST_ASSERT_ALMOST_EQ_EPS(in[ii], out[ii], std::numeric_limits<double>::epsilon());
     }
 }
 
@@ -78,8 +77,7 @@ TEST_CASE(testOneDFloatSerialize)
     //! verify the result matches
     for (size_t ii = 0; ii < in.order() + 1; ++ii)
     {
-        TEST_ASSERT_ALMOST_EQ_EPS(in[ii], out[ii],
-                                  std::numeric_limits<float>::epsilon());
+        TEST_ASSERT_ALMOST_EQ_EPS(in[ii], out[ii], std::numeric_limits<float>::epsilon());
     }
 }
 
@@ -109,9 +107,9 @@ TEST_CASE(testOneDIntSerialize)
     }
 }
 
-}
+} // namespace
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     srand(176);
     TEST_CHECK(testOneDDoubleSerialize);

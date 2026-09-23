@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of math.poly-c++ 
+ * This file is part of math.poly-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * math.poly-c++ is free software; you can redistribute it and/or modify
@@ -14,19 +14,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
+#include "TestCase.h"
 #include <import/math/linear.h>
 #include <import/math/poly.h>
-#include "TestCase.h"
 
-
-inline
-double diffSq(double lhs, double rhs)
+inline double diffSq(double lhs, double rhs)
 {
     const double diff = lhs - rhs;
     return (diff * diff);
@@ -37,9 +35,9 @@ TEST_CASE(test1DPolyfit)
     using namespace math::linear;
     using namespace math::poly;
 
-    const double xObs[] = { 1, -1, 2, -2 };
-    const double yObs[] = { 3, 13, 1, 33 };
-    const double zPoly[] = { 5, -4, 3, -1 };
+    const double xObs[] = {1, -1, 2, -2};
+    const double yObs[] = {3, 13, 1, 33};
+    const double zPoly[] = {5, -4, 3, -1};
 
     const std::vector<double> truthSTLVec(zPoly, zPoly + 4);
 
@@ -49,7 +47,7 @@ TEST_CASE(test1DPolyfit)
 
     // should fail with not enough points (order>=npoints)
     TEST_EXCEPTION(fit(4, xObs, yObs, 4));
-    
+
     // Now call the other one
     const Vector<double> xv(4, xObs);
     const Vector<double> yv(4, yObs);
@@ -63,7 +61,7 @@ TEST_CASE(test1DPolyfit)
     // Polys better match
     TEST_ASSERT_EQ(polyFromRaw, polyFromVec);
     TEST_ASSERT_EQ(polyFromRaw, truth);
-    //TEST_ASSERT_EQ(polyFromRaw, fixed);
+    // TEST_ASSERT_EQ(polyFromRaw, fixed);
     TEST_ASSERT(polyFromRaw == fixed);
     assert(polyFromRaw == truthSTLVec);
     TEST_ASSERT_EQ(polyFromSTL, truth);
@@ -76,8 +74,8 @@ TEST_CASE(test1DPolyfitLarge)
 
     // Fit a polynomial
     static const size_t NUM_OBS = 9;
-    double xObs[] = { 1, -1, 2, -2, 3, 15, 29, -4, -14 };
-    const double yObs[] = { 3, 13, 1, 33, -7, -2755, -21977, 133, 3393 };
+    double xObs[] = {1, -1, 2, -2, 3, 15, 29, -4, -14};
+    const double yObs[] = {3, 13, 1, 33, -7, -2755, -21977, 133, 3393};
 
     static const size_t POLY_ORDER = 3;
     const OneD<double> polyUnshifted = fit(NUM_OBS, xObs, yObs, POLY_ORDER);
@@ -90,17 +88,14 @@ TEST_CASE(test1DPolyfitLarge)
         xObsShifted[ii] = xObs[ii] + OFFSET;
     }
 
-    const OneD<double> polyShifted =
-            fit(NUM_OBS, xObsShifted, yObs, POLY_ORDER);
+    const OneD<double> polyShifted = fit(NUM_OBS, xObsShifted, yObs, POLY_ORDER);
 
     // If we evaluate the polynomials at equivalent x positions, we better
     // have almost the same values
     // TODO: Seems like I need a bigger epsilon here than I'd expect
     for (size_t ii = 0; ii < NUM_OBS; ++ii)
     {
-        TEST_ASSERT_ALMOST_EQ_EPS(polyUnshifted(xObs[ii]),
-                                  polyShifted(xObsShifted[ii]),
-                                  0.0005);
+        TEST_ASSERT_ALMOST_EQ_EPS(polyUnshifted(xObs[ii]), polyShifted(xObsShifted[ii]), 0.0005);
     }
 
     // Calculate the mean residual error to determine goodness of fit.
@@ -135,29 +130,47 @@ TEST_CASE(test2DPolyfit)
     using namespace math::linear;
     using namespace math::poly;
 
-    const double coeffs[] =
-    {
-        -1.02141e-16, 0.15,
-         0.08,        0.4825,
+    const double coeffs[] = {
+        -1.02141e-16,
+        0.15,
+        0.08,
+        0.4825,
     };
 
     TwoD<double> truth(1, 1, coeffs);
 
     Matrix2D<double> x(3, 3);
-    x(0, 0) = 1;  x(1, 0) = 0; x(2, 0) = 1;
-    x(0, 1) = 1;  x(1, 1) = 1; x(2, 1) = 0;
-    x(0, 2) = 0;  x(1, 2) = 1; x(2, 2) = 1;
-        
-    Matrix2D<double> y(3, 3);
-    y(0, 0) = 1;  y(1, 0) = 1; y(2, 0) = 1;
-    y(0, 1) = 0;  y(1, 1) = 1; y(2, 1) = 1;
-    y(0, 2) = 0;  y(1, 2) = 0; y(2, 2) = 1;
+    x(0, 0) = 1;
+    x(1, 0) = 0;
+    x(2, 0) = 1;
+    x(0, 1) = 1;
+    x(1, 1) = 1;
+    x(2, 1) = 0;
+    x(0, 2) = 0;
+    x(1, 2) = 1;
+    x(2, 2) = 1;
 
+    Matrix2D<double> y(3, 3);
+    y(0, 0) = 1;
+    y(1, 0) = 1;
+    y(2, 0) = 1;
+    y(0, 1) = 0;
+    y(1, 1) = 1;
+    y(2, 1) = 1;
+    y(0, 2) = 0;
+    y(1, 2) = 0;
+    y(2, 2) = 1;
 
     Matrix2D<double> z(3, 3);
-    z(0, 0) = 1;   z(1, 0) = .3; z(2, 0) = 0;
-    z(0, 1) = .16; z(1, 1) = 1;  z(2, 1) = 0;
-    z(0, 2) = 0;   z(1, 2) = 0;  z(2, 2) = .85;
+    z(0, 0) = 1;
+    z(1, 0) = .3;
+    z(2, 0) = 0;
+    z(0, 1) = .16;
+    z(1, 1) = 1;
+    z(2, 1) = 0;
+    z(0, 2) = 0;
+    z(1, 2) = 0;
+    z(2, 2) = .85;
 
     // should fail with not enough points: (orderX+1)*(orderY+1) > npoints
     TEST_EXCEPTION(fit(x, y, z, 3, 3));
@@ -173,13 +186,8 @@ TEST_CASE(test2DPolyfitLarge)
 
     // Use a defined polynomial to generate mapped values.  This ensures
     // it is possible to fit the points using at least as many coefficients.
-    const double coeffs[] =
-    {
-        -1.021e-12, 7.5,    2.2,   5.5,
-         0.88,      4.825,  .52,   .69,
-         5.5,       1.0,    .62,   1.01,
-         .012,      6.32,   1.56,  .376
-    };
+    const double coeffs[] = {-1.021e-12, 7.5, 2.2, 5.5,  0.88, 4.825, .52,  .69,
+                             5.5,        1.0, .62, 1.01, .012, 6.32,  1.56, .376};
 
     TwoD<double> truth(3, 3, coeffs);
 
@@ -255,13 +263,21 @@ TEST_CASE(testVectorValuedOrderChange)
     // we exceed the order of one of the reduced polynomials.
 
     std::vector<double> indep(3);
-    indep[0] = 0.0; indep[1] = 1.0; indep[2] = 2.0;
+    indep[0] = 0.0;
+    indep[1] = 1.0;
+    indep[2] = 2.0;
     std::vector<double> compZeroed(3);
-    compZeroed[0] = 0.0; compZeroed[1] = 0.0; compZeroed[2] = 0.0;
+    compZeroed[0] = 0.0;
+    compZeroed[1] = 0.0;
+    compZeroed[2] = 0.0;
     std::vector<double> comp1(3);
-    comp1[0] = 1.0; comp1[1] = 2.0; comp1[2] = 4.0;
+    comp1[0] = 1.0;
+    comp1[1] = 2.0;
+    comp1[2] = 4.0;
     std::vector<double> comp2(3);
-    comp2[0] = 0.1; comp2[1] = 0.9; comp2[2] = 0.1;
+    comp2[0] = 0.1;
+    comp2[1] = 0.9;
+    comp2[2] = 0.1;
 
     // First, test that we're actually reducing the order of some of the fits
     const OneD<double> polyZeroed = fit(indep, compZeroed, 2);
@@ -281,8 +297,7 @@ TEST_CASE(testVectorValuedOrderChange)
 
     // Zeroed values in the X component
     {
-        const OneD<VectorN<3, double> > poly =
-                fit(indep, compZeroed, comp1, comp2, 2);
+        const OneD<VectorN<3, double>> poly = fit(indep, compZeroed, comp1, comp2, 2);
 
         TEST_ASSERT_EQ(poly.order(), static_cast<size_t>(2));
 
@@ -304,8 +319,7 @@ TEST_CASE(testVectorValuedOrderChange)
 
     // Zeroed values in the Y component
     {
-        const OneD<VectorN<3, double> > poly =
-                fit(indep, comp1, compZeroed, comp2, 2);
+        const OneD<VectorN<3, double>> poly = fit(indep, comp1, compZeroed, comp2, 2);
 
         TEST_ASSERT_EQ(poly.order(), static_cast<size_t>(2));
 
@@ -327,8 +341,7 @@ TEST_CASE(testVectorValuedOrderChange)
 
     // Zeroed values in the Z component
     {
-        const OneD<VectorN<3, double> > poly =
-                fit(indep, comp1, comp2, compZeroed, 2);
+        const OneD<VectorN<3, double>> poly = fit(indep, comp1, comp2, compZeroed, 2);
 
         TEST_ASSERT_EQ(poly.order(), static_cast<size_t>(2));
 
@@ -349,10 +362,5 @@ TEST_CASE(testVectorValuedOrderChange)
     }
 }
 
-TEST_MAIN(
-    TEST_CHECK(test1DPolyfit);
-    TEST_CHECK(test1DPolyfitLarge);
-    TEST_CHECK(test2DPolyfit);
-    TEST_CHECK(test2DPolyfitLarge);
-    TEST_CHECK(testVectorValuedOrderChange);
-    )
+TEST_MAIN(TEST_CHECK(test1DPolyfit); TEST_CHECK(test1DPolyfitLarge); TEST_CHECK(test2DPolyfit);
+          TEST_CHECK(test2DPolyfitLarge); TEST_CHECK(testVectorValuedOrderChange);)

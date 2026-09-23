@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of math.poly-c++ 
+ * This file is part of math.poly-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * math.poly-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,22 +23,24 @@
 #include <stdlib.h>
 #include <tuple>
 
-#include <math/poly/Fixed1D.h>
 #include "TestCase.h"
+#include <math/poly/Fixed1D.h>
 
-template<size_t ORDER>
-using Fixed1D = math::poly::Fixed1D<ORDER, double>;
+template <size_t ORDER> using Fixed1D = math::poly::Fixed1D<ORDER, double>;
 
 double getRand()
 {
-    static const auto call_srand = [](){ srand(176); return true; };
+    static const auto call_srand = []()
+    {
+        srand(176);
+        return true;
+    };
     static auto srand_called = call_srand();
     std::ignore = srand_called;
     return (50.0 * rand() / RAND_MAX - 25.0);
 }
 
-template<size_t ORDER>
-Fixed1D<ORDER> getRandPoly()
+template <size_t ORDER> Fixed1D<ORDER> getRandPoly()
 {
     Fixed1D<ORDER> poly;
     for (size_t ii = 0; ii <= ORDER; ++ii)
@@ -49,7 +51,7 @@ Fixed1D<ORDER> getRandPoly()
     return poly;
 }
 
-void getRandValues(std::vector<double>& value)
+void getRandValues(std::vector<double> &value)
 {
     value.resize(100);
     for (size_t ii = 0; ii < value.size(); ++ii)
@@ -75,9 +77,7 @@ TEST_CASE(testScaleVariable)
         // of the expected value
         const double val(value[ii]);
         const double expectedValue(poly(val * scale));
-        TEST_ASSERT_ALMOST_EQ_EPS(transformedPoly(val),
-                                  expectedValue,
-                                  std::abs(.01 * expectedValue));
+        TEST_ASSERT_ALMOST_EQ_EPS(transformedPoly(val), expectedValue, std::abs(.01 * expectedValue));
     }
 }
 
@@ -88,27 +88,27 @@ TEST_CASE(testVelocity)
 
     // Constant poly should have 0 velocity
     auto constPoly(getRandPoly<0>());
-    for (const auto& val: values)
+    for (const auto &val : values)
     {
         TEST_ASSERT_EQ(constPoly.velocity(val), 0.0);
     }
 
     // Linear poly should have constant velocity
     auto linearPoly(getRandPoly<1>());
-    for (const auto& val: values)
+    for (const auto &val : values)
     {
         TEST_ASSERT_EQ(linearPoly.velocity(val), linearPoly[1]);
     }
 
     // Check quadratic and cubic against the derivative
     auto quadraticPoly(getRandPoly<2>());
-    for (const auto& val: values)
+    for (const auto &val : values)
     {
         TEST_ASSERT_EQ(quadraticPoly.velocity(val), quadraticPoly.derivative()(val));
     }
 
     auto cubicPoly(getRandPoly<3>());
-    for (const auto& val: values)
+    for (const auto &val : values)
     {
         TEST_ASSERT_EQ(cubicPoly.velocity(val), cubicPoly.derivative()(val));
     }
@@ -121,40 +121,36 @@ TEST_CASE(testAcceleration)
 
     // Constant and linear polys should have 0 acceleration
     auto constPoly(getRandPoly<0>());
-    for (const auto& val: values)
+    for (const auto &val : values)
     {
         TEST_ASSERT_EQ(constPoly.acceleration(val), 0.0);
     }
 
     auto linearPoly(getRandPoly<1>());
-    for (const auto& val: values)
+    for (const auto &val : values)
     {
         TEST_ASSERT_EQ(linearPoly.acceleration(val), 0.0);
     }
 
     // Quadratic poly should have constant acceleration
     auto quadraticPoly(getRandPoly<2>());
-    for (const auto& val: values)
+    for (const auto &val : values)
     {
         TEST_ASSERT_EQ(quadraticPoly.acceleration(val), 2 * quadraticPoly[2]);
     }
-    
+
     // Check cubic and quartic against the 2nd derivative
     auto cubicPoly(getRandPoly<3>());
-    for (const auto& val: values)
+    for (const auto &val : values)
     {
         TEST_ASSERT_EQ(cubicPoly.acceleration(val), cubicPoly.derivative().derivative()(val));
     }
 
     auto quarticPoly(getRandPoly<4>());
-    for (const auto& val: values)
+    for (const auto &val : values)
     {
         TEST_ASSERT_EQ(quarticPoly.acceleration(val), quarticPoly.derivative().derivative()(val));
     }
 }
 
-TEST_MAIN(
-    TEST_CHECK(testScaleVariable);
-    TEST_CHECK(testVelocity);
-    TEST_CHECK(testAcceleration);
-)
+TEST_MAIN(TEST_CHECK(testScaleVariable); TEST_CHECK(testVelocity); TEST_CHECK(testAcceleration);)
