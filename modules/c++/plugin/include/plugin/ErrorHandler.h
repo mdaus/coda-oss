@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of plugin-c++ 
+ * This file is part of plugin-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * plugin-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,8 +23,8 @@
 #define __PLUGIN_ERROR_HANDLER_H__
 
 #include <import/except.h>
-#include <import/sys.h>
 #include <import/logging.h>
+#include <import/sys.h>
 
 #include "config/Exports.h"
 
@@ -32,41 +32,45 @@ namespace plugin
 {
 class CODA_OSS_API ErrorHandler
 {
-public:
-    ErrorHandler() {}
+  public:
+    ErrorHandler()
+    {
+    }
 
-    virtual ~ErrorHandler() {}
+    virtual ~ErrorHandler()
+    {
+    }
 
-    virtual void onPluginDirectoryNotFound(const std::string& dir) = 0;
+    virtual void onPluginDirectoryNotFound(const std::string &dir) = 0;
 
-    virtual void onPluginLoadedAlready(const std::string& file) = 0;
+    virtual void onPluginLoadedAlready(const std::string &file) = 0;
 
-    virtual void onPluginLoadFailed(const std::string& file) = 0;
+    virtual void onPluginLoadFailed(const std::string &file) = 0;
 
-    virtual void onPluginVersionUnsupported(const std::string& message) = 0;
+    virtual void onPluginVersionUnsupported(const std::string &message) = 0;
 
-    virtual void onPluginError(except::Context& c) = 0;
+    virtual void onPluginError(except::Context &c) = 0;
 };
 
 class CODA_OSS_API DefaultErrorHandler : public ErrorHandler
 {
-public:
+  public:
     DefaultErrorHandler(logging::LoggerPtr logger = logging::LoggerPtr());
 
-    void onPluginDirectoryNotFound(const std::string& dir) override;
+    void onPluginDirectoryNotFound(const std::string &dir) override;
 
-    void onPluginLoadedAlready(const std::string& file) override;
+    void onPluginLoadedAlready(const std::string &file) override;
 
-    void onPluginLoadFailed(const std::string& file) override;
+    void onPluginLoadFailed(const std::string &file) override;
 
-    void onPluginVersionUnsupported(const std::string& message) override;
+    void onPluginVersionUnsupported(const std::string &message) override;
 
-    void onPluginError(except::Context& c) override;
+    void onPluginError(except::Context &c) override;
 
-protected:
+  protected:
     logging::LoggerPtr mLogger;
 };
 
-}
+} // namespace plugin
 
 #endif

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of plugin-c++ 
+ * This file is part of plugin-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * plugin-c++ is free software; you can redistribute it and/or modify
@@ -14,27 +14,26 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #ifndef __PLUGIN_DEFINES_H__
 #define __PLUGIN_DEFINES_H__
 
-#include <memory>
 #include <mem/SharedPtr.h>
+#include <memory>
 
 /* #define PLUGIN_CONSTRUCTOR_NAME "SpawnPlugin" */
 /* #define PLUGIN_DESTRUCTOR_NAME "DestroyPlugin" */
 #define GET_PLUGIN_IDENT "GetPluginIdentity"
 
 #ifdef _WIN32
-#    define PLUGIN_DSO_EXTENSION ".dll"
+#define PLUGIN_DSO_EXTENSION ".dll"
 #else
-#    define PLUGIN_DSO_EXTENSION ".so"
+#define PLUGIN_DSO_EXTENSION ".so"
 #endif
 
 /*
@@ -47,15 +46,14 @@
 #define PLUGIN_API_MAJOR_VERSION 1
 #define PLUGIN_API_MINOR_VERSION 0
 
-
 #ifdef _WIN32
-#      if defined(PLUGIN_MODULE_EXPORTS)
-#          define PLUGIN_HOOK extern "C" __declspec(dllexport)
-#      else
-#          define PLUGIN_HOOK extern "C" __declspec(dllimport)
-#      endif
+#if defined(PLUGIN_MODULE_EXPORTS)
+#define PLUGIN_HOOK extern "C" __declspec(dllexport)
 #else
-#      define PLUGIN_HOOK extern "C"
+#define PLUGIN_HOOK extern "C" __declspec(dllimport)
+#endif
+#else
+#define PLUGIN_HOOK extern "C"
 #endif
 
 /*
@@ -71,33 +69,38 @@
  *  The return type of the functions must be a void* since the functions are
  *  extern C'd - the caller must cast to a pointer to a shared pointer.
  */
-#define PLUGIN_EXPOSE_IDENT(IDENT, BASE) \
-    PLUGIN_HOOK const void* GetPluginIdentity() { \
-        static const std::shared_ptr<BASE > ident(new IDENT()); \
-        return &ident;  \
+#define PLUGIN_EXPOSE_IDENT(IDENT, BASE)                                                                               \
+    PLUGIN_HOOK const void *GetPluginIdentity()                                                                        \
+    {                                                                                                                  \
+        static const std::shared_ptr<BASE> ident(new IDENT());                                                         \
+        return &ident;                                                                                                 \
     }
 
-
-#define PLUGIN_EXPOSE_IDENT_PRE(IDENT, PRE, BASE) \
-    PLUGIN_HOOK const void* PRE##GetPluginIdentity() { \
-        static const std::shared_ptr<BASE > ident(new IDENT()); \
-        return &ident;  \
+#define PLUGIN_EXPOSE_IDENT_PRE(IDENT, PRE, BASE)                                                                      \
+    PLUGIN_HOOK const void *PRE##GetPluginIdentity()                                                                   \
+    {                                                                                                                  \
+        static const std::shared_ptr<BASE> ident(new IDENT());                                                         \
+        return &ident;                                                                                                 \
     }
 
 namespace plugin
 {
-template<typename T> class PluginIdentity
+template <typename T> class PluginIdentity
 {
-public:
-    PluginIdentity() {}
-    virtual ~PluginIdentity() {}
-    //virtual void getOperations(std::vector<std::string>& ops) = 0;
-    virtual const char** getOperations() = 0;
+  public:
+    PluginIdentity()
+    {
+    }
+    virtual ~PluginIdentity()
+    {
+    }
+    // virtual void getOperations(std::vector<std::string>& ops) = 0;
+    virtual const char **getOperations() = 0;
     virtual int getMajorVersion() = 0;
     virtual int getMinorVersion() = 0;
-    virtual T* spawnHandler() = 0;
-    virtual void destroyHandler(T*& handler) = 0;
+    virtual T *spawnHandler() = 0;
+    virtual void destroyHandler(T *&handler) = 0;
 };
-}
+} // namespace plugin
 
 #endif
