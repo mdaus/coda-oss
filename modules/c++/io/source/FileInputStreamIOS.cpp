@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,12 +24,14 @@
 
 #if defined(USE_IO_STREAMS)
 
-io::FileInputStreamIOS::FileInputStreamIOS(const char *inputFile, std::ios::openmode mode)
+io::FileInputStreamIOS::FileInputStreamIOS(const char* inputFile,
+                                     std::ios::openmode mode)
 {
     open(inputFile, mode);
 }
 
-io::FileInputStreamIOS::FileInputStreamIOS(const std::string &inputFile, std::ios::openmode mode)
+io::FileInputStreamIOS::FileInputStreamIOS(const std::string& inputFile,
+                                     std::ios::openmode mode)
 {
     open(inputFile.c_str(), mode);
 }
@@ -37,10 +39,10 @@ io::FileInputStreamIOS::FileInputStreamIOS(const std::string &inputFile, std::io
 /*!
  * Returns the number of bytes that can be read
  * without blocking by the next caller of a method for this input
- *
+ * 
  * \throw except::IOException
  * \return number of bytes which are readable
- *
+ * 
  */
 sys::Off_T io::FileInputStreamIOS::available()
 {
@@ -61,47 +63,54 @@ sys::Off_T io::FileInputStreamIOS::seek(sys::Off_T offset, Whence whence)
     std::ios::seekdir flags;
     switch (whence)
     {
-    case START:
-        flags = std::ios::beg;
-        break;
+        case START:
+            flags = std::ios::beg;
+            break;
 
-    case END:
-        flags = std::ios::end;
-        break;
+        case END:
+            flags = std::ios::end;
+            break;
 
-    default:
-        flags = std::ios::cur;
+        default:
+            flags = std::ios::cur;
+
     }
 
     mFStream.seekg(offset, flags);
     return tell();
 }
 
+
 bool io::FileInputStreamIOS::isOpen()
 {
     return mFStream.is_open() && mFStream.good();
 }
-void io::FileInputStreamIOS::open(const char *file, std::ios::openmode mode)
+void io::FileInputStreamIOS::open(const char *file,
+                               std::ios::openmode mode)
 {
     mFStream.open(file, mode);
     if (!isOpen())
-        throw except::IOException(Ctxt(str::Format("File %s could not be opened for reading", file)));
+        throw except::IOException(Ctxt(
+                                      str::Format(
+                                          "File %s could not be opened for reading",
+                                          file)
+                                  )
+                                 );
 }
 void io::FileInputStreamIOS::close()
 {
     mFStream.close();
 }
 
-sys::SSize_T io::FileInputStreamIOS::readImpl(void *buffer, size_t len)
+sys::SSize_T io::FileInputStreamIOS::readImpl(void* buffer, size_t len)
 {
     ::memset(buffer, 0, len);
     sys::Off_T avail = available();
-    if (mFStream.eof() || avail <= 0)
-        return io::InputStream::IS_EOF;
+    if (mFStream.eof() || avail <= 0) return io::InputStream::IS_EOF;
     if (len < (sys::Size_T)avail)
         avail = len;
 
-    char *const bufferPtr = static_cast<char *>(buffer);
+    char* const bufferPtr = static_cast<char*>(buffer);
 
     if (avail > 0)
     {

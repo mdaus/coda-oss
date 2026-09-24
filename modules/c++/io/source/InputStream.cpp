@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,19 +14,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
+#include <sys/Conf.h>
 #include <except/Exception.h>
 #include <io/InputStream.h>
-#include <sys/Conf.h>
 
 namespace io
 {
-sys::SSize_T InputStream::read(void *buffer, size_t len, bool verifyFullRead)
+sys::SSize_T InputStream::read(void* buffer,
+                               size_t len,
+                               bool verifyFullRead)
 {
     const sys::SSize_T numBytes = readImpl(buffer, len);
     if (verifyFullRead)
@@ -40,7 +42,8 @@ sys::SSize_T InputStream::read(void *buffer, size_t len, bool verifyFullRead)
         else if (numBytes != static_cast<sys::SSize_T>(len))
         {
             std::ostringstream ostr;
-            ostr << "Tried to read " << len << " bytes but only read " << numBytes << " bytes";
+            ostr << "Tried to read " << len << " bytes but only read "
+                 << numBytes << " bytes";
             throw except::IOException(Ctxt(ostr));
         }
     }
@@ -48,7 +51,7 @@ sys::SSize_T InputStream::read(void *buffer, size_t len, bool verifyFullRead)
     return numBytes;
 }
 
-sys::SSize_T InputStream::streamTo(OutputStream &soi, sys::SSize_T bytesToPipe)
+sys::SSize_T InputStream::streamTo(OutputStream& soi, sys::SSize_T bytesToPipe)
 {
 
     // In this event, we want to find the end of file,
@@ -71,14 +74,15 @@ sys::SSize_T InputStream::streamTo(OutputStream &soi, sys::SSize_T bytesToPipe)
     // While we dont have end of (stream), read into the vec, use the
     // vec to write the pipe, and reset the vec
     // This could be easily done using a char vec as well
-    while (((bytesRead = read(vec, sizeOfVec)) != io::InputStream::IS_EOF) && (totalBytesTransferred != bytesToPipe))
+    while ( ((bytesRead = read(vec, sizeOfVec)) != io::InputStream::IS_EOF) &&
+            (totalBytesTransferred != bytesToPipe))
     {
 
         soi.write(vec, bytesRead);
         totalBytesTransferred += bytesRead;
         memset(vec, 0, DEFAULT_CHUNK_SIZE);
-        sizeOfVec = (bytesToPipe - totalBytesTransferred <= defaultChunkSize) ? (bytesToPipe - totalBytesTransferred)
-                                                                              : defaultChunkSize;
+        sizeOfVec = (bytesToPipe - totalBytesTransferred <= defaultChunkSize) ?
+                    (bytesToPipe - totalBytesTransferred) : defaultChunkSize;
     }
     // Return the number of bytes we piped
     return totalBytesTransferred;
@@ -93,13 +97,11 @@ sys::SSize_T InputStream::readln(sys::byte *cStr, const sys::Size_T strLenPlusNu
     for (i = 0; i < strLenPlusNullByte - 1; i++)
     {
         // If we got nothing
-        if (read(cStr + i, 1) == -1)
-            return -1;
+        if (read(cStr + i, 1) == -1) return -1;
         // Otherwise, if we got newline, return that we read i + 1
-        if (*(cStr + i) == '\n')
-            return i + 1;
+        if (*(cStr + i) == '\n') return i + 1;
         // Otherwise, append c;
     }
     return static_cast<sys::SSize_T>(i);
 }
-} // namespace io
+}

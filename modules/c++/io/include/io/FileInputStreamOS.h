@@ -28,10 +28,11 @@
 #if !defined(USE_IO_STREAMS)
 
 #include "except/Exception.h"
-#include "io/InputStream.h"
-#include "io/SeekableStreams.h"
 #include "sys/File.h"
 #include "sys/filesystem.h"
+#include "io/InputStream.h"
+#include "io/SeekableStreams.h"
+
 
 /*!
  *  \file FileInputStreamOS.h
@@ -57,13 +58,14 @@ constexpr size_t defaultMinChunksForThreading = 4;
  */
 struct CODA_OSS_API FileInputStreamOS : public SeekableInputStream
 {
-  protected:
+protected:
     sys::File mFile;
     size_t mMaxReadThreads;
     size_t mParallelChunkSize;
     size_t mMinChunksForThreading;
 
-  public:
+public:
+
     FileInputStreamOS() = default;
 
     /*!
@@ -71,32 +73,32 @@ struct CODA_OSS_API FileInputStreamOS : public SeekableInputStream
      *  \param inputFile The file name
      *  \param mode The mode to open the file in
      */
-    FileInputStreamOS(const std::string &inputFile)
-        : mMaxReadThreads(defaultNumThreads), mParallelChunkSize(defaultChunkSize),
-          mMinChunksForThreading(defaultMinChunksForThreading)
+    FileInputStreamOS(const std::string& inputFile) :
+        mMaxReadThreads(defaultNumThreads),
+        mParallelChunkSize(defaultChunkSize),
+        mMinChunksForThreading(defaultMinChunksForThreading)
     {
         // Let this SystemException slide for now
-        mFile.create(inputFile, sys::File::READ_ONLY, sys::File::EXISTING);
+        mFile.create(inputFile,
+                     sys::File::READ_ONLY,
+                     sys::File::EXISTING);
     }
-    explicit FileInputStreamOS(const coda_oss::filesystem::path &inputFile) : FileInputStreamOS(inputFile.string())
-    {
-    }
-    FileInputStreamOS(const char *inputFile)
-        : // "file.txt" could be either std::string or std::filesystem::path
-          FileInputStreamOS(std::string(inputFile))
-    {
-    }
+    explicit FileInputStreamOS(const coda_oss::filesystem::path& inputFile) :
+        FileInputStreamOS(inputFile.string()) { }
+    FileInputStreamOS(const char* inputFile) : // "file.txt" could be either std::string or std::filesystem::path
+        FileInputStreamOS(std::string(inputFile))  {  }
 
-    FileInputStreamOS(const sys::File &inputFile)
-        : mMaxReadThreads(defaultNumThreads), mParallelChunkSize(defaultChunkSize),
-          mMinChunksForThreading(defaultMinChunksForThreading)
+    FileInputStreamOS(const sys::File& inputFile) :
+        mMaxReadThreads(defaultNumThreads),
+        mParallelChunkSize(defaultChunkSize),
+        mMinChunksForThreading(defaultMinChunksForThreading)
     {
         mFile = inputFile;
     }
 
     virtual ~FileInputStreamOS()
     {
-        if (isOpen())
+        if ( isOpen() )
         {
             close();
         }
@@ -121,15 +123,21 @@ struct CODA_OSS_API FileInputStreamOS : public SeekableInputStream
         return mFile.isOpen();
     }
 
+
     /*!
      *  Open the file in the mode provided
      *  \param file The file to open
      *  \param mode The mode
      */
-    virtual void create(const std::string &str)
+    virtual void create(const std::string& str)
     {
-        mFile.create(str, sys::File::READ_ONLY, sys::File::EXISTING);
+        mFile.create(str,
+                     sys::File::READ_ONLY,
+                     sys::File::EXISTING);
+
     }
+
+
 
     /*!
      *  Go to the offset at the location specified.
@@ -140,19 +148,19 @@ struct CODA_OSS_API FileInputStreamOS : public SeekableInputStream
         int from = sys::File::FROM_CURRENT;
         switch (whence)
         {
-        case END:
-            from = sys::File::FROM_END;
-            break;
+            case END:
+                from = sys::File::FROM_END;
+                break;
 
-        case START:
-            from = sys::File::FROM_START;
-            break;
+            case START:
+                from = sys::File::FROM_START;
+                break;
 
-        case CURRENT:
-        default:
-            from = sys::File::FROM_CURRENT;
+            case CURRENT:
+            default:
+                from = sys::File::FROM_CURRENT;
         }
-        return mFile.seekTo(off, from);
+        return mFile.seekTo( off, from );
     }
 
     /*!
@@ -231,7 +239,7 @@ struct CODA_OSS_API FileInputStreamOS : public SeekableInputStream
         return mMinChunksForThreading;
     }
 
-  protected:
+protected:
     /*!
      * Read up to len bytes of data from input stream into an array
      *
@@ -241,9 +249,9 @@ struct CODA_OSS_API FileInputStreamOS : public SeekableInputStream
      * \return  The number of bytes read
      *
      */
-    virtual sys::SSize_T readImpl(void *buffer, size_t len) override;
+    virtual sys::SSize_T readImpl(void* buffer, size_t len) override;
 };
-} // namespace io
+}
 
 #endif
 #endif

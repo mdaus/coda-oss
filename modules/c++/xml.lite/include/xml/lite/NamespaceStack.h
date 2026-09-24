@@ -23,6 +23,7 @@
 #ifndef CODA_OSS_xml_lite_NamespaceStack_h_INCLUDED_
 #define CODA_OSS_xml_lite_NamespaceStack_h_INCLUDED_
 
+#pragma once
 
 /*!
  *  \file NamespaceStack.h

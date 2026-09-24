@@ -18,6 +18,7 @@
  * License along with this program; If not, http://www.gnu.org/licenses/.
  *
  */
+#pragma once
 #ifndef CODA_OSS_coda_oss_type_traits_h_INCLUDED_
 #define CODA_OSS_coda_oss_type_traits_h_INCLUDED_
 
@@ -28,4 +29,4 @@ namespace coda_oss
 using std::is_trivially_copyable;
 }
 
-#endif // CODA_OSS_coda_oss_type_traits_h_INCLUDED_
+#endif  // CODA_OSS_coda_oss_type_traits_h_INCLUDED_

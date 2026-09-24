@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -34,12 +34,13 @@ namespace io
  */
 struct CODA_OSS_API CountingOutputStream : public ProxyOutputStream
 {
-    CountingOutputStream(OutputStream *proxy, bool ownPtr = false) : ProxyOutputStream(proxy, ownPtr), mByteCount(0)
+    CountingOutputStream(OutputStream *proxy, bool ownPtr = false) :
+        ProxyOutputStream(proxy, ownPtr), mByteCount(0)
     {
     }
     virtual ~CountingOutputStream() = default;
-    CountingOutputStream(const CountingOutputStream &) = delete;
-    CountingOutputStream &operator=(const CountingOutputStream &) = delete;
+    CountingOutputStream(const CountingOutputStream&) = delete;
+    CountingOutputStream& operator=(const CountingOutputStream&) = delete;
 
     using ProxyOutputStream::write;
 
@@ -47,7 +48,7 @@ struct CODA_OSS_API CountingOutputStream : public ProxyOutputStream
      * \param buffer The byte array to write to the stream
      * \param len The length of the byte array to write to the stream
      */
-    virtual void write(const void *buffer, size_t len) override
+    virtual void write(const void* buffer, size_t len) override
     {
         ProxyOutputStream::write(buffer, len);
         mByteCount += len;
@@ -63,10 +64,10 @@ struct CODA_OSS_API CountingOutputStream : public ProxyOutputStream
         mByteCount = 0;
     }
 
-  protected:
+protected:
     sys::Off_T mByteCount;
 };
 
-} // namespace io
+}
 
 #endif

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,22 +24,25 @@
 
 #if !defined(USE_IO_STREAMS)
 
-io::FileOutputStreamOS::FileOutputStreamOS(const path &str, int creationFlags)
+io::FileOutputStreamOS::FileOutputStreamOS(const path& str,
+        int creationFlags)
 {
     mFile.create(str.string(), sys::File::WRITE_ONLY, creationFlags);
 }
 
-void io::FileOutputStreamOS::create(const path &str_, int creationFlags)
+void io::FileOutputStreamOS::create(const path& str_,
+                                    int creationFlags)
 {
     const auto str = str_.string();
     mFile.create(str, sys::File::WRITE_ONLY, creationFlags);
     if (!isOpen())
     {
-        throw except::FileNotFoundException("File could not be opened: " + str);
+        throw except::FileNotFoundException(
+            "File could not be opened: " + str);
     }
 }
 
-void io::FileOutputStreamOS::write(const void *buffer, size_t len)
+void io::FileOutputStreamOS::write(const void* buffer, size_t len)
 {
     mFile.writeFrom(buffer, len);
 }
@@ -49,7 +52,8 @@ void io::FileOutputStreamOS::flush()
     mFile.flush();
 }
 
-sys::Off_T io::FileOutputStreamOS::seek(sys::Off_T offset, io::Seekable::Whence whence)
+sys::Off_T io::FileOutputStreamOS::seek(sys::Off_T offset,
+                                        io::Seekable::Whence whence)
 {
     int fileWhence;
     switch (whence)

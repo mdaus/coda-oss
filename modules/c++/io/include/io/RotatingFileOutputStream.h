@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,8 +24,8 @@
 #define __IO_ROTATING_FILE_STREAMS_H__
 
 #include "config/Exports.h"
-#include "io/CountingStreams.h"
 #include <import/sys.h>
+#include "io/CountingStreams.h"
 
 namespace io
 {
@@ -35,26 +35,29 @@ namespace io
  */
 struct CODA_OSS_API RotatingFileOutputStream : public CountingOutputStream
 {
-    RotatingFileOutputStream(const std::string &filename, unsigned long maxBytes = 0, size_t backupCount = 0,
-                             int creationFlags = sys::File::CREATE | sys::File::TRUNCATE);
+    RotatingFileOutputStream(const std::string& filename,
+                             unsigned long maxBytes = 0,
+                             size_t backupCount = 0, int creationFlags =
+                                     sys::File::CREATE | sys::File::TRUNCATE);
 
     virtual ~RotatingFileOutputStream() = default;
-    RotatingFileOutputStream(const RotatingFileOutputStream &) = delete;
-    RotatingFileOutputStream &operator=(const RotatingFileOutputStream &) = delete;
+    RotatingFileOutputStream(const RotatingFileOutputStream&) = delete;
+    RotatingFileOutputStream& operator=(const RotatingFileOutputStream&) = delete;
 
     using CountingOutputStream::write;
 
-    virtual void write(const void *buffer, size_t len) override;
+    virtual void write(const void* buffer, size_t len) override;
 
-  protected:
+protected:
     std::string mFilename;
     unsigned long mMaxBytes;
     size_t mBackupCount;
 
     virtual bool shouldRollover(sys::Size_T len);
     virtual void doRollover();
+
 };
 
-} // namespace io
+}
 
 #endif

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,23 +14,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
 #ifndef CODA_OSS_io_OutputStream_h_INCLUDED_
 #define CODA_OSS_io_OutputStream_h_INCLUDED_
+#pragma once
 
 #include <string>
 
+#include "config/Exports.h"
+#include "sys/Dbg.h"
+#include "sys/Conf.h"
+#include "coda_oss/string.h"
 #include "coda_oss/cstddef.h"
 #include "coda_oss/span.h"
-#include "coda_oss/string.h"
-#include "config/Exports.h"
-#include "sys/Conf.h"
-#include "sys/Dbg.h"
 
 /*!
  * \file OutputStream.h
@@ -46,7 +47,7 @@ namespace io
  * \brief Class for handling output streams
  *
  * This class is analogous to the corresponding java class.  It is
- * responsible for writes.
+ * responsible for writes. 
  *
  */
 
@@ -72,11 +73,11 @@ struct CODA_OSS_API OutputStream
      *  Write a string
      *  \param str
      */
-    void write(const std::string &str)
+    void write(const std::string& str)
     {
         write(coda_oss::span<const std::string::value_type>(str.data(), str.size()));
     }
-    void write(const coda_oss::u8string &str)
+    void write(const coda_oss::u8string& str)
     {
         write(coda_oss::span<const coda_oss::u8string::value_type>(str.data(), str.size()));
     }
@@ -85,12 +86,12 @@ struct CODA_OSS_API OutputStream
      *  Write a string with a newline at the end
      *  \param str
      */
-    void writeln(const std::string &str)
+    void writeln(const std::string& str)
     {
         write(str);
         write('\n');
     }
-    void writeln(const coda_oss::u8string &str)
+    void writeln(const coda_oss::u8string& str)
     {
         write(str);
         write('\n');
@@ -104,12 +105,14 @@ struct CODA_OSS_API OutputStream
      * \param len The length of the byte array to write to the stream
      * \throw IOException
      */
-    virtual void write(const void *buffer, size_t len) = 0;
-    template <typename T> void write(coda_oss::span<const T> buffer)
+    virtual void write(const void* buffer, size_t len) = 0;
+    template<typename T>
+    void write(coda_oss::span<const T> buffer)
     {
         write(buffer.data(), buffer.size_bytes());
     }
-    template <typename T> void write(coda_oss::span<T> buffer)
+    template <typename T>
+    void write(coda_oss::span<T> buffer)
     {
         write(coda_oss::span<const T>(buffer.data(), buffer.size()));
     }
@@ -128,6 +131,6 @@ struct CODA_OSS_API OutputStream
     {
     }
 };
-} // namespace io
+}
 
 #endif // CODA_OSS_io_OutputStream_h_INCLUDED_

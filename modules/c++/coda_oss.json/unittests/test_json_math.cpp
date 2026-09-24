@@ -21,8 +21,8 @@
 
 #include "TestCase.h"
 
-#include <coda_oss/json/Math.h>
 #include <nlohmann/json.hpp>
+#include <coda_oss/json/Math.h>
 
 using json = nlohmann::json;
 
@@ -30,15 +30,17 @@ TEST_CASE(TestVectorN)
 {
     using VecI = math::linear::VectorN<2, int>;
     using VecD = math::linear::VectorN<3, double>;
-
-    std::vector<int> v0 = {static_cast<int>(0), static_cast<int>(1)};
+    
+    std::vector<int> v0 = {
+        static_cast<int>(0), 
+        static_cast<int>(1)};
     VecI startVal0(v0);
     json expected = v0;
     json serialized = startVal0;
     auto deserialized0 = serialized.template get<VecI>();
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal0 == deserialized0);
-
+    
     std::vector<double> v1 = {10., 20., 30.};
     VecD startVal1(v1);
     expected = v1;
@@ -68,7 +70,7 @@ TEST_CASE(TestMatrixMxN)
     TEST_ASSERT(startVal1 == deserialized1);
 
     TwoXThree startVal2({0., 1., 2., 3., 4., 5.});
-    expected = std::vector<std::vector<double>>{{0., 1., 2.}, {3., 4., 5.}};
+    expected = std::vector<std::vector<double>>{{0., 1., 2.}, {3., 4., 5.}}; 
     serialized = startVal2;
     auto deserialized2 = serialized.template get<TwoXThree>();
     TEST_ASSERT(serialized == expected);
@@ -140,5 +142,11 @@ TEST_CASE(TestPolyFixed2D)
     TEST_ASSERT(startVal == deserialized);
 }
 
-TEST_MAIN(TEST_CHECK(TestVectorN); TEST_CHECK(TestMatrixMxN); TEST_CHECK(TestPolyOneD); TEST_CHECK(TestPolyTwoD);
-          TEST_CHECK(TestPolyXYZ);)
+
+TEST_MAIN(
+    TEST_CHECK(TestVectorN);
+    TEST_CHECK(TestMatrixMxN);
+    TEST_CHECK(TestPolyOneD);
+    TEST_CHECK(TestPolyTwoD);
+    TEST_CHECK(TestPolyXYZ);
+)

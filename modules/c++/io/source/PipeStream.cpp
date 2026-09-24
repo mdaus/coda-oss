@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++
+ * This file is part of sys-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -27,11 +27,11 @@
 
 using namespace io;
 
-sys::SSize_T io::PipeStream::readImpl(void *buffer, size_t numBytes)
+sys::SSize_T io::PipeStream::readImpl(void* buffer, size_t numBytes)
 {
-    FILE *pipe = mExecPipe.getPipe();
+    FILE* pipe = mExecPipe.getPipe();
 
-    char *cStr = static_cast<char *>(buffer);
+    char* cStr = static_cast<char*>(buffer);
 
     size_t bytesLeft = numBytes;
     while (bytesLeft && !feof(pipe))
@@ -55,9 +55,10 @@ sys::SSize_T io::PipeStream::readImpl(void *buffer, size_t numBytes)
     return gsl::narrow<sys::SSize_T>(numBytes - bytesLeft);
 }
 
-sys::SSize_T io::PipeStream::readln(sys::byte *cStr, const sys::Size_T strLenPlusNullByte)
+sys::SSize_T io::PipeStream::readln(sys::byte *cStr,
+                                    const sys::Size_T strLenPlusNullByte)
 {
-    FILE *pipe = mExecPipe.getPipe();
+    FILE* pipe = mExecPipe.getPipe();
 
     while (!feof(pipe))
     {
@@ -74,7 +75,8 @@ sys::SSize_T io::PipeStream::readln(sys::byte *cStr, const sys::Size_T strLenPlu
     return IS_EOF;
 }
 
-sys::SSize_T io::PipeStream::streamTo(OutputStream &soi, sys::SSize_T numBytes)
+sys::SSize_T io::PipeStream::streamTo(OutputStream& soi,
+                                      sys::SSize_T numBytes)
 {
     sys::SSize_T totalBytesRead = 0;
     if (numBytes == IS_END)
@@ -95,7 +97,8 @@ sys::SSize_T io::PipeStream::streamTo(OutputStream &soi, sys::SSize_T numBytes)
         while (bytesLeft && !feof(mExecPipe.getPipe()))
         {
             // don't read more bytes than streaming forward or buff size
-            const auto bytesRead = read(mCharString.get(), std::min(bytesLeft, mBufferSize));
+            const auto bytesRead = read(mCharString.get(),
+                                          std::min(bytesLeft, mBufferSize));
             if (bytesRead > 0)
             {
                 soi.write(mCharString.get(), gsl::narrow<size_t>(bytesRead));

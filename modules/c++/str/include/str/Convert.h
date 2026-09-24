@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_str_Convert_h_INCLUDED_
 #define CODA_OSS_str_Convert_h_INCLUDED_
 

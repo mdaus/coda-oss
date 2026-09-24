@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once 
 #ifndef CODA_OSS_except_Context_h_INCLUDED_
 #define CODA_OSS_except_Context_h_INCLUDED_
 

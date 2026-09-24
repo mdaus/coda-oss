@@ -23,28 +23,29 @@
 #include <iostream>
 #include <stdexcept>
 
+#include <sys/Path.h>
 #include <except/Exception.h>
 #include <io/ReadUtils.h>
-#include <sys/Path.h>
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     try
     {
         if (argc != 2)
         {
-            std::cerr << "Usage: " << sys::Path::basename(argv[0]) << " <file to read in>\n\n";
+            std::cerr << "Usage: " << sys::Path::basename(argv[0])
+                      << " <file to read in>\n\n";
             return 1;
         }
 
         std::cout << io::readFileContents(argv[1]) << std::endl;
     }
-    catch (const except::Exception &ex)
+    catch (const except::Exception& ex)
     {
         std::cerr << ex.toString() << std::endl;
         return 1;
     }
-    catch (const std::exception &ex)
+    catch (const std::exception& ex)
     {
         std::cerr << ex.what() << std::endl;
         return 1;

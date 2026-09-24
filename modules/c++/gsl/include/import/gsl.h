@@ -23,6 +23,7 @@
 
 #ifndef CODA_OSS_import_gsl_h_INCLUDED_
 #define CODA_OSS_import_gsl_h_INCLUDED_
+#pragma once
 
 #include "gsl/gsl.h"
 

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,23 +23,25 @@
 #ifndef __IO_MMAP_INPUT_STREAM_H__
 #define __IO_MMAP_INPUT_STREAM_H__
 
-#include "io/SeekableStreams.h"
-#include "sys/OS.h"
 #include <cstdio>
+#include "sys/OS.h"
+#include "io/SeekableStreams.h"
+
 
 namespace io
 {
 
 class MMapInputStream : public SeekableInputStream
 {
-  public:
+public:
     MMapInputStream() : mFile(nullptr), mLength(0), mData(nullptr), mMark(0)
-    {
-    }
-    MMapInputStream(const std::string &inputFile, char *flags = "r+b")
-        : mFile(nullptr), mLength(0), mData(nullptr), mMark(0)
+    {}
+    MMapInputStream(const std::string& inputFile,
+                    char* flags = "r+b") :
+            mFile(nullptr), mLength(0), mData(nullptr), mMark(0)
     {
         open(inputFile, flags);
+
     }
 
     virtual ~MMapInputStream()
@@ -50,7 +52,7 @@ class MMapInputStream : public SeekableInputStream
         }
     }
 
-    virtual void open(const std::string &fname, char *flags);
+    virtual void open(const std::string& fname, char* flags);
 
     virtual void close();
 
@@ -68,19 +70,20 @@ class MMapInputStream : public SeekableInputStream
         return mMark;
     }
 
-  protected:
-    virtual sys::SSize_T readImpl(void *buffer, size_t len);
+protected:
+    virtual sys::SSize_T readImpl(void* buffer, size_t len);
 
     virtual void _map();
     virtual void _unmap();
     sys::OS mOs;
 
-    FILE *mFile;
+    FILE* mFile;
     size_t mLength;
-    sys::byte *mData;
+    sys::byte* mData;
     size_t mMark;
+
 };
 
-} // namespace io
+}
 
 #endif

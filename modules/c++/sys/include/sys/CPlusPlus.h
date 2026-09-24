@@ -22,6 +22,7 @@
 
 #ifndef CODA_OSS_sys_CPlusPlus_h_INCLUDED_
 #define CODA_OSS_sys_CPlusPlus_h_INCLUDED_
+#pragma once
 
 #include "coda_oss/CPlusPlus.h"
 

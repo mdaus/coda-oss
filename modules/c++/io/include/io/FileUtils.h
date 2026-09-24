@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,17 +14,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_io_FileUtils_h_INCLUDED_
 #define CODA_OSS_io_FileUtils_h_INCLUDED_
 
-#include <sstream>
 #include <string>
+#include <sstream>
 
 #include <import/except.h>
 #include <import/str.h>
@@ -34,7 +35,7 @@ namespace io
 {
 
 /*!
- *  Copy a file or directory to a new path.
+ *  Copy a file or directory to a new path. 
  *  Source and destination cannot be the same location
  *
  *  \param path      - source location
@@ -43,19 +44,24 @@ namespace io
  *                     NOTE: This is a placeholder and is unused currently
  *  \return True upon success, false if failure
  */
-void copy(const std::string &path, const std::string &newPath, size_t blockSize = 1048576);
+void copy(const std::string& path, 
+          const std::string& newPath,
+          size_t blockSize = 1048576);
 
 /*!
  *  Move file with this path name to the newPath
  *  \return True upon success, false if failure
  */
-inline void move(const std::string &path, const std::string &newPath)
+inline void move(const std::string& path, 
+                 const std::string& newPath)
 {
     sys::OS os;
     if (os.move(path, newPath) == false)
     {
         std::ostringstream oss;
-        oss << "Move Failed: Could not move source [" << path << "] to destination [" << newPath << "]";
+        oss << "Move Failed: Could not move source [" <<
+            path << "] to destination [" <<
+            newPath << "]";
         throw except::Exception(Ctxt(oss));
     }
 }
@@ -64,11 +70,12 @@ inline void move(const std::string &path, const std::string &newPath)
  *  Remove file with this path name
  *  \return True upon success, false if failure
  */
-inline void remove(const std::string &path)
+inline void remove(const std::string& path)
 {
     sys::OS os;
     os.remove(path);
 }
+
 
 /**
  * Static file manipulation utilities.
@@ -82,12 +89,13 @@ struct FileUtils final
      * given. If overwrite is false, it will create a filename based on the
      * given one. If the given filename is empty, a temporary name is used.
      */
-    static std::string createFile(std::string dirname, std::string filename = std::string(""), bool overwrite = true);
+    static std::string createFile(std::string dirname, std::string filename =
+            std::string(""), bool overwrite = true);
 
     static void touchFile(std::string filename);
 
     static void forceMkdir(std::string dirname);
 };
-} // namespace io
+}
 
-#endif // CODA_OSS_io_FileUtils_h_INCLUDED_
+#endif  // CODA_OSS_io_FileUtils_h_INCLUDED_

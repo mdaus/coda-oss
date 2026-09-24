@@ -20,15 +20,16 @@
  *
  */
 
-#include <TestCase.h>
 #include <algorithm>
-#include <io/StreamSplitter.h>
-#include <io/StringStream.h>
 #include <string>
 #include <vector>
+#include <io/StreamSplitter.h>
+#include <io/StringStream.h>
+#include <TestCase.h>
 
 // return true if the string sequences are the same, false otherwise
-bool compareStringSequence(const std::vector<std::string> &a, const std::vector<std::string> &b)
+bool compareStringSequence(const std::vector<std::string>& a,
+                           const std::vector<std::string>& b)
 {
     if (a.size() != b.size())
     {
@@ -46,7 +47,10 @@ std::string getTestLine(size_t length)
 // join lines into StringStream and verify StreamSplitter produces the same
 // sequence of lines
 // return true for success, false for failure
-bool streamSplitterTestRunner(size_t numLines, size_t lineLength, const std::string &delimiter, size_t bufferSize)
+bool streamSplitterTestRunner(size_t numLines,
+                              size_t lineLength,
+                              const std::string& delimiter,
+                              size_t bufferSize)
 {
     std::vector<std::string> inputLines;
     io::StringStream stream;
@@ -84,7 +88,8 @@ bool streamSplitterTestRunner(size_t numLines, size_t lineLength, const std::str
     std::string substring;
     size_t numBytesReturned = 0;
 
-    if (splitter.getNumSubstringsReturned() != 0 || splitter.getNumBytesReturned() != 0 ||
+    if (splitter.getNumSubstringsReturned() != 0 ||
+        splitter.getNumBytesReturned() != 0 ||
         splitter.getNumBytesProcessed() != 0)
     {
         return false;
@@ -101,7 +106,8 @@ bool streamSplitterTestRunner(size_t numLines, size_t lineLength, const std::str
 
         numBytesReturned += substring.size();
         if (numBytesReturned != splitter.getNumBytesReturned() ||
-            (numBytesCumulative[outputLines.size() - 1] != splitter.getNumBytesProcessed()))
+            (numBytesCumulative[outputLines.size() - 1] !=
+             splitter.getNumBytesProcessed()))
         {
             return false;
         }
@@ -138,7 +144,7 @@ TEST_CASE(testStreamSplitter)
     lineLengths.push_back(9);
     lineLengths.push_back(10);
     lineLengths.push_back(11);
-    lineLengths.push_back(50); // variable line lengths
+    lineLengths.push_back(50);  // variable line lengths
 
     std::vector<std::string> delimiters;
     delimiters.push_back(",");
@@ -187,6 +193,7 @@ TEST_CASE(testStreamSplitter)
             }
         }
     }
+
 }
 
 TEST_CASE(testStreamSplitterEmpty)
@@ -225,7 +232,7 @@ TEST_CASE(testStreamSplitterInputValidation)
     TEST_ASSERT(streamSplitterTestRunner(10, 10, "abc", 7));
 }
 
-int main(int, char **)
+int main(int, char**)
 {
     TEST_CHECK(testStreamSplitterEmpty);
     TEST_CHECK(testStreamSplitter);

@@ -21,6 +21,7 @@
  */
 
 
+#pragma once
 #ifndef CODA_OSS_mt_import_mt_h_h_INCLUDED_
 #define CODA_OSS_mt_import_mt_h_h_INCLUDED_
 

@@ -19,6 +19,7 @@
  * see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
 #ifndef CODA_OSS_json_mem_h_INCLUDED_
 #define CODA_OSS_json_mem_h_INCLUDED_
 
@@ -26,20 +27,19 @@
 
 namespace mem
 {
-template <typename T, typename TCopyIsClone, typename BasicJsonType>
-void to_json(BasicJsonType &j, const ScopedPtr<T, TCopyIsClone> &p)
-{
-    // If 'p' is not `nullptr`, serialize a type T
-    if (p)
-        j = *p;
-}
-template <typename T, typename TCopyIsClone, typename BasicJsonType>
-void from_json(const BasicJsonType &j, ScopedPtr<T, TCopyIsClone> &p)
-{
-    // If the json is `null` reset with a`nullptr`
-    // otherwise, deserialize a 'T'
-    p.reset(j.is_null() ? nullptr : new T(j.template get<T>()));
-}
+    template<typename T, typename TCopyIsClone, typename BasicJsonType>
+    void to_json(BasicJsonType& j, const ScopedPtr<T, TCopyIsClone>& p)
+    {
+        // If 'p' is not `nullptr`, serialize a type T
+        if (p) j = *p;
+    }
+    template<typename T, typename TCopyIsClone, typename BasicJsonType>
+    void from_json(const BasicJsonType& j, ScopedPtr<T, TCopyIsClone>& p)
+    {
+        // If the json is `null` reset with a`nullptr`
+        // otherwise, deserialize a 'T'
+        p.reset(j.is_null() ? nullptr : new T(j.template get<T>()));
+    }
 } // namespace mem
 
 #endif

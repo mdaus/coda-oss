@@ -21,6 +21,7 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_str_Encoding_h_INCLUDED_
 #define CODA_OSS_str_Encoding_h_INCLUDED_
 

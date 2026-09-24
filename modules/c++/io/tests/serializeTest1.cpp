@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,15 +14,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <import/except.h>
-#include <import/io.h>
+
 #include <import/sys.h>
+#include <import/io.h>
+#include <import/except.h>
 
 using namespace sys;
 using namespace io;
@@ -33,84 +34,86 @@ using namespace std;
 
 class A : public Serializable
 {
-  public:
-    A()
+public:
+    A() 
     {
-        dbg.set(new FileOutputStream("dbg.out"), DEBUG_A);
-
-        vec[0] = 0.0;
-        vec[1] = 0.0;
-        vec[2] = 0.0;
+	dbg.set(new FileOutputStream("dbg.out"), DEBUG_A);
+	
+	vec[0] = 0.0;
+	vec[1] = 0.0;
+	vec[2] = 0.0;
     }
-    virtual ~A()
+    virtual ~A() {}
+    virtual void serialize(OutputStream& os) override
     {
-    }
-    virtual void serialize(OutputStream &os) override
-    {
-        os.writeln("Class A");
-        os.writeln(str::Format("%f", vec[0]));
-        os.writeln(str::Format("%f", vec[1]));
-        os.writeln(str::Format("%f", vec[2]));
-    }
-    virtual void deserialize(InputStream &is) override
-    {
-        string classType = fillString(is);
-        string vec_0 = fillString(is);
-        string vec_1 = fillString(is);
-        string vec_2 = fillString(is);
+	os.writeln("Class A");
+	os.writeln(str::Format("%f", vec[0]));
+	os.writeln(str::Format("%f", vec[1]));
+	os.writeln(str::Format("%f", vec[2]));
 
-        assert(classType == "Class A");
-        dbg.writeln(str::Format("vec[0] = %s", vec_0));
-        dbg.writeln(str::Format("vec[1] = %s", vec_1));
-        dbg.writeln(str::Format("vec[2] = %s", vec_2));
+    }
+    virtual void deserialize(InputStream& is) override
+    {
+	string classType = fillString(is);
+	string vec_0 = fillString(is);
+	string vec_1 = fillString(is);
+	string vec_2 = fillString(is);
 
-        vec[0] = str::toType<float>(vec_0);
-        vec[1] = str::toType<float>(vec_1);
-        vec[2] = str::toType<float>(vec_2);
+	assert(classType == "Class A");
+	dbg.writeln(str::Format("vec[0] = %s", vec_0));
+	dbg.writeln(str::Format("vec[1] = %s", vec_1));
+	dbg.writeln(str::Format("vec[2] = %s", vec_2));
+
+	vec[0] = str::toType<float>(vec_0);
+	vec[1] = str::toType<float>(vec_1);
+	vec[2] = str::toType<float>(vec_2);
+
     }
     std::string fillString(io::InputStream &is)
     {
-        std::string toFill;
-        sys::byte b[1];
-        while (true)
-        {
-            if (is.read(b, 1) == InputStream::IS_EOF)
-                throw IOException(Ctxt("Source corrupt"));
-
-            else if (b[0] == '\n')
-            {
-                return toFill;
-            }
-            else if (b[0] == '\r')
-            {
-                cout << "Warning: detected CR, ignoring" << endl;
-            }
-            else
-            {
-                toFill.append((const char *)b, 1);
-            }
-        }
+	std::string toFill;
+	sys::byte b[1];
+	while (true)
+	{
+	    if (is.read(b, 1) ==  InputStream::IS_EOF)
+		throw IOException(Ctxt("Source corrupt") );
+	
+	    else if (b[0] == '\n')
+	    {
+		return toFill;
+	    }
+	    else if (b[0] == '\r')
+	    {
+		cout << "Warning: detected CR, ignoring" << endl;
+	    }
+	    else
+	    {
+		toFill.append((const char*)b, 1);
+	    }
+	}
+	   
     }
-    void setVector(float *f3v)
+    void setVector(float* f3v)
     {
-        memcpy(vec, f3v, sizeof(float) * 3);
+	memcpy(vec, f3v, sizeof(float) * 3);
     }
-    void getVector(float *f3v)
+    void getVector(float* f3v)
     {
-        memcpy(f3v, vec, sizeof(float) * 3);
-    }
-
-    bool operator==(const A &a) const
-    {
-        return (a.vec[0] == vec[0] && a.vec[1] == vec[1] && a.vec[2] == vec[2]);
+	memcpy(f3v, vec, sizeof(float) * 3);
     }
 
-  protected:
+    bool operator==(const A& a) const
+    {
+	return (a.vec[0] == vec[0] &&
+		a.vec[1] == vec[1] &&
+		a.vec[2] == vec[2]);
+    }
+protected:
     DbgStream dbg;
     float vec[3];
 };
 
-int main(int, char **)
+int main(int, char**)
 {
     StandardOutStream out;
     A a;
@@ -132,12 +135,14 @@ int main(int, char **)
 
     if (a == a2)
     {
-        cout << "Successfully copied object a2 through object a via \"A.save\"" << endl;
-        a2.serialize(out);
+	cout << "Successfully copied object a2 through object a via \"A.save\"" << endl;
+	a2.serialize(out);
     }
     else
     {
-        cout << "Serialization process failed" << endl;
-        a2.serialize(out);
+	cout << "Serialization process failed" << endl;
+	a2.serialize(out);
     }
+
 }
+

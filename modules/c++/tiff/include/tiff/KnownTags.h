@@ -19,6 +19,7 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 #ifndef __TIFF_KNOWN_TAGS_H__
 #define __TIFF_KNOWN_TAGS_H__
 
