@@ -21,15 +21,14 @@
  */
 #include <import/except.h>
 #include <import/io.h>
-#include <import/str.h>
 #include <import/sio/lite.h>
+#include <import/str.h>
 
 using namespace sio::lite;
 using namespace io;
 using namespace except;
 
-
-std::string printPrintable(std::vector<sys::byte>& bytes)
+std::string printPrintable(std::vector<sys::byte> &bytes)
 {
     std::ostringstream printable;
     for (unsigned int i = 0; i < bytes.size(); i++)
@@ -43,19 +42,17 @@ std::string printPrintable(std::vector<sys::byte>& bytes)
     return printable.str();
 }
 
-
-void printUserData(FileHeader* h)
+void printUserData(FileHeader *h)
 {
-    sio::lite::UserDataDictionary& userData = h->getUserDataSection();
-    for (sio::lite::UserDataDictionary::Iterator it = userData.begin();
-        it != userData.end(); ++it)
+    sio::lite::UserDataDictionary &userData = h->getUserDataSection();
+    for (sio::lite::UserDataDictionary::Iterator it = userData.begin(); it != userData.end(); ++it)
     {
         std::cout << ". " << it->first << ": ";
-        std::cout << "[" << printPrintable( it->second ) << "]" << std::endl;
+        std::cout << "[" << printPrintable(it->second) << "]" << std::endl;
     }
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     if (argc != 2)
         die_printf("Usage: %s <sio-file>\n", argv[0]);
@@ -65,7 +62,7 @@ int main(int argc, char** argv)
         FileInputStream input(argv[1]);
         //  Create a reader
         FileReader r(&input);
-        FileHeader* header = r.readHeader();
+        FileHeader *header = r.readHeader();
 
         // Now let's spit out header info
         std::cout << ". nl: " << header->getNumLines() << std::endl;
@@ -75,10 +72,9 @@ int main(int argc, char** argv)
 
         printUserData(header);
     }
-    catch (Exception& e)
+    catch (Exception &e)
     {
         std::cout << "Caught exception: " << e.getMessage() << std::endl;
         std::cout << "Trace:" << std::endl << e.getTrace() << std::endl;
     }
 }
-

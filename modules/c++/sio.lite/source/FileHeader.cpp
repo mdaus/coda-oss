@@ -28,35 +28,34 @@ std::string sio::lite::FileHeader::getElementTypeAsString() const
 {
     std::string type;
     //  Switch on the enumerated type and produce something useful
-    switch ( et )
+    switch (et)
     {
-        case UNSIGNED:
-            type = "Unsigned byte";
-            break;
-        case SIGNED:
-            type = "Signed byte";
-            break;
-        case FLOAT:
-            type = "Float";
-            break;
-        case COMPLEX_UNSIGNED:
-            type = "Complex unsigned";
-            break;
-        case COMPLEX_SIGNED:
-            type = "Complex signed";
-            break;
-        case COMPLEX_FLOAT:
-            type = "Complex float";
-            break;
-        case N_BYTE_UNSIGNED:
-            type = "N-Byte unsigned";
-            break;
-        case N_BYTE_SIGNED:
-            type = "N-Byte signed";
-            break;
-        default:
-            type = "Unknown type";
-
+    case UNSIGNED:
+        type = "Unsigned byte";
+        break;
+    case SIGNED:
+        type = "Signed byte";
+        break;
+    case FLOAT:
+        type = "Float";
+        break;
+    case COMPLEX_UNSIGNED:
+        type = "Complex unsigned";
+        break;
+    case COMPLEX_SIGNED:
+        type = "Complex signed";
+        break;
+    case COMPLEX_FLOAT:
+        type = "Complex float";
+        break;
+    case N_BYTE_UNSIGNED:
+        type = "N-Byte unsigned";
+        break;
+    case N_BYTE_SIGNED:
+        type = "N-Byte signed";
+        break;
+    default:
+        type = "Unknown type";
     }
     return type;
 }
@@ -66,46 +65,42 @@ long sio::lite::FileHeader::getLength() const
     size_t length = SIO_HEADER_LENGTH;
 
     if (!userData.empty())
-        length += 4; //num fields int
-    for (sio::lite::UserDataDictionary::ConstIterator it = userData.begin();
-        it != userData.end(); ++it)
+        length += 4; // num fields int
+    for (sio::lite::UserDataDictionary::ConstIterator it = userData.begin(); it != userData.end(); ++it)
     {
-        length += 4; //key size
-        length += it->first.length(); //key data
+        length += 4;                  // key size
+        length += it->first.length(); // key data
         if (idsAreNullTerminated())
-            length += 1; //1 (null-byte)
-        length += 4; //data size
-        length += it->second.size(); //num bytes of data
+            length += 1;             // 1 (null-byte)
+        length += 4;                 // data size
+        length += it->second.size(); // num bytes of data
     }
     return static_cast<long>(length);
 }
 
-
-bool sio::lite::FileHeader::userDataFieldExists(const std::string& key) const
+bool sio::lite::FileHeader::userDataFieldExists(const std::string &key) const
 {
     return userData.exists(key);
 }
 
-void sio::lite::FileHeader::getAllUserDataFields(
-    std::vector<std::string>& keys) const
+void sio::lite::FileHeader::getAllUserDataFields(std::vector<std::string> &keys) const
 {
-    for (sio::lite::UserDataDictionary::ConstIterator p = userData.begin();
-        p != userData.end(); ++p)
+    for (sio::lite::UserDataDictionary::ConstIterator p = userData.begin(); p != userData.end(); ++p)
         keys.push_back(p->first);
 }
 
-std::vector<sys::byte>& sio::lite::FileHeader::getUserData(const std::string& key)
+std::vector<sys::byte> &sio::lite::FileHeader::getUserData(const std::string &key)
 {
     if (!userData.exists(key))
         throw except::NoSuchKeyException(key);
     return userData[key];
 }
 
-
-void sio::lite::FileHeader::to(size_t numBands, io::OutputStream& os)
+void sio::lite::FileHeader::to(size_t numBands, io::OutputStream &os)
 {
-    if (numBands <= 0) numBands = 1;
-    //compare the input numBands to the elementType
+    if (numBands <= 0)
+        numBands = 1;
+    // compare the input numBands to the elementType
 
     int elementType = et;
     int elementSize = es;
@@ -135,48 +130,46 @@ void sio::lite::FileHeader::to(size_t numBands, io::OutputStream& os)
     }
 
     if (elementType != sio::lite::FileHeader::UNSIGNED && elementType != sio::lite::FileHeader::SIGNED &&
-            elementType != sio::lite::FileHeader::FLOAT && elementType != sio::lite::FileHeader::COMPLEX_UNSIGNED &&
-            elementType != sio::lite::FileHeader::COMPLEX_SIGNED && elementType != sio::lite::FileHeader::COMPLEX_FLOAT &&
-            elementType != sio::lite::FileHeader::N_BYTE_UNSIGNED && elementType != sio::lite::FileHeader::N_BYTE_SIGNED)
+        elementType != sio::lite::FileHeader::FLOAT && elementType != sio::lite::FileHeader::COMPLEX_UNSIGNED &&
+        elementType != sio::lite::FileHeader::COMPLEX_SIGNED && elementType != sio::lite::FileHeader::COMPLEX_FLOAT &&
+        elementType != sio::lite::FileHeader::N_BYTE_UNSIGNED && elementType != sio::lite::FileHeader::N_BYTE_SIGNED)
         throw except::Exception(Ctxt("Unknown element type"));
 
-    //update the version based on the user data fields
+    // update the version based on the user data fields
     version = getNumUserDataFields() > 0 ? 2 : 1;
 
-    //construct the magic byte
+    // construct the magic byte
     int magic = (255 - version) | 127 << 8 | version << 16 | 255 << 24;
 
-    os.write((const sys::byte*)&magic, 4);
-    os.write((const sys::byte*)&nl, 4);
-    os.write((const sys::byte*)&ne, 4);
-    os.write((const sys::byte*)&elementType, 4);
-    os.write((const sys::byte*)&elementSize, 4);
+    os.write((const sys::byte *)&magic, 4);
+    os.write((const sys::byte *)&nl, 4);
+    os.write((const sys::byte *)&ne, 4);
+    os.write((const sys::byte *)&elementType, 4);
+    os.write((const sys::byte *)&elementSize, 4);
 
     if (version > 1)
         writeUserData(os);
 }
 
-void sio::lite::FileHeader::writeUserData(io::OutputStream& os)
+void sio::lite::FileHeader::writeUserData(io::OutputStream &os)
 {
     const auto numFields = gsl::narrow<int32_t>(userData.size());
-    os.write((const sys::byte*)&numFields, 4);
+    os.write((const sys::byte *)&numFields, 4);
 
-    for(sio::lite::UserDataDictionary::Iterator it = userData.begin();
-            it != userData.end(); ++it)
+    for (sio::lite::UserDataDictionary::Iterator it = userData.begin(); it != userData.end(); ++it)
     {
         std::string key = it->first;
-        //add 1 for null-byte termination
+        // add 1 for null-byte termination
         const auto keySize = static_cast<int32_t>(key.length() + 1);
-        os.write((const sys::byte*)&keySize, 4);
-        os.write((const sys::byte*)key.c_str(), keySize);
+        os.write((const sys::byte *)&keySize, 4);
+        os.write((const sys::byte *)key.c_str(), keySize);
 
-        std::vector<sys::byte>& uData = it->second;
-        const auto udSize =  gsl::narrow<int32_t>(uData.size());
-        os.write((const sys::byte*)&udSize, 4);
+        std::vector<sys::byte> &uData = it->second;
+        const auto udSize = gsl::narrow<int32_t>(uData.size());
+        os.write((const sys::byte *)&udSize, 4);
 
-        //Do we need to check for endian-ness and possibly byteswap???
-        for (std::vector<sys::byte>::iterator iter = uData.begin();
-                iter != uData.end(); ++iter)
+        // Do we need to check for endian-ness and possibly byteswap???
+        for (std::vector<sys::byte>::iterator iter = uData.begin(); iter != uData.end(); ++iter)
         {
             sys::byte x = *iter;
             os.write(&x, 1);
@@ -184,30 +177,25 @@ void sio::lite::FileHeader::writeUserData(io::OutputStream& os)
     }
 }
 
-void sio::lite::FileHeader::addUserData(const std::string& field,
-                                        const std::string& data)
+void sio::lite::FileHeader::addUserData(const std::string &field, const std::string &data)
 {
-    const sys::byte* const begin =
-        reinterpret_cast<const sys::byte*>(data.c_str());
+    const sys::byte *const begin = reinterpret_cast<const sys::byte *>(data.c_str());
 
     const std::vector<sys::byte> vec(begin, begin + data.length());
     userData.add(field, vec);
 }
 
-
-void sio::lite::FileHeader::addUserData(const std::string& field,
-                                        const std::vector<sys::byte>& data)
+void sio::lite::FileHeader::addUserData(const std::string &field, const std::vector<sys::byte> &data)
 {
     userData.add(field, data);
 }
 
-void sio::lite::FileHeader::addUserData(const std::string& field, int data)
+void sio::lite::FileHeader::addUserData(const std::string &field, int data)
 {
     std::vector<sys::byte> vec;
     vec.reserve(sizeof(int));
-    char* cData = (char*)&data;
+    char *cData = (char *)&data;
     for (int i = 0, size = sizeof(int); i < size; ++i)
         vec.push_back((sys::byte)cData[i]);
     userData.add(field, vec);
 }
-

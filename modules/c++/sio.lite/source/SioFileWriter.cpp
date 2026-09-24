@@ -21,40 +21,33 @@
  */
 #include "sio/lite/FileWriter.h"
 
-void sio::lite::FileWriter::write(sio::lite::FileHeader* header, std::vector<io::InputStream*> bandStreams)
+void sio::lite::FileWriter::write(sio::lite::FileHeader *header, std::vector<io::InputStream *> bandStreams)
 {
-    header->to(bandStreams.size(), *mStream); //write header
-    //write band-sequential
-    for (std::vector<io::InputStream*>::iterator iter = bandStreams.begin(), end = bandStreams.end();
-            iter != end; ++iter)
+    header->to(bandStreams.size(), *mStream); // write header
+    // write band-sequential
+    for (std::vector<io::InputStream *>::iterator iter = bandStreams.begin(), end = bandStreams.end(); iter != end;
+         ++iter)
         (*iter)->streamTo(*mStream);
 }
 
-
-void sio::lite::FileWriter::write(int numLines, int numElements, int elementSize,
-                                  int elementType, std::vector<io::InputStream*> bandStreams)
+void sio::lite::FileWriter::write(int numLines, int numElements, int elementSize, int elementType,
+                                  std::vector<io::InputStream *> bandStreams)
 {
     sio::lite::FileHeader hdr(numLines, numElements, elementSize, elementType, 1);
     write(&hdr, bandStreams);
 }
 
-
-void sio::lite::FileWriter::write(sio::lite::FileHeader* header,
-                                  const void* data,
-                                  int numBands)
+void sio::lite::FileWriter::write(sio::lite::FileHeader *header, const void *data, int numBands)
 {
-    header->to(numBands, *mStream); //write header
-    mStream->write(static_cast<const sys::byte*>(data),
-                   static_cast<size_t>(header->getNumLines()) *
-                            static_cast<size_t>(header->getNumElements()) *
-                            static_cast<size_t>(header->getElementSize()) *
-                            static_cast<size_t>(numBands));
+    header->to(numBands, *mStream); // write header
+    mStream->write(static_cast<const sys::byte *>(data),
+                   static_cast<size_t>(header->getNumLines()) * static_cast<size_t>(header->getNumElements()) *
+                       static_cast<size_t>(header->getElementSize()) * static_cast<size_t>(numBands));
 }
 
-void sio::lite::FileWriter::write(int numLines, int numElements, int elementSize,
-                                  int elementType, const void* data, int numBands)
+void sio::lite::FileWriter::write(int numLines, int numElements, int elementSize, int elementType, const void *data,
+                                  int numBands)
 {
     sio::lite::FileHeader hdr(numLines, numElements, elementSize, elementType);
     write(&hdr, data, numBands);
 }
-

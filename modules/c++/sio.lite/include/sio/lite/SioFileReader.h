@@ -22,18 +22,17 @@
 #ifndef __SIO_LITE_FILE_READER_H__
 #define __SIO_LITE_FILE_READER_H__
 
-#include <import/sys.h>
-#include <io/Seekable.h>
-#include <io/FileInputStream.h>
 #include "config/Exports.h"
 #include "sio/lite/InvalidHeaderException.h"
 #include "sio/lite/StreamReader.h"
+#include <import/sys.h>
+#include <io/FileInputStream.h>
+#include <io/Seekable.h>
 
 namespace sio
 {
 namespace lite
 {
-
 
 /**
  *  \class FileReader
@@ -45,13 +44,13 @@ namespace lite
  *  the StreamReader (e.g., data coming in from a socket).  If its really a file
  *  use the FileReader in conjunction with a FileInputStream.
  *
- *  To make this safer, only supports the FileInputStream and std::string 
+ *  To make this safer, only supports the FileInputStream and std::string
  *  args for now:
  *
-    \code 
+    \code
 
     FileReader reader("/path/to/file.sio");
-    
+
     FileHeader* fhdr = reader->getHeader();
     int nl = fhdr->getNumLines();
     int ne = fhdr->getNumElements();
@@ -59,10 +58,10 @@ namespace lite
     int et = fhdr->getElementType();
 
     // Read a double element from the user data
-    std::vector<sys::byte>& ud = fhdr->getUserData("userDefinedDouble");       
+    std::vector<sys::byte>& ud = fhdr->getUserData("userDefinedDouble");
 
     // Cast address from sys::byte* -> double*, and deref:
-    double d = fhdr->isDifferentByteOrdering() ? 
+    double d = fhdr->isDifferentByteOrdering() ?
         sys::byteSwap<double>(*(double*)&ud[0]) : *(double*)&ud[0];
 
     // Read in an amplitude single precision float image
@@ -83,30 +82,29 @@ namespace lite
 
 class CODA_OSS_API FileReader : public StreamReader, public io::Seekable
 {
-public:
+  public:
     /** Constructor */
-    FileReader() : StreamReader() {}
+    FileReader() : StreamReader()
+    {
+    }
 
     /** Destructor */
     ~FileReader()
     {
     }
 
-    FileReader(const std::string& file) :
-        StreamReader(new io::FileInputStream(file), true)
+    FileReader(const std::string &file) : StreamReader(new io::FileInputStream(file), true)
     {
     }
 
-
     /**  Construct from stream  */
-    FileReader(io::FileInputStream* is, bool adopt = false) : 
-        StreamReader(is, adopt)
+    FileReader(io::FileInputStream *is, bool adopt = false) : StreamReader(is, adopt)
     {
     }
 
     /*!
      *  Overloaded seek, only works if this is a FileInputStream.
-     *  Reports position relative to file header if Whence == 
+     *  Reports position relative to file header if Whence ==
      *  io::Seekable::START.  Otherwise, works as a normal FileInputStream.
      *  In a typical
      *  header with no UD (i.e., headerLength = 20), seek
@@ -123,7 +121,7 @@ public:
      *  For simplicity, the final position is reported in the return value relative
      *  to header start (always).  This is done by calling tell().
      */
-    sys::Off_T seek( sys::Off_T offset, Whence whence ) override;
+    sys::Off_T seek(sys::Off_T offset, Whence whence) override;
 
     /*!
      *  Overloaded method, only works if this is a FileInputStream.
@@ -134,12 +132,11 @@ public:
      */
     sys::Off_T tell() override;
 
-
     void killStream() override;
-protected:
+
+  protected:
 };
-}
-}
+} // namespace lite
+} // namespace sio
 
 #endif
-

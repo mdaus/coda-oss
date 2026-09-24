@@ -22,16 +22,16 @@
 #ifndef __SIO_LITE_FILE_HEADER_H__
 #define __SIO_LITE_FILE_HEADER_H__
 
+#include "config/Exports.h"
+#include "sio/lite/InvalidHeaderException.h"
+#include "sio/lite/UnsupportedDataTypeException.h"
+#include "sio/lite/UserDataDictionary.h"
+#include <import/except.h>
+#include <import/io.h>
+#include <import/sys.h>
 #include <map>
 #include <string>
 #include <vector>
-#include <import/except.h>
-#include <import/sys.h>
-#include <import/io.h>
-#include "config/Exports.h"
-#include "sio/lite/UserDataDictionary.h"
-#include "sio/lite/InvalidHeaderException.h"
-#include "sio/lite/UnsupportedDataTypeException.h"
 
 namespace sio
 {
@@ -40,7 +40,7 @@ namespace lite
 
 class CODA_OSS_API FileHeader
 {
-public:
+  public:
     /** Unsigned byte data */
     static const int UNSIGNED = 1;
     /** Signed byte data */
@@ -67,16 +67,19 @@ public:
     /**
      *  Constructor.
      */
-    FileHeader(int numLines, int numElements, int elementSize,
-               int elementType, int ver = 1)
-            : nl(numLines), ne(numElements), es(elementSize), et(elementType),
-            version(ver), nullTerminatedIds(true) {}
+    FileHeader(int numLines, int numElements, int elementSize, int elementType, int ver = 1)
+        : nl(numLines), ne(numElements), es(elementSize), et(elementType), version(ver), nullTerminatedIds(true)
+    {
+    }
 
-    FileHeader() : nl(0), ne(0), es(0), et(0), version(1),
-                 nullTerminatedIds(true){}
+    FileHeader() : nl(0), ne(0), es(0), et(0), version(1), nullTerminatedIds(true)
+    {
+    }
 
     //! Destructor.
-    virtual ~FileHeader() {}
+    virtual ~FileHeader()
+    {
+    }
 
     /**
      * This is the length of the header.  It is calculated on-the-spot each
@@ -89,29 +92,53 @@ public:
      *  This is the number of lines in the 2D stream
      *  @return Number of lines in SIO data
      */
-    int getNumLines() const { return nl; }
-    void setNumLines(int numLines) { nl = numLines; }
+    int getNumLines() const
+    {
+        return nl;
+    }
+    void setNumLines(int numLines)
+    {
+        nl = numLines;
+    }
 
     /**
      *  This is the nubmer of elements in the 2D stream
      *  @return Number of elements in SIO data
      */
-    int getNumElements() const { return ne; }
-    void setNumElements(int numElements) { ne = numElements; }
+    int getNumElements() const
+    {
+        return ne;
+    }
+    void setNumElements(int numElements)
+    {
+        ne = numElements;
+    }
 
     /**
      *   This is the element size.  It is the es byte in the header.
      *   @return The element size
      */
-    int getElementSize() const { return es; }
-    void setElementSize(int size) { es = size; }
+    int getElementSize() const
+    {
+        return es;
+    }
+    void setElementSize(int size)
+    {
+        es = size;
+    }
 
     /**
      *  This is the element type.  It is the et byte in the header.
      *  @return The element type.
      */
-    int getElementType() const { return et; }
-    void setElementType(int type) { et = type; }
+    int getElementType() const
+    {
+        return et;
+    }
+    void setElementType(int type)
+    {
+        et = type;
+    }
 
     /**
      *  As an enumerated type, the element type is not very useful
@@ -128,8 +155,14 @@ public:
      *  1, 2, 3, & 4
      *  @return The version.
      */
-    int getVersion() const { return version; }
-    void setVersion(int newVersion) { version = newVersion; }
+    int getVersion() const
+    {
+        return version;
+    }
+    void setVersion(int newVersion)
+    {
+        version = newVersion;
+    }
 
     /**
      *   This is the sate of null termination for id strings.  It
@@ -137,14 +170,23 @@ public:
      *   or not in the header data in the stream.
      *   @return The null terminated id strings flag
      */
-    bool idsAreNullTerminated() const { return nullTerminatedIds; }
-    void setNullTerminationFlag(bool flag) { nullTerminatedIds = flag; }
+    bool idsAreNullTerminated() const
+    {
+        return nullTerminatedIds;
+    }
+    void setNullTerminationFlag(bool flag)
+    {
+        nullTerminatedIds = flag;
+    }
 
     /**
      *  In other words (for java), is our input stream little-endian
      *  @return Whether or not the input stream is little-endian
      */
-    bool isDifferentByteOrdering() const { return differentByteOrdering; }
+    bool isDifferentByteOrdering() const
+    {
+        return differentByteOrdering;
+    }
     void setIsDifferentByteOrdering(bool isDifferent)
     {
         differentByteOrdering = isDifferent;
@@ -158,50 +200,57 @@ public:
      * @param key The key to search for in our hash table
      * @return true if it exists
      */
-    bool userDataFieldExists(const std::string& key) const;
+    bool userDataFieldExists(const std::string &key) const;
 
     /**
      *  Get all of the user data field names
      *  @return An iteratable structure of all keys in the hash table
      */
-    void getAllUserDataFields(std::vector<std::string>& keys) const;
+    void getAllUserDataFields(std::vector<std::string> &keys) const;
 
     /**
      *  Get the number of user data fields in our associative array
      *  @return The number of user data fields
      */
-    size_t getNumUserDataFields() const { return userData.size(); }
+    size_t getNumUserDataFields() const
+    {
+        return userData.size();
+    }
 
     /**
      *  Get the raw byte user data for a given user data ID.
      *  @return An array of user data for a given key
      */
-    std::vector<sys::byte>& getUserData(const std::string& key);
+    std::vector<sys::byte> &getUserData(const std::string &key);
 
     /**
      *  Get back the whole hash table
      *  @return The hash table
      */
-    const sio::lite::UserDataDictionary& getUserDataSection() const{ return userData; }
-    sio::lite::UserDataDictionary& getUserDataSection() { return userData; }
-
+    const sio::lite::UserDataDictionary &getUserDataSection() const
+    {
+        return userData;
+    }
+    sio::lite::UserDataDictionary &getUserDataSection()
+    {
+        return userData;
+    }
 
     //! Add a std::string user data field
-    void addUserData(const std::string& field, const std::string& data);
+    void addUserData(const std::string &field, const std::string &data);
     //! Add a std::vector<sys::byte> user data field
-    void addUserData(const std::string& field,
-                     const std::vector<sys::byte>& data);
+    void addUserData(const std::string &field, const std::vector<sys::byte> &data);
     //! Add an int user data field
-    void addUserData(const std::string& field, int data);
+    void addUserData(const std::string &field, int data);
 
     /**
      * Writes the SIO header to the given OutputStream
      * @param numBands the number of bands intended for the SIO file
      * @os    the OutputStream to write the header to
      */
-    void to(size_t numBands, io::OutputStream& os);
+    void to(size_t numBands, io::OutputStream &os);
 
-protected:
+  protected:
     /** Number of lines in the image or vector */
     int nl;
 
@@ -225,13 +274,10 @@ protected:
     bool differentByteOrdering;
 
     /** Write the version2 user data */
-    void writeUserData(io::OutputStream& os);
+    void writeUserData(io::OutputStream &os);
 };
 
-}
-}
-
+} // namespace lite
+} // namespace sio
 
 #endif
-
-

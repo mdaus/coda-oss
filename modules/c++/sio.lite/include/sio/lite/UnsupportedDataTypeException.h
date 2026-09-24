@@ -24,42 +24,45 @@
 
 #include <import/except.h>
 
-
 namespace sio
 {
 namespace lite
 {
 class UnsupportedDataTypeException : public except::Exception
 {
-public:
+  public:
     //!  Default constructor
-    UnsupportedDataTypeException() {}
+    UnsupportedDataTypeException()
+    {
+    }
 
     /*!
      *  Constructor with a rhs message
      *  \param message The message to report
      *
      */
-    UnsupportedDataTypeException(const char *message) :
-            except::Exception(message) {}
+    UnsupportedDataTypeException(const char *message) : except::Exception(message)
+    {
+    }
 
     /*!
      *  Constructor with a rhs message
      *  \param message The message to report
      *
      */
-    UnsupportedDataTypeException(const std::string& message)  :
-            except::Exception(message) {}
+    UnsupportedDataTypeException(const std::string &message) : except::Exception(message)
+    {
+    }
 
     /*!
      *  Constructor with a context
      *  \param c The context with the message to report
      *
      */
-    UnsupportedDataTypeException(const except::Context& c)  :
-            except::Exception(c) {}
+    UnsupportedDataTypeException(const except::Context &c) : except::Exception(c)
+    {
+    }
 };
-}
-}
+} // namespace lite
+} // namespace sio
 #endif
-

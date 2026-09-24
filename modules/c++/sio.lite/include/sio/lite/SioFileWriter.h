@@ -25,15 +25,14 @@
 #include <memory>
 #include <vector>
 
-#include <import/sys.h>
 #include <import/io.h>
 #include <import/mem.h>
-#include <types/RowCol.h>
+#include <import/sys.h>
 #include <sys/filesystem.h>
+#include <types/RowCol.h>
 
-#include "sio/lite/InvalidHeaderException.h"
 #include "sio/lite/FileHeader.h"
-
+#include "sio/lite/InvalidHeaderException.h"
 
 namespace sio
 {
@@ -50,72 +49,75 @@ namespace lite
  */
 struct FileWriter
 {
-    FileWriter(const std::string& outputFile) : mFileName(outputFile), mAdopt(true)
+    FileWriter(const std::string &outputFile) : mFileName(outputFile), mAdopt(true)
     {
         mStream.reset(new io::FileOutputStream(mFileName));
     }
 
-    FileWriter(const char* outputFile) : mFileName(outputFile), mAdopt(true)
+    FileWriter(const char *outputFile) : mFileName(outputFile), mAdopt(true)
     {
         mStream.reset(new io::FileOutputStream(mFileName));
     }
 
     //! The input stream will get freed by the Writer if adopt is set to true
-    FileWriter(io::OutputStream* stream, bool adopt = true) : mAdopt(adopt)
+    FileWriter(io::OutputStream *stream, bool adopt = true) : mAdopt(adopt)
     {
         mStream.reset(stream);
     }
 
     // need copy for Python binding w/SWIG
-    //FileWriter(const FileWriter&) = default;
-    //FileWriter& operator=(const FileWriter&) = default;
-    //FileWriter(FileWriter&&) = default;
-    //FileWriter& operator=(FileWriter&&) = default;
+    // FileWriter(const FileWriter&) = default;
+    // FileWriter& operator=(const FileWriter&) = default;
+    // FileWriter(FileWriter&&) = default;
+    // FileWriter& operator=(FileWriter&&) = default;
 
     virtual ~FileWriter()
     {
-        //if we aren't adopting it, release it
-        if (!mAdopt) mStream.release();
+        // if we aren't adopting it, release it
+        if (!mAdopt)
+            mStream.release();
     }
 
-    FileWriter(const FileWriter&) = delete;
-    FileWriter& operator=(const FileWriter&) = delete;
-    FileWriter(FileWriter&&) = default;
-    FileWriter& operator=(FileWriter&&) = default;
+    FileWriter(const FileWriter &) = delete;
+    FileWriter &operator=(const FileWriter &) = delete;
+    FileWriter(FileWriter &&) = default;
+    FileWriter &operator=(FileWriter &&) = default;
 
     /*!
      * Writes the SIO given the FileHeader and InputStreams.
      */
-    void write(FileHeader* header, std::vector<io::InputStream*> bandStreams);
-    
+    void write(FileHeader *header, std::vector<io::InputStream *> bandStreams);
+
     /*!
      * Writes a version 1 SIO given the basic file header contents and a
      * vector of InputStreams
      */
-    void write(int numLines, int numElements, int elementSize,
-               int elementType, std::vector<io::InputStream*> bandStreams);
+    void write(int numLines, int numElements, int elementSize, int elementType,
+               std::vector<io::InputStream *> bandStreams);
 
     /*!
-     * Writes the SIO given the FileHeader and a buffer of raw data in 
+     * Writes the SIO given the FileHeader and a buffer of raw data in
      * band-sequential format.
      */
-    void write(FileHeader* header, const void* data, int numBands = 1);
-    
+    void write(FileHeader *header, const void *data, int numBands = 1);
+
     /*!
      * Writes a version 1 SIO given the basic file header contents and a buffer
      * of raw data in band-sequential format.
      */
-    void write(int numLines, int numElements, int elementSize,
-               int elementType, const void* data, int numBands = 1);
+    void write(int numLines, int numElements, int elementSize, int elementType, const void *data, int numBands = 1);
 
-protected:
+  protected:
     std::string mFileName;
     std::unique_ptr<io::OutputStream> mStream;
     bool mAdopt;
 };
 
 /** Automatic data, this is not explicitly valid, dont use this in an FileHeader */
-enum { AUTO = -1 };
+enum
+{
+    AUTO = -1
+};
 
 /*!
  *  Utility routine to write an image of type T into an SIO file format.  Supported
@@ -143,9 +145,8 @@ enum { AUTO = -1 };
  *
  *
  */
-template<typename T> void writeSIO(const T* image, size_t rows, size_t cols,
-                                   const std::string& imageFile,
-                                   int et = AUTO, int es = AUTO)
+template <typename T>
+void writeSIO(const T *image, size_t rows, size_t cols, const std::string &imageFile, int et = AUTO, int es = AUTO)
 {
 
     if (es == AUTO)
@@ -182,20 +183,18 @@ template<typename T> void writeSIO(const T* image, size_t rows, size_t cols,
     FileHeader fhdr(static_cast<int>(rows), static_cast<int>(cols), es, et);
     fhdr.to(1, imageStream);
 
-    imageStream.write(reinterpret_cast<const sys::byte*>(image),
-                      rows * cols * es);
+    imageStream.write(reinterpret_cast<const sys::byte *>(image), rows * cols * es);
 
     imageStream.close();
 }
-template<typename T>
-void writeSIO(const T* image, const types::RowCol<size_t>& dims, const sys::filesystem::path& imageFile,
-                                   int et = AUTO, int es = AUTO)
+template <typename T>
+void writeSIO(const T *image, const types::RowCol<size_t> &dims, const sys::filesystem::path &imageFile, int et = AUTO,
+              int es = AUTO)
 {
     writeSIO(image, dims.row, dims.col, imageFile.string(), et, es);
 }
 
+} // namespace lite
+} // namespace sio
 
-}
-}
-
-#endif  // CODA_OSS_sio_lite_SioFileWriter_h_INCLUDED_
+#endif // CODA_OSS_sio_lite_SioFileWriter_h_INCLUDED_

@@ -19,22 +19,22 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
+#include <complex>
 #include <import/except.h>
 #include <import/io.h>
 #include <import/sio/lite.h>
-#include <complex>
 
 using namespace sio::lite;
 using namespace io;
 using namespace except;
 
-void printFloat(float* f)
+void printFloat(float *f)
 {
-    char* buf = (char*)f;
+    char *buf = (char *)f;
     printf("Val: %x,%x,%x,%x\n", buf[0], buf[1], buf[2], buf[3]);
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     if (argc < 2 || argc > 3)
         die_printf("Usage: %s <sio-file> (<sio-output>)\n", argv[0]);
@@ -46,39 +46,36 @@ int main(int argc, char** argv)
 
         //  Create a reader
         FileReader r(&input);
-        FileHeader* header = r.readHeader();
-        
+        FileHeader *header = r.readHeader();
+
         int len = header->getNumElements() * header->getNumLines();
         int elemSize = header->getElementSize();
-        sys::byte* buf = new sys::byte[len*elemSize];
-        r.read(buf, len*elemSize);
-        
-        std::cout << "Different byte order? "
-            << (header->isDifferentByteOrdering() ? "yes" : "no") << std::endl;
+        sys::byte *buf = new sys::byte[len * elemSize];
+        r.read(buf, len * elemSize);
+
+        std::cout << "Different byte order? " << (header->isDifferentByteOrdering() ? "yes" : "no") << std::endl;
         std::cout << "Input Header length: " << header->getLength() << std::endl;
         std::cout << "Input Data length: " << (len * elemSize) << std::endl;
-        
+
         std::string outputFile = ((argc == 3) ? (argv[2]) : (std::string(argv[1]) + ".out"));
         FileWriter writer(outputFile);
         writer.write(header, buf, 1);
-        delete [] buf;
-        
-        //read the new one!
+        delete[] buf;
+
+        // read the new one!
         FileInputStream input2(outputFile);
         r.setInputStream(&input2);
         header = r.readHeader();
-        
+
         len = header->getNumElements() * header->getNumLines();
         elemSize = header->getElementSize();
         std::cout << "Output Header length: " << header->getLength() << std::endl;
         std::cout << "Output Data length: " << (len * elemSize) << std::endl;
     }
-    catch (Exception& e)
+    catch (Exception &e)
     {
         std::cout << "Caught exception: " << e.getMessage() << std::endl;
         std::cout << "Trace:" << std::endl << e.getTrace() << std::endl;
     }
     return 0;
 }
-
-

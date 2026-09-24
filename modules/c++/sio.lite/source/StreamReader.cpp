@@ -21,7 +21,6 @@
  */
 #include "sio/lite/StreamReader.h"
 
-
 union _IntBuffer
 {
     int iVal;
@@ -31,19 +30,16 @@ union _IntBuffer
 int sio::lite::StreamReader::getNextInteger()
 {
     if (header == nullptr)
-        throw
-        sio::lite::InvalidHeaderException(
-            Ctxt("Header == null")
-        );
+        throw sio::lite::InvalidHeaderException(Ctxt("Header == null"));
 
     union _IntBuffer buf;
     inputStream->read(buf.bVal, 4);
 
-    if (header->isDifferentByteOrdering() )
+    if (header->isDifferentByteOrdering())
     {
         sys::byteSwap(buf.bVal, 4, 1);
     }
-    return buf.iVal;//(int) ( b[0] << 24 | b[1] << 16 | b[2] << 8 | b[3] );
+    return buf.iVal; //(int) ( b[0] << 24 | b[1] << 16 | b[2] << 8 | b[3] );
 }
 
 void sio::lite::StreamReader::checkMagic(bool calledFromConstructor)
@@ -53,7 +49,7 @@ void sio::lite::StreamReader::checkMagic(bool calledFromConstructor)
     bool bigEndian = sys::isBigEndianSystem();
     // Read the first four bytes
     unsigned char b[4];
-    inputStream->read((sys::byte*)b, 4);
+    inputStream->read((sys::byte *)b, 4);
 
     // We are big endian
     if (b[0] == 0xFF && b[2] == 0x7F && (b[1] ^ b[3]) == 0xFF)
@@ -82,12 +78,9 @@ void sio::lite::StreamReader::checkMagic(bool calledFromConstructor)
             killStream();
         }
 
-        throw
-        sio::lite::InvalidHeaderException(
-            Ctxt("Invalid magic header byte")
-        );
+        throw sio::lite::InvalidHeaderException(Ctxt("Invalid magic header byte"));
     }
-    dbg_printf("Detected header version: %d\n", header->getVersion() );
+    dbg_printf("Detected header version: %d\n", header->getVersion());
 }
 
 void sio::lite::StreamReader::killHeader()
@@ -113,23 +106,22 @@ void sio::lite::StreamReader::parseHeader(bool calledFromConstructor)
     header = new FileHeader();
     checkMagic(calledFromConstructor);
 
-    header->setNumLines( getNextInteger() );
-    header->setNumElements( getNextInteger() );
-    header->setElementType( getNextInteger() );
-    header->setElementSize( getNextInteger() );
+    header->setNumLines(getNextInteger());
+    header->setNumElements(getNextInteger());
+    header->setElementType(getNextInteger());
+    header->setElementSize(getNextInteger());
 
     if (header->getVersion() >= 2)
         readType2Header();
 
     if (header->getVersion() > 2)
-        dbg_printf("Warning: header version is [%d]\n",
-                   header->getVersion() );
+        dbg_printf("Warning: header version is [%d]\n", header->getVersion());
 
     // Cache this for seek speed
     headerLength = header->getLength();
 }
 
-void sio::lite::StreamReader::setInputStream(io::InputStream* is, bool adopt)
+void sio::lite::StreamReader::setInputStream(io::InputStream *is, bool adopt)
 {
     killStream();
     inputStream = is;
@@ -148,9 +140,9 @@ void sio::lite::StreamReader::readType2Header()
 
         sys::byte *tmpBytes = new sys::byte[idSize];
         inputStream->read(tmpBytes, idSize);
-        std::string id((const char*)tmpBytes);
-        header->setNullTerminationFlag(tmpBytes[idSize-1] == 0x00);
-        delete [] tmpBytes;
+        std::string id((const char *)tmpBytes);
+        header->setNullTerminationFlag(tmpBytes[idSize - 1] == 0x00);
+        delete[] tmpBytes;
 
         int udSize = getNextInteger();
         // This is what we are storing in the hash table
@@ -165,4 +157,3 @@ void sio::lite::StreamReader::readType2Header()
         header->getUserDataSection().add(id, udEntry);
     }
 }
-

@@ -23,20 +23,20 @@
 #ifndef CODA_OSS_sio_lite_ReadUtils_h_
 #define CODA_OSS_sio_lite_ReadUtils_h_
 
-#include <string>
 #include <memory>
+#include <string>
 #include <vector>
 
-#include <gsl/gsl.h>
-#include <sys/Conf.h>
 #include <except/Exception.h>
-#include <types/RowCol.h>
+#include <gsl/gsl.h>
 #include <mem/ScopedArray.h>
-#include <sio/lite/FileReader.h>
-#include <sio/lite/FileHeader.h>
 #include <sio/lite/ElementType.h>
-#include <sys/filesystem.h>
+#include <sio/lite/FileHeader.h>
+#include <sio/lite/FileReader.h>
+#include <sys/Conf.h>
 #include <sys/Span.h>
+#include <sys/filesystem.h>
+#include <types/RowCol.h>
 
 namespace sio
 {
@@ -51,17 +51,14 @@ namespace lite
  *  \param image Output for the data.
  */
 template <typename InputT>
-void readSIO(const std::string& pathname,
-             types::RowCol<size_t>& dims,
-             std::unique_ptr<InputT[]>& image)
+void readSIO(const std::string &pathname, types::RowCol<size_t> &dims, std::unique_ptr<InputT[]> &image)
 {
     sio::lite::FileReader reader(pathname);
-    const sio::lite::FileHeader* const header(reader.getHeader());
+    const sio::lite::FileHeader *const header(reader.getHeader());
     dims.row = gsl::narrow<size_t>(header->getNumLines());
     dims.col = gsl::narrow<size_t>(header->getNumElements());
 
-    if (header->getElementSize() != sizeof(InputT) ||
-        header->getElementType() != sio::lite::ElementType<InputT>::Type)
+    if (header->getElementSize() != sizeof(InputT) || header->getElementType() != sio::lite::ElementType<InputT>::Type)
     {
         throw except::Exception(Ctxt("Unexpected format"));
     }
@@ -71,17 +68,14 @@ void readSIO(const std::string& pathname,
     reader.read(image.get(), numPixels * sizeof(InputT), true);
 }
 template <typename InputT>
-void readSIO(const coda_oss::filesystem::path& pathname,
-             types::RowCol<size_t>& dims,
-             std::vector<InputT>& image)
+void readSIO(const coda_oss::filesystem::path &pathname, types::RowCol<size_t> &dims, std::vector<InputT> &image)
 {
     sio::lite::FileReader reader(pathname.string());
-    const sio::lite::FileHeader* const header(reader.getHeader());
+    const sio::lite::FileHeader *const header(reader.getHeader());
     dims.row = gsl::narrow<size_t>(header->getNumLines());
     dims.col = gsl::narrow<size_t>(header->getNumElements());
 
-    if (header->getElementSize() != sizeof(InputT) ||
-        header->getElementType() != sio::lite::ElementType<InputT>::Type)
+    if (header->getElementSize() != sizeof(InputT) || header->getElementType() != sio::lite::ElementType<InputT>::Type)
     {
         throw except::Exception(Ctxt("Unexpected format"));
     }
@@ -99,9 +93,8 @@ void readSIO(const coda_oss::filesystem::path& pathname,
  *  \param image Output for the data.
  */
 template <typename InputT>
-void readSIOVerifyDimensions(const std::string& pathname,
-                             const types::RowCol<size_t>& dims,
-                             std::unique_ptr<InputT[]>& image)
+void readSIOVerifyDimensions(const std::string &pathname, const types::RowCol<size_t> &dims,
+                             std::unique_ptr<InputT[]> &image)
 {
     types::RowCol<size_t> theseDims;
     readSIO<InputT>(pathname, theseDims, image);
@@ -111,7 +104,7 @@ void readSIOVerifyDimensions(const std::string& pathname,
         throw except::Exception(Ctxt(pathname + " not sized as expected"));
     }
 }
-}
-}
+} // namespace lite
+} // namespace sio
 
-#endif  // CODA_OSS_sio_lite_ReadUtils_h_
+#endif // CODA_OSS_sio_lite_ReadUtils_h_

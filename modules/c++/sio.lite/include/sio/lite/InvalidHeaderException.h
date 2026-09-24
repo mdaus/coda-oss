@@ -24,43 +24,46 @@
 
 #include <import/except.h>
 
-
 namespace sio
 {
 namespace lite
 {
 class InvalidHeaderException : public except::Exception
 {
-public:
+  public:
     //!  Default constructor
-    InvalidHeaderException() {}
+    InvalidHeaderException()
+    {
+    }
 
     /*!
      *  Constructor with a rhs message
      *  \param message The message to report
      *
      */
-    InvalidHeaderException(const char *message) :
-            except::Exception(message) {}
+    InvalidHeaderException(const char *message) : except::Exception(message)
+    {
+    }
 
     /*!
      *  Constructor with a rhs message
      *  \param message The message to report
      *
      */
-    InvalidHeaderException(const std::string& message)  :
-            except::Exception(message) {}
+    InvalidHeaderException(const std::string &message) : except::Exception(message)
+    {
+    }
 
     /*!
      *  Constructor with a context
      *  \param c The context with the message to report
      *
      */
-    InvalidHeaderException(const except::Context& c)  :
-            except::Exception(c) {}
+    InvalidHeaderException(const except::Context &c) : except::Exception(c)
+    {
+    }
 };
-}
-}
+} // namespace lite
+} // namespace sio
 
 #endif
-
