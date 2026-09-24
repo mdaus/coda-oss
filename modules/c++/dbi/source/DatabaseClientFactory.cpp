@@ -42,11 +42,11 @@ dbi::DatabaseClientFactory::DatabaseClientFactory()
 }
 CODA_OSS_disable_warning_pop
 
-dbi::DatabaseConnection *dbi::DatabaseClientFactory::create(
-    const std::string &database,
-    const std::string &user,
-    const std::string &pass,
-    const std::string &host, unsigned int port)
+dbi::DatabaseConnection *dbi::DatabaseClientFactory::create(const std::string &database,
+                                                            const std::string &user,
+                                                            const std::string &pass,
+                                                            const std::string &host,
+                                                            unsigned int port)
 {
     dbi::DatabaseConnection *connection = nullptr;
 #if defined(USE_PGSQL)
