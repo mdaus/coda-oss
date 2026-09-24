@@ -28,4 +28,4 @@ namespace coda_oss
 using std::is_trivially_copyable;
 }
 
-#endif // CODA_OSS_coda_oss_type_traits_h_INCLUDED_
+#endif  // CODA_OSS_coda_oss_type_traits_h_INCLUDED_

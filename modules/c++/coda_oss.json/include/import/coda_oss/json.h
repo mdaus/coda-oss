@@ -22,10 +22,10 @@
 #ifndef __IMPORT_CODA_OSS_JSON_H__
 #define __IMPORT_CODA_OSS_JSON_H__
 
+#include <nlohmann/json.hpp>
 #include <coda_oss/json/Math.h>
 #include <coda_oss/json/Mem.h>
 #include <coda_oss/json/Std.h>
 #include <coda_oss/json/Types.h>
-#include <nlohmann/json.hpp>
 
 #endif

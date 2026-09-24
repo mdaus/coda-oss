@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once 
 #ifndef CODA_OSS_mem_SharedPtrCpp11_h_INCLUDED_
 #define CODA_OSS_mem_SharedPtrCpp11_h_INCLUDED_
 
