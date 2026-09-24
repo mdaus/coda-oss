@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of str-c++ 
+ * This file is part of str-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * str-c++ is free software; you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifndef __STR_TOKENIZER_H__
 #define __STR_TOKENIZER_H__
@@ -52,26 +51,27 @@ namespace str
 
 class Tokenizer
 {
-public:
+  public:
     typedef std::vector<std::string> Tokens;
     /*!
      * Constructor.  Take a string to parse, and a delimiter set
      * \param str String to parse
      * \param delim string to divide str up using
      */
-    Tokenizer(const std::string& str, const std::string& delim);
+    Tokenizer(const std::string &str, const std::string &delim);
 
     /*!
-     * Method to return the resultant vector 
+     * Method to return the resultant vector
      * \return The vector that was created by the tokenizer
      */
-    operator Tokenizer::Tokens& () noexcept
+    operator Tokenizer::Tokens &() noexcept
     {
         return vec;
     }
-protected:
+
+  protected:
     Tokenizer::Tokens vec;
 };
 
-}
+} // namespace str
 #endif

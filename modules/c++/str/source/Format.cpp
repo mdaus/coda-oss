@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of str-c++ 
+ * This file is part of str-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * str-c++ is free software; you can redistribute it and/or modify
@@ -14,21 +14,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #include "str/Format.h"
 
-#include <stdio.h>
 #include <stdarg.h>
+#include <stdio.h>
 
 #include <config/compiler_extensions.h>
 
-static std::string vformat(const char* format, va_list& args)
+static std::string vformat(const char *format, va_list &args)
 {
     char buffer[1024];
 #if !_WIN32
@@ -39,19 +38,19 @@ static std::string vformat(const char* format, va_list& args)
     return std::string(buffer);
 }
 
-inline void va_end_(va_list& args)
+inline void va_end_(va_list &args)
 {
     CODA_OSS_disable_warning_push
-    #if _MSC_VER
-    #pragma warning(disable : 26477)  // Use '...' rather than 0 or NULL(es .47).
-    #endif
+#if _MSC_VER
+#pragma warning(disable : 26477) // Use '...' rather than 0 or NULL(es .47).
+#endif
 
-    va_end(args);
+        va_end(args);
 
     CODA_OSS_disable_warning_pop
 }
 
-std::string str::details::Format_(const char* format, ...)
+std::string str::details::Format_(const char *format, ...)
 {
     va_list args;
     va_start(args, format);

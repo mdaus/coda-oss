@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of str-c++ 
+ * This file is part of str-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  * (C) Copyright 2022, Maxar Technologies, Inc.
  *
@@ -15,12 +15,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifndef CODA_OSS_str_import_str_h_INCLUDED_
 #define CODA_OSS_str_import_str_h_INCLUDED_
@@ -41,12 +40,12 @@
  */
 
 #include "str/Convert.h"
-#include "str/Tokenizer.h"
+#include "str/Encoding.h"
 #include "str/Format.h"
 #include "str/Manip.h"
-#include "str/Encoding.h"
+#include "str/Tokenizer.h"
 #define STR_MAJOR_VERSION 0
 #define STR_MINOR_VERSION 1
 #define STR_MICRO_VERSION 0
 
-#endif  // CODA_OSS_str_import_str_h_INCLUDED_
+#endif // CODA_OSS_str_import_str_h_INCLUDED_

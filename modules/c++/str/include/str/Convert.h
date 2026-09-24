@@ -34,35 +34,33 @@
 #include <string>
 #include <typeinfo>
 
-#include "config/Exports.h"
-#include "coda_oss/string.h"
-#include "coda_oss/optional.h"
 #include "coda_oss/cstddef.h"
-#include "types/Complex.h"
-#include "import/except.h"
+#include "coda_oss/optional.h"
+#include "coda_oss/string.h"
+#include "config/Exports.h"
 #include "gsl/gsl.h"
+#include "import/except.h"
 #include "str/Encoding.h"
+#include "types/Complex.h"
 
 namespace str
 {
-template <typename T> int getPrecision(const T& type);
-template <typename T> int getPrecision(const std::complex<T>&);
+template <typename T> int getPrecision(const T &type);
+template <typename T> int getPrecision(const std::complex<T> &);
 #if CODA_OSS_types_unique_ComplexInteger
-template <typename T> int getPrecision(const types::ComplexInteger<T>&);
+template <typename T> int getPrecision(const types::ComplexInteger<T> &);
 #endif
 
 // Note that std::to_string() doesn't necessarily generate the same output as writing
 // to std::cout; see https://en.cppreference.com/w/cpp/string/basic_string/to_string
-template <typename T>
-std::string toString_(const T& value)
+template <typename T> std::string toString_(const T &value)
 {
     std::ostringstream buf;
     buf.precision(getPrecision(value));
     buf << std::boolalpha << value;
     return buf.str();
 }
-template <typename T>
-inline std::string toString(const T& value)
+template <typename T> inline std::string toString(const T &value)
 {
     return toString_(value);
 }
@@ -123,27 +121,27 @@ inline std::string toString(std::nullptr_t)
     return "<nullptr>";
 }
 
-inline std::string toString(const std::string& value)
+inline std::string toString(const std::string &value)
 {
     return value;
 }
 // Prevent the template above from getting used; instead, use routines from **Encoding.h**.
-std::string toString(const std::wstring&) = delete;
-std::string toString(const std::u16string&) = delete;
-std::string toString(const std::u32string&) = delete;
-std::string toString(const coda_oss::u8string&) = delete;
-std::string toString(const str::W1252string&) = delete;
+std::string toString(const std::wstring &) = delete;
+std::string toString(const std::u16string &) = delete;
+std::string toString(const std::u32string &) = delete;
+std::string toString(const coda_oss::u8string &) = delete;
+std::string toString(const str::W1252string &) = delete;
 
 inline std::string toString(std::string::const_pointer pStr)
 {
     return toString(std::string(pStr));
 }
 // can't be a template; `bool` overload above is a better match
-std::string toString(std::wstring::const_pointer) = delete; // only used in unittests
+std::string toString(std::wstring::const_pointer) = delete;   // only used in unittests
 std::string toString(std::u16string::const_pointer) = delete; // only used in unittests
 std::string toString(std::u32string::const_pointer) = delete; // only used in unittests
 
-inline std::ostream& operator<<(std::ostream& os, const coda_oss::u8string& s)
+inline std::ostream &operator<<(std::ostream &os, const coda_oss::u8string &s)
 {
     os << to_native(s);
     return os;
@@ -154,29 +152,22 @@ inline std::string toString(char value)
     return std::string(1, value);
 }
 
-template <typename T>
-inline std::string toString(const coda_oss::optional<T>& value)
+template <typename T> inline std::string toString(const coda_oss::optional<T> &value)
 {
     // TODO: handle empty/NULL optional?
     return toString(value.value());
 }
 
-template<typename T>
-inline std::string toString(const T& real, const T& imag)
+template <typename T> inline std::string toString(const T &real, const T &imag)
 {
     return toString(std::complex<T>(real, imag));
 }
 
-template <typename T>
-T toType(const std::string& s)
+template <typename T> T toType(const std::string &s)
 {
     if (s.empty())
         throw except::BadCastException(
-                except::Context(__FILE__,
-                                __LINE__,
-                                std::string(""),
-                                std::string(""),
-                                std::string("Empty string")));
+            except::Context(__FILE__, __LINE__, std::string(""), std::string(""), std::string("Empty string")));
 
     T value;
 
@@ -187,31 +178,24 @@ T toType(const std::string& s)
     if (buf.fail())
     {
         throw except::BadCastException(
-                except::Context(__FILE__,
-                                __LINE__,
-                                std::string(""),
-                                std::string(""),
-                                std::string("Conversion failed: '") + s +
-                                        std::string("' -> ") +
-                                        typeid(T).name()));
+            except::Context(__FILE__, __LINE__, std::string(""), std::string(""),
+                            std::string("Conversion failed: '") + s + std::string("' -> ") + typeid(T).name()));
     }
 
     return value;
 }
 
-template <>
-CODA_OSS_API bool toType<bool>(const std::string& s);
-template <>
-CODA_OSS_API std::string toType<std::string>(const std::string& s);
+template <> CODA_OSS_API bool toType<bool>(const std::string &s);
+template <> CODA_OSS_API std::string toType<std::string>(const std::string &s);
 
 /**
  *  strtoll wrapper for msvc compatibility.
  */
-CODA_OSS_API long long strtoll(const char* str, char** endptr, int base);
+CODA_OSS_API long long strtoll(const char *str, char **endptr, int base);
 /**
  *  strtoull wrapper for msvc compatibility.
  */
-CODA_OSS_API unsigned long long strtoull(const char* str, char** endptr, int base);
+CODA_OSS_API unsigned long long strtoull(const char *str, char **endptr, int base);
 
 /**
  *  Convert a string containing a number in any base to a numerical type.
@@ -221,12 +205,11 @@ CODA_OSS_API unsigned long long strtoull(const char* str, char** endptr, int bas
  *  @return a numberical representation of the number
  *  @throw BadCastException thrown if cast cannot be performed.
  */
-template <typename T>
-T toType(const std::string& s, int base)
+template <typename T> T toType(const std::string &s, int base)
 {
-    char* end;
+    char *end;
     errno = 0;
-    const char* str = s.c_str();
+    const char *str = s.c_str();
 
     T res;
     bool overflow = false;
@@ -243,10 +226,8 @@ T toType(const std::string& s, int base)
     else
     {
         const unsigned long long longRes = str::strtoull(str, &end, base);
-        if (longRes < static_cast<unsigned long long>(
-                              std::numeric_limits<T>::min()) ||
-            longRes > static_cast<unsigned long long>(
-                              std::numeric_limits<T>::max()))
+        if (longRes < static_cast<unsigned long long>(std::numeric_limits<T>::min()) ||
+            longRes > static_cast<unsigned long long>(std::numeric_limits<T>::max()))
         {
             overflow = true;
         }
@@ -255,24 +236,14 @@ T toType(const std::string& s, int base)
 
     if (overflow || errno == ERANGE)
         throw except::BadCastException(
-                except::Context(__FILE__,
-                                __LINE__,
-                                std::string(""),
-                                std::string(""),
-                                std::string("Overflow: '") + s +
-                                        std::string("' -> ") +
-                                        typeid(T).name()));
+            except::Context(__FILE__, __LINE__, std::string(""), std::string(""),
+                            std::string("Overflow: '") + s + std::string("' -> ") + typeid(T).name()));
     // If the end pointer is at the start of the string, we didn't convert
     // anything.
     else if (end == str)
         throw except::BadCastException(
-                except::Context(__FILE__,
-                                __LINE__,
-                                std::string(""),
-                                std::string(""),
-                                std::string("Conversion failed: '") + s +
-                                        std::string("' -> ") +
-                                        typeid(T).name()));
+            except::Context(__FILE__, __LINE__, std::string(""), std::string(""),
+                            std::string("Conversion failed: '") + s + std::string("' -> ") + typeid(T).name()));
 
     return res;
 }
@@ -284,33 +255,27 @@ T toType(const std::string& s, int base)
  *  @return The integer argument required by ios::precision() to represent
  *  this type.
  */
-template <typename T>
-int getPrecision(const T&)
+template <typename T> int getPrecision(const T &)
 {
     return 0;
 }
 
-template <typename T>
-int getPrecision(const std::complex<T>& type)
+template <typename T> int getPrecision(const std::complex<T> &type)
 {
     return getPrecision(type.real());
 }
 #if CODA_OSS_types_unique_ComplexInteger
-template <typename T>
-int getPrecision(const types::ComplexInteger<T>& type)
+template <typename T> int getPrecision(const types::ComplexInteger<T> &type)
 {
     return getPrecision(type.real());
 }
 #endif
 
-template <>
-int getPrecision(const float& type);
+template <> int getPrecision(const float &type);
 
-template <>
-int getPrecision(const double& type);
+template <> int getPrecision(const double &type);
 
-template <>
-int getPrecision(const long double& type);
+template <> int getPrecision(const long double &type);
 
 /** Generic casting routine; used by explicitly overloaded
  conversion operators.
@@ -320,12 +285,11 @@ int getPrecision(const long double& type);
  to the desired type, if possible.
  @throw BadCastException thrown if cast cannot be performed.
  */
-template <typename T>
-T generic_cast(const std::string& value)
+template <typename T> T generic_cast(const std::string &value)
 {
     return str::toType<T>(value);
 }
 
-}
+} // namespace str
 
 #endif // CODA_OSS_str_Convert_h_INCLUDED_

@@ -24,29 +24,29 @@
 #include <string.h> // strlen()
 #include <wchar.h>
 
-#include <map>
-#include <locale>
-#include <stdexcept>
-#include <iostream>
-#include <vector>
 #include <clocale>
 #include <cwchar>
+#include <iostream>
+#include <locale>
+#include <map>
+#include <stdexcept>
+#include <vector>
 
 #include "str/Convert.h"
 #include "str/Manip.h"
 
-template<> std::string str::toType<std::string>(const std::string& s)
+template <> std::string str::toType<std::string>(const std::string &s)
 {
     return s;
 }
 
-template<> bool str::toType<bool>(const std::string& s)
+template <> bool str::toType<bool>(const std::string &s)
 {
     if (eq(s, "true")) // case-insensitive compare
     {
         return true;
     }
-    if (eq(s, "false"))  // case-insensitive compare
+    if (eq(s, "false")) // case-insensitive compare
     {
         return false;
     }
@@ -81,16 +81,15 @@ unsigned long long str::strtoull(const char *str, char **endptr, int base)
 #endif
 }
 
-template<> CODA_OSS_API int str::getPrecision(const float&)
+template <> CODA_OSS_API int str::getPrecision(const float &)
 {
     return std::numeric_limits<float>::max_digits10;
 }
-template<> CODA_OSS_API int str::getPrecision(const double& )
+template <> CODA_OSS_API int str::getPrecision(const double &)
 {
     return std::numeric_limits<double>::max_digits10;
 }
-template <> CODA_OSS_API int str::getPrecision(const long double&)
+template <> CODA_OSS_API int str::getPrecision(const long double &)
 {
     return std::numeric_limits<long double>::max_digits10;
 }
-

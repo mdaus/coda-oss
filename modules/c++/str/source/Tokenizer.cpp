@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of str-c++ 
+ * This file is part of str-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * str-c++ is free software; you can redistribute it and/or modify
@@ -14,17 +14,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #include "str/Tokenizer.h"
 
-
-str::Tokenizer::Tokenizer(const std::string& str, const std::string& delim)
+str::Tokenizer::Tokenizer(const std::string &str, const std::string &delim)
 {
     const auto str_l = str.length();
     size_t pos = 0;
