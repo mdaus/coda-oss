@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of tiff-c++ 
+ * This file is part of tiff-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -35,13 +35,13 @@ namespace tiff
  * @brief A factory for creating tiff::GenericTypes
  *
  * Contains a static member function that creates an tiff::GenericType,
- * inserting the provided data as the specified type.  The types 
+ * inserting the provided data as the specified type.  The types
  * assume a specific size for the data, see tiff::Const for the size
  * of each TIFF type.
  *********************************************************************/
 class CODA_OSS_API TypeFactory final
 {
-public:
+  public:
     //! Default constructor
     TypeFactory()
     {
@@ -65,10 +65,9 @@ public:
      * @return
      *   a pointer to a TypeInterface
      *****************************************************************/
-    static tiff::TypeInterface *create(const unsigned char *data,
-            const unsigned short type);
+    static tiff::TypeInterface *create(const unsigned char *data, const unsigned short type);
 };
 
-} // End namespace.
+} // namespace tiff
 
 #endif // __TIFF_TYPE_FACTORY_H__

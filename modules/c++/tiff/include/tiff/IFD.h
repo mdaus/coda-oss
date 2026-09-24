@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of tiff-c++ 
+ * This file is part of tiff-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -25,9 +25,9 @@
 #include <map>
 #include <string>
 
-#include <import/io.h>
-#include <import/except.h>
 #include <config/Exports.h>
+#include <import/except.h>
+#include <import/io.h>
 
 #include "tiff/IFDEntry.h"
 #include "tiff/KnownTags.h"
@@ -41,14 +41,14 @@ namespace tiff
  * @class IFD
  * @brief The TIFF IFD class.  Contains all IFD Entries for an image.
  *
- * This is basically the TIFF footer for every TIFF image.  Each 
+ * This is basically the TIFF footer for every TIFF image.  Each
  * entry in it further defines the image it is associated with.
  * Contains functions for adding new entries to the IFD or adding
  * values to a specific IFD entry.
  *********************************************************************/
 class CODA_OSS_API IFD : public io::Serializable
 {
-public:
+  public:
     //! The IFDType
     typedef std::map<unsigned short, tiff::IFDEntry *> IFDType;
 
@@ -58,7 +58,7 @@ public:
     //! Deconstructor
     ~IFD() noexcept
     {
-        for (auto& kv : mIFD)
+        for (auto &kv : mIFD)
             delete kv.second;
     }
 
@@ -70,17 +70,17 @@ public:
      * @param name
      *   the name to look for in the IFD.
      * @return
-     *   the TIFFIFDEntry associated with the specified name, or 
+     *   the TIFFIFDEntry associated with the specified name, or
      *   NULL if the entry doesn't exist in the IFD
      *****************************************************************/
     tiff::IFDEntry *operator[](const char *name);
-    const tiff::IFDEntry* operator[](const char* name) const;
+    const tiff::IFDEntry *operator[](const char *name) const;
 
-    tiff::IFDEntry *operator[](const std::string& name)
+    tiff::IFDEntry *operator[](const std::string &name)
     {
         return this->operator[](name.c_str());
     }
-    const tiff::IFDEntry* operator[](const std::string& name) const
+    const tiff::IFDEntry *operator[](const std::string &name) const
     {
         return this->operator[](name.c_str());
     }
@@ -93,11 +93,11 @@ public:
      * @param name
      *   the tag to look for in the IFD.
      * @return
-     *   the TIFFIFDEntry associated with the specified tag, or 
+     *   the TIFFIFDEntry associated with the specified tag, or
      *   NULL if the entry doesn't exist in the IFD
      *****************************************************************/
     tiff::IFDEntry *operator[](unsigned short tag);
-    const tiff::IFDEntry* operator[](unsigned short tag) const;
+    const tiff::IFDEntry *operator[](unsigned short tag) const;
 
     /**
      * Returns true if an IFDEntry for the given tag exists in the IFD.
@@ -115,7 +115,7 @@ public:
      * Returns true if an IFDEntry with the given name exists in the IFD.
      * \return true if the entry exists, otherwise false.
      */
-    bool exists(const std::string& name) const
+    bool exists(const std::string &name) const
     {
         return exists(name.c_str());
     }
@@ -132,18 +132,18 @@ public:
 
     /**
      *****************************************************************
-     * Adds an IFDEntry with the specified name to the IFD.  Looks 
+     * Adds an IFDEntry with the specified name to the IFD.  Looks
      * up the specified name in the KnownTagsSingleton.
      *
      * @param name
      *   the name of the IFDEntry to copy into the IFD
      *****************************************************************/
-    void addEntry(const std::string& name);
+    void addEntry(const std::string &name);
 
     /**
      *****************************************************************
-     * Adds a IFDEntry with the specified name to the IFD.  Looks 
-     * up the specified name in the KnownTags Singleton.  Adds the 
+     * Adds a IFDEntry with the specified name to the IFD.  Looks
+     * up the specified name in the KnownTags Singleton.  Adds the
      * specified value to the added IFDEntry.
      *
      * @param name
@@ -151,10 +151,10 @@ public:
      * @param value
      *   the value to add to the IFDEntry
      *****************************************************************/
-    template <typename T> void addEntry(const std::string& name, const T& value)
+    template <typename T> void addEntry(const std::string &name, const T &value)
     {
         const tiff::IFDEntry *mapEntry = tiff::KnownTagsRegistry::getInstance()[name];
-        //we can't add it if we don't know about it
+        // we can't add it if we don't know about it
         if (!mapEntry)
             throw except::Exception(Ctxt(str::Format("Unable to add IFD Entry: unknown tag [%s]", name)));
 
@@ -163,8 +163,7 @@ public:
 
         mIFD[id] = new tiff::IFDEntry;
         *(mIFD[id]) = *mapEntry;
-        mIFD[id]->addValue(tiff::TypeFactory::create( (unsigned char *)&value,
-                type));
+        mIFD[id]->addValue(tiff::TypeFactory::create((unsigned char *)&value, type));
     }
 
     /**
@@ -177,15 +176,13 @@ public:
      * @param value
      *   the value to add to the IFDEntry
      *****************************************************************/
-    template <typename T> void addEntryValue(const std::string& name,
-            const T value)
+    template <typename T> void addEntryValue(const std::string &name, const T value)
     {
         tiff::IFDEntry *entry = (*this)[name.c_str()];
         if (!entry)
             throw except::Exception(Ctxt("IFD entry must exist before adding values"));
 
-        entry->addValue(tiff::TypeFactory::create((unsigned char *)&value,
-                entry->getType()));
+        entry->addValue(tiff::TypeFactory::create((unsigned char *)&value, entry->getType()));
     }
 
     /**
@@ -195,7 +192,7 @@ public:
      * @param output
      *   the output stream to write the IFD to
      *****************************************************************/
-    void serialize(io::OutputStream& output) override;
+    void serialize(io::OutputStream &output) override;
 
     /**
      *****************************************************************
@@ -204,8 +201,8 @@ public:
      * @param input
      *   the input stream to read the IFD from
      *****************************************************************/
-    void deserialize(io::InputStream& input) override;
-    void deserialize(io::InputStream& input, const bool reverseBytes);
+    void deserialize(io::InputStream &input) override;
+    void deserialize(io::InputStream &input, const bool reverseBytes);
 
     /**
      *****************************************************************
@@ -215,7 +212,7 @@ public:
      * @param output
      *   the output stream to print the IFD to
      *****************************************************************/
-    void print(io::OutputStream& output) const;
+    void print(io::OutputStream &output) const;
 
     /**
      *****************************************************************
@@ -234,47 +231,46 @@ public:
      * Calculates the image size in bytes from entries in the IFD and
      * returns the value.
      *
-     * @return 
+     * @return
      *   the calculated image size in bytes
      *****************************************************************/
     sys::Uint32_T getImageSize() const;
 
     /**
      *****************************************************************
-     * Calculates the image width in elements from entries in the 
+     * Calculates the image width in elements from entries in the
      * IFD and returns the value.
      *
-     * @return 
+     * @return
      *   the calculated image width in elements
      *****************************************************************/
     sys::Uint32_T getImageWidth() const;
 
     /**
      *****************************************************************
-     * Calculates the image length in lines from entries in the 
+     * Calculates the image length in lines from entries in the
      * IFD and returns the value.
      *
-     * @return 
+     * @return
      *   the calculated image length in lines
      *****************************************************************/
     sys::Uint32_T getImageLength() const;
 
     /**
      *****************************************************************
-     * Calculates the element size in bytes from entries in the 
+     * Calculates the element size in bytes from entries in the
      * IFD and returns the value.
      *
-     * @return 
+     * @return
      *   the calculated element size in bytes
      *****************************************************************/
     unsigned short getElementSize() const;
-    
-    
+
     unsigned short getNumBands() const;
 
     /**
      *****************************************************************
-     * Returns the file offset where the offset to the next IFD can 
+     * Returns the file offset where the offset to the next IFD can
      * be written.
      *
      * @return
@@ -285,8 +281,7 @@ public:
         return mNextIFDOffsetPosition;
     }
 
-private:
-
+  private:
     /**
      *****************************************************************
      * Finalizes all of the IFD entries.  Calculates the file offsets
@@ -294,7 +289,7 @@ private:
      * into each entry.
      *
      * @param offset
-     *   the file offset that indicates the beginning position of 
+     *   the file offset that indicates the beginning position of
      *   the IFD.
      * @return
      *   the highest overflow offset calculated, this marks the
@@ -313,6 +308,6 @@ private:
     sys::Uint32_T mNextIFDOffsetPosition = 0;
 };
 
-} // End namespace.
+} // namespace tiff
 
 #endif // __TIFF_IFD_H__

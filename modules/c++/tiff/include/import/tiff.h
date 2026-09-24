@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of tiff-c++ 
+ * This file is part of tiff-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,17 +24,16 @@
 #define __IMPORT_TIFF_H__
 
 #include "tiff/Common.h"
-#include "tiff/Header.h"
+#include "tiff/FileReader.h"
+#include "tiff/FileWriter.h"
 #include "tiff/GenericType.h"
-#include "tiff/IFDEntry.h"
+#include "tiff/Header.h"
 #include "tiff/IFD.h"
+#include "tiff/IFDEntry.h"
+#include "tiff/ImageReader.h"
+#include "tiff/ImageWriter.h"
 #include "tiff/KnownTags.h"
 #include "tiff/TypeFactory.h"
-#include "tiff/ImageReader.h"
-#include "tiff/FileReader.h"
-#include "tiff/ImageWriter.h"
-#include "tiff/FileWriter.h"
 #include "tiff/Utils.h"
 
 #endif
-

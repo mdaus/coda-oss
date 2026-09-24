@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of tiff-c++ 
+ * This file is part of tiff-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #include "tiff/IFD.h"
 #include "tiff/Common.h"
@@ -27,20 +26,21 @@
 #include "tiff/IFDEntry.h"
 #include "tiff/KnownTags.h"
 
-#include <string>
-#include <sstream>
-#include <import/io.h>
 #include <import/except.h>
+#include <import/io.h>
+#include <sstream>
+#include <string>
 
 tiff::IFDEntry *tiff::IFD::operator[](const char *name)
 {
     tiff::IFDEntry *mapEntry = tiff::KnownTagsRegistry::getInstance()[name];
-    if (!mapEntry) return nullptr;
+    if (!mapEntry)
+        return nullptr;
     return (*this)[mapEntry->getTagID()];
 }
-const tiff::IFDEntry* tiff::IFD::operator[](const char* name) const
+const tiff::IFDEntry *tiff::IFD::operator[](const char *name) const
 {
-    tiff::IFDEntry* mapEntry = tiff::KnownTagsRegistry::getInstance()[name];
+    tiff::IFDEntry *mapEntry = tiff::KnownTagsRegistry::getInstance()[name];
     if (!mapEntry)
         return nullptr;
     return (*this)[mapEntry->getTagID()];
@@ -55,7 +55,7 @@ tiff::IFDEntry *tiff::IFD::operator[](unsigned short tag)
     // a key already exists of not.
     return exists(tag) ? mIFD[tag] : nullptr;
 }
-const tiff::IFDEntry* tiff::IFD::operator[](unsigned short tag) const
+const tiff::IFDEntry *tiff::IFD::operator[](unsigned short tag) const
 {
     // Ensures that the key exists.  Without this check, the defined
     // behavior for the [] operator is to create an entry if it does
@@ -85,7 +85,7 @@ void tiff::IFD::addEntry(const tiff::IFDEntry *entry)
     *(mIFD[id]) = *entry;
 }
 
-void tiff::IFD::addEntry(const std::string& name)
+void tiff::IFD::addEntry(const std::string &name)
 {
     tiff::IFDEntry *mapEntry = tiff::KnownTagsRegistry::getInstance()[name];
     // we can't add it b/c we don't know about this tag
@@ -98,12 +98,12 @@ void tiff::IFD::addEntry(const std::string& name)
     *(mIFD[id]) = *mapEntry;
 }
 
-void tiff::IFD::deserialize(io::InputStream& input)
+void tiff::IFD::deserialize(io::InputStream &input)
 {
     deserialize(input, false);
 }
 
-void tiff::IFD::deserialize(io::InputStream& input, const bool reverseBytes)
+void tiff::IFD::deserialize(io::InputStream &input, const bool reverseBytes)
 {
     unsigned short ifdEntryCount;
     input.read((sys::byte *)&ifdEntryCount, sizeof(ifdEntryCount));
@@ -118,10 +118,9 @@ void tiff::IFD::deserialize(io::InputStream& input, const bool reverseBytes)
     }
 }
 
-void tiff::IFD::serialize(io::OutputStream& output)
+void tiff::IFD::serialize(io::OutputStream &output)
 {
-    io::Seekable *seekable =
-            dynamic_cast<io::Seekable *>(&output);
+    io::Seekable *seekable = dynamic_cast<io::Seekable *>(&output);
     if (seekable == nullptr)
         throw except::Exception(Ctxt("Can only serialize IFD to seekable stream"));
 
@@ -153,7 +152,7 @@ void tiff::IFD::serialize(io::OutputStream& output)
     seekable->seek(endOffset, io::Seekable::START);
 }
 
-void tiff::IFD::print(io::OutputStream& output) const
+void tiff::IFD::print(io::OutputStream &output) const
 {
     sys::Uint32_T x = 1;
 
@@ -204,23 +203,22 @@ sys::Uint32_T tiff::IFD::getImageSize() const
 unsigned short tiff::IFD::getNumBands() const
 {
     unsigned short numBands = 1;
-    
+
     auto samplesPerPixel = (*this)[tiff::KnownTags::SAMPLES_PER_PIXEL];
     auto bitsPerSample = (*this)[tiff::KnownTags::BITS_PER_SAMPLE];
-    
+
     if (samplesPerPixel)
         numBands = *(::tiff::GenericType<unsigned short> *)(*samplesPerPixel)[0];
     else if (bitsPerSample)
         numBands = static_cast<unsigned short>(bitsPerSample->getCount());
-    
+
     return numBands;
 }
 
 unsigned short tiff::IFD::getElementSize() const
 {
     auto bitsPerSample = (*this)[tiff::KnownTags::BITS_PER_SAMPLE];
-    const auto bytesPerSample = (!bitsPerSample) ? 1
-            : *(tiff::GenericType<unsigned short> *)(*bitsPerSample)[0] >> 3;
+    const auto bytesPerSample = (!bitsPerSample) ? 1 : *(tiff::GenericType<unsigned short> *)(*bitsPerSample)[0] >> 3;
 
     return static_cast<unsigned short>(bytesPerSample * getNumBands());
 }
@@ -231,8 +229,8 @@ sys::Uint32_T tiff::IFD::finalize(const sys::Uint32_T offset)
     // the size of an IFD entry multiplied by the number of entries, plus
     // 4 bytes to hold the offset to the next IFD, and 2 bytes to hold the
     // IFD entry count.
-    auto dataOffset = static_cast<sys::Uint32_T>(offset + sizeof(short) + (mIFD.size()
-            * tiff::IFDEntry::sizeOf()) + sizeof(sys::Uint32_T));
+    auto dataOffset = static_cast<sys::Uint32_T>(offset + sizeof(short) + (mIFD.size() * tiff::IFDEntry::sizeOf()) +
+                                                 sizeof(sys::Uint32_T));
 
     for (IFDType::iterator i = mIFD.begin(); i != mIFD.end(); ++i)
     {

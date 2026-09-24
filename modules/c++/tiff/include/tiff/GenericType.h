@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of tiff-c++ 
+ * This file is part of tiff-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,8 +23,8 @@
 #ifndef __TIFF_GENERIC_TYPE_H__
 #define __TIFF_GENERIC_TYPE_H__
 
-#include <string>
 #include <import/io.h>
+#include <string>
 
 #include "tiff/Common.h"
 
@@ -38,7 +38,7 @@ namespace tiff
  *********************************************************************/
 class TypeInterface : public io::Serializable
 {
-public:
+  public:
     //! Default constructor
     TypeInterface()
     {
@@ -88,18 +88,15 @@ public:
  * the data to a string for printing, and retrieving the data in
  * byte form.
  *********************************************************************/
-template <typename Data_T, typename Strategy_T = tiff::PrintStrategy> class GenericType :
-    public TypeInterface
+template <typename Data_T, typename Strategy_T = tiff::PrintStrategy> class GenericType : public TypeInterface
 {
-public:
+  public:
     //! Default constructor
-    GenericType() :
-        mData(0)
+    GenericType() : mData(0)
     {
     }
 
-    explicit GenericType(std::string s) :
-        mData(str::toType<Data_T>(s))
+    explicit GenericType(std::string s) : mData(str::toType<Data_T>(s))
     {
     }
 
@@ -112,8 +109,8 @@ public:
      *****************************************************************/
     GenericType(const unsigned char *data)
     {
-        const void* const pData = data;
-        mData = *(static_cast<const Data_T*>(pData));
+        const void *const pData = data;
+        mData = *(static_cast<const Data_T *>(pData));
     }
 
     //! Deconstructor
@@ -128,7 +125,7 @@ public:
      * @param output
      *   the output stream to write the member to
      *****************************************************************/
-    virtual void serialize(io::OutputStream& output) override
+    virtual void serialize(io::OutputStream &output) override
     {
         output.write((char *)&mData, sizeof(Data_T));
     }
@@ -140,7 +137,7 @@ public:
      * @param input
      *   the input stream to read the member from
      *****************************************************************/
-    virtual void deserialize(io::InputStream& input) override
+    virtual void deserialize(io::InputStream &input) override
     {
         input.read((char *)&mData, sizeof(Data_T));
     }
@@ -172,12 +169,11 @@ public:
         return mData;
     }
 
-protected:
-
+  protected:
     //! The member data
     Data_T mData;
 };
 
-} // End namespace.
+} // namespace tiff
 
 #endif // __TIFF_GENERIC_TYPE_H__

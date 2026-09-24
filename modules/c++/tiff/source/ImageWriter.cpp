@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of tiff-c++ 
+ * This file is part of tiff-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
@@ -14,17 +14,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "tiff/ImageWriter.h"
 
-#include <sstream>
 #include <cmath>
 #include <import/except.h>
+#include <sstream>
 
 #include "gsl/gsl.h"
 
@@ -34,8 +34,7 @@
 
 const unsigned short tiff::ImageWriter::CHUNK_SIZE = 8192;
 
-void tiff::ImageWriter::putData(const unsigned char *buffer,
-                                sys::Uint32_T numElementsToWrite)
+void tiff::ImageWriter::putData(const unsigned char *buffer, sys::Uint32_T numElementsToWrite)
 {
     validate();
 
@@ -87,7 +86,7 @@ void tiff::ImageWriter::validate()
     // Compression
     tiff::IFDEntry *compression = mIFD["Compression"];
     if (!compression)
-        mIFD.addEntry("Compression", (unsigned short) 1);
+        mIFD.addEntry("Compression", (unsigned short)1);
     else
     {
         if (*(tiff::GenericType<unsigned short> *)(*compression)[0] != 1)
@@ -98,27 +97,25 @@ void tiff::ImageWriter::validate()
     tiff::IFDEntry *xResolution = mIFD["XResolution"];
     if (!xResolution)
     {
-        mIFD.addEntry("XResolution", tiff::combine(
-                          (sys::Uint32_T) 72, (sys::Uint32_T) 1));
+        mIFD.addEntry("XResolution", tiff::combine((sys::Uint32_T)72, (sys::Uint32_T)1));
     }
 
     // YResolution
     tiff::IFDEntry *yResolution = mIFD["YResolution"];
     if (!yResolution)
     {
-        mIFD.addEntry("YResolution", tiff::combine(
-                          (sys::Uint32_T) 72, (sys::Uint32_T) 1));
+        mIFD.addEntry("YResolution", tiff::combine((sys::Uint32_T)72, (sys::Uint32_T)1));
     }
 
     // ResolutionUnit
     tiff::IFDEntry *resolutionUnit = mIFD["ResolutionUnit"];
     if (!resolutionUnit)
-        mIFD.addEntry("ResolutionUnit", (unsigned short) 2);
+        mIFD.addEntry("ResolutionUnit", (unsigned short)2);
 
     // SamplesPerPixel
     tiff::IFDEntry *samplesPerPixel = mIFD["SamplesPerPixel"];
-    unsigned short spp = (!samplesPerPixel) ? 0
-            : (unsigned short)*(tiff::GenericType<unsigned short> *)(*samplesPerPixel)[0];
+    unsigned short spp =
+        (!samplesPerPixel) ? 0 : (unsigned short)*(tiff::GenericType<unsigned short> *)(*samplesPerPixel)[0];
 
     // PhotometricInterpretation
     tiff::IFDEntry *photoInterp = mIFD["PhotometricInterpretation"];
@@ -136,7 +133,7 @@ void tiff::ImageWriter::validate()
         if (!samplesPerPixel)
         {
             spp = 3;
-            mIFD.addEntry("SamplesPerPixel", (unsigned short) spp);
+            mIFD.addEntry("SamplesPerPixel", (unsigned short)spp);
             samplesPerPixel = mIFD["SamplesPerPixel"];
         }
         else
@@ -167,17 +164,16 @@ void tiff::ImageWriter::validate()
         for (int i = 0; i < spp; ++i)
         {
             if (!bitsPerSample)
-                mIFD.addEntry("BitsPerSample", (unsigned short) 8);
+                mIFD.addEntry("BitsPerSample", (unsigned short)8);
             else
             {
                 unsigned short bps = *(tiff::GenericType<unsigned short> *)(*bitsPerSample)[0];
 
                 if (!(*bitsPerSample)[i])
-                    mIFD.addEntryValue("BitsPerSample", (unsigned short) bps);
+                    mIFD.addEntryValue("BitsPerSample", (unsigned short)bps);
                 else
                 {
-                    unsigned short value =
-                            *(tiff::GenericType<unsigned short> *)(*bitsPerSample)[i];
+                    unsigned short value = *(tiff::GenericType<unsigned short> *)(*bitsPerSample)[i];
                     if (value != 8 && i < 3)
                         throw except::Exception(Ctxt("BitsPerSample values must be 8 for RGB files"));
                 }
@@ -188,11 +184,10 @@ void tiff::ImageWriter::validate()
             {
                 unsigned short format = *(tiff::GenericType<unsigned short> *)(*sampleFormat)[0];
                 if (!(*sampleFormat)[i])
-                    mIFD.addEntryValue("SampleFormat", (unsigned short) format);
+                    mIFD.addEntryValue("SampleFormat", (unsigned short)format);
                 else
                 {
-                    unsigned short value =
-                            *(tiff::GenericType<unsigned short> *)(*sampleFormat)[i];
+                    unsigned short value = *(tiff::GenericType<unsigned short> *)(*sampleFormat)[i];
                     if (value != 1 && i < 3)
                         throw except::Exception(Ctxt("SampleFormat values must be 1 for RGB files"));
                 }
@@ -201,7 +196,7 @@ void tiff::ImageWriter::validate()
     }
 
     if (!bitsPerSample)
-        mIFD.addEntry("BitsPerSample", (unsigned short) 8);
+        mIFD.addEntry("BitsPerSample", (unsigned short)8);
 
     mElementSize = mIFD.getElementSize();
 
@@ -232,17 +227,15 @@ void tiff::ImageWriter::validate()
 
 void tiff::ImageWriter::initTiles()
 {
-    const sys::Uint32_T root = (sys::Uint32_T)sqrt((double)mIdealChunkSize
-            / (double)mIFD.getElementSize());
+    const sys::Uint32_T root = (sys::Uint32_T)sqrt((double)mIdealChunkSize / (double)mIFD.getElementSize());
     const sys::Uint32_T ceiling = (sys::Uint32_T)ceil(((double)root) / 16);
     const sys::Uint32_T tileSize = ceiling * 16;
 
-    mIFD.addEntry("TileWidth", (sys::Uint32_T) tileSize);
-    mIFD.addEntry("TileLength", (sys::Uint32_T) tileSize);
+    mIFD.addEntry("TileWidth", (sys::Uint32_T)tileSize);
+    mIFD.addEntry("TileLength", (sys::Uint32_T)tileSize);
 
     auto fileOffset = mOutput->tell();
-    const sys::Uint32_T tilesAcross = (mIFD.getImageWidth() + tileSize - 1)
-            / tileSize;
+    const sys::Uint32_T tilesAcross = (mIFD.getImageWidth() + tileSize - 1) / tileSize;
     const sys::Uint32_T tilesDown = (mIFD.getImageLength() + tileSize - 1) / tileSize;
 
     const unsigned short elementSize = mIFD.getElementSize();
@@ -254,8 +247,8 @@ void tiff::ImageWriter::initTiles()
         for (sys::Uint32_T x = 0; x < tilesAcross; ++x)
         {
             const sys::Uint32_T byteCount = tileSize * tileSize * elementSize;
-            mIFD.addEntryValue("TileOffsets", (sys::Uint32_T) fileOffset);
-            mIFD.addEntryValue("TileByteCounts", (sys::Uint32_T) byteCount);
+            mIFD.addEntryValue("TileOffsets", (sys::Uint32_T)fileOffset);
+            mIFD.addEntryValue("TileByteCounts", (sys::Uint32_T)byteCount);
             fileOffset += byteCount;
         }
     }
@@ -276,8 +269,7 @@ void tiff::ImageWriter::initStrips()
         stripByteCount = bytesPerLine;
     else
     {
-        rowsPerStrip = (mIdealChunkSize + (mIdealChunkSize >> 1))
-                / bytesPerLine;
+        rowsPerStrip = (mIdealChunkSize + (mIdealChunkSize >> 1)) / bytesPerLine;
         stripByteCount = bytesPerLine * rowsPerStrip;
     }
 
@@ -285,8 +277,7 @@ void tiff::ImageWriter::initStrips()
 
     const sys::Uint32_T length = mIFD.getImageLength();
     const sys::Uint32_T stripsPerImage =
-            (sys::Uint32_T)floor(static_cast<double>(length + rowsPerStrip - 1)
-                    / static_cast<double>(rowsPerStrip));
+        (sys::Uint32_T)floor(static_cast<double>(length + rowsPerStrip - 1) / static_cast<double>(rowsPerStrip));
 
     auto offset = mOutput->tell();
 
@@ -295,26 +286,24 @@ void tiff::ImageWriter::initStrips()
     mIFD.addEntry("StripByteCounts");
     for (sys::Uint32_T i = 0; i < stripsPerImage - 1; ++i)
     {
-        mIFD.addEntryValue("StripOffsets", (sys::Uint32_T) offset);
-        mIFD.addEntryValue("StripByteCounts", (sys::Uint32_T) stripByteCount);
+        mIFD.addEntryValue("StripOffsets", (sys::Uint32_T)offset);
+        mIFD.addEntryValue("StripByteCounts", (sys::Uint32_T)stripByteCount);
         offset += stripByteCount;
     }
 
     // Add the last offset.
-    mIFD.addEntryValue("StripOffsets", (sys::Uint32_T) offset);
+    mIFD.addEntryValue("StripOffsets", (sys::Uint32_T)offset);
 
     // The last byte count can be less than the previous counts.  This occurs
     // (for example) if RowsPerStrip is even, and ImageLength is odd.
-    sys::Uint32_T remainingBytes = mIFD.getImageSize() - ((stripsPerImage - 1)
-            * stripByteCount);
+    sys::Uint32_T remainingBytes = mIFD.getImageSize() - ((stripsPerImage - 1) * stripByteCount);
 
     // Add the last byteCount.
     mIFD.addEntryValue("StripByteCounts", remainingBytes);
     mStripByteCounts = mIFD["StripByteCounts"];
 }
 
-void tiff::ImageWriter::putTileData(const unsigned char *buffer,
-                                    sys::Uint32_T numElementsToWrite)
+void tiff::ImageWriter::putTileData(const unsigned char *buffer, sys::Uint32_T numElementsToWrite)
 {
     const sys::Uint32_T imageElemWidth = mIFD.getImageWidth();
     const sys::Uint32_T imageByteWidth = imageElemWidth * mElementSize;
@@ -336,9 +325,8 @@ void tiff::ImageWriter::putTileData(const unsigned char *buffer,
     sys::Uint32_T remainingElementsToWrite = numElementsToWrite;
     while (remainingElementsToWrite)
     {
-        if (((mBytePosition + currentNumBytesRead) / imageByteWidth)
-                / tileElemLength > (tempBytePosition / imageByteWidth)
-                / tileElemLength)
+        if (((mBytePosition + currentNumBytesRead) / imageByteWidth) / tileElemLength >
+            (tempBytePosition / imageByteWidth) / tileElemLength)
         {
             tempBytePosition = mBytePosition + currentNumBytesRead;
             globalReadOffset = currentNumBytesRead;
@@ -360,12 +348,10 @@ void tiff::ImageWriter::putTileData(const unsigned char *buffer,
         const sys::Uint32_T rowInTile = row % tileElemLength;
         sys::Uint32_T paddedBytes = ((tileColumn + 1) / tilesAcross) * widthPadding;
 
-        sys::Uint32_T remainingBytesInTile = tileByteCount - (tileElemLength
-                * paddedBytes) - (rowInTile * (tileByteWidth - paddedBytes)
-                + (column % tileByteWidth));
+        sys::Uint32_T remainingBytesInTile = tileByteCount - (tileElemLength * paddedBytes) -
+                                             (rowInTile * (tileByteWidth - paddedBytes) + (column % tileByteWidth));
 
-        tempBytePosition += tileByteWidth - (paddedBytes + (column
-                % tileByteWidth));
+        tempBytePosition += tileByteWidth - (paddedBytes + (column % tileByteWidth));
 
         sys::byte *copyBuffer = new sys::byte[tileByteWidth * tileElemLength];
         memset(copyBuffer, 0, tileByteWidth * tileElemLength);
@@ -375,8 +361,7 @@ void tiff::ImageWriter::putTileData(const unsigned char *buffer,
         unsigned short iteration = 0;
         while (readOffset < numBytesToWrite)
         {
-            sys::Uint32_T remainingBytesThisLine = tileByteWidth - (paddedBytes
-                    + (tempColumn % tileByteWidth));
+            sys::Uint32_T remainingBytesThisLine = tileByteWidth - (paddedBytes + (tempColumn % tileByteWidth));
 
             sys::Uint32_T numBytesToCopy = remainingBytesThisLine;
 
@@ -395,8 +380,7 @@ void tiff::ImageWriter::putTileData(const unsigned char *buffer,
 
             if (paddedBytes)
             {
-                if (((tempColumn % tileByteWidth) + numBytesToCopy)
-                        / (tileByteWidth - paddedBytes) == 0)
+                if (((tempColumn % tileByteWidth) + numBytesToCopy) / (tileByteWidth - paddedBytes) == 0)
                     paddedBytes = 0;
             }
 
@@ -414,7 +398,7 @@ void tiff::ImageWriter::putTileData(const unsigned char *buffer,
         seekPos += (column % tileByteWidth);
         mOutput->seek(seekPos, io::Seekable::START);
         mOutput->write(copyBuffer, copyOffset);
-        delete [] copyBuffer;
+        delete[] copyBuffer;
     }
 
     mBytePosition += numBytesToWrite;
@@ -423,8 +407,7 @@ void tiff::ImageWriter::putTileData(const unsigned char *buffer,
     if (mBytePosition == mIFD.getImageSize())
     {
         sys::Uint32_T imageElemLength = mIFD.getImageLength();
-        sys::Uint32_T tilesDown = (imageElemLength + tileElemLength - 1)
-                / tileElemLength;
+        sys::Uint32_T tilesDown = (imageElemLength + tileElemLength - 1) / tileElemLength;
         const sys::Uint32_T startIndex = (tilesDown - 1) * tilesAcross;
         const sys::Uint32_T paddingStartLine = imageElemLength % tileElemLength;
         if (paddingStartLine)
@@ -442,10 +425,10 @@ void tiff::ImageWriter::putTileData(const unsigned char *buffer,
                 mOutput->write(padBuffer, paddedLines * tileByteWidth);
             }
 
-            delete [] padBuffer;
+            delete[] padBuffer;
         }
 
-        // If no padding, seek the end of the image.  This is so that 
+        // If no padding, seek the end of the image.  This is so that
         // when the IFD is written, it doesn't try to write it into the
         // middle of the file.  This is a patch and a better solution
         // should probably be found.
@@ -459,8 +442,7 @@ void tiff::ImageWriter::putTileData(const unsigned char *buffer,
     }
 }
 
-void tiff::ImageWriter::putStripData(const unsigned char *buffer,
-                                     sys::Uint32_T numElementsToWrite)
+void tiff::ImageWriter::putStripData(const unsigned char *buffer, sys::Uint32_T numElementsToWrite)
 {
     sys::Uint32_T stripSize = *(tiff::GenericType<sys::Uint32_T> *)(*mStripByteCounts)[0];
     sys::Uint32_T bufferIndex = 0;
@@ -473,7 +455,7 @@ void tiff::ImageWriter::putStripData(const unsigned char *buffer,
 
         // Calculate what remains to be written in the current strip.
         sys::Uint32_T remainingBytesInStrip =
-                (*(tiff::GenericType<sys::Uint32_T> *)(*mStripByteCounts)[stripIndex]) - stripPosition;
+            (*(tiff::GenericType<sys::Uint32_T> *)(*mStripByteCounts)[stripIndex]) - stripPosition;
 
         if (bytesToWrite > remainingBytesInStrip)
             bytesToWrite = remainingBytesInStrip;

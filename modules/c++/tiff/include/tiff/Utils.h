@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of tiff-c++ 
+ * This file is part of tiff-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -30,17 +30,15 @@ namespace tiff
 
 class Utils
 {
-public:
+  public:
+    static bool hasGeoTiffIFD(const tiff::IFD *inputIFD);
+    static tiff::IFD *createGeoTiffIFD(tiff::IFD *inputIFD);
 
-    static bool hasGeoTiffIFD(const tiff::IFD* inputIFD);
-    static tiff::IFD* createGeoTiffIFD(tiff::IFD* inputIFD);
-
-private:
+  private:
     Utils()
     {
     }
-
 };
 
-}
+} // namespace tiff
 #endif // __TIFF_UTILS_H__

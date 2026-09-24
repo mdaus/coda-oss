@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of tiff-c++ 
+ * This file is part of tiff-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
@@ -14,20 +14,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
+#include <fstream>
 #include <import/except.h>
 #include <import/io.h>
 #include <import/tiff.h>
-#include <fstream>
 
 using namespace sys;
 
-int main(int, char**)
+int main(int, char **)
 {
     try
     {
@@ -40,10 +40,10 @@ int main(int, char**)
         entry2.print(st);
         entry2.print(st);
     }
-    catch (except::Throwable& t)
+    catch (except::Throwable &t)
     {
         std::cerr << "Caught throwable: " << t.toString() << std::endl;
-        exit( EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
     catch (...)
     {

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of tiff-c++ 
+ * This file is part of tiff-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
@@ -14,19 +14,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 #ifndef __TIFF_IMAGE_READER_H__
 #define __TIFF_IMAGE_READER_H__
 
-#include <import/io.h>
 #include <config/Exports.h>
+#include <import/io.h>
 
-#include "tiff/IFDEntry.h"
 #include "tiff/IFD.h"
+#include "tiff/IFDEntry.h"
 
 namespace tiff
 {
@@ -41,7 +41,7 @@ namespace tiff
  *********************************************************************/
 class CODA_OSS_API ImageReader
 {
-public:
+  public:
     /**
      *****************************************************************
      * Constructor.  Sets the image reader to read from the specified
@@ -50,10 +50,9 @@ public:
      * @param input
      *   the stream to read the TIFF image from
      *****************************************************************/
-    ImageReader(io::FileInputStream *input) :
-        mIFD(), mStripByteCounts(nullptr), mStripOffsets(nullptr), mInput(input),
-                mNextOffset(0), mBytePosition(0), mStripIndex(0),
-                mElementSize(0), mReverseBytes(false)
+    ImageReader(io::FileInputStream *input)
+        : mIFD(), mStripByteCounts(nullptr), mStripOffsets(nullptr), mInput(input), mNextOffset(0), mBytePosition(0),
+          mStripIndex(0), mElementSize(0), mReverseBytes(false)
     {
     }
 
@@ -83,7 +82,7 @@ public:
      * Gets the specified number of elements from the TIFF image and
      * stores them into the specified buffer.  The buffer must be
      * allocated outside because it is not allocated in this function.
-     * 
+     *
      * @param buffer
      *   the buffer to populate with image data
      * @param numElementsToRead
@@ -98,7 +97,7 @@ public:
      * @return
      *   a pointer to the IFD for this image
      *****************************************************************/
-    tiff::IFD* getIFD()
+    tiff::IFD *getIFD()
     {
         return &mIFD;
     }
@@ -115,7 +114,7 @@ public:
 
     /**
      *****************************************************************
-     * Returns the offset to the next IFD.  Used to determine if 
+     * Returns the offset to the next IFD.  Used to determine if
      * there is another image in the file, and if so where is the
      * file position of the next image's IFD.
      *
@@ -127,11 +126,10 @@ public:
         return mNextOffset;
     }
 
-private:
-
+  private:
     /**
      *****************************************************************
-     * Reads the specified number of elements into the specified 
+     * Reads the specified number of elements into the specified
      * buffer, in TIFF stripped format.  Converts the TIFF image from
      * the TIFF stripped format into raster format.
      * @param buffer
@@ -143,7 +141,7 @@ private:
 
     /**
      *****************************************************************
-     * Reads the specified number of elements into the specified 
+     * Reads the specified number of elements into the specified
      * buffer, in TIFF tiled format.  Converts the TIFF image from
      * the TIFF tiled format into raster format.
      * @param buffer
@@ -170,7 +168,7 @@ private:
 
     //! Used to keep track of the current read position in the file.
     sys::Uint32_T mBytePosition;
-    
+
     sys::Uint32_T mStripIndex;
 
     //! The element size of the image.
@@ -180,6 +178,6 @@ private:
     bool mReverseBytes;
 };
 
-} // End namespace.
+} // namespace tiff
 
 #endif // __TIFF_IMAGE_READER_H__

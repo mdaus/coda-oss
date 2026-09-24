@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of tiff-c++ 
+ * This file is part of tiff-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
@@ -14,24 +14,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 #include "tiff/TiffFileReader.h"
 
+#include <import/except.h>
+#include <import/io.h>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <sstream>
-#include <import/io.h>
-#include <import/except.h>
 
-#include "tiff/ImageReader.h"
 #include "tiff/IFD.h"
+#include "tiff/ImageReader.h"
 
-
-void tiff::FileReader::openFile(const std::string& fileName)
+void tiff::FileReader::openFile(const std::string &fileName)
 {
     if (mInput.isOpen())
         throw except::Exception(Ctxt("Last file not closed; call close() first."));
@@ -48,7 +47,7 @@ void tiff::FileReader::openFile(const std::string& fileName)
 
     // Read TIFF header from input
     mHeader.deserialize(mInput);
-    
+
     mReverseBytes = mHeader.isDifferentByteOrdering();
     sys::Uint32_T offset = mHeader.getIFDOffset();
     while (offset != 0)
@@ -79,7 +78,7 @@ void tiff::FileReader::close()
 tiff::ImageReader *tiff::FileReader::operator[](const sys::Uint32_T index) const
 {
     if (index >= mImages.size())
-    throw except::Exception(Ctxt(str::Format("Index out of range: %d", index)));
+        throw except::Exception(Ctxt(str::Format("Index out of range: %d", index)));
 
     return mImages[index];
 }
@@ -102,13 +101,11 @@ void tiff::FileReader::print(io::OutputStream &output) const
     }
 }
 
-void tiff::FileReader::getData(unsigned char *buffer,
-        const sys::Uint32_T numElementsToRead, const sys::Uint32_T imageIndex)
+void tiff::FileReader::getData(unsigned char *buffer, const sys::Uint32_T numElementsToRead,
+                               const sys::Uint32_T imageIndex)
 {
     if (imageIndex >= mImages.size())
         throw except::Exception(Ctxt(str::Format("Index out of range", imageIndex)));
 
     mImages[imageIndex]->getData(buffer, numElementsToRead);
 }
-
-

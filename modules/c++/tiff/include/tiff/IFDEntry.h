@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of tiff-c++ 
+ * This file is part of tiff-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -27,9 +27,9 @@
 #include <string>
 #include <vector>
 
-#include <import/io.h>
-#include "sys/Conf.h"
 #include "config/Exports.h"
+#include "sys/Conf.h"
+#include <import/io.h>
 
 #include "tiff/GenericType.h"
 
@@ -50,10 +50,9 @@ namespace tiff
  *********************************************************************/
 class CODA_OSS_API IFDEntry : public io::Serializable
 {
-public:
+  public:
     //! Constructor
-    IFDEntry() :
-        mTag(0), mType(0), mCount(0), mOffset(0)
+    IFDEntry() : mTag(0), mType(0), mCount(0), mOffset(0)
     {
     }
 
@@ -71,9 +70,9 @@ public:
      * @param count
      *   the number of values for this entry
      *****************************************************************/
-    IFDEntry(const unsigned short tag, const unsigned short type,
-            const std::string& name, const sys::Uint32_T count = 0) :
-        mTag(tag), mType(type), mCount(count), mOffset(0), mName(name)
+    IFDEntry(const unsigned short tag, const unsigned short type, const std::string &name,
+             const sys::Uint32_T count = 0)
+        : mTag(tag), mType(type), mCount(count), mOffset(0), mName(name)
     {
     }
 
@@ -89,9 +88,8 @@ public:
      * @param count
      *   the number of values for this entry
      *****************************************************************/
-    IFDEntry(const unsigned short tag, const unsigned short type,
-            const sys::Uint32_T count = 0) :
-        mTag(tag), mType(type), mCount(count), mOffset(0)
+    IFDEntry(const unsigned short tag, const unsigned short type, const sys::Uint32_T count = 0)
+        : mTag(tag), mType(type), mCount(count), mOffset(0)
     {
     }
 
@@ -123,7 +121,7 @@ public:
      * @param output
      *   the output stream to write the entry to
      *****************************************************************/
-    void serialize(io::OutputStream& output) override;
+    void serialize(io::OutputStream &output) override;
 
     /**
      *****************************************************************
@@ -132,18 +130,18 @@ public:
      * @param input
      *   the input stream to read the entry from
      *****************************************************************/
-    void deserialize(io::InputStream& input) override;
-    void deserialize(io::InputStream& input, const bool reverseBytes);
+    void deserialize(io::InputStream &input) override;
+    void deserialize(io::InputStream &input, const bool reverseBytes);
 
     /**
      *****************************************************************
-     * Prints the IFD entry in a readable format to the specified 
+     * Prints the IFD entry in a readable format to the specified
      * output stream.
      *
      * @param output
      *   the output stream to write the entry to
      *****************************************************************/
-    void print(io::OutputStream& output) const;
+    void print(io::OutputStream &output) const;
 
     /**
      *****************************************************************
@@ -152,7 +150,7 @@ public:
      * @return
      *  the name of the IFD entry.
      *****************************************************************/
-    const std::string& getName() const
+    const std::string &getName() const
     {
         return mName;
     }
@@ -224,7 +222,7 @@ public:
      * @return
      *  the vector of values in the IFD entry.
      *****************************************************************/
-    const std::vector<tiff::TypeInterface *>& getValues() const
+    const std::vector<tiff::TypeInterface *> &getValues() const
     {
         return mValues;
     }
@@ -263,7 +261,7 @@ public:
      * @param value
      *   the tiff::GenericType to add as a value
      *****************************************************************/
-    void addValue(std::unique_ptr<tiff::TypeInterface>&& value)
+    void addValue(std::unique_ptr<tiff::TypeInterface> &&value)
     {
         mValues.push_back(value.get());
         ++mCount;
@@ -304,7 +302,7 @@ public:
      * @param tiffType
      *   the type of the value to use.  defaults to ascii.
      *****************************************************************/
-    void addValues(const std::string& str, int tiffType = Const::Type::ASCII);
+    void addValues(const std::string &str, int tiffType = Const::Type::ASCII);
 
     /**
      *****************************************************************
@@ -340,7 +338,7 @@ public:
     /**
      *****************************************************************
      * According to the TIFF 6.0 spec, the size of an IFD entry is 12
-     * bytes.  The sizeof operator is thrown off by the extra members 
+     * bytes.  The sizeof operator is thrown off by the extra members
      * mName of string type, and mValues of vector type (both of which
      * are not in the specification but exist to make life simpler),
      * hence the adjustment.  Returns the size of the IFD entry.
@@ -353,8 +351,7 @@ public:
         return 12;
     }
 
-private:
-
+  private:
     /**
      *****************************************************************
      * Parses the specified buffer for values to store into the
@@ -386,6 +383,6 @@ private:
     std::vector<tiff::TypeInterface *> mValues;
 };
 
-} // End namespace.
+} // namespace tiff
 
 #endif // __TIFF_IFD_ENTRY_H__

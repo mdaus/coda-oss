@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of tiff-c++ 
+ * This file is part of tiff-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -121,38 +121,31 @@ tiff::KnownTags::KnownTags()
     addEntry(34737, tiff::Const::Type::ASCII, "GeoAsciiParamsTag");
 }
 
-
 tiff::KnownTags::~KnownTags()
 {
-    for(std::map<unsigned short, tiff::IFDEntry*>::iterator it = mKnownTags.begin();
-        it != mKnownTags.end(); ++it)
+    for (std::map<unsigned short, tiff::IFDEntry *>::iterator it = mKnownTags.begin(); it != mKnownTags.end(); ++it)
         delete it->second;
     mKnownTags.clear();
 }
 
-void tiff::KnownTags::addEntry(const unsigned short tag, 
-                               const unsigned short type, 
-                               const std::string& name)
+void tiff::KnownTags::addEntry(const unsigned short tag, const unsigned short type, const std::string &name)
 {
-    std::map<unsigned short, tiff::IFDEntry*>::iterator pos =
-        mKnownTags.find(tag);
+    std::map<unsigned short, tiff::IFDEntry *>::iterator pos = mKnownTags.find(tag);
     if (pos != mKnownTags.end())
         return;
 
     mNameMap[name] = tag;
-    mKnownTags[tag]   = new tiff::IFDEntry(tag, type, name);
+    mKnownTags[tag] = new tiff::IFDEntry(tag, type, name);
 }
 
-tiff::IFDEntry *tiff::KnownTags::operator[] (const std::string& nameKey)
+tiff::IFDEntry *tiff::KnownTags::operator[](const std::string &nameKey)
 {
     unsigned short tagKey = mNameMap[nameKey];
     return (*this)[tagKey];
 }
 
-tiff::IFDEntry *tiff::KnownTags::operator[] (const unsigned short tagKey)
+tiff::IFDEntry *tiff::KnownTags::operator[](const unsigned short tagKey)
 {
-    std::map<unsigned short, tiff::IFDEntry*>::iterator pos =
-        mKnownTags.find(tagKey);
+    std::map<unsigned short, tiff::IFDEntry *>::iterator pos = mKnownTags.find(tagKey);
     return pos != mKnownTags.end() ? pos->second : nullptr;
 }
-

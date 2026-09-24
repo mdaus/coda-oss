@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of tiff-c++ 
+ * This file is part of tiff-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
@@ -14,33 +14,33 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "tiff/Header.h"
-#include <sstream>
 #include <import/io.h>
+#include <sstream>
 
 // INCOMPLETE
-void tiff::Header::serialize(io::OutputStream& output)
+void tiff::Header::serialize(io::OutputStream &output)
 {
     output.write((sys::byte *)&mByteOrder, sizeof(mByteOrder));
     output.write((sys::byte *)&mId, sizeof(mId));
     output.write((sys::byte *)&mIFDOffset, sizeof(mIFDOffset));
 }
 
-void tiff::Header::deserialize(io::InputStream& input)
+void tiff::Header::deserialize(io::InputStream &input)
 {
     input.read((sys::byte *)&mByteOrder, sizeof(mByteOrder));
     input.read((sys::byte *)&mId, sizeof(mId));
     input.read((sys::byte *)&mIFDOffset, sizeof(mIFDOffset));
-    
-    mDifferentByteOrdering = sys::isBigEndianSystem() ? \
-            getByteOrder() != tiff::Header::MM : getByteOrder() != tiff::Header::II;
-    
+
+    mDifferentByteOrdering =
+        sys::isBigEndianSystem() ? getByteOrder() != tiff::Header::MM : getByteOrder() != tiff::Header::II;
+
     if (mDifferentByteOrdering)
     {
         mId = sys::byteSwap(mId);
@@ -48,7 +48,7 @@ void tiff::Header::deserialize(io::InputStream& input)
     }
 }
 
-void tiff::Header::print(io::OutputStream& output) const
+void tiff::Header::print(io::OutputStream &output) const
 {
     std::ostringstream message;
     message << "Type:          " << mByteOrder[0] << mByteOrder[1] << std::endl;
@@ -56,5 +56,3 @@ void tiff::Header::print(io::OutputStream& output) const
     message << "IFD Offset:    " << mIFDOffset << std::endl;
     output.write(message.str());
 }
-
-

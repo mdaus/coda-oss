@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of tiff-c++ 
+ * This file is part of tiff-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * tiff-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -25,8 +25,8 @@
 #include <string>
 #include <vector>
 
-#include <import/io.h>
 #include <config/Exports.h>
+#include <import/io.h>
 
 #include "tiff/Header.h"
 #include "tiff/ImageWriter.h"
@@ -40,14 +40,13 @@ namespace tiff
  * @brief Writes a TIFF file.
  *
  * Writes a TIFF file to an output stream.  Can write multiple images
- * to the same file.  Contains function for manipulating each 
+ * to the same file.  Contains function for manipulating each
  * sub-image and for writing data.
  *********************************************************************/
 struct CODA_OSS_API FileWriter
 {
     //! Constructor
-    FileWriter() :
-        mIFDOffset(0)
+    FileWriter() : mIFDOffset(0)
     {
     }
 
@@ -58,8 +57,7 @@ struct CODA_OSS_API FileWriter
      * @param fileName
      *   the file to open for writing
      *****************************************************************/
-    FileWriter(const std::string& fileName) :
-        mIFDOffset(0)
+    FileWriter(const std::string &fileName) : mIFDOffset(0)
     {
         openFile(fileName);
     }
@@ -67,7 +65,7 @@ struct CODA_OSS_API FileWriter
     //! Destructor
     ~FileWriter() noexcept;
 
-    void openFile(const std::string& fileName);
+    void openFile(const std::string &fileName);
     void close();
 
     /**
@@ -94,9 +92,7 @@ struct CODA_OSS_API FileWriter
      * @param subImageIndex
      *   the index to a sub-image to write
      *****************************************************************/
-    void putData(const unsigned char *buffer,
-                 sys::Uint32_T numElementsToWrite,
-                 sys::Uint32_T subImageIndex = 0);
+    void putData(const unsigned char *buffer, sys::Uint32_T numElementsToWrite, sys::Uint32_T subImageIndex = 0);
 
     /**
      *****************************************************************
@@ -116,10 +112,10 @@ struct CODA_OSS_API FileWriter
      *****************************************************************/
     void writeHeader();
 
-    FileWriter(const FileWriter&) = delete;
-    FileWriter& operator=(const FileWriter&) = delete;
+    FileWriter(const FileWriter &) = delete;
+    FileWriter &operator=(const FileWriter &) = delete;
 
-private:
+  private:
     //! The position to write the offset to the first IFD to
     sys::Uint32_T mIFDOffset;
 
@@ -131,11 +127,13 @@ private:
 
     //! The images to write
     std::vector<tiff::ImageWriter *> mImages;
-
 };
 
 /** Enumeration for automatic detection of image type */
-enum { AUTO = -1 };
+enum
+{
+    AUTO = -1
+};
 
 /*!
  *  This function is designed to mimic (roughly) the API for sio::lite::writeSIO().
@@ -160,8 +158,8 @@ enum { AUTO = -1 };
  *         guessing based on the input data size
  *
  */
-template<typename T> void writeTIFF(const T* image, size_t rows, size_t cols,
-                                    std::string imageFile, unsigned short et = AUTO, int es = AUTO)
+template <typename T>
+void writeTIFF(const T *image, size_t rows, size_t cols, std::string imageFile, unsigned short et = AUTO, int es = AUTO)
 {
 
     if (es == AUTO)
@@ -185,7 +183,7 @@ template<typename T> void writeTIFF(const T* image, size_t rows, size_t cols,
 
         case 3:
             et = ::tiff::Const::SampleFormatType::UNSIGNED_INT;
-            photoInterp = (unsigned short) ::tiff::Const::PhotoInterpType::RGB;
+            photoInterp = (unsigned short)::tiff::Const::PhotoInterpType::RGB;
             numBands = 3;
             break;
 
@@ -199,48 +197,41 @@ template<typename T> void writeTIFF(const T* image, size_t rows, size_t cols,
     unsigned short alpha(0);
     if (es == 4 && et == ::tiff::Const::SampleFormatType::UNSIGNED_INT)
     {
-        photoInterp = (unsigned short) ::tiff::Const::PhotoInterpType::RGB;
+        photoInterp = (unsigned short)::tiff::Const::PhotoInterpType::RGB;
         numBands = 4;
         // This is "unassociated alpha value"
         alpha = 2;
-
     }
-    
 
     ::tiff::FileWriter fileWriter(imageFile);
 
-    //write the header first
+    // write the header first
     fileWriter.writeHeader();
 
-    
-    ::tiff::ImageWriter* imageWriter = fileWriter.addImage();
-    ::tiff::IFD* ifd = imageWriter->getIFD();
+    ::tiff::ImageWriter *imageWriter = fileWriter.addImage();
+    ::tiff::IFD *ifd = imageWriter->getIFD();
 
     ifd->addEntry(::tiff::KnownTags::IMAGE_WIDTH, cols);
     ifd->addEntry(::tiff::KnownTags::IMAGE_LENGTH, rows);
-       
-    ifd->addEntry(::tiff::KnownTags::COMPRESSION,
-                  (unsigned short) ::tiff::Const::CompressionType::NO_COMPRESSION);
 
-    
+    ifd->addEntry(::tiff::KnownTags::COMPRESSION, (unsigned short)::tiff::Const::CompressionType::NO_COMPRESSION);
+
     ifd->addEntry(::tiff::KnownTags::PHOTOMETRIC_INTERPRETATION, photoInterp);
     // Added this for RGBA, because otherwise the ImageWriter::validate() changes all of
     // these fields back assuming 3 bytes per pixel
     ifd->addEntry(::tiff::KnownTags::SAMPLES_PER_PIXEL, numBands);
     ifd->addEntry(::tiff::KnownTags::BITS_PER_SAMPLE);
     ifd->addEntry(::tiff::KnownTags::SAMPLE_FORMAT);
-    ::tiff::IFDEntry* bps = (*ifd)[::tiff::KnownTags::BITS_PER_SAMPLE];
-    ::tiff::IFDEntry* sf = (*ifd)[::tiff::KnownTags::SAMPLE_FORMAT];
-    
+    ::tiff::IFDEntry *bps = (*ifd)[::tiff::KnownTags::BITS_PER_SAMPLE];
+    ::tiff::IFDEntry *sf = (*ifd)[::tiff::KnownTags::SAMPLE_FORMAT];
+
     unsigned short bitsPerBand = (es << 3) / numBands;
 
-    //set some fields that have 'numSamples' values
+    // set some fields that have 'numSamples' values
     for (int band = 0; band < numBands; ++band)
     {
-        bps->addValue(::tiff::TypeFactory::create((unsigned char *) &bitsPerBand,
-                                                  ::tiff::Const::Type::SHORT));
-        sf->addValue(::tiff::TypeFactory::create((unsigned char *) &et,
-                                                 ::tiff::Const::Type::SHORT));
+        bps->addValue(::tiff::TypeFactory::create((unsigned char *)&bitsPerBand, ::tiff::Const::Type::SHORT));
+        sf->addValue(::tiff::TypeFactory::create((unsigned char *)&et, ::tiff::Const::Type::SHORT));
     }
 
     // If the alpha channel is on (note 0 is a valid value for ExtraSamples,
@@ -248,14 +239,13 @@ template<typename T> void writeTIFF(const T* image, size_t rows, size_t cols,
     if (alpha)
         ifd->addEntry(std::string("ExtraSamples"), alpha);
 
-    imageWriter->putData((unsigned char*) image, rows * cols);
+    imageWriter->putData((unsigned char *)image, rows * cols);
 
-    //write the IFD 
+    // write the IFD
     imageWriter->writeIFD();
     fileWriter.close();
-
 }
 
-} // End namespace.
+} // namespace tiff
 
 #endif // __TIFF_FILE_WRITER_H__
