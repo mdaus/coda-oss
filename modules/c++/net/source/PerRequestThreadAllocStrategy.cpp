@@ -22,10 +22,10 @@
 
 #include "net/PerRequestThreadAllocStrategy.h"
 
-void net::PerRequestThreadAllocStrategy::handleConnection(net::NetConnection *conn)
+void net::PerRequestThreadAllocStrategy::handleConnection(net::NetConnection* conn)
 {
-    net::RequestHandler *handler = mRequestHandlerFactory->create();
+    net::RequestHandler* handler = mRequestHandlerFactory->create();
 
-    RequestHandlerThread *thr = new RequestHandlerThread(handler, conn);
+    RequestHandlerThread* thr = new RequestHandlerThread(handler, conn);
     thr->start();
 }

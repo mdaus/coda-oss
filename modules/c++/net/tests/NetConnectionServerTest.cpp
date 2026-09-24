@@ -50,11 +50,11 @@ class EchoHandler : public net::RequestHandler
     ~EchoHandler()
     {
     }
-    void operator()(net::NetConnection *conn) override
+    void operator()(net::NetConnection* conn) override
     {
         char buf[MAX_BUF_SIZE];
         unsigned int length;
-        conn->read((char *)&length, sizeof(unsigned int));
+        conn->read((char*)&length, sizeof(unsigned int));
         assert(length <= (MAX_BUF_SIZE - strlen(RET_STR)));
         conn->read(buf, length);
         buf[length] = 0;
@@ -63,19 +63,19 @@ class EchoHandler : public net::RequestHandler
         memcpy(&buf[length], RET_STR, strlen(RET_STR));
         length = length + static_cast<unsigned int>(strlen(RET_STR));
         buf[length] = 0;
-        conn->write((const char *)&length, 4);
-        conn->write((const char *)buf, length);
+        conn->write((const char*)&length, 4);
+        conn->write((const char*)buf, length);
     }
 };
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     try
     {
         if (argc < 2)
             throw Exception(str::Format("Usage: %s <port> (-mt|-st|-tp)", argv[0]));
 
-        net::AllocStrategy *strategy = nullptr;
+        net::AllocStrategy* strategy = nullptr;
 
         if (argc == 3)
         {
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
         server.initialize(new DefaultRequestHandlerFactory<EchoHandler>(), strategy);
         server.create(atoi(argv[1]));
     }
-    catch (except::Throwable &t)
+    catch (except::Throwable& t)
     {
         cout << t.toString() << endl;
         exit(EXIT_FAILURE);

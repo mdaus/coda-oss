@@ -68,7 +68,7 @@ void DaemonUnix::restart()
         exit(1);
 }
 
-void DaemonUnix::daemonize(int &argc, char **&argv)
+void DaemonUnix::daemonize(int& argc, char**& argv)
 {
     enum
     {
@@ -122,13 +122,13 @@ void DaemonUnix::daemonize(int &argc, char **&argv)
 }
 
 //! Set tracefile (file to redirect stdout and stderr)
-void DaemonUnix::setTracefile(const std::string &tracefile)
+void DaemonUnix::setTracefile(const std::string& tracefile)
 {
     mTracefile = tracefile;
 }
 
 //! Set pidfile (file for locking application to single occurance)
-void DaemonUnix::setPidfile(const std::string &pidfile)
+void DaemonUnix::setPidfile(const std::string& pidfile)
 {
     mPidfile = pidfile;
 }
@@ -247,7 +247,7 @@ bool DaemonUnix::terminate(sys::Pid_T pid, unsigned int retry)
     return false;
 }
 
-void DaemonUnix::redirectStreamsTo(const std::string &filename)
+void DaemonUnix::redirectStreamsTo(const std::string& filename)
 {
     if (openFileFor(STDIN_FILENO, "/dev/null", O_RDONLY) < 0)
     {
@@ -263,7 +263,7 @@ void DaemonUnix::redirectStreamsTo(const std::string &filename)
     }
 }
 
-int DaemonUnix::openFileFor(int fd, const std::string &filename, int flags)
+int DaemonUnix::openFileFor(int fd, const std::string& filename, int flags)
 {
     int newfd = ::open(filename.c_str(), flags, 0644);
     if (newfd < 0)

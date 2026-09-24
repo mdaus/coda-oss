@@ -27,7 +27,7 @@
 using namespace logging;
 using namespace std;
 
-int main(int, char **)
+int main(int, char**)
 {
     // create a logger, named 'test'
     Logger logger;

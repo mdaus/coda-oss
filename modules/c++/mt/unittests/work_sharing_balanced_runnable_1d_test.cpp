@@ -26,7 +26,7 @@
 
 struct IncOp final
 {
-    IncOp(std::vector<size_t> &globalWorkDone) : mGlobalWorkDone(globalWorkDone)
+    IncOp(std::vector<size_t>& globalWorkDone) : mGlobalWorkDone(globalWorkDone)
     {
     }
 
@@ -36,7 +36,7 @@ struct IncOp final
     }
 
   private:
-    std::vector<size_t> &mGlobalWorkDone;
+    std::vector<size_t>& mGlobalWorkDone;
 };
 
 TEST_CASE(WorkSharingBalancedRunnable1DTestWorkDone)
@@ -54,7 +54,7 @@ TEST_CASE(WorkSharingBalancedRunnable1DTestWorkDone)
         TEST_ASSERT_EQ(workVec.size(), numElements);
 
         const size_t targetValue = 1;
-        for (const auto &value : workVec)
+        for (const auto& value : workVec)
         {
             TEST_ASSERT_EQ(value, targetValue);
         }
@@ -76,7 +76,7 @@ TEST_CASE(WorkSharingBalancedRunnable1DTestWorkDoneLessWorkThanThreads)
         TEST_ASSERT_EQ(workVec.size(), numElements);
 
         const size_t targetValue = 1;
-        for (const auto &value : workVec)
+        for (const auto& value : workVec)
         {
             TEST_ASSERT_EQ(value, targetValue);
         }

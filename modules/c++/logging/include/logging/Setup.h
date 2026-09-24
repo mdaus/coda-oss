@@ -49,9 +49,9 @@ using path = coda_oss::filesystem::path; // still used in SWIG bindings
  *  \param logCount - number of rotating logs to keep (default: 0 no rotation)
  *  \param logBytes - number of bytes per rotating log (default: 0 no rotation)
  */
-CODA_OSS_API std::unique_ptr<logging::Logger> setupLogger(const path &program, const std::string &logLevel = "warning",
-                                                          const path &logFile = "console",
-                                                          const std::string &logFormat = "[%p] (%d) %m",
+CODA_OSS_API std::unique_ptr<logging::Logger> setupLogger(const path& program, const std::string& logLevel = "warning",
+                                                          const path& logFile = "console",
+                                                          const std::string& logFormat = "[%p] (%d) %m",
                                                           size_t logCount = 0, size_t logBytes = 0);
 } // namespace logging
 

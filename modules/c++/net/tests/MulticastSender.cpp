@@ -34,7 +34,7 @@ using namespace sys;
 using namespace io;
 using namespace except;
 
-std::unique_ptr<Socket> createSenderSocket(SocketAddress &address, int loopback = 1)
+std::unique_ptr<Socket> createSenderSocket(SocketAddress& address, int loopback = 1)
 {
     std::unique_ptr<Socket> s(new Socket(UDP_PROTO));
 
@@ -57,7 +57,7 @@ struct Packet
 
 #define ACK_CHANNEL 8647
 #define ACK_HOST "127.0.0.1"
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     try
     {
@@ -74,9 +74,9 @@ int main(int argc, char **argv)
         memcpy(packet.what, myMessage.c_str(), myMessage.length());
         packet.what[myMessage.length()] = 0;
         packet.number = 1;
-        socket->sendTo(sa, (const char *)&packet, sizeof(packet));
+        socket->sendTo(sa, (const char*)&packet, sizeof(packet));
     }
-    catch (Exception &ex)
+    catch (Exception& ex)
     {
         std::cout << ex.toString() << std::endl;
     }

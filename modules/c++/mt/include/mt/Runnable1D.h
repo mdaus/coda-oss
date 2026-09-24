@@ -15,7 +15,7 @@ namespace mt
 template <typename OpT> class Runnable1D : public sys::Runnable
 {
   public:
-    Runnable1D(size_t startElement, size_t numElements, const OpT &op)
+    Runnable1D(size_t startElement, size_t numElements, const OpT& op)
         : mStartElement(startElement), mEndElement(startElement + numElements), mOp(op)
     {
     }
@@ -31,10 +31,10 @@ template <typename OpT> class Runnable1D : public sys::Runnable
   private:
     const size_t mStartElement;
     const size_t mEndElement;
-    const OpT &mOp;
+    const OpT& mOp;
 };
 
-template <typename OpT> void run1D(size_t numElements, size_t numThreads, const OpT &op)
+template <typename OpT> void run1D(size_t numElements, size_t numThreads, const OpT& op)
 {
     if (numThreads <= 1)
     {
@@ -60,7 +60,7 @@ template <typename OpT> void run1D(size_t numElements, size_t numThreads, const 
 // This is useful when each thread needs its own local storage and/or you
 // need access to a per-thread result afterwards (make these member variables
 // mutable since operator() is const).
-template <typename OpT> void run1D(size_t numElements, size_t numThreads, const std::vector<OpT> &ops)
+template <typename OpT> void run1D(size_t numElements, size_t numThreads, const std::vector<OpT>& ops)
 {
     if (ops.size() != numThreads)
     {
@@ -92,7 +92,7 @@ template <typename OpT> void run1D(size_t numElements, size_t numThreads, const 
 // Same as above but each thread gets their own copy-constructed copy of 'op'
 // This is useful when each thread needs its own local storage (make this
 // scratch space mutable since operator() is const).
-template <typename OpT> void run1DWithCopies(size_t numElements, size_t numThreads, const OpT &op)
+template <typename OpT> void run1DWithCopies(size_t numElements, size_t numThreads, const OpT& op)
 {
     const std::vector<OpT> ops(numThreads, op);
     run1D(numElements, numThreads, ops);

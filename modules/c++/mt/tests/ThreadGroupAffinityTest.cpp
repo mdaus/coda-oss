@@ -38,7 +38,7 @@ namespace
 class MyRunTask : public Runnable
 {
   public:
-    MyRunTask(size_t threadNum, sys::AtomicCounter &counter) : mThread(threadNum), mThreadCounter(counter)
+    MyRunTask(size_t threadNum, sys::AtomicCounter& counter) : mThread(threadNum), mThreadCounter(counter)
     {
     }
 
@@ -74,11 +74,11 @@ class MyRunTask : public Runnable
   private:
     sys::AtomicCounter::ValueType mThread;
     sys::Mutex mMutex;
-    sys::AtomicCounter &mThreadCounter;
+    sys::AtomicCounter& mThreadCounter;
 };
 } // namespace
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     // This program simulates a workload with periodic breaks
     // in an attempt to illustrate pinning threads spawned
@@ -146,7 +146,7 @@ int main(int argc, char **argv)
         threads.joinAll();
     }
 
-    catch (const except::Throwable &t)
+    catch (const except::Throwable& t)
     {
         std::cout << "Exception Caught: " << t.toString() << std::endl;
         return -1;
@@ -163,7 +163,7 @@ int main(int argc, char **argv)
 #else
 
 #include <iostream>
-int main(int, char **)
+int main(int, char**)
 {
     std::cout << "Usable only on *nix systems" << std::endl;
     return 0;

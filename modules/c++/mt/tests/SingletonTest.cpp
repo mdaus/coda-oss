@@ -22,7 +22,7 @@
 
 #if defined(__APPLE_CC__)
 #include <iostream>
-int main(int, char **)
+int main(int, char**)
 {
     std::cout << "Sorry no semaphores" << std::endl;
     return 0;
@@ -56,7 +56,7 @@ class Counter
 
 typedef Singleton<Counter> AutoIncrementer;
 
-int main(int, char **)
+int main(int, char**)
 {
     AutoIncrementer::getInstance().sayCount();
     AutoIncrementer::getInstance().sayCount();

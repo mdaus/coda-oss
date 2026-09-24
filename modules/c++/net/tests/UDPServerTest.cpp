@@ -45,7 +45,7 @@
 
 using namespace net;
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 
     if (argc != 2)
@@ -61,13 +61,13 @@ int main(int argc, char **argv)
 
         my_packet_t packet;
         SocketAddress cliAddr(port);
-        socket->recvFrom(cliAddr, (char *)&packet, sizeof(my_packet_t));
+        socket->recvFrom(cliAddr, (char*)&packet, sizeof(my_packet_t));
         std::cout << "(in packet: #" << packet.packet_no << ")" << std::endl;
         int one = 1;
-        socket->sendTo(cliAddr, (const char *)&one, 4);
+        socket->sendTo(cliAddr, (const char*)&one, 4);
         socket->close();
     }
-    catch (except::Exception &ex)
+    catch (except::Exception& ex)
     {
         std::cout << ex.getTrace() << std::endl;
     }

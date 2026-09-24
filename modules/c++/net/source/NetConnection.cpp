@@ -22,12 +22,12 @@
 
 #include "net/NetConnection.h"
 
-sys::SSize_T net::NetConnection::readImpl(void *buffer, size_t len)
+sys::SSize_T net::NetConnection::readImpl(void* buffer, size_t len)
 {
     return mSocket->recv(buffer, len);
 }
 
-void net::NetConnection::write(const void *buffer, size_t len)
+void net::NetConnection::write(const void* buffer, size_t len)
 {
     mSocket->send(buffer, len);
 }

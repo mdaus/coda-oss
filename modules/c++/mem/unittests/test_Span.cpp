@@ -31,7 +31,7 @@
 #include "TestCase.h"
 
 template <typename TContainer, typename TSpan>
-static void testSpanBuffer_(const std::string &testName, const TContainer &ints, const TSpan &span)
+static void testSpanBuffer_(const std::string& testName, const TContainer& ints, const TSpan& span)
 {
     (void)testName;
     TEST_ASSERT_EQ(ints.size(), span.size());
@@ -57,7 +57,7 @@ TEST_CASE(testSpanBuffer)
 }
 
 template <typename TContainer, typename TSpan>
-static void testSpanVector_(const std::string &testName, const TContainer &ints, const TSpan &span)
+static void testSpanVector_(const std::string& testName, const TContainer& ints, const TSpan& span)
 {
     (void)testName;
     TEST_ASSERT_EQ(ints.size(), span.size());
@@ -95,7 +95,7 @@ TEST_CASE(testGslNarrow)
 TEST_CASE(test_sys_make_span)
 {
     int i = 314;
-    int *const p = &i;
+    int* const p = &i;
     auto s = sys::make_span(p, 1);
     TEST_ASSERT(s.data() == p);
     TEST_ASSERT_EQ(s[0], i);
@@ -103,7 +103,7 @@ TEST_CASE(test_sys_make_span)
     TEST_ASSERT_EQ(i, 123);
     s[0] = 314;
 
-    const int *const q = &i;
+    const int* const q = &i;
     auto cs = sys::make_span(q, 1);
     TEST_ASSERT(cs.data() == q);
     TEST_ASSERT_EQ(cs[0], i);
@@ -118,7 +118,7 @@ TEST_CASE(test_sys_make_span)
     TEST_ASSERT_EQ(v[0], 123);
     s[0] = 314;
 
-    const std::vector<int> &u = v;
+    const std::vector<int>& u = v;
     cs = sys::make_span(u);
     TEST_ASSERT(cs.data() == u.data());
     TEST_ASSERT_EQ(cs[0], u[0]);

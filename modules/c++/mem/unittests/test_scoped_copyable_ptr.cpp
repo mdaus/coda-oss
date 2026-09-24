@@ -31,7 +31,7 @@ struct Foo final
     int val1 = 0;
     int val2 = 0;
 
-    Foo *clone() const = delete; // be sure there is no clone()
+    Foo* clone() const = delete; // be sure there is no clone()
 };
 
 struct Bar final
@@ -48,7 +48,7 @@ struct Baz final
 
 struct AssignOnDestruct final
 {
-    AssignOnDestruct(int &ref, int finalVal) : mRef(ref), mFinalVal(finalVal)
+    AssignOnDestruct(int& ref, int finalVal) : mRef(ref), mFinalVal(finalVal)
     {
     }
 
@@ -58,7 +58,7 @@ struct AssignOnDestruct final
     }
 
   private:
-    int &mRef;
+    int& mRef;
     const int mFinalVal;
 };
 
@@ -167,7 +167,7 @@ TEST_CASE(testDestructor)
 
 TEST_CASE(testSyntax)
 {
-    Foo *const rawPtr(new Foo());
+    Foo* const rawPtr(new Foo());
     const mem::ScopedCopyablePtr<Foo> ptr(rawPtr);
 
     TEST_ASSERT_EQ(ptr.get(), rawPtr);

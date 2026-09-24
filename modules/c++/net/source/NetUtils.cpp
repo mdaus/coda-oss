@@ -73,7 +73,7 @@ std::string net::urlJoin(std::string scheme, std::string location, int port, std
     return url.str();
 }
 
-std::string net::urlJoin(const std::vector<std::string> &parts)
+std::string net::urlJoin(const std::vector<std::string>& parts)
 {
     size_t numParts = parts.size();
     if (numParts < 2)

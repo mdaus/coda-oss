@@ -54,7 +54,7 @@ class SocketAddress
      *  \param host The host id
      *  \param port The port number
      */
-    SocketAddress(const std::string &host, int port);
+    SocketAddress(const std::string& host, int port);
 
     /*!
      *  Construct the socket address of a port.  This is
@@ -75,15 +75,15 @@ class SocketAddress
      */
     void setPort(int port);
 
-    void setHost(const std::string &host);
+    void setHost(const std::string& host);
 
     void set(int port, std::string host = "");
 
-    SockAddrIn_T &getAddress()
+    SockAddrIn_T& getAddress()
     {
         return mAddress;
     }
-    const SockAddrIn_T &getAddress() const
+    const SockAddrIn_T& getAddress() const
     {
         return mAddress;
     }

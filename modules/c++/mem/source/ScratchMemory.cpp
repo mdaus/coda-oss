@@ -31,7 +31,7 @@ ScratchMemory::Segment::Segment(size_t numBytes_, size_t numBuffers_, size_t ali
 {
 }
 
-void ScratchMemory::release(const std::string &key)
+void ScratchMemory::release(const std::string& key)
 {
     std::map<std::string, Segment>::const_iterator iterSeg = mSegments.find(key);
     if (iterSeg == mSegments.end())
@@ -42,12 +42,12 @@ void ScratchMemory::release(const std::string &key)
 
     if (mKeyOrder.back() == key)
     {
-        const Segment &segment = iterSeg->second;
+        const Segment& segment = iterSeg->second;
         mOffset = segment.offset;
     }
     else
     {
-        const Segment &segment = iterSeg->second;
+        const Segment& segment = iterSeg->second;
 
         mKeyOrder.push_back(key);
         std::vector<std::string>::iterator keyIter = std::find(mKeyOrder.begin(), mKeyOrder.end(), key);
@@ -100,7 +100,7 @@ void ScratchMemory::release(const std::string &key)
 
             //  Get data for the segment that will be moved
             std::map<std::string, Segment>::const_iterator mapIter = mSegments.find(*nextKeyIter);
-            const Segment &segmentToBeMoved = mapIter->second;
+            const Segment& segmentToBeMoved = mapIter->second;
 
             const size_t numElements = segmentToBeMoved.numBytes;
             const size_t numBuffers = segmentToBeMoved.numBuffers;
@@ -134,7 +134,7 @@ void ScratchMemory::release(const std::string &key)
                 if (!firstReleasedKey.empty())
                 {
                     std::map<std::string, Segment>::const_iterator iterSegNew = mSegments.find(firstReleasedKey);
-                    const Segment &segmentNew = iterSegNew->second;
+                    const Segment& segmentNew = iterSegNew->second;
                     mOffset = segmentNew.offset;
 
                     mConnectedKeys.insert(keyToInsert);
@@ -145,12 +145,12 @@ void ScratchMemory::release(const std::string &key)
             put<sys::ubyte>(keyToInsert, numElements, numBuffers, alignment);
         }
         std::map<std::string, Segment>::const_iterator iterSegNew = mSegments.find(firstReleasedKey);
-        const Segment &segmentNew = iterSegNew->second;
+        const Segment& segmentNew = iterSegNew->second;
         mOffset = segmentNew.offset;
     }
 }
 
-void ScratchMemory::setup(const BufferView<sys::ubyte> &scratchBuffer)
+void ScratchMemory::setup(const BufferView<sys::ubyte>& scratchBuffer)
 {
     if (scratchBuffer.size == 0)
     {
@@ -174,7 +174,7 @@ void ScratchMemory::setup(const BufferView<sys::ubyte> &scratchBuffer)
 
     for (std::map<std::string, Segment>::iterator iterSeg = mSegments.begin(); iterSeg != mSegments.end(); ++iterSeg)
     {
-        Segment &segment = iterSeg->second;
+        Segment& segment = iterSeg->second;
         segment.buffers.resize(segment.numBuffers);
         size_t currentOffset = segment.offset;
         for (size_t i = 0; i < segment.numBuffers; ++i)
@@ -186,7 +186,7 @@ void ScratchMemory::setup(const BufferView<sys::ubyte> &scratchBuffer)
     }
 }
 
-const ScratchMemory::Segment &ScratchMemory::lookupSegment(const std::string &key, size_t indexBuffer) const
+const ScratchMemory::Segment& ScratchMemory::lookupSegment(const std::string& key, size_t indexBuffer) const
 {
     if (mBuffer.data == nullptr)
     {
@@ -203,7 +203,7 @@ const ScratchMemory::Segment &ScratchMemory::lookupSegment(const std::string &ke
         throw except::Exception(Ctxt(oss));
     }
 
-    const Segment &segment = iterSeg->second;
+    const Segment& segment = iterSeg->second;
     if (indexBuffer >= segment.buffers.size())
     {
         std::ostringstream oss;

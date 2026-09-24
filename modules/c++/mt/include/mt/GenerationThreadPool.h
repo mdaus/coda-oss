@@ -39,22 +39,22 @@ namespace mt
 {
 class CODA_OSS_API TiedRequestHandler : public sys::Runnable
 {
-    RunnableRequestQueue *mRequestQueue;
-    sys::Semaphore *mSem = nullptr;
-    CPUAffinityThreadInitializer *mAffinityInit;
+    RunnableRequestQueue* mRequestQueue;
+    sys::Semaphore* mSem = nullptr;
+    CPUAffinityThreadInitializer* mAffinityInit;
 
   public:
-    TiedRequestHandler(RunnableRequestQueue *requestQueue) : mRequestQueue(requestQueue), mAffinityInit(nullptr)
+    TiedRequestHandler(RunnableRequestQueue* requestQueue) : mRequestQueue(requestQueue), mAffinityInit(nullptr)
     {
     }
 
     virtual ~TiedRequestHandler();
 
-    virtual void setSemaphore(sys::Semaphore *sem)
+    virtual void setSemaphore(sys::Semaphore* sem)
     {
         mSem = sem;
     }
-    virtual void setAffinityInit(CPUAffinityThreadInitializer *affinityInit)
+    virtual void setAffinityInit(CPUAffinityThreadInitializer* affinityInit)
     {
         mAffinityInit = affinityInit;
     }
@@ -68,22 +68,22 @@ class CODA_OSS_API TiedRequestHandler : public sys::Runnable
 class CODA_OSS_API GenerationThreadPool : public BasicThreadPool<TiedRequestHandler>
 {
     sys::Semaphore mGenerationSync;
-    CPUAffinityInitializer *mAffinityInit = nullptr;
+    CPUAffinityInitializer* mAffinityInit = nullptr;
     int mGenSize = 0;
 
   public:
     GenerationThreadPool() = default;
-    GenerationThreadPool(unsigned short numThreads, CPUAffinityInitializer *affinityInit = nullptr)
+    GenerationThreadPool(unsigned short numThreads, CPUAffinityInitializer* affinityInit = nullptr)
         : BasicThreadPool<TiedRequestHandler>(numThreads), mAffinityInit(affinityInit)
     {
     }
     virtual ~GenerationThreadPool() = default;
-    GenerationThreadPool(const GenerationThreadPool &) = delete;
-    GenerationThreadPool &operator=(const GenerationThreadPool &) = delete;
+    GenerationThreadPool(const GenerationThreadPool&) = delete;
+    GenerationThreadPool& operator=(const GenerationThreadPool&) = delete;
 
-    virtual TiedRequestHandler *newRequestHandler() override
+    virtual TiedRequestHandler* newRequestHandler() override
     {
-        TiedRequestHandler *handler = BasicThreadPool<TiedRequestHandler>::newRequestHandler();
+        TiedRequestHandler* handler = BasicThreadPool<TiedRequestHandler>::newRequestHandler();
         assert(handler != nullptr);
         handler->setSemaphore(&mGenerationSync);
 
@@ -96,12 +96,12 @@ class CODA_OSS_API GenerationThreadPool : public BasicThreadPool<TiedRequestHand
     }
 
     // Not set up for multiple producers
-    void addGroup(const std::vector<sys::Runnable *> &toRun);
+    void addGroup(const std::vector<sys::Runnable*>& toRun);
 
     // Not set up for multiple producers
     void waitGroup();
 
-    void addAndWaitGroup(const std::vector<sys::Runnable *> &toRun)
+    void addAndWaitGroup(const std::vector<sys::Runnable*>& toRun)
     {
         addGroup(toRun);
         waitGroup();
@@ -116,9 +116,9 @@ class CODA_OSS_API GenerationThreadPool : public BasicThreadPool<TiedRequestHand
      *                     size_t which will be called for each number in the
      *                     given range
      */
-    template <typename OpT> void run1D(size_t numElements, const OpT &op)
+    template <typename OpT> void run1D(size_t numElements, const OpT& op)
     {
-        std::vector<sys::Runnable *> runnables;
+        std::vector<sys::Runnable*> runnables;
         const ThreadPlanner planner(numElements, mNumThreads);
 
         size_t threadNum(0);

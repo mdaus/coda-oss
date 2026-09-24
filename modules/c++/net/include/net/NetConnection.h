@@ -62,7 +62,7 @@ class NetConnection : public io::BidirectionalStream
     }
 
     //! we own the ptr after this transaction
-    NetConnection(std::unique_ptr<net::Socket> &&socket) : mSocket(socket.release())
+    NetConnection(std::unique_ptr<net::Socket>&& socket) : mSocket(socket.release())
     {
     }
 
@@ -70,7 +70,7 @@ class NetConnection : public io::BidirectionalStream
      *  Copy constructor
      *  \param connection
      */
-    NetConnection(const NetConnection &connection)
+    NetConnection(const NetConnection& connection)
     {
         mSocket = connection.mSocket;
     }
@@ -79,7 +79,7 @@ class NetConnection : public io::BidirectionalStream
      *  Assignment operator
      *  \param connection
      */
-    NetConnection &operator=(const NetConnection &connection)
+    NetConnection& operator=(const NetConnection& connection)
     {
         if (&connection != this)
         {
@@ -108,7 +108,7 @@ class NetConnection : public io::BidirectionalStream
      *  \param connection The handle to initialize
      *  \throw SocketCreationFailedException
      */
-    virtual void open(const NetConnection &connection)
+    virtual void open(const NetConnection& connection)
     {
         mSocket = connection.mSocket;
     }
@@ -139,7 +139,7 @@ class NetConnection : public io::BidirectionalStream
      *  \param len The length of the byte array to write to the stream
      *  \throw IOException
      */
-    virtual void write(const void *buffer, size_t len) override;
+    virtual void write(const void* buffer, size_t len) override;
 
     using io::BidirectionalStream::read;
     using io::BidirectionalStream::write;
@@ -152,7 +152,7 @@ class NetConnection : public io::BidirectionalStream
      *  \throw IOException
      *  \return  The number of bytes read, or -1 if eof
      */
-    virtual sys::SSize_T readImpl(void *buffer, size_t len) override;
+    virtual sys::SSize_T readImpl(void* buffer, size_t len) override;
 
     //! The socket
     std::shared_ptr<net::Socket> mSocket;

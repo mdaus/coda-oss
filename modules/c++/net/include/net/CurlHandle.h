@@ -56,7 +56,7 @@ class CurlHandle
      *
      *  \param url The desired url.
      */
-    void setURL(const std::string &url);
+    void setURL(const std::string& url);
 
     /*
      *  \func setWriteBuffer
@@ -66,7 +66,7 @@ class CurlHandle
      *
      *  \param buffer The buffer for CURL to use.
      */
-    void setWriteBuffer(std::string &buffer);
+    void setWriteBuffer(std::string& buffer);
 
     /*
      *  \func disableHostVerification
@@ -81,7 +81,7 @@ class CurlHandle
      *
      *  \param certPathname The full path to the certificate on disk.
      */
-    void setClientCert(const std::string &certPathname);
+    void setClientCert(const std::string& certPathname);
 
     /*
      *  \func setProxy
@@ -89,7 +89,7 @@ class CurlHandle
      *
      *  \param url The url to the proxy host.
      */
-    void setProxy(const std::string &url);
+    void setProxy(const std::string& url);
 
     /*
      *  \func setProxyPort
@@ -107,15 +107,15 @@ class CurlHandle
     void perform();
 
   private:
-    CurlHandle(const CurlHandle &);
-    CurlHandle &operator=(const CurlHandle &);
+    CurlHandle(const CurlHandle&);
+    CurlHandle& operator=(const CurlHandle&);
 
-    static void verify(CURLcode code, const std::string &prefix);
+    static void verify(CURLcode code, const std::string& prefix);
 
-    static int writeCallback(char *data, size_t size, size_t nmemb, std::string *writerData);
+    static int writeCallback(char* data, size_t size, size_t nmemb, std::string* writerData);
 
-    static size_t writeBetterCallback(char *data, size_t size, size_t nmemb, std::string *writerData);
-    CURL *const mHandle;
+    static size_t writeBetterCallback(char* data, size_t size, size_t nmemb, std::string* writerData);
+    CURL* const mHandle;
 };
 } // namespace net
 

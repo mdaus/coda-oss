@@ -50,7 +50,7 @@ static std::vector<uint64_t> make_origValues_(size_t count)
 }
 
 static constexpr size_t NUM_PIXELS = 10000;
-static const std::vector<uint64_t> &make_origValues()
+static const std::vector<uint64_t>& make_origValues()
 {
     static const auto retval = make_origValues_(NUM_PIXELS);
     return retval;
@@ -58,7 +58,7 @@ static const std::vector<uint64_t> &make_origValues()
 
 TEST_CASE(testThreadedByteSwap)
 {
-    const auto &origValues = make_origValues();
+    const auto& origValues = make_origValues();
 
     constexpr size_t numThreads = 4;
 
@@ -78,17 +78,17 @@ TEST_CASE(testThreadedByteSwap)
 
 TEST_CASE(test_transform_ByteSwap)
 {
-    const auto &origValues = make_origValues();
+    const auto& origValues = make_origValues();
 
     // Byte swap the old-fashioned way
     constexpr size_t numThreads = 4;
     auto expected_(origValues);
     constexpr auto elemSize = sizeof(expected_[0]);
     mt::threadedByteSwap(expected_.data(), elemSize, NUM_PIXELS, numThreads);
-    const auto &expected = expected_;
+    const auto& expected = expected_;
 
     // Byte swap into output buffer
-    const auto byteSwap = [&](const auto &buffer_)
+    const auto byteSwap = [&](const auto& buffer_)
     {
         auto buffer = buffer_;
         sys::byteSwap(&buffer, elemSize, 1 /*numElements*/);
@@ -105,17 +105,17 @@ TEST_CASE(test_transform_ByteSwap)
 
 TEST_CASE(test_Transform_par_ByteSwap)
 {
-    const auto &origValues = make_origValues();
+    const auto& origValues = make_origValues();
 
     // Byte swap the old-fashioned way
     constexpr size_t numThreads = 4;
     auto expected_(origValues);
     constexpr auto elemSize = sizeof(expected_[0]);
     mt::threadedByteSwap(expected_.data(), elemSize, NUM_PIXELS, numThreads);
-    const auto &expected = expected_;
+    const auto& expected = expected_;
 
     // Byte swap into output buffer
-    const auto byteSwap = [&](const auto &buffer_)
+    const auto byteSwap = [&](const auto& buffer_)
     {
         auto buffer = buffer_;
         sys::byteSwap(&buffer, elemSize, 1 /*numElements*/);

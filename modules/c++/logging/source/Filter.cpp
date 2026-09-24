@@ -26,7 +26,7 @@
 
 #include "logging/Filter.h"
 
-bool logging::Filter::filter(const logging::LogRecord *record) const
+bool logging::Filter::filter(const logging::LogRecord* record) const
 {
     std::string recName = record->getName();
     if (mName.empty() || recName == mName)

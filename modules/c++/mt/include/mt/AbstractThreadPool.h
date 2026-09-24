@@ -63,10 +63,10 @@ template <typename Request_T> class AbstractThreadPool
         join(); // destroy();
     }
 
-    AbstractThreadPool(const AbstractThreadPool &) = delete;
-    AbstractThreadPool &operator=(const AbstractThreadPool &) = delete;
-    AbstractThreadPool(AbstractThreadPool &&) = delete;
-    AbstractThreadPool &operator=(AbstractThreadPool &&) = delete;
+    AbstractThreadPool(const AbstractThreadPool&) = delete;
+    AbstractThreadPool& operator=(const AbstractThreadPool&) = delete;
+    AbstractThreadPool(AbstractThreadPool&&) = delete;
+    AbstractThreadPool& operator=(AbstractThreadPool&&) = delete;
 
     /*!
      *  Intialize and start each thread running.
@@ -89,7 +89,7 @@ template <typename Request_T> class AbstractThreadPool
      *  function can be derived to produce a pointer to the base class,
      *  pointing at the newly derived worker thread.
      */
-    virtual WorkerThread<Request_T> *newWorker() = 0;
+    virtual WorkerThread<Request_T>* newWorker() = 0;
 
     /*!
      *  Wait on all the threads in a pool.  If the WorkerThread<T>'s run()
@@ -112,7 +112,7 @@ template <typename Request_T> class AbstractThreadPool
         mNumThreads = numThreads;
     }
 
-    void addRequest(Request_T &handler)
+    void addRequest(Request_T& handler)
     {
         mRequestQueue.enqueue(handler);
     }

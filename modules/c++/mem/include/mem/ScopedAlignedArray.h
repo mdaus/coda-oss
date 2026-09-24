@@ -69,33 +69,33 @@ template <class T> struct ScopedAlignedArray
         mArray = allocate(numElements, alignment);
     }
 
-    T &operator[](std::ptrdiff_t idx) const
+    T& operator[](std::ptrdiff_t idx) const
     {
         return mArray[idx];
     }
 
-    T *get() const
+    T* get() const
     {
         return mArray;
     }
 
-    T *release()
+    T* release()
     {
-        T *const array = mArray;
+        T* const array = mArray;
         mArray = nullptr;
         return array;
     }
 
-    ScopedAlignedArray(const ScopedAlignedArray &) = delete;
-    ScopedAlignedArray &operator=(const ScopedAlignedArray &) = delete;
+    ScopedAlignedArray(const ScopedAlignedArray&) = delete;
+    ScopedAlignedArray& operator=(const ScopedAlignedArray&) = delete;
 
   private:
-    static T *allocate(size_t numElements, size_t alignment)
+    static T* allocate(size_t numElements, size_t alignment)
     {
         if (numElements > 0)
         {
             const size_t numBytes(numElements * sizeof(T));
-            return static_cast<T *>(sys::alignedAlloc(numBytes, alignment));
+            return static_cast<T*>(sys::alignedAlloc(numBytes, alignment));
         }
         else
         {
@@ -104,7 +104,7 @@ template <class T> struct ScopedAlignedArray
     }
 
   private:
-    T *mArray;
+    T* mArray;
 };
 } // namespace mem
 

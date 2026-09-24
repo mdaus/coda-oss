@@ -46,7 +46,7 @@ class SSLException : public sys::SocketException
      *  Create a new exception
      *  \param message  The message
      */
-    SSLException(const char *message) : sys::SocketException(message)
+    SSLException(const char* message) : sys::SocketException(message)
     {
         if (message != nullptr)
         {
@@ -59,7 +59,7 @@ class SSLException : public sys::SocketException
      *  Create a new exception
      *  \param message  The message
      */
-    SSLException(const std::string &message) : sys::SocketException(message)
+    SSLException(const std::string& message) : sys::SocketException(message)
     {
         mMessage = "SSL: ";
         mMessage += message;
@@ -69,7 +69,7 @@ class SSLException : public sys::SocketException
      *  Create a new exception
      *  \param c  The context
      */
-    SSLException(const except::Context &c) : sys::SocketException(c)
+    SSLException(const except::Context& c) : sys::SocketException(c)
     {
         mMessage = "SSL: ";
         mMessage += c.getMessage();

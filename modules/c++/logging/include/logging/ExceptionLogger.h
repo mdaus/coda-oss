@@ -45,20 +45,20 @@ class ExceptionLogger
   protected:
     mutable sys::Mutex mLock;
 
-    Logger *mLogger = nullptr;
+    Logger* mLogger = nullptr;
 
     bool mHasLogged = false;
 
   public:
-    ExceptionLogger(Logger *logger) : mLogger(logger)
+    ExceptionLogger(Logger* logger) : mLogger(logger)
     {
     }
 
     virtual ~ExceptionLogger() = default;
-    ExceptionLogger(const ExceptionLogger &) = delete;
-    ExceptionLogger &operator=(const ExceptionLogger &) = delete;
-    ExceptionLogger(ExceptionLogger &&) = delete;
-    ExceptionLogger &operator=(ExceptionLogger &&) = delete;
+    ExceptionLogger(const ExceptionLogger&) = delete;
+    ExceptionLogger& operator=(const ExceptionLogger&) = delete;
+    ExceptionLogger(ExceptionLogger&&) = delete;
+    ExceptionLogger& operator=(ExceptionLogger&&) = delete;
 
     //! Tells whether it has logged at least one exception
     bool hasLogged() const
@@ -68,7 +68,7 @@ class ExceptionLogger
     }
 
     //! Log the exception/throwable
-    void log(const except::Throwable &t, LogLevel logLevel)
+    void log(const except::Throwable& t, LogLevel logLevel)
     {
         mt::CriticalSection<sys::Mutex> crit(&mLock);
         mLogger->log(logLevel, t);

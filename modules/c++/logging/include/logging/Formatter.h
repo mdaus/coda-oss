@@ -46,7 +46,7 @@ class CODA_OSS_API Formatter
     {
     }
 
-    Formatter(const std::string &fmt, const std::string &prologue = "", const std::string &epilogue = "")
+    Formatter(const std::string& fmt, const std::string& prologue = "", const std::string& epilogue = "")
         : mFmt(fmt), mPrologue(prologue), mEpilogue(epilogue)
     {
     }
@@ -55,10 +55,10 @@ class CODA_OSS_API Formatter
     {
     }
 
-    Formatter &operator=(const Formatter &) = delete;
+    Formatter& operator=(const Formatter&) = delete;
 
     // returns string
-    virtual void format(const LogRecord *record, io::OutputStream &os) const = 0;
+    virtual void format(const LogRecord* record, io::OutputStream& os) const = 0;
 
     virtual std::string getPrologue() const;
     virtual std::string getEpilogue() const;

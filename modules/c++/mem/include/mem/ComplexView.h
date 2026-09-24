@@ -56,8 +56,8 @@ template <typename TAxis> struct ComplexViewConstIterator final
     using value_type = std::complex<TAxis>;
     using difference_type = ptrdiff_t;
     using size_type = size_t;
-    using pointer = const value_type *;
-    using reference = const value_type &;
+    using pointer = const value_type*;
+    using reference = const value_type&;
 
     template <typename TView>
     explicit ComplexViewConstIterator(TView view)
@@ -75,22 +75,22 @@ template <typename TAxis> struct ComplexViewConstIterator final
 
     ComplexViewConstIterator() = default;
     ~ComplexViewConstIterator() = default;
-    ComplexViewConstIterator(const ComplexViewConstIterator &) = default;
-    ComplexViewConstIterator &operator=(const ComplexViewConstIterator &) = default;
-    ComplexViewConstIterator(ComplexViewConstIterator &&) = default;
-    ComplexViewConstIterator &operator=(ComplexViewConstIterator &&) = default;
+    ComplexViewConstIterator(const ComplexViewConstIterator&) = default;
+    ComplexViewConstIterator& operator=(const ComplexViewConstIterator&) = default;
+    ComplexViewConstIterator(ComplexViewConstIterator&&) = default;
+    ComplexViewConstIterator& operator=(ComplexViewConstIterator&&) = default;
 
-    bool operator==(const ComplexViewConstIterator &rhs) const
+    bool operator==(const ComplexViewConstIterator& rhs) const
     {
         // Checking the target() helps ensure the same type of view is used.
         return (index_ == rhs.index_) && (size_ == rhs.size_) && (index_f_.target_type() == rhs.index_f_.target_type());
     }
-    bool operator!=(const ComplexViewConstIterator &rhs) const
+    bool operator!=(const ComplexViewConstIterator& rhs) const
     {
         return !(*this == rhs);
     }
 
-    ComplexViewConstIterator &operator++()
+    ComplexViewConstIterator& operator++()
     {
         ++index_;
         return *this;
@@ -101,13 +101,13 @@ template <typename TAxis> struct ComplexViewConstIterator final
         ++(*this);
         return retval;
     }
-    ComplexViewConstIterator &operator+=(size_type i)
+    ComplexViewConstIterator& operator+=(size_type i)
     {
         index_ += i;
         return *this;
     }
 
-    difference_type operator-(const ComplexViewConstIterator &other) const
+    difference_type operator-(const ComplexViewConstIterator& other) const
     {
         return index_ - other.index_;
     }
@@ -167,10 +167,10 @@ template <typename T> struct ComplexInterleavedView final
     explicit ComplexInterleavedView(span_t_ data) : data_(data)
     {
     }
-    ComplexInterleavedView(const ComplexInterleavedView &) = default;
-    ComplexInterleavedView &operator=(const ComplexInterleavedView &) = default;
-    ComplexInterleavedView(ComplexInterleavedView &&) = default;
-    ComplexInterleavedView &operator=(ComplexInterleavedView &&) = default;
+    ComplexInterleavedView(const ComplexInterleavedView&) = default;
+    ComplexInterleavedView& operator=(const ComplexInterleavedView&) = default;
+    ComplexInterleavedView(ComplexInterleavedView&&) = default;
+    ComplexInterleavedView& operator=(ComplexInterleavedView&&) = default;
 
     // This class is almost the same as std::span<const std::complex<T>> ... but
     // don't provide data() as ComplexParallelView stores complex numbers in two
@@ -190,11 +190,11 @@ template <typename T> struct ComplexInterleavedView final
     // std::complex<> (copying one pointer vs. two doubles).  But this
     // provides a (subtle) way for clients to know what "view style" they're
     // using, should that be needed; it also more closely matches std::span<>.
-    constexpr const cxvalue_t_ &index(size_type idx) const noexcept // i.e., std::complex<float>
+    constexpr const cxvalue_t_& index(size_type idx) const noexcept // i.e., std::complex<float>
     {
         return data_[idx];
     }
-    constexpr const auto &operator[](size_type idx) const noexcept
+    constexpr const auto& operator[](size_type idx) const noexcept
     {
         return index(idx);
     }
@@ -246,7 +246,7 @@ template <typename T> inline auto make_ComplexInterleavedView(coda_oss::span<con
 {
     return ComplexInterleavedView<T>(s);
 }
-template <typename TVectorLike> inline auto make_ComplexInterleavedView(const TVectorLike &v)
+template <typename TVectorLike> inline auto make_ComplexInterleavedView(const TVectorLike& v)
 {
     using cxvalue_t = typename TVectorLike::value_type; // i.e., std::complex<float>
     using span_t = coda_oss::span<const cxvalue_t>;
@@ -276,14 +276,14 @@ struct ComplexParallelView final // Two parallel arrays, absolutely nothing to t
             throw std::invalid_argument("real and imag must be the same size.");
         }
     }
-    ComplexParallelView(const T *reals, const T *imags, size_t sz)
+    ComplexParallelView(const T* reals, const T* imags, size_t sz)
         : ComplexParallelView(span_t_(reals, sz), span_t_(imags, sz))
     {
     }
-    ComplexParallelView(const ComplexParallelView &) = default;
-    ComplexParallelView &operator=(const ComplexParallelView &) = default;
-    ComplexParallelView(ComplexParallelView &&) = default;
-    ComplexParallelView &operator=(ComplexParallelView &&) = default;
+    ComplexParallelView(const ComplexParallelView&) = default;
+    ComplexParallelView& operator=(const ComplexParallelView&) = default;
+    ComplexParallelView(ComplexParallelView&&) = default;
+    ComplexParallelView& operator=(ComplexParallelView&&) = default;
 
     constexpr auto real(size_type idx) const noexcept
     {
@@ -346,7 +346,7 @@ template <typename T> inline auto make_ComplexParallelView(coda_oss::span<const 
     return ComplexParallelView<T>(reals, imags);
 }
 template <typename TVectorLike>
-inline auto make_ComplexParallelView(const TVectorLike &reals_, const TVectorLike &imags_)
+inline auto make_ComplexParallelView(const TVectorLike& reals_, const TVectorLike& imags_)
 {
     using value_type = typename TVectorLike::value_type; // i.e., float
     using cxvalue_t = std::complex<value_type>;          // i.e., std::complex<float>

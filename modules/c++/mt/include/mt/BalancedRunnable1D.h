@@ -63,7 +63,7 @@ template <typename OpT> class BalancedRunnable1D : public sys::Runnable
      *  \param op Functor to use
      *
      */
-    BalancedRunnable1D(size_t numElements, sys::AtomicCounter &atomicCounter, const OpT &op)
+    BalancedRunnable1D(size_t numElements, sys::AtomicCounter& atomicCounter, const OpT& op)
         : mNumElements(numElements), mCounter(atomicCounter), mOp(op)
     {
     }
@@ -86,8 +86,8 @@ template <typename OpT> class BalancedRunnable1D : public sys::Runnable
 
   private:
     const size_t mNumElements;
-    sys::AtomicCounter &mCounter;
-    const OpT &mOp;
+    sys::AtomicCounter& mCounter;
+    const OpT& mOp;
 };
 
 /*!
@@ -110,7 +110,7 @@ template <typename OpT> class BalancedRunnable1D : public sys::Runnable
  *  \param numThreads Number of threads
  *  \param op Functor to use
  */
-template <typename OpT> void runBalanced1D(size_t numElements, size_t numThreads, const OpT &op)
+template <typename OpT> void runBalanced1D(size_t numElements, size_t numThreads, const OpT& op)
 {
     sys::AtomicCounter counter(0);
     if (numThreads <= 1)
@@ -138,7 +138,7 @@ template <typename OpT> void runBalanced1D(size_t numElements, size_t numThreads
  *  \param numThreads Number of threads
  *  \param ops Vector of functors to use
  */
-template <typename OpT> void runBalanced1D(size_t numElements, size_t numThreads, const std::vector<OpT> &ops)
+template <typename OpT> void runBalanced1D(size_t numElements, size_t numThreads, const std::vector<OpT>& ops)
 {
     sys::AtomicCounter counter(0);
     if (ops.size() != numThreads)
@@ -175,7 +175,7 @@ template <typename OpT> void runBalanced1D(size_t numElements, size_t numThreads
  *  \param numThreads Number of threads
  *  \param op Functor to use
  */
-template <typename OpT> void runBalanced1DWithCopies(size_t numElements, size_t numThreads, const OpT &op)
+template <typename OpT> void runBalanced1DWithCopies(size_t numElements, size_t numThreads, const OpT& op)
 {
     const std::vector<OpT> ops(numThreads, op);
     runBalanced1D(numElements, numThreads, ops);

@@ -43,7 +43,7 @@ class GenericRequestHandler : public sys::Runnable
 {
   public:
     //! Constructor
-    GenericRequestHandler(RunnableRequestQueue *request) : mRequest(request)
+    GenericRequestHandler(RunnableRequestQueue* request) : mRequest(request)
     {
     }
 
@@ -58,7 +58,7 @@ class GenericRequestHandler : public sys::Runnable
     virtual void run() override;
 
   protected:
-    RunnableRequestQueue *mRequest;
+    RunnableRequestQueue* mRequest;
 };
 } // namespace mt
 

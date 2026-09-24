@@ -57,10 +57,10 @@ class NetConnectionServer
     //! Destructor.
     virtual ~NetConnectionServer() = default;
 
-    NetConnectionServer(const NetConnectionServer &) = delete;
-    NetConnectionServer &operator=(const NetConnectionServer &) = delete;
-    NetConnectionServer(NetConnectionServer &&) = default;
-    NetConnectionServer &operator=(NetConnectionServer &&) = default;
+    NetConnectionServer(const NetConnectionServer&) = delete;
+    NetConnectionServer& operator=(const NetConnectionServer&) = delete;
+    NetConnectionServer(NetConnectionServer&&) = default;
+    NetConnectionServer& operator=(NetConnectionServer&&) = default;
 
     /*!
      *  Create a server on the port, with a backlog queue given in the
@@ -75,7 +75,7 @@ class NetConnectionServer
      *
      *
      */
-    void initialize(net::RequestHandlerFactory *requestHandlerFactory, net::AllocStrategy *allocStrategy = nullptr);
+    void initialize(net::RequestHandlerFactory* requestHandlerFactory, net::AllocStrategy* allocStrategy = nullptr);
     // virtual void handleConnection(NetConnection* connection) = 0;
 
     /*!
@@ -97,7 +97,7 @@ class NetConnectionServer
      *  Accept an incoming client connection.
      *  \return A Socket_T representing that client.
      */
-    NetConnection *accept();
+    NetConnection* accept();
 
   protected:
     //! The port number we are listening on

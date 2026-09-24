@@ -42,7 +42,7 @@ namespace logging
 class DefaultLogger : public Logger
 {
   protected:
-    Handler *mDefaultHandler;
+    Handler* mDefaultHandler;
 
     static LogLevel defaultLogLevel;
 
@@ -51,11 +51,11 @@ class DefaultLogger : public Logger
 
     virtual ~DefaultLogger();
 
-    DefaultLogger(const DefaultLogger &) = delete;
-    DefaultLogger &operator=(const DefaultLogger &) = delete;
+    DefaultLogger(const DefaultLogger&) = delete;
+    DefaultLogger& operator=(const DefaultLogger&) = delete;
 
     //! Returns the default Handler. You can modify, but do not destroy.
-    virtual Handler *getDefaultHandler()
+    virtual Handler* getDefaultHandler()
     {
         return mDefaultHandler;
     }

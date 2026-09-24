@@ -23,13 +23,13 @@
 namespace mem
 {
 template <typename T>
-void ScratchMemory::put(const std::string &key, size_t numElements, size_t numBuffers, size_t alignment)
+void ScratchMemory::put(const std::string& key, size_t numElements, size_t numBuffers, size_t alignment)
 {
     put<sys::ubyte>(key, numElements * sizeof(T), numBuffers, alignment);
 }
 
 template <>
-inline void ScratchMemory::put<sys::ubyte>(const std::string &key, size_t numElements, size_t numBuffers,
+inline void ScratchMemory::put<sys::ubyte>(const std::string& key, size_t numElements, size_t numBuffers,
                                            size_t alignment)
 {
     // invalidate buffer (setup must be called before any subsequent get call)
@@ -54,25 +54,25 @@ inline void ScratchMemory::put<sys::ubyte>(const std::string &key, size_t numEle
     mKeyOrder.push_back(key);
 }
 
-template <typename T> T *ScratchMemory::get(const std::string &key, size_t indexBuffer)
+template <typename T> T* ScratchMemory::get(const std::string& key, size_t indexBuffer)
 {
-    return reinterpret_cast<T *>(lookupSegment(key, indexBuffer).buffers[indexBuffer]);
+    return reinterpret_cast<T*>(lookupSegment(key, indexBuffer).buffers[indexBuffer]);
 }
 
-template <typename T> const T *ScratchMemory::get(const std::string &key, size_t indexBuffer) const
+template <typename T> const T* ScratchMemory::get(const std::string& key, size_t indexBuffer) const
 {
-    return reinterpret_cast<const T *>(lookupSegment(key, indexBuffer).buffers[indexBuffer]);
+    return reinterpret_cast<const T*>(lookupSegment(key, indexBuffer).buffers[indexBuffer]);
 }
 
-template <typename T> BufferView<T> ScratchMemory::getBufferView(const std::string &key, size_t indexBuffer)
+template <typename T> BufferView<T> ScratchMemory::getBufferView(const std::string& key, size_t indexBuffer)
 {
-    const Segment &segment = lookupSegment(key, indexBuffer);
-    return BufferView<T>(reinterpret_cast<T *>(segment.buffers[indexBuffer]), segment.numBytes);
+    const Segment& segment = lookupSegment(key, indexBuffer);
+    return BufferView<T>(reinterpret_cast<T*>(segment.buffers[indexBuffer]), segment.numBytes);
 }
 
-template <typename T> BufferView<const T> ScratchMemory::getBufferView(const std::string &key, size_t indexBuffer) const
+template <typename T> BufferView<const T> ScratchMemory::getBufferView(const std::string& key, size_t indexBuffer) const
 {
-    const Segment &segment = lookupSegment(key, indexBuffer);
-    return BufferView<const T>(reinterpret_cast<const T *>(segment.buffers[indexBuffer]), segment.numBytes);
+    const Segment& segment = lookupSegment(key, indexBuffer);
+    return BufferView<const T>(reinterpret_cast<const T*>(segment.buffers[indexBuffer]), segment.numBytes);
 }
 } // namespace mem

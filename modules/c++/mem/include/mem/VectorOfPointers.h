@@ -50,7 +50,7 @@ template <typename T> struct VectorOfPointers
         mValues.clear();
     }
 
-    const std::vector<T *> &get() const
+    const std::vector<T*>& get() const
     {
         return mValues;
     }
@@ -65,30 +65,30 @@ template <typename T> struct VectorOfPointers
         return mValues.empty();
     }
 
-    T *operator[](std::ptrdiff_t idx) const
+    T* operator[](std::ptrdiff_t idx) const
     {
         return mValues[idx];
     }
 
-    T *back() const
+    T* back() const
     {
         return mValues.back();
     }
 
-    template <typename OtherT> void push_back(OtherT *value)
+    template <typename OtherT> void push_back(OtherT* value)
     {
         std::unique_ptr<OtherT> scopedValue(value);
         push_back(std::move(scopedValue));
     }
 
-    template <typename OtherT> void push_back(std::unique_ptr<OtherT> &&value)
+    template <typename OtherT> void push_back(std::unique_ptr<OtherT>&& value)
     {
         mValues.resize(mValues.size() + 1);
         mValues.back() = value.release();
     }
 
-    typedef typename std::vector<T *>::iterator iterator;
-    typedef typename std::vector<T *>::const_iterator const_iterator;
+    typedef typename std::vector<T*>::iterator iterator;
+    typedef typename std::vector<T*>::const_iterator const_iterator;
 
     iterator begin()
     {
@@ -125,36 +125,36 @@ template <typename T> struct VectorOfPointers
         return mValues.erase(first, last);
     }
 
-    VectorOfPointers(const VectorOfPointers &) = delete;
-    VectorOfPointers &operator=(const VectorOfPointers &) = delete;
+    VectorOfPointers(const VectorOfPointers&) = delete;
+    VectorOfPointers& operator=(const VectorOfPointers&) = delete;
 
   private:
-    std::vector<T *> mValues;
+    std::vector<T*> mValues;
 };
 
 template <typename T> struct VectorOfSharedPointers
 {
     VectorOfSharedPointers() = default;
     ~VectorOfSharedPointers() = default;
-    VectorOfSharedPointers(const VectorOfSharedPointers &) = default;
-    VectorOfSharedPointers(VectorOfSharedPointers &&) = default;
-    VectorOfSharedPointers &operator=(const VectorOfSharedPointers &) = default;
-    VectorOfSharedPointers &operator=(VectorOfSharedPointers &&) = default;
+    VectorOfSharedPointers(const VectorOfSharedPointers&) = default;
+    VectorOfSharedPointers(VectorOfSharedPointers&&) = default;
+    VectorOfSharedPointers& operator=(const VectorOfSharedPointers&) = default;
+    VectorOfSharedPointers& operator=(VectorOfSharedPointers&&) = default;
 
-    VectorOfSharedPointers(const std::vector<std::shared_ptr<T>> &values) : mValues(values)
+    VectorOfSharedPointers(const std::vector<std::shared_ptr<T>>& values) : mValues(values)
     {
     }
-    VectorOfSharedPointers &operator=(const std::vector<std::shared_ptr<T>> &values)
+    VectorOfSharedPointers& operator=(const std::vector<std::shared_ptr<T>>& values)
     {
         mValues = values;
         return *this;
     }
 
-    operator std::vector<std::shared_ptr<T>> &()
+    operator std::vector<std::shared_ptr<T>>&()
     {
         return mValues;
     }
-    operator const std::vector<std::shared_ptr<T>> &() const
+    operator const std::vector<std::shared_ptr<T>>&() const
     {
         return mValues;
     }
@@ -164,9 +164,9 @@ template <typename T> struct VectorOfSharedPointers
         mValues.clear();
     }
 
-    std::vector<T *> get() const
+    std::vector<T*> get() const
     {
-        std::vector<T *> values(size());
+        std::vector<T*> values(size());
         for (size_t ii = 0; ii < size(); ++ii)
         {
             values[ii] = mValues[ii].get();
@@ -184,22 +184,22 @@ template <typename T> struct VectorOfSharedPointers
         return mValues.empty();
     }
 
-    const std::shared_ptr<T> &operator[](std::ptrdiff_t idx) const
+    const std::shared_ptr<T>& operator[](std::ptrdiff_t idx) const
     {
         return mValues[idx];
     }
-    std::shared_ptr<T> &operator[](std::ptrdiff_t idx)
+    std::shared_ptr<T>& operator[](std::ptrdiff_t idx)
     {
         return mValues[idx];
     }
 
-    template <typename OtherT> void push_back(OtherT *value)
+    template <typename OtherT> void push_back(OtherT* value)
     {
         std::unique_ptr<OtherT> scopedValue(value);
         push_back(std::move(scopedValue));
     }
 
-    template <typename OtherT> void push_back(std::unique_ptr<OtherT> &&value)
+    template <typename OtherT> void push_back(std::unique_ptr<OtherT>&& value)
     {
         mValues.resize(mValues.size() + 1);
         mValues.back().reset(value.release());

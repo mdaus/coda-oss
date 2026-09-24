@@ -33,8 +33,8 @@ struct Foo final
     int val2 = 0;
     Foo() = default;
     Foo(int v1, int v2) : val1(v1), val2(v2) {};
-    Foo(const Foo &) = delete;
-    Foo &operator=(const Foo &) = delete;
+    Foo(const Foo&) = delete;
+    Foo& operator=(const Foo&) = delete;
     std::unique_ptr<Foo> clone() const
     {
         // compiler has a hard time resolving overload ... probably because =deletes
@@ -57,7 +57,7 @@ struct Baz final
 
 struct AssignOnDestruct final
 {
-    AssignOnDestruct(int &ref, int finalVal) : mRef(ref), mFinalVal(finalVal)
+    AssignOnDestruct(int& ref, int finalVal) : mRef(ref), mFinalVal(finalVal)
     {
     }
 
@@ -67,7 +67,7 @@ struct AssignOnDestruct final
     }
 
   private:
-    int &mRef;
+    int& mRef;
     const int mFinalVal;
 };
 
@@ -176,7 +176,7 @@ TEST_CASE(testDestructor)
 
 TEST_CASE(testSyntax)
 {
-    Foo *const rawPtr(new Foo());
+    Foo* const rawPtr(new Foo());
     const mem::ScopedCloneablePtr<Foo> ptr(rawPtr);
 
     TEST_ASSERT_EQ(ptr.get(), rawPtr);

@@ -38,7 +38,7 @@ class PrintChar : public sys::Runnable
 /*-- std::exception --*/
 struct stdExcept : std::exception
 {
-    const char *what() const noexcept override
+    const char* what() const noexcept override
     {
         return "std::exception in add";
     }
@@ -71,7 +71,7 @@ class AddInts : public sys::Runnable
 };
 
 /*-- (...) exception --*/
-void printConcat(const std::string &x, const std::string &y)
+void printConcat(const std::string& x, const std::string& y)
 {
     globalMutex.lock();
     std::cout << x + y << std::endl;
@@ -107,7 +107,7 @@ int main()
         threads.createThread(new ConcatStr("hello,", "world!"));
         threads.joinAll();
     }
-    catch (except::Throwable &t)
+    catch (except::Throwable& t)
     {
         std::cout << "Exception Caught(main): " << t.toString() << std::endl;
     }

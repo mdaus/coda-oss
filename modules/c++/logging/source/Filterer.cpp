@@ -26,21 +26,21 @@
 
 #include "logging/Filterer.h"
 
-void logging::Filterer::addFilter(logging::Filter *filter)
+void logging::Filterer::addFilter(logging::Filter* filter)
 {
     if (filters.find(filter->getName()) == filters.end())
     {
         filters[filter->getName()] = filter;
     }
 }
-void logging::Filterer::addFilter(logging::Filter &filter)
+void logging::Filterer::addFilter(logging::Filter& filter)
 {
     addFilter(&filter);
 }
 
-bool logging::Filterer::filter(const logging::LogRecord *record) const
+bool logging::Filterer::filter(const logging::LogRecord* record) const
 {
-    for (const auto &p : filters)
+    for (const auto& p : filters)
     {
         if (!p.second->filter(record))
             return false;
@@ -48,11 +48,11 @@ bool logging::Filterer::filter(const logging::LogRecord *record) const
     return true;
 }
 
-void logging::Filterer::removeFilter(logging::Filter *filter)
+void logging::Filterer::removeFilter(logging::Filter* filter)
 {
     filters.erase(filter->getName());
 }
-void logging::Filterer::removeFilter(logging::Filter &filter)
+void logging::Filterer::removeFilter(logging::Filter& filter)
 {
     removeFilter(&filter);
 }

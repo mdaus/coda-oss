@@ -61,15 +61,15 @@ class CODA_OSS_API StandardFormatter : public Formatter
     StandardFormatter() : Formatter(DEFAULT_FORMAT)
     {
     }
-    StandardFormatter(const std::string &fmt, const std::string &prologue = "", const std::string &epilogue = "");
+    StandardFormatter(const std::string& fmt, const std::string& prologue = "", const std::string& epilogue = "");
 
     virtual ~StandardFormatter()
     {
     }
 
-    StandardFormatter &operator=(const StandardFormatter &) = delete;
+    StandardFormatter& operator=(const StandardFormatter&) = delete;
 
-    virtual void format(const LogRecord *record, io::OutputStream &os) const override;
+    virtual void format(const LogRecord* record, io::OutputStream& os) const override;
 };
 
 } // namespace logging

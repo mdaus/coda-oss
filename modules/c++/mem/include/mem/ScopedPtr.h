@@ -58,32 +58,32 @@ template <typename T, typename TCopyIsClone> class ScopedPtr
 {
     std::unique_ptr<T> mPtr;
 
-    void duplicate(const T &from, std::true_type)
+    void duplicate(const T& from, std::true_type)
     {
         reset(from.clone());
     }
-    void duplicate(const T &from, std::false_type)
+    void duplicate(const T& from, std::false_type)
     {
         reset(std::make_unique<T>(from));
     }
 
   public:
-    explicit ScopedPtr(T *ptr = nullptr)
+    explicit ScopedPtr(T* ptr = nullptr)
     {
         reset(ptr);
     }
 
-    explicit ScopedPtr(std::unique_ptr<T> &&ptr)
+    explicit ScopedPtr(std::unique_ptr<T>&& ptr)
     {
         reset(std::move(ptr));
     }
 
-    ScopedPtr(const ScopedPtr &rhs)
+    ScopedPtr(const ScopedPtr& rhs)
     {
         *this = rhs;
     }
 
-    const ScopedPtr &operator=(const ScopedPtr &rhs)
+    const ScopedPtr& operator=(const ScopedPtr& rhs)
     {
         if (this != &rhs)
         {
@@ -101,10 +101,10 @@ template <typename T, typename TCopyIsClone> class ScopedPtr
         return *this;
     }
 
-    ScopedPtr(ScopedPtr &&) = default;
-    ScopedPtr &operator=(ScopedPtr &&) = default;
+    ScopedPtr(ScopedPtr&&) = default;
+    ScopedPtr& operator=(ScopedPtr&&) = default;
 
-    bool operator==(const ScopedPtr &rhs) const noexcept
+    bool operator==(const ScopedPtr& rhs) const noexcept
     {
         auto ptr = get();
         auto rhs_ptr = rhs.get();
@@ -119,7 +119,7 @@ template <typename T, typename TCopyIsClone> class ScopedPtr
         return *ptr == *rhs_ptr; // compare the (non-NULL) objects
     }
 
-    bool operator!=(const ScopedPtr &rhs) const noexcept
+    bool operator!=(const ScopedPtr& rhs) const noexcept
     {
         return !(*this == rhs);
     }
@@ -129,31 +129,31 @@ template <typename T, typename TCopyIsClone> class ScopedPtr
         return get() == nullptr ? false : true;
     }
 
-    T *get() const noexcept
+    T* get() const noexcept
     {
         return mPtr.get();
     }
 
-    T &operator*() const
+    T& operator*() const
     {
         auto ptr = get();
         assert(ptr != nullptr);
         return *ptr;
     }
 
-    T *operator->() const noexcept
+    T* operator->() const noexcept
     {
         auto ptr = get();
         assert(ptr != nullptr);
         return ptr;
     }
 
-    void reset(T *ptr = nullptr)
+    void reset(T* ptr = nullptr)
     {
         mPtr.reset(ptr);
     }
 
-    void reset(std::unique_ptr<T> &&ptr)
+    void reset(std::unique_ptr<T>&& ptr)
     {
         mPtr = std::move(ptr);
     }

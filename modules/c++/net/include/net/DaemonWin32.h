@@ -36,7 +36,7 @@ class DaemonWin32 : public DaemonInterface
     }
 
     //! Parse and execute command line option (start/stop/restart)
-    void daemonize(int &argc, char **&argv)
+    void daemonize(int& argc, char**& argv)
     {
         bool foreground = false;
 
@@ -63,10 +63,10 @@ class DaemonWin32 : public DaemonInterface
         }
     }
 
-    void setTracefile(const std::string &)
+    void setTracefile(const std::string&)
     {
     }
-    void setPidfile(const std::string &)
+    void setPidfile(const std::string&)
     {
     }
     std::string getTracefile() const

@@ -83,7 +83,7 @@ class AllocStrategy
      *
      *  \param factory A request handler producer
      */
-    virtual void setRequestHandlerFactory(RequestHandlerFactory *factory)
+    virtual void setRequestHandlerFactory(RequestHandlerFactory* factory)
     {
         mRequestHandlerFactory = factory;
     }
@@ -107,10 +107,10 @@ class AllocStrategy
      *
      *  \param conn The connection
      */
-    virtual void handleConnection(net::NetConnection *conn) = 0;
+    virtual void handleConnection(net::NetConnection* conn) = 0;
 
   protected:
-    RequestHandlerFactory *mRequestHandlerFactory;
+    RequestHandlerFactory* mRequestHandlerFactory;
 };
 
 } // namespace net

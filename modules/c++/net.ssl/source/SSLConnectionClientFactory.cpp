@@ -33,7 +33,7 @@ namespace ssl
  *  of having to enter it in manually for every connection.
  *  It needs the password from the SSLConnectionClientFactory somehow...
  */
-int password_cb(char *buf, int num, int rwflag, void *userdata)
+int password_cb(char* buf, int num, int rwflag, void* userdata)
 {
     // Somehow need to obtain a password
     // from an SSLConnectionClientFactory
@@ -53,9 +53,9 @@ void net::ssl::SSLConnectionClientFactory::initializeContext()
     SSL_load_error_strings();
 
 #if defined(OPENSSL_0_9_8)
-    SSL_METHOD *method = SSLv23_client_method();
+    SSL_METHOD* method = SSLv23_client_method();
 #else
-    const SSL_METHOD *method = SSLv23_client_method();
+    const SSL_METHOD* method = SSLv23_client_method();
 #endif
 
     if (method == nullptr)
@@ -102,7 +102,7 @@ void net::ssl::SSLConnectionClientFactory::initializeContext()
 #endif
 }
 
-net::NetConnection *net::ssl::SSLConnectionClientFactory::newConnection(std::unique_ptr<net::Socket> &&toServer)
+net::NetConnection* net::ssl::SSLConnectionClientFactory::newConnection(std::unique_ptr<net::Socket>&& toServer)
 {
 #if defined(USE_OPENSSL)
     return (new SSLConnection(std::move(toServer), mCtx, mServerAuthentication, mUrl.getHost()));

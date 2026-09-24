@@ -27,7 +27,7 @@
 #pragma warning(push)
 #pragma warning(disable                                                                                                \
                 : 5039) //	'...': pointer or reference to potentially throwing function passed to 'extern "C"' function
-                        //under - EHc.Undefined behavior may occur if this function throws an exception.
+                        // under - EHc.Undefined behavior may occur if this function throws an exception.
 #endif                  // _MSC_VER
 
 #include "mt/AbstractThreadPool.h"

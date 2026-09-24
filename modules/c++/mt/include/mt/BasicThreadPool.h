@@ -53,8 +53,8 @@ template <typename RequestHandler_T> struct BasicThreadPool
         shutdown();
     }
 
-    BasicThreadPool(const BasicThreadPool &) = delete;
-    BasicThreadPool &operator=(const BasicThreadPool &) = delete;
+    BasicThreadPool(const BasicThreadPool&) = delete;
+    BasicThreadPool& operator=(const BasicThreadPool&) = delete;
 
     void start()
     {
@@ -107,7 +107,7 @@ template <typename RequestHandler_T> struct BasicThreadPool
         mNumThreads = (bySize > mNumThreads) ? 0 : mNumThreads - bySize;
     }
 
-    void addRequest(sys::Runnable *handler)
+    void addRequest(sys::Runnable* handler)
     {
         mHandlerQueue.enqueue(handler);
     }
@@ -120,7 +120,7 @@ template <typename RequestHandler_T> struct BasicThreadPool
     void shutdown()
     {
         // Add requests that signal the thread should stop
-        static sys::Runnable *stopSignal = nullptr;
+        static sys::Runnable* stopSignal = nullptr;
         for (size_t i = 0; i < mPool.size(); ++i)
         {
             addRequest(stopSignal);
@@ -134,7 +134,7 @@ template <typename RequestHandler_T> struct BasicThreadPool
   protected:
     // Derive this to use a new kind of request handler
     // For instance, you may want an IterativeRequestHandler
-    virtual RequestHandler_T *newRequestHandler()
+    virtual RequestHandler_T* newRequestHandler()
     {
         return std::make_unique<RequestHandler_T>(&mHandlerQueue).release();
     }

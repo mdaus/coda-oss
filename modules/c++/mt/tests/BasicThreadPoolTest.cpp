@@ -22,7 +22,7 @@
 
 #if defined(__APPLE_CC__)
 #include <iostream>
-int main(int, char **)
+int main(int, char**)
 {
     std::cout << "Sorry no semaphores" << std::endl;
     return 0;
@@ -41,10 +41,10 @@ const int TO_SLEEP = 2;
 
 class MyRunTask : public Runnable
 {
-    Semaphore &mSem;
+    Semaphore& mSem;
 
   public:
-    MyRunTask(Semaphore &sem) : mSem(sem)
+    MyRunTask(Semaphore& sem) : mSem(sem)
     {
     }
     virtual ~MyRunTask()
@@ -58,7 +58,7 @@ class MyRunTask : public Runnable
     }
 };
 
-int main(int, char **)
+int main(int, char**)
 {
     try
     {
@@ -82,7 +82,7 @@ int main(int, char **)
         std::cout << "Finished all" << std::endl;
     }
 
-    catch (except::Throwable &t)
+    catch (except::Throwable& t)
     {
         cout << "Exception Caught: " << t.toString() << endl;
     }

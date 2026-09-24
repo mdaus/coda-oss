@@ -151,45 +151,45 @@ struct LogLevel final
     }
 
     //! assignment operator
-    LogLevel &operator=(const LogLevel &) = default;
-    LogLevel(const LogLevel &) = default;
-    LogLevel &operator=(LogLevel &&) = default;
-    LogLevel(LogLevel &&) = default;
+    LogLevel& operator=(const LogLevel&) = default;
+    LogLevel(const LogLevel&) = default;
+    LogLevel& operator=(LogLevel&&) = default;
+    LogLevel(LogLevel&&) = default;
 
-    bool operator==(const LogLevel &o) const
+    bool operator==(const LogLevel& o) const
     {
         return value == o.value;
     }
-    bool operator!=(const LogLevel &o) const
+    bool operator!=(const LogLevel& o) const
     {
         return value != o.value;
     }
-    bool operator==(const int &o) const
+    bool operator==(const int& o) const
     {
         return value == o;
     }
-    bool operator!=(const int &o) const
+    bool operator!=(const int& o) const
     {
         return value != o;
     }
-    LogLevel &operator=(const int &o)
+    LogLevel& operator=(const int& o)
     {
         value = o;
         return *this;
     }
-    bool operator<(const LogLevel &o) const
+    bool operator<(const LogLevel& o) const
     {
         return value < o.value;
     }
-    bool operator>(const LogLevel &o) const
+    bool operator>(const LogLevel& o) const
     {
         return value > o.value;
     }
-    bool operator<=(const LogLevel &o) const
+    bool operator<=(const LogLevel& o) const
     {
         return value <= o.value;
     }
-    bool operator>=(const LogLevel &o) const
+    bool operator>=(const LogLevel& o) const
     {
         return value >= o.value;
     }

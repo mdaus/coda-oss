@@ -42,10 +42,10 @@ template <typename T> class RetransmitTarget : public net::RequestHandler
     ~RetransmitTarget()
     {
     }
-    void operator()(net::NetConnection *conn)
+    void operator()(net::NetConnection* conn)
     {
         T packet;
-        conn->read((char *)&packet, sizeof(packet));
+        conn->read((char*)&packet, sizeof(packet));
         std::cout << "Recieved packet" << " on retransmit" << std::endl;
     }
 };
@@ -56,7 +56,7 @@ template <typename T> class AckMulticastSubscriber
     std::unique_ptr<Socket> mMulticastSubscriber;
 
   public:
-    AckMulticastSubscriber(const std::string &mcastGroup, int mcastLocalPort, const std::string &replyTo,
+    AckMulticastSubscriber(const std::string& mcastGroup, int mcastLocalPort, const std::string& replyTo,
                            int replyToPort)
     {
         mMulticastSubscriber = createMulticastSubscriber(mcastGroup, mcastLocalPort);
@@ -67,7 +67,7 @@ template <typename T> class AckMulticastSubscriber
     {
     }
 
-    std::unique_ptr<Socket> createMulticastSubscriber(const std::string &group, int port)
+    std::unique_ptr<Socket> createMulticastSubscriber(const std::string& group, int port)
     {
         SocketAddress here(port);
         std::unique_ptr<Socket> socket(new Socket(UDP_PROTO));
@@ -85,7 +85,7 @@ template <typename T> class AckMulticastSubscriber
         return socket;
     }
 
-    std::unique_ptr<Socket> createSocketForAck(const std::string &senderHost, int senderPort)
+    std::unique_ptr<Socket> createSocketForAck(const std::string& senderHost, int senderPort)
     {
         SocketAddress toSender(senderHost, senderPort);
         std::unique_ptr<Socket> s = UDPClientSocketFactory().create(toSender);
@@ -93,14 +93,14 @@ template <typename T> class AckMulticastSubscriber
         return s;
     }
 
-    void waitForNotification(T &packet)
+    void waitForNotification(T& packet)
     {
         SocketAddress whereFrom;
-        mMulticastSubscriber->recvFrom(whereFrom, (char *)&packet, sizeof(packet));
+        mMulticastSubscriber->recvFrom(whereFrom, (char*)&packet, sizeof(packet));
     }
     void confirmDelivery(int sequenceNumber)
     {
-        mAckChannel->send((const char *)&sequenceNumber, sizeof(int));
+        mAckChannel->send((const char*)&sequenceNumber, sizeof(int));
     }
 };
 
@@ -122,7 +122,7 @@ class RetransmitThread : public sys::Thread
     void run()
     {
         net::NetConnectionServer server;
-        net::DefaultAllocStrategy *strategy = new net::DefaultAllocStrategy();
+        net::DefaultAllocStrategy* strategy = new net::DefaultAllocStrategy();
         strategy->setRequestHandlerFactory(new DefaultRequestHandlerFactory<RetransmitTarget<MyPacket>>());
 
         strategy->initialize();
@@ -132,7 +132,7 @@ class RetransmitThread : public sys::Thread
     }
 };
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     try
     {
@@ -146,7 +146,7 @@ int main(int argc, char **argv)
         int replyAt = atoi(argv[4]);
         int retransmitPort = atoi(argv[5]);
 
-        sys::Thread *thr = new RetransmitThread(retransmitPort);
+        sys::Thread* thr = new RetransmitThread(retransmitPort);
         thr->start();
 
         pthread_detach(thr->getNative());
@@ -160,7 +160,7 @@ int main(int argc, char **argv)
         mcastSubs.confirmDelivery(packet.number);
         std::cout << "Confirmed packet #: " << packet.number << std::endl;
     }
-    catch (Exception &ex)
+    catch (Exception& ex)
     {
         std::cout << ex.toString() << std::endl;
     }

@@ -76,7 +76,7 @@ class CPUAffinityInitializerLinux : public AbstractCPUAffinityInitializer
     }
 
   private:
-    CPUAffinityThreadInitializerLinux *newThreadInitializerImpl() override
+    CPUAffinityThreadInitializerLinux* newThreadInitializerImpl() override
     {
         return new CPUAffinityThreadInitializerLinux(mCPUProvider->nextCPU());
     }

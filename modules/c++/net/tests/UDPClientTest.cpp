@@ -49,7 +49,7 @@
 
 using namespace net;
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 
     if (argc != 3)
@@ -67,14 +67,14 @@ int main(int argc, char **argv)
         my_packet_t packet;
         packet.packet_no = 1;
         packet.time_stamp = time(nullptr);
-        socket->send((const char *)&packet, sizeof(my_packet_t));
+        socket->send((const char*)&packet, sizeof(my_packet_t));
         int rv;
-        socket->recv((char *)&rv, sizeof(int));
+        socket->recv((char*)&rv, sizeof(int));
         std::cout << "Recv'd: " << rv << " back from socket" << std::endl;
         socket->close();
         return 0;
     }
-    catch (except::Exception &ex)
+    catch (except::Exception& ex)
     {
         std::cout << ex.getTrace() << std::endl;
     }

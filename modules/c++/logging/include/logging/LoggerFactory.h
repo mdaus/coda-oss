@@ -53,10 +53,10 @@ class LoggerManager
 
   public:
     LoggerManager() = default;
-    LoggerManager(const LoggerManager &) = delete;
-    LoggerManager(LoggerManager &&) = delete;
-    LoggerManager &operator=(const LoggerManager &) = delete;
-    LoggerManager &operator=(LoggerManager &&) = delete;
+    LoggerManager(const LoggerManager&) = delete;
+    LoggerManager(LoggerManager&&) = delete;
+    LoggerManager& operator=(const LoggerManager&) = delete;
+    LoggerManager& operator=(LoggerManager&&) = delete;
 
     /*!
      * Returns the Logger with the specified name. If a logger with the
@@ -64,7 +64,7 @@ class LoggerManager
      * default values in the sytem. If the name is not supplied, the root logger
      * is used by default.
      */
-    std::shared_ptr<Logger> getLoggerSharedPtr(const std::string &name = "root");
+    std::shared_ptr<Logger> getLoggerSharedPtr(const std::string& name = "root");
 
     /*!
      * Returns the Logger with the specified name. If a logger with the
@@ -72,7 +72,7 @@ class LoggerManager
      * default values in the sytem. If the name is not supplied, the root logger
      * is used by default.
      */
-    Logger *getLogger(const std::string &name = "root")
+    Logger* getLogger(const std::string& name = "root")
     {
         return getLoggerSharedPtr(name).get();
     }
@@ -90,45 +90,45 @@ typedef mt::Singleton<LoggerManager, true> LoggerFactory;
 // and it will use the root logger that is managed by the factory singleton
 
 //! Logs a message at the DEBUG LogLevel to the 'root' logger
-void debug(const std::string &msg);
+void debug(const std::string& msg);
 //! Logs a message at the INFO LogLevel to the 'root' logger
-void info(const std::string &msg);
+void info(const std::string& msg);
 //! Logs a message at the WARNING LogLevel to the 'root' logger
-void warn(const std::string &msg);
+void warn(const std::string& msg);
 //! Logs a message at the ERROR LogLevel to the 'root' logger
-void error(const std::string &msg);
+void error(const std::string& msg);
 //! Logs a message at the CRITICAL LogLevel to the 'root' logger
-void critical(const std::string &msg);
+void critical(const std::string& msg);
 
 //! Logs an Exception Context at the DEBUG LogLevel to the 'root' logger
-void debug(const except::Context &ctxt);
+void debug(const except::Context& ctxt);
 //! Logs an Exception Context at the INFO LogLevel to the 'root' logger
-void info(const except::Context &ctxt);
+void info(const except::Context& ctxt);
 //! Logs an Exception Context at the WARNING LogLevel to the 'root' logger
-void warn(const except::Context &ctxt);
+void warn(const except::Context& ctxt);
 //! Logs an Exception Context at the ERROR LogLevel to the 'root' logger
-void error(const except::Context &ctxt);
+void error(const except::Context& ctxt);
 //! Logs an Exception Context at the CRITICAL LogLevel to the 'root' logger
-void critical(const except::Context &ctxt);
+void critical(const except::Context& ctxt);
 
 //! Logs a Throwable at the DEBUG LogLevel to the 'root' logger
-void debug(except::Throwable &t);
+void debug(except::Throwable& t);
 //! Logs a Throwable at the INFO LogLevel to the 'root' logger
-void info(except::Throwable &t);
+void info(except::Throwable& t);
 //! Logs a Throwable at the WARNING LogLevel to the 'root' logger
-void warn(except::Throwable &t);
+void warn(except::Throwable& t);
 //! Logs a Throwable at the ERROR LogLevel to the 'root' logger
-void error(except::Throwable &t);
+void error(except::Throwable& t);
 //! Logs a Throwable at the CRITICAL LogLevel to the 'root' logger
-void critical(except::Throwable &t);
+void critical(except::Throwable& t);
 
 //! Sets the LogLevel for the default 'root' logger
 // TODO deprecate this
 void setLogLevel(LogLevel level);
 
 //! get a Logger of the given name
-Logger *getLogger(const std::string &name = "root");
-std::shared_ptr<logging::Logger> getLoggerSharedPtr(const std::string &name = "root");
+Logger* getLogger(const std::string& name = "root");
+std::shared_ptr<logging::Logger> getLoggerSharedPtr(const std::string& name = "root");
 
 } // namespace logging
 #endif // CODA_OSS_logging_LoggerFactory_h_INCLUDED_

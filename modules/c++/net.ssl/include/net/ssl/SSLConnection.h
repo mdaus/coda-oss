@@ -63,8 +63,8 @@ class SSLConnection : public NetConnection
      *  \param serverAuth  Flag for server authentication
      *  \param host  The host name in which we are connected
      */
-    SSLConnection(std::unique_ptr<net::Socket> &&socket, SSL_CTX *ctx, bool serverAuth = false,
-                  const std::string &host = "");
+    SSLConnection(std::unique_ptr<net::Socket>&& socket, SSL_CTX* ctx, bool serverAuth = false,
+                  const std::string& host = "");
 
     /*!
      *  Destructor
@@ -90,7 +90,7 @@ class SSLConnection : public NetConnection
      *  \throw IOException
      *  \return  The number of bytes read, or -1 if eof
      */
-    virtual sys::SSize_T read(sys::byte *b, sys::Size_T len);
+    virtual sys::SSize_T read(sys::byte* b, sys::Size_T len);
 
     /*!
      *  This method defines a given OutputStream. By defining,
@@ -100,27 +100,27 @@ class SSLConnection : public NetConnection
      *  \param len The length of the byte array to write to the stream
      *  \throw IOException
      */
-    virtual void write(const sys::byte *b, sys::Size_T len);
+    virtual void write(const sys::byte* b, sys::Size_T len);
 
   protected:
     /*!
      *  Binds the socket to an SSL object
      *  \param hostName  The host we are connecting to
      */
-    void setupSocket(const std::string &hostName);
+    void setupSocket(const std::string& hostName);
 
     /*!
      *  Authenticates the server by verifying its
      *  certificate
      *  \param hostName  The host we are connecting to
      */
-    void verifyCertificate(const std::string &hostName);
+    void verifyCertificate(const std::string& hostName);
 
     //! The SSL object
-    SSL *mSSL;
+    SSL* mSSL;
 
     //! The BIO error object
-    BIO *mBioErr;
+    BIO* mBioErr;
 
     //! Flag for doing additional server authentication
     bool mServerAuthentication;

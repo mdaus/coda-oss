@@ -30,7 +30,7 @@ using namespace sys;
 using namespace io;
 using namespace except;
 
-std::unique_ptr<Socket> createMulticastSubscriber(const std::string &group, const SocketAddress &local)
+std::unique_ptr<Socket> createMulticastSubscriber(const std::string& group, const SocketAddress& local)
 {
     std::unique_ptr<Socket> socket(new Socket(UDP_PROTO));
 
@@ -65,7 +65,7 @@ struct Packet
 
 #define ACK_CHANNEL 8647
 #define ACK_HOST "127.0.0.1"
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     try
     {
@@ -81,12 +81,12 @@ int main(int argc, char **argv)
         std::unique_ptr<Socket> socket = createMulticastSubscriber(mcastGroup, here);
         Packet packet;
         SocketAddress whereFrom;
-        socket->recvFrom(whereFrom, (char *)&packet, sizeof(packet));
+        socket->recvFrom(whereFrom, (char*)&packet, sizeof(packet));
         std::cout << "Recv'd message: " << packet.what << std::endl;
         std::cout << "Packet #: " << packet.number << std::endl;
         socket->close();
     }
-    catch (Exception &ex)
+    catch (Exception& ex)
     {
         std::cout << ex.toString() << std::endl;
     }

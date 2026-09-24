@@ -45,8 +45,8 @@ struct Filter
     }
     virtual ~Filter() = default;
 
-    virtual bool filter(const LogRecord *record) const;
-    virtual bool filter(const LogRecord &record) const
+    virtual bool filter(const LogRecord* record) const;
+    virtual bool filter(const LogRecord& record) const
     {
         return filter(&record);
     }

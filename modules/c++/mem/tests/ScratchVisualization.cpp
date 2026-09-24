@@ -32,7 +32,7 @@ namespace
 {
 struct Operation
 {
-    Operation(const std::string &op_, const std::string &name_, const size_t bytes_)
+    Operation(const std::string& op_, const std::string& name_, const size_t bytes_)
         : op(op_), name(name_), bytes(bytes_)
     {
     }
@@ -59,8 +59,8 @@ class Visualizer
      * \param[in,out] htmlFile Ofstream to .html file
      * \param[in,out] cssFile Ofstream to .css file
      */
-    Visualizer(const std::vector<Operation> &prevOperations, size_t iteration, std::ofstream &htmlFile,
-               std::ofstream &cssFile)
+    Visualizer(const std::vector<Operation>& prevOperations, size_t iteration, std::ofstream& htmlFile,
+               std::ofstream& cssFile)
         : mPrevOperations(prevOperations), mIteration(iteration), mHTMLFile(htmlFile), mCSSFile(cssFile)
     {
         mStartPtr = nullptr;
@@ -77,7 +77,7 @@ class Visualizer
      *
      * \param operations A vector of all operations
      */
-    void setStartPtr(const std::vector<Operation> &operations)
+    void setStartPtr(const std::vector<Operation>& operations)
     {
         mStartPtr = operations.at(0).buffer.data;
         for (size_t ii = 0; ii < operations.size(); ++ii)
@@ -95,7 +95,7 @@ class Visualizer
      * \param op Operation to draw a box of
      * \param color_iter Iterator to arbitrarily select a color
      */
-    void createBox(const Operation &op, size_t colorIter)
+    void createBox(const Operation& op, size_t colorIter)
     {
         std::string color = mColors.at(colorIter % 3);
         std::string height = "25px;\n";
@@ -126,7 +126,7 @@ class Visualizer
      * \param[out] currentOperations Operations for this iteration
      * \param[out] scratch Scratch memory object
      */
-    void handlePrevOps(std::vector<Operation> &currentOperations, mem::ScratchMemory &scratch)
+    void handlePrevOps(std::vector<Operation>& currentOperations, mem::ScratchMemory& scratch)
     {
         for (size_t ii = 0; ii < mPrevOperations.size(); ++ii)
         {
@@ -154,8 +154,8 @@ class Visualizer
      * \param[out] usedBufferSpace How much memory has already been used up
      * \param[out] scratch Scratch memory object
      */
-    void randomTest(std::vector<Operation> &currentOperations, unsigned char &bufferName,
-                    std::vector<unsigned char> &notReleasedKeys, mem::ScratchMemory &scratch)
+    void randomTest(std::vector<Operation>& currentOperations, unsigned char& bufferName,
+                    std::vector<unsigned char>& notReleasedKeys, mem::ScratchMemory& scratch)
     {
         handlePrevOps(currentOperations, scratch);
 
@@ -194,8 +194,8 @@ class Visualizer
      * \param[out] usedBufferSpace How much memory has already been used up
      * \param[out] scratch Scratch memory object
      */
-    void concurrentBlockTest(std::vector<Operation> &currentOperations, unsigned char &bufferName, size_t &testIter,
-                             mem::ScratchMemory &scratch)
+    void concurrentBlockTest(std::vector<Operation>& currentOperations, unsigned char& bufferName, size_t& testIter,
+                             mem::ScratchMemory& scratch)
     {
         handlePrevOps(currentOperations, scratch);
         size_t numElements = (rand() % 150) + 20;
@@ -242,8 +242,8 @@ class Visualizer
      * \param[out] usedBufferSpace How much memory has already been used up
      * \param[out] scratch Scratch memory object
      */
-    void connectedBlockTest(std::vector<Operation> &currentOperations, unsigned char &bufferName, size_t &testIter,
-                            mem::ScratchMemory &scratch)
+    void connectedBlockTest(std::vector<Operation>& currentOperations, unsigned char& bufferName, size_t& testIter,
+                            mem::ScratchMemory& scratch)
     {
         handlePrevOps(currentOperations, scratch);
         size_t numElements = (rand() % 150) + 20;
@@ -283,22 +283,22 @@ class Visualizer
     std::vector<std::string> mColors;
     std::vector<std::string> mReleasedColors;
     std::vector<Operation> mPrevOperations;
-    sys::ubyte *mStartPtr;
+    sys::ubyte* mStartPtr;
     size_t mIteration;
 
-    std::ofstream &mHTMLFile;
-    std::ofstream &mCSSFile;
+    std::ofstream& mHTMLFile;
+    std::ofstream& mCSSFile;
 };
 } // namespace
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     cli::ArgumentParser parser;
 
     parser.setDescription("Software to visualize scratch memory test cases in HTML/CSS");
     parser.addArgument("--test", "Select which test case to run", cli::STORE, "test")->setDefault("random");
 
-    const cli::Results *options(parser.parse(argc, argv));
+    const cli::Results* options(parser.parse(argc, argv));
     const std::string testType(options->get<std::string>("test"));
 
     srand((unsigned)time(nullptr));
@@ -388,7 +388,7 @@ int main(int argc, char **argv)
         { /*fix compiler warning*/
         }
     }
-    catch (const except::Exception &)
+    catch (const except::Exception&)
     {
         std::cout << "Failed to open html file in firefox\n";
     }

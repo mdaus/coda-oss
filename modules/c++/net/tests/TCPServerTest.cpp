@@ -46,7 +46,7 @@
 
 using namespace net;
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 
     if (argc != 2)
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
         client->close();
         listener->close();
     }
-    catch (except::Exception &ex)
+    catch (except::Exception& ex)
     {
         std::cout << ex.getTrace() << std::endl;
     }

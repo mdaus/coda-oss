@@ -37,7 +37,7 @@
 #include <sys/LocalDateTime.h>
 #include <sys/Path.h>
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     try
     {
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
         client->recv(&numBytes, sizeof(sys::Uint64_T));
 
         std::vector<sys::ubyte> bufferVec(std::min<sys::Uint64_T>(numBytes, bufferSize));
-        sys::ubyte *const buffer = &bufferVec[0];
+        sys::ubyte* const buffer = &bufferVec[0];
 
         // Then receive all the bytes
         const sys::LocalDateTime start;
@@ -87,12 +87,12 @@ int main(int argc, char **argv)
 
         return 0;
     }
-    catch (const except::Exception &ex)
+    catch (const except::Exception& ex)
     {
         std::cerr << ex.toString() << std::endl;
         return 1;
     }
-    catch (const std::exception &ex)
+    catch (const std::exception& ex)
     {
         std::cerr << ex.what() << std::endl;
         return 1;

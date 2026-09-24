@@ -35,7 +35,7 @@ MemoryHandler::MemoryHandler(LogLevel level) : Handler(level)
     }
 }
 
-const std::vector<std::string> &MemoryHandler::getLogs(LogLevel level) const
+const std::vector<std::string>& MemoryHandler::getLogs(LogLevel level) const
 {
     const LogMap::const_iterator iter = mLogMap.find(level);
     if (iter == mLogMap.end())
@@ -45,7 +45,7 @@ const std::vector<std::string> &MemoryHandler::getLogs(LogLevel level) const
     return iter->second;
 }
 
-void MemoryHandler::write(const std::string &str)
+void MemoryHandler::write(const std::string& str)
 {
     for (LogMap::iterator iter = mLogMap.begin(); iter != mLogMap.end(); ++iter)
     {
@@ -53,7 +53,7 @@ void MemoryHandler::write(const std::string &str)
     }
 }
 
-void MemoryHandler::emitRecord(const LogRecord *record)
+void MemoryHandler::emitRecord(const LogRecord* record)
 {
     io::StringStream ostr;
     mFormatter->format(record, ostr);

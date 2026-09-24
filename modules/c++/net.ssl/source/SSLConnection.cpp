@@ -24,8 +24,8 @@
 #include <net/ssl/SSLExceptions.h>
 #if defined(USE_OPENSSL)
 
-net::ssl::SSLConnection::SSLConnection(std::unique_ptr<net::Socket> &&socket, SSL_CTX *ctx, bool serverAuth,
-                                       const std::string &host)
+net::ssl::SSLConnection::SSLConnection(std::unique_ptr<net::Socket>&& socket, SSL_CTX* ctx, bool serverAuth,
+                                       const std::string& host)
     : NetConnection(std::move(socket)), mServerAuthentication(serverAuth)
 {
     mSSL = nullptr;
@@ -53,10 +53,10 @@ net::ssl::SSLConnection::~SSLConnection()
     }
 }
 
-void net::ssl::SSLConnection::setupSocket(const std::string &hostName)
+void net::ssl::SSLConnection::setupSocket(const std::string& hostName)
 {
     net::Socket_T fd = mSocket->getHandle();
-    BIO *sbio = BIO_new_socket(fd, BIO_NOCLOSE);
+    BIO* sbio = BIO_new_socket(fd, BIO_NOCLOSE);
     SSL_set_bio(mSSL, sbio, sbio);
     int val = SSL_connect(mSSL);
     if (val <= 0)
@@ -93,10 +93,10 @@ void net::ssl::SSLConnection::setupSocket(const std::string &hostName)
     }
 }
 
-void net::ssl::SSLConnection::verifyCertificate(const std::string &hostName)
+void net::ssl::SSLConnection::verifyCertificate(const std::string& hostName)
 {
     // Check that the common name matches the host name
-    X509 *peer;
+    X509* peer;
     char peer_CN[256];
 
     /*if(SSL_get_verify_result(mSSL) != X509_V_OK)
@@ -116,14 +116,14 @@ void net::ssl::SSLConnection::verifyCertificate(const std::string &hostName)
     }
 }
 
-sys::SSize_T net::ssl::SSLConnection::read(sys::byte *b, sys::Size_T len)
+sys::SSize_T net::ssl::SSLConnection::read(sys::byte* b, sys::Size_T len)
 {
     sys::SSize_T numBytes(0);
     int val(0);
     if (len == 0)
         return -1;
 
-    numBytes = SSL_read(mSSL, (char *)b, len);
+    numBytes = SSL_read(mSSL, (char*)b, len);
 
 #if defined(__DEBUG_SOCKET)
     std::cout << "======= READ FROM SECURE CONNECTION =========" << std::endl;
@@ -158,12 +158,12 @@ sys::SSize_T net::ssl::SSLConnection::read(sys::byte *b, sys::Size_T len)
     return numBytes;
 }
 
-void net::ssl::SSLConnection::write(const sys::byte *b, sys::Size_T len)
+void net::ssl::SSLConnection::write(const sys::byte* b, sys::Size_T len)
 {
     if (len <= 0)
         return;
 
-    const auto numBytes = SSL_write(mSSL, (const char *)b, len);
+    const auto numBytes = SSL_write(mSSL, (const char*)b, len);
     if (static_cast<sys::Size_T>(numBytes) != len)
     {
         throw net::ssl::SSLException(Ctxt(str::Format("Tried sending %d bytes, %d sent", len, numBytes)));

@@ -49,7 +49,7 @@ class CPUAffinityInitializerWin32 : public AbstractCPUAffinityInitializer
     }
 
   private:
-    CPUAffinityThreadInitializerWin32 *newThreadInitializerImpl() override
+    CPUAffinityThreadInitializerWin32* newThreadInitializerImpl() override
     {
         return nullptr;
     }

@@ -33,20 +33,20 @@ logging::Logger::~Logger()
     reset();
 }
 
-void logging::Logger::log(logging::LogLevel level, const std::string &msg)
+void logging::Logger::log(logging::LogLevel level, const std::string& msg)
 {
     const logging::LogRecord rec(mName, msg, level);
     handle(rec);
 }
 
-void logging::Logger::log(LogLevel level, const except::Context &ctxt)
+void logging::Logger::log(LogLevel level, const except::Context& ctxt)
 {
     const logging::LogRecord rec(mName, ctxt.getMessage(), level, ctxt.getFile(), ctxt.getFunction(), ctxt.getLine(),
                                  ctxt.getTime());
     handle(rec);
 }
 
-void logging::Logger::log(LogLevel level, const except::Throwable &t)
+void logging::Logger::log(LogLevel level, const except::Throwable& t)
 {
     std::deque<except::Context> savedContexts;
     except::Trace trace = t.getTrace();
@@ -71,111 +71,111 @@ void logging::Logger::log(LogLevel level, const except::Throwable &t)
     }
 }
 
-void logging::Logger::debug(const std::string &msg)
+void logging::Logger::debug(const std::string& msg)
 {
     log(LogLevel::LOG_DEBUG, msg);
 }
 
-void logging::Logger::info(const std::string &msg)
+void logging::Logger::info(const std::string& msg)
 {
     log(LogLevel::LOG_INFO, msg);
 }
 
-void logging::Logger::warn(const std::string &msg)
+void logging::Logger::warn(const std::string& msg)
 {
     log(LogLevel::LOG_WARNING, msg);
 }
 
-void logging::Logger::error(const std::string &msg)
+void logging::Logger::error(const std::string& msg)
 {
     log(LogLevel::LOG_ERROR, msg);
 }
 
-void logging::Logger::critical(const std::string &msg)
+void logging::Logger::critical(const std::string& msg)
 {
     log(LogLevel::LOG_CRITICAL, msg);
 }
 
-void logging::Logger::debug(const std::ostringstream &msg)
+void logging::Logger::debug(const std::ostringstream& msg)
 {
     log(LogLevel::LOG_DEBUG, msg.str());
 }
 
-void logging::Logger::info(const std::ostringstream &msg)
+void logging::Logger::info(const std::ostringstream& msg)
 {
     log(LogLevel::LOG_INFO, msg.str());
 }
 
-void logging::Logger::warn(const std::ostringstream &msg)
+void logging::Logger::warn(const std::ostringstream& msg)
 {
     log(LogLevel::LOG_WARNING, msg.str());
 }
 
-void logging::Logger::error(const std::ostringstream &msg)
+void logging::Logger::error(const std::ostringstream& msg)
 {
     log(LogLevel::LOG_ERROR, msg.str());
 }
 
-void logging::Logger::critical(const std::ostringstream &msg)
+void logging::Logger::critical(const std::ostringstream& msg)
 {
     log(LogLevel::LOG_CRITICAL, msg.str());
 }
 
-void logging::Logger::debug(const except::Context &ctxt)
+void logging::Logger::debug(const except::Context& ctxt)
 {
     log(LogLevel::LOG_DEBUG, ctxt);
 }
 
-void logging::Logger::info(const except::Context &ctxt)
+void logging::Logger::info(const except::Context& ctxt)
 {
     log(LogLevel::LOG_INFO, ctxt);
 }
 
-void logging::Logger::warn(const except::Context &ctxt)
+void logging::Logger::warn(const except::Context& ctxt)
 {
     log(LogLevel::LOG_WARNING, ctxt);
 }
 
-void logging::Logger::error(const except::Context &ctxt)
+void logging::Logger::error(const except::Context& ctxt)
 {
     log(LogLevel::LOG_ERROR, ctxt);
 }
 
-void logging::Logger::critical(const except::Context &ctxt)
+void logging::Logger::critical(const except::Context& ctxt)
 {
     log(LogLevel::LOG_CRITICAL, ctxt);
 }
 
-void logging::Logger::debug(const except::Throwable &t)
+void logging::Logger::debug(const except::Throwable& t)
 {
     log(LogLevel::LOG_DEBUG, t);
 }
 
-void logging::Logger::info(const except::Throwable &t)
+void logging::Logger::info(const except::Throwable& t)
 {
     log(LogLevel::LOG_INFO, t);
 }
 
-void logging::Logger::warn(const except::Throwable &t)
+void logging::Logger::warn(const except::Throwable& t)
 {
     log(LogLevel::LOG_WARNING, t);
 }
 
-void logging::Logger::error(const except::Throwable &t)
+void logging::Logger::error(const except::Throwable& t)
 {
     log(LogLevel::LOG_ERROR, t);
 }
 
-void logging::Logger::critical(const except::Throwable &t)
+void logging::Logger::critical(const except::Throwable& t)
 {
     log(LogLevel::LOG_CRITICAL, t);
 }
 
-void logging::Logger::handle(const logging::LogRecord *record)
+void logging::Logger::handle(const logging::LogRecord* record)
 {
     if (filter(record))
     {
-        for (const auto &p : mHandlers)
+        for (const auto& p : mHandlers)
         {
             // std::cout << (int)(*p)->getLevel() << std::endl;
             // only handle if it is above/equal to threshold
@@ -185,7 +185,7 @@ void logging::Logger::handle(const logging::LogRecord *record)
     }
 }
 
-void logging::Logger::addHandler(logging::Handler *handler, bool own)
+void logging::Logger::addHandler(logging::Handler* handler, bool own)
 {
     // only add the handler if it isn't added already
     bool found = false;
@@ -200,12 +200,12 @@ void logging::Logger::addHandler(logging::Handler *handler, bool own)
     if (!found)
         mHandlers.push_back(Handler_T(handler, own));
 }
-void logging::Logger::addHandler(std::unique_ptr<logging::Handler> &&handler)
+void logging::Logger::addHandler(std::unique_ptr<logging::Handler>&& handler)
 {
     addHandler(handler.release(), true /*own*/);
 }
 
-void logging::Logger::removeHandler(logging::Handler *handler)
+void logging::Logger::removeHandler(logging::Handler* handler)
 {
     // find and remove, if it exists
     for (Handlers_T::iterator p = mHandlers.begin(); p != mHandlers.end(); ++p)
@@ -220,7 +220,7 @@ void logging::Logger::removeHandler(logging::Handler *handler)
 
 void logging::Logger::setLevel(LogLevel level)
 {
-    for (const auto &p : mHandlers)
+    for (const auto& p : mHandlers)
     {
         // set the level
         p.first->setLevel(level);
@@ -229,7 +229,7 @@ void logging::Logger::setLevel(LogLevel level)
 
 void logging::Logger::reset()
 {
-    for (const auto &p : mHandlers)
+    for (const auto& p : mHandlers)
     {
         if (p.second && p.first)
             delete p.first;

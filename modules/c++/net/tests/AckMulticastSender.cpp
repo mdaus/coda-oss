@@ -40,8 +40,8 @@ template <typename T> class AckMulticastSender
     int mRetransmitPort;
 
   public:
-    AckMulticastSender(const std::string &mcastGroup, int mcastPort, int localAckPort,
-                       const std::vector<std::string> &subscribers, int retransmitPort, int loopback = 1)
+    AckMulticastSender(const std::string& mcastGroup, int mcastPort, int localAckPort,
+                       const std::vector<std::string>& subscribers, int retransmitPort, int loopback = 1)
         : mRetransmitPort(retransmitPort)
     {
         mSubscribers = subscribers;
@@ -58,7 +58,7 @@ template <typename T> class AckMulticastSender
         SocketAddress address(localAckPort);
         return UDPServerSocketFactory().create(address);
     }
-    std::unique_ptr<Socket> createSenderSocket(const std::string &mcastGroup, int mcastPort, int loopback)
+    std::unique_ptr<Socket> createSenderSocket(const std::string& mcastGroup, int mcastPort, int loopback)
     {
 
         mMulticastAddr.set(mcastPort, mcastGroup);
@@ -74,12 +74,12 @@ template <typename T> class AckMulticastSender
 
         return s;
     }
-    void sendNotification(const T &t)
+    void sendNotification(const T& t)
     {
-        mMulticastSender->sendTo(mMulticastAddr, (const char *)&t, sizeof(t));
+        mMulticastSender->sendTo(mMulticastAddr, (const char*)&t, sizeof(t));
     }
 
-    void confirmOrRetransmit(int number, const T &t)
+    void confirmOrRetransmit(int number, const T& t)
     {
         std::vector<std::string> rsvp;
         // We should set a timer here, and collectRSVPs.
@@ -92,18 +92,18 @@ template <typename T> class AckMulticastSender
         retransmit(needRetransmit, t);
     }
 
-    void retransmit(const std::vector<std::string> &needRetransmit, const T &packet)
+    void retransmit(const std::vector<std::string>& needRetransmit, const T& packet)
     {
         for (int i = 0; i < needRetransmit.size(); i++)
         {
             SocketAddress sa(needRetransmit[i], mRetransmitPort);
             std::unique_ptr<Socket> toRetransmit = net::TCPClientSocketFactory().create(sa);
-            toRetransmit.send((const char *)&packet, sizeof(packet));
+            toRetransmit.send((const char*)&packet, sizeof(packet));
             toRetransmit.close();
         }
     }
 
-    void initRetransmitList(const std::vector<std::string> &rsvped, std::vector<std::string> &retransmitList)
+    void initRetransmitList(const std::vector<std::string>& rsvped, std::vector<std::string>& retransmitList)
     {
         for (int i = 0; i < mSubscribers.size(); i++)
         {
@@ -116,7 +116,7 @@ template <typename T> class AckMulticastSender
         }
     }
 
-    void collectRSVPs(int number, std::vector<std::string> &rsvps)
+    void collectRSVPs(int number, std::vector<std::string>& rsvps)
     {
 
         for (int i = 0; i < mSubscribers.size(); i++)
@@ -144,7 +144,7 @@ template <typename T> class AckMulticastSender
 
             if (rv)
             {
-                mAckChannel->recvFrom(whereFrom, (char *)&myNumber, sizeof(int));
+                mAckChannel->recvFrom(whereFrom, (char*)&myNumber, sizeof(int));
                 if (myNumber == number)
                 {
                     std::string host = inet_ntoa(whereFrom.getAddress().sin_addr);
@@ -166,7 +166,7 @@ struct MyPacket
     char what[128];
 };
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     try
     {
@@ -198,7 +198,7 @@ int main(int argc, char **argv)
 
         multicastSender.confirmOrRetransmit(packet.number, packet);
     }
-    catch (Exception &ex)
+    catch (Exception& ex)
     {
         std::cout << ex.toString() << std::endl;
     }

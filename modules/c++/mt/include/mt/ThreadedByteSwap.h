@@ -18,7 +18,7 @@ namespace mt
  * \param numElements Number of elements in 'buffer'
  * \param numThreads Number of threads to use for byte-swapping
  */
-inline void threadedByteSwap(void *buffer, size_t elemSize, size_t numElements, size_t numThreads)
+inline void threadedByteSwap(void* buffer, size_t elemSize, size_t numElements, size_t numThreads)
 {
     if (numThreads <= 1)
     {
@@ -52,8 +52,8 @@ inline void threadedByteSwap(void *buffer, size_t elemSize, size_t numElements, 
  * \param numThreads Number of threads to use for byte-swapping
  * \param outputBuffer buffer to write into
  */
-inline void threadedByteSwap(const void *buffer, size_t elemSize, size_t numElements, size_t numThreads,
-                             void *outputBuffer)
+inline void threadedByteSwap(const void* buffer, size_t elemSize, size_t numElements, size_t numThreads,
+                             void* outputBuffer)
 {
     if (numThreads <= 1)
     {

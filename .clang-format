@@ -1,5 +1,6 @@
 BasedOnStyle: Microsoft
 BreakBeforeBraces: Allman
+PointerAlignment: Left
 WhitespaceSensitiveMacros: [
     CODA_OSS_disable_warning
 ]

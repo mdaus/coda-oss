@@ -55,7 +55,7 @@ std::string urlJoin(std::string scheme, std::string location, int port = -1, std
 /**
  * Joins the url components given in the vector into a url string
  */
-std::string urlJoin(const std::vector<std::string> &parts);
+std::string urlJoin(const std::vector<std::string>& parts);
 
 /**
  * Quotes the given string - mainly for use in query strings

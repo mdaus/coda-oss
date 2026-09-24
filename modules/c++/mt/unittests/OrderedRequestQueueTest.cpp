@@ -102,7 +102,7 @@ TEST_CASE(PriorityEnqueue)
 
 } // namespace
 
-int main(int, char **)
+int main(int, char**)
 {
     TEST_CHECK(PriorityEnqueue);
 

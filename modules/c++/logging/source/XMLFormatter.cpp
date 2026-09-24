@@ -39,12 +39,12 @@ logging::XMLFormatter::XMLFormatter() : logging::Formatter(DEFAULT_FORMAT, "<Log
     //       date, jobID, and other information that
     //       can distinguish the logs from one another
 }
-logging::XMLFormatter::XMLFormatter(const std::string &fmt, const std::string &prologue, const std::string &epilogue)
+logging::XMLFormatter::XMLFormatter(const std::string& fmt, const std::string& prologue, const std::string& epilogue)
     : logging::Formatter((fmt.empty()) ? DEFAULT_FORMAT : fmt, prologue, epilogue)
 {
 }
 
-void logging::XMLFormatter::format(const logging::LogRecord *record, io::OutputStream &os) const
+void logging::XMLFormatter::format(const logging::LogRecord* record, io::OutputStream& os) const
 {
     // conver record
     std::string name = (record->getName().empty()) ? ("DEFAULT") : record->getName();

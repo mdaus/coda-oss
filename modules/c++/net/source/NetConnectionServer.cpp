@@ -34,7 +34,7 @@ void net::NetConnectionServer::create(int portNumber, int backlog)
     mSocket = socketFactory.create(address);
     while (true)
     {
-        net::NetConnection *conn = accept();
+        net::NetConnection* conn = accept();
         mAllocStrategy->handleConnection(conn);
     }
 }
@@ -46,14 +46,14 @@ std::string net::NetConnectionServer::getHostName()
     return std::string(name);
 }
 
-net::NetConnection *net::NetConnectionServer::accept()
+net::NetConnection* net::NetConnectionServer::accept()
 {
     net::SocketAddress sa;
     std::unique_ptr<net::NetConnection> tmp(new net::NetConnection(mSocket->accept(sa)));
     return tmp.release();
 }
 
-void net::NetConnectionServer::initialize(net::RequestHandlerFactory *factory, net::AllocStrategy *newStrategy)
+void net::NetConnectionServer::initialize(net::RequestHandlerFactory* factory, net::AllocStrategy* newStrategy)
 {
     std::unique_ptr<net::AllocStrategy> tmp((newStrategy == nullptr) ? new DefaultAllocStrategy() : newStrategy);
 

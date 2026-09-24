@@ -33,7 +33,7 @@ using namespace sys;
 
 const static std::string SEND_THIS = "Hello, Server";
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 
     try
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
         cout << "Connecting to: " << url.toString() << endl;
 
         NetConnectionClientFactory clientBuilder(TCP_PROTO);
-        NetConnection *toUrl = clientBuilder.create(url);
+        NetConnection* toUrl = clientBuilder.create(url);
 
         SerializableConnection myConn(*toUrl);
         io::DataStream inData;
@@ -57,19 +57,19 @@ int main(int argc, char **argv)
 
         char buffer[20] = "HELLO WORLD!";
 
-        outData.write((sys::byte *)buffer, sizeof(buffer));
+        outData.write((sys::byte*)buffer, sizeof(buffer));
 
         cout << "Sending this to Url: " << buffer << endl;
         // Send a block
 
         myConn.write(outData);
         myConn.read(inData);
-        inData.read((sys::byte *)buffer, sizeof(buffer));
+        inData.read((sys::byte*)buffer, sizeof(buffer));
         cout << "Received response: \"" << buffer << "\" Back from server" << endl;
 
         clientBuilder.destroy(toUrl);
     }
-    catch (except::Throwable &t)
+    catch (except::Throwable& t)
     {
         cout << t.toString() << endl;
         exit(EXIT_FAILURE);

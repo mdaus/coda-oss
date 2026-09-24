@@ -27,10 +27,10 @@
 struct MyRunTask final : public sys::Runnable
 {
     int result;
-    int *state;
-    int *num_deleted;
+    int* state;
+    int* num_deleted;
 
-    MyRunTask(int *new_state, int *new_num_deleted)
+    MyRunTask(int* new_state, int* new_num_deleted)
     {
         state = new_state;
         result = *new_state;
@@ -52,7 +52,7 @@ TEST_CASE(DoThreadGroupTest)
 {
     auto threads = new mt::ThreadGroup();
     int state = 1, numDeleted = 0;
-    MyRunTask *tasks[3];
+    MyRunTask* tasks[3];
 
     for (int i = 0; i < 3; i++)
         tasks[i] = new MyRunTask(&state, &numDeleted);

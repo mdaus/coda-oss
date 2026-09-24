@@ -43,7 +43,7 @@
 
 using namespace net;
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 
     if (argc != 3)
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
         socket->close();
         return 0;
     }
-    catch (except::Exception &ex)
+    catch (except::Exception& ex)
     {
         std::cout << ex.getTrace() << std::endl;
     }

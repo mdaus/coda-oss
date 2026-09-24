@@ -35,7 +35,7 @@ struct ThreadPoolException : public except::Exception
      *  User constructor.  Sets the exception message.
      *  \param message the exception message
      */
-    ThreadPoolException(const char *message) : except::Exception(message)
+    ThreadPoolException(const char* message) : except::Exception(message)
     {
     }
 
@@ -43,7 +43,7 @@ struct ThreadPoolException : public except::Exception
      *  User constructor.  Sets the exception message.
      *  \param message the exception message
      */
-    ThreadPoolException(const std::string &message) : except::Exception(message)
+    ThreadPoolException(const std::string& message) : except::Exception(message)
     {
     }
 
@@ -51,7 +51,7 @@ struct ThreadPoolException : public except::Exception
      *  User constructor.  Sets the exception context.
      *  \param c the exception context
      */
-    ThreadPoolException(const except::Context &c) : except::Exception(c)
+    ThreadPoolException(const except::Context& c) : except::Exception(c)
     {
     }
 

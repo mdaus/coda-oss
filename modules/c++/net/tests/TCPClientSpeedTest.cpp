@@ -37,7 +37,7 @@
 #include <sys/LocalDateTime.h>
 #include <sys/Path.h>
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     try
     {
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
         std::unique_ptr<net::Socket> socket = net::TCPClientSocketFactory().create(sa);
 
         std::vector<sys::ubyte> bufferVec(std::min(bufferSize, bytesToSend), 0);
-        sys::ubyte *const buffer = &bufferVec[0];
+        sys::ubyte* const buffer = &bufferVec[0];
 
         // First send the # of bytes we'll be sending
         sys::Uint64_T numBytesMsg(bytesToSend);
@@ -87,12 +87,12 @@ int main(int argc, char **argv)
 
         return 0;
     }
-    catch (const except::Exception &ex)
+    catch (const except::Exception& ex)
     {
         std::cerr << ex.toString() << std::endl;
         return 1;
     }
-    catch (const std::exception &ex)
+    catch (const std::exception& ex)
     {
         std::cerr << ex.what() << std::endl;
         return 1;

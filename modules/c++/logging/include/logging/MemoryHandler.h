@@ -43,17 +43,17 @@ struct MemoryHandler : public Handler
 {
     MemoryHandler(LogLevel level = LogLevel::LOG_NOTSET);
 
-    MemoryHandler(const MemoryHandler &) = delete;
-    MemoryHandler &operator=(const MemoryHandler &) = delete;
-    MemoryHandler(MemoryHandler &&) = delete;
-    MemoryHandler &operator=(MemoryHandler &&) = delete;
+    MemoryHandler(const MemoryHandler&) = delete;
+    MemoryHandler& operator=(const MemoryHandler&) = delete;
+    MemoryHandler(MemoryHandler&&) = delete;
+    MemoryHandler& operator=(MemoryHandler&&) = delete;
 
-    const std::vector<std::string> &getLogs(LogLevel level = LogLevel::LOG_NOTSET) const;
+    const std::vector<std::string>& getLogs(LogLevel level = LogLevel::LOG_NOTSET) const;
 
   protected:
-    virtual void write(const std::string &str) override;
+    virtual void write(const std::string& str) override;
 
-    void emitRecord(const LogRecord *record) override;
+    void emitRecord(const LogRecord* record) override;
 
   private:
     typedef std::map<LogLevel, std::vector<std::string>> LogMap;

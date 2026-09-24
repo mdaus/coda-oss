@@ -35,7 +35,7 @@ namespace mt
 template <typename T> class AbstractComparator
 {
   public:
-    virtual bool operator()(const T &lhs, const T &rhs) const
+    virtual bool operator()(const T& lhs, const T& rhs) const
     {
         return lhs < rhs;
     }
@@ -82,7 +82,7 @@ template <typename T, typename CmpFtor = AbstractComparator<T>> class OrderedReq
     }
 
     //! Retrieve (by reference) T from the queue. blocks until ok
-    void dequeue(T &request)
+    void dequeue(T& request)
     {
 #ifdef THREAD_DEBUG
         dbg_printf("Locking (dequeue)\n");
@@ -135,7 +135,7 @@ template <typename T, typename CmpFtor = AbstractComparator<T>> class OrderedReq
     }
 
     //! Lets the n'th request from the front cut in line and dequeue
-    void cutAndDequeue(size_t n, T &request)
+    void cutAndDequeue(size_t n, T& request)
     {
 #ifdef THREAD_DEBUG
         dbg_printf("Locking (peek)\n");
@@ -192,7 +192,7 @@ template <typename T, typename CmpFtor = AbstractComparator<T>> class OrderedReq
 
     //! Aggregates ProcFunctor of all of the elements of the queue
     template <typename ProcFunctor, typename AggregateType>
-    AggregateType aggregate(const ProcFunctor &aggregate, const AggregateType &initial)
+    AggregateType aggregate(const ProcFunctor& aggregate, const AggregateType& initial)
     {
         mQueueLock.lock();
         AggregateType cumulative = initial;
@@ -208,7 +208,7 @@ template <typename T, typename CmpFtor = AbstractComparator<T>> class OrderedReq
     //! Remove the given request from the queue
     // Does nothing if the given request is not in the queue
     // \return true if an item was removed, false otherwise
-    template <typename CmpFunctor> bool removeRequest(const CmpFunctor &compare)
+    template <typename CmpFunctor> bool removeRequest(const CmpFunctor& compare)
     {
         mQueueLock.lock();
         for (typename std::set<T>::iterator iter = mRequestQueue.begin(); iter != mRequestQueue.end(); ++iter)
@@ -229,7 +229,7 @@ template <typename T, typename CmpFtor = AbstractComparator<T>> class OrderedReq
     // Does nothing if the given request is not in the queue
     // \return true if an item was removed, false otherwise
     // request is set the object of the request in the queue
-    template <typename CmpFunctor> bool removeAndGetRequest(const CmpFunctor &compare, T &request)
+    template <typename CmpFunctor> bool removeAndGetRequest(const CmpFunctor& compare, T& request)
     {
         mQueueLock.lock();
         for (typename std::set<T>::iterator iter = mRequestQueue.begin(); iter != mRequestQueue.end(); ++iter)
@@ -249,8 +249,8 @@ template <typename T, typename CmpFtor = AbstractComparator<T>> class OrderedReq
 
   private:
     // Noncopyable
-    OrderedRequestQueue(const OrderedRequestQueue &);
-    const OrderedRequestQueue &operator=(const OrderedRequestQueue &);
+    OrderedRequestQueue(const OrderedRequestQueue&);
+    const OrderedRequestQueue& operator=(const OrderedRequestQueue&);
 
   private:
     //! The internal data structure
@@ -263,7 +263,7 @@ template <typename T, typename CmpFtor = AbstractComparator<T>> class OrderedReq
     sys::ConditionVar mAvailableItems;
 };
 
-template <typename OrderingFtor> using RunnableOrderedRequestQueue = OrderedRequestQueue<sys::Runnable *, OrderingFtor>;
+template <typename OrderingFtor> using RunnableOrderedRequestQueue = OrderedRequestQueue<sys::Runnable*, OrderingFtor>;
 } // namespace mt
 
 #endif // __MT_REQUEST_QUEUE_H__

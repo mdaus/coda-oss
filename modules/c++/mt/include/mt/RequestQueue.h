@@ -90,7 +90,7 @@ template <typename T> struct RequestQueue
     }
 
     //! Retrieve (by reference) T from the queue. blocks until ok
-    void dequeue(T &request)
+    void dequeue(T& request)
     {
 #ifdef THREAD_DEBUG
         dbg_printf("Locking (dequeue)\n");
@@ -139,7 +139,7 @@ template <typename T> struct RequestQueue
     //! Lets the n'th request from the front cut in line and dequeue
     //! NOTE: The RequestQueue does not prevent changes to the queue between
     //! when peak() and cutAndDequeue() are called
-    void cutAndDequeue(size_t n, T &request)
+    void cutAndDequeue(size_t n, T& request)
     {
 #ifdef THREAD_DEBUG
         dbg_printf("Locking (peek)\n");
@@ -193,7 +193,7 @@ template <typename T> struct RequestQueue
 
     //! Aggregates ProcFunctor of all of the elements of the queue
     template <typename ProcFunctor, typename AggregateType>
-    AggregateType aggregate(const ProcFunctor &aggregate, const AggregateType &initial)
+    AggregateType aggregate(const ProcFunctor& aggregate, const AggregateType& initial)
     {
         mQueueLock.lock();
         AggregateType cumulative = initial;
@@ -209,7 +209,7 @@ template <typename T> struct RequestQueue
     //! Remove the given request from the queue
     // Does nothing if the given request is not in the queue
     // \return true if an item was removed, false otherwise
-    template <typename CmpFunctor> bool removeRequest(const CmpFunctor &compare)
+    template <typename CmpFunctor> bool removeRequest(const CmpFunctor& compare)
     {
         mQueueLock.lock();
         for (typename std::deque<T>::iterator iter = mRequestQueue.begin(); iter != mRequestQueue.end(); ++iter)
@@ -227,8 +227,8 @@ template <typename T> struct RequestQueue
     }
 
   private:
-    RequestQueue(const RequestQueue &) = delete;
-    RequestQueue &operator=(const RequestQueue &) = delete;
+    RequestQueue(const RequestQueue&) = delete;
+    RequestQueue& operator=(const RequestQueue&) = delete;
 
   private:
     //! The internal data structure
@@ -241,7 +241,7 @@ template <typename T> struct RequestQueue
     sys::ConditionVar mAvailableItems;
 };
 
-typedef RequestQueue<sys::Runnable *> RunnableRequestQueue;
+typedef RequestQueue<sys::Runnable*> RunnableRequestQueue;
 } // namespace mt
 
 #endif // __MT_REQUEST_QUEUE_H__

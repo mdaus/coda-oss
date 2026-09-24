@@ -56,17 +56,17 @@ struct CODA_OSS_API Handler : public Filterer
      */
     Handler(LogLevel level = LogLevel::LOG_NOTSET);
     virtual ~Handler() = default;
-    Handler(const Handler &) = delete;
-    Handler &operator=(const Handler &) = delete;
-    Handler(Handler &&) = delete;
-    Handler &operator=(Handler &&) = delete;
+    Handler(const Handler&) = delete;
+    Handler& operator=(const Handler&) = delete;
+    Handler(Handler&&) = delete;
+    Handler& operator=(Handler&&) = delete;
 
     /*!
      * Sets the Formatter to use when formatting LogRecords
      * Not Threads Safe!
      */
-    virtual void setFormatter(Formatter *formatter);
-    virtual void setFormatter(std::unique_ptr<Formatter> &&);
+    virtual void setFormatter(Formatter* formatter);
+    virtual void setFormatter(std::unique_ptr<Formatter>&&);
 
     //! Sets the minimum LogLevel required to emit LogRecords
     void setLevel(LogLevel level);
@@ -82,8 +82,8 @@ struct CODA_OSS_API Handler : public Filterer
      * If the LogRecord meets the LogLevel criteria, it is formatted
      * and emitted.
      */
-    virtual bool handle(const LogRecord *record);
-    virtual bool handle(const LogRecord &record)
+    virtual bool handle(const LogRecord* record);
+    virtual bool handle(const LogRecord& record)
     {
         return handle(&record);
     }
@@ -92,15 +92,15 @@ struct CODA_OSS_API Handler : public Filterer
 
   protected:
     // for general string write
-    virtual void write(const std::string &) = 0;
+    virtual void write(const std::string&) = 0;
 
     // for writing directly to stream,
     // used for the bulk of the logging for speed
-    virtual void emitRecord(const LogRecord *record) = 0;
+    virtual void emitRecord(const LogRecord* record) = 0;
 
     LogLevel mLevel = LogLevel::LOG_NOTSET;
     std::recursive_mutex mHandlerLock;
-    Formatter *mFormatter = nullptr;
+    Formatter* mFormatter = nullptr;
     StandardFormatter mDefaultFormatter;
 };
 

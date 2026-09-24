@@ -34,7 +34,7 @@ using namespace sys;
 
 const static std::string SEND_THIS = "Hello, Server";
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 #if defined(USE_OPENSSL)
     try
@@ -53,7 +53,7 @@ int main(int argc, char **argv)
         url.setPort(port);
 
         net::ssl::SSLConnectionClientFactory clientBuilder;
-        NetConnection *toUrl = clientBuilder.create(url);
+        NetConnection* toUrl = clientBuilder.create(url);
 
         cout << "Sending this to Url: " << SEND_THIS << endl;
         // Send a block
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 
         clientBuilder.destroy(toUrl);
     }
-    catch (except::Throwable &t)
+    catch (except::Throwable& t)
     {
         cout << t.toString() << endl;
         exit(EXIT_FAILURE);

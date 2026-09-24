@@ -74,7 +74,7 @@ struct Transform_par_settings final
 
 template <typename InputIt, typename OutputIt, typename UnaryOperation>
 inline OutputIt Transform_par_(InputIt first1, InputIt last1, OutputIt d_first, UnaryOperation unary_op,
-                               const Transform_par_settings &settings)
+                               const Transform_par_settings& settings)
 {
     // https://en.cppreference.com/w/cpp/thread/async
     const auto len = std::distance(first1, last1);

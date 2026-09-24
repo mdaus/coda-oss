@@ -15,7 +15,7 @@ ThreadPlanner::ThreadPlanner(size_t numElements, size_t numThreads) : mNumElemen
     mNumElementsPerThread = math::ceilingDivide(mNumElements, mNumThreads);
 }
 
-bool ThreadPlanner::getThreadInfo(size_t threadNum, size_t &startElement, size_t &numElementsThisThread) const
+bool ThreadPlanner::getThreadInfo(size_t threadNum, size_t& startElement, size_t& numElementsThisThread) const
 {
     startElement = threadNum * mNumElementsPerThread;
     if (startElement > mNumElements)

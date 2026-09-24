@@ -47,21 +47,21 @@ struct CODA_OSS_API StreamHandler : public Handler
     StreamHandler(LogLevel level = LogLevel::LOG_NOTSET);
 
     //! Constructs a StreamHandler using the specified OutputStream
-    StreamHandler(io::OutputStream *stream, LogLevel level = LogLevel::LOG_NOTSET);
-    StreamHandler(std::unique_ptr<io::OutputStream> &&stream, LogLevel level = LogLevel::LOG_NOTSET)
+    StreamHandler(io::OutputStream* stream, LogLevel level = LogLevel::LOG_NOTSET);
+    StreamHandler(std::unique_ptr<io::OutputStream>&& stream, LogLevel level = LogLevel::LOG_NOTSET)
         : StreamHandler(stream.release(), level)
     {
     }
 
     virtual ~StreamHandler();
 
-    StreamHandler(const StreamHandler &) = delete;
-    StreamHandler &operator=(const StreamHandler &) = delete;
+    StreamHandler(const StreamHandler&) = delete;
+    StreamHandler& operator=(const StreamHandler&) = delete;
 
     //! adds the need to write epilogue before deleting formatter
     //  and then writing the prologue with the new formatter
-    virtual void setFormatter(Formatter *formatter) override;
-    virtual void setFormatter(std::unique_ptr<Formatter> &&) override;
+    virtual void setFormatter(Formatter* formatter) override;
+    virtual void setFormatter(std::unique_ptr<Formatter>&&) override;
 
     virtual void close() override;
 
@@ -71,11 +71,11 @@ struct CODA_OSS_API StreamHandler : public Handler
     void closeImpl();
 
     //! for general string write
-    virtual void write(const std::string &) override;
+    virtual void write(const std::string&) override;
 
     //! for writing directly to stream,
     // used for the bulk of the logging for speed
-    void emitRecord(const LogRecord *record) override;
+    void emitRecord(const LogRecord* record) override;
 
     std::unique_ptr<io::OutputStream> mStream;
 

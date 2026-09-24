@@ -35,8 +35,8 @@ namespace mt
 template <typename Request_T> class TiedWorkerThread : public mt::WorkerThread<Request_T>
 {
   public:
-    TiedWorkerThread(mt::RequestQueue<Request_T> *requestQueue,
-                     std::unique_ptr<CPUAffinityThreadInitializer> &&cpuAffinityInit =
+    TiedWorkerThread(mt::RequestQueue<Request_T>* requestQueue,
+                     std::unique_ptr<CPUAffinityThreadInitializer>&& cpuAffinityInit =
                          std::unique_ptr<CPUAffinityThreadInitializer>(nullptr))
         : mt::WorkerThread<Request_T>(requestQueue), mCPUAffinityInit(std::move(cpuAffinityInit))
     {
@@ -50,7 +50,7 @@ template <typename Request_T> class TiedWorkerThread : public mt::WorkerThread<R
         }
     }
 
-    virtual void performTask(Request_T &request) = 0;
+    virtual void performTask(Request_T& request) = 0;
 
   private:
     TiedWorkerThread();

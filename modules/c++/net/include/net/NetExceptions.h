@@ -48,7 +48,7 @@ class MalformedURLException : public except::Exception
      *  Create a new exception
      *  \param url An incorrectly formed URL
      */
-    MalformedURLException(const char *url) : except::Exception(url)
+    MalformedURLException(const char* url) : except::Exception(url)
     {
         if (url != nullptr)
         {
@@ -61,7 +61,7 @@ class MalformedURLException : public except::Exception
      *  Create a new exception
      *  \param url An incorrectly formed URL
      */
-    MalformedURLException(const std::string &url) : except::Exception(url)
+    MalformedURLException(const std::string& url) : except::Exception(url)
     {
         mMessage = "In: ";
         mMessage += url;
@@ -71,7 +71,7 @@ class MalformedURLException : public except::Exception
      *  Create a new exception
      *  \param c The exception context
      */
-    MalformedURLException(const except::Context &c) : except::Exception(c)
+    MalformedURLException(const except::Context& c) : except::Exception(c)
     {
         mMessage = "In: ";
         mMessage += c.getMessage();

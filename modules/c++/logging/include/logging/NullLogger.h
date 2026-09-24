@@ -44,15 +44,15 @@ struct NullHandler : public Handler
     }
     ~NullHandler() = default;
 
-    NullHandler(const NullHandler &) = delete;
-    NullHandler &operator=(const NullHandler &) = delete;
+    NullHandler(const NullHandler&) = delete;
+    NullHandler& operator=(const NullHandler&) = delete;
 
   protected:
-    void write(const std::string &) override
+    void write(const std::string&) override
     {
         // does nothing...
     }
-    void emitRecord(const LogRecord *) override
+    void emitRecord(const LogRecord*) override
     {
         // does nothing...
     }
@@ -67,14 +67,14 @@ class NullLogger final : public Logger
     NullHandler mHandler;
 
   public:
-    NullLogger(const std::string &name = "") : Logger(name)
+    NullLogger(const std::string& name = "") : Logger(name)
     {
         addHandler(&mHandler, false /*own*/);
     }
     ~NullLogger() = default;
 
-    NullLogger(const NullLogger &) = delete;
-    NullLogger &operator=(const NullLogger &) = delete;
+    NullLogger(const NullLogger&) = delete;
+    NullLogger& operator=(const NullLogger&) = delete;
 };
 
 } // namespace logging

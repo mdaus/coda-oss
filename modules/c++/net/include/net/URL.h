@@ -48,13 +48,13 @@ class URLParams
     URLParams(std::string paramString = "");
 
     bool contains(std::string key) const;
-    ParamValues &get(std::string key);
-    const ParamValues &get(std::string key) const;
-    Params &get()
+    ParamValues& get(std::string key);
+    const ParamValues& get(std::string key) const;
+    Params& get()
     {
         return mParams;
     }
-    const Params &get() const
+    const Params& get() const
     {
         return mParams;
     }
@@ -77,10 +77,10 @@ class URL
      *  Copy constructor.
      *  \param url A right-hand-side URL
      */
-    URL(const URL &);
-    URL &operator=(const URL &);
-    URL(URL &&) = default;
-    URL &operator=(URL &&) = default;
+    URL(const URL&);
+    URL& operator=(const URL&);
+    URL(URL&&) = default;
+    URL& operator=(URL&&) = default;
 
     virtual ~URL() = default;
 
@@ -94,11 +94,11 @@ class URL
     std::string getQuery() const;
     std::string getServer() const;
     std::string getDocument() const;
-    URLParams &getParams()
+    URLParams& getParams()
     {
         return mParams;
     }
-    const URLParams &getParams() const
+    const URLParams& getParams() const
     {
         return mParams;
     }
@@ -110,7 +110,7 @@ class URL
      * Are these URLs equal
      * \param url A URL to compare
      */
-    bool operator==(const URL &url) const;
+    bool operator==(const URL& url) const;
 
   protected:
     friend class URLBuilder;
@@ -122,7 +122,7 @@ class URL
     std::string mFragment;
 };
 
-inline std::ostream &operator<<(std::ostream &os, const URL &url)
+inline std::ostream& operator<<(std::ostream& os, const URL& url)
 {
     os << url.toString();
     return os;

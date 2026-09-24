@@ -66,28 +66,28 @@ size_t cpp11Function(std::shared_ptr<Foo> foo)
 TEST_CASE(testNullCopying)
 {
     mem::SharedPtr<int> ptr1;
-    TEST_ASSERT_EQ(ptr1.get(), static_cast<int *>(nullptr));
+    TEST_ASSERT_EQ(ptr1.get(), static_cast<int*>(nullptr));
 
     // Copy construction
     const mem::SharedPtr<int> ptr2(ptr1);
-    TEST_ASSERT_EQ(ptr2.get(), static_cast<int *>(nullptr));
+    TEST_ASSERT_EQ(ptr2.get(), static_cast<int*>(nullptr));
 
     // Assignment operator
     mem::SharedPtr<int> ptr3;
     ptr3 = ptr1;
-    TEST_ASSERT_EQ(ptr3.get(), static_cast<int *>(nullptr));
+    TEST_ASSERT_EQ(ptr3.get(), static_cast<int*>(nullptr));
 
     ptr1.reset();
-    TEST_ASSERT_EQ(ptr1.get(), static_cast<int *>(nullptr));
+    TEST_ASSERT_EQ(ptr1.get(), static_cast<int*>(nullptr));
 }
 
 TEST_CASE(testAutoPtrConstructor)
 {
-    int *const rawPtr(new int(89));
+    int* const rawPtr(new int(89));
     std::unique_ptr<int> autoPtr(rawPtr);
     const mem::SharedPtr<int> ptr(autoPtr.release());
     TEST_ASSERT_EQ(ptr.get(), rawPtr);
-    TEST_ASSERT_EQ(autoPtr.get(), static_cast<int *>(nullptr));
+    TEST_ASSERT_EQ(autoPtr.get(), static_cast<int*>(nullptr));
     // TEST_ASSERT_EQ(ptr.getCount(), 1);
     TEST_ASSERT_EQ(ptr.use_count(), 1);
     TEST_ASSERT_EQ(getCount(ptr), 1);
@@ -97,10 +97,10 @@ TEST_CASE(testAutoPtrReset)
 {
     // Similar to the construction test,
     // except using the reset() that takes an auto_ptr
-    int *const rawPtr1 = new int(90);
+    int* const rawPtr1 = new int(90);
     std::unique_ptr<int> autoPtr(rawPtr1);
 
-    int *const rawPtr2 = new int(100);
+    int* const rawPtr2 = new int(100);
     mem::SharedPtr<int> sharedPtr(rawPtr2);
 
     TEST_ASSERT_EQ(autoPtr.get(), rawPtr1);
@@ -116,7 +116,7 @@ TEST_CASE(testAutoPtrReset)
 
 TEST_CASE(testCopying)
 {
-    int *const rawPtr(new int(89));
+    int* const rawPtr(new int(89));
     std::unique_ptr<mem::SharedPtr<int>> ptr3;
     {
         mem::SharedPtr<int> ptr1(rawPtr);
@@ -175,7 +175,7 @@ static std::shared_ptr<int> getIntSP()
 
 TEST_CASE(testAssigning)
 {
-    int *const rawPtr(new int(89));
+    int* const rawPtr(new int(89));
     mem::SharedPtr<int> ptr3;
     {
         mem::SharedPtr<int> ptr1(rawPtr);
@@ -254,7 +254,7 @@ TEST_CASE(testAssigning)
 
 TEST_CASE(testSyntax)
 {
-    Foo *const rawPtr(new Foo(123));
+    Foo* const rawPtr(new Foo(123));
     const mem::SharedPtr<Foo> ptr(rawPtr);
 
     TEST_ASSERT_EQ(ptr.get(), rawPtr);
@@ -266,7 +266,7 @@ TEST_CASE(testCasting)
 {
     {
         // Test creating SharedPtr of base class from raw pointer of derived
-        Bar *const rawBar(new Bar(456));
+        Bar* const rawBar(new Bar(456));
         const mem::SharedPtr<Foo> fooPtr(rawBar);
         TEST_ASSERT_EQ(fooPtr.get(), rawBar);
         // TEST_ASSERT_EQ(fooPtr.getCount(), 1);
@@ -276,11 +276,11 @@ TEST_CASE(testCasting)
 
     {
         // Test creating SharedPtr of base class from auto pointer of derived
-        Bar *const rawBar(new Bar(456));
+        Bar* const rawBar(new Bar(456));
         std::unique_ptr<Bar> autoBar(rawBar);
         const mem::SharedPtr<Foo> fooPtr(autoBar.release());
         TEST_ASSERT_EQ(fooPtr.get(), rawBar);
-        TEST_ASSERT_EQ(autoBar.get(), static_cast<Bar *>(nullptr));
+        TEST_ASSERT_EQ(autoBar.get(), static_cast<Bar*>(nullptr));
         // TEST_ASSERT_EQ(fooPtr.getCount(), 1);
         TEST_ASSERT_EQ(fooPtr.use_count(), 1);
         TEST_ASSERT_EQ(getCount(fooPtr), 1);
@@ -288,7 +288,7 @@ TEST_CASE(testCasting)
 
     {
         // Test creating SharedPtr of base class from SharedPtr of derived
-        Bar *const rawBar(new Bar(456));
+        Bar* const rawBar(new Bar(456));
         const mem::SharedPtr<Bar> barPtr(rawBar);
         // TEST_ASSERT_EQ(barPtr.getCount(), 1);
         TEST_ASSERT_EQ(barPtr.use_count(), 1);
@@ -313,7 +313,7 @@ TEST_CASE(testCasting)
     {
         // Test creating a class with a SharedPtr of base class as parameter
         // from a class with a SharedPtr of derived as parameter
-        Bar *const rawBar(new Bar(456));
+        Bar* const rawBar(new Bar(456));
         const mem::SharedPtr<Bar> barPtr(rawBar);
         // TEST_ASSERT_EQ(barPtr.getCount(), 1);
         TEST_ASSERT_EQ(barPtr.use_count(), 1);

@@ -31,7 +31,7 @@ using namespace sys;
 using namespace std;
 using namespace net;
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     try
     {
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
         cout << "server: " << url.getServer() << endl;
         cout << "Url: " << url.toString() << endl;
     }
-    catch (Throwable &t)
+    catch (Throwable& t)
     {
         cout << "Caught Throwable: " << t.toString() << endl;
     }

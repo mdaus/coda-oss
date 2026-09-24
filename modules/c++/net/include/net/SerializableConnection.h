@@ -75,7 +75,7 @@ class SerializableConnection
      *  This is a constructor featuring a TCP/IP connection.
      *  \param connection  A connection to maintain
      */
-    SerializableConnection(const NetConnection &connection)
+    SerializableConnection(const NetConnection& connection)
     {
         mConnection.open(connection);
     }
@@ -100,7 +100,7 @@ class SerializableConnection
      *  \param objectToRetrieve  This object will retrieve
      *  itself from the internet
      */
-    void read(io::Serializable &objectToRetrieve)
+    void read(io::Serializable& objectToRetrieve)
     {
         objectToRetrieve.deserialize(mConnection);
     }
@@ -112,11 +112,11 @@ class SerializableConnection
      *  \throw IOException
      *  \return  The number of bytes read, or -1 if eof
      */
-    sys::SSize_T read(sys::byte *b, sys::Size_T len)
+    sys::SSize_T read(sys::byte* b, sys::Size_T len)
     {
         return mConnection.read(b, len);
     }
-    sys::SSize_T recv(sys::byte *b, sys::Size_T len)
+    sys::SSize_T recv(sys::byte* b, sys::Size_T len)
     {
         return read(b, len);
     }
@@ -128,7 +128,7 @@ class SerializableConnection
      *  \param objectToSend This object will send itself
      *  over the socket
      */
-    void write(io::Serializable &objectToSend)
+    void write(io::Serializable& objectToSend)
     {
         objectToSend.serialize(mConnection);
     }
@@ -141,11 +141,11 @@ class SerializableConnection
      *  \param len The length of the byte array to write to the stream
      *  \throw IOException
      */
-    void write(const sys::byte *b, sys::Size_T len)
+    void write(const sys::byte* b, sys::Size_T len)
     {
         mConnection.write(b, len);
     }
-    void send(const sys::byte *b, sys::Size_T len)
+    void send(const sys::byte* b, sys::Size_T len)
     {
         write(b, len);
     }

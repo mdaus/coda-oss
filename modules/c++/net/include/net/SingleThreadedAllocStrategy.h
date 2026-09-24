@@ -66,13 +66,13 @@ class SingleThreadedAllocStrategy : public AllocStrategy
      *
      *  \param conn The network connection
      */
-    void handleConnection(net::NetConnection *conn) override
+    void handleConnection(net::NetConnection* conn) override
     {
         (*mHandler)(conn);
     }
 
   private:
-    net::RequestHandler *mHandler;
+    net::RequestHandler* mHandler;
 };
 
 } // namespace net

@@ -103,7 +103,7 @@ template <typename T, bool AutoDestroy = false> class Singleton
     /*!
      * Returns the one and only instance of the object
      */
-    static T &getInstance();
+    static T& getInstance();
 
     /*!
      * This attempts to destroy the internal singleton object. If it has
@@ -118,7 +118,7 @@ template <typename T, bool AutoDestroy = false> class Singleton
     inline explicit Singleton()
     {
         assert(mInstance == 0);
-        mInstance = static_cast<T *>(this);
+        mInstance = static_cast<T*>(this);
     }
     //! Destructor
     inline ~Singleton()
@@ -127,18 +127,18 @@ template <typename T, bool AutoDestroy = false> class Singleton
     }
 
   private:
-    static T *mInstance;      // static instance
+    static T* mInstance;      // static instance
     static std::mutex mMutex; // static mutex for locking access to the instance
-    inline explicit Singleton(Singleton const &)
+    inline explicit Singleton(Singleton const&)
     {
     }
-    inline Singleton &operator=(Singleton const &)
+    inline Singleton& operator=(Singleton const&)
     {
         return *this;
     }
 };
 
-template <typename T, bool AutoDestroy> T &Singleton<T, AutoDestroy>::getInstance()
+template <typename T, bool AutoDestroy> T& Singleton<T, AutoDestroy>::getInstance()
 {
     // double-checked locking
     if (mInstance == nullptr)
@@ -168,7 +168,7 @@ template <typename T, bool AutoDestroy> void Singleton<T, AutoDestroy>::destroy(
     }
 }
 
-template <typename T, bool AutoDestroy> T *Singleton<T, AutoDestroy>::mInstance = nullptr;
+template <typename T, bool AutoDestroy> T* Singleton<T, AutoDestroy>::mInstance = nullptr;
 template <typename T, bool AutoDestroy> std::mutex Singleton<T, AutoDestroy>::mMutex;
 
 } // namespace mt

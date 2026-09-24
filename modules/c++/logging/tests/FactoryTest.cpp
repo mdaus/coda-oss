@@ -27,11 +27,11 @@
 using namespace logging;
 using namespace std;
 
-int main(int, char **)
+int main(int, char**)
 {
     std::cout << LoggerFactory::getInstance().getLogger("test")->getName() << std::endl;
 
-    Logger *logger = LoggerFactory::getInstance().getLogger("tomsLogger");
+    Logger* logger = LoggerFactory::getInstance().getLogger("tomsLogger");
     logger->error("This should get logged to stdout");
 
     LoggerFactory::getInstance().getLogger()->info("A message from the root logger.");

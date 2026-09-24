@@ -120,7 +120,7 @@ TEST_CASE(testVecOfSharedPointers)
     }
 }
 
-template <typename TView> static void test_cx_view(const std::string &testName, const TView &view)
+template <typename TView> static void test_cx_view(const std::string& testName, const TView& view)
 {
     TEST_ASSERT_EQ(4, view.size());
     TEST_ASSERT_EQ(view[0].real(), 1.0f);
@@ -132,7 +132,7 @@ template <typename TView> static void test_cx_view(const std::string &testName, 
     TEST_ASSERT_EQ(view[3].real(), 7.0f);
     TEST_ASSERT_EQ(view[3].imag(), 8.0f);
 }
-template <typename TView> static void test_mem_ComplexParallelView(const std::string &testName, const TView &view)
+template <typename TView> static void test_mem_ComplexParallelView(const std::string& testName, const TView& view)
 {
     test_cx_view(testName, view);
 
@@ -160,7 +160,7 @@ template <typename TView> static void test_mem_ComplexParallelView(const std::st
 }
 
 using cx_float = std::complex<float>;
-static const std::vector<cx_float> &cx_data()
+static const std::vector<cx_float>& cx_data()
 {
     static const std::vector<cx_float> retval{{1, 2}, {3, 4}, {5, 6}, {7, 8}};
     return retval;
@@ -193,7 +193,7 @@ TEST_CASE(testComplexParallelViewFloat)
     }
 }
 
-static void test_mem_ComplexViewConstIterator(const std::string &testName, mem::ComplexViewConstIterator<float> begin,
+static void test_mem_ComplexViewConstIterator(const std::string& testName, mem::ComplexViewConstIterator<float> begin,
                                               mem::ComplexViewConstIterator<float> end)
 {
     TEST_ASSERT(begin != end);
@@ -217,13 +217,13 @@ static void test_mem_ComplexViewConstIterator(const std::string &testName, mem::
     TEST_ASSERT_EQ(it->real(), 7.0f);
     TEST_ASSERT_EQ(it->imag(), 8.0f);
 }
-template <typename TView> static void test_mem_ComplexViewConstIterator(const std::string &testName, TView view)
+template <typename TView> static void test_mem_ComplexViewConstIterator(const std::string& testName, TView view)
 {
     test_mem_ComplexViewConstIterator(testName, view.begin(), view.end());
 
     using cxvalue_t = typename decltype(view.begin())::value_type; // i.e., std::complex<float>
     cxvalue_t cx{1.0f, 2.0f};
-    for (auto &&v : view)
+    for (auto&& v : view)
     {
         TEST_ASSERT_EQ(v.real(), cx.real());
         TEST_ASSERT_EQ(v.imag(), cx.imag());

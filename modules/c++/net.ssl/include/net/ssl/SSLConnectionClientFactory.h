@@ -57,9 +57,9 @@ class SSLConnectionClientFactory : public NetConnectionClientFactory
      *  \param serverAuth  Server authentication flag
      *  \param ciphers  The list of ciphers to use
      */
-    SSLConnectionClientFactory(bool clientAuth = false, const std::string &keyfile = "client.pem",
-                               const std::string &password = "password", const std::string &caList = "root.pem",
-                               bool serverAuth = true, char *ciphers = nullptr)
+    SSLConnectionClientFactory(bool clientAuth = false, const std::string& keyfile = "client.pem",
+                               const std::string& password = "password", const std::string& caList = "root.pem",
+                               bool serverAuth = true, char* ciphers = nullptr)
         : mClientAuthentication(clientAuth), mKeyfile(keyfile), mPass(password), mCAList(caList),
           mServerAuthentication(serverAuth), mCiphers(ciphers)
     {
@@ -91,12 +91,12 @@ class SSLConnectionClientFactory : public NetConnectionClientFactory
      * \param toServer The socket for the new connection
      * \return A new SSLConnection
      */
-    virtual NetConnection *newConnection(std::unique_ptr<net::Socket> &&toServer) override;
+    virtual NetConnection* newConnection(std::unique_ptr<net::Socket>&& toServer) override;
 
   private:
 #if defined(USE_OPENSSL)
     //! The SSL context
-    SSL_CTX *mCtx;
+    SSL_CTX* mCtx;
 #endif
     //! Flag for client authentication
     bool mClientAuthentication;
@@ -109,7 +109,7 @@ class SSLConnectionClientFactory : public NetConnectionClientFactory
     //! Flag for server authentication
     bool mServerAuthentication;
     //! The cipher list
-    char *mCiphers;
+    char* mCiphers;
 };
 
 } // namespace ssl

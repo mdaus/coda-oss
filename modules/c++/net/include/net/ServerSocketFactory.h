@@ -82,7 +82,7 @@ class ServerSocketFactory
      *  \param address Address to establish the socket for
      *  \return The created & bound socket
      */
-    virtual std::unique_ptr<Socket> create(const SocketAddress &address)
+    virtual std::unique_ptr<Socket> create(const SocketAddress& address)
     {
         std::unique_ptr<Socket> s(new Socket(mProto));
 
@@ -129,7 +129,7 @@ class UDPServerSocketFactory : public ServerSocketFactory
      *
      *  \return The produced socket
      */
-    virtual std::unique_ptr<Socket> create(const SocketAddress &address) override
+    virtual std::unique_ptr<Socket> create(const SocketAddress& address) override
     {
         std::unique_ptr<Socket> s(new Socket(mProto));
 
@@ -187,7 +187,7 @@ class TCPServerSocketFactory : ServerSocketFactory
      *  listen().
      *
      */
-    virtual std::unique_ptr<Socket> create(const SocketAddress &address) override
+    virtual std::unique_ptr<Socket> create(const SocketAddress& address) override
     {
         std::unique_ptr<Socket> s(new Socket(mProto));
 

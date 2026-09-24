@@ -53,21 +53,21 @@ struct CODA_OSS_API Filterer
      * Adds a Filter to the managed map of Filters. We do NOT take control of
      * the pointer
      */
-    void addFilter(Filter *filter);
-    void addFilter(Filter &);
+    void addFilter(Filter* filter);
+    void addFilter(Filter&);
 
-    virtual bool filter(const LogRecord *record) const;
-    virtual bool filter(const LogRecord &record) const
+    virtual bool filter(const LogRecord* record) const;
+    virtual bool filter(const LogRecord& record) const
     {
         return filter(&record);
     }
 
     //! Removes the specified Filter
-    void removeFilter(Filter *filter);
-    void removeFilter(Filter &);
+    void removeFilter(Filter* filter);
+    void removeFilter(Filter&);
 
   protected:
-    std::map<std::string, Filter *> filters;
+    std::map<std::string, Filter*> filters;
 };
 
 } // namespace logging

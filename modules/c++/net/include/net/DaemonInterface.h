@@ -40,16 +40,16 @@ class DaemonInterface
      *
      *  \return Should processing continue?
      */
-    virtual void daemonize(int &argc, char **&argv) = 0;
+    virtual void daemonize(int& argc, char**& argv) = 0;
 
     //! Set pidfile (file for locking application to single occurance).
-    virtual void setPidfile(const std::string &pidfile) = 0;
+    virtual void setPidfile(const std::string& pidfile) = 0;
 
     //! Get pidfile.
     virtual std::string getPidfile() const = 0;
 
     //! Set tracefile (file to redirect stdout and stderr).
-    virtual void setTracefile(const std::string &tracefile) = 0;
+    virtual void setTracefile(const std::string& tracefile) = 0;
 
     //! Get tracefile.
     virtual std::string getTracefile() const = 0;

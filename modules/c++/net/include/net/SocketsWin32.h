@@ -63,7 +63,7 @@ typedef SOCKET Socket_T;
 typedef HOSTENT HostEnt_T;
 typedef SOCKADDR SockAddr_T;
 typedef SOCKADDR_IN SockAddrIn_T;
-typedef char *ByteBuf_T;
+typedef char* ByteBuf_T;
 typedef int BufSize_T;
 typedef const SockAddr_T ConnParam2_T;
 

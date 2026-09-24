@@ -33,18 +33,18 @@
 
 class RunNothing final : public sys::Runnable
 {
-    size_t &counter;
-    logging::ExceptionLogger *exLog;
+    size_t& counter;
+    logging::ExceptionLogger* exLog;
     bool getBacktrace;
 
-    static sys::Mutex *counterLock()
+    static sys::Mutex* counterLock()
     {
         static sys::Mutex lock;
         return &lock;
     }
 
   public:
-    RunNothing(size_t &c, logging::ExceptionLogger *el, bool getBacktrace_ = false)
+    RunNothing(size_t& c, logging::ExceptionLogger* el, bool getBacktrace_ = false)
         : counter(c), exLog(el), getBacktrace(getBacktrace_)
     {
     }
@@ -75,7 +75,7 @@ TEST_CASE(testExceptionLogger)
     size_t counter(0);
     uint16_t numThreads(2);
 
-    std::vector<sys::Runnable *> runs;
+    std::vector<sys::Runnable*> runs;
 
     mt::GenerationThreadPool pool(numThreads);
     pool.start();
@@ -104,7 +104,7 @@ TEST_CASE(testExceptionWithBacktrace)
         throw except::Exception("Bad run");
         TEST_FAIL;
     }
-    catch (const except::Throwable &t)
+    catch (const except::Throwable& t)
     {
         TEST_ASSERT_EQ(std::ssize(t.getBacktrace()), 0);
         s = t.toString();
@@ -123,7 +123,7 @@ TEST_CASE(testExceptionWithBacktrace)
         throw except::Exception("Bad run").backtrace();
         TEST_FAIL;
     }
-    catch (const except::Throwable &t)
+    catch (const except::Throwable& t)
     {
         const auto backtraceSize = static_cast<int64_t>(t.getBacktrace().size());
         TEST_ASSERT_GREATER(backtraceSize, 0);

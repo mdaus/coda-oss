@@ -35,7 +35,7 @@ SocketAddress::SocketAddress()
     mAddress.sin_family = AF_INET;
 }
 
-SocketAddress::SocketAddress(const std::string &host, int port)
+SocketAddress::SocketAddress(const std::string& host, int port)
 {
     clear();
     set(port, host);
@@ -58,7 +58,7 @@ void SocketAddress::setPort(int port)
     mAddress.sin_port = htons(static_cast<u_short>(port));
 }
 
-void SocketAddress::setHost(const std::string &host)
+void SocketAddress::setHost(const std::string& host)
 {
     if (host.empty())
     {
@@ -69,7 +69,7 @@ void SocketAddress::setHost(const std::string &host)
 #ifdef _WIN32
         struct sockaddr saddr;
         int slen = sizeof(saddr);
-        struct sockaddr_in *paddr = (struct sockaddr_in *)&saddr;
+        struct sockaddr_in* paddr = (struct sockaddr_in*)&saddr;
         std::ignore = WSAStringToAddress((LPSTR)host.c_str(), AF_INET, nullptr, &saddr, &slen);
         mAddress.sin_addr = paddr->sin_addr;
 #else

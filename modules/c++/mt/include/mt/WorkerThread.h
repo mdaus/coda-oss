@@ -42,7 +42,7 @@ template <typename Request_T> class WorkerThread : public sys::Thread
 {
   public:
     //! Constructor
-    WorkerThread(mt::RequestQueue<Request_T> *requestQueue) : mRequestQueue(requestQueue), mDone(false)
+    WorkerThread(mt::RequestQueue<Request_T>* requestQueue) : mRequestQueue(requestQueue), mDone(false)
     {
     }
 
@@ -51,10 +51,10 @@ template <typename Request_T> class WorkerThread : public sys::Thread
      */
     virtual ~WorkerThread() = default;
 
-    WorkerThread(const WorkerThread &) = delete;
-    WorkerThread &operator=(const WorkerThread &) = delete;
-    WorkerThread(WorkerThread &&) = delete;
-    WorkerThread &operator=(WorkerThread &&) = delete;
+    WorkerThread(const WorkerThread&) = delete;
+    WorkerThread& operator=(const WorkerThread&) = delete;
+    WorkerThread(WorkerThread&&) = delete;
+    WorkerThread& operator=(WorkerThread&&) = delete;
 
     virtual void initialize()
     {
@@ -87,7 +87,7 @@ template <typename Request_T> class WorkerThread : public sys::Thread
      *
      *  \param request A request from the queue
      */
-    virtual void performTask(Request_T &request) = 0;
+    virtual void performTask(Request_T& request) = 0;
 
     /*!
      *  Produces the system-named thread ID
@@ -100,7 +100,7 @@ template <typename Request_T> class WorkerThread : public sys::Thread
     }
 
   protected:
-    mt::RequestQueue<Request_T> *mRequestQueue;
+    mt::RequestQueue<Request_T>* mRequestQueue;
     bool mDone;
 };
 } // namespace mt

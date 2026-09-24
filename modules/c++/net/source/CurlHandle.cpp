@@ -41,12 +41,12 @@ CurlHandle::~CurlHandle()
     curl_easy_cleanup(mHandle);
 }
 
-void CurlHandle::setURL(const std::string &url)
+void CurlHandle::setURL(const std::string& url)
 {
     verify(curl_easy_setopt(mHandle, CURLOPT_URL, url.c_str()), "Setting URL");
 }
 
-void CurlHandle::setWriteBuffer(std::string &buffer)
+void CurlHandle::setWriteBuffer(std::string& buffer)
 {
     verify(curl_easy_setopt(mHandle, CURLOPT_WRITEFUNCTION, writeCallback), "Setting write function");
 
@@ -60,12 +60,12 @@ void CurlHandle::disableHostVerification()
     verify(curl_easy_setopt(mHandle, CURLOPT_SSL_VERIFYPEER, 0), "Disabling host verification");
 }
 
-void CurlHandle::setClientCert(const std::string &certPathname)
+void CurlHandle::setClientCert(const std::string& certPathname)
 {
     verify(curl_easy_setopt(mHandle, CURLOPT_SSLCERT, certPathname.c_str()), "Setting client cert pathname");
 }
 
-void CurlHandle::setProxy(const std::string &url)
+void CurlHandle::setProxy(const std::string& url)
 {
     verify(curl_easy_setopt(mHandle, CURLOPT_PROXY, url.c_str()), "Setting proxy");
 }
@@ -80,7 +80,7 @@ void CurlHandle::perform()
     verify(curl_easy_perform(mHandle), "curl_easy_perform()");
 }
 
-void CurlHandle::verify(CURLcode code, const std::string &prefix)
+void CurlHandle::verify(CURLcode code, const std::string& prefix)
 {
     if (code != CURLE_OK)
     {
@@ -88,7 +88,7 @@ void CurlHandle::verify(CURLcode code, const std::string &prefix)
     }
 }
 
-size_t CurlHandle::writeBetterCallback(char *data, size_t size, size_t nmemb, std::string *writeData)
+size_t CurlHandle::writeBetterCallback(char* data, size_t size, size_t nmemb, std::string* writeData)
 {
     if (writeData == nullptr)
     {
@@ -99,7 +99,7 @@ size_t CurlHandle::writeBetterCallback(char *data, size_t size, size_t nmemb, st
     return size * nmemb;
 }
 
-int CurlHandle::writeCallback(char *data, size_t size, size_t nmemb, std::string *writeData)
+int CurlHandle::writeCallback(char* data, size_t size, size_t nmemb, std::string* writeData)
 {
     return (int)CurlHandle::writeBetterCallback(data, size, nmemb, writeData);
 }

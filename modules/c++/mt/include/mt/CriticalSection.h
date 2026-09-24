@@ -53,11 +53,11 @@ namespace mt
 template <typename T> struct CriticalSection
 {
     //!  Constructor.  Lock the mutex.
-    CriticalSection(T *mutex) : mMutex(mutex), mIsLocked(false)
+    CriticalSection(T* mutex) : mMutex(mutex), mIsLocked(false)
     {
         manualLock();
     }
-    CriticalSection(T &mutex) : CriticalSection(&mutex)
+    CriticalSection(T& mutex) : CriticalSection(&mutex)
     {
     }
 
@@ -91,11 +91,11 @@ template <typename T> struct CriticalSection
         mIsLocked = true;
     }
 
-    CriticalSection(const CriticalSection &) = delete;
-    CriticalSection &operator=(const CriticalSection &) = delete;
+    CriticalSection(const CriticalSection&) = delete;
+    CriticalSection& operator=(const CriticalSection&) = delete;
 
   private:
-    T *const mMutex;
+    T* const mMutex;
     bool mIsLocked;
 };
 } // namespace mt

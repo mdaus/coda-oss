@@ -67,12 +67,12 @@ struct SwapBuffer
      *  It is the responsibility of the user to deallocate any
      *  memory passed into this class.
      */
-    SwapBuffer(void *valid, void *scratch, size_t numBytes) : mNumBytes(numBytes), mValid(valid), mScratch(scratch)
+    SwapBuffer(void* valid, void* scratch, size_t numBytes) : mNumBytes(numBytes), mValid(valid), mScratch(scratch)
     {
     }
 
-    SwapBuffer(const SwapBuffer &) = delete;
-    SwapBuffer &operator=(const SwapBuffer &) = delete;
+    SwapBuffer(const SwapBuffer&) = delete;
+    SwapBuffer& operator=(const SwapBuffer&) = delete;
 
     //! Get the number of bytes
     size_t getNumBytes() const
@@ -82,30 +82,30 @@ struct SwapBuffer
 
     //! Grab the currently active buffer.  Users should read data
     //  from this buffer during processing.
-    template <typename T> T *getValidBuffer()
+    template <typename T> T* getValidBuffer()
     {
-        return static_cast<T *>(mValid);
+        return static_cast<T*>(mValid);
     }
 
     //! Grab the currently active buffer.  Users should read data
     //  from this buffer during processing.
-    template <typename T> const T *getValidBuffer() const
+    template <typename T> const T* getValidBuffer() const
     {
-        return static_cast<T *>(mValid);
+        return static_cast<T*>(mValid);
     }
 
     //! Grab the currently inactive buffer.  Users should write
     //  data to this buffer during processing.
-    template <typename T> T *getScratchBuffer()
+    template <typename T> T* getScratchBuffer()
     {
-        return static_cast<T *>(mScratch);
+        return static_cast<T*>(mScratch);
     }
 
     //! Grab the currently inactive buffer.  Users should write
     //  data to this buffer during processing.
-    template <typename T> const T *getScratchBuffer() const
+    template <typename T> const T* getScratchBuffer() const
     {
-        return static_cast<T *>(mScratch);
+        return static_cast<T*>(mScratch);
     }
 
     //! Swap the buffers
@@ -120,8 +120,8 @@ struct SwapBuffer
     const ScopedAlignedArray<sys::byte> mAlignedValid;
     const ScopedAlignedArray<sys::byte> mAlignedScratch;
 
-    void *mValid;
-    void *mScratch;
+    void* mValid;
+    void* mScratch;
 };
 
 } // namespace mem

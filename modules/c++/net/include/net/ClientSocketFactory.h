@@ -81,7 +81,7 @@ class ClientSocketFactory
      *
      *  \return A socket
      */
-    std::unique_ptr<Socket> create(const SocketAddress &address)
+    std::unique_ptr<Socket> create(const SocketAddress& address)
     {
         std::unique_ptr<Socket> s(new Socket(mProto));
 
@@ -95,7 +95,7 @@ class ClientSocketFactory
      * Sets socket options for the protocol (none by default).
      * \param s The socket
      */
-    virtual void setOptions(Socket &)
+    virtual void setOptions(Socket&)
     {
     }
 
@@ -136,7 +136,7 @@ class UDPClientSocketFactory : public ClientSocketFactory
      * Sets SO_BROADCAST socket option.
      * \param s The socket
      */
-    virtual void setOptions(Socket &s) override
+    virtual void setOptions(Socket& s) override
     {
         // Make sure we're set up for broadcasting if necessary
         int on = 1;

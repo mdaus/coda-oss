@@ -87,7 +87,7 @@ TEST_CASE(test_make_unique)
     }
 }
 
-static void f(const std::string &testName, mem::AutoPtr<Foo> p)
+static void f(const std::string& testName, mem::AutoPtr<Foo> p)
 {
     TEST_ASSERT_NOT_NULL(p.get());
     TEST_ASSERT_EQ(123, p->mVal);

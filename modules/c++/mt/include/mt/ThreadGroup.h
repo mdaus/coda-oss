@@ -70,20 +70,20 @@ struct CODA_OSS_API ThreadGroup
      */
     ~ThreadGroup();
 
-    ThreadGroup(const ThreadGroup &) = delete;
-    ThreadGroup &operator=(const ThreadGroup &) = delete;
+    ThreadGroup(const ThreadGroup&) = delete;
+    ThreadGroup& operator=(const ThreadGroup&) = delete;
 
     /*!
      *  Creates and starts a thread from a sys::Runnable.
      *  \param runnable pointer to sys::Runnable
      */
-    void createThread(sys::Runnable *runnable);
+    void createThread(sys::Runnable* runnable);
 
     /*!
      *  Creates and starts a thread from a sys::Runnable.
      *  \param runnable unique_ptr to sys::Runnable
      */
-    void createThread(std::unique_ptr<sys::Runnable> &&runnable);
+    void createThread(std::unique_ptr<sys::Runnable>&& runnable);
 
     /*!
      * Waits for all threads to complete.
@@ -128,7 +128,7 @@ struct CODA_OSS_API ThreadGroup
     /*!
      * Adds an exception to the mExceptions vector
      */
-    void addException(const except::Exception &ex);
+    void addException(const except::Exception& ex);
 
     /*!
      * \returns the next available thread initializer provided by
@@ -156,12 +156,12 @@ struct CODA_OSS_API ThreadGroup
          *                   to execute on. If NULL, no affinity preferences
          *                   will be enforced.
          */
-        ThreadGroupRunnable(std::unique_ptr<sys::Runnable> &&runnable, mt::ThreadGroup &parentThreadGroup,
-                            std::unique_ptr<CPUAffinityThreadInitializer> &&threadInit =
+        ThreadGroupRunnable(std::unique_ptr<sys::Runnable>&& runnable, mt::ThreadGroup& parentThreadGroup,
+                            std::unique_ptr<CPUAffinityThreadInitializer>&& threadInit =
                                 std::unique_ptr<CPUAffinityThreadInitializer>(nullptr));
 
-        ThreadGroupRunnable(const ThreadGroupRunnable &) = delete;
-        ThreadGroupRunnable &operator=(const ThreadGroupRunnable &) = delete;
+        ThreadGroupRunnable(const ThreadGroupRunnable&) = delete;
+        ThreadGroupRunnable& operator=(const ThreadGroupRunnable&) = delete;
 
         /*!
          *  Call run() on the Runnable passed to createThread
@@ -170,7 +170,7 @@ struct CODA_OSS_API ThreadGroup
 
       private:
         std::unique_ptr<sys::Runnable> mRunnable;
-        mt::ThreadGroup &mParentThreadGroup;
+        mt::ThreadGroup& mParentThreadGroup;
         std::unique_ptr<CPUAffinityThreadInitializer> mCPUInit;
     };
 };

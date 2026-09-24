@@ -34,12 +34,12 @@ using namespace logging;
 
 const char StandardFormatter::DEFAULT_FORMAT[] = "[%c] %p [%t] %d ==> %m";
 
-StandardFormatter::StandardFormatter(const std::string &fmt, const std::string &prologue, const std::string &epilogue)
+StandardFormatter::StandardFormatter(const std::string& fmt, const std::string& prologue, const std::string& epilogue)
     : Formatter((fmt.empty()) ? DEFAULT_FORMAT : fmt, prologue, epilogue)
 {
 }
 
-void StandardFormatter::format(const LogRecord *record, io::OutputStream &os) const
+void StandardFormatter::format(const LogRecord* record, io::OutputStream& os) const
 {
     std::string name = (record->getName().empty()) ? ("DEFAULT") : record->getName();
 

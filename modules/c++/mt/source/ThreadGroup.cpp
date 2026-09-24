@@ -48,12 +48,12 @@ ThreadGroup::~ThreadGroup()
     }
 }
 
-void ThreadGroup::createThread(sys::Runnable *runnable)
+void ThreadGroup::createThread(sys::Runnable* runnable)
 {
     createThread(std::unique_ptr<sys::Runnable>(runnable));
 }
 
-void ThreadGroup::createThread(std::unique_ptr<sys::Runnable> &&runnable)
+void ThreadGroup::createThread(std::unique_ptr<sys::Runnable>&& runnable)
 {
     // Note: If getNextInitializer throws, any previously created
     //       threads may never finish if cross-thread communication is used.
@@ -96,7 +96,7 @@ void ThreadGroup::joinAll()
         throw except::Error(Ctxt("ThreadGroup could not be joined"));
 }
 
-void ThreadGroup::addException(const except::Exception &ex)
+void ThreadGroup::addException(const except::Exception& ex)
 {
     try
     {
@@ -120,9 +120,9 @@ std::unique_ptr<CPUAffinityThreadInitializer> ThreadGroup::getNextInitializer()
     return std::unique_ptr<CPUAffinityThreadInitializer>(threadInit.release());
 }
 
-ThreadGroup::ThreadGroupRunnable::ThreadGroupRunnable(std::unique_ptr<sys::Runnable> &&runnable,
-                                                      ThreadGroup &parentThreadGroup,
-                                                      std::unique_ptr<CPUAffinityThreadInitializer> &&threadInit)
+ThreadGroup::ThreadGroupRunnable::ThreadGroupRunnable(std::unique_ptr<sys::Runnable>&& runnable,
+                                                      ThreadGroup& parentThreadGroup,
+                                                      std::unique_ptr<CPUAffinityThreadInitializer>&& threadInit)
     : mRunnable(std::move(runnable)), mParentThreadGroup(parentThreadGroup), mCPUInit(std::move(threadInit))
 {
 }
@@ -137,11 +137,11 @@ void ThreadGroup::ThreadGroupRunnable::run()
         }
         mRunnable->run();
     }
-    catch (const except::Exception &ex)
+    catch (const except::Exception& ex)
     {
         mParentThreadGroup.addException(ex);
     }
-    catch (const std::exception &ex)
+    catch (const std::exception& ex)
     {
         mParentThreadGroup.addException(except::Exception(Ctxt(ex.what())));
     }

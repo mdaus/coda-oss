@@ -52,7 +52,7 @@ void Handler::setLevel(LogLevel level)
     mLevel = level;
 }
 
-bool Handler::handle(const LogRecord *record)
+bool Handler::handle(const LogRecord* record)
 {
     bool rv = false;
     if (filter(record))
@@ -64,7 +64,7 @@ bool Handler::handle(const LogRecord *record)
             emitRecord(record);
             rv = true;
         }
-        catch (const except::Throwable &)
+        catch (const except::Throwable&)
         {
             // TODO do something here?
             // std::cout << t.getTrace() << std::endl;
@@ -72,7 +72,7 @@ bool Handler::handle(const LogRecord *record)
     }
     return rv;
 }
-void Handler::setFormatter(Formatter *formatter)
+void Handler::setFormatter(Formatter* formatter)
 {
     // check if current formatter
     if (mFormatter != formatter)
@@ -83,7 +83,7 @@ void Handler::setFormatter(Formatter *formatter)
         mFormatter = formatter;
     }
 }
-void Handler::setFormatter(std::unique_ptr<Formatter> &&formatter)
+void Handler::setFormatter(std::unique_ptr<Formatter>&& formatter)
 {
     setFormatter(formatter.release());
 }

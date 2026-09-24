@@ -64,7 +64,7 @@ class CODA_OSS_API ScratchMemory
      * \throws except::Exception if the given key has already been used
      */
     template <typename T>
-    void put(const std::string &key, size_t numElements, size_t numBuffers = 1,
+    void put(const std::string& key, size_t numElements, size_t numBuffers = 1,
              size_t alignment = sys::SSE_INSTRUCTION_ALIGNMENT);
 
     /*!
@@ -72,7 +72,7 @@ class CODA_OSS_API ScratchMemory
      *
      * \param key Identifier for scratch segment
      */
-    void release(const std::string &key);
+    void release(const std::string& key);
 
     /*!
      * \brief Get pointer to buffer segment.
@@ -85,7 +85,7 @@ class CODA_OSS_API ScratchMemory
      * \throws except::Exception if the scratch memory has not been set up,
      *         the key does not exist, or index of buffer is out of bounds
      */
-    template <typename T> T *get(const std::string &key, size_t indexBuffer = 0);
+    template <typename T> T* get(const std::string& key, size_t indexBuffer = 0);
 
     /*!
      * \brief Get const pointer to buffer segment.
@@ -98,7 +98,7 @@ class CODA_OSS_API ScratchMemory
      * \throws except::Exception if the scratch memory has not been set up,
      *         the key does not exist, or index of buffer is out of bounds
      */
-    template <typename T> const T *get(const std::string &key, size_t indexBuffer = 0) const;
+    template <typename T> const T* get(const std::string& key, size_t indexBuffer = 0) const;
 
     /*!
      * \brief Get buffer view of buffer segment.
@@ -111,7 +111,7 @@ class CODA_OSS_API ScratchMemory
      * \throws except::Exception if the scratch memory has not been set up,
      *         the key does not exist, or index of buffer is out of bounds
      */
-    template <typename T> BufferView<T> getBufferView(const std::string &key, size_t indexBuffer = 0);
+    template <typename T> BufferView<T> getBufferView(const std::string& key, size_t indexBuffer = 0);
 
     /*!
      * \brief Get const buffer view of buffer segment.
@@ -124,7 +124,7 @@ class CODA_OSS_API ScratchMemory
      * \throws except::Exception if the scratch memory has not been set up,
      *         the key does not exist, or index of buffer is out of bounds
      */
-    template <typename T> BufferView<const T> getBufferView(const std::string &key, size_t indexBuffer = 0) const;
+    template <typename T> BufferView<const T> getBufferView(const std::string& key, size_t indexBuffer = 0) const;
 
     /*!
      * \brief Ensure underlying memory is properly set up and position segment
@@ -138,7 +138,7 @@ class CODA_OSS_API ScratchMemory
      *         to hold the requested scratch memory or has size > 0 with null
      *         data pointer
      */
-    void setup(const BufferView<sys::ubyte> &scratchBuffer = BufferView<sys::ubyte>());
+    void setup(const BufferView<sys::ubyte>& scratchBuffer = BufferView<sys::ubyte>());
 
     /*!
      * \brief Get number of bytes needed to store scratch memory, including the
@@ -149,8 +149,8 @@ class CODA_OSS_API ScratchMemory
         return mNumBytesNeeded;
     }
 
-    ScratchMemory(const ScratchMemory &) = delete;
-    ScratchMemory &operator=(const ScratchMemory &) = delete;
+    ScratchMemory(const ScratchMemory&) = delete;
+    ScratchMemory& operator=(const ScratchMemory&) = delete;
 
   private:
     struct CODA_OSS_API Segment final
@@ -161,10 +161,10 @@ class CODA_OSS_API ScratchMemory
         size_t numBuffers;
         size_t alignment;
         size_t offset;
-        std::vector<sys::ubyte *> buffers;
+        std::vector<sys::ubyte*> buffers;
     };
 
-    const Segment &lookupSegment(const std::string &key, size_t indexBuffer) const;
+    const Segment& lookupSegment(const std::string& key, size_t indexBuffer) const;
 
     std::map<std::string, Segment> mSegments;
     std::vector<sys::ubyte> mStorage;

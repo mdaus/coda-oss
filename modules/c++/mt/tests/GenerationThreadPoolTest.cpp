@@ -22,7 +22,7 @@
 
 #if defined(__APPLE_CC__)
 #include <iostream>
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     std::cout << "Sorry no semaphores" << std::endl;
     return 0;
@@ -60,11 +60,11 @@ class MyRunTask : public sys::Runnable
     }
 };
 
-void runGeneration(GenerationThreadPool &pool)
+void runGeneration(GenerationThreadPool& pool)
 {
     static int nRunsInGen = 1;
 
-    std::vector<Runnable *> runs;
+    std::vector<Runnable*> runs;
     for (int i = 0; i < nRunsInGen; i++)
     {
         runs.push_back(new MyRunTask(i));
@@ -89,7 +89,7 @@ int main()
         pool.shutdown();
         pool.join();
     }
-    catch (except::Exception &ex)
+    catch (except::Exception& ex)
     {
         std::cout << "Caught exception: " << ex.toString() << std::endl;
         std::cout << "\t" << ex.getTrace() << std::endl;

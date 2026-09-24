@@ -55,7 +55,7 @@ class RequestHandler
      *
      *  \param conn The connection
      */
-    virtual void operator()(net::NetConnection *conn) = 0;
+    virtual void operator()(net::NetConnection* conn) = 0;
 };
 
 class RequestHandlerFactory
@@ -67,7 +67,7 @@ class RequestHandlerFactory
     virtual ~RequestHandlerFactory()
     {
     }
-    virtual net::RequestHandler *create() = 0;
+    virtual net::RequestHandler* create() = 0;
 };
 
 template <typename ReqHandler_T> class DefaultRequestHandlerFactory : public RequestHandlerFactory
@@ -79,7 +79,7 @@ template <typename ReqHandler_T> class DefaultRequestHandlerFactory : public Req
     virtual ~DefaultRequestHandlerFactory()
     {
     }
-    net::RequestHandler *create() override
+    net::RequestHandler* create() override
     {
         return new ReqHandler_T();
     }

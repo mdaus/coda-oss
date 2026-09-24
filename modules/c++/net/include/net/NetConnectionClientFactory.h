@@ -68,7 +68,7 @@ class NetConnectionClientFactory
      * \return A connection to the url
      * \throw SocketCreationException
      */
-    virtual NetConnection *create(const URL &url);
+    virtual NetConnection* create(const URL& url);
 
     /*!
      * Create a client connection to the specified socket address
@@ -78,18 +78,18 @@ class NetConnectionClientFactory
      * \throw SocketCreationException
      */
 
-    virtual NetConnection *create(const SocketAddress &address);
+    virtual NetConnection* create(const SocketAddress& address);
 
     /*!
      *
      *
      */
-    virtual NetConnection *newConnection(std::unique_ptr<Socket> &&toServer);
+    virtual NetConnection* newConnection(std::unique_ptr<Socket>&& toServer);
     /*!
      * Destroy a spawned connection.
      * \param connection The connection to destroy
      */
-    virtual void destroy(NetConnection *connection)
+    virtual void destroy(NetConnection* connection)
     {
         if (connection != nullptr)
         {

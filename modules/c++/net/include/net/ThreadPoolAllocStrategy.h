@@ -24,14 +24,14 @@ namespace net
  *  Also note that, since we are in a server, we will never shut down
  *
  */
-class ConnectionThread : public mt::WorkerThread<NetConnection *>
+class ConnectionThread : public mt::WorkerThread<NetConnection*>
 {
-    RequestHandler *mHandler;
+    RequestHandler* mHandler;
 
   public:
     //! Each thread gets 1 unique request handler
-    ConnectionThread(mt::RequestQueue<NetConnection *> *connQueue, net::RequestHandler *handler)
-        : mt::WorkerThread<NetConnection *>(connQueue), mHandler(handler)
+    ConnectionThread(mt::RequestQueue<NetConnection*>* connQueue, net::RequestHandler* handler)
+        : mt::WorkerThread<NetConnection*>(connQueue), mHandler(handler)
     {
     }
 
@@ -41,15 +41,15 @@ class ConnectionThread : public mt::WorkerThread<NetConnection *>
         delete mHandler;
     }
 
-    ConnectionThread(const ConnectionThread &) = delete;
-    ConnectionThread &operator=(const ConnectionThread &) = delete;
-    ConnectionThread(ConnectionThread &&) = delete;
-    ConnectionThread &operator=(ConnectionThread &&) = delete;
+    ConnectionThread(const ConnectionThread&) = delete;
+    ConnectionThread& operator=(const ConnectionThread&) = delete;
+    ConnectionThread(ConnectionThread&&) = delete;
+    ConnectionThread& operator=(ConnectionThread&&) = delete;
 
     /*!
      *  Do this in a loop forever.
      */
-    void performTask(net::NetConnection *&request) override
+    void performTask(net::NetConnection*& request) override
     {
         (*mHandler)(request);
     }
@@ -67,13 +67,13 @@ class ConnectionThread : public mt::WorkerThread<NetConnection *>
  *  and the RequestHandler implementations are a nod to this,
  *  recognizing that all resources are safe within this thread
  */
-class ConnectionThreadPool : public mt::AbstractThreadPool<net::NetConnection *>
+class ConnectionThreadPool : public mt::AbstractThreadPool<net::NetConnection*>
 {
-    RequestHandlerFactory *mFactory;
+    RequestHandlerFactory* mFactory;
 
   public:
-    ConnectionThreadPool(unsigned short numThreads, net::RequestHandlerFactory *factory)
-        : mt::AbstractThreadPool<net::NetConnection *>(numThreads), mFactory(factory)
+    ConnectionThreadPool(unsigned short numThreads, net::RequestHandlerFactory* factory)
+        : mt::AbstractThreadPool<net::NetConnection*>(numThreads), mFactory(factory)
     {
     }
     ~ConnectionThreadPool()
@@ -81,12 +81,12 @@ class ConnectionThreadPool : public mt::AbstractThreadPool<net::NetConnection *>
         delete mFactory;
     }
 
-    ConnectionThreadPool(const ConnectionThreadPool &) = delete;
-    ConnectionThreadPool &operator=(const ConnectionThreadPool &) = delete;
-    ConnectionThreadPool(ConnectionThreadPool &&) = delete;
-    ConnectionThreadPool &operator=(ConnectionThreadPool &&) = delete;
+    ConnectionThreadPool(const ConnectionThreadPool&) = delete;
+    ConnectionThreadPool& operator=(const ConnectionThreadPool&) = delete;
+    ConnectionThreadPool(ConnectionThreadPool&&) = delete;
+    ConnectionThreadPool& operator=(ConnectionThreadPool&&) = delete;
 
-    mt::WorkerThread<net::NetConnection *> *newWorker() override
+    mt::WorkerThread<net::NetConnection*>* newWorker() override
     {
         return new ConnectionThread(&mRequestQueue, mFactory->create());
     }
@@ -123,7 +123,7 @@ class ConnectionThreadPool : public mt::AbstractThreadPool<net::NetConnection *>
 class ThreadPoolAllocStrategy : public AllocStrategy
 {
 
-    ConnectionThreadPool *mPool;
+    ConnectionThreadPool* mPool;
     unsigned short mNumThreads;
 
   public:
@@ -137,7 +137,7 @@ class ThreadPoolAllocStrategy : public AllocStrategy
     // by the time this function is called
     void initialize() override;
 
-    void handleConnection(net::NetConnection *conn) override;
+    void handleConnection(net::NetConnection* conn) override;
 };
 } // namespace net
 

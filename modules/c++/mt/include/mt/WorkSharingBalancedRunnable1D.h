@@ -79,17 +79,17 @@ template <typename OpT> struct WorkSharingBalancedRunnable1D : public sys::Runna
      *  thread
      *
      */
-    WorkSharingBalancedRunnable1D(const types::Range &range, sys::AtomicCounter &counter,
-                                  const SharedAtomicCounterVec &threadCounters,
-                                  const std::vector<size_t> &threadPoolEndElements, const OpT &op)
+    WorkSharingBalancedRunnable1D(const types::Range& range, sys::AtomicCounter& counter,
+                                  const SharedAtomicCounterVec& threadCounters,
+                                  const std::vector<size_t>& threadPoolEndElements, const OpT& op)
         : mStartElement(range.mStartElement), mEndElement(mStartElement + range.mNumElements), mCounter(counter),
           mThreadPoolCounters(threadCounters), mThreadPoolEndElements(threadPoolEndElements), mOp(op)
     {
     }
-    WorkSharingBalancedRunnable1D(const WorkSharingBalancedRunnable1D &) = delete;
-    WorkSharingBalancedRunnable1D &operator=(const WorkSharingBalancedRunnable1D &) = delete;
-    WorkSharingBalancedRunnable1D(WorkSharingBalancedRunnable1D &&) = default;
-    WorkSharingBalancedRunnable1D &operator=(WorkSharingBalancedRunnable1D &&) = delete;
+    WorkSharingBalancedRunnable1D(const WorkSharingBalancedRunnable1D&) = delete;
+    WorkSharingBalancedRunnable1D& operator=(const WorkSharingBalancedRunnable1D&) = delete;
+    WorkSharingBalancedRunnable1D(WorkSharingBalancedRunnable1D&&) = default;
+    WorkSharingBalancedRunnable1D& operator=(WorkSharingBalancedRunnable1D&&) = delete;
 
     virtual void run() override
     {
@@ -101,13 +101,13 @@ template <typename OpT> struct WorkSharingBalancedRunnable1D : public sys::Runna
         for (size_t ii = 0; ii < mThreadPoolEndElements.size(); ++ii)
         {
             const size_t threadEndElement = mThreadPoolEndElements[ii];
-            sys::AtomicCounter &threadCounter = *mThreadPoolCounters[ii];
+            sys::AtomicCounter& threadCounter = *mThreadPoolCounters[ii];
             processElements(threadCounter, threadEndElement);
         }
     }
 
   private:
-    void processElements(sys::AtomicCounter &counter, size_t endElement)
+    void processElements(sys::AtomicCounter& counter, size_t endElement)
     {
         while (true)
         {
@@ -125,10 +125,10 @@ template <typename OpT> struct WorkSharingBalancedRunnable1D : public sys::Runna
 
     const size_t mStartElement;
     const size_t mEndElement;
-    sys::AtomicCounter &mCounter;
-    const SharedAtomicCounterVec &mThreadPoolCounters;
-    const std::vector<size_t> &mThreadPoolEndElements;
-    const OpT &mOp;
+    sys::AtomicCounter& mCounter;
+    const SharedAtomicCounterVec& mThreadPoolCounters;
+    const std::vector<size_t>& mThreadPoolEndElements;
+    const OpT& mOp;
 };
 
 /*!
@@ -152,7 +152,7 @@ template <typename OpT> struct WorkSharingBalancedRunnable1D : public sys::Runna
  *  \param numThreads Number of threads
  *  \param op Functor to use
  */
-template <typename OpT> void runWorkSharingBalanced1D(size_t numElements, size_t numThreads, const OpT &op)
+template <typename OpT> void runWorkSharingBalanced1D(size_t numElements, size_t numThreads, const OpT& op)
 {
     std::vector<size_t> threadPoolEndElements;
     SharedAtomicCounterVec threadPoolCounters;
@@ -205,7 +205,7 @@ template <typename OpT> void runWorkSharingBalanced1D(size_t numElements, size_t
  *  \param ops Vector of functors to use
  */
 template <typename OpT>
-void runWorkSharingBalanced1D(size_t numElements, size_t numThreads, const std::vector<OpT> &ops)
+void runWorkSharingBalanced1D(size_t numElements, size_t numThreads, const std::vector<OpT>& ops)
 {
     if (ops.size() != numThreads)
     {
@@ -267,7 +267,7 @@ void runWorkSharingBalanced1D(size_t numElements, size_t numThreads, const std::
  *  \param numThreads Number of threads
  *  \param op Functor to use
  */
-template <typename OpT> void runWorkSharingBalanced1DWithCopies(size_t numElements, size_t numThreads, const OpT &op)
+template <typename OpT> void runWorkSharingBalanced1DWithCopies(size_t numElements, size_t numThreads, const OpT& op)
 {
     const std::vector<OpT> ops(numThreads, op);
     runWorkSharingBalanced1D(numElements, numThreads, ops);

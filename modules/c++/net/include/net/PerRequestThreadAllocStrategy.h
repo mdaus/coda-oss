@@ -45,8 +45,8 @@ namespace net
 
 class RequestHandlerThread : public sys::Thread
 {
-    RequestHandler *mRequestHandler;
-    NetConnection *mConnection;
+    RequestHandler* mRequestHandler;
+    NetConnection* mConnection;
 
   public:
     /*!
@@ -54,7 +54,7 @@ class RequestHandlerThread : public sys::Thread
      *  \param handler A (freshly created) request handler
      *  \param connection The network socket connection
      */
-    RequestHandlerThread(RequestHandler *handler, NetConnection *connection)
+    RequestHandlerThread(RequestHandler* handler, NetConnection* connection)
         : mRequestHandler(handler), mConnection(connection)
     {
     }
@@ -62,10 +62,10 @@ class RequestHandlerThread : public sys::Thread
     //!  Destructor
     ~RequestHandlerThread() = default;
 
-    RequestHandlerThread(const RequestHandlerThread &) = delete;
-    RequestHandlerThread &operator=(const RequestHandlerThread &) = delete;
-    RequestHandlerThread(RequestHandlerThread &&) = delete;
-    RequestHandlerThread &operator=(RequestHandlerThread &&) = delete;
+    RequestHandlerThread(const RequestHandlerThread&) = delete;
+    RequestHandlerThread& operator=(const RequestHandlerThread&) = delete;
+    RequestHandlerThread(RequestHandlerThread&&) = delete;
+    RequestHandlerThread& operator=(RequestHandlerThread&&) = delete;
 
     /*!
      *  Overloaded run method for handling a connection.
@@ -107,7 +107,7 @@ class PerRequestThreadAllocStrategy : public AllocStrategy
      *
      *  \param conn The network connection
      */
-    void handleConnection(NetConnection *conn) override;
+    void handleConnection(NetConnection* conn) override;
 };
 
 /*     class ThreadPoolAllocStrategy : public AllocStrategy */

@@ -54,76 +54,76 @@ struct CODA_OSS_API Logger : public Filterer
      * Constructs a Logger with an optional name
      * \param name  (optional) Name of the logger
      */
-    Logger(const std::string &name = "") : mName(name)
+    Logger(const std::string& name = "") : mName(name)
     {
     }
 
     virtual ~Logger();
 
     //! Logs a message at the specified LogLevel
-    void log(LogLevel level, const std::string &msg);
+    void log(LogLevel level, const std::string& msg);
 
     //! Logs an Exception Context at the specified LogLevel
-    void log(LogLevel level, const except::Context &ctxt);
+    void log(LogLevel level, const except::Context& ctxt);
 
     //! Logs a Throwable at the specified LogLevel
-    void log(LogLevel level, const except::Throwable &t);
+    void log(LogLevel level, const except::Throwable& t);
 
     //! Logs a message at the DEBUG LogLevel
-    void debug(const std::string &msg);
+    void debug(const std::string& msg);
     //! Logs a message at the INFO LogLevel
-    void info(const std::string &msg);
+    void info(const std::string& msg);
     //! Logs a message at the WARNING LogLevel
-    void warn(const std::string &msg);
+    void warn(const std::string& msg);
     //! Logs a message at the ERROR LogLevel
-    void error(const std::string &msg);
+    void error(const std::string& msg);
     //! Logs a message at the CRITICAL LogLevel
-    void critical(const std::string &msg);
+    void critical(const std::string& msg);
 
     //! Logs a message at the DEBUG LogLevel
-    void debug(const std::ostringstream &msg);
+    void debug(const std::ostringstream& msg);
     //! Logs a message at the INFO LogLevel
-    void info(const std::ostringstream &msg);
+    void info(const std::ostringstream& msg);
     //! Logs a message at the WARNING LogLevel
-    void warn(const std::ostringstream &msg);
+    void warn(const std::ostringstream& msg);
     //! Logs a message at the ERROR LogLevel
-    void error(const std::ostringstream &msg);
+    void error(const std::ostringstream& msg);
     //! Logs a message at the CRITICAL LogLevel
-    void critical(const std::ostringstream &msg);
+    void critical(const std::ostringstream& msg);
 
     //! Logs an Exception Context at the DEBUG LogLevel
-    void debug(const except::Context &ctxt);
+    void debug(const except::Context& ctxt);
     //! Logs an Exception Context at the INFO LogLevel
-    void info(const except::Context &ctxt);
+    void info(const except::Context& ctxt);
     //! Logs an Exception Context at the WARNING LogLevel
-    void warn(const except::Context &ctxt);
+    void warn(const except::Context& ctxt);
     //! Logs an Exception Context at the ERROR LogLevel
-    void error(const except::Context &ctxt);
+    void error(const except::Context& ctxt);
     //! Logs an Exception Context at the CRITICAL LogLevel
-    void critical(const except::Context &ctxt);
+    void critical(const except::Context& ctxt);
 
     //! Logs a Throwable at the DEBUG LogLevel
-    void debug(const except::Throwable &t);
+    void debug(const except::Throwable& t);
     //! Logs a Throwable at the INFO LogLevel
-    void info(const except::Throwable &t);
+    void info(const except::Throwable& t);
     //! Logs a Throwable at the WARNING LogLevel
-    void warn(const except::Throwable &t);
+    void warn(const except::Throwable& t);
     //! Logs a Throwable at the ERROR LogLevel
-    void error(const except::Throwable &t);
+    void error(const except::Throwable& t);
     //! Logs a Throwable at the CRITICAL LogLevel
-    void critical(const except::Throwable &t);
+    void critical(const except::Throwable& t);
 
     /*!
      * Adds a Hander to the list of Handlers this Logger delegates to.
      * This Logger does not own the passed-in Handler.
      */
-    void addHandler(Handler *handler, bool own = false);
-    void addHandler(std::unique_ptr<Handler> &&); // own = true
+    void addHandler(Handler* handler, bool own = false);
+    void addHandler(std::unique_ptr<Handler>&&); // own = true
 
     /*!
      * Removes the specified Handler from the list of Handlers.
      */
-    void removeHandler(Handler *handler);
+    void removeHandler(Handler* handler);
 
     /*!
      * This sets the LogLevel for all of the Handlers for this Logger
@@ -131,7 +131,7 @@ struct CODA_OSS_API Logger : public Filterer
     void setLevel(LogLevel level);
 
     //! Sets the name of the Logger
-    void setName(const std::string &name)
+    void setName(const std::string& name)
     {
         mName = name;
     }
@@ -157,17 +157,17 @@ struct CODA_OSS_API Logger : public Filterer
     //       smart pointers :o( ).  If we really wanted to support a copy,
     //       would need to decide if mHandlers should be deeply or shallowly
     //       copied.
-    Logger(const Logger &) = delete;
-    Logger &operator=(const Logger &) = delete;
+    Logger(const Logger&) = delete;
+    Logger& operator=(const Logger&) = delete;
 
   protected:
-    void handle(const LogRecord *record);
-    void handle(const LogRecord &record)
+    void handle(const LogRecord* record);
+    void handle(const LogRecord& record)
     {
         handle(&record);
     }
 
-    typedef std::pair<Handler *, bool> Handler_T;
+    typedef std::pair<Handler*, bool> Handler_T;
     typedef std::vector<Handler_T> Handlers_T;
 
     std::string mName;

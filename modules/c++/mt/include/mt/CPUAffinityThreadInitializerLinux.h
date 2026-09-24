@@ -47,7 +47,7 @@ class CPUAffinityThreadInitializerLinux : public AbstractCPUAffinityThreadInitia
      *            affinity mask for the CPUs that this thread
      *            is allowed to bind to
      */
-    CPUAffinityThreadInitializerLinux(std::unique_ptr<const sys::ScopedCPUMaskUnix> &&cpu);
+    CPUAffinityThreadInitializerLinux(std::unique_ptr<const sys::ScopedCPUMaskUnix>&& cpu);
 
     /*!
      * Attempt to bind to the affinity mask given during construction

@@ -27,10 +27,10 @@
 using namespace logging;
 using namespace std;
 
-int main(int, char **)
+int main(int, char**)
 {
     // create a logger, named 'test'
-    Logger *logger = new Logger("test");
+    Logger* logger = new Logger("test");
 
     // rotate every 1024 bytes, max of 5 backups
     RotatingFileHandler handler("./rotate.log", 1024, 5);

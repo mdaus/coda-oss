@@ -42,7 +42,7 @@ template <typename Request_T> class AbstractTiedThreadPool : public AbstractThre
     {
     }
 
-    virtual void initialize(CPUAffinityInitializer *affinityInit = nullptr)
+    virtual void initialize(CPUAffinityInitializer* affinityInit = nullptr)
     {
         mAffinityInit = affinityInit;
     }
@@ -60,17 +60,17 @@ template <typename Request_T> class AbstractTiedThreadPool : public AbstractThre
         return threadInit;
     }
 
-    virtual mt::WorkerThread<Request_T> *newWorker()
+    virtual mt::WorkerThread<Request_T>* newWorker()
     {
         return newTiedWorker(&this->mRequestQueue, getCPUAffinityThreadInitializer());
     }
 
   protected:
-    virtual mt::TiedWorkerThread<Request_T> *newTiedWorker(mt::RequestQueue<Request_T> *q,
-                                                           std::unique_ptr<CPUAffinityThreadInitializer> &&init) = 0;
+    virtual mt::TiedWorkerThread<Request_T>* newTiedWorker(mt::RequestQueue<Request_T>* q,
+                                                           std::unique_ptr<CPUAffinityThreadInitializer>&& init) = 0;
 
   private:
-    CPUAffinityInitializer *mAffinityInit;
+    CPUAffinityInitializer* mAffinityInit;
 };
 
 } // namespace mt

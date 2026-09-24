@@ -66,7 +66,7 @@ typedef socklen_t SockLen_T;
 typedef int SockLen_T;
 #endif
 
-typedef char *ByteBuf_T;
+typedef char* ByteBuf_T;
 typedef int BufSize_T;
 
 //! close socket and throw on failure

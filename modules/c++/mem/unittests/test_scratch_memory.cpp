@@ -58,9 +58,9 @@ TEST_CASE(testReleaseSingleEndBuffer)
     TEST_ASSERT_EQ(scratch.getNumBytes(), numBytes0 + numBytes2 + numBytes3 + numBytes4);
 
     scratch.setup();
-    sys::ubyte *pBuf0 = scratch.get<sys::ubyte>("buf0");
-    sys::ubyte *pBuf1 = scratch.get<sys::ubyte>("buf1");
-    sys::ubyte *pBuf2 = scratch.get<sys::ubyte>("buf2");
+    sys::ubyte* pBuf0 = scratch.get<sys::ubyte>("buf0");
+    sys::ubyte* pBuf1 = scratch.get<sys::ubyte>("buf1");
+    sys::ubyte* pBuf2 = scratch.get<sys::ubyte>("buf2");
 
     TEST_ASSERT_EQ(pBuf1, pBuf2);
     TEST_ASSERT_NOT_EQ(pBuf0, pBuf2);
@@ -109,12 +109,12 @@ TEST_CASE(testReleaseMultipleEndBuffers)
     TEST_ASSERT_EQ(scratch.getNumBytes(), static_cast<size_t>(14));
 
     scratch.setup();
-    sys::ubyte *pBuf1 = scratch.get<sys::ubyte>("buf1");
-    sys::ubyte *pBuf2 = scratch.get<sys::ubyte>("buf2");
-    sys::ubyte *pBuf3 = scratch.get<sys::ubyte>("buf3");
-    sys::ubyte *pBuf4 = scratch.get<sys::ubyte>("buf4");
-    sys::ubyte *pBuf6 = scratch.get<sys::ubyte>("buf6");
-    sys::ubyte *pBuf7 = scratch.get<sys::ubyte>("buf7");
+    sys::ubyte* pBuf1 = scratch.get<sys::ubyte>("buf1");
+    sys::ubyte* pBuf2 = scratch.get<sys::ubyte>("buf2");
+    sys::ubyte* pBuf3 = scratch.get<sys::ubyte>("buf3");
+    sys::ubyte* pBuf4 = scratch.get<sys::ubyte>("buf4");
+    sys::ubyte* pBuf6 = scratch.get<sys::ubyte>("buf6");
+    sys::ubyte* pBuf7 = scratch.get<sys::ubyte>("buf7");
 
     TEST_ASSERT_EQ(pBuf1, pBuf2);
     TEST_ASSERT_EQ(pBuf3, pBuf4);
@@ -148,12 +148,12 @@ TEST_CASE(testReleaseNonEndBuffers)
     scratch.put<sys::ubyte>("buf7", 3, 1, 2);
 
     scratch.setup();
-    sys::ubyte *pBuf1 = scratch.get<sys::ubyte>("buf1");
-    sys::ubyte *pBuf4 = scratch.get<sys::ubyte>("buf4");
-    sys::ubyte *pBuf3 = scratch.get<sys::ubyte>("buf3");
-    sys::ubyte *pBuf5 = scratch.get<sys::ubyte>("buf5");
-    sys::ubyte *pBuf6 = scratch.get<sys::ubyte>("buf6");
-    sys::ubyte *pBuf7 = scratch.get<sys::ubyte>("buf7");
+    sys::ubyte* pBuf1 = scratch.get<sys::ubyte>("buf1");
+    sys::ubyte* pBuf4 = scratch.get<sys::ubyte>("buf4");
+    sys::ubyte* pBuf3 = scratch.get<sys::ubyte>("buf3");
+    sys::ubyte* pBuf5 = scratch.get<sys::ubyte>("buf5");
+    sys::ubyte* pBuf6 = scratch.get<sys::ubyte>("buf6");
+    sys::ubyte* pBuf7 = scratch.get<sys::ubyte>("buf7");
     TEST_ASSERT_EQ(pBuf1, pBuf4);
     TEST_ASSERT_EQ(pBuf4, pBuf6);
     TEST_ASSERT_EQ(pBuf3, pBuf5);
@@ -546,12 +546,12 @@ TEST_CASE(testScratchMemory)
         // trying to get nonexistent key should throw
         TEST_EXCEPTION(scratch.get<char>("buf999"));
 
-        sys::ubyte *pBuf0 = scratch.get<sys::ubyte>("buf0");
-        sys::ubyte *pBuf1 = scratch.get<sys::ubyte>("buf1");
-        sys::ubyte *pBuf2_0 = scratch.get<sys::ubyte>("buf2", 0);
-        sys::ubyte *pBuf2_1 = scratch.get<sys::ubyte>("buf2", 1);
-        sys::ubyte *pBuf2_2 = scratch.get<sys::ubyte>("buf2", 2);
-        sys::ubyte *pBuf3 = scratch.get<sys::ubyte>("buf3");
+        sys::ubyte* pBuf0 = scratch.get<sys::ubyte>("buf0");
+        sys::ubyte* pBuf1 = scratch.get<sys::ubyte>("buf1");
+        sys::ubyte* pBuf2_0 = scratch.get<sys::ubyte>("buf2", 0);
+        sys::ubyte* pBuf2_1 = scratch.get<sys::ubyte>("buf2", 1);
+        sys::ubyte* pBuf2_2 = scratch.get<sys::ubyte>("buf2", 2);
+        sys::ubyte* pBuf3 = scratch.get<sys::ubyte>("buf3");
 
         // verify getBufferView matches get
         mem::BufferView<sys::ubyte> bufView0 = scratch.getBufferView<sys::ubyte>("buf0");
@@ -570,8 +570,8 @@ TEST_CASE(testScratchMemory)
         TEST_ASSERT_EQ(bufView2_1.size, static_cast<size_t>(29));
 
         // verify get works with const reference to ScratchMemory
-        const mem::ScratchMemory &constScratch = scratch;
-        const sys::ubyte *pConstBuf0 = constScratch.get<sys::ubyte>("buf0");
+        const mem::ScratchMemory& constScratch = scratch;
+        const sys::ubyte* pConstBuf0 = constScratch.get<sys::ubyte>("buf0");
         TEST_ASSERT_EQ(pBuf0, pConstBuf0);
 
         // verify getBufferView works with const reference to ScratchMemory
