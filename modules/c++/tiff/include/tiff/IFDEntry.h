@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once
 #ifndef __TIFF_IFD_ENTRY_H__
 #define __TIFF_IFD_ENTRY_H__
 

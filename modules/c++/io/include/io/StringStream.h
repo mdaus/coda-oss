@@ -22,6 +22,7 @@
 
 #ifndef CODA_OSS_io_StringStream_h_INCLUDED_
 #define CODA_OSS_io_StringStream_h_INCLUDED_
+#pragma once
 
 /*! \file StringStream.h
  *  \brief  A stream interface to the std::stringstream from C++ STL.

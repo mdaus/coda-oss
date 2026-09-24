@@ -22,6 +22,7 @@
  */
 
 
+#pragma once
 #ifndef CODA_OSS_import_std_h_INCLUDED_
 #define CODA_OSS_import_std_h_INCLUDED_
 

@@ -19,5 +19,6 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 #include "sio/lite/SioFileReader.h"
 

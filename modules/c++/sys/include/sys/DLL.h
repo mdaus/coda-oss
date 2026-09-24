@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once
 #ifndef __SYS_DLL_H__
 #define __SYS_DLL_H__
 

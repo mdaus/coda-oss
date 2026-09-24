@@ -1,5 +1,6 @@
 #ifndef CODA_OSS_mt_ThreadedByteSwap_h_INCLUDED_
 #define CODA_OSS_mt_ThreadedByteSwap_h_INCLUDED_
+#pragma once
 
 #include <memory>
 

@@ -21,6 +21,7 @@
  */
 #ifndef CODA_OSS_mem_Span_h_INCLUDED_
 #define CODA_OSS_mem_Span_h_INCLUDED_
+#pragma once
 
 #include "coda_oss/span.h"
 

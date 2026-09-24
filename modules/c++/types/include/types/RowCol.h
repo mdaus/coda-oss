@@ -19,7 +19,8 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
- #ifndef __TYPES_ROW_COL_H__
+ #pragma once
+#ifndef __TYPES_ROW_COL_H__
 #define __TYPES_ROW_COL_H__
 
 #include <cstddef>

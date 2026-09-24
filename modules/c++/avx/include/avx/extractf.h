@@ -22,6 +22,7 @@
  */
 #ifndef CODA_OSS_avx_extractf_h_INCLUDED_
 #define CODA_OSS_avx_extractf_h_INCLUDED_
+#pragma once
 
 #include <config/compiler_extensions.h>
 

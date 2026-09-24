@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_xml_lite_XMLReaderInterface_h_INCLUDED_
 #define CODA_OSS_xml_lite_XMLReaderInterface_h_INCLUDED_
 

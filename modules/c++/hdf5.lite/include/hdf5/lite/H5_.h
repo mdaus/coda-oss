@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_hdf5_lite_H5__h_INCLUDED_
 #define CODA_OSS_hdf5_lite_H5__h_INCLUDED_
 

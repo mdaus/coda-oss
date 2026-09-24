@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once
 #ifndef __NUMPYUTILS_NUMPYUTILS_H__
 #define __NUMPYUTILS_NUMPYUTILS_H__
 

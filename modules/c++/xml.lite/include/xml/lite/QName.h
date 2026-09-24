@@ -20,6 +20,7 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_xml_lite_QName_h_INCLLUDED_
 #define CODA_OSS_xml_lite_QName_h_INCLLUDED_
 

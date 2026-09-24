@@ -21,6 +21,7 @@
  */
 #ifndef CODA_OSS_math_linear_MatrixMxN_h_INCLUDED_
 #define CODA_OSS_math_linear_MatrixMxN_h_INCLUDED_
+#pragma once
 
 #include <cmath>
 #include <limits>

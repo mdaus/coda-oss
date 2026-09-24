@@ -23,6 +23,7 @@
 
 #ifndef CODA_OSS_except_Backtrace_h_INCLUDED_
 #define CODA_OSS_except_Backtrace_h_INCLUDED_
+#pragma once
 
 #include <string>
 #include <vector>

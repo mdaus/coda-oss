@@ -22,6 +22,7 @@
 
 #ifndef CODA_OSS_math_import_h_INCLUDED_
 #define CODA_OSS_math_import_h_INCLUDED_
+#pragma once
 
 #include <math/Bessel.h>
 #include <math/Constants.h>

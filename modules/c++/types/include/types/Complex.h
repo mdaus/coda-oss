@@ -21,6 +21,7 @@
  *
  */
 
+#pragma once
 #ifndef CODA_OSS_types_Complex_h_INCLUDED_
 #define CODA_OSS_types_Complex_h_INCLUDED_
 

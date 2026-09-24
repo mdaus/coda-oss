@@ -19,6 +19,7 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 #ifndef __TIFF_FILE_WRITER_H__
 #define __TIFF_FILE_WRITER_H__
 

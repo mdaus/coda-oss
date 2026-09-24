@@ -19,6 +19,7 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 #ifndef __TIFF_IFD_H__
 #define __TIFF_IFD_H__
 

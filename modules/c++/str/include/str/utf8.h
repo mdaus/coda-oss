@@ -22,6 +22,7 @@
 
 #ifndef CODA_OSS_str_utf8_h_INCLUDED_
 #define CODA_OSS_str_utf8_h_INCLUDED_
+#pragma once
 
 #include <stdint.h>
 #include <stddef.h>

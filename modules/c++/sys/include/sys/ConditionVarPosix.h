@@ -23,6 +23,7 @@
 
 #ifndef CODA_OSS_sys_ConditionVarPosix_h_INCLUDED_
 #define CODA_OSS_sys_ConditionVarPosix_h_INCLUDED_
+#pragma once
 
 #include <new>
 

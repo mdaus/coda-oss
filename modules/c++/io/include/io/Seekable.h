@@ -22,6 +22,7 @@
 
 #ifndef __IO_SEEKABLE_H__
 #define __IO_SEEKABLE_H__
+#pragma once
 
 #include "config/Exports.h"
 

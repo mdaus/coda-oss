@@ -21,6 +21,7 @@
  */
 #ifndef CODA_OSS_config_Version_h_INCLUDED_
 #define CODA_OSS_config_Version_h_INCLUDED_
+#pragma once
 
 #include <stdint.h>
 

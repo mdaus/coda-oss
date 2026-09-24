@@ -22,6 +22,7 @@
 
 #ifndef __MEM_VECTOR_OF_POINTERS_H__
 #define __MEM_VECTOR_OF_POINTERS_H__
+#pragma once
 
 #include <cstddef>
 #include <vector>

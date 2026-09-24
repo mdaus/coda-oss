@@ -22,6 +22,7 @@
 
 #ifndef __NET_SSL_CONNECTION_CLIENT_FACTORY_H__
 #define __NET_SSL_CONNECTION_CLIENT_FACTORY_H__
+#pragma once
 
 /*!
  *  \file SSLConnectionClientFactory.h
