@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,21 +14,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
+#include <iostream>
 #include <import/except.h>
 #include <import/io.h>
-#include <iostream>
 
 using namespace io;
 using namespace except;
 using namespace std;
 
-int main(int, char **)
+int main(int, char**)
 {
     try
     {
@@ -38,20 +38,21 @@ int main(int, char **)
         memset(buffer, 0, 32);
         StringStream sStream;
 
-        sStream.write((const sys::byte *)input.c_str(), 5);
-        sStream.read((sys::byte *)buffer, 3);
+        sStream.write((const sys::byte*) input.c_str(), 5);
+        sStream.read((sys::byte*) buffer, 3);
         cout << buffer << endl;
 
         memset(buffer, 0, 32);
-        sStream.write((const sys::byte *)input.c_str(), 10);
-        sStream.read((sys::byte *)buffer, 11);
+        sStream.write((const sys::byte*) input.c_str(), 10);
+        sStream.read((sys::byte*) buffer, 11);
         cout << buffer << endl;
 
         memset(buffer, 0, 32);
-        sStream.read((sys::byte *)buffer, 100);
+        sStream.read((sys::byte*) buffer, 100);
         cout << buffer << endl;
+
     }
-    catch (Throwable &t)
+    catch (Throwable& t)
     {
         cerr << "Caught throwable: " << t.toString() << endl;
     }

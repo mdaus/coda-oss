@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,30 +14,31 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
+#include <sstream>
+#include <io/FileUtils.h>
 #include <io/FileInputStream.h>
 #include <io/FileOutputStream.h>
-#include <io/FileUtils.h>
-#include <sstream>
 
 /*!
  *  Copy a file or directory permissions and ownership.
  *
- *  NOTE: This is not exposed to the user because windows
+ *  NOTE: This is not exposed to the user because windows 
  *        functionality is unsupported. Once this is
- *        implemented copyPermissions() and setPermissions()
+ *        implemented copyPermissions() and setPermissions() 
  *        functions should be promoted to the header.
  *
  *  \param src      - source location
  *  \param dest     - destination location
  *  \return True upon success, false if failure
  */
-void copyPermissions(const std::string &src, const std::string &dest)
+void copyPermissions(const std::string& src, 
+                     const std::string& dest)
 {
 #ifndef _WIN32
     // set up permissions on unix --
@@ -45,7 +46,8 @@ void copyPermissions(const std::string &src, const std::string &dest)
     struct stat statBuf;
     if (stat(src.c_str(), &statBuf) == -1)
     {
-        throw except::Exception(Ctxt("Copy Failed: Could not obtain the statistics of the input"));
+        throw except::Exception(Ctxt(
+            "Copy Failed: Could not obtain the statistics of the input"));
     }
 
     // set the file with the appropriate access --
@@ -53,7 +55,8 @@ void copyPermissions(const std::string &src, const std::string &dest)
     // NOTE: this will be ignored on Windows-based mapped file systems
     if (chmod(dest.c_str(), statBuf.st_mode) == -1)
     {
-        throw except::Exception(Ctxt("Copy Failed: Could not set the permissions of the output"));
+        throw except::Exception(Ctxt(
+            "Copy Failed: Could not set the permissions of the output"));
     }
 
     // set the file ownership --
@@ -62,7 +65,8 @@ void copyPermissions(const std::string &src, const std::string &dest)
     //       and will fail otherwise
     if (chown(dest.c_str(), statBuf.st_uid, statBuf.st_gid) == -1)
     {
-        throw except::Exception(Ctxt("Copy Failed: Could not set the ownership of the output"));
+        throw except::Exception(Ctxt(
+            "Copy Failed: Could not set the ownership of the output"));
     }
 #else
     UNREFERENCED_PARAMETER(src);
@@ -70,7 +74,9 @@ void copyPermissions(const std::string &src, const std::string &dest)
 #endif
 }
 
-void io::copy(const std::string &path, const std::string &newPath, size_t blockSize)
+void io::copy(const std::string& path, 
+              const std::string& newPath,
+              size_t blockSize)
 {
     //! list will find '.' and '..' in the directory
     const std::string item = sys::Path::splitPath(path).second;
@@ -80,7 +86,7 @@ void io::copy(const std::string &path, const std::string &newPath, size_t blockS
     }
 
     sys::OS os;
-    if (os.isDirectory(path))
+    if(os.isDirectory(path))
     {
         std::string destDir = sys::Path::joinPaths(newPath, item);
 
@@ -95,7 +101,7 @@ void io::copy(const std::string &path, const std::string &newPath, size_t blockS
         std::vector<std::string> contents = sys::Path::list(path);
         for (size_t ii = 0; ii < contents.size(); ++ii)
         {
-            std::string srcFile = sys::Path::joinPaths(path, contents[ii]);
+            std::string srcFile  = sys::Path::joinPaths(path, contents[ii]);
             io::copy(srcFile, destDir, blockSize);
         }
     }
@@ -113,13 +119,16 @@ void io::copy(const std::string &path, const std::string &newPath, size_t blockS
         if (numBytes < 0)
         {
             std::ostringstream oss;
-            oss << "Copy Failed: Could not copy source [" << path << "] to destination [" << newFile << "]";
+            oss << "Copy Failed: Could not copy source [" <<
+                path << "] to destination [" <<
+                newFile << "]";
             throw except::Exception(Ctxt(oss));
         }
     }
 }
 
-std::string io::FileUtils::createFile(std::string dirname, std::string filename, bool overwrite)
+std::string io::FileUtils::createFile(std::string dirname,
+        std::string filename, bool overwrite)
 {
     sys::OS os;
 
@@ -129,7 +138,7 @@ std::string io::FileUtils::createFile(std::string dirname, std::string filename,
     str::trim(filename);
 
     bool emptyName = filename.empty();
-    // to protect against full paths being passed in
+    //to protect against full paths being passed in
     filename = emptyName ? filename : sys::Path::basename(filename);
 
     std::string outFilename = sys::Path::joinPaths(dirname, filename);
@@ -155,10 +164,10 @@ std::string io::FileUtils::createFile(std::string dirname, std::string filename,
         }
         else
         {
-            // just create a temp filename
+            //just create a temp filename
             outFilename = os.getTempName(dirname);
         }
-        // now, touch it
+        //now, touch it
         io::FileUtils::touchFile(outFilename);
     }
     return outFilename;
@@ -169,12 +178,14 @@ void io::FileUtils::touchFile(std::string filename)
     sys::OS os;
     if (os.exists(filename))
     {
-        io::FileOutputStream f(filename, sys::File::EXISTING | sys::File::WRITE_ONLY);
+        io::FileOutputStream f(filename, sys::File::EXISTING
+                | sys::File::WRITE_ONLY);
         f.close();
     }
     else
     {
-        io::FileOutputStream f(filename, sys::File::CREATE | sys::File::TRUNCATE);
+        io::FileOutputStream f(filename, sys::File::CREATE
+                | sys::File::TRUNCATE);
         f.close();
     }
 }
@@ -185,7 +196,8 @@ void io::FileUtils::forceMkdir(std::string dirname)
     if (os.exists(dirname))
     {
         if (!os.isDirectory(dirname))
-            throw except::IOException(Ctxt("Cannot create directory - file already exists"));
+            throw except::IOException(Ctxt(
+                    "Cannot create directory - file already exists"));
     }
     else
     {

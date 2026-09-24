@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,15 +14,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <import/except.h>
-#include <import/io.h>
 #include <import/sys.h>
+#include <import/io.h>
+#include <import/except.h>
 
 using namespace sys;
 using namespace io;
@@ -31,8 +31,8 @@ using namespace std;
 
 class Copy
 {
-  public:
-    static void run(const char *src, const char *dest)
+public:
+    static void run(const char* src, const char* dest)
     {
         io::FileInputStream in(src);
         io::FileOutputStream out(dest);
@@ -41,6 +41,7 @@ class Copy
 
         in.close();
         out.close();
+
     }
 };
 
@@ -50,12 +51,17 @@ int main(int argc, char **argv)
     {
 
         if (argc != 3)
-            throw except::Error(Ctxt(str::Format("Usage: %s <input file> <output file>", argv[0])));
+            throw except::Error(
+                                Ctxt(
+                                     str::Format(
+                                          "Usage: %s <input file> <output file>",
+                                          argv[0])));
 
         Copy::run(argv[1], argv[2]);
     }
-    catch (except::Throwable &e)
+    catch (except::Throwable& e)
     {
         cout << e.toString() << endl;
     }
+
 }

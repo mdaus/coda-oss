@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,23 +24,25 @@
 
 #if defined(USE_IO_STREAMS)
 
-io::FileOutputStreamIOS::FileOutputStreamIOS(const char *outputFile, int creationFlags)
+io::FileOutputStreamIOS::FileOutputStreamIOS(const char* outputFile,
+                                       int creationFlags)
 {
     std::ios::openmode mode = std::ios::out;
 
-    if ((creationFlags & sys::File::TRUNCATE) != sys::File::TRUNCATE ||
-        (creationFlags & std::ios::app) == std::ios::app)
+    if ( (creationFlags & sys::File::TRUNCATE) != sys::File::TRUNCATE ||
+            (creationFlags & std::ios::app) == std::ios::app)
         mode |= std::ios::app;
 
     open(outputFile, mode);
 }
 
-io::FileOutputStreamIOS::FileOutputStreamIOS(const std::string &outputFile, int creationFlags)
+io::FileOutputStreamIOS::FileOutputStreamIOS(const std::string& outputFile,
+                                       int creationFlags)
 {
     std::ios::openmode mode = std::ios::out;
 
-    if ((creationFlags & sys::File::TRUNCATE) != sys::File::TRUNCATE ||
-        (creationFlags & std::ios::app) == std::ios::app)
+    if ( (creationFlags & sys::File::TRUNCATE) != sys::File::TRUNCATE ||
+            (creationFlags & std::ios::app) == std::ios::app)
         mode |= std::ios::app;
 
     open(outputFile.c_str(), mode);
@@ -51,19 +53,20 @@ bool io::FileOutputStreamIOS::isOpen()
     return mFStream.is_open() && mFStream.good();
 }
 
-void io::FileOutputStreamIOS::open(const char *file, std::ios::openmode mode)
+void io::FileOutputStreamIOS::open(const char *file,
+                                std::ios::openmode mode)
 {
     mFStream.open(file, mode);
     if (!isOpen())
     {
-        throw except::Error(Ctxt("File could not be opened: " + std::string(file)));
+        throw except::Error(Ctxt(
+                "File could not be opened: " + std::string(file)));
     }
 }
 
 void io::FileOutputStreamIOS::close()
 {
-    if (!isOpen())
-        return;
+    if (!isOpen()) return ;
     mFStream.close();
 
     if (mFStream.is_open())
@@ -72,12 +75,14 @@ void io::FileOutputStreamIOS::close()
     }
 }
 
-void io::FileOutputStreamIOS::write(const void *buffer, size_t len)
+void io::FileOutputStreamIOS::write(const void* buffer, size_t len)
 {
-    mFStream.write((const char *)buffer, len);
+    mFStream.write((const char*)buffer, len);
 }
 
-sys::Off_T io::FileOutputStreamIOS::seek(sys::Off_T offset, io::Seekable::Whence whence)
+
+sys::Off_T io::FileOutputStreamIOS::seek(sys::Off_T offset,
+                                         io::Seekable::Whence whence)
 {
     std::ios::seekdir dir;
     switch (whence)
@@ -96,7 +101,7 @@ sys::Off_T io::FileOutputStreamIOS::seek(sys::Off_T offset, io::Seekable::Whence
     mFStream.seekp(offset, dir);
     return tell();
 }
-
+    
 sys::Off_T io::FileOutputStreamIOS::tell()
 {
     return mFStream.tellp();

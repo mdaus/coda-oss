@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,15 +23,15 @@
 #ifndef __IO_STANDARD_STREAMS_H__
 #define __IO_STANDARD_STREAMS_H__
 
-#include "except/Exception.h"
 #include "io/OutputStream.h"
+#include "except/Exception.h"
 #include "sys/Mutex.h"
 
-#define _STDSTREAM_DECLARE_MUTEX_SEMICOLON_ static sys::Mutex mCritSection;
-#define _STDERR_DEFINE_MUTEX_SEMICOLON_ sys::Mutex io::StandardErrStream::mCritSection;
-#define _STDOUT_DEFINE_MUTEX_SEMICOLON_ sys::Mutex io::StandardOutStream::mCritSection;
-#define _STDSTREAM_BEGIN_CS_SEMICOLON_ mCritSection.lock();
-#define _STDSTREAM_END_CS_SEMICOLON_ mCritSection.unlock();
+#  define _STDSTREAM_DECLARE_MUTEX_SEMICOLON_ static sys::Mutex mCritSection;
+#  define _STDERR_DEFINE_MUTEX_SEMICOLON_ sys::Mutex io::StandardErrStream::mCritSection;
+#  define _STDOUT_DEFINE_MUTEX_SEMICOLON_ sys::Mutex io::StandardOutStream::mCritSection;
+#  define _STDSTREAM_BEGIN_CS_SEMICOLON_  mCritSection.lock();
+#  define _STDSTREAM_END_CS_SEMICOLON_    mCritSection.unlock();
 
 /* no REENTRANT
 #else
@@ -62,7 +62,7 @@ struct StandardOutStream final : public OutputStream
      * \param len the length of bytes to read
      * \throw except::IOException
      */
-    virtual void write(const void *buffer, size_t len) override;
+    virtual void write(const void* buffer, size_t len) override;
 
     /*!
      *  Flushes stdout
@@ -72,8 +72,9 @@ struct StandardOutStream final : public OutputStream
     using OutputStream::write;
     using OutputStream::writeln;
 
-  protected:
+protected:
     _STDSTREAM_DECLARE_MUTEX_SEMICOLON_
+
 };
 
 /*!
@@ -90,16 +91,17 @@ struct StandardErrStream final : public OutputStream
      * \param len the length of bytes to read
      * \throw except::IOException
      */
-    virtual void write(const void *buffer, sys::Size_T len) override;
+    virtual void write(const void* buffer, sys::Size_T len) override;
 
     /*!
      *  Flushes stderr
      */
     virtual void flush() override;
 
-  protected:
+protected:
     _STDSTREAM_DECLARE_MUTEX_SEMICOLON_
+
 };
 
-} // namespace io
+}
 #endif

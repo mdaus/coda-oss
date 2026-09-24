@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -24,9 +24,9 @@
 #define __IO_SEEKABLE_STREAMS_H__
 
 #include "config/Exports.h"
-#include "io/BidirectionalStream.h"
 #include "io/InputStream.h"
 #include "io/OutputStream.h"
+#include "io/BidirectionalStream.h"
 #include "io/Seekable.h"
 
 /*!
@@ -37,31 +37,35 @@
  *  use-case that you may, in fact, wish to guarantee that your Seekable
  *  is also an InputStream.  What you would have, then, are two derived types:
  *  SeekableInputStream, SeekableOutputStream, and SeekableBidirectionalStream.
- *  Here are the definitions, which will allow that inheritance
+ *  Here are the definitions, which will allow that inheritance 
  */
 
 namespace io
 {
-struct CODA_OSS_API SeekableInputStream : public InputStream, public Seekable
+struct CODA_OSS_API SeekableInputStream :
+            public InputStream, public Seekable
 {
     SeekableInputStream() = default;
     virtual ~SeekableInputStream() = default;
     using InputStream::streamTo;
 };
 
-struct CODA_OSS_API SeekableOutputStream : public OutputStream, public Seekable
+struct CODA_OSS_API SeekableOutputStream :
+            public OutputStream, public Seekable
 {
     SeekableOutputStream() = default;
     virtual ~SeekableOutputStream() = default;
 };
 
-struct SeekableBidirectionalStream : public BidirectionalStream, public Seekable
+struct SeekableBidirectionalStream :
+            public BidirectionalStream, public Seekable
 {
     SeekableBidirectionalStream() = default;
     virtual ~SeekableBidirectionalStream() = default;
     using InputStream::streamTo;
 };
 
-} // namespace io
+}
+
 
 #endif

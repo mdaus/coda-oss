@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -26,10 +26,10 @@
 #include <vector>
 
 #include "config/Exports.h"
+#include "sys/Conf.h"
 #include "except/Error.h"
 #include "except/Exception.h"
 #include "io/SeekableStreams.h"
-#include "sys/Conf.h"
 
 /*!
  *  \file
@@ -40,8 +40,8 @@
  *  data is ascii, it is easy just to use a std::string from
  *  C++ to handle this.  However, for binary transfers, arbitrary
  *  0's can be anywhere (Null-bytes) making it impossible to use
- *  strings as containers.
- *
+ *  strings as containers.  
+ * 
  *  Alternatively, we could have used std::stream<const char*>,
  *  but having it in a container makes it all less accessible, so we
  *  opted for our own growable data array
@@ -56,38 +56,43 @@ namespace io
  *  data is ascii, it is easy just to use a std::string from
  *  C++ to handle this.  However, for binary transfers, arbitrary
  *  0's can be anywhere (Null-bytes) making it impossible to use
- *  strings as containers.
+ *  strings as containers.  
  */
 struct CODA_OSS_API ByteStream : public SeekableInputStream, public SeekableOutputStream
 {
     ByteStream() = default;
     virtual ~ByteStream() = default;
-    ByteStream(sys::Size_T len) : mData(len)
+    ByteStream(sys::Size_T len) :
+        mData(len)
     {
     }
 
-    virtual sys::Off_T tell() override
+    virtual
+    sys::Off_T tell() override
     {
         return mPosition;
     }
 
-    virtual sys::Off_T seek(sys::Off_T offset, Whence whence) override;
+    virtual
+    sys::Off_T seek(sys::Off_T offset, Whence whence) override;
 
     /*!
      *  Returns the available bytes to read from the stream
      *  \return the available bytes to read
      */
-    virtual sys::Off_T available() override;
+    virtual
+    sys::Off_T available() override;
 
-    using InputStream::streamTo;
     using OutputStream::write;
+    using InputStream::streamTo;
 
     /*!
      *  Writes the bytes in data to the stream.
      *  \param buffer the data to write to the stream
      *  \param size the number of bytes to write to the stream
      */
-    virtual void write(const void *buffer, size_t size) override;
+    virtual
+    void write(const void* buffer, size_t size) override;
 
     void reset()
     {
@@ -99,28 +104,29 @@ struct CODA_OSS_API ByteStream : public SeekableInputStream, public SeekableOutp
         mPosition = 0;
         mData.clear();
     }
-
+    
     /*!
-     * Get a pointer to the internal buffer
+     * Get a pointer to the internal buffer 
      * This pointer should not be treated as valid
      * after a call to the seek, write, or reset methods
      * \return pointer to the internal buffer
      */
-    sys::ubyte *get()
+    sys::ubyte *
+    get()
     {
         return mData.empty() ? nullptr : &mData[0];
     }
 
     auto size() const
     {
-        return mData.size();
+        return mData.size();    
     }
     auto getSize() const
     {
         return size();
     }
 
-  protected:
+protected:
     /*!
      * Read up to len bytes of data from this buffer into an array
      * update the mark
@@ -129,12 +135,12 @@ struct CODA_OSS_API ByteStream : public SeekableInputStream, public SeekableOutp
      * \throw IoException
      * \return  The number of bytes read
      */
-    virtual sys::SSize_T readImpl(void *buffer, size_t len) override;
+    virtual sys::SSize_T readImpl(void* buffer, size_t len) override;
 
-  private:
+private:
     std::vector<sys::ubyte> mData;
     sys::Off_T mPosition = 0;
 };
-} // namespace io
+}
 
 #endif

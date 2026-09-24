@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,14 +23,17 @@
 #include "io/RotatingFileOutputStream.h"
 #include "io/FileOutputStream.h"
 
-io::RotatingFileOutputStream::RotatingFileOutputStream(const std::string &filename, unsigned long maxBytes,
-                                                       size_t backupCount, int creationFlags)
-    : io::CountingOutputStream(new io::FileOutputStream(filename, creationFlags), true), mMaxBytes(maxBytes),
-      mBackupCount(backupCount)
+io::RotatingFileOutputStream::RotatingFileOutputStream(
+                                                       const std::string& filename,
+                                                       unsigned long maxBytes,
+                                                       size_t backupCount,
+                                                       int creationFlags) :
+    io::CountingOutputStream(new io::FileOutputStream(filename, creationFlags), true),
+    mMaxBytes(maxBytes), mBackupCount(backupCount)
 {
     mFilename = filename; // doing this in initializer list causes ASAN diagnostic on Windows ... VS bug?
 
-    mByteCount = ((io::FileOutputStream *)mProxy.get())->tell();
+    mByteCount = ((io::FileOutputStream*) mProxy.get())->tell();
     if (shouldRollover(0))
         doRollover();
 }
@@ -55,7 +58,7 @@ bool io::RotatingFileOutputStream::shouldRollover(sys::Size_T len)
 
 void io::RotatingFileOutputStream::doRollover()
 {
-    io::FileOutputStream *fos = (io::FileOutputStream *)mProxy.get();
+    io::FileOutputStream* fos = (io::FileOutputStream*) mProxy.get();
     fos->close();
     sys::OS os;
 
@@ -85,7 +88,7 @@ void io::RotatingFileOutputStream::doRollover()
     mByteCount = 0;
 }
 
-void io::RotatingFileOutputStream::write(const void *buffer, size_t len)
+void io::RotatingFileOutputStream::write(const void* buffer, size_t len)
 {
     if (shouldRollover(len))
         doRollover();

@@ -23,20 +23,31 @@
 #include <algorithm>
 #include <sstream>
 
+#include <io/StreamSplitter.h>
 #include <except/Exception.h>
 #include <io/InputStream.h>
-#include <io/StreamSplitter.h>
 
 namespace io
 {
-StreamSplitter::StreamSplitter(io::InputStream &inputStream, const std::string &delimiter, size_t bufferSize)
-    : mDelimiter(delimiter), mBufferValidBegin(0), mBufferValidEnd(0), mNumSubstringsReturned(0), mNumBytesReturned(0),
-      mNumDelimitersProcessed(0), mBufferStorage(bufferSize), mBufferCapacity(mBufferStorage.size()),
-      mBuffer(mBufferStorage.empty() ? nullptr : &mBufferStorage[0]), mInputStream(inputStream), mStreamEmpty(false)
+StreamSplitter::StreamSplitter(io::InputStream& inputStream,
+                               const std::string& delimiter,
+                               size_t bufferSize) :
+    mDelimiter(delimiter),
+    mBufferValidBegin(0),
+    mBufferValidEnd(0),
+    mNumSubstringsReturned(0),
+    mNumBytesReturned(0),
+    mNumDelimitersProcessed(0),
+    mBufferStorage(bufferSize),
+    mBufferCapacity(mBufferStorage.size()),
+    mBuffer(mBufferStorage.empty() ? nullptr : &mBufferStorage[0]),
+    mInputStream(inputStream),
+    mStreamEmpty(false)
 {
     if (delimiter.empty())
     {
-        throw except::InvalidArgumentException(Ctxt("delimiter must be a string with size > 0"));
+        throw except::InvalidArgumentException(
+                Ctxt("delimiter must be a string with size > 0"));
     }
 
     if (static_cast<size_t>(mBufferCapacity) < delimiter.size() * 2 + 1)
@@ -48,7 +59,7 @@ StreamSplitter::StreamSplitter(io::InputStream &inputStream, const std::string &
     }
 }
 
-bool StreamSplitter::getNext(std::string &substring)
+bool StreamSplitter::getNext(std::string& substring)
 {
     if (isEnd())
     {
@@ -68,9 +79,13 @@ bool StreamSplitter::getNext(std::string &substring)
 
         // search for delimiter in buffer
         for (sys::SSize_T ii = mBufferValidBegin;
-             ii < mBufferValidEnd - static_cast<sys::SSize_T>(mDelimiter.size() - 1); ++ii)
+             ii < mBufferValidEnd - static_cast<sys::SSize_T>(mDelimiter.size() - 1);
+             ++ii)
         {
-            if (0 == mDelimiter.compare(0, mDelimiter.size(), mBuffer + ii, mDelimiter.size()))
+            if (0 == mDelimiter.compare(0,
+                                        mDelimiter.size(),
+                                        mBuffer + ii,
+                                        mDelimiter.size()))
             {
                 // delimiter found starting at buffer position ii
                 // append the buffer contents preceding that point to output
@@ -84,8 +99,10 @@ bool StreamSplitter::getNext(std::string &substring)
 
         // no delimiter found in buffer
         // append the current buffer contents to output
-        const sys::SSize_T segmentEnd =
-            mStreamEmpty ? mBufferValidEnd : mBufferValidEnd - static_cast<sys::SSize_T>(mDelimiter.size() - 1);
+        const sys::SSize_T segmentEnd = mStreamEmpty ?
+                mBufferValidEnd
+                :
+                mBufferValidEnd - static_cast<sys::SSize_T>(mDelimiter.size() - 1);
         transferBufferSegmentToSubstring(substring, substringSize, segmentEnd);
 
         // if no bytes remain in stream or buffer, we are done
@@ -120,14 +137,19 @@ size_t StreamSplitter::getNumBytesProcessed() const
     return getNumBytesReturned() + mNumDelimitersProcessed * mDelimiter.size();
 }
 
-void StreamSplitter::transferBufferSegmentToSubstring(std::string &substring, size_t &substringSize,
-                                                      sys::SSize_T bufferSegmentEnd)
+void StreamSplitter::transferBufferSegmentToSubstring(
+        std::string& substring,
+        size_t& substringSize,
+        sys::SSize_T bufferSegmentEnd)
 {
     const sys::SSize_T segmentSize = bufferSegmentEnd - mBufferValidBegin;
     if (segmentSize >= 0)
     {
         substring.resize(substringSize + segmentSize);
-        substring.replace(substringSize, segmentSize, mBuffer + mBufferValidBegin, segmentSize);
+        substring.replace(substringSize,
+                          segmentSize,
+                          mBuffer + mBufferValidBegin,
+                          segmentSize);
         substringSize += segmentSize;
         mBufferValidBegin += segmentSize;
     }
@@ -139,7 +161,9 @@ void StreamSplitter::handleStreamRead()
     {
         // first half of buffer is no longer needed, shift the rest
         // down to make space for reading in more
-        std::copy(mBuffer + mBufferValidBegin, mBuffer + mBufferValidEnd, mBuffer);
+        std::copy(mBuffer + mBufferValidBegin,
+                  mBuffer + mBufferValidEnd,
+                  mBuffer);
         mBufferValidEnd = mBufferValidEnd - mBufferValidBegin;
         mBufferValidBegin = 0;
     }
@@ -147,7 +171,9 @@ void StreamSplitter::handleStreamRead()
     // read more from stream if buffer has space
     if (!mStreamEmpty && (mBufferValidEnd < mBufferCapacity))
     {
-        const sys::SSize_T numRead = mInputStream.read(mBuffer + mBufferValidEnd, mBufferCapacity - mBufferValidEnd);
+        const sys::SSize_T numRead =
+                mInputStream.read(mBuffer + mBufferValidEnd,
+                                  mBufferCapacity - mBufferValidEnd);
         if (numRead > 0)
         {
             mBufferValidEnd += numRead;
@@ -158,4 +184,4 @@ void StreamSplitter::handleStreamRead()
         }
     }
 }
-} // namespace io
+}

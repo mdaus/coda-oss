@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of io-c++
+ * This file is part of io-c++ 
  * =========================================================================
- *
+ * 
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * io-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; If not,
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this program; If not, 
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -25,20 +25,21 @@
 
 #include "config/Exports.h"
 #include "io/InputStream.h"
-#include "io/NullStreams.h"
 #include "io/OutputStream.h"
+#include "io/NullStreams.h"
 #include "mem/SharedPtr.h"
 
 namespace io
 {
 struct CODA_OSS_API ProxyInputStream : public InputStream
 {
-    ProxyInputStream(InputStream *proxy, bool ownPtr = false) : mOwnPtr(ownPtr)
+    ProxyInputStream(InputStream *proxy, bool ownPtr = false) :
+        mOwnPtr(ownPtr)
     {
         mProxy.reset(proxy);
     }
-    ProxyInputStream(const ProxyInputStream &) = delete;
-    ProxyInputStream &operator=(const ProxyInputStream &) = delete;
+    ProxyInputStream(const ProxyInputStream&) = delete;
+    ProxyInputStream& operator=(const ProxyInputStream&) = delete;
 
     virtual ~ProxyInputStream()
     {
@@ -59,8 +60,8 @@ struct CODA_OSS_API ProxyInputStream : public InputStream
         mOwnPtr = ownPtr;
     }
 
-  protected:
-    virtual sys::SSize_T readImpl(void *buffer, size_t len) override
+protected:
+    virtual sys::SSize_T readImpl(void* buffer, size_t len) override
     {
         return mProxy->read(buffer, len);
     }
@@ -75,7 +76,8 @@ struct CODA_OSS_API ProxyInputStream : public InputStream
 struct CODA_OSS_API ProxyOutputStream : public OutputStream
 {
     ProxyOutputStream() = default;
-    ProxyOutputStream(OutputStream *proxy, bool ownPtr = false) : mOwnPtr(ownPtr)
+    ProxyOutputStream(OutputStream *proxy, bool ownPtr = false) :
+        mOwnPtr(ownPtr)
     {
         mProxy.reset(proxy);
     }
@@ -84,14 +86,14 @@ struct CODA_OSS_API ProxyOutputStream : public OutputStream
         if (!mOwnPtr)
             mProxy.release();
     }
-    ProxyOutputStream(const ProxyOutputStream &) = delete;
-    ProxyOutputStream &operator=(const ProxyOutputStream &) = delete;
-    ProxyOutputStream(ProxyOutputStream &&) = default;
-    ProxyOutputStream &operator=(ProxyOutputStream &&) = default;
+    ProxyOutputStream(const ProxyOutputStream&) = delete;
+    ProxyOutputStream& operator=(const ProxyOutputStream&) = delete;
+    ProxyOutputStream(ProxyOutputStream&&) = default;
+    ProxyOutputStream& operator=(ProxyOutputStream&&) = default;
 
     using OutputStream::write;
 
-    virtual void write(const void *buffer, size_t len) override
+    virtual void write(const void* buffer, size_t len) override
     {
         mProxy->write(buffer, len);
     }
@@ -114,7 +116,7 @@ struct CODA_OSS_API ProxyOutputStream : public OutputStream
         mOwnPtr = ownPtr;
     }
 
-  protected:
+protected:
     std::unique_ptr<OutputStream> mProxy;
     bool mOwnPtr = false;
 };
@@ -125,8 +127,8 @@ struct CODA_OSS_API ProxyOutputStream : public OutputStream
 struct CODA_OSS_API ToggleOutputStream : public io::ProxyOutputStream
 {
     ToggleOutputStream() = default;
-    ToggleOutputStream(io::OutputStream *output, bool ownPtr = false)
-        : io::ProxyOutputStream(nullptr), mPtr(output), mOwnPtr(ownPtr)
+    ToggleOutputStream(io::OutputStream *output, bool ownPtr = false) :
+        io::ProxyOutputStream(nullptr), mPtr(output), mOwnPtr(ownPtr)
     {
     }
     virtual ~ToggleOutputStream()
@@ -134,10 +136,10 @@ struct CODA_OSS_API ToggleOutputStream : public io::ProxyOutputStream
         if (mOwnPtr && mPtr)
             delete mPtr;
     }
-    ToggleOutputStream(const ToggleOutputStream &) = delete;
-    ToggleOutputStream &operator=(const ToggleOutputStream &) = delete;
-    ToggleOutputStream(ToggleOutputStream &&) = default;
-    ToggleOutputStream &operator=(ToggleOutputStream &&) = default;
+    ToggleOutputStream(const ToggleOutputStream&) = delete;
+    ToggleOutputStream& operator=(const ToggleOutputStream&) = delete;
+    ToggleOutputStream(ToggleOutputStream&&) = default;
+    ToggleOutputStream& operator=(ToggleOutputStream&&) = default;
 
     void setEnabled(bool flag)
     {
@@ -157,12 +159,12 @@ struct CODA_OSS_API ToggleOutputStream : public io::ProxyOutputStream
         setEnabled(false);
     }
 
-  protected:
-    io::OutputStream *mPtr = nullptr;
+protected:
+    io::OutputStream* mPtr = nullptr;
     io::NullOutputStream mNullStream;
     bool mOwnPtr = false, mEnabled = false;
 };
 
-} // namespace io
+}
 
 #endif
