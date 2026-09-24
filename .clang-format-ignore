@@ -1,3 +1,6 @@
 modules/c++/numpyutils/**
+modules/c++/gsl/**
+modules/c++/hdf5.lite/**
+modules/c++/std/**
 modules/drivers/**
 modules/python/**
