@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,16 +14,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <import/sys.h>
 #include <import/except.h>
+#include <import/sys.h>
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 
     if (argc != 2)
@@ -36,11 +36,10 @@ int main(int argc, char** argv)
 
         sys::Handle_T handle;
         size_t size = os.getSize(fname);
-        FILE* file = fopen(fname.c_str(), "r+b");
+        FILE *file = fopen(fname.c_str(), "r+b");
         handle = fileno(file);
 
-        char* memLoc = (char*) os.mapFile(handle, size, PROT_READ, MAP_SHARED,
-                                          0);
+        char *memLoc = (char *)os.mapFile(handle, size, PROT_READ, MAP_SHARED, 0);
 
         for (int i = 0; i < size; i++)
             std::cout << memLoc[i];
@@ -50,9 +49,8 @@ int main(int argc, char** argv)
         fclose(file);
         return 0;
     }
-    catch (except::Throwable& t)
+    catch (except::Throwable &t)
     {
         std::cout << t.toString() << std::endl;
     }
-
 }

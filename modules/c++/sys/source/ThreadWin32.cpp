@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,17 +14,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #ifdef _WIN32
 #if !defined(USE_NSPR_THREADS)
 #include "sys/ThreadWin32.h"
-
 
 sys::ThreadWin32::~ThreadWin32()
 {
@@ -32,31 +30,21 @@ sys::ThreadWin32::~ThreadWin32()
     {
         CloseHandle(mNative);
     }
-
 }
 
 void sys::ThreadWin32::start()
 {
     DWORD threadId;
 
-    mNative = __CREATETHREAD(nullptr,
-                             0,
-                             __start,
-                             (void*)this,
-                             0,
-                             &threadId);
+    mNative = __CREATETHREAD(nullptr, 0, __start, (void *)this, 0, &threadId);
     if (mNative == nullptr)
         throw sys::SystemException("Thread creation failed");
-
-
 }
-
 
 void sys::ThreadWin32::join()
 {
     if (WaitForSingleObject(mNative, INFINITE) == WAIT_FAILED)
         throw sys::SystemException("Thread join failed");
-
 }
 
 #endif // Not using another package

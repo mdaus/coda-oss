@@ -25,7 +25,7 @@
 
 #include <stddef.h>
 
-#include <atomic>  // C++11: https://en.cppreference.com/w/cpp/atomic/atomic
+#include <atomic> // C++11: https://en.cppreference.com/w/cpp/atomic/atomic
 
 namespace sys
 {
@@ -36,10 +36,9 @@ namespace sys
  */
 struct AtomicCounterImplCpp11 final
 {
-    using ValueType = size_t ;
+    using ValueType = size_t;
 
-    explicit AtomicCounterImplCpp11(ValueType initialValue) noexcept :
-        mValue(initialValue)
+    explicit AtomicCounterImplCpp11(ValueType initialValue) noexcept : mValue(initialValue)
     {
     }
 
@@ -61,12 +60,12 @@ struct AtomicCounterImplCpp11 final
         return mValue.load();
     }
 
-    AtomicCounterImplCpp11(const AtomicCounterImplCpp11&) = delete;
-    AtomicCounterImplCpp11& operator=(const AtomicCounterImplCpp11&) = delete;
+    AtomicCounterImplCpp11(const AtomicCounterImplCpp11 &) = delete;
+    AtomicCounterImplCpp11 &operator=(const AtomicCounterImplCpp11 &) = delete;
 
-private:
+  private:
     std::atomic<ValueType> mValue;
 };
-}
+} // namespace sys
 
-#endif  // CODA_OSS_sys_AtomicCounterCpp11_h_INCLUDED_
+#endif // CODA_OSS_sys_AtomicCounterCpp11_h_INCLUDED_

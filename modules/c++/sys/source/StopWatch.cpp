@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,16 +14,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #include "sys/StopWatch.h"
 
-sys::RealTimeStopWatch::RealTimeStopWatch():mStartTime(0),mTimePaused(0),mPauseStartTime(0),mPaused(false)
+sys::RealTimeStopWatch::RealTimeStopWatch() : mStartTime(0), mTimePaused(0), mPauseStartTime(0), mPaused(false)
 {
 }
 
@@ -35,17 +34,17 @@ double sys::RealTimeStopWatch::start()
 {
     sys::LocalDateTime now;
     double nowInMillis = now.getTimeInMillis();
-    
+
     // If we are in a paused state
-    if(mPaused)
+    if (mPaused)
     {
-	// accumulate the time we have been paused
-	mTimePaused += nowInMillis - mPauseStartTime;
-	mPaused = false;
+        // accumulate the time we have been paused
+        mTimePaused += nowInMillis - mPauseStartTime;
+        mPaused = false;
     } // else set the start time to right now
     else
-	mStartTime = nowInMillis;
-    
+        mStartTime = nowInMillis;
+
     // return the current time
     return nowInMillis;
 }
@@ -55,31 +54,31 @@ double sys::RealTimeStopWatch::stop()
     sys::LocalDateTime now;
     double nowInMillis = now.getTimeInMillis();
     // If in a paused state, accumulate paused time
-    if(mPaused)
+    if (mPaused)
     {
-	mTimePaused += (nowInMillis - mPauseStartTime);
-	mPaused = false;
-    }    
+        mTimePaused += (nowInMillis - mPauseStartTime);
+        mPaused = false;
+    }
     // If we have been started then calculate stop time,
     // otherwise don't bother
-    if(mStartTime != 0)
+    if (mStartTime != 0)
     {
-	double elapsed = (nowInMillis - mStartTime - mTimePaused);
-	//mStartTime = 0;
-	return elapsed;
+        double elapsed = (nowInMillis - mStartTime - mTimePaused);
+        // mStartTime = 0;
+        return elapsed;
     }
     return 0;
 }
 
 double sys::RealTimeStopWatch::pause()
 {
-    // If not already paused, set it to be so and the 
+    // If not already paused, set it to be so and the
     // pause start time to be now
-    if(!mPaused)
+    if (!mPaused)
     {
-	sys::LocalDateTime now;
-	mPauseStartTime = now.getTimeInMillis();
-	mPaused = true;
+        sys::LocalDateTime now;
+        mPauseStartTime = now.getTimeInMillis();
+        mPaused = true;
     }
     return mPauseStartTime;
 }
@@ -93,9 +92,9 @@ void sys::RealTimeStopWatch::clear()
     mPaused = false;
 }
 
-sys::CPUStopWatch::CPUStopWatch():mStartTime(-1),mPauseStartTime(0),mTimePaused(0),mPaused(false)
+sys::CPUStopWatch::CPUStopWatch() : mStartTime(-1), mPauseStartTime(0), mTimePaused(0), mPaused(false)
 {
-    mClocksPerMillis = CLOCKS_PER_SEC/1000;
+    mClocksPerMillis = CLOCKS_PER_SEC / 1000;
 }
 
 sys::CPUStopWatch::~CPUStopWatch()
@@ -106,41 +105,41 @@ double sys::CPUStopWatch::start()
 {
     clock_t now = clock();
     // If we're in a paused state, accumulate the paused time
-    if(mPaused)
+    if (mPaused)
     {
-	mTimePaused += (now - mPauseStartTime);
-	mPaused = false;
+        mTimePaused += (now - mPauseStartTime);
+        mPaused = false;
     }
     else
-	mStartTime = now;
-    
-    return static_cast<double>(now)/mClocksPerMillis;
+        mStartTime = now;
+
+    return static_cast<double>(now) / mClocksPerMillis;
 }
 
 double sys::CPUStopWatch::stop()
 {
     clock_t end = clock();
     // If in paused state, accumulate paused time before stopping
-    if(mPaused)
+    if (mPaused)
     {
-	mTimePaused += (end - mPauseStartTime);
-	mPaused = false;
+        mTimePaused += (end - mPauseStartTime);
+        mPaused = false;
     }
     // If start time was never set (or reset) then don't bother calculating elapsed time
-    if(mStartTime != -1)
-	return static_cast<double>(end - mStartTime - mTimePaused)/mClocksPerMillis;
+    if (mStartTime != -1)
+        return static_cast<double>(end - mStartTime - mTimePaused) / mClocksPerMillis;
     else
-	return 0;
+        return 0;
 }
 
 double sys::CPUStopWatch::pause()
 {
-    if(!mPaused)
+    if (!mPaused)
     {
-	mPauseStartTime = clock();
-	mPaused = true;
+        mPauseStartTime = clock();
+        mPaused = true;
     }
-    return static_cast<double>(mPauseStartTime)/mClocksPerMillis;
+    return static_cast<double>(mPauseStartTime) / mClocksPerMillis;
 }
 
 void sys::CPUStopWatch::clear()

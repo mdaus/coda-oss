@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifndef __SYS_MUTEX_WIN32_H__
 #define __SYS_MUTEX_WIN32_H__
@@ -35,15 +34,15 @@ namespace sys
 {
 class CODA_OSS_API MutexWin32 : public MutexInterface
 {
-public:
+  public:
     //! \todo Add string name option
     MutexWin32();
     virtual ~MutexWin32();
 
-    MutexWin32(const MutexWin32&) = delete;
-    MutexWin32& operator = (const MutexWin32&) = delete;
-    MutexWin32(MutexWin32&&) = delete;
-    MutexWin32& operator=(MutexWin32&&) = delete;
+    MutexWin32(const MutexWin32 &) = delete;
+    MutexWin32 &operator=(const MutexWin32 &) = delete;
+    MutexWin32(MutexWin32 &&) = delete;
+    MutexWin32 &operator=(MutexWin32 &&) = delete;
 
     /*!
      *  Lock the mutex.
@@ -54,25 +53,25 @@ public:
      *  Unlock the mutex.
      */
     virtual void unlock();
-    
+
     /*!
      *  Returns the native type.
      */
-    HANDLE& getNative();
-    
+    HANDLE &getNative();
+
     /*!
      *  Return the type name.  This function is essentially free,
      *  because it is static RTTI.
      */
-    const char* getNativeType() const noexcept
+    const char *getNativeType() const noexcept
     {
         return typeid(mNative).name();
     }
-    
-private:
+
+  private:
     HANDLE mNative;
 };
-}
+} // namespace sys
 #endif
 #endif
 #endif

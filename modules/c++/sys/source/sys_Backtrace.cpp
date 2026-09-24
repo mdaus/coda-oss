@@ -22,14 +22,14 @@
 
 #include <sys/Backtrace.h>
 
-std::string sys::getBacktrace(bool* pSupported)
+std::string sys::getBacktrace(bool *pSupported)
 {
     bool supported = false;
     std::vector<std::string> frames;
-    bool& supported_ = pSupported != nullptr ? *pSupported : supported;
+    bool &supported_ = pSupported != nullptr ? *pSupported : supported;
     return getBacktrace(supported_, frames);
 }
-std::string sys::getBacktrace(bool& supported, std::vector<std::string>& frames)
+std::string sys::getBacktrace(bool &supported, std::vector<std::string> &frames)
 {
     return except::getBacktrace(supported, frames);
 }

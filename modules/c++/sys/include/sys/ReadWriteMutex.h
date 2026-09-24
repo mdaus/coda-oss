@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifndef __SYS_READ_WRITE_MUTEX_INTERFACE_H__
 #define __SYS_READ_WRITE_MUTEX_INTERFACE_H__
@@ -34,7 +33,7 @@
 
 namespace sys
 {
-    
+
 /*!
  *  \class ReadWriteMutex
  *  \brief Locks resources exclusively during writes while allowing
@@ -44,22 +43,22 @@ namespace sys
 struct ReadWriteMutex
 {
     //!  Constructor
-        ReadWriteMutex(int maxReaders) : mSem(gsl::narrow<unsigned int>(maxReaders))
+    ReadWriteMutex(int maxReaders) : mSem(gsl::narrow<unsigned int>(maxReaders))
     {
         mMaxReaders = maxReaders;
         dbg_printf("Creating a read/write mutex\n");
     }
 
     //!  Destructor
-    virtual ~ReadWriteMutex() 
+    virtual ~ReadWriteMutex()
     {
         dbg_printf("Destroying a read/write mutex\n");
     }
 
-    ReadWriteMutex(const ReadWriteMutex&) = delete;
-    ReadWriteMutex& operator=(const ReadWriteMutex&) = delete;
-    ReadWriteMutex(ReadWriteMutex&&) = delete;
-    ReadWriteMutex& operator=(ReadWriteMutex&&) = delete;
+    ReadWriteMutex(const ReadWriteMutex &) = delete;
+    ReadWriteMutex &operator=(const ReadWriteMutex &) = delete;
+    ReadWriteMutex(ReadWriteMutex &&) = delete;
+    ReadWriteMutex &operator=(ReadWriteMutex &&) = delete;
 
     /*!
      *  Lock for reading (no writes allowed)
@@ -81,15 +80,14 @@ struct ReadWriteMutex
      */
     virtual void unlockWrite();
 
-protected:
+  protected:
     sys::Semaphore mSem;
     sys::Mutex mMutex;
     int mMaxReaders;
 };
-    
-}
+
+} // namespace sys
 
 #endif // Not apple
 
 #endif
-

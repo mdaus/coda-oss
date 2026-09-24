@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,16 +14,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #ifndef _WIN32
-#include <config/compiler_extensions.h>
 #include "sys/ProcessUnix.h"
+#include <config/compiler_extensions.h>
 #include <stdlib.h>
 
 void sys::ProcessUnix::start()
@@ -45,18 +44,16 @@ void sys::ProcessUnix::start()
     {
         dbg_printf("In parent and child pid is: %d\n", lPid);
         mChildProcessID = lPid;
-        return ;
+        return;
     }
-
 }
-
 
 void sys::ProcessUnix::waitFor()
 {
     dbg_printf("Waiting\n");
     int status;
-    //pid_t pid = wait(&status);
-    //assert(pid == mChildProcessID);
+    // pid_t pid = wait(&status);
+    // assert(pid == mChildProcessID);
     int options = 0;
     int whatExited = waitpid(mChildProcessID, &status, options);
     if (WIFEXITED(status))

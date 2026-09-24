@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,16 +14,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #ifndef __SYS_RUNTIME_PROCESS_INTERFACE_H__
 #define __SYS_RUNTIME_PROCESS_INTERFACE_H__
-
 
 /*!
  *  \file
@@ -45,27 +43,35 @@ namespace sys
 
 template <typename Pid_T> class ProcessInterface : public sys::Runnable
 {
-public:
-    enum { THE_CHILD = 0 };
-    enum { PROCESS_CREATE_FAILED = -1 };
+  public:
+    enum
+    {
+        THE_CHILD = 0
+    };
+    enum
+    {
+        PROCESS_CREATE_FAILED = -1
+    };
     ProcessInterface()
     {
         mTarget = this;
     }
-    ProcessInterface(sys::Runnable* target) : mTarget(target)
-    {}
+    ProcessInterface(sys::Runnable *target) : mTarget(target)
+    {
+    }
 
     virtual ~ProcessInterface()
-    {}
+    {
+    }
 
     virtual void start() = 0;
     virtual void waitFor() = 0;
     virtual void run() override = 0;
 
-protected:
+  protected:
     Pid_T mChildProcessID;
-    sys::Runnable* mTarget;
+    sys::Runnable *mTarget;
 };
-}
+} // namespace sys
 
 #endif

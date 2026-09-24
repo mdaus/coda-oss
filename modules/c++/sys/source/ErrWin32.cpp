@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,17 +14,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #ifdef _WIN32
 
-#include <WinSock.h>
 #include "sys/Err.h"
+#include <WinSock.h>
 
 int sys::Err::getLast() const
 {
@@ -34,14 +33,12 @@ int sys::Err::getLast() const
 std::string sys::Err::toString() const
 {
     LPTSTR buffer;
-    if (FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
-                      FORMAT_MESSAGE_FROM_SYSTEM, nullptr,
-                      static_cast<DWORD>(mErrId), 0,
-                      (LPTSTR)&buffer, 0, nullptr) == 0)
+    if (FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr, static_cast<DWORD>(mErrId),
+                      0, (LPTSTR)&buffer, 0, nullptr) == 0)
     {
         return std::string("Unknown error code");
     }
-    
+
     std::string error(buffer);
     LocalFree(buffer);
     return error;

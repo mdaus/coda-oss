@@ -32,11 +32,9 @@ TEST_CASE(testNaNsAreNotEqual)
     // It's not awesome that things work this way, but presumably
     // the caller is testing against a known value, so if this comes up
     // NaN oddness is already expected.
-    TEST_ASSERT_NOT_EQ(std::numeric_limits<float>::quiet_NaN(),
-        std::numeric_limits<float>::quiet_NaN());
+    TEST_ASSERT_NOT_EQ(std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::quiet_NaN());
 
     TEST_ASSERT_NOT_EQ(std::numeric_limits<float>::quiet_NaN(), 3.4);
-
 }
 
 TEST_CASE(testNaNIsNotAlmostEqualToNumber)
@@ -82,19 +80,16 @@ TEST_CASE(test_ssize)
     static_assert(sizeof(str) == 6, "sizeof(str)");
 
     // But use of sizeof here is a common source of bugs
-    const char* str_decayed = "12345";
-    static_assert(sizeof(str_decayed) == sizeof(void*), "sizeof(void*)");
+    const char *str_decayed = "12345";
+    static_assert(sizeof(str_decayed) == sizeof(void *), "sizeof(void*)");
 
     // Since C++20 the signed size (std::ssize) is available
     auto i = std::ssize(v);
-    for (--i; i != -1; --i) { }
+    for (--i; i != -1; --i)
+    {
+    }
     TEST_ASSERT_EQ(i, -1);
 }
 
-TEST_MAIN(
-    TEST_CHECK(testNaNsAreNotEqual);
-    TEST_CHECK(testNaNIsNotAlmostEqualToNumber);
-    TEST_CHECK(testIsNaN);
-    TEST_CHECK(test_ssize);
-    )
-
+TEST_MAIN(TEST_CHECK(testNaNsAreNotEqual); TEST_CHECK(testNaNIsNotAlmostEqualToNumber); TEST_CHECK(testIsNaN);
+          TEST_CHECK(test_ssize);)

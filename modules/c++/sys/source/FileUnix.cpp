@@ -24,11 +24,12 @@
 
 #ifndef _WIN32
 
-#include <unistd.h>
-#include <string.h>
 #include <errno.h>
+#include <string.h>
+#include <unistd.h>
 
-_SYS_HANDLE_TYPE sys::File::createFile(const coda_oss::filesystem::path& str_, int accessFlags, int creationFlags) noexcept
+_SYS_HANDLE_TYPE sys::File::createFile(const coda_oss::filesystem::path &str_, int accessFlags,
+                                       int creationFlags) noexcept
 {
     const auto str = str_.string();
 
@@ -36,24 +37,22 @@ _SYS_HANDLE_TYPE sys::File::createFile(const coda_oss::filesystem::path& str_, i
         creationFlags |= sys::File::TRUNCATE;
     return open(str.c_str(), accessFlags | creationFlags, _SYS_DEFAULT_PERM);
 }
-void sys::File::create(const std::string& str, int accessFlags,
-        int creationFlags)
+void sys::File::create(const std::string &str, int accessFlags, int creationFlags)
 {
     create(std::nothrow, str, accessFlags, creationFlags);
     if (mHandle < 0)
     {
-        throw sys::SystemException(Ctxt(
-                str::Format("Error opening file [%d]: [%s]", mHandle, str.c_str())));
+        throw sys::SystemException(Ctxt(str::Format("Error opening file [%d]: [%s]", mHandle, str.c_str())));
     }
 }
 
-void sys::File::readInto(void* buffer, Size_T size)
+void sys::File::readInto(void *buffer, Size_T size)
 {
     SSize_T bytesRead = 0;
     Size_T totalBytesRead = 0;
     int i;
 
-    sys::byte* bufferPtr = static_cast<sys::byte*>(buffer);
+    sys::byte *bufferPtr = static_cast<sys::byte *>(buffer);
 
     /* make sure the user actually wants data */
     if (size == 0)
@@ -61,8 +60,7 @@ void sys::File::readInto(void* buffer, Size_T size)
 
     for (i = 1; i <= _SYS_MAX_READ_ATTEMPTS; i++)
     {
-        bytesRead = ::read(mHandle, bufferPtr + totalBytesRead, size
-                - totalBytesRead);
+        bytesRead = ::read(mHandle, bufferPtr + totalBytesRead, size - totalBytesRead);
 
         switch (bytesRead)
         {
@@ -95,13 +93,13 @@ void sys::File::readInto(void* buffer, Size_T size)
     throw sys::SystemException(Ctxt("Unknown read state"));
 }
 
-void sys::File::readAtInto(sys::Off_T offset, void* buffer, size_t size)
+void sys::File::readAtInto(sys::Off_T offset, void *buffer, size_t size)
 {
     SSize_T bytesRead = 0;
     Size_T totalBytesRead = 0;
     int i;
 
-    sys::byte* bufferPtr = static_cast<sys::byte*>(buffer);
+    sys::byte *bufferPtr = static_cast<sys::byte *>(buffer);
 
     /* make sure the user actually wants data */
     if (size == 0)
@@ -109,10 +107,7 @@ void sys::File::readAtInto(sys::Off_T offset, void* buffer, size_t size)
 
     for (i = 1; i <= _SYS_MAX_READ_ATTEMPTS; i++)
     {
-        bytesRead = ::pread(mHandle,
-                            bufferPtr + totalBytesRead,
-                            size - totalBytesRead,
-                            offset + totalBytesRead);
+        bytesRead = ::pread(mHandle, bufferPtr + totalBytesRead, size - totalBytesRead, offset + totalBytesRead);
 
         switch (bytesRead)
         {
@@ -145,24 +140,21 @@ void sys::File::readAtInto(sys::Off_T offset, void* buffer, size_t size)
     throw sys::SystemException(Ctxt("Unknown read state"));
 }
 
-void sys::File::writeFrom(const void* buffer, size_t size)
+void sys::File::writeFrom(const void *buffer, size_t size)
 {
     size_t bytesActuallyWritten = 0;
 
-    const sys::byte* bufferPtr = static_cast<const sys::byte*>(buffer);
+    const sys::byte *bufferPtr = static_cast<const sys::byte *>(buffer);
 
     do
     {
-        const SSize_T bytesThisWrite = ::write(mHandle,
-                                              bufferPtr + bytesActuallyWritten,
-                                              size - bytesActuallyWritten);
+        const SSize_T bytesThisWrite = ::write(mHandle, bufferPtr + bytesActuallyWritten, size - bytesActuallyWritten);
         if (bytesThisWrite == -1)
         {
             throw sys::SystemException(Ctxt("Writing to file"));
         }
         bytesActuallyWritten += bytesThisWrite;
-    }
-    while (bytesActuallyWritten < size);
+    } while (bytesActuallyWritten < size);
 }
 
 sys::Off_T sys::File::seekTo(sys::Off_T offset, int whence)
@@ -188,7 +180,7 @@ sys::Off_T sys::File::lastModifiedTime()
     int rval = fstat(mHandle, &buf);
     if (rval == -1)
         throw sys::SystemException(Ctxt("Error querying file attributes"));
-    return (sys::Off_T) buf.st_mtime * 1000;
+    return (sys::Off_T)buf.st_mtime * 1000;
 }
 
 void sys::File::flush()
@@ -196,8 +188,7 @@ void sys::File::flush()
     if (::fsync(mHandle) != 0)
     {
         const int errnum = errno;
-        throw sys::SystemException(Ctxt(
-            "Error flushing file " + mPath + " (" + ::strerror(errnum) + ")"));
+        throw sys::SystemException(Ctxt("Error flushing file " + mPath + " (" + ::strerror(errnum) + ")"));
     }
 }
 
@@ -208,4 +199,3 @@ void sys::File::close()
 }
 
 #endif
-

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifdef _WIN32
 
@@ -27,26 +26,24 @@
 
 void sys::DLLException::adjustMessage()
 {
-    if (!mMessage.empty() )
+    if (!mMessage.empty())
     {
         mMessage += ": ";
     }
     mMessage += sys::Err().toString();
 }
 
-void sys::DLL::load(const std::string& libName)
+void sys::DLL::load(const std::string &libName)
 {
     // First we get the library name in case you ask
     mLibName = libName;
 
     // Next we load the library
-    mLib = LoadLibrary( mLibName.c_str() );
-
+    mLib = LoadLibrary(mLibName.c_str());
 
     // Now we check the return value
     if (!mLib)
-        throw sys::DLLException(str::Format("Failed to load() DLL: %s",
-                                     mLibName.c_str() ) );
+        throw sys::DLLException(str::Format("Failed to load() DLL: %s", mLibName.c_str()));
 }
 
 void sys::DLL::unload()
@@ -55,7 +52,7 @@ void sys::DLL::unload()
     if (mLib)
     {
         // Next we unload it or raise an exception
-        FreeLibrary( mLib );
+        FreeLibrary(mLib);
 
         // Now we reset member data
         mLib = nullptr;
@@ -63,20 +60,17 @@ void sys::DLL::unload()
     }
 }
 
-DLL_FUNCTION_PTR sys::DLL::
-retrieve(const std::string& functionName)
+DLL_FUNCTION_PTR sys::DLL::retrieve(const std::string &functionName)
 {
     // Check to make sure we have a library
-    if ( mLib != nullptr )
+    if (mLib != nullptr)
     {
         // Now we get a ptr
-        DLL_FUNCTION_PTR ptr = (DLL_FUNCTION_PTR)
-                               GetProcAddress(mLib, functionName.c_str());
+        DLL_FUNCTION_PTR ptr = (DLL_FUNCTION_PTR)GetProcAddress(mLib, functionName.c_str());
 
         // Now we check the ptr value
         if (ptr == nullptr)
-            throw sys::DLLException(str::Format("Failed to load function: %s",
-                                         functionName.c_str()));
+            throw sys::DLLException(str::Format("Failed to load function: %s", functionName.c_str()));
         return ptr;
     }
     else
@@ -84,6 +78,5 @@ retrieve(const std::string& functionName)
         throw sys::DLLException("No library loaded");
     };
 }
-
 
 #endif

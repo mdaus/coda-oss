@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  * (C) Copyright 2021, Maxar Technologies, Inc.
  *
@@ -15,12 +15,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #include "sys/Dbg.h"
 
@@ -28,14 +27,14 @@
 
 #include <config/compiler_extensions.h>
 
-inline void va_end_(va_list& args) noexcept
+inline void va_end_(va_list &args) noexcept
 {
     CODA_OSS_disable_warning_push
-    #if _MSC_VER
-    #pragma warning(disable : 26477)  // Use '...' rather than 0 or NULL(es .47).
-    #endif
+#if _MSC_VER
+#pragma warning(disable : 26477) // Use '...' rather than 0 or NULL(es .47).
+#endif
 
-    va_end(args);
+        va_end(args);
 
     CODA_OSS_disable_warning_pop
 }
@@ -52,7 +51,7 @@ void sys::dbgPrintf(const char *format, ...) noexcept
     }
 }
 
-void sys::diePrintf(const char* format, ...) noexcept
+void sys::diePrintf(const char *format, ...) noexcept
 {
     va_list args;
     va_start(args, format);

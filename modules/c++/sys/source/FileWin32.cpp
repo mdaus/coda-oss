@@ -22,17 +22,18 @@
 
 #ifdef _WIN32
 
-#include <limits>
-#include <cmath>
 #include "sys/File.h"
+#include <cmath>
+#include <limits>
 
-_SYS_HANDLE_TYPE sys::File::createFile(const coda_oss::filesystem::path& str_, int accessFlags, int creationFlags) noexcept
+_SYS_HANDLE_TYPE sys::File::createFile(const coda_oss::filesystem::path &str_, int accessFlags,
+                                       int creationFlags) noexcept
 {
     const auto str = str_.string();
 
     // If the truncate bit is on AND the file does exist,
     // we need to set the mode to TRUNCATE_EXISTING
-    if ((creationFlags & sys::File::TRUNCATE) && sys::OS().exists(str) )
+    if ((creationFlags & sys::File::TRUNCATE) && sys::OS().exists(str))
     {
         creationFlags = TRUNCATE_EXISTING;
     }
@@ -43,17 +44,10 @@ _SYS_HANDLE_TYPE sys::File::createFile(const coda_oss::filesystem::path& str_, i
 
     const auto dwDesiredAccess = static_cast<DWORD>(accessFlags);
     const auto dwCreationDisposition = static_cast<DWORD>(creationFlags);
-    return CreateFile(str.c_str(),
-                         dwDesiredAccess,
-                         FILE_SHARE_READ,
-                         nullptr /*lpSecurityAttributes*/,
-                         dwCreationDisposition,
-                         FILE_ATTRIBUTE_NORMAL,
-                         static_cast<HANDLE>(nullptr) /*hTemplateFile*/);
+    return CreateFile(str.c_str(), dwDesiredAccess, FILE_SHARE_READ, nullptr /*lpSecurityAttributes*/,
+                      dwCreationDisposition, FILE_ATTRIBUTE_NORMAL, static_cast<HANDLE>(nullptr) /*hTemplateFile*/);
 }
-void sys::File::create(const std::string& str,
-                       int accessFlags,
-                       int creationFlags)
+void sys::File::create(const std::string &str, int accessFlags, int creationFlags)
 {
     create(std::nothrow, str, accessFlags, creationFlags);
     if (mHandle == INVALID_HANDLE_VALUE)
@@ -62,27 +56,22 @@ void sys::File::create(const std::string& str,
     }
 }
 
-void sys::File::readInto(void* buffer, size_t size)
+void sys::File::readInto(void *buffer, size_t size)
 {
     static const size_t MAX_READ_SIZE = std::numeric_limits<DWORD>::max();
     size_t bytesRead = 0;
     size_t bytesRemaining = size;
 
-    sys::byte* bufferPtr = static_cast<sys::byte*>(buffer);
+    sys::byte *bufferPtr = static_cast<sys::byte *>(buffer);
 
     while (bytesRead < size)
     {
         // Determine how many bytes to read
-        const DWORD bytesToRead = static_cast<DWORD>(
-                std::min(MAX_READ_SIZE, bytesRemaining));
+        const DWORD bytesToRead = static_cast<DWORD>(std::min(MAX_READ_SIZE, bytesRemaining));
 
         // Read from file
         DWORD bytesThisRead = 0;
-        if (!ReadFile(mHandle,
-                      bufferPtr + bytesRead,
-                      bytesToRead,
-                      &bytesThisRead,
-                      nullptr))
+        if (!ReadFile(mHandle, bufferPtr + bytesRead, bytesToRead, &bytesThisRead, nullptr))
         {
             throw sys::SystemException(Ctxt("Error reading from file"));
         }
@@ -99,7 +88,7 @@ void sys::File::readInto(void* buffer, size_t size)
     }
 }
 
-void sys::File::readAtInto(sys::Off_T offset, void* buffer, size_t size)
+void sys::File::readAtInto(sys::Off_T offset, void *buffer, size_t size)
 {
     static const size_t MAX_READ_SIZE = std::numeric_limits<DWORD>::max();
     size_t bytesRead = 0;
@@ -107,24 +96,19 @@ void sys::File::readAtInto(sys::Off_T offset, void* buffer, size_t size)
     OVERLAPPED overlapped;
 
     ::memset(&overlapped, 0, sizeof(OVERLAPPED));
-    sys::byte* bufferPtr = static_cast<sys::byte*>(buffer);
+    sys::byte *bufferPtr = static_cast<sys::byte *>(buffer);
 
     while (bytesRead < size)
     {
         // Determine how many bytes to read
-        const DWORD bytesToRead =
-                static_cast<DWORD>(std::min(MAX_READ_SIZE, bytesRemaining));
+        const DWORD bytesToRead = static_cast<DWORD>(std::min(MAX_READ_SIZE, bytesRemaining));
 
         // Read from file
         DWORD bytesThisRead = 0;
         sys::Off_T curOffset = offset + bytesRead;
         overlapped.Offset = curOffset & 0xFFFFFFFF;
         overlapped.OffsetHigh = curOffset >> 32;
-        if (!ReadFile(mHandle,
-                      bufferPtr + bytesRead,
-                      bytesToRead,
-                      &bytesThisRead,
-                      &overlapped))
+        if (!ReadFile(mHandle, bufferPtr + bytesRead, bytesToRead, &bytesThisRead, &overlapped))
         {
             throw sys::SystemException(Ctxt("Error reading from file"));
         }
@@ -141,27 +125,22 @@ void sys::File::readAtInto(sys::Off_T offset, void* buffer, size_t size)
     }
 }
 
-void sys::File::writeFrom(const void* buffer, size_t size)
+void sys::File::writeFrom(const void *buffer, size_t size)
 {
     static const size_t MAX_WRITE_SIZE = std::numeric_limits<DWORD>::max();
     size_t bytesRemaining = size;
     size_t bytesWritten = 0;
 
-    const sys::byte* bufferPtr = static_cast<const sys::byte*>(buffer);
+    const sys::byte *bufferPtr = static_cast<const sys::byte *>(buffer);
 
     while (bytesWritten < size)
     {
         // Determine how many bytes to write
-        const DWORD bytesToWrite = static_cast<DWORD>(
-            std::min(MAX_WRITE_SIZE, bytesRemaining));
+        const DWORD bytesToWrite = static_cast<DWORD>(std::min(MAX_WRITE_SIZE, bytesRemaining));
 
         // Write the data
         DWORD bytesThisWrite = 0;
-        if (!WriteFile(mHandle,
-                       bufferPtr + bytesWritten,
-                       bytesToWrite,
-                       &bytesThisWrite,
-                       nullptr))
+        if (!WriteFile(mHandle, bufferPtr + bytesWritten, bytesToWrite, &bytesThisWrite, nullptr))
         {
             throw sys::SystemException(Ctxt("Writing to file"));
         }
@@ -199,18 +178,16 @@ sys::Off_T sys::File::length()
 sys::Off_T sys::File::lastModifiedTime()
 {
     FILETIME creationTime, lastAccessTime, lastWriteTime;
-    BOOL ret = GetFileTime(mHandle, &creationTime,
-            &lastAccessTime, &lastWriteTime);
+    BOOL ret = GetFileTime(mHandle, &creationTime, &lastAccessTime, &lastWriteTime);
     if (ret)
     {
         ULARGE_INTEGER uli;
         uli.LowPart = lastWriteTime.dwLowDateTime;
         uli.HighPart = lastWriteTime.dwHighDateTime;
-        ULONGLONG stInMillis(uli.QuadPart/10000);
+        ULONGLONG stInMillis(uli.QuadPart / 10000);
         return (sys::Off_T)stInMillis;
     }
-    throw sys::SystemException(Ctxt(
-                    str::Format("Error getting last modified time for path %s", mPath)));
+    throw sys::SystemException(Ctxt(str::Format("Error getting last modified time for path %s", mPath)));
 }
 
 void sys::File::flush()

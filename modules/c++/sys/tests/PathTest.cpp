@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,19 +14,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <import/sys.h>
 #include <fstream>
+#include <import/sys.h>
 #include <iomanip>
 
 using namespace sys;
 
-int main(int, char**)
+int main(int, char **)
 {
     try
     {
@@ -37,8 +37,8 @@ int main(int, char**)
         std::cout << "Path: " << p.getAbsolutePath() << std::endl;
 
         sys::OS os;
-        std::string fileName = os.getCurrentWorkingDirectory()
-                + os.getDelimiter() + ".." + os.getDelimiter() + "blah.txt";
+        std::string fileName =
+            os.getCurrentWorkingDirectory() + os.getDelimiter() + ".." + os.getDelimiter() + "blah.txt";
 
         std::cout << "File Name as string: " << fileName << std::endl;
 
@@ -47,23 +47,18 @@ int main(int, char**)
         std::cout << "File Name as path: " << filePath.getPath() << std::endl;
 
         Path::StringPair parts = Path::splitPath(fileName);
-        std::cout << "1) " << parts.first << " --- " << parts.second
-                << std::endl;
+        std::cout << "1) " << parts.first << " --- " << parts.second << std::endl;
 
         parts = filePath.split();
-        std::cout << "2) " << parts.first << " --- " << parts.second
-                << std::endl;
+        std::cout << "2) " << parts.first << " --- " << parts.second << std::endl;
         parts = Path::splitDrive("c:/junk.txt");
-        std::cout << "1) " << parts.first << " --- " << parts.second
-                << std::endl;
+        std::cout << "1) " << parts.first << " --- " << parts.second << std::endl;
         filePath = Path("c:/junk.txt");
         parts = filePath.splitDrive();
-        std::cout << "2) " << parts.first << " --- " << parts.second
-                << std::endl;
+        std::cout << "2) " << parts.first << " --- " << parts.second << std::endl;
         filePath = Path("/data/nitf///data/vendor1.ntf");
 
-        std::string base =
-                Path::basename("/data/nitf///data/vendor1.ntf", true);
+        std::string base = Path::basename("/data/nitf///data/vendor1.ntf", true);
         std::cout << "1) " << base << std::endl;
 
         base = filePath.getBasePath(true);
@@ -79,70 +74,46 @@ int main(int, char**)
         std::cout << parts.first << " --- " << parts.second << std::endl;
 
         std::cout << Path::normalizePath(fileName) << std::endl;
-        std::cout << Path::normalizePath("c:/data/nitf/data/vendor1.ntf")
-                << std::endl;
-        std::cout << Path("/data/nitf///data/vendor1.ntf").normalize()
-                << std::endl;
+        std::cout << Path::normalizePath("c:/data/nitf/data/vendor1.ntf") << std::endl;
+        std::cout << Path("/data/nitf///data/vendor1.ntf").normalize() << std::endl;
 
-        std::cout << Path::normalizePath("/data/nitf///data/../vendor1.ntf")
-                << std::endl;
+        std::cout << Path::normalizePath("/data/nitf///data/../vendor1.ntf") << std::endl;
 
-        std::cout
-                << Path::normalizePath(
-                                       "../data/../../..//./nitf///data/../vendor1.ntf")
-                << std::endl;
+        std::cout << Path::normalizePath("../data/../../..//./nitf///data/../vendor1.ntf") << std::endl;
 
-        std::cout
-                << Path::normalizePath(
-                                       "data/junk/tzellman/../../../../../..///./nitf///data/../vendor1.ntf")
-                << std::endl;
+        std::cout << Path::normalizePath("data/junk/tzellman/../../../../../..///./nitf///data/../vendor1.ntf")
+                  << std::endl;
 
-        std::cout << "1) " << Path("/data/junk/", "test.txt").getPath()
-                << std::endl;
-        std::cout << "2) " << Path::joinPaths("/data/junk/", "///test.txt")
-                << std::endl;
-        std::cout << "3) " << Path("/data/junk/").join("/test.txt").getPath()
-                << std::endl;
-        std::cout << "4) " << Path::joinPaths("/data/junk", "test.txt")
-                << std::endl;
-        std::cout
-                << Path(
-                        "data/junk/tzellman/../../../../../..///./nitf///data/../vendor1.ntf").getAbsolutePath()
-                << std::endl;
-        std::cout
-                << Path::normalizePath(
-                                       "data/junk/tzellman/../../../../../..///./nitf///data/../vendor1.ntf")
-                << std::endl;
-        std::cout
-                << Path::absolutePath(
-                                      "c:/data/junk/tzellman/../../../../../..///./nitf///data/../vendor1.ntf")
-                << std::endl;
+        std::cout << "1) " << Path("/data/junk/", "test.txt").getPath() << std::endl;
+        std::cout << "2) " << Path::joinPaths("/data/junk/", "///test.txt") << std::endl;
+        std::cout << "3) " << Path("/data/junk/").join("/test.txt").getPath() << std::endl;
+        std::cout << "4) " << Path::joinPaths("/data/junk", "test.txt") << std::endl;
+        std::cout << Path("data/junk/tzellman/../../../../../..///./nitf///data/../vendor1.ntf").getAbsolutePath()
+                  << std::endl;
+        std::cout << Path::normalizePath("data/junk/tzellman/../../../../../..///./nitf///data/../vendor1.ntf")
+                  << std::endl;
+        std::cout << Path::absolutePath("c:/data/junk/tzellman/../../../../../..///./nitf///data/../vendor1.ntf")
+                  << std::endl;
         std::cout << Path::normalizePath("c:/../../../junk.txt") << std::endl;
 
         std::cout << Path::absolutePath("/home/tzellman/dev/") << std::endl;
 
-        const std::string currentDirWithDelimiter =
-            os.getCurrentWorkingDirectory() + os.getDelimiter();
+        const std::string currentDirWithDelimiter = os.getCurrentWorkingDirectory() + os.getDelimiter();
         parts = Path::splitPath(currentDirWithDelimiter);
-        std::cout << "1) " << parts.first << " --- " << parts.second
-                        << std::endl;
+        std::cout << "1) " << parts.first << " --- " << parts.second << std::endl;
 
-        std::cout << Path::normalizePath(currentDirWithDelimiter)
-                  << std::endl;
+        std::cout << Path::normalizePath(currentDirWithDelimiter) << std::endl;
 
-        std::cout << Path::absolutePath(currentDirWithDelimiter)
-                  << std::endl;
+        std::cout << Path::absolutePath(currentDirWithDelimiter) << std::endl;
 
-        std::cout << Path::joinPaths(parts.first + os.getDelimiter(),
-                                     parts.second + os.getDelimiter())
-                  << std::endl;
+        std::cout << Path::joinPaths(parts.first + os.getDelimiter(), parts.second + os.getDelimiter()) << std::endl;
     }
-    catch (const except::Throwable& t)
+    catch (const except::Throwable &t)
     {
         std::cerr << "Caught throwable: " << t.toString() << std::endl;
         exit(EXIT_FAILURE);
     }
-    catch (const std::exception& ex)
+    catch (const std::exception &ex)
     {
         std::cerr << "Caught std::exception: " << ex.what() << std::endl;
         exit(EXIT_FAILURE);

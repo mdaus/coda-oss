@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __SYS_OS_UNIX_H__
 #define __SYS_OS_UNIX_H__
 
@@ -48,7 +47,7 @@ struct OSUnix final : public AbstractOS
      *  For unix it will be one slash /
      *  \return The path delimiter
      */
-    virtual const char* getDelimiter() const override
+    virtual const char *getDelimiter() const override
     {
         return "/";
     }
@@ -64,34 +63,31 @@ struct OSUnix final : public AbstractOS
      *  \param path The path to check for
      *  \return True if it does, false otherwise
      */
-    virtual bool exists(const std::string& path) const override;
+    virtual bool exists(const std::string &path) const override;
 
     /*!
      *  Move file with this path name to the newPath
      *  \return True upon success, false if failure
      */
-    virtual bool move(const std::string& path,
-                      const std::string& newPath) const override;
+    virtual bool move(const std::string &path, const std::string &newPath) const override;
 
     /*!
      *  Does this path resolve to a file?
      *  \param path The path
      *  \return True if it does, false if not
      */
-    virtual bool isFile(const std::string& path) const override;
+    virtual bool isFile(const std::string &path) const override;
 
     /*!
      *  Does this path resolve to a directory?
      *  \param path The path
      *  \return True if it does, false if not
      */
-    virtual bool isDirectory(const std::string& path) const override;
+    virtual bool isDirectory(const std::string &path) const override;
 
-    virtual bool makeDirectory(const std::string& path) const override;
-
+    virtual bool makeDirectory(const std::string &path) const override;
 
     virtual Pid_T getProcessId() const override;
-
 
     /*!
      *  Retrieve the current working directory.
@@ -103,25 +99,24 @@ struct OSUnix final : public AbstractOS
      *  Change the current working directory.
      *  \return true if the directory was changed, otherwise false.
      */
-    virtual bool changeDirectory(const std::string& path) const override;
+    virtual bool changeDirectory(const std::string &path) const override;
 
     /*!
      *  Get a suitable temporary file name
      *  \return The file name
      */
-    virtual std::string getTempName(const std::string& path = ".",
-                                    const std::string& prefix = "TMP") const override;
+    virtual std::string getTempName(const std::string &path = ".", const std::string &prefix = "TMP") const override;
 
     /*!
      *  Return the size in bytes of a file
      *  \return The file size
      */
-    virtual sys::Off_T getSize(const std::string& path) const override;
+    virtual sys::Off_T getSize(const std::string &path) const override;
 
     /**
      * Returns the last modified time of the file/directory
      */
-    virtual sys::Off_T getLastModifiedTime(const std::string& path) const override;
+    virtual sys::Off_T getLastModifiedTime(const std::string &path) const override;
 
     /*!
      *  This is a system independent sleep function.
@@ -132,29 +127,27 @@ struct OSUnix final : public AbstractOS
      */
     virtual void millisleep(int milliseconds) const override;
 
-    virtual std::string operator[](const std::string& s) const override;
+    virtual std::string operator[](const std::string &s) const override;
 
     /*!
      *  Get an environment variable
      */
-    virtual std::string getEnv(const std::string& s) const override;
+    virtual std::string getEnv(const std::string &s) const override;
 
     /*!
      * Returns true if environment variable is set, false otherwise
      */
-    virtual bool isEnvSet(const std::string& s) const override;
+    virtual bool isEnvSet(const std::string &s) const override;
 
     /*!
      *  Set an environment variable
      */
-    virtual void setEnv(const std::string& var,
-                        const std::string& val,
-                        bool overwrite) override;
+    virtual void setEnv(const std::string &var, const std::string &val, bool overwrite) override;
 
     /*!
      * Unset an environment variable
      */
-    virtual void unsetEnv(const std::string& var) override;
+    virtual void unsetEnv(const std::string &var) override;
 
     virtual std::string getDSOSuffix() const override;
 
@@ -198,8 +191,7 @@ struct OSUnix final : public AbstractOS
      *                    'physicalCPUs'. Size of
      *                    getNumCPUsAvailable() - getNumPhysicalCPUsAvailable().
      */
-    virtual void getAvailableCPUs(std::vector<int>& physicalCPUs,
-                                  std::vector<int>& htCPUs) const override;
+    virtual void getAvailableCPUs(std::vector<int> &physicalCPUs, std::vector<int> &htCPUs) const override;
 
     /*!
      * Figure out what SIMD instrunctions are available.  Keep in mind these
@@ -210,36 +202,34 @@ struct OSUnix final : public AbstractOS
     /*!
      *  Create a symlink, pathnames can be either absolute or relative
      */
-    virtual void createSymlink(const std::string& origPathname,
-                               const std::string& symlinkPathname) const override;
+    virtual void createSymlink(const std::string &origPathname, const std::string &symlinkPathname) const override;
 
     /*!
      * Remove a symlink, pathname can be absolute or relative
      */
-    virtual void removeSymlink(const std::string& symlinkPathname) const override;
+    virtual void removeSymlink(const std::string &symlinkPathname) const override;
 
     /*!
      *  Get the total RAM and available RAM on the system in megabytes
      */
-    virtual void getMemInfo(size_t& totalPhysMem, size_t& freePhysMem) const override;
+    virtual void getMemInfo(size_t &totalPhysMem, size_t &freePhysMem) const override;
 
     /*!
      *  Get the absolute path to the current executable
      */
-    virtual std::string getCurrentExecutable(
-            const std::string& argvPathname="") const override;
+    virtual std::string getCurrentExecutable(const std::string &argvPathname = "") const override;
 
-protected:
+  protected:
     /*!
      *  Remove file with this pathname
      */
-    virtual void removeFile(const std::string& pathname) const override;
+    virtual void removeFile(const std::string &pathname) const override;
 
     /*!
      *  Remove directory with this pathname
      *  NOTE: This will throw if the directory is not empty
      */
-    virtual void removeDirectory(const std::string& pathname) const override;
+    virtual void removeDirectory(const std::string &pathname) const override;
 };
 
 struct DirectoryUnix final : public AbstractDirectory
@@ -250,12 +240,12 @@ struct DirectoryUnix final : public AbstractDirectory
         close();
     }
     void close() override;
-    std::string findFirstFile(const std::string& dir) override;
+    std::string findFirstFile(const std::string &dir) override;
     std::string findNextFile() override;
-    DIR* mDir = nullptr;
+    DIR *mDir = nullptr;
 };
 
-}
+} // namespace sys
 
 #endif
 #endif

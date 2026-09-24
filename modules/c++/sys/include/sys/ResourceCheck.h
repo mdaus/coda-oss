@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2019, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -25,7 +25,7 @@
 
 #include <stddef.h>
 
-namespace sys 
+namespace sys
 {
 
 /*!
@@ -33,7 +33,7 @@ namespace sys
  * on a machine with the given amount of memory, with amounts reserved for
  * other applications or a relative margin of error, whichever reserves more.
  *
- * If the reserved bytes is greater than the systemMemBytes we treat this as 
+ * If the reserved bytes is greater than the systemMemBytes we treat this as
  * though the job cannot fit, regardless of the jobMemBytes or margin.
  *
  * \param jobMemBytes the approximate amount of memory the job will consume
@@ -45,10 +45,8 @@ namespace sys
  *      defaults to 95% (0.95)
  * \return true if the job can fit, false otherwise
  */
-bool canProcessFit(size_t jobMemBytes,
-                   size_t systemMemBytes,
-                   size_t reservedBytes = static_cast<size_t>(1024)*1024*1024*4,
-                   double margin = 0.95);
+bool canProcessFit(size_t jobMemBytes, size_t systemMemBytes,
+                   size_t reservedBytes = static_cast<size_t>(1024) * 1024 * 1024 * 4, double margin = 0.95);
 
 /*!
  * Calculates the amount of available system memory given the total, an absolute
@@ -59,12 +57,11 @@ bool canProcessFit(size_t jobMemBytes,
  *      defaults to 4GB
  * \param margin the fraction of system RAM that is available for use, defaults
  *      to 95% (0.95)
- * \return the number of bytes available 
+ * \return the number of bytes available
  */
-size_t getAvailableMem(size_t systemMemBytes, 
-                       size_t reservedBytes = static_cast<size_t>(1024)*1024*1024*4,
+size_t getAvailableMem(size_t systemMemBytes, size_t reservedBytes = static_cast<size_t>(1024) * 1024 * 1024 * 4,
                        double margin = 0.95);
 
-}
+} // namespace sys
 
 #endif

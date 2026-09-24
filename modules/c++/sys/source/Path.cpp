@@ -33,22 +33,19 @@ Path::Path()
 {
 }
 
-Path::Path(const Path& parent, const std::string& child) :
-    mPathName(joinPaths(parent.mPathName, child))
+Path::Path(const Path &parent, const std::string &child) : mPathName(joinPaths(parent.mPathName, child))
 {
 }
 
-Path::Path(const std::string& parent, const std::string& child) :
-    mPathName(joinPaths(parent, child))
+Path::Path(const std::string &parent, const std::string &child) : mPathName(joinPaths(parent, child))
 {
 }
 
-Path::Path(const std::string& pathName) :
-    mPathName(pathName)
+Path::Path(const std::string &pathName) : mPathName(pathName)
 {
 }
 
-Path& Path::operator=(const Path& path)
+Path &Path::operator=(const Path &path)
 {
     if (this != &path)
     {
@@ -57,37 +54,34 @@ Path& Path::operator=(const Path& path)
     return *this;
 }
 
-Path::Path(const Path& path) :
-    mPathName(path.mPathName)
+Path::Path(const Path &path) : mPathName(path.mPathName)
 {
 }
 
-std::string Path::normalizePath(const std::string& path)
+std::string Path::normalizePath(const std::string &path)
 {
     std::string osDelimStr(Path::delimiter());
     std::string delimStr = osDelimStr;
 
-    //if it's not a forward slash, add it as one of the options
+    // if it's not a forward slash, add it as one of the options
     if (delimStr != "/")
         delimStr += "/";
 
-    //get the drive parts, if any -- we will use the drive later
+    // get the drive parts, if any -- we will use the drive later
     Path::StringPair driveParts = Path::splitDrive(path);
 
     std::vector<std::string> parts = str::Tokenizer(path, delimStr);
 
     int upCount = 0;
     std::deque<std::string> pathDeque;
-    for (std::vector<std::string>::iterator it = parts.begin(); it
-            != parts.end(); ++it)
+    for (std::vector<std::string>::iterator it = parts.begin(); it != parts.end(); ++it)
     {
         if (*it == ".")
             continue;
         else if (*it == "..")
         {
-            //we want to keep the drive, if there is one
-            if (pathDeque.size() == 1 && (*pathDeque.begin())
-                    == driveParts.first)
+            // we want to keep the drive, if there is one
+            if (pathDeque.size() == 1 && (*pathDeque.begin()) == driveParts.first)
                 continue;
             if (pathDeque.size() > 0)
                 pathDeque.pop_back();
@@ -98,11 +92,10 @@ std::string Path::normalizePath(const std::string& path)
             pathDeque.push_back(*it);
     }
 
-    //use the OS-specific delimiters
+    // use the OS-specific delimiters
     std::ostringstream out;
-    //only apply the beginning up directories if we didn't start at the root (/)
-    if (!str::startsWith(path, osDelimStr) && !str::startsWith(path, "/")
-            && driveParts.first.empty())
+    // only apply the beginning up directories if we didn't start at the root (/)
+    if (!str::startsWith(path, osDelimStr) && !str::startsWith(path, "/") && driveParts.first.empty())
     {
         if (upCount > 0)
             out << "..";
@@ -110,7 +103,7 @@ std::string Path::normalizePath(const std::string& path)
             out << osDelimStr << "..";
     }
 
-    //make sure we don't prepend the drive with a delimiter!
+    // make sure we don't prepend the drive with a delimiter!
     std::deque<std::string>::iterator it = pathDeque.begin();
     if (!driveParts.first.empty())
         out << *it++;
@@ -119,14 +112,12 @@ std::string Path::normalizePath(const std::string& path)
     return out.str();
 }
 
-std::string Path::joinPaths(const std::string& path1,
-                                 const std::string& path2)
+std::string Path::joinPaths(const std::string &path1, const std::string &path2)
 {
     std::string osDelimStr(Path::delimiter());
 
-    //check to see if path2 is a root path
-    if (str::startsWith(path2, osDelimStr) || str::startsWith(path2, "/")
-            || !Path::splitDrive(path2).first.empty())
+    // check to see if path2 is a root path
+    if (str::startsWith(path2, osDelimStr) || str::startsWith(path2, "/") || !Path::splitDrive(path2).first.empty())
         return path2;
 
     std::ostringstream out;
@@ -137,7 +128,7 @@ std::string Path::joinPaths(const std::string& path1,
     return out.str();
 }
 
-std::vector<std::string> Path::separate(const std::string& path)
+std::vector<std::string> Path::separate(const std::string &path)
 {
     Path workingPath = path;
     std::vector<std::string> pathList;
@@ -152,23 +143,20 @@ std::vector<std::string> Path::separate(const std::string& path)
     std::reverse(pathList.begin(), pathList.end());
     return pathList;
 }
-std::vector<std::string> Path::separate(const std::string& path, bool& isAbsolute)
+std::vector<std::string> Path::separate(const std::string &path, bool &isAbsolute)
 {
     isAbsolute = isAbsolutePath(path);
     return separate(path);
 }
 
-std::string Path::absolutePath(const std::string& path)
+std::string Path::absolutePath(const std::string &path)
 {
     std::string osDelimStr(Path::delimiter());
 
     Path::StringPair driveParts = Path::splitDrive(path);
-    if (!str::startsWith(path, osDelimStr) &&
-        !str::startsWith(path, "/") &&
-        driveParts.first.empty())
+    if (!str::startsWith(path, osDelimStr) && !str::startsWith(path, "/") && driveParts.first.empty())
     {
-        return Path::normalizePath(Path::joinPaths(
-            OS().getCurrentWorkingDirectory(), path));
+        return Path::normalizePath(Path::joinPaths(OS().getCurrentWorkingDirectory(), path));
     }
     else
     {
@@ -176,7 +164,7 @@ std::string Path::absolutePath(const std::string& path)
     }
 }
 
-bool Path::isAbsolutePath(const std::string& path)
+bool Path::isAbsolutePath(const std::string &path)
 {
 #ifdef _WIN32
     const auto split = Path::splitDrive(path);
@@ -195,11 +183,11 @@ bool Path::isAbsolutePath(const std::string& path)
 #endif
 }
 
-Path::StringPair Path::splitPath(const std::string& path)
+Path::StringPair Path::splitPath(const std::string &path)
 {
     std::string delimStr(Path::delimiter());
 
-    //if it's not a forward slash, add it as one of the options
+    // if it's not a forward slash, add it as one of the options
     if (delimStr != "/")
         delimStr += "/";
 
@@ -222,7 +210,7 @@ Path::StringPair Path::splitPath(const std::string& path)
     return Path::StringPair(root, base);
 }
 
-Path::StringPair Path::splitExt(const std::string& path)
+Path::StringPair Path::splitExt(const std::string &path)
 {
     std::string::size_type pos = path.rfind(".");
     if (pos == std::string::npos)
@@ -230,7 +218,7 @@ Path::StringPair Path::splitExt(const std::string& path)
     return Path::StringPair(path.substr(0, pos), path.substr(pos));
 }
 
-std::string Path::basename(const std::string& path, bool removeExt)
+std::string Path::basename(const std::string &path, bool removeExt)
 {
     std::string baseWithExtension = Path::splitPath(path).second;
     if (removeExt)
@@ -238,10 +226,9 @@ std::string Path::basename(const std::string& path, bool removeExt)
         return Path::splitExt(baseWithExtension).first;
     }
     return baseWithExtension;
-
 }
 
-Path::StringPair Path::splitDrive(const std::string& path)
+Path::StringPair Path::splitDrive(const std::string &path)
 {
 #ifdef _WIN32
     std::string::size_type pos = path.find(":");
@@ -254,7 +241,7 @@ Path::StringPair Path::splitDrive(const std::string& path)
     return Path::StringPair(path.substr(0, pos + 1), path.substr(pos + 1));
 }
 
-const char* Path::delimiter()
+const char *Path::delimiter()
 {
 #ifdef _WIN32
     return "\\";
@@ -263,7 +250,7 @@ const char* Path::delimiter()
 #endif
 }
 
-const char* Path::separator()
+const char *Path::separator()
 {
 #ifdef _WIN32
     return ";";
@@ -272,14 +259,13 @@ const char* Path::separator()
 #endif
 }
 
-std::vector<std::string> Path::list(const std::string& path)
+std::vector<std::string> Path::list(const std::string &path)
 {
     OS os;
     if (!os.exists(path) || !os.isDirectory(path))
     {
         std::ostringstream oss;
-        oss << "'" << path
-                << "' does not exist or is not a valid directory";
+        oss << "'" << path << "' does not exist or is not a valid directory";
         throw except::Exception(Ctxt(oss));
     }
     std::vector<std::string> listing;
@@ -293,12 +279,12 @@ std::vector<std::string> Path::list(const std::string& path)
     return listing;
 }
 
-std::ostream& operator<<(std::ostream& os, const Path& path)
+std::ostream &operator<<(std::ostream &os, const Path &path)
 {
     os << path.getPath().c_str();
     return os;
 }
-std::istream& operator>>(std::istream& is, Path& path)
+std::istream &operator>>(std::istream &is, Path &path)
 {
     std::string str;
     is >> str;
@@ -311,21 +297,28 @@ class separated_path final
 {
     path_components components_;
 
-public:
+  public:
     bool absolute = false;
-    separated_path(path_components&& components) : components_(std::move(components)) { }
-    separated_path(const path_components& components) : components_(components)  {  }
-    void push_back(const std::string& s)
+    separated_path(path_components &&components) : components_(std::move(components))
+    {
+    }
+    separated_path(const path_components &components) : components_(components)
+    {
+    }
+    void push_back(const std::string &s)
     {
         components_.push_back(s);
     }
-    void push_back(std::string&& s)
+    void push_back(std::string &&s)
     {
         components_.push_back(std::move(s));
     }
-    const path_components& components() const { return components_; }
+    const path_components &components() const
+    {
+        return components_;
+    }
 };
-static separated_path separate_path(const std::string& path)
+static separated_path separate_path(const std::string &path)
 {
     bool absolute;
     separated_path retval(Path::separate(path, absolute));
@@ -333,7 +326,7 @@ static separated_path separate_path(const std::string& path)
     return retval;
 }
 
-static void clean_slashes(std::string& path, bool isAbsolute)
+static void clean_slashes(std::string &path, bool isAbsolute)
 {
     // Directories will consistently have a trailing '/', files won't
     while (str::endsWith(path, Path::delimiter()))
@@ -344,16 +337,16 @@ static void clean_slashes(std::string& path, bool isAbsolute)
     // get rid of multiple "//"s
     while (str::startsWith(path, Path::delimiter()))
     {
-    path = path.substr(1);
+        path = path.substr(1);
     }
-    #ifndef _WIN32 // std::filesystem has (some?) support for UNC paths, but not this code
+#ifndef _WIN32 // std::filesystem has (some?) support for UNC paths, but not this code
     if (isAbsolute)
     {
         path = Path::delimiter() + path;
     }
-    #else
+#else
     UNREFERENCED_PARAMETER(isAbsolute);
-    #endif
+#endif
 
     // Do this last so that we have the best chance of finding the path on disk
     if (fs::is_directory(path))
@@ -365,18 +358,18 @@ static void clean_slashes(std::string& path, bool isAbsolute)
     }
     else if (fs::is_regular_file(path))
     {
-      while (str::endsWith(path, Path::delimiter()))
+        while (str::endsWith(path, Path::delimiter()))
         {
             path = path.substr(0, path.length() - 1);
-      }
+        }
     }
 
     assert(isAbsolute ? fs::path(path).is_absolute() : fs::path(path).is_relative());
 }
-std::string Path::merge(const std::vector<std::string>& components, bool isAbsolute)
+std::string Path::merge(const std::vector<std::string> &components, bool isAbsolute)
 {
     std::string retval = isAbsolute ? delimiter() : "";
-    for (const auto& component : components)
+    for (const auto &component : components)
     {
         retval += component + delimiter();
     }
@@ -384,7 +377,7 @@ std::string Path::merge(const std::vector<std::string>& components, bool isAbsol
     clean_slashes(retval, isAbsolute);
     return retval;
 }
-static std::string merge_path(const separated_path& components)
+static std::string merge_path(const separated_path &components)
 {
     return Path::merge(components.components(), components.absolute);
 }
@@ -393,17 +386,19 @@ struct ExtractedEnvironmentVariable final
 {
     std::string component; // copy of what was passed
 
-    std::string begin; // "foo" of "foo$(BAR)baz"
+    std::string begin;    // "foo" of "foo$(BAR)baz"
     std::string variable; // "BAR" of "foo$(BAR)baz"
-    std::string op; // for ${FOO@b}, "b"; http://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Shell-Parameter-Expansion
-    std::string end; // "baz" of "foo$(BAR)baz"
+    std::string op;       // for ${FOO@b}, "b";
+                          // http://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Shell-Parameter-Expansion
+    std::string end;      // "baz" of "foo$(BAR)baz"
 };
 
-static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::string component, size_t pos) // make a copy for manipulation
+static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::string component,
+                                                                      size_t pos) // make a copy for manipulation
 {
     assert(pos != std::string::npos);
     ExtractedEnvironmentVariable retval;
-    retval.component = retval.variable = component;  // assume this really isn't an env. var
+    retval.component = retval.variable = component; // assume this really isn't an env. var
 
     retval.begin = component.substr(0, pos);
     str::replace(component, retval.begin + "$", ""); // don't want to find "(" before "$"
@@ -425,13 +420,13 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::strin
 
             // We're going to support a very specific format for modifiers, just: ${FOO@c}
             // If it's anythng else, assume it's something else
-            if (paren_match == '}')  // only "${...", not "$(..."
+            if (paren_match == '}') // only "${...", not "$(..."
             {
                 const auto at_pos = retval.variable.find('@');
                 if ((at_pos != std::string::npos) && (at_pos >= 1) && (at_pos < retval.variable.length()))
                 {
                     auto op = retval.variable.substr(at_pos + 1); // at_pos < length(), from above()
-                    if (op.length() == 1)  // only single-characters
+                    if (op.length() == 1)                         // only single-characters
                     {
                         retval.variable = retval.variable.substr(0, at_pos);
                         retval.op = std::move(op);
@@ -458,13 +453,14 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_dollar(std::strin
 }
 
 #if _WIN32 // %FOO% only on Windows
-static ExtractedEnvironmentVariable extractEnvironmentVariable_percent(std::string component, size_t pos) // make a copy for manipulation
+static ExtractedEnvironmentVariable extractEnvironmentVariable_percent(std::string component,
+                                                                       size_t pos) // make a copy for manipulation
 {
     assert(pos != std::string::npos);
     ExtractedEnvironmentVariable retval;
-    retval.variable = component;  // assume this really isn't an env. var
+    retval.variable = component; // assume this really isn't an env. var
 
-    retval.begin = component.substr(0, pos); // foo%BAR%
+    retval.begin = component.substr(0, pos);         // foo%BAR%
     str::replace(component, retval.begin + "%", ""); // %FOO%bar% -> foo_bar% for FOO=foo_
     auto percent_pos = component.find('%');
     if (percent_pos == std::string::npos) // "foo%BAR"
@@ -474,117 +470,121 @@ static ExtractedEnvironmentVariable extractEnvironmentVariable_percent(std::stri
     }
 
     retval.variable = component.substr(0, percent_pos);
-    retval.end = component.substr(percent_pos+1);
+    retval.end = component.substr(percent_pos + 1);
     return retval;
 }
 #endif // _WIN32
 
-static ExtractedEnvironmentVariable extractEnvironmentVariable(const std::string& component)
+static ExtractedEnvironmentVariable extractEnvironmentVariable(const std::string &component)
 {
     // http://www.kitebird.com/csh-tcsh-book/tcsh.pdf
-    /* The word or words in a history reference can be edited, or "modified", by following it with one or more modifiers,
-        each preceded by a ':':
-            h Remove a trailing pathname component, leaving the head.
-            t Remove all leading pathname components, leaving the tail.
-            r Remove a filename extension '.xxx', leaving the root name.
-            e Remove all but the extension.
+    /* The word or words in a history reference can be edited, or "modified", by following it with one or more
+       modifiers, each preceded by a ':': h Remove a trailing pathname component, leaving the head. t Remove all leading
+       pathname components, leaving the tail. r Remove a filename extension '.xxx', leaving the root name. e Remove all
+       but the extension.
     */
     // http://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Shell-Parameter-Expansion
     /*
-    ${parameter@operator} The expansion is either a transformation of the value of parameter or information about parameter itself,
-    depending on the value of operator. Each operator is a single letter:
+    ${parameter@operator} The expansion is either a transformation of the value of parameter or information about
+    parameter itself, depending on the value of operator. Each operator is a single letter:
     */
-
 
     ExtractedEnvironmentVariable retval;
     retval.variable = component; // assume this really isn't an env. var
 
     const auto dollar_pos = component.find('$');
-    if (dollar_pos != std::string::npos)  // foo$BAR -> "foo_bar" for BAR=_bar
+    if (dollar_pos != std::string::npos) // foo$BAR -> "foo_bar" for BAR=_bar
     {
         return extractEnvironmentVariable_dollar(component, dollar_pos);
     }
 
-    #if _WIN32 // %FOO% only on Windows
+#if _WIN32 // %FOO% only on Windows
     const auto percent_pos = component.find('%');
     if (percent_pos != std::string::npos)
     {
         return extractEnvironmentVariable_percent(component, percent_pos);
     }
-    #endif
+#endif
 
     return retval;
 }
 
-static std::string apply_edits(const std::string& path, const std::string& op)
+static std::string apply_edits(const std::string &path, const std::string &op)
 {
     // http://www.kitebird.com/csh-tcsh-book/tcsh.pdf
-    /* The word or words in a history reference can be edited, or "modified", by following it with one or more modifiers,
-        each preceded by a ':':
+    /* The word or words in a history reference can be edited, or "modified", by following it with one or more
+       modifiers, each preceded by a ':':
     */
     if (op.length() == 1)
     {
         const fs::path fspath(path);
         switch (op[0])
         {
-	   // h Remove a trailing pathname component, leaving the head.
-           case 'h': return fspath.parent_path().string();
+            // h Remove a trailing pathname component, leaving the head.
+        case 'h':
+            return fspath.parent_path().string();
 
-	   // t Remove all leading pathname components, leaving the tail.
-           case 't': return fspath.filename().string();
+            // t Remove all leading pathname components, leaving the tail.
+        case 't':
+            return fspath.filename().string();
 
-	   // r Remove a filename extension '.xxx', leaving the root name.
-           case 'r': return fspath.root_path().string();
+            // r Remove a filename extension '.xxx', leaving the root name.
+        case 'r':
+            return fspath.root_path().string();
 
+            // e Remove all but the extension.
+        case 'e':
+        {
+            // CSH "e" doesn't include the "."
+            auto ext = fspath.extension().string();
+            const auto dot_pos = ext.find(".");
+            if (dot_pos == 0)
+            {
+                ext = ext.substr(1);
+            }
+            return ext;
+        }
 
-	   // e Remove all but the extension.
-          case 'e':
-	  {
-	      // CSH "e" doesn't include the "."
-	      auto ext = fspath.extension().string();
-	      const auto dot_pos = ext.find(".");
-	      if (dot_pos == 0)
-	      {
-	          ext = ext.substr(1);
-	      }    	    
-	      return ext;
-	  }
+        // We're already "off the reservation" by combining BASH and CSH syntax/functionality,
+        // so ... provide access to other std::file_system::path routines too.
+        // https://en.cppreference.com/w/cpp/filesystem/path
 
+        // root_name()
+        case 'n':
+            break; // return fspath.root_name().string();
 
-	  // We're already "off the reservation" by combining BASH and CSH syntax/functionality,
-	  // so ... provide access to other std::file_system::path routines too.
-	  // https://en.cppreference.com/w/cpp/filesystem/path
+        // root_directory()
+        case 'd':
+            break; // return fspath.root_directory().string();
 
-	  // root_name()
-	  case 'n' : break; // return fspath.root_name().string();
+        // root_path(), 'r' above
 
-	  // root_directory()
-	  case 'd' : break; // return fspath.root_directory().string();
+        // relative_path()
+        case 'p':
+            break; // return fspath.relative_path().string();
 
-	  // root_path(), 'r' above
+        // parent_path(), 'h' above
 
-	  // relative_path()
-	  case 'p' : break; // return fspath.relative_path().string();
+        // Force use of CSH names rather than providing and alisas: 'f' filename()
+        // filename(), 't' above
+        case 'f':
+            break; // return fspath.filename().string();
 
-	  // parent_path(), 'h' above
+        // stem()
+        case 's':
+            return fspath.stem().string();
 
-	  // Force use of CSH names rather than providing and alisas: 'f' filename()
-	  // filename(), 't' above
-	  case 'f' : break; // return fspath.filename().string();
+            // extension(), 'e' above
 
-	  // stem()
-	  case 's' : return fspath.stem().string();
-
-	  // extension(), 'e' above
-
-          default: break;
+        default:
+            break;
         }
     }
 
     return path;
 }
 
-static path_components expandEnvironmentVariable(const std::string& component)
+static path_components expandEnvironmentVariable(const std::string &component)
 {
     const auto extractedEnvVar = extractEnvironmentVariable(component);
     path_components retval;
@@ -615,11 +615,11 @@ static path_components expandEnvironmentVariable(const std::string& component)
     const auto endExpandedEnvVar = expandEnvironmentVariable(extractedEnvVar.end); // note: recursion
 
     path_components updated_paths;
-    for (const auto& path_ : paths)
+    for (const auto &path_ : paths)
     {
         const auto path = apply_edits(path_, extractedEnvVar.op);
 
-        for (const auto& endVar : endExpandedEnvVar)
+        for (const auto &endVar : endExpandedEnvVar)
         {
             auto p = extractedEnvVar.begin + path + endVar;
             updated_paths.push_back(std::move(p));
@@ -628,7 +628,7 @@ static path_components expandEnvironmentVariable(const std::string& component)
     return updated_paths;
 }
 
-static path_components join(const std::string& v1, const std::string& v2)
+static path_components join(const std::string &v1, const std::string &v2)
 {
     // put two strings into a new list
     path_components retval;
@@ -636,18 +636,17 @@ static path_components join(const std::string& v1, const std::string& v2)
     retval.push_back(v2);
     return retval;
 }
-static path_components join(path_components v1, const std::string& v2)
+static path_components join(path_components v1, const std::string &v2)
 {
     // add a string onto an existing list
     v1.push_back(v2);
     return v1;
 }
-template <typename C3, typename C1, typename C2>
-C3& joined_cartesian_product(const C1& c1, const C2& c2, C3& result)
+template <typename C3, typename C1, typename C2> C3 &joined_cartesian_product(const C1 &c1, const C2 &c2, C3 &result)
 {
-    for (const auto& v1 : c1)
+    for (const auto &v1 : c1)
     {
-        for (const auto& v2 : c2)
+        for (const auto &v2 : c2)
         {
             // Rather than returning a list of (v1_n, v2_n) pairs, we'll "join" the
             // pair into a list [v1_n, v2_n].  That list will in turn be the input for
@@ -669,13 +668,13 @@ struct expanded_component final
     std::string component;
     std::vector<std::string> value;
 };
-static std::vector<expanded_component> expand_components(const separated_path& components)
+static std::vector<expanded_component> expand_components(const separated_path &components)
 {
     std::vector<expanded_component> retval;
-    for (const auto& component : components.components())
+    for (const auto &component : components.components())
     {
         expanded_component e{component, expandEnvironmentVariable(component)};
-        assert(e.value.size() >= 1);  // the component itself should always be there
+        assert(e.value.size() >= 1); // the component itself should always be there
 
         retval.push_back(std::move(e));
     }
@@ -683,17 +682,18 @@ static std::vector<expanded_component> expand_components(const separated_path& c
 }
 
 // Generate all the different ways the expansions can be combined.
-std::vector<path_components> joined_cartesian_product(const expanded_component& ec1, const expanded_component& ec2)
+std::vector<path_components> joined_cartesian_product(const expanded_component &ec1, const expanded_component &ec2)
 {
     std::vector<path_components> retval;
     return joined_cartesian_product(ec1.value, ec2.value, retval);
 }
-std::vector<path_components> joined_cartesian_product(const std::vector<path_components>& ec1, const expanded_component& ec2)
+std::vector<path_components> joined_cartesian_product(const std::vector<path_components> &ec1,
+                                                      const expanded_component &ec2)
 {
     std::vector<path_components> retval;
     return joined_cartesian_product(ec1, ec2.value, retval);
 }
-std::vector<path_components> expand(const std::vector<expanded_component>& expanded_components)
+std::vector<path_components> expand(const std::vector<expanded_component> &expanded_components)
 {
     std::vector<path_components> retval;
     if (expanded_components.empty())
@@ -703,7 +703,7 @@ std::vector<path_components> expand(const std::vector<expanded_component>& expan
     if (expanded_components.size() == 1)
     {
         // cartesian product of <anything> with <empty> is empty; we want <anything> instead
-        for (const auto& s : expanded_components[0].value)
+        for (const auto &s : expanded_components[0].value)
         {
             retval.push_back(join(s, ""));
         }
@@ -725,15 +725,17 @@ static std::string expandTilde()
     return os.getSpecialEnv("HOME"); // getSpecialEnv manages $HOME vs. %USERPROFILE%
 }
 
-static std::vector<std::string> expandedEnvironmentVariables_(const std::string& path_, bool& specialPath)
+static std::vector<std::string> expandedEnvironmentVariables_(const std::string &path_, bool &specialPath)
 {
-    // Avoid pathalogical cases where the first env-variable expands to escape or ~
-    #if _WIN32
-    //constexpr auto escape = R"(\\?\)"; // https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
-    constexpr auto escape = R"(\\)"; // none of the Path:: code supports UNC paths: \\server\dir\file.txt, only C:\dir\file.txt
-    #else // assuming *nix
+// Avoid pathalogical cases where the first env-variable expands to escape or ~
+#if _WIN32
+    // constexpr auto escape = R"(\\?\)"; //
+    // https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
+    constexpr auto escape =
+        R"(\\)"; // none of the Path:: code supports UNC paths: \\server\dir\file.txt, only C:\dir\file.txt
+#else            // assuming *nix
     constexpr auto escape = R"(//)";
-    #endif
+#endif
     if (path_.find(escape) == 0)
     {
         specialPath = true;
@@ -755,12 +757,12 @@ static std::vector<std::string> expandedEnvironmentVariables_(const std::string&
         str::replace(path, tilde_slash, expandTilde() + "/");
     }
 
-    const auto components = separate_path(path);  // "This splits on both '/' and '\\'."
+    const auto components = separate_path(path); // "This splits on both '/' and '\\'."
     const auto expanded_components = expand_components(components);
     const auto all_expansions = expand(expanded_components);
 
     std::vector<std::string> retval;
-    for (const auto& unmerged_path_ : all_expansions)
+    for (const auto &unmerged_path_ : all_expansions)
     {
         separated_path unmerged_path(unmerged_path_);
         unmerged_path.absolute = components.absolute;
@@ -774,7 +776,7 @@ static std::vector<std::string> expandedEnvironmentVariables_(const std::string&
     }
     return retval;
 }
-std::vector<std::string> Path::expandedEnvironmentVariables(const std::string& path)
+std::vector<std::string> Path::expandedEnvironmentVariables(const std::string &path)
 {
     bool unused_specialPath;
     return expandedEnvironmentVariables_(path, unused_specialPath);
@@ -787,15 +789,15 @@ static bool path_matches_type(const std::string &path_, fs::file_type type)
     {
         return true;
     }
-    if ((type== fs::file_type::directory) && is_directory(path))
+    if ((type == fs::file_type::directory) && is_directory(path))
     {
         return true;
     }
     return false;
 }
 
-static std::string expandEnvironmentVariables_(const std::string& path,
-                                               bool checkIfExists, fs::file_type* pType = nullptr)
+static std::string expandEnvironmentVariables_(const std::string &path, bool checkIfExists,
+                                               fs::file_type *pType = nullptr)
 {
     bool specialPath;
     const auto expanded_paths = expandedEnvironmentVariables_(path, specialPath);
@@ -814,7 +816,7 @@ static std::string expandEnvironmentVariables_(const std::string& path,
         return expanded_paths[0];
     }
 
-    for (const auto& expanded_path : expanded_paths)
+    for (const auto &expanded_path : expanded_paths)
     {
         // If the type matches, we're done
         if (pType != nullptr)
@@ -840,19 +842,18 @@ static std::string expandEnvironmentVariables_(const std::string& path,
     }
     return "";
 }
-std::string Path::expandEnvironmentVariables(const std::string& path, bool checkIfExists)
+std::string Path::expandEnvironmentVariables(const std::string &path, bool checkIfExists)
 {
     return expandEnvironmentVariables_(path, checkIfExists);
 }
-std::string Path::expandEnvironmentVariables(const std::string& path, fs::file_type type)
+std::string Path::expandEnvironmentVariables(const std::string &path, fs::file_type type)
 {
     bool unused_checkIfExists = true;
     return expandEnvironmentVariables_(path, unused_checkIfExists, &type);
 }
-} // sys
+} // namespace sys
 
-
-template<typename TReturn, typename TSpan, typename TFunc>
+template <typename TReturn, typename TSpan, typename TFunc>
 inline auto convertPaths_(coda_oss::span<const TSpan> paths, TFunc fun)
 {
     std::vector<TReturn> retval;
@@ -861,9 +862,9 @@ inline auto convertPaths_(coda_oss::span<const TSpan> paths, TFunc fun)
 }
 std::vector<std::string> sys::convertPaths(coda_oss::span<const fs::path> paths)
 {
-    return convertPaths_<std::string>(paths, [](const auto& p) { return p.string(); });
+    return convertPaths_<std::string>(paths, [](const auto &p) { return p.string(); });
 }
 std::vector<fs::path> sys::convertPaths(coda_oss::span<const std::string> paths)
 {
-    return convertPaths_<fs::path>(paths, [](const auto& p) { return p; });
+    return convertPaths_<fs::path>(paths, [](const auto &p) { return p; });
 }

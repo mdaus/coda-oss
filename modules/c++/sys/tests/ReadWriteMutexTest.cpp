@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,16 +14,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #if defined(__APPLE_CC__)
 #include <iostream>
-int main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     std::cout << "Sorry no semaphores" << std::endl;
     return 0;
@@ -31,10 +30,10 @@ int main (int argc, char *argv[])
 
 #else
 
-#include <sstream>
-#include <iostream>
-#include "sys/Thread.h"
 #include "sys/ReadWriteMutex.h"
+#include "sys/Thread.h"
+#include <iostream>
+#include <sstream>
 
 using namespace sys;
 const int MAX_THREADS = 10;
@@ -53,48 +52,50 @@ std::string BUFFER[1];
 
 class ReadWriteThread : public Thread
 {
-protected:
-   void run() override {
-        
-         for(int i=0; i < 5; ++i)
-         {
-             rwLock.lockWrite();
-             BUFFER[0] = getName().substr(7);
-             mutexCout.lock();
-             std::cout << getName() << " write " << BUFFER[0] << std::endl;
-             mutexCout.unlock();
-             sleep(1);
-             rwLock.unlockWrite();
-         }
-        
-         
-         rwLock.lockRead();
-         std::string b = BUFFER[0];
-         for(int i=0; i < 5; ++i)
-         {
-           assert(b == BUFFER[0]);
-           b = BUFFER[0];
-           mutexCout.lock();
-       std::cout << getName() << " read " << b << std::endl;
-           mutexCout.unlock();
-           sleep(1);
-         }
-         rwLock.unlockRead();
-   }
+  protected:
+    void run() override
+    {
 
-public:
-   ReadWriteThread(std::string name) : Thread(name) {};
+        for (int i = 0; i < 5; ++i)
+        {
+            rwLock.lockWrite();
+            BUFFER[0] = getName().substr(7);
+            mutexCout.lock();
+            std::cout << getName() << " write " << BUFFER[0] << std::endl;
+            mutexCout.unlock();
+            sleep(1);
+            rwLock.unlockWrite();
+        }
+
+        rwLock.lockRead();
+        std::string b = BUFFER[0];
+        for (int i = 0; i < 5; ++i)
+        {
+            assert(b == BUFFER[0]);
+            b = BUFFER[0];
+            mutexCout.lock();
+            std::cout << getName() << " read " << b << std::endl;
+            mutexCout.unlock();
+            sleep(1);
+        }
+        rwLock.unlockRead();
+    }
+
+  public:
+    ReadWriteThread(std::string name) : Thread(name) {};
 };
 
-int main (int, char**)
+int main(int, char **)
 {
-   Thread *threads[MAX_THREADS];
-   for (int i = 0 ; i < MAX_THREADS ; i++ ) {
-      threads[i] = new ReadWriteThread( "Thread " + itos(i) );
-      threads[i]->start();
-   }
-   for (int j = 0; j < MAX_THREADS; j++ ) {
-      threads[j]->join();
-   }
+    Thread *threads[MAX_THREADS];
+    for (int i = 0; i < MAX_THREADS; i++)
+    {
+        threads[i] = new ReadWriteThread("Thread " + itos(i));
+        threads[i]->start();
+    }
+    for (int j = 0; j < MAX_THREADS; j++)
+    {
+        threads[j]->join();
+    }
 }
 #endif

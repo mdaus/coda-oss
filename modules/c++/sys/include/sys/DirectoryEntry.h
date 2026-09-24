@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -27,7 +27,6 @@
 #include "sys/OS.h"
 #include "sys/Path.h"
 
-
 namespace sys
 {
 struct DirectoryEntry
@@ -35,7 +34,7 @@ struct DirectoryEntry
     struct Iterator;
     friend struct Iterator;
 
-    DirectoryEntry(const Path& path)
+    DirectoryEntry(const Path &path)
     {
         if (!path.exists() || !path.isDirectory())
             throw except::FileNotFoundException(Ctxt(path.getPath()));
@@ -43,7 +42,6 @@ struct DirectoryEntry
         mCurrent = mDir.findFirstFile(path.getPath());
         mFirst.reset(this);
         mLast.reset(nullptr);
-
     }
 
     /* Dont worry about this for now
@@ -59,8 +57,7 @@ struct DirectoryEntry
     }
     */
 
-    DirectoryEntry(const std::string& dirName) : 
-        mDirName(dirName)
+    DirectoryEntry(const std::string &dirName) : mDirName(dirName)
     {
         mCurrent = mDir.findFirstFile(dirName);
         mFirst.reset(this);
@@ -83,71 +80,63 @@ struct DirectoryEntry
     struct Iterator final
     {
         Iterator() = default;
-        explicit Iterator(DirectoryEntry* dirEntry) : mEntry(dirEntry)
-        {}
+        explicit Iterator(DirectoryEntry *dirEntry) : mEntry(dirEntry)
+        {
+        }
 
-
-        void reset(DirectoryEntry* dirEntry)
+        void reset(DirectoryEntry *dirEntry)
         {
             mEntry = dirEntry;
         }
-        Iterator& operator++()
+        Iterator &operator++()
         {
             mEntry->next();
-            if (mEntry->mCurrent.empty()) 
+            if (mEntry->mCurrent.empty())
                 mEntry = nullptr;
             return *this;
         }
         std::string operator*() const
         {
             if (mEntry->mCurrent.empty())
-                throw except::NullPointerReference(Ctxt(
-                    "DirectoryEntry::Iterator NULL entry not allowed"));
+                throw except::NullPointerReference(Ctxt("DirectoryEntry::Iterator NULL entry not allowed"));
             return std::string(mEntry->mCurrent);
         }
-        DirectoryEntry* get() const
+        DirectoryEntry *get() const
         {
             return mEntry;
         }
 
-        DirectoryEntry* operator->() const
+        DirectoryEntry *operator->() const
         {
             return get();
         }
 
-    private:
-        DirectoryEntry* mEntry = nullptr;
+      private:
+        DirectoryEntry *mEntry = nullptr;
     };
 
-    const Iterator& begin() const
+    const Iterator &begin() const
     {
         return mFirst;
     }
-    const Iterator& end() const
+    const Iterator &end() const
     {
         return mLast;
     }
 
-
-private:
+  private:
     Iterator mFirst;
     Iterator mLast;
     std::string mCurrent;
     std::string mDirName;
     Directory mDir;
     //   DirectoryEntry mDirLast;
-
-
 };
 
+} // namespace sys
 
+bool operator==(const sys::DirectoryEntry::Iterator &lhs, const sys::DirectoryEntry::Iterator &rhs);
 
-}
+bool operator!=(const sys::DirectoryEntry::Iterator &lhs, const sys::DirectoryEntry::Iterator &rhs);
 
-bool operator==(const sys::DirectoryEntry::Iterator& lhs,
-                const sys::DirectoryEntry::Iterator& rhs);
-
-bool operator!=(const sys::DirectoryEntry::Iterator& lhs,
-                const sys::DirectoryEntry::Iterator& rhs);
-
-#endif  // CODA_OSS_sys_DirectoryEntry_h_INCLUDED_
+#endif // CODA_OSS_sys_DirectoryEntry_h_INCLUDED_

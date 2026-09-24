@@ -20,20 +20,19 @@
  *
  */
 
-
 #ifndef __SYS_SEMAPHORE_POSIX_H__
 #define __SYS_SEMAPHORE_POSIX_H__
 
 #include <sys/Conf.h>
 
-#if CODA_OSS_POSIX_SOURCE &&!defined(__APPLE_CC__)
+#if CODA_OSS_POSIX_SOURCE && !defined(__APPLE_CC__)
 
 #include "sys/SemaphoreInterface.h"
 
 #if defined(__APPLE_CC_H__)
-#  include <sys/semaphore.h>
+#include <sys/semaphore.h>
 #else
-#  include <semaphore.h>
+#include <semaphore.h>
 #endif
 
 namespace sys
@@ -41,25 +40,26 @@ namespace sys
 //    typedef ::sem_t sem_t;
 class SemaphorePosix : public SemaphoreInterface
 {
-public:
+  public:
     SemaphorePosix(unsigned int count = 0);
     virtual ~SemaphorePosix();
     void wait() override;
     void signal() override;
-    sem_t& getNative();
+    sem_t &getNative();
 
     /*!
      *  Return the type name.  This function is essentially free,
      *  because it is static RTTI.
      */
-    const char* getNativeType() const
+    const char *getNativeType() const
     {
         return typeid(mNative).name();
     }
-private:
+
+  private:
     sem_t mNative;
 };
-}
+} // namespace sys
 
 #endif
 #endif

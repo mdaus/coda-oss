@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __SYS_WIN32_OS_H__
 #define __SYS_WIN32_OS_H__
 
@@ -59,7 +58,7 @@ struct CODA_OSS_API OSWin32 final : public AbstractOS
      *  For unix it will be one slash /
      *  \return The path delimiter
      */
-    const char* getDelimiter() const noexcept override
+    const char *getDelimiter() const noexcept override
     {
         return "\\";
     }
@@ -68,8 +67,7 @@ struct CODA_OSS_API OSWin32 final : public AbstractOS
      *  Determine the username
      *  \return The username
      */
-    //virtual std::string getUsername() const;
-
+    // virtual std::string getUsername() const;
 
     /*!
      *  Does this path exist?
@@ -78,7 +76,7 @@ struct CODA_OSS_API OSWin32 final : public AbstractOS
      *  \param path The path to check for
      *  \return True if it does, false otherwise
      */
-    virtual bool exists(const std::string& path) const;
+    virtual bool exists(const std::string &path) const;
 
     /*!
      *  Move file with this path name to the newPath
@@ -89,15 +87,14 @@ struct CODA_OSS_API OSWin32 final : public AbstractOS
      *
      *  \return True upon success, false if failure
      */
-    virtual bool move(const std::string& path,
-                      const std::string& newPath) const;
+    virtual bool move(const std::string &path, const std::string &newPath) const;
 
     /*!
      *  Does this path resolve to a file?
      *  \param path The path
      *  \return True if it does, false if not
      */
-    virtual bool isFile(const std::string& path) const;
+    virtual bool isFile(const std::string &path) const;
 
     /*!
      *  Does this path resolve to a directory?
@@ -105,7 +102,7 @@ struct CODA_OSS_API OSWin32 final : public AbstractOS
      *  \return True if it does, false if not
      *  \todo Throw if nothing exists??
      */
-    virtual bool isDirectory(const std::string& path) const;
+    virtual bool isDirectory(const std::string &path) const;
 
     /*!
      *  Create a directory with for the path specified
@@ -113,7 +110,7 @@ struct CODA_OSS_API OSWin32 final : public AbstractOS
      *  \return True on success, false on failure (since
      *  you may only create if no such exists)
      */
-    virtual bool makeDirectory(const std::string& path) const;
+    virtual bool makeDirectory(const std::string &path) const;
 
     /*!
      *  Retrieve the current working directory.
@@ -125,8 +122,7 @@ struct CODA_OSS_API OSWin32 final : public AbstractOS
      *  Change the current working directory.
      *  \return true if the directory was changed, otherwise false.
      */
-    virtual bool changeDirectory(const std::string& path) const;
-
+    virtual bool changeDirectory(const std::string &path) const;
 
     virtual Pid_T getProcessId() const;
 
@@ -135,15 +131,14 @@ struct CODA_OSS_API OSWin32 final : public AbstractOS
      *  \return The file name
      *
      */
-    virtual std::string getTempName(const std::string& path = ".",
-                                    const std::string& prefix = "TMP") const;
+    virtual std::string getTempName(const std::string &path = ".", const std::string &prefix = "TMP") const;
     /*!
      *  Return the size in bytes of a file
      *  \return The file size
      */
-    virtual sys::Off_T getSize(const std::string& path) const;
+    virtual sys::Off_T getSize(const std::string &path) const;
 
-    virtual sys::Off_T getLastModifiedTime(const std::string& path) const;
+    virtual sys::Off_T getLastModifiedTime(const std::string &path) const;
 
     virtual std::string getDSOSuffix() const;
 
@@ -154,29 +149,27 @@ struct CODA_OSS_API OSWin32 final : public AbstractOS
      */
     virtual void millisleep(int milliseconds) const;
 
-    virtual std::string operator[](const std::string& s) const;
+    virtual std::string operator[](const std::string &s) const;
 
     /*!
      *  Get an environment variable
      */
-    virtual std::string getEnv(const std::string& s) const;
+    virtual std::string getEnv(const std::string &s) const;
 
     /*!
      * Returns true if environment variable is set, false otherwise
      */
-    virtual bool isEnvSet(const std::string& s) const;
+    virtual bool isEnvSet(const std::string &s) const;
 
     /*!
      *  Set an environment variable
      */
-    virtual void setEnv(const std::string& var,
-                        const std::string& val,
-                        bool overwrite);
+    virtual void setEnv(const std::string &var, const std::string &val, bool overwrite);
 
     /*!
      * Unset an environment variable
      */
-    virtual void unsetEnv(const std::string& var);
+    virtual void unsetEnv(const std::string &var);
 
     /*!
      * \return the number of logical CPUs present on the machine
@@ -223,8 +216,7 @@ struct CODA_OSS_API OSWin32 final : public AbstractOS
      *                    'physicalCPUs'. Size of
      *                    getNumCPUsAvailable() - getNumPhysicalCPUsAvailable().
      */
-    virtual void getAvailableCPUs(std::vector<int>& physicalCPUs,
-                                  std::vector<int>& htCPUs) const;
+    virtual void getAvailableCPUs(std::vector<int> &physicalCPUs, std::vector<int> &htCPUs) const;
 
     /*!
      * Figure out what SIMD instrunctions are available.  Keep in mind these
@@ -235,36 +227,34 @@ struct CODA_OSS_API OSWin32 final : public AbstractOS
     /*!
      *  Create a symlink, pathnames can be either absolute or relative
      */
-    virtual void createSymlink(const std::string& origPathname,
-                               const std::string& symlinkPathname) const;
+    virtual void createSymlink(const std::string &origPathname, const std::string &symlinkPathname) const;
 
     /*!
      * Remove a symlink, pathname can be absolute or relative
      */
-    virtual void removeSymlink(const std::string& symlinkPathname) const;
+    virtual void removeSymlink(const std::string &symlinkPathname) const;
 
     /*!
      *  Get the total RAM and available RAM on the system in megabytes
      */
-    virtual void getMemInfo(size_t& totalPhysMem, size_t& freePhysMem) const;
+    virtual void getMemInfo(size_t &totalPhysMem, size_t &freePhysMem) const;
 
     /*!
-    *  Get the absolute path to the current executable
-    */
-    virtual std::string getCurrentExecutable(
-        const std::string& argvPathname = "") const;
+     *  Get the absolute path to the current executable
+     */
+    virtual std::string getCurrentExecutable(const std::string &argvPathname = "") const;
 
-protected:
+  protected:
     /*!
      *  Remove file with this pathname
      */
-    virtual void removeFile(const std::string& pathname) const;
+    virtual void removeFile(const std::string &pathname) const;
 
     /*!
      *  Remove directory with this pathname
      *  NOTE: This will throw if the directory is not empty
      */
-    virtual void removeDirectory(const std::string& pathname) const;
+    virtual void removeDirectory(const std::string &pathname) const;
 };
 
 struct DirectoryWin32 final : public AbstractDirectory
@@ -276,7 +266,7 @@ struct DirectoryWin32 final : public AbstractDirectory
     }
     void close() override;
 
-    std::string findFirstFile(const std::string& dir) override;
+    std::string findFirstFile(const std::string &dir) override;
 
     std::string findNextFile() override;
 
@@ -284,7 +274,7 @@ struct DirectoryWin32 final : public AbstractDirectory
     WIN32_FIND_DATA mFileData{};
 };
 
-}
+} // namespace sys
 
 #endif
 #endif

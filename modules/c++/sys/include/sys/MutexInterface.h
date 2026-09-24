@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,22 +14,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #ifndef CODA_OSS_sys_MutexInterface_h_INCLUDED_
 #define CODA_OSS_sys_MutexInterface_h_INCLUDED_
-
 
 #include <typeinfo>
 
 #include "config/Exports.h"
-#include "sys/SystemException.h"
 #include "sys/Dbg.h"
+#include "sys/SystemException.h"
 
 namespace sys
 {
@@ -43,14 +41,13 @@ namespace sys
  */
 class CODA_OSS_API MutexInterface
 {
-public:
+  public:
     //!  Constructor
     MutexInterface()
     {
 #ifdef THREAD_DEBUG
         dbg_printf("Creating a mutex\n");
 #endif
-
     }
 
     //!  Destructor
@@ -59,11 +56,10 @@ public:
 #ifdef THREAD_DEBUG
         dbg_printf("Destroying a mutex\n");
 #endif
-
     }
 
-    MutexInterface(const MutexInterface&) = delete;
-    MutexInterface& operator=(const MutexInterface&) = delete;
+    MutexInterface(const MutexInterface &) = delete;
+    MutexInterface &operator=(const MutexInterface &) = delete;
 
     /*!
      *  Lock the mutex up.
@@ -74,9 +70,8 @@ public:
      *  Unlock the mutex.
      */
     virtual void unlock() = 0;
-
 };
 
-}
+} // namespace sys
 
-#endif  // CODA_OSS_sys_MutexInterface_h_INCLUDED_
+#endif // CODA_OSS_sys_MutexInterface_h_INCLUDED_

@@ -44,8 +44,8 @@ struct MutexCpp11 final : public MutexInterface
     //!  Destructor
     virtual ~MutexCpp11();
 
-    MutexCpp11(const MutexCpp11&) = delete;
-    MutexCpp11& operator=(const MutexCpp11&) = delete;
+    MutexCpp11(const MutexCpp11 &) = delete;
+    MutexCpp11 &operator=(const MutexCpp11 &) = delete;
 
     /*!
      *  Lock the mutex.
@@ -60,20 +60,20 @@ struct MutexCpp11 final : public MutexInterface
     /*!
      *  Returns the native type.
      */
-    std::mutex& getNative();
+    std::mutex &getNative();
 
     /*!
      *  Return the type name.  This function is essentially free,
      *  because it is static RTTI.
      */
-    const char* getNativeType() const noexcept
+    const char *getNativeType() const noexcept
     {
         return typeid(mNative).name();
     }
 
-private:
+  private:
     std::mutex mNative;
 };
-}
+} // namespace sys
 
 #endif // CODA_OSS_sys_MutexCpp11_h_INCLUDED_

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  * (C) Copyright 2021, Maxar Technologies, Inc.
  *
@@ -15,8 +15,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -32,23 +32,27 @@
 #include "except/Backtrace.h"
 
 #define CODA_OSS_sys_Backtrace CODA_OSS_except_Backtrace
-namespace version { namespace sys {
+namespace version
+{
+namespace sys
+{
 constexpr auto backtrace = version::except::backtrace;
-} }
+}
+} // namespace version
 
 namespace sys
 {
-/*! 
+/*!
  * Returns a human-readable string describing the current stack of
- * function calls. Usefulness and format may vary depending on 
+ * function calls. Usefulness and format may vary depending on
  * your platform and what kind of symbols are compiled in.
  *
  * Currently only supported on *nix with glibc and Windows. This function will
  * return with an error message instead of a backtrace if the current
  * configuration is unsupported.
  */
-CODA_OSS_API std::string getBacktrace(bool* pSupported = nullptr);
-CODA_OSS_API std::string getBacktrace(bool& supported, std::vector<std::string>& frames);
-}
+CODA_OSS_API std::string getBacktrace(bool *pSupported = nullptr);
+CODA_OSS_API std::string getBacktrace(bool &supported, std::vector<std::string> &frames);
+} // namespace sys
 
 #endif // CODA_OSS_sys_Backtrace_h_INCLUDED_

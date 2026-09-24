@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,19 +14,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #ifndef __SYSTEM_EXCEPTION_H__
 #define __SYSTEM_EXCEPTION_H__
 
-#include "sys/Err.h"
 #include "except/Error.h"
 #include "except/Exception.h"
+#include "sys/Err.h"
 
 /*!
  *  \file  SystemException.h
@@ -43,14 +42,12 @@ namespace sys
  */
 class SystemException : public except::Exception
 {
-public:
-
+  public:
     /*!
      *  Constructs the user message, and retrieves the last error.
      *  \param userMessage The user's message
      */
-    SystemException(const std::string& userMessage) :
-            except::Exception(userMessage)
+    SystemException(const std::string &userMessage) : except::Exception(userMessage)
     {
         Err e;
         mMessage += std::string(": ") + e.toString();
@@ -60,8 +57,7 @@ public:
      *  Constructs the user message, and retrieves the last error.
      *  \param c The user's context
      */
-    SystemException(const except::Context& c) :
-            except::Exception(c)
+    SystemException(const except::Context &c) : except::Exception(c)
     {
         Err e;
         mMessage += std::string(": ") + e.toString();
@@ -71,8 +67,7 @@ public:
      *  Constructs the user message, and retrieves the last error.
      *  \param userMessage The user's message
      */
-    SystemException(const char *userMessage) :
-            except::Exception(userMessage)
+    SystemException(const char *userMessage) : except::Exception(userMessage)
     {
         Err e;
         mMessage += std::string(": ") + e.toString();
@@ -83,8 +78,7 @@ public:
      *  \param userMessage A user's message
      *  \param errorId the system error id
      */
-    SystemException(const char *userMessage, int errorId):
-            except::Exception(userMessage)
+    SystemException(const char *userMessage, int errorId) : except::Exception(userMessage)
     {
         Err e(errorId);
         mMessage += std::string(": ") + e.toString();
@@ -95,8 +89,7 @@ public:
      *  \param userMessage A user's message
      *  \param errorId the system error id
      */
-    SystemException(const std::string& userMessage, int errorId) :
-            except::Exception(userMessage)
+    SystemException(const std::string &userMessage, int errorId) : except::Exception(userMessage)
     {
         Err e(errorId);
         mMessage += std::string(": ") + e.toString();
@@ -112,14 +105,12 @@ public:
  */
 class SystemError : public except::Error
 {
-public:
-
+  public:
     /*!
      *  Constructs the user message, and retrieves the last error.
      *  \param userMessage The user's message
      */
-    SystemError(const std::string& userMessage) :
-            except::Error(userMessage)
+    SystemError(const std::string &userMessage) : except::Error(userMessage)
     {
         Err e;
         mMessage += std::string(": ") + e.toString();
@@ -129,8 +120,7 @@ public:
      *  Constructs the user message, and retrieves the last error.
      *  \param userMessage The user's message
      */
-    SystemError(const char *userMessage) :
-            except::Error(userMessage)
+    SystemError(const char *userMessage) : except::Error(userMessage)
     {
         Err e;
         mMessage += std::string(": ") + e.toString();
@@ -141,8 +131,7 @@ public:
      *  \param userMessage A user's message
      *  \param errorId the system error id
      */
-    SystemError(const char *userMessage, int errorId):
-            except::Error(userMessage)
+    SystemError(const char *userMessage, int errorId) : except::Error(userMessage)
     {
         Err e(errorId);
         mMessage += std::string(": ") + e.toString();
@@ -153,8 +142,7 @@ public:
      *  \param userMessage A user's message
      *  \param errorId the system error id
      */
-    SystemError(const std::string& userMessage, int errorId) :
-            except::Error(userMessage)
+    SystemError(const std::string &userMessage, int errorId) : except::Error(userMessage)
     {
         Err e(errorId);
         mMessage += std::string(": ") + e.toString();
@@ -164,26 +152,22 @@ public:
      *  Constructs the user message, and retrieves the last error.
      *  \param c The user's context
      */
-    SystemError(const except::Context& c) :
-            except::Error(c)
+    SystemError(const except::Context &c) : except::Error(c)
     {
         Err e;
         mMessage += std::string(": ") + e.toString();
     }
 };
 
-
 /*     class SocketException : public except::Exception */
 /*     { */
 /*     public: */
-
 
 /*  SocketException(const std::string& userMessage) :  */
 /*      except::Exception(userMessage)  */
 /*  { */
 /*      mErr = Err(); */
 /*  } */
-
 
 /*  SocketException(const char *userMessage) : */
 /*      except::Exception(userMessage) {} */
@@ -217,7 +201,6 @@ public:
 /*      mErr = Err(); */
 /*  } */
 
-
 /*  SocketError(const char *userMessage) : */
 /*      except::Error(userMessage) {} */
 
@@ -242,10 +225,9 @@ public:
 
 /*     }; */
 
-
 // Temporary -- eventually want a socket error specific class
 // so we can support winsock
 typedef SystemException SocketException;
 typedef SystemError SocketError;
-}
+} // namespace sys
 #endif

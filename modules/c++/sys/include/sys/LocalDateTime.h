@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifndef __SYS_LOCAL_DATE_TIME_H__
 #define __SYS_LOCAL_DATE_TIME_H__
@@ -35,11 +34,11 @@ namespace sys
  */
 class CODA_OSS_API LocalDateTime : public DateTime
 {
-protected:
+  protected:
     int mDST;
 
     //! @brief Set members from the tm struct value.
-    virtual void fromMillis(const tm& t) override;
+    virtual void fromMillis(const tm &t) override;
 
     /**
      * @brief Set the millis value from the members
@@ -47,9 +46,9 @@ protected:
     virtual void toMillis() override;
 
     // ! Given seconds since the epoch, provides the local time
-    virtual void getTime(time_t numSecondsSinceEpoch, tm& t) const override;
+    virtual void getTime(time_t numSecondsSinceEpoch, tm &t) const override;
 
-public:
+  public:
     /*!
      *  Construct as current date and time (localtime).
      */
@@ -65,8 +64,7 @@ public:
     /*!
      *  Construct with date and time values.
      */
-    LocalDateTime(int year, int month, int day, 
-             int hour, int minute, double second);
+    LocalDateTime(int year, int month, int day, int hour, int minute, double second);
     /*!
      *  Construct with time in milliseconds.
      */
@@ -74,11 +72,14 @@ public:
     /*!
      *  Construct with string/format.
      */
-    LocalDateTime(const std::string& time);
-    LocalDateTime(const std::string& time, const std::string& format);
+    LocalDateTime(const std::string &time);
+    LocalDateTime(const std::string &time, const std::string &format);
 
     //! Return the Daylight Savings Time flag (true = on, false = off)
-    bool getDST() const noexcept { return mDST == 1; }
+    bool getDST() const noexcept
+    {
+        return mDST == 1;
+    }
 
     //! Set the Daylight Savings Time flag (true = on, false = off)
     void setDST(bool isDST);
@@ -94,8 +95,8 @@ public:
     std::string format() const;
 };
 
-std::ostream& operator<<(std::ostream& os, const LocalDateTime& dateTime);
-std::istream& operator>>(std::istream& is, LocalDateTime& dateTime);
-}
+std::ostream &operator<<(std::ostream &os, const LocalDateTime &dateTime);
+std::istream &operator>>(std::istream &is, LocalDateTime &dateTime);
+} // namespace sys
 
 #endif

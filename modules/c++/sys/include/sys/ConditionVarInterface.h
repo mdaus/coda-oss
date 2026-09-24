@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifndef CODA_OSS_sys_ConditionVarInterface_h_INCLUDED_
 #define CODA_OSS_sys_ConditionVarInterface_h_INCLUDED_
@@ -28,8 +27,8 @@
 
 #include "config/Exports.h"
 
-#include "sys/SystemException.h"
 #include "sys/Mutex.h"
+#include "sys/SystemException.h"
 namespace sys
 {
 /*!
@@ -61,14 +60,18 @@ struct CODA_OSS_API ConditionVarInterface
      *  use for synchronization purposes
      *
      *  \param isOwner This defaults to false, which means that your
-     *  condition variable is not responsible for the deletion of the 
+     *  condition variable is not responsible for the deletion of the
      *  mutex (in other words, you must delete the mutex explicitly.
      *  If you set this parameter to true, you may actually be sharing
      *  a lock, but this class will STILL delete it.
      *
      */
-    explicit ConditionVarInterface(Mutex *, bool = false) noexcept {}
-    explicit ConditionVarInterface(Mutex&) noexcept { }
+    explicit ConditionVarInterface(Mutex *, bool = false) noexcept
+    {
+    }
+    explicit ConditionVarInterface(Mutex &) noexcept
+    {
+    }
 
     virtual ~ConditionVarInterface() = default;
 
@@ -83,7 +86,7 @@ struct CODA_OSS_API ConditionVarInterface
     virtual void dropLock() = 0;
 
     /*!
-     *  Wait for on a signal for a time interval.  
+     *  Wait for on a signal for a time interval.
      *  This should eventually have
      *  a class TimeInterval as the second argument, which takes
      *  any time interval as a right-hand-side
@@ -91,9 +94,9 @@ struct CODA_OSS_API ConditionVarInterface
      *  a double
      *  \todo  Create a TimeInterval class, and use it as parameter
      *
-     *  WARNING: The user is responsible for locking the mutex prior 
-     *           to using this method. There will be no check and on 
-     *           certain systems, undefined/unfavorable behavior may 
+     *  WARNING: The user is responsible for locking the mutex prior
+     *           to using this method. There will be no check and on
+     *           certain systems, undefined/unfavorable behavior may
      *           result.
      */
     virtual void wait(double timeout) = 0;
@@ -101,9 +104,9 @@ struct CODA_OSS_API ConditionVarInterface
     /*!
      *  Wait on a signal
      *
-     *  WARNING: The user is responsible for locking the mutex prior 
-     *           to using this method. There will be no check and on 
-     *           certain systems, undefined/unfavorable behavior may 
+     *  WARNING: The user is responsible for locking the mutex prior
+     *           to using this method. There will be no check and on
+     *           certain systems, undefined/unfavorable behavior may
      *           result.
      */
     virtual void wait() = 0;
@@ -117,8 +120,7 @@ struct CODA_OSS_API ConditionVarInterface
      *  Broadcast (notify all)
      */
     virtual void broadcast() = 0;
-
 };
 
-}
-#endif  // CODA_OSS_sys_ConditionVarInterface_h_INCLUDED_
+} // namespace sys
+#endif // CODA_OSS_sys_ConditionVarInterface_h_INCLUDED_

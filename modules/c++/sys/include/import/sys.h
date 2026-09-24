@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -26,10 +26,10 @@
 #include "sys/AtomicCounter.h"
 #include "sys/ConditionVar.h"
 #include "sys/Conf.h"
+#include "sys/DLL.h"
 #include "sys/DateTime.h"
 #include "sys/Dbg.h"
 #include "sys/DirectoryEntry.h"
-#include "sys/DLL.h"
 #include "sys/Err.h"
 #include "sys/Exec.h"
 #include "sys/File.h"
@@ -43,10 +43,10 @@
 #include "sys/Semaphore.h"
 #include "sys/StopWatch.h"
 #include "sys/SystemException.h"
-#include "sys/TimeStamp.h"
 #include "sys/Thread.h"
+#include "sys/TimeStamp.h"
 #include "sys/UTCDateTime.h"
-//#include "sys/Process.h"
+// #include "sys/Process.h"
 
 /*!
 
@@ -54,9 +54,9 @@
 
 The sys library servers the purpose of creating a common, system-independent
 interface layer for cross-platform applications.  It currently supports
-UNIX and Windows, and provides interfaces for sockets, threads, 
+UNIX and Windows, and provides interfaces for sockets, threads,
 synchronization, conditions, time and operating system-specific function calls.
 
 */
 
-#endif  // CODA_OSS_import_sys_h_INCLUDED_
+#endif // CODA_OSS_import_sys_h_INCLUDED_

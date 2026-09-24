@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,54 +14,49 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #if defined(_WIN32)
 #include "sys/ConditionVarWin32.h"
 
 namespace
 {
-    // RAII for EnterCriticalSection() / LeaveCriticalSection()
-    class ScopedCriticalSection
+// RAII for EnterCriticalSection() / LeaveCriticalSection()
+class ScopedCriticalSection
+{
+  public:
+    ScopedCriticalSection(CRITICAL_SECTION &criticalSection) : mCriticalSection(criticalSection)
     {
-    public:
-        ScopedCriticalSection(CRITICAL_SECTION& criticalSection) :
-            mCriticalSection(criticalSection)
-        {
-            EnterCriticalSection(&mCriticalSection);
-        }
+        EnterCriticalSection(&mCriticalSection);
+    }
 
-        ~ScopedCriticalSection()
-        {
-            LeaveCriticalSection(&mCriticalSection);
-        }
+    ~ScopedCriticalSection()
+    {
+        LeaveCriticalSection(&mCriticalSection);
+    }
 
-        ScopedCriticalSection(const ScopedCriticalSection&) = delete;
-        ScopedCriticalSection& operator=(const ScopedCriticalSection&) = delete;
-        ScopedCriticalSection(ScopedCriticalSection&&) = delete;
-        ScopedCriticalSection& operator=(ScopedCriticalSection&&) = delete;
+    ScopedCriticalSection(const ScopedCriticalSection &) = delete;
+    ScopedCriticalSection &operator=(const ScopedCriticalSection &) = delete;
+    ScopedCriticalSection(ScopedCriticalSection &&) = delete;
+    ScopedCriticalSection &operator=(ScopedCriticalSection &&) = delete;
 
-    private:
-        CRITICAL_SECTION& mCriticalSection;
-    };
-}
+  private:
+    CRITICAL_SECTION &mCriticalSection;
+};
+} // namespace
 
-sys::ConditionVarDataWin32::ConditionVarDataWin32():
-    mNumWaiters(0),
-    mSemaphore(CreateSemaphore(nullptr, 0, 0x7FFFFFFF, nullptr)),
-    mWaitersAreDone(CreateEvent(nullptr, FALSE, FALSE, nullptr)),
-    mWasBroadcast(false)
+sys::ConditionVarDataWin32::ConditionVarDataWin32()
+    : mNumWaiters(0), mSemaphore(CreateSemaphore(nullptr, 0, 0x7FFFFFFF, nullptr)),
+      mWaitersAreDone(CreateEvent(nullptr, FALSE, FALSE, nullptr)), mWasBroadcast(false)
 {
     InitializeCriticalSection(&mNumWaitersCS);
     if (mSemaphore == nullptr || mWaitersAreDone == nullptr)
     {
-        throw sys::SystemException(
-            "ConditionVarDataWin32 Initializer failed");
+        throw sys::SystemException("ConditionVarDataWin32 Initializer failed");
     }
 }
 
@@ -82,8 +77,7 @@ void sys::ConditionVarDataWin32::wait(HANDLE externalMutex)
 
     // Atomically release the mutex and wait on the semaphore until signal()
     // or broadcast() are called by another thread
-    if (SignalObjectAndWait(externalMutex, mSemaphore, INFINITE, FALSE) != 
-        WAIT_OBJECT_0)
+    if (SignalObjectAndWait(externalMutex, mSemaphore, INFINITE, FALSE) != WAIT_OBJECT_0)
     {
         throw sys::SystemException("SignalObjectAndWait() failed");
     }
@@ -107,19 +101,16 @@ bool sys::ConditionVarDataWin32::wait(HANDLE externalMutex, double timeout)
 
     // Atomically release the mutex and wait on the semaphore until signal()
     // or broadcast() are called by another thread or we time out
-    switch (SignalObjectAndWait(externalMutex,
-                                mSemaphore, 
-                                static_cast<DWORD>(timeout * 1000), 
-                                FALSE))
+    switch (SignalObjectAndWait(externalMutex, mSemaphore, static_cast<DWORD>(timeout * 1000), FALSE))
     {
     case WAIT_OBJECT_0:
         waitImpl(externalMutex);
         return true;
     case WAIT_TIMEOUT:
-        {
-            const ScopedCriticalSection lock(mNumWaitersCS);
-            --mNumWaiters;
-        }
+    {
+        const ScopedCriticalSection lock(mNumWaitersCS);
+        --mNumWaiters;
+    }
         return false;
     default:
         throw sys::SystemException("SignalObjectAndWait() failed");
@@ -203,22 +194,23 @@ void sys::ConditionVarDataWin32::broadcast()
     }
 }
 
-sys::ConditionVarWin32::ConditionVarWin32() :
-    mMutexOwned(std::make_unique<sys::MutexWin32>()),
-    mMutex(mMutexOwned.get())
-{}
+sys::ConditionVarWin32::ConditionVarWin32()
+    : mMutexOwned(std::make_unique<sys::MutexWin32>()), mMutex(mMutexOwned.get())
+{
+}
 
-sys::ConditionVarWin32::ConditionVarWin32(MutexWin32* theLock, bool isOwner, std::nullptr_t) : mMutex(theLock)
+sys::ConditionVarWin32::ConditionVarWin32(MutexWin32 *theLock, bool isOwner, std::nullptr_t) : mMutex(theLock)
 {
     if (isOwner)
         mMutexOwned.reset(theLock);
 }
-sys::ConditionVarWin32::ConditionVarWin32(MutexWin32 *theLock, bool isOwner) : ConditionVarWin32(theLock, isOwner, nullptr)
+sys::ConditionVarWin32::ConditionVarWin32(MutexWin32 *theLock, bool isOwner)
+    : ConditionVarWin32(theLock, isOwner, nullptr)
 {
     if (!theLock)
         throw SystemException("ConditionVar received NULL mutex");
 }
-sys::ConditionVarWin32::ConditionVarWin32(MutexWin32& theLock) : ConditionVarWin32(&theLock, false /*isOwner*/, nullptr)
+sys::ConditionVarWin32::ConditionVarWin32(MutexWin32 &theLock) : ConditionVarWin32(&theLock, false /*isOwner*/, nullptr)
 {
 }
 
@@ -257,10 +249,9 @@ void sys::ConditionVarWin32::broadcast()
     mNative.broadcast();
 }
 
-sys::ConditionVarDataWin32& sys::ConditionVarWin32::getNative()
+sys::ConditionVarDataWin32 &sys::ConditionVarWin32::getNative()
 {
     return mNative;
 }
 
 #endif // Windows
-

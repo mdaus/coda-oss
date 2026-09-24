@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -25,14 +25,15 @@
 #if CODA_OSS_POSIX_SOURCE
 
 #ifdef _WIN32
-#   define SIGKILL 0
+#define SIGKILL 0
 #endif
 void sys::ThreadPosix::start()
 {
 
     if (getLevel() != DEFAULT_LEVEL)
     {
-        throw sys::SystemException("Cannot determine upfront wheteher pthread threads are implemented using kernel or user level threads.  Set the level to DEFAULT_LEVEL");
+        throw sys::SystemException("Cannot determine upfront wheteher pthread threads are implemented using kernel or "
+                                   "user level threads.  Set the level to DEFAULT_LEVEL");
     }
 
     if (getPriority() != NORMAL_PRIORITY)
@@ -47,22 +48,15 @@ void sys::ThreadPosix::start()
 
         pthread_attr_t attr;
         pthread_attr_init(&attr);
-        pthread_attr_setschedparam(&attr,
-                                   &sp);
+        pthread_attr_setschedparam(&attr, &sp);
 
-        if (::pthread_create(&mNative,
-                             &attr,
-                             static_cast<void *(*)(void *)>(this->__start),
-                             this) != 0)
+        if (::pthread_create(&mNative, &attr, static_cast<void *(*)(void *)>(this->__start), this) != 0)
             throw sys::SystemException("pthread_create()");
         pthread_attr_destroy(&attr);
     }
     else
     {
-        if (::pthread_create(&mNative,
-                             nullptr,
-                             static_cast<void *(*)(void *)>(this->__start),
-                             this) != 0)
+        if (::pthread_create(&mNative, nullptr, static_cast<void *(*)(void *)>(this->__start), this) != 0)
             throw sys::SystemException("pthread_create()");
     }
 }
@@ -70,7 +64,7 @@ void *sys::ThreadPosix::__start(void *v)
 {
     STANDARD_START_CALL(ThreadPosix, v);
     /*
-    sys::Runnable *runnable = 
+    sys::Runnable *runnable =
         static_cast<sys::Runnable *>(v);
 
     runnable->run();

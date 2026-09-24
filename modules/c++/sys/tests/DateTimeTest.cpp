@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  * (C) Copyright 2025-26 ARKA Group, L.P. All rights reserved
  *
@@ -15,46 +15,44 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <import/sys.h>
-#include <fstream>
-#include <iomanip>
-#include "sys/StopWatch.h"
 #include "sys/LocalDateTime.h"
+#include "sys/StopWatch.h"
 #include "sys/UTCDateTime.h"
+#include <fstream>
+#include <import/sys.h>
+#include <iomanip>
 
 using namespace sys;
 
-int main(int, char**)
+int main(int, char **)
 {
     try
     {
         sys::LocalDateTime now;
         std::cout << "Epoch seconds: " << sys::DateTime::getEpochSeconds() << std::endl;
-        std::cout << "Today is: " << now.getMonth() << "/"
-                << now.getDayOfMonth() << "/" << now.getYear() << std::endl;
-        std::cout << "Time is: " << now.getHour() << ":" << now.getMinute()
-                << ":" << std::setprecision(50) << now.getSecond() << std::endl;
+        std::cout << "Today is: " << now.getMonth() << "/" << now.getDayOfMonth() << "/" << now.getYear() << std::endl;
+        std::cout << "Time is: " << now.getHour() << ":" << now.getMinute() << ":" << std::setprecision(50)
+                  << now.getSecond() << std::endl;
         if (now.getDST())
             std::cout << "Daylight Savings Time is in effect" << std::endl;
         std::cout << "formatted: " << now.format() << std::endl;
 
         sys::UTCDateTime gmnow;
-        std::cout << "Today (UTC) is: " << gmnow.getMonth() << "/"
-                << gmnow.getDayOfMonth() << "/" << gmnow.getYear() << std::endl;
-        std::cout << "Time (UTC) is: " << gmnow.getHour() << ":"
-            << gmnow.getMinute() << ":" << std::setprecision(50)
-            << gmnow.getSecond() << std::endl;
+        std::cout << "Today (UTC) is: " << gmnow.getMonth() << "/" << gmnow.getDayOfMonth() << "/" << gmnow.getYear()
+                  << std::endl;
+        std::cout << "Time (UTC) is: " << gmnow.getHour() << ":" << gmnow.getMinute() << ":" << std::setprecision(50)
+                  << gmnow.getSecond() << std::endl;
         std::cout << "formatted: " << gmnow.format() << std::endl;
 
         sys::RealTimeStopWatch sw;
         sys::CPUStopWatch csw;
-        //std::cout << "CPS: " << CLOCKS_PER_SEC << std::endl;
+        // std::cout << "CPS: " << CLOCKS_PER_SEC << std::endl;
         std::cout << "clock(): " << clock() / CLOCKS_PER_SEC << std::endl;
         std::cout << "time(): " << time(nullptr) << std::endl;
         std::cout << "RTStart: " << sw.start() << std::endl;
@@ -64,7 +62,9 @@ int main(int, char**)
         {
             x = 1 * 2 * 3;
         }
-        if (x > 0) { /*remove compiler warning*/ }
+        if (x > 0)
+        { /*remove compiler warning*/
+        }
         std::cout << "Finish Loop 1" << std::endl;
         sw.pause();
         csw.pause();
@@ -73,8 +73,8 @@ int main(int, char**)
             x = 1 * 2 * 3;
         }
         std::cout << "Finish Loop 2" << std::endl;
-        //sw.clear();
-        //csw.clear();
+        // sw.clear();
+        // csw.clear();
         sw.start();
         csw.start();
 
@@ -85,16 +85,13 @@ int main(int, char**)
         std::cout << "Finish Loop 3" << std::endl;
         std::cout << "clock(): " << clock() / CLOCKS_PER_SEC << std::endl;
         std::cout << "time(): " << time(nullptr) << std::endl;
-        std::cout << "RTStop: " << std::setprecision(50) << sw.stop()
-                << std::endl;
-        std::cout << "CStop: " << std::setprecision(50) << csw.stop()
-                << std::endl;
-
+        std::cout << "RTStop: " << std::setprecision(50) << sw.stop() << std::endl;
+        std::cout << "CStop: " << std::setprecision(50) << csw.stop() << std::endl;
     }
-    catch (except::Throwable& t)
+    catch (except::Throwable &t)
     {
         std::cerr << "Caught throwable: " << t.toString() << std::endl;
-        exit( EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
     catch (...)
     {

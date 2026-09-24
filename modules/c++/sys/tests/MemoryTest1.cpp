@@ -25,28 +25,27 @@
 
 using namespace sys;
 
-int main(int, char**)
+int main(int, char **)
 {
     try
     {
         sys::OS os;
-        size_t freePhysMem=0, totalPhysMem=0;
+        size_t freePhysMem = 0, totalPhysMem = 0;
         os.getMemInfo(totalPhysMem, freePhysMem);
         std::cout << "Total system memory: " << totalPhysMem << " MB" << std::endl;
         std::cout << "Free system memory: " << freePhysMem << " MB" << std::endl;
     }
-    catch (const except::Exception& ex)
+    catch (const except::Exception &ex)
     {
-        std::cerr << "Caught except::exception: " << ex.getMessage()
-                  << std::endl;
+        std::cerr << "Caught except::exception: " << ex.getMessage() << std::endl;
         return 1;
     }
-    catch (const std::exception& ex)
+    catch (const std::exception &ex)
     {
         std::cerr << "Caught std::exception: " << ex.what() << std::endl;
         return 1;
     }
-    catch(...)
+    catch (...)
     {
         std::cerr << "Caught unknown exception\n";
         return 1;

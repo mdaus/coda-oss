@@ -25,7 +25,7 @@
 
 namespace
 {
-void printCPUs(const std::string& header, const std::vector<int>& cpus)
+void printCPUs(const std::string &header, const std::vector<int> &cpus)
 {
     std::vector<int>::const_iterator cpu;
 
@@ -40,31 +40,26 @@ void printCPUs(const std::string& header, const std::vector<int>& cpus)
     }
     std::cout << std::endl;
 }
-}
+} // namespace
 
-int main(int /*argc*/, char** /*argv*/)
+int main(int /*argc*/, char ** /*argv*/)
 {
     try
     {
         sys::OS os;
 
-        std::cout << "Present number of CPUs: "
-                  << os.getNumCPUs() << std::endl;
-        std::cout << "Present number of physical CPUs: "
-                  << os.getNumPhysicalCPUs() << std::endl;
-        std::cout << "Available number of CPUs: "
-                  << os.getNumCPUsAvailable() << std::endl;
-        std::cout << "Available number of physical CPUs: "
-                  << os.getNumPhysicalCPUsAvailable() << std::endl;
+        std::cout << "Present number of CPUs: " << os.getNumCPUs() << std::endl;
+        std::cout << "Present number of physical CPUs: " << os.getNumPhysicalCPUs() << std::endl;
+        std::cout << "Available number of CPUs: " << os.getNumCPUsAvailable() << std::endl;
+        std::cout << "Available number of physical CPUs: " << os.getNumPhysicalCPUsAvailable() << std::endl;
 
         std::vector<int> physicalCPUs;
         std::vector<int> htCPUs;
         os.getAvailableCPUs(physicalCPUs, htCPUs);
         printCPUs("Available physical CPUs", physicalCPUs);
         printCPUs("Available HT CPUs", htCPUs);
-
     }
-    catch (const except::Throwable& t)
+    catch (const except::Throwable &t)
     {
         std::cerr << "Caught throwable: " << t.toString() << std::endl;
         return 1;

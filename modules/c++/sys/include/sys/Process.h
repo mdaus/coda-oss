@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,16 +14,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #ifndef __SYS_RUNTIME_PROCESS_H__
 #define __SYS_RUNTIME_PROCESS_H__
-
 
 /*!
  *  \file
@@ -39,19 +37,18 @@
 #include "sys/ProcessInterface.h"
 
 #ifdef _WIN32
-#  include "sys/ProcessWin32.h"
+#include "sys/ProcessWin32.h"
 namespace sys
 {
 typedef ProcessWin32 Process;
 }
 #
 #else
-#  include "sys/ProcessUnix.h"
+#include "sys/ProcessUnix.h"
 namespace sys
 {
 typedef ProcessUnix Process;
 }
 #endif
-
 
 #endif

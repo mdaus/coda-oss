@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,17 +14,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <import/sys.h>
-#include <import/str.h>
 #include <import/except.h>
+#include <import/str.h>
+#include <import/sys.h>
 
-int main(int, char**)
+int main(int, char **)
 {
     try
     {
@@ -49,11 +49,11 @@ int main(int, char**)
             std::cout << "Found file: " << *p << std::endl;
         }
     }
-    catch (except::Throwable& t)
+    catch (except::Throwable &t)
     {
         std::cout << t.toString() << std::endl;
     }
-    catch (std::exception& ex)
+    catch (std::exception &ex)
     {
         std::cout << ex.what() << std::endl;
     }
@@ -62,5 +62,4 @@ int main(int, char**)
         std::cout << "Caught unnknown throwable" << std::endl;
     }
     return 0;
-
 }

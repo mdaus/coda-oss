@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,19 +14,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #ifndef __SYS_SEMAPHORE_INTERFACE_H__
 #define __SYS_SEMAPHORE_INTERFACE_H__
 
-#include <typeinfo>
-#include "sys/SystemException.h"
 #include "config/Exports.h"
+#include "sys/SystemException.h"
+#include <typeinfo>
 
 namespace sys
 {
@@ -38,9 +37,8 @@ struct CODA_OSS_API SemaphoreInterface
     virtual void signal() = 0;
 
     virtual void wait() = 0;
-
 };
 
-}
+} // namespace sys
 
 #endif

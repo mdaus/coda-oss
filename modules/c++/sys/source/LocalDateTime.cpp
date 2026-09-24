@@ -21,17 +21,17 @@
  */
 #include <sys/LocalDateTime.h>
 
-#include <sys/Conf.h>
 #include <except/Exception.h>
 #include <str/Convert.h>
 #include <str/Manip.h>
+#include <sys/Conf.h>
 
 static const char DEFAULT_DATETIME_FORMAT[] = "%Y-%m-%d_%H:%M:%S";
 
 namespace sys
 {
 
-void LocalDateTime::fromMillis(const tm& t)
+void LocalDateTime::fromMillis(const tm &t)
 {
     DateTime::fromMillis(t);
     mDST = t.tm_isdst;
@@ -53,20 +53,18 @@ void LocalDateTime::toMillis()
     mTimeInMillis = DateTime::toMillis(t);
 }
 
-void LocalDateTime::getTime(time_t numSecondsSinceEpoch, tm& t) const
+void LocalDateTime::getTime(time_t numSecondsSinceEpoch, tm &t) const
 {
     DateTime::localtime(numSecondsSinceEpoch, t);
 }
 
-LocalDateTime::LocalDateTime() :
-    mDST(-1) // Tell mktime() we're not sure
+LocalDateTime::LocalDateTime() : mDST(-1) // Tell mktime() we're not sure
 {
     setNow();
     toMillis();
 }
 
-LocalDateTime::LocalDateTime(int hour, int minute, double second) :
-    mDST(-1) // Tell mktime() we're not sure
+LocalDateTime::LocalDateTime(int hour, int minute, double second) : mDST(-1) // Tell mktime() we're not sure
 {
     setNow();
 
@@ -77,8 +75,7 @@ LocalDateTime::LocalDateTime(int hour, int minute, double second) :
     toMillis();
 }
 
-LocalDateTime::LocalDateTime(int year, int month, int day) :
-    mDST(-1) // Tell mktime() we're not sure
+LocalDateTime::LocalDateTime(int year, int month, int day) : mDST(-1) // Tell mktime() we're not sure
 {
     mYear = year;
     mMonth = month;
@@ -88,9 +85,8 @@ LocalDateTime::LocalDateTime(int year, int month, int day) :
     DateTime::fromMillis();
 }
 
-LocalDateTime::LocalDateTime(int year, int month, int day,
-                             int hour, int minute, double second) :
-    mDST(-1) // Tell mktime() we're not sure
+LocalDateTime::LocalDateTime(int year, int month, int day, int hour, int minute, double second)
+    : mDST(-1) // Tell mktime() we're not sure
 {
     mYear = year;
     mMonth = month;
@@ -103,27 +99,26 @@ LocalDateTime::LocalDateTime(int year, int month, int day,
     DateTime::fromMillis();
 }
 
-LocalDateTime::LocalDateTime(double timeInMillis) :
-    mDST(-1) // Tell mktime() we're not sure
+LocalDateTime::LocalDateTime(double timeInMillis) : mDST(-1) // Tell mktime() we're not sure
 {
     mTimeInMillis = timeInMillis;
     DateTime::fromMillis();
 }
 
-LocalDateTime::LocalDateTime(const std::string& time,
-                             const std::string& format) :
-    mDST(-1) // Tell mktime() we're not sure
+LocalDateTime::LocalDateTime(const std::string &time,
+                             const std::string &format)
+    : mDST(-1) // Tell mktime() we're not sure
 {
     setTime(time, format);
     DateTime::fromMillis();
 }
-LocalDateTime::LocalDateTime(const std::string& time) : LocalDateTime(time, DEFAULT_DATETIME_FORMAT)
+LocalDateTime::LocalDateTime(const std::string &time) : LocalDateTime(time, DEFAULT_DATETIME_FORMAT)
 {
 }
 
 void LocalDateTime::setDST(bool isDST)
 {
-    if(isDST)
+    if (isDST)
         mDST = 1;
     else
         mDST = 0;
@@ -134,17 +129,17 @@ std::string LocalDateTime::format() const
     return format(DEFAULT_DATETIME_FORMAT);
 }
 
-std::ostream& operator<<(std::ostream& os, const LocalDateTime& dateTime)
+std::ostream &operator<<(std::ostream &os, const LocalDateTime &dateTime)
 {
     os << dateTime.format().c_str();
     return os;
 }
 
-std::istream& operator>>(std::istream& is, LocalDateTime& dateTime)
+std::istream &operator>>(std::istream &is, LocalDateTime &dateTime)
 {
     std::string str;
     is >> str;
     dateTime.setTime(str, DEFAULT_DATETIME_FORMAT);
     return is;
 }
-}
+} // namespace sys

@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,13 +23,13 @@
 #ifndef __SYS_EXEC_PIPE_H__
 #define __SYS_EXEC_PIPE_H__
 
-#include <stdlib.h>
 #include <import/except.h>
+#include <stdlib.h>
 #include <str/Convert.h>
 
-#include "sys/Runnable.h"
 #include "sys/Err.h"
 #include "sys/ProcessInterface.h"
+#include "sys/Runnable.h"
 
 namespace sys
 {
@@ -45,34 +45,33 @@ namespace sys
  */
 class Exec : public sys::Runnable
 {
-public:
+  public:
     /*!
      *  Execute a command on the run() function
      *  \param cmd The command to exec()
      */
-    Exec( const std::string& cmd ) :
-        mCmd(cmd)
+    Exec(const std::string &cmd) : mCmd(cmd)
     {
     }
 
     //!  Destructor
     virtual ~Exec()
-    {}
+    {
+    }
 
     /*!
      *  Execute a command
      */
     virtual void run() override
-    { 
+    {
         if (::system(mCmd.c_str()) == -1)
         {
             sys::Err err;
-            throw except::IOException(
-                Ctxt("Unable to run system command: " + err.toString()));
+            throw except::IOException(Ctxt("Unable to run system command: " + err.toString()));
         }
     }
 
-protected:
+  protected:
     //!  A command
     std::string mCmd;
 };
@@ -85,13 +84,12 @@ protected:
 struct ExecPipe : Exec
 {
     /*!
-    *  Constructor --
-    *  Kicks off child process and connects a pipe to the std::cout
-    *
-    *  \param cmd           - command line string to run
-    */
-    ExecPipe(const std::string& cmd) : 
-        Exec(cmd)
+     *  Constructor --
+     *  Kicks off child process and connects a pipe to the std::cout
+     *
+     *  \param cmd           - command line string to run
+     */
+    ExecPipe(const std::string &cmd) : Exec(cmd)
     {
     }
 
@@ -102,8 +100,7 @@ struct ExecPipe : Exec
         if (mOutStream == nullptr)
         {
             sys::Err err;
-            throw except::IOException(
-                Ctxt("Unable to open stream: " + err.toString()));
+            throw except::IOException(Ctxt("Unable to open stream: " + err.toString()));
         }
     }
 
@@ -112,7 +109,7 @@ struct ExecPipe : Exec
     {
         if (mOutStream)
         {
-            try 
+            try
             {
                 killProcess();
             }
@@ -123,20 +120,25 @@ struct ExecPipe : Exec
     }
 
     //! make available the pipe
-    const FILE* getPipe() const { return mOutStream; }
+    const FILE *getPipe() const
+    {
+        return mOutStream;
+    }
 
     //! make available the pipe
-    FILE* getPipe() { return mOutStream; }
+    FILE *getPipe()
+    {
+        return mOutStream;
+    }
 
     //! closes the stream connected to the child process --
     //  this is a blocking call until the process is complete
     int closePipe();
 
-    ExecPipe(const ExecPipe&) = delete;
-    ExecPipe& operator=(const ExecPipe&) = delete;
+    ExecPipe(const ExecPipe &) = delete;
+    ExecPipe &operator=(const ExecPipe &) = delete;
 
-protected:
-
+  protected:
 #ifdef _WIN32
     STARTUPINFO mStartInfo{};
     PROCESS_INFORMATION mProcessInfo{};
@@ -144,16 +146,15 @@ protected:
     pid_t mProcess{};
 #endif
 
-    FILE* mOutStream = nullptr;
+    FILE *mOutStream = nullptr;
 
     //! popen with user access to process id
-    FILE* openPipe(const std::string& command,
-                   const std::string& type);
+    FILE *openPipe(const std::string &command, const std::string &type);
 
     //! forcefully kill the process and call closePipe
     int killProcess();
 };
 
-}
+} // namespace sys
 
 #endif

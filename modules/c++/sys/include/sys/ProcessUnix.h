@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,45 +14,45 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifndef __SYS_PROCESS_UNIX_H__
 #define __SYS_PROCESS_UNIX_H__
 
 #ifndef _WIN32
 
+#include "sys/Conf.h"
+#include "sys/ProcessInterface.h"
 #include <assert.h>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <iostream>
-#include <stdlib.h>
-#include <stdio.h>
-#include "sys/Conf.h"
-#include "sys/ProcessInterface.h"
-
 
 namespace sys
 {
-class ProcessUnix : public ProcessInterface< Pid_T >
+class ProcessUnix : public ProcessInterface<Pid_T>
 {
-public:
+  public:
     ProcessUnix()
-    {}
-    ProcessUnix(Runnable* target): ProcessInterface< Pid_T >(target)
-    {}
+    {
+    }
+    ProcessUnix(Runnable *target) : ProcessInterface<Pid_T>(target)
+    {
+    }
     virtual ~ProcessUnix()
-    {}
+    {
+    }
     void start() override;
     void waitFor() override;
 };
-}
-
+} // namespace sys
 
 #endif
 #endif

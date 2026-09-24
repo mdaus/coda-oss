@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,32 +14,30 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #ifndef _WIN32
 
-#include <sys/wait.h>
 #include <str/Manip.h>
 #include <sys/Exec.h>
+#include <sys/wait.h>
 
-namespace 
+namespace
 {
 static const size_t READ_PIPE = 0;
 static const size_t WRITE_PIPE = 1;
-}
+} // namespace
 
 namespace sys
 {
 
-FILE* ExecPipe::openPipe(const std::string& command,
-                         const std::string& type)
+FILE *ExecPipe::openPipe(const std::string &command, const std::string &type)
 {
-    FILE* ioFile = nullptr;
+    FILE *ioFile = nullptr;
     int pIO[2];
 
     //! create the IO pipes for stdin/out
@@ -54,61 +52,59 @@ FILE* ExecPipe::openPipe(const std::string& command,
     mProcess = fork();
     switch (mProcess)
     {
-        case -1:
-            // there was an error while forking
-            close(pIO[READ_PIPE]);
-            close(pIO[WRITE_PIPE]);
-            return nullptr;
-        case 0:
+    case -1:
+        // there was an error while forking
+        close(pIO[READ_PIPE]);
+        close(pIO[WRITE_PIPE]);
+        return nullptr;
+    case 0:
+    {
+        // we are now in the forked process --
+        // anything performed in this block only affects the subprocess
+        //
+        // connect the pipes we create to stdin or stdout
+        if (type == "r")
         {
-            // we are now in the forked process --
-            // anything performed in this block only affects the subprocess
-            //
-            // connect the pipes we create to stdin or stdout
-            if (type == "r")
+            // reset both stdout and stderr to the outpipe
+            // only close the descriptor if it is not already one of them
+            if (pIO[WRITE_PIPE] != fileno(stdout))
             {
-                // reset both stdout and stderr to the outpipe
-                // only close the descriptor if it is not already one of them
-                if (pIO[WRITE_PIPE] != fileno(stdout))
-                {
-                    dup2(pIO[WRITE_PIPE], fileno(stdout));
-                    if (pIO[WRITE_PIPE] != fileno(stderr))
-                    {
-                        dup2(pIO[WRITE_PIPE], fileno(stderr));
-                        close(pIO[WRITE_PIPE]);
-                    }
-                }
-                else if (pIO[WRITE_PIPE] != fileno(stderr))
+                dup2(pIO[WRITE_PIPE], fileno(stdout));
+                if (pIO[WRITE_PIPE] != fileno(stderr))
                 {
                     dup2(pIO[WRITE_PIPE], fileno(stderr));
+                    close(pIO[WRITE_PIPE]);
                 }
+            }
+            else if (pIO[WRITE_PIPE] != fileno(stderr))
+            {
+                dup2(pIO[WRITE_PIPE], fileno(stderr));
+            }
 
-                // close the in pipe accordingly
+            // close the in pipe accordingly
+            close(pIO[READ_PIPE]);
+        }
+        else
+        {
+            // reset stdin to the inpipe if it isn't already
+            if (pIO[READ_PIPE] != fileno(stdin))
+            {
+                dup2(pIO[READ_PIPE], fileno(stdin));
                 close(pIO[READ_PIPE]);
             }
-            else
-            {
-                // reset stdin to the inpipe if it isn't already
-                if (pIO[READ_PIPE] != fileno(stdin))
-                {
-                    dup2(pIO[READ_PIPE], fileno(stdin));
-                    close(pIO[READ_PIPE]);
-                }
 
-                // close the out pipe accordingly
-                close(pIO[WRITE_PIPE]);
-            }
-
-            //! call our command --
-            //  this command replaces the forked process with
-            //  command the user specified
-            execl("/bin/sh", "sh", "-c",
-                  command.c_str(),
-                  static_cast<char*>(nullptr));
-
-            //! exit the subprocess once it has completed
-            exit(127);
+            // close the out pipe accordingly
+            close(pIO[WRITE_PIPE]);
         }
+
+        //! call our command --
+        //  this command replaces the forked process with
+        //  command the user specified
+        execl("/bin/sh", "sh", "-c", command.c_str(), static_cast<char *>(nullptr));
+
+        //! exit the subprocess once it has completed
+        exit(127);
+    }
     }
 
     //! this is executed on the parent process
@@ -163,29 +159,25 @@ int ExecPipe::closePipe()
         // due to uncaught signal (ex. segFault)
         if (WIFSIGNALED(encodedStatus))
         {
-            throw except::IOException(
-                Ctxt("The child process was terminated by " \
-                        "an uncaught signal: " +
-                        str::toString(WTERMSIG(encodedStatus))));
+            throw except::IOException(Ctxt("The child process was terminated by "
+                                           "an uncaught signal: " +
+                                           str::toString(WTERMSIG(encodedStatus))));
         }
         // due to unplanned stoppage
         if (WIFSTOPPED(encodedStatus))
         {
             throw except::IOException(
-                Ctxt("The child process was unexpectedly stopped: " +
-                        str::toString(WSTOPSIG(encodedStatus))));
+                Ctxt("The child process was unexpectedly stopped: " + str::toString(WSTOPSIG(encodedStatus))));
         }
 
         // all other errors
         sys::SocketErr err;
-        throw except::IOException(
-                Ctxt("Failure while closing stream to child process: " +
-                     err.toString()));
+        throw except::IOException(Ctxt("Failure while closing stream to child process: " + err.toString()));
     }
 
     return exitStatus;
 }
 
-}
+} // namespace sys
 
 #endif

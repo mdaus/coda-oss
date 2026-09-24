@@ -24,16 +24,15 @@
 #ifndef CODA_OSS_sys_AbstractOS_h_INCLUDED_
 #define CODA_OSS_sys_AbstractOS_h_INCLUDED_
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "config/Exports.h"
+#include "str/Tokenizer.h"
 #include "sys/Conf.h"
 #include "sys/FileFinder.h"
 #include "sys/SystemException.h"
-#include "str/Tokenizer.h"
 #include "sys/filesystem.h"
-
 
 /*!
  *  \file
@@ -53,57 +52,58 @@ namespace sys
  *  We require at least SSE2 which is from 2000 ... 23 years ago.
  *  Also see https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
  *  "... For the x86-64 compiler, these extensions [ -msse2 ] are enabled by default."
-*   We're 64-bit only.
-* 
-* Well ... it turns out third parties want to compile this code in different
-* enviroments which we don't know about; SIMD support makes that
-* more difficult.
+ *   We're 64-bit only.
+ *
+ * Well ... it turns out third parties want to compile this code in different
+ * enviroments which we don't know about; SIMD support makes that
+ * more difficult.
  */
 #ifdef CODA_OSS_DISABLE_SIMD
-    #ifdef CODA_OSS_ENABLE_SIMD
-        #error "CODA_OSS_ENABLE_SIMD already #define'd'"
-    #endif
-    #define CODA_OSS_ENABLE_SIMD 0
+#ifdef CODA_OSS_ENABLE_SIMD
+#error "CODA_OSS_ENABLE_SIMD already #define'd'"
+#endif
+#define CODA_OSS_ENABLE_SIMD 0
 #endif // CODA_OSS_DISABLE_SIMD
 
 #ifndef CODA_OSS_ENABLE_SIMD
-    #if __AVX512F__ || __AVX2__
-        #define CODA_OSS_ENABLE_SIMD 1
-    #elif _MSC_VER && _M_X64 /*MSVC for SSE2*/ 
-        #define CODA_OSS_ENABLE_SIMD 1
-    #elif __GNUC__ && __SSE2__
-        #define CODA_OSS_ENABLE_SIMD 1
-    #else
-        #define CODA_OSS_ENABLE_SIMD 0
-    #endif
+#if __AVX512F__ || __AVX2__
+#define CODA_OSS_ENABLE_SIMD 1
+#elif _MSC_VER && _M_X64 /*MSVC for SSE2*/
+#define CODA_OSS_ENABLE_SIMD 1
+#elif __GNUC__ && __SSE2__
+#define CODA_OSS_ENABLE_SIMD 1
+#else
+#define CODA_OSS_ENABLE_SIMD 0
+#endif
 #endif
 
 enum class SIMDInstructionSet
 {
     Disabled, // CODA_OSS_ENABLE_SIMD = 0
-    Unknown, // CODA_OSS_ENABLE_SIMD = 1, but can't determine
+    Unknown,  // CODA_OSS_ENABLE_SIMD = 1, but can't determine
 
-    SSE2, //  https://en.wikipedia.org/wiki/SSE2
-    AVX2,  // https://en.wikipedia.org/wiki/Advanced_Vector_Extensions
+    SSE2,    //  https://en.wikipedia.org/wiki/SSE2
+    AVX2,    // https://en.wikipedia.org/wiki/Advanced_Vector_Extensions
     AVX512F, // https://en.wikipedia.org/wiki/AVX-512
 };
 
-constexpr auto getSIMDInstructionSet() { 
-    #if !CODA_OSS_ENABLE_SIMD
-        return SIMDInstructionSet::Disabled;
-    #else
-        // https://learn.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=msvc-170
-        #if __AVX512F__
-            return SIMDInstructionSet::AVX512F;
-        #elif __AVX2__
-            return SIMDInstructionSet::AVX2;
-        #elif _M_X64 /*MSVC*/ || __SSE2__ /*GCC*/
-            return SIMDInstructionSet::SSE2;
-        #else
-            #error "Can't determine SIMDInstructionSet'"
-            return SIMDInstructionSet::Unknown;
-        #endif
-    #endif // CODA_OSS_ENABLE_SIMD
+constexpr auto getSIMDInstructionSet()
+{
+#if !CODA_OSS_ENABLE_SIMD
+    return SIMDInstructionSet::Disabled;
+#else
+// https://learn.microsoft.com/en-us/cpp/preprocessor/predefined-macros?view=msvc-170
+#if __AVX512F__
+    return SIMDInstructionSet::AVX512F;
+#elif __AVX2__
+    return SIMDInstructionSet::AVX2;
+#elif _M_X64 /*MSVC*/ || __SSE2__ /*GCC*/
+    return SIMDInstructionSet::SSE2;
+#else
+#error "Can't determine SIMDInstructionSet'"
+    return SIMDInstructionSet::Unknown;
+#endif
+#endif // CODA_OSS_ENABLE_SIMD
 }
 
 /*!
@@ -142,7 +142,7 @@ struct CODA_OSS_API AbstractOS
      *  For unix it will be one slash /
      *  \return The path delimiter
      */
-    virtual const char* getDelimiter() const = 0;
+    virtual const char *getDelimiter() const = 0;
 
     /*!
      *  Search recursively for some fragment with the directory.
@@ -154,50 +154,44 @@ struct CODA_OSS_API AbstractOS
      *  \param extension      extensions should only be used for files
      *  \param pathList       The path list (colon delimited)
      */
-    std::vector<std::string>
-    search(const std::vector<std::string>& searchPaths,
-           const std::string& fragment = "",
-           const std::string& extension = "",
-           bool recursive = true) const;
-    std::vector<coda_oss::filesystem::path> search(
-            const std::vector<coda_oss::filesystem::path>& searchPaths,
-            const std::string& fragment = "",
-            const std::string& extension = "",
-            bool recursive = true) const;
+    std::vector<std::string> search(const std::vector<std::string> &searchPaths, const std::string &fragment = "",
+                                    const std::string &extension = "", bool recursive = true) const;
+    std::vector<coda_oss::filesystem::path> search(const std::vector<coda_oss::filesystem::path> &searchPaths,
+                                                   const std::string &fragment = "", const std::string &extension = "",
+                                                   bool recursive = true) const;
 
     /*!
      *  Does this path exist?
      *  \param path The path to check for
      *  \return True if it does, false otherwise
      */
-    virtual bool exists(const std::string& path) const = 0;
+    virtual bool exists(const std::string &path) const = 0;
 
     /*!
      *  Remove file with this path name
      *  This method will not remove symlinks, use removeSymlink()
      */
-    virtual void remove(const std::string& path) const;
+    virtual void remove(const std::string &path) const;
 
     /*!
      *  Move file with this path name to the newPath
      *  \return True upon success, false if failure
      */
-    virtual bool move(const std::string& path,
-                      const std::string& newPath) const = 0;
+    virtual bool move(const std::string &path, const std::string &newPath) const = 0;
 
     /*!
      *  Does this path resolve to a file?
      *  \param path The path
      *  \return True if it does, false if not
      */
-    virtual bool isFile(const std::string& path) const = 0;
+    virtual bool isFile(const std::string &path) const = 0;
 
     /*!
      *  Does this path resolve to a directory?
      *  \param path The path
      *  \return True if it does, false if not
      */
-    virtual bool isDirectory(const std::string& path) const = 0;
+    virtual bool isDirectory(const std::string &path) const = 0;
 
     /*!
      *  Create a directory with for the path specified
@@ -205,7 +199,7 @@ struct CODA_OSS_API AbstractOS
      *  \return True on success, false on failure (since
      *  you may only create if no such exists)
      */
-    virtual bool makeDirectory(const std::string& path) const = 0;
+    virtual bool makeDirectory(const std::string &path) const = 0;
 
     /*!
      *  Retrieve the current working directory.
@@ -217,7 +211,7 @@ struct CODA_OSS_API AbstractOS
      *  Change the current working directory.
      *  \return true if the directory was changed, otherwise false.
      */
-    virtual bool changeDirectory(const std::string& path) const = 0;
+    virtual bool changeDirectory(const std::string &path) const = 0;
 
     /*!
      *  Create a temporary file with random name in the specified
@@ -226,20 +220,19 @@ struct CODA_OSS_API AbstractOS
      *  \return The file name
      *
      */
-    virtual std::string getTempName(const std::string& path = "",
-                                    const std::string& prefix = "") const = 0;
+    virtual std::string getTempName(const std::string &path = "", const std::string &prefix = "") const = 0;
 
     /*!
      *  Return the size in bytes of a file
      *  \return The file size
      */
-    virtual sys::Off_T getSize(const std::string& path) const = 0;
+    virtual sys::Off_T getSize(const std::string &path) const = 0;
 
     /*!
      * Return the last modified time of a file
      * \return The last modified time, in millis
      */
-    virtual sys::Off_T getLastModifiedTime(const std::string& path) const = 0;
+    virtual sys::Off_T getLastModifiedTime(const std::string &path) const = 0;
 
     /*!
      *  This is a system independent sleep function.
@@ -251,50 +244,47 @@ struct CODA_OSS_API AbstractOS
     /*!
      *  Get an environment variable
      */
-    virtual std::string operator[](const std::string& s) const = 0;
+    virtual std::string operator[](const std::string &s) const = 0;
 
     /*!
      *  Get an environment variable
      */
-    virtual std::string getEnv(const std::string&) const = 0;
+    virtual std::string getEnv(const std::string &) const = 0;
 
     // Get a "speical" enviroment variable such as $0 or $PWD.
     // See https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
     // and https://wiki.bash-hackers.org/syntax/shellvars
-    std::string getSpecialEnv(const std::string&) const;
+    std::string getSpecialEnv(const std::string &) const;
 
     /*!
      *  Returns true if environment variable is set, false otherwise
      */
-    virtual bool isEnvSet(const std::string&) const = 0;
-    bool isSpecialEnv(const std::string&) const;
-
+    virtual bool isEnvSet(const std::string &) const = 0;
+    bool isSpecialEnv(const std::string &) const;
 
     /*!
      *  Get an environment variable and updates value, but only if set.
      *  Returns true if environment variable is set, false otherwise
      */
-    bool getEnvIfSet(const std::string& envVar, std::string& value, bool includeSpecial=false) const;
+    bool getEnvIfSet(const std::string &envVar, std::string &value, bool includeSpecial = false) const;
 
     // A variable like PATH is often several directories, return each one that exists.
-    bool splitEnv(const std::string& envVar, std::vector<std::string>&) const;
-    bool splitEnv(const std::string& envVar, std::vector<std::string>&, coda_oss::filesystem::file_type) const;
+    bool splitEnv(const std::string &envVar, std::vector<std::string> &) const;
+    bool splitEnv(const std::string &envVar, std::vector<std::string> &, coda_oss::filesystem::file_type) const;
 
     // Modify the specified env-var as indicated.
-    void prependEnv(const std::string& envVar, const std::vector<std::string>&, bool overwrite);
-    void appendEnv(const std::string& envVar, const std::vector<std::string>&, bool overwrite);
+    void prependEnv(const std::string &envVar, const std::vector<std::string> &, bool overwrite);
+    void appendEnv(const std::string &envVar, const std::vector<std::string> &, bool overwrite);
 
     /*!
      *  Set an environment variable
      */
-    virtual void setEnv(const std::string& var,
-                        const std::string& val,
-                        bool overwrite) = 0;
+    virtual void setEnv(const std::string &var, const std::string &val, bool overwrite) = 0;
 
     /*!
      * Unset an environment variable
      */
-    virtual void unsetEnv(const std::string& var) = 0;
+    virtual void unsetEnv(const std::string &var) = 0;
 
     virtual Pid_T getProcessId() const = 0;
 
@@ -340,9 +330,7 @@ struct CODA_OSS_API AbstractOS
      *                    'physicalCPUs'. Size of
      *                    getNumCPUsAvailable() - getNumPhysicalCPUsAvailable().
      */
-    virtual void getAvailableCPUs(std::vector<int>& physicalCPUs,
-                                  std::vector<int>& htCPUs) const = 0;
-
+    virtual void getAvailableCPUs(std::vector<int> &physicalCPUs, std::vector<int> &htCPUs) const = 0;
 
     /*!
      * Figure out what SIMD instrunctions are available.  Keep in mind these
@@ -353,18 +341,17 @@ struct CODA_OSS_API AbstractOS
     /*!
      *  Create a symlink, pathnames can be either absolute or relative
      */
-    virtual void createSymlink(const std::string& origPathname,
-                               const std::string& symlinkPathname) const = 0;
+    virtual void createSymlink(const std::string &origPathname, const std::string &symlinkPathname) const = 0;
 
     /*!
      *  Remove a symlink, pathname can be absolute or relative
      */
-    virtual void removeSymlink(const std::string& symlinkPathname) const = 0;
+    virtual void removeSymlink(const std::string &symlinkPathname) const = 0;
 
     /*!
      *  Get the total RAM and available RAM on the system in megabytes
      */
-    virtual void getMemInfo(size_t& totalPhysMem, size_t& freePhysMem) const = 0;
+    virtual void getMemInfo(size_t &totalPhysMem, size_t &freePhysMem) const = 0;
 
     /*!
      *  Get the absolute path to the current executable
@@ -372,39 +359,37 @@ struct CODA_OSS_API AbstractOS
      *          way fails
      *  \return absolute path to the current exectuable
      */
-    virtual std::string getCurrentExecutable(
-            const std::string& argvPathname="") const;
+    virtual std::string getCurrentExecutable(const std::string &argvPathname = "") const;
     // Access to argv[0] might be far away from a getCurrentExecutable() call.
-    static void setArgvPathname(const std::string& argvPathname);
+    static void setArgvPathname(const std::string &argvPathname);
 
-protected:
-    std::string getArgvPathname(const std::string& argvPathname) const;
+  protected:
+    std::string getArgvPathname(const std::string &argvPathname) const;
 
     /*!
      *  Remove file with this pathname
      */
-    virtual void removeFile(const std::string& pathname) const = 0;
+    virtual void removeFile(const std::string &pathname) const = 0;
 
     /*!
      *  Remove directory with this pathname
      *  NOTE: This will throw if the directory is not empty
      */
-    virtual void removeDirectory(const std::string& pathname) const = 0;
+    virtual void removeDirectory(const std::string &pathname) const = 0;
 };
 
 class AbstractDirectory
 {
-public:
+  public:
     AbstractDirectory() = default;
     virtual ~AbstractDirectory() noexcept(false)
     {
     }
     virtual void close() = 0;
-    virtual std::string findFirstFile(const std::string& dir) = 0;
+    virtual std::string findFirstFile(const std::string &dir) = 0;
     virtual std::string findNextFile() = 0;
-
 };
 
-}
+} // namespace sys
 
-#endif  // CODA_OSS_sys_AbstractOS_h_INCLUDED_
+#endif // CODA_OSS_sys_AbstractOS_h_INCLUDED_

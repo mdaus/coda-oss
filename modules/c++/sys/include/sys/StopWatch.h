@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifndef __SYS_STOPWATCH_H__
 #define __SYS_STOPWATCH_H__
@@ -56,12 +55,13 @@ struct StopWatch
 
 class RealTimeStopWatch : public StopWatch
 {
-protected:
+  protected:
     double mStartTime;
     double mTimePaused;
     double mPauseStartTime;
     bool mPaused;
-public:
+
+  public:
     RealTimeStopWatch();
 
     ~RealTimeStopWatch();
@@ -77,13 +77,14 @@ public:
 
 class CPUStopWatch : public StopWatch
 {
-protected:
+  protected:
     clock_t mStartTime;
     clock_t mPauseStartTime;
     clock_t mTimePaused;
     bool mPaused;
     double mClocksPerMillis;
-public:
+
+  public:
     CPUStopWatch();
 
     ~CPUStopWatch();
@@ -97,6 +98,6 @@ public:
     void clear() override;
 };
 
-}
+} // namespace sys
 
 #endif

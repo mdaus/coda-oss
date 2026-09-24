@@ -22,18 +22,16 @@
 
 #include <iostream>
 
-#include <sys/Conf.h>
-#include <sys/Path.h>
+#include "TestCase.h"
 #include <except/Exception.h>
 #include <str/Convert.h>
-#include "TestCase.h"
+#include <sys/Conf.h>
+#include <sys/Path.h>
 
-
-bool
-testAlignedAlloc(const size_t numBytes_, const size_t alignment)
+bool testAlignedAlloc(const size_t numBytes_, const size_t alignment)
 {
     // Allocate an aligned buffer
-    void* ptr = sys::alignedAlloc(numBytes_, alignment);
+    void *ptr = sys::alignedAlloc(numBytes_, alignment);
 
     // Confirm it's a multiple of alignment
     const bool isAligned(reinterpret_cast<size_t>(ptr) % alignment == 0);
@@ -74,10 +72,5 @@ TEST_CASE(testAlignedAlloc128)
     TEST_ASSERT(testAlignedAlloc(numBytes, 128));
 }
 
-TEST_MAIN(
-    TEST_CHECK(testAlignedAlloc8);
-    TEST_CHECK(testAlignedAlloc16);
-    TEST_CHECK(testAlignedAlloc32);
-    TEST_CHECK(testAlignedAlloc64);
-    TEST_CHECK(testAlignedAlloc128);
-)
+TEST_MAIN(TEST_CHECK(testAlignedAlloc8); TEST_CHECK(testAlignedAlloc16); TEST_CHECK(testAlignedAlloc32);
+          TEST_CHECK(testAlignedAlloc64); TEST_CHECK(testAlignedAlloc128);)

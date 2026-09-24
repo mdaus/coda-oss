@@ -20,16 +20,16 @@
  *
  */
 
-#include <iostream>
 #include <import/sys.h>
+#include <iostream>
 using namespace sys;
 using namespace std;
 
 class MyRunTask : public Runnable
 {
-public:
+  public:
     int result;
-    
+
     MyRunTask()
     {
         result = 0;
@@ -40,11 +40,11 @@ public:
 
     virtual void run() override
     {
-		result = 1;
+        result = 1;
     }
 };
 
-int main(int, char**)
+int main(int, char **)
 {
     Thread *thread;
     MyRunTask *task1;
@@ -58,28 +58,27 @@ int main(int, char**)
         thread->start();
         thread->join();
         task2 = new MyRunTask();
-        
+
         if (task1->result != 1)
         {
             cout << "Task1 not run, result: " << task1->result << endl;
             return -1;
         }
-        
+
         delete thread;
 
         task3 = new MyRunTask();
-        
+
         if (task1 == task3)
             cout << "Task1 freed" << endl;
-            
-        
+
         delete task2;
         delete task3;
-        
+
         std::cout << "Finished all" << std::endl;
     }
 
-    catch (except::Throwable& t)
+    catch (except::Throwable &t)
     {
         cout << "Exception Caught: " << t.toString() << endl;
         return -1;

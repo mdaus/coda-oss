@@ -20,13 +20,13 @@
  *
  */
 
-#include <import/sys.h>
 #include <cassert>
-#include <iostream>
 #include <fstream>
+#include <import/sys.h>
+#include <iostream>
 #include <streambuf>
 
-int main(int /*argc*/, char** /*argv*/)
+int main(int /*argc*/, char ** /*argv*/)
 {
     try
     {
@@ -61,12 +61,11 @@ int main(int /*argc*/, char** /*argv*/)
 
         return 0;
     }
-    catch (const except::Exception& ex)
+    catch (const except::Exception &ex)
     {
-        std::cerr << "Caught except::exception: " << ex.getMessage()
-                  << std::endl;
+        std::cerr << "Caught except::exception: " << ex.getMessage() << std::endl;
     }
-    catch (const std::exception& ex)
+    catch (const std::exception &ex)
     {
         std::cerr << "Caught std::exception: " << ex.what() << std::endl;
     }

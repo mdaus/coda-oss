@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,14 +14,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <vector>
 #include <ostream>
+#include <vector>
 
 #include <except/Exception.h>
 #include <sys/Thread.h>
@@ -30,7 +30,7 @@ using namespace std;
 
 class TestThread : public Thread
 {
-public:
+  public:
     TestThread(int *val)
     {
 
@@ -52,7 +52,7 @@ public:
 
 int main()
 {
-    std::vector< TestThread *> tAry;
+    std::vector<TestThread *> tAry;
     tAry.resize(5);
 
     try
@@ -78,9 +78,8 @@ int main()
             tAry.pop_back();
             delete t;
         }
-
     }
-    catch (const except::Exception& e)
+    catch (const except::Exception &e)
     {
         cout << e.toString() << endl;
     }

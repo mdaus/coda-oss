@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __SYS_ERR_H__
 #define __SYS_ERR_H__
 
@@ -62,7 +61,7 @@ struct CODA_OSS_API Err
      * Copy constructor
      * \param err The err to take
      */
-    Err(const Err& err) noexcept
+    Err(const Err &err) noexcept
     {
         mErrId = err.getErrID();
     }
@@ -82,7 +81,7 @@ struct CODA_OSS_API Err
      *  Assignment operator
      *  \param err The err to take
      */
-    Err& operator=(const Err& err) noexcept
+    Err &operator=(const Err &err) noexcept
     {
         if (&err != this)
         {
@@ -115,10 +114,12 @@ struct CODA_OSS_API Err
     //!  Return the last error
     virtual int getLast() const;
 
-    int getErrID() const noexcept { return mErrId; }
+    int getErrID() const noexcept
+    {
+        return mErrId;
+    }
 
-protected:
-
+  protected:
     int mErrId = __last_err__;
 };
 
@@ -136,8 +137,7 @@ struct SocketErr : public Err
      *  \param err An error to initialize from
      *
      */
-    SocketErr(const SocketErr& err) :
-        Err(err.getErrID())
+    SocketErr(const SocketErr &err) : Err(err.getErrID())
     {
     }
 
@@ -158,7 +158,7 @@ struct SocketErr : public Err
      *  \param err The err to take
      *
      */
-    SocketErr& operator=(const SocketErr& err) noexcept
+    SocketErr &operator=(const SocketErr &err) noexcept
     {
         if (&err != this)
         {
@@ -169,9 +169,8 @@ struct SocketErr : public Err
 
     //!  Redefined for socket errors
     virtual int getLast() const override;
-
 };
 
-}
+} // namespace sys
 
 #endif

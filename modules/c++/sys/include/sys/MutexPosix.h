@@ -20,7 +20,6 @@
  *
  */
 
-
 #ifndef __SYS_MUTEX_POSIX_H__
 #define __SYS_MUTEX_POSIX_H__
 
@@ -30,8 +29,6 @@
 
 #include "sys/MutexInterface.h"
 #include <pthread.h>
-
-
 
 namespace sys
 {
@@ -44,7 +41,7 @@ namespace sys
  */
 class MutexPosix : public MutexInterface
 {
-public:
+  public:
     //!  Constructor
     MutexPosix();
 
@@ -64,21 +61,21 @@ public:
     /*!
      *  Returns the native type.
      */
-    pthread_mutex_t& getNative();
+    pthread_mutex_t &getNative();
 
     /*!
      *  Return the type name.  This function is essentially free,
      *  because it is static RTTI.
      */
-    const char* getNativeType() const
+    const char *getNativeType() const
     {
         return typeid(mNative).name();
     }
 
-private:
+  private:
     pthread_mutex_t mNative;
 };
-}
+} // namespace sys
 
 #endif
 #endif

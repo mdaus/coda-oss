@@ -23,19 +23,18 @@
 #ifndef CODA_OSS_sys_Path_h_INCLUDED_
 #define CODA_OSS_sys_Path_h_INCLUDED_
 
-#include <string>
 #include <deque>
+#include <string>
 #include <utility>
 #include <vector>
 
+#include "coda_oss/span.h"
 #include "config/Exports.h"
 #include <import/str.h>
-#include "coda_oss/span.h"
 
 #include "sys/OS.h"
-#include "sys/filesystem.h"
 #include "sys/Span.h"
-
+#include "sys/filesystem.h"
 
 /*!
  *  \file
@@ -48,13 +47,13 @@ namespace sys
 
 class CODA_OSS_API Path
 {
-public:
+  public:
     Path();
-    Path(const Path& parent, const std::string& child);
-    Path(const std::string& parent, const std::string& child);
-    Path(const std::string& pathName);
-    Path& operator=(const Path& path);
-    Path(const Path& path);
+    Path(const Path &parent, const std::string &child);
+    Path(const std::string &parent, const std::string &child);
+    Path(const std::string &pathName);
+    Path &operator=(const Path &path);
+    Path(const Path &path);
 
     inline operator std::string() const
     {
@@ -68,7 +67,7 @@ public:
      * Normalizes a pathname. Collapses redundant separators and up-level
      * references. On Windows, it converts forward slashes to backward slashes.
      */
-    static std::string normalizePath(const std::string& path);
+    static std::string normalizePath(const std::string &path);
 
     inline std::string normalize() const
     {
@@ -76,20 +75,19 @@ public:
     }
 
     /*!
-    * Expands the environment variables in a string
-    * c.f., https://docs.microsoft.com/en-us/dotnet/api/system.environment.expandenvironmentvariables?view=net-5.0
-    */
-    static std::string expandEnvironmentVariables(const std::string& path, bool checkIfExists = true);
-    static std::string expandEnvironmentVariables(const std::string& path, coda_oss::filesystem::file_type);
-    static std::vector<std::string> expandedEnvironmentVariables(const std::string& path); // mostly for unit-testing
+     * Expands the environment variables in a string
+     * c.f., https://docs.microsoft.com/en-us/dotnet/api/system.environment.expandenvironmentvariables?view=net-5.0
+     */
+    static std::string expandEnvironmentVariables(const std::string &path, bool checkIfExists = true);
+    static std::string expandEnvironmentVariables(const std::string &path, coda_oss::filesystem::file_type);
+    static std::vector<std::string> expandedEnvironmentVariables(const std::string &path); // mostly for unit-testing
 
     /*!
      * Joins two paths together, using the OS-specific delimiter.
      */
-    static std::string joinPaths(const std::string& path1,
-                                 const std::string& path2);
+    static std::string joinPaths(const std::string &path1, const std::string &path2);
 
-    inline Path join(const std::string& path) const
+    inline Path join(const std::string &path) const
     {
         return joinPaths(mPathName, path);
     }
@@ -97,7 +95,7 @@ public:
     /*!
      * Return a normalized absolutized version of the pathname supplied.
      */
-    static std::string absolutePath(const std::string& path);
+    static std::string absolutePath(const std::string &path);
 
     inline std::string getAbsolutePath() const
     {
@@ -109,7 +107,7 @@ public:
      *  \param path pathname in question
      *  \return true if the pathname is an absolute path
      */
-    static bool isAbsolutePath(const std::string& path);
+    static bool isAbsolutePath(const std::string &path);
 
     /*!
      *  Return true if path is absolute. False otherwise
@@ -124,8 +122,8 @@ public:
      *  Separates a path into its components, and returns a vector of
      *  them. This splits on both '/' and '\\'.
      */
-    static std::vector<std::string> separate(const std::string& path);
-    static std::vector<std::string> separate(const std::string& path, bool& isAbsolute);
+    static std::vector<std::string> separate(const std::string &path);
+    static std::vector<std::string> separate(const std::string &path, bool &isAbsolute);
 
     inline std::vector<std::string> separate() const
     {
@@ -135,7 +133,7 @@ public:
     /*!
      *  Reverses separate()
      */
-    static std::string merge(const std::vector<std::string>&, bool isAbsolute);
+    static std::string merge(const std::vector<std::string> &, bool isAbsolute);
 
     /*!
      * Splits the path into two components: head & tail.
@@ -143,7 +141,7 @@ public:
      * The tail part will never contain the delim; if path ends in the delim,
      * tail will be empty. If there is no delim in path, head will be empty.
      */
-    static StringPair splitPath(const std::string& path);
+    static StringPair splitPath(const std::string &path);
 
     inline StringPair split() const
     {
@@ -156,7 +154,7 @@ public:
      * For systems that do not support drive specifications, drive will always
      * be the empty string. drive + tail = path
      */
-    static StringPair splitDrive(const std::string& path);
+    static StringPair splitDrive(const std::string &path);
 
     inline StringPair splitDrive() const
     {
@@ -170,7 +168,7 @@ public:
      * if one exists. You can combine the returned pair to create the original
      * path.
      */
-    static StringPair splitExt(const std::string& path);
+    static StringPair splitExt(const std::string &path);
 
     inline StringPair splitExt() const
     {
@@ -181,7 +179,7 @@ public:
      * Returns the base name of the path supplied. This is the second half of the
      * pair returned by splitPath()
      */
-    static std::string basename(const std::string& path, bool rmvExt = false);
+    static std::string basename(const std::string &path, bool rmvExt = false);
 
     inline std::string getBasePath(bool removeExt = false) const
     {
@@ -191,12 +189,12 @@ public:
     /*!
      * Returns the path delimiter
      */
-    static const char* delimiter();
+    static const char *delimiter();
 
     /*!
      * Returns the path separator
      */
-    static const char* separator();
+    static const char *separator();
 
     inline bool exists() const
     {
@@ -223,7 +221,7 @@ public:
         return mPathName;
     }
 
-    static std::vector<std::string> list(const std::string& path);
+    static std::vector<std::string> list(const std::string &path);
     std::vector<std::string> list() const
     {
         return sys::Path::list(mPathName);
@@ -289,23 +287,22 @@ public:
         mPathName = str;
     }
 
-protected:
+  protected:
     std::string mPathName;
     OS mOS;
 };
 
-std::ostream& operator<<(std::ostream& os, const sys::Path& path);
-std::istream& operator>>(std::istream& os, sys::Path& path);
+std::ostream &operator<<(std::ostream &os, const sys::Path &path);
+std::istream &operator>>(std::istream &os, sys::Path &path);
 
 // Convert between collections of paths as strings and coda_oss::filesystem::path
 CODA_OSS_API std::vector<std::string> convertPaths(coda_oss::span<const coda_oss::filesystem::path>);
 CODA_OSS_API std::vector<coda_oss::filesystem::path> convertPaths(coda_oss::span<const std::string>);
-template<typename T>
-inline auto convertPaths(const std::vector<T>& paths)
+template <typename T> inline auto convertPaths(const std::vector<T> &paths)
 {
     return convertPaths(make_span(paths));
 }
 
-}
+} // namespace sys
 
 #endif // CODA_OSS_sys_Path_h_INCLUDED_

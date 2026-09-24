@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -30,7 +30,7 @@ using namespace std;
 
 class NotAddableError : public Error
 {
-public:
+  public:
     NotAddableError(int size)
     {
         std::ostringstream m;
@@ -41,7 +41,7 @@ public:
 
 class GreaterThan10Ex : public Exception
 {
-public:
+  public:
     GreaterThan10Ex(int size)
     {
         std::ostringstream m;
@@ -51,8 +51,7 @@ public:
 };
 class NegativeNumberEx : public Exception
 {
-public:
-
+  public:
     NegativeNumberEx(int size)
     {
         std::ostringstream m;
@@ -65,7 +64,7 @@ int main(int argc, char **argv)
 {
     try
     {
-        vector<int>v;
+        vector<int> v;
         for (int i = 1; i < argc; i++)
         {
             v.push_back(atoi(argv[i]));
@@ -87,7 +86,6 @@ int main(int argc, char **argv)
 
             NegativeNumberEx nne(acc);
             throw nne;
-
         }
         else if (acc > 10)
         {
@@ -99,15 +97,15 @@ int main(int argc, char **argv)
             //__status__("Succeeded");
         }
     }
-    catch (Exception& ex)
+    catch (Exception &ex)
     {
         cout << "Ex: " << ex.toString() << endl;
     }
-    catch (Error& err)
+    catch (Error &err)
     {
         cout << "Err: " << err.toString() << endl;
     }
-    catch (Throwable& t)
+    catch (Throwable &t)
     {
         cout << "Throwable: " << t.toString() << endl;
     }
@@ -118,5 +116,4 @@ int main(int argc, char **argv)
     }
 
     return 0;
-
 }

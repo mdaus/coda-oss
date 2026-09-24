@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,16 +14,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-#include <import/sys.h>
-#include <fstream>
-#include <iomanip>
 #include "sys/StopWatch.h"
+#include <fstream>
+#include <import/sys.h>
+#include <iomanip>
 
 using namespace sys;
 
@@ -41,15 +41,13 @@ int main(int argc, char **argv)
         sys::Exec exe(cmd);
         exe.run();
     }
-    catch (const except::Throwable& ex)
+    catch (const except::Throwable &ex)
     {
-        std::cerr << "Caught C++ exception" << 
-            ex.getMessage() << std::endl;
+        std::cerr << "Caught C++ exception" << ex.getMessage() << std::endl;
     }
-    catch (const std::exception& ex)
+    catch (const std::exception &ex)
     {
-        std::cerr << "Caught standard exception" << 
-            ex.what() << std::endl;
+        std::cerr << "Caught standard exception" << ex.what() << std::endl;
     }
     catch (...)
     {
@@ -57,4 +55,3 @@ int main(int argc, char **argv)
     }
     return 0;
 }
-

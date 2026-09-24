@@ -43,7 +43,7 @@ namespace sys
  */
 class ScopedCPUMaskUnix
 {
-public:
+  public:
     /*!
      * Constructor which automatically creates a mask that can hold
      * at least the number of online CPUs
@@ -69,13 +69,13 @@ public:
     std::string toString() const;
 
     //! \returns a const cpu_set_t* mask
-    const cpu_set_t* getMask() const
+    const cpu_set_t *getMask() const
     {
         return mMask;
     }
 
     //! \returns a mutable cpu_set_t* mask
-    cpu_set_t* getMask()
+    cpu_set_t *getMask()
     {
         return mMask;
     }
@@ -89,12 +89,12 @@ public:
     //! \returns the number of online CPUs
     static int getNumOnlineCPUs();
 
-private:
+  private:
     void initialize(int numCPUs);
 
-protected:
+  protected:
     size_t mSize;
-    cpu_set_t* mMask;
+    cpu_set_t *mMask;
 };
 
 /*!
@@ -108,7 +108,7 @@ protected:
  */
 class ScopedCPUAffinityUnix : public ScopedCPUMaskUnix
 {
-public:
+  public:
     /*!
      * Constructor that obtains the CPU affinity mask for the current
      * process.
@@ -118,7 +118,7 @@ public:
      */
     ScopedCPUAffinityUnix();
 };
-}
+} // namespace sys
 
 #endif
 #endif

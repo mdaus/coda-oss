@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifndef __SYS_THREAD_WIN32_H__
 #define __SYS_THREAD_WIN32_H__
@@ -34,64 +33,51 @@
 
 #if !defined(USE_NSPR_THREADS)
 
-#include "sys/ThreadInterface.h"
 #include "sys/Conf.h"
+#include "sys/ThreadInterface.h"
 
 #define sleep Sleep
 
 // A typedef and macro to make _beginthreadex look like CreateThread
 // See MSDN Wind32 Q&A  July 1999  by Jeffrey Richter
-typedef unsigned (__stdcall *THREAD_START_FN) (void *);
+typedef unsigned(__stdcall *THREAD_START_FN)(void *);
 
 #if defined(USE_CREATETHREAD)
-#   define __CREATETHREAD(psa, cbStack, pfnStartAddr, \
-                       pvParam, fdwCreate, pdwThreadID) \
-        CreateThread(psa, cbStack, \
-        (LPTHREAD_START_ROUTINE)(pfnStartAddr), \
-        (void*)pvParam, fdwCreate, \
-        pdwThreadID)
+#define __CREATETHREAD(psa, cbStack, pfnStartAddr, pvParam, fdwCreate, pdwThreadID)                                    \
+    CreateThread(psa, cbStack, (LPTHREAD_START_ROUTINE)(pfnStartAddr), (void *)pvParam, fdwCreate, pdwThreadID)
 
 #else
-#   define  __CREATETHREAD(psa, cbStack, pfnStartAddr,         \
-                        pvParam, fdwCreate, pdwThreadID)    \
-   ((HANDLE) _beginthreadex(                                \
-                            (void *) (psa),                 \
-                            (unsigned) (cbStack),           \
-                            (THREAD_START_FN) (pfnStartAddr), \
-                            (void *) (pvParam),             \
-                            (unsigned) (fdwCreate),         \
-                            (unsigned *) (pdwThreadID)))
+#define __CREATETHREAD(psa, cbStack, pfnStartAddr, pvParam, fdwCreate, pdwThreadID)                                    \
+    ((HANDLE)_beginthreadex((void *)(psa), (unsigned)(cbStack), (THREAD_START_FN)(pfnStartAddr), (void *)(pvParam),    \
+                            (unsigned)(fdwCreate), (unsigned *)(pdwThreadID)))
 #endif
 namespace sys
 {
 
-
-    inline long getThreadID()
-    {
-	return gsl::narrow<long>(GetCurrentThreadId());
-    }
+inline long getThreadID()
+{
+    return gsl::narrow<long>(GetCurrentThreadId());
+}
 
 struct CODA_OSS_API ThreadWin32 : public ThreadInterface
+{
+    ThreadWin32(const std::string &name = "") : ThreadInterface(name)
     {
-    ThreadWin32(const std::string& name = "") : ThreadInterface(name)
-    {}
+    }
 
-    ThreadWin32(sys::Runnable *target,
-                const std::string& name = "") :
-            ThreadInterface(target, name)
-    {}
+    ThreadWin32(sys::Runnable *target, const std::string &name = "") : ThreadInterface(target, name)
+    {
+    }
 
-    ThreadWin32(sys::Runnable *target,
-                const std::string& name,
-                int level,
-                int priority) :
-            ThreadInterface(target, name, level, priority)
-    {}
+    ThreadWin32(sys::Runnable *target, const std::string &name, int level, int priority)
+        : ThreadInterface(target, name, level, priority)
+    {
+    }
 
     virtual ~ThreadWin32();
 
-    ThreadWin32(const ThreadWin32&) = delete;
-    ThreadWin32& operator=(const ThreadWin32&) = delete;
+    ThreadWin32(const ThreadWin32 &) = delete;
+    ThreadWin32 &operator=(const ThreadWin32 &) = delete;
 
     virtual void start();
     static DWORD WINAPI __start(void *v)
@@ -114,16 +100,15 @@ struct CODA_OSS_API ThreadWin32 : public ThreadInterface
 #else
         throw sys::SystemException("Thread::yield() only supported in windows NT 4.0 or greater!");
 #endif
-
     }
-    
+
     /*!
      *  Returns the native type.  You probably should not use this
      *  unless you have specific constraints on which package you use
      *  Use of this function may defeat the purpose of these classes:
      *  to provide thread implementation in an abstract interface.
      */
-    HANDLE & getNative()
+    HANDLE &getNative()
     {
         return mNative;
     }
@@ -132,16 +117,16 @@ struct CODA_OSS_API ThreadWin32 : public ThreadInterface
      *  Return the type name.  This function is essentially free,
      *  because it is static RTTI.
      */
-    const char* getNativeType() const
+    const char *getNativeType() const
     {
         return typeid(mNative).name();
     }
-    
-private:
+
+  private:
     HANDLE mNative = INVALID_HANDLE_VALUE;
 };
 
-}
+} // namespace sys
 
 #endif // Not using other thread package
 #endif // Is windows

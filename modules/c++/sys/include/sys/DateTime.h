@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,18 +14,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
 #ifndef CODA_OSS_sys_DateTime_h_INCLUDED_
 #define CODA_OSS_sys_DateTime_h_INCLUDED_
 
-#include <time.h>
 #include <stdint.h>
+#include <time.h>
 
 #include <string>
 
@@ -40,7 +39,7 @@ namespace sys
  */
 class CODA_OSS_API DateTime
 {
-protected:
+  protected:
     int mYear = 0;
     int mMonth = 0;
     int mDayOfMonth = 0;
@@ -54,9 +53,9 @@ protected:
     // Turn a tm struct into a double
     double toMillis(tm t) const;
 
-    /*! 
-     * Set the time to right now.  
-     * Uses time() or if HAVE_SYS_TIME_H is defined, 
+    /*!
+     * Set the time to right now.
+     * Uses time() or if HAVE_SYS_TIME_H is defined,
      * gettimeofday() for usec precision.
      */
     void setNow();
@@ -65,43 +64,70 @@ protected:
     void fromMillis();
 
     //! @brief Set members from the tm struct value.
-    virtual void fromMillis(const tm& t);
+    virtual void fromMillis(const tm &t);
 
     //! @brief Set the millis value from the members
     virtual void toMillis() = 0;
 
     //! @brief Provides the time as a 'tm'
-    void getTime(tm& t) const;
+    void getTime(tm &t) const;
 
     //! @brief Given seconds since the epoch, provides the time
-    virtual void getTime(time_t numSecondsSinceEpoch, tm& t) const = 0;
+    virtual void getTime(time_t numSecondsSinceEpoch, tm &t) const = 0;
 
-public: // for unit-testing
-    static void localtime(time_t numSecondsSinceEpoch, tm& t);
-    static void gmtime(time_t numSecondsSinceEpoch, tm& t);
+  public: // for unit-testing
+    static void localtime(time_t numSecondsSinceEpoch, tm &t);
+    static void gmtime(time_t numSecondsSinceEpoch, tm &t);
 
-public:
+  public:
     DateTime() = default;
     virtual ~DateTime() = default;
 
     //! Return month {1,12}
-    int getMonth() const noexcept { return mMonth; }
+    int getMonth() const noexcept
+    {
+        return mMonth;
+    }
     //! Return day of month {1,31}
-    int getDayOfMonth() const noexcept { return mDayOfMonth; }
+    int getDayOfMonth() const noexcept
+    {
+        return mDayOfMonth;
+    }
     //! Return day of week {1,7}
-    int getDayOfWeek() const noexcept { return mDayOfWeek; }
+    int getDayOfWeek() const noexcept
+    {
+        return mDayOfWeek;
+    }
     //! Return day of year {1,366}
-    int getDayOfYear() const noexcept { return mDayOfYear; }
+    int getDayOfYear() const noexcept
+    {
+        return mDayOfYear;
+    }
     //! Return hour {0,23}
-    int getHour() const noexcept { return mHour; }
+    int getHour() const noexcept
+    {
+        return mHour;
+    }
     //! Return minute {0,59}
-    int getMinute() const noexcept { return mMinute; }
+    int getMinute() const noexcept
+    {
+        return mMinute;
+    }
     //! Return second {0,59}
-    double getSecond() const noexcept { return mSecond; }
+    double getSecond() const noexcept
+    {
+        return mSecond;
+    }
     //! Return millis since 1 Jan 1970
-    double getTimeInMillis() const noexcept { return mTimeInMillis; }
+    double getTimeInMillis() const noexcept
+    {
+        return mTimeInMillis;
+    }
     //! Return the current year
-    int getYear() const noexcept { return mYear; }
+    int getYear() const noexcept
+    {
+        return mYear;
+    }
     //! Return the number of seconds since the time epoch
     static int64_t getEpochSeconds() noexcept;
 
@@ -115,12 +141,12 @@ public:
     // ! Given the {1,7} day, return the abbreviated alphabetic equivalent
     static std::string dayOfWeekToStringAbbr(int dayOfWeek);
 
-    // ! Given the alphabetic or abbreviated version return {1,12} equivalent 
+    // ! Given the alphabetic or abbreviated version return {1,12} equivalent
     // Acceptable input "August" or "Aug" would return 8
-    static int monthToValue(const std::string& month);
-    // ! Given the alphabetic or abbreviated version return {1,7} equivalent 
+    static int monthToValue(const std::string &month);
+    // ! Given the alphabetic or abbreviated version return {1,7} equivalent
     // Acceptable input "Wednesday" or "Wed" would return 4
-    static int dayOfWeekToValue(const std::string& dayOfWeek);
+    static int dayOfWeekToValue(const std::string &dayOfWeek);
 
     // Setters
     void setMonth(int month);
@@ -132,7 +158,7 @@ public:
     void setYear(int year);
 
     //! @brief Set members from a string/format.
-    void setTime(const std::string& time, const std::string& format);
+    void setTime(const std::string &time, const std::string &format);
 
     /*!
      *  format the DateTime string
@@ -143,7 +169,7 @@ public:
      *  M = minute (mm)
      *  S = second (ss)
      */
-    std::string format(const std::string& formatStr) const;
+    std::string format(const std::string &formatStr) const;
 
     /**
      * @name Logical Operators.
@@ -154,37 +180,37 @@ public:
      * @return true if comparison holds, false otherwise.
      */
     //@{
-    bool operator<(const DateTime& rhs) const noexcept
+    bool operator<(const DateTime &rhs) const noexcept
     {
         return (mTimeInMillis < rhs.mTimeInMillis);
     }
 
-    bool operator<=(const DateTime& rhs) const noexcept
+    bool operator<=(const DateTime &rhs) const noexcept
     {
         return (mTimeInMillis <= rhs.mTimeInMillis);
     }
 
-    bool operator>(const DateTime& rhs) const noexcept
+    bool operator>(const DateTime &rhs) const noexcept
     {
         return (mTimeInMillis > rhs.mTimeInMillis);
     }
 
-    bool operator>=(const DateTime& rhs) const noexcept
+    bool operator>=(const DateTime &rhs) const noexcept
     {
         return (mTimeInMillis >= rhs.mTimeInMillis);
     }
 
-    bool operator==(const DateTime& rhs) const noexcept
+    bool operator==(const DateTime &rhs) const noexcept
     {
         return (mTimeInMillis == rhs.mTimeInMillis);
     }
 
-    bool operator!=(const DateTime& rhs) const noexcept
+    bool operator!=(const DateTime &rhs) const noexcept
     {
         return !operator==(rhs);
     }
     //@}
 };
-}
+} // namespace sys
 
-#endif//CODA_OSS_sys_DateTime_h_INCLUDED_
+#endif // CODA_OSS_sys_DateTime_h_INCLUDED_

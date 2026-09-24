@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -23,8 +23,6 @@
 #include <sys/MutexPosix.h>
 
 #if CODA_OSS_POSIX_SOURCE
-
-
 
 sys::MutexPosix::MutexPosix()
 {
@@ -34,7 +32,7 @@ sys::MutexPosix::MutexPosix()
 
 sys::MutexPosix::~MutexPosix()
 {
-    if ( ::pthread_mutex_destroy(&mNative) == -1 )
+    if (::pthread_mutex_destroy(&mNative) == -1)
     {
         ::pthread_mutex_unlock(&mNative);
         ::pthread_mutex_destroy(&mNative);
@@ -57,13 +55,11 @@ void sys::MutexPosix::unlock()
 #endif
     if (::pthread_mutex_unlock(&mNative) != 0)
         throw sys::SystemException("Mutex unlock failed");
-
 }
 
-pthread_mutex_t& sys::MutexPosix::getNative()
+pthread_mutex_t &sys::MutexPosix::getNative()
 {
     return mNative;
 }
 
 #endif
-

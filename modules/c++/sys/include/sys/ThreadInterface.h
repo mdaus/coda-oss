@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifndef __SYS_THREAD_INTERFACE_H__
 #define __SYS_THREAD_INTERFACE_H__
@@ -28,9 +27,9 @@
 
 #include "sys/Runnable.h"
 
-#include <typeinfo>
-#include <iostream>
 #include "sys/SystemException.h"
+#include <iostream>
+#include <typeinfo>
 
 #include "config/Exports.h"
 
@@ -38,32 +37,31 @@ namespace sys
 {
 /*!
  *  \def STANDARD_START_CALL(MY_NAME, PTR_TO_ME)
- *  You should probably place this in you compatibility 
+ *  You should probably place this in you compatibility
  *  layer if you are writing a CTI integration package.
  *  call it as follows:
  *
  *  \code
  *   static void* PthreadThread::start(void* v)
  *   {
- *     // declare this function. 
+ *     // declare this function.
  *     STANDARD_START_CALL(Win32Thread, v);
  *     return nullptr;
  *   }
  *  \endcode
  */
-#define STANDARD_START_CALL(MY_NAME, PTR_TO_ME) \
-   sys::MY_NAME *me = static_cast<sys::MY_NAME*>(PTR_TO_ME); \
-   assert(me != nullptr); \
-   me->setIsRunning(true); \
-   me->target()->run(); \
-   me->setIsRunning(false)
-
+#define STANDARD_START_CALL(MY_NAME, PTR_TO_ME)                                                                        \
+    sys::MY_NAME *me = static_cast<sys::MY_NAME *>(PTR_TO_ME);                                                         \
+    assert(me != nullptr);                                                                                             \
+    me->setIsRunning(true);                                                                                            \
+    me->target()->run();                                                                                               \
+    me->setIsRunning(false)
 
 /*!
  * \class ThreadInterface
  * \brief defines a thread, which implements a runnable
  * \todo  Add the string name variable and associate values
- *  
+ *
  * A thread in java implements runnable, allowing it to pass
  * threads as runners.  The run part of the interface
  * does nothing in the parent thread, however, if it is
@@ -73,8 +71,18 @@ namespace sys
 
 struct CODA_OSS_API ThreadInterface : public Runnable
 {
-    enum { DEFAULT_LEVEL, KERNEL_LEVEL, USER_LEVEL };
-    enum { MINIMUM_PRIORITY, NORMAL_PRIORITY, MAXIMUM_PRIORITY };
+    enum
+    {
+        DEFAULT_LEVEL,
+        KERNEL_LEVEL,
+        USER_LEVEL
+    };
+    enum
+    {
+        MINIMUM_PRIORITY,
+        NORMAL_PRIORITY,
+        MAXIMUM_PRIORITY
+    };
 
     //! Default constructor
     ThreadInterface() : mIsSelf(true)
@@ -88,11 +96,10 @@ struct CODA_OSS_API ThreadInterface : public Runnable
      *  API
      *  \param name The name of this thread
      */
-    ThreadInterface(const std::string& name) : mIsSelf(true)
+    ThreadInterface(const std::string &name) : mIsSelf(true)
     {
         initialize(this, NORMAL_PRIORITY, DEFAULT_LEVEL, name);
     }
-
 
     /*!
      *  Constructor
@@ -111,16 +118,12 @@ struct CODA_OSS_API ThreadInterface : public Runnable
      *  \param target What to run
      *  \param name The name of this thread
      */
-    ThreadInterface(Runnable *target,
-                    const std::string& name) : mIsSelf(false)
+    ThreadInterface(Runnable *target, const std::string &name) : mIsSelf(false)
     {
         initialize(target, NORMAL_PRIORITY, DEFAULT_LEVEL, name);
     }
 
-    ThreadInterface(Runnable *target,
-                    const std::string& name,
-                    int level,
-                    int priority) : mIsSelf(false)
+    ThreadInterface(Runnable *target, const std::string &name, int level, int priority) : mIsSelf(false)
     {
         initialize(target, priority, level, name);
     }
@@ -132,12 +135,13 @@ struct CODA_OSS_API ThreadInterface : public Runnable
         // of nasty issues that could pop up (execution in freed memory, etc).
         if (isRunning())
         {
-            std::cerr << Ctxt(str::Format("Thread object [%s] destructed before " \
-                                   "thread terminated, aborting program.", 
-                                   getName().c_str())) << std::endl;
+            std::cerr << Ctxt(str::Format("Thread object [%s] destructed before "
+                                          "thread terminated, aborting program.",
+                                          getName().c_str()))
+                      << std::endl;
             abort();
         }
-        
+
         if (mTarget && mTarget != this)
             delete mTarget;
     }
@@ -155,7 +159,7 @@ struct CODA_OSS_API ThreadInterface : public Runnable
      *  Set the name of the thread
      *  \param name New name for thread
      */
-    void setName(const std::string& name)
+    void setName(const std::string &name)
     {
         mName = name;
     }
@@ -213,7 +217,8 @@ struct CODA_OSS_API ThreadInterface : public Runnable
      *  allowing the implementor to inherit this class directly
      */
     virtual void run() override
-    {}
+    {
+    }
 
     /*!
      *  Join the thread
@@ -230,7 +235,7 @@ struct CODA_OSS_API ThreadInterface : public Runnable
      *  Return the target
      *  \return The target runnable
      */
-    Runnable* target()
+    Runnable *target()
     {
         return mTarget;
     }
@@ -244,11 +249,10 @@ struct CODA_OSS_API ThreadInterface : public Runnable
         mIsRunning = isRunning;
     }
 
-        
-    ThreadInterface(const ThreadInterface&) = delete;
-    ThreadInterface& operator=(const ThreadInterface&) = delete;
+    ThreadInterface(const ThreadInterface &) = delete;
+    ThreadInterface &operator=(const ThreadInterface &) = delete;
 
-private:
+  private:
     bool mIsSelf;
 
     /*!
@@ -257,10 +261,7 @@ private:
      *  initialized
      *
      */
-    void initialize(Runnable *target,
-                    int priority,
-                    int level,
-                    const std::string& name)
+    void initialize(Runnable *target, int priority, int level, const std::string &name)
     {
         mTarget = target;
         mName = name;
@@ -279,6 +280,6 @@ private:
     int mLevel;
     bool mIsRunning;
 };
-}
+} // namespace sys
 
 #endif

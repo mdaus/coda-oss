@@ -20,14 +20,13 @@
  *
  */
 
-
 #ifndef CODA_OSS_sys_ConditionVarPosix_h_INCLUDED_
 #define CODA_OSS_sys_ConditionVarPosix_h_INCLUDED_
 
 #include <new>
 
-#include <sys/Conf.h>
 #include "sys/ConditionVarInterface.h"
+#include <sys/Conf.h>
 
 #if CODA_OSS_POSIX_SOURCE
 
@@ -47,20 +46,20 @@ namespace sys
  */
 class ConditionVarPosix final : public ConditionVarInterface
 {
-    ConditionVarPosix(MutexPosix* theLock, bool isOwner, std::nullptr_t);
+    ConditionVarPosix(MutexPosix *theLock, bool isOwner, std::nullptr_t);
 
-public:
+  public:
     ConditionVarPosix();
 
     //!  Constructor
-    explicit ConditionVarPosix(MutexPosix* theLock, bool isOwner = false);
-    explicit ConditionVarPosix(MutexPosix&);  // isOwner = false
+    explicit ConditionVarPosix(MutexPosix *theLock, bool isOwner = false);
+    explicit ConditionVarPosix(MutexPosix &); // isOwner = false
 
     //!  Destructor
     virtual ~ConditionVarPosix();
 
-    ConditionVarPosix(const ConditionVarPosix&) = delete;
-    ConditionVarPosix& operator=(const ConditionVarPosix&) = delete;
+    ConditionVarPosix(const ConditionVarPosix &) = delete;
+    ConditionVarPosix &operator=(const ConditionVarPosix &) = delete;
 
     /*!
      *  Acquire the lock
@@ -108,24 +107,24 @@ public:
     /*!
      *  Returns the native type.
      */
-    pthread_cond_t& getNative();
+    pthread_cond_t &getNative();
 
     /*!
      *  Return the type name.  This function is essentially free,
      *  because it is static RTTI.
      */
-    const char* getNativeType() const
+    const char *getNativeType() const
     {
         return typeid(mNative).name();
     }
 
-private:
+  private:
     // This is set if we own the mutex, to make sure it gets deleted.
     std::unique_ptr<MutexPosix> mMutexOwned;
     MutexPosix *mMutex;
     pthread_cond_t mNative;
 };
-}
+} // namespace sys
 
 #endif
-#endif  // CODA_OSS_sys_ConditionVarPosix_h_INCLUDED_
+#endif // CODA_OSS_sys_ConditionVarPosix_h_INCLUDED_

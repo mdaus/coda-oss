@@ -24,9 +24,9 @@
 
 #include <errno.h>
 
-#include <sys/Conf.h>
 #include <except/Exception.h>
 #include <gsl/gsl.h>
+#include <sys/Conf.h>
 
 #include <sys/ScopedCPUAffinityUnix.h>
 
@@ -92,14 +92,13 @@ int ScopedCPUMaskUnix::getNumOnlineCPUs()
     }
     return gsl::narrow<int>(numOnlineCPUs);
 #else
-throw except::NotImplementedException(Ctxt("Unable to get the number of CPUs"));
+    throw except::NotImplementedException(Ctxt("Unable to get the number of CPUs"));
 #endif
 }
 
 //-----------------------------------------------------------------------------
 
-ScopedCPUAffinityUnix::ScopedCPUAffinityUnix() :
-    ScopedCPUMaskUnix()
+ScopedCPUAffinityUnix::ScopedCPUAffinityUnix() : ScopedCPUMaskUnix()
 {
     if (sched_getaffinity(0, mSize, mMask) == -1)
     {
@@ -125,6 +124,6 @@ ScopedCPUAffinityUnix::ScopedCPUAffinityUnix() :
         throw except::Exception(Ctxt(msg));
     }
 }
-}
+} // namespace sys
 
 #endif

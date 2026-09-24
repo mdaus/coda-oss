@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
@@ -28,15 +28,14 @@
 
 #include <pthread.h>
 
-sys::ConditionVarPosix::ConditionVarPosix() :
-    mMutexOwned(std::make_unique<sys::MutexPosix>()),
-    mMutex(mMutexOwned.get())
+sys::ConditionVarPosix::ConditionVarPosix()
+    : mMutexOwned(std::make_unique<sys::MutexPosix>()), mMutex(mMutexOwned.get())
 {
-    if ( ::pthread_cond_init(&mNative, nullptr) != 0)
+    if (::pthread_cond_init(&mNative, nullptr) != 0)
         throw SystemException("ConditionVar initialization failed");
 }
 
-sys::ConditionVarPosix::ConditionVarPosix(MutexPosix* theLock, bool isOwner, std::nullptr_t) : mMutex(theLock)
+sys::ConditionVarPosix::ConditionVarPosix(MutexPosix *theLock, bool isOwner, std::nullptr_t) : mMutex(theLock)
 {
     if (isOwner)
         mMutexOwned.reset(theLock);
@@ -44,12 +43,16 @@ sys::ConditionVarPosix::ConditionVarPosix(MutexPosix* theLock, bool isOwner, std
     if (::pthread_cond_init(&mNative, nullptr) != 0)
         throw SystemException("ConditionVar initialization failed");
 }
-sys::ConditionVarPosix::ConditionVarPosix(sys::MutexPosix* theLock, bool isOwner) : ConditionVarPosix(theLock, isOwner, nullptr)
+sys::ConditionVarPosix::ConditionVarPosix(sys::MutexPosix *theLock, bool isOwner)
+    : ConditionVarPosix(theLock, isOwner, nullptr)
 {
     if (!theLock)
         throw SystemException("ConditionVar received NULL mutex");
 }
-sys::ConditionVarPosix::ConditionVarPosix(sys::MutexPosix& theLock) : ConditionVarPosix(&theLock, false /*isOwner*/, nullptr) { }
+sys::ConditionVarPosix::ConditionVarPosix(sys::MutexPosix &theLock)
+    : ConditionVarPosix(&theLock, false /*isOwner*/, nullptr)
+{
+}
 
 sys::ConditionVarPosix::~ConditionVarPosix()
 {
@@ -84,14 +87,12 @@ void sys::ConditionVarPosix::wait(double seconds)
 {
     dbg_printf("Timed waiting on condition [%f]\n", seconds);
 
-    if ( seconds > 0 )
+    if (seconds > 0)
     {
         timespec tout;
         tout.tv_sec = time(nullptr) + gsl::narrow_cast<int>(seconds);
         tout.tv_nsec = gsl::narrow_cast<int>((seconds - gsl::narrow_cast<int>(seconds)) * 1e9);
-        if (::pthread_cond_timedwait(&mNative,
-                                     &(mMutex->getNative()),
-                                     &tout) != 0)
+        if (::pthread_cond_timedwait(&mNative, &(mMutex->getNative()), &tout) != 0)
             throw sys::SystemException("ConditionVar wait failed");
     }
     else
@@ -105,7 +106,7 @@ void sys::ConditionVarPosix::broadcast()
         throw sys::SystemException("ConditionVar broadcast failed");
 }
 
-pthread_cond_t& sys::ConditionVarPosix::getNative()
+pthread_cond_t &sys::ConditionVarPosix::getNative()
 {
     return mNative;
 }

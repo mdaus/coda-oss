@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,12 +14,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
-
 
 #ifndef __SYS_SEMAPHORE_WIN32_H__
 #define __SYS_SEMAPHORE_WIN32_H__
@@ -38,28 +37,29 @@ namespace sys
 
 class CODA_OSS_API SemaphoreWin32 : public SemaphoreInterface
 {
-public:
+  public:
     SemaphoreWin32(unsigned int count = 0, size_t maxCount = std::numeric_limits<size_t>::max());
 
     void wait();
 
     void signal();
-    
-    HANDLE& getNative();
-    
+
+    HANDLE &getNative();
+
     /*!
      *  Return the type name.  This function is essentially free,
      *  because it is static RTTI.
      */
-    const char* getNativeType() const
+    const char *getNativeType() const
     {
         return typeid(mNative).name();
     }
-private:
+
+  private:
     HANDLE mNative;
 };
 
-}
+} // namespace sys
 #endif
 #endif
 #endif

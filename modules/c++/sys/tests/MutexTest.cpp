@@ -1,7 +1,7 @@
 /* =========================================================================
- * This file is part of sys-c++ 
+ * This file is part of sys-c++
  * =========================================================================
- * 
+ *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
@@ -14,59 +14,61 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this program; If not, 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program; If not,
  * see <http://www.gnu.org/licenses/>.
  *
  */
 
-
-#include <sstream>
-#include <iostream>
-#include "sys/Thread.h"
 #include "sys/Mutex.h"
-
+#include "sys/Thread.h"
+#include <iostream>
+#include <sstream>
 
 using namespace sys;
 const int MAX_THREADS = 9;
 const int THREAD_LOOPS = 3;
 
-Mutex         mutexCout;
+Mutex mutexCout;
 
-std::string itos (int arg) {
-   std::ostringstream buffer;
-   buffer << arg;
-   return buffer.str();
+std::string itos(int arg)
+{
+    std::ostringstream buffer;
+    buffer << arg;
+    return buffer.str();
 }
 
 class DemoThread : public Thread
 {
-protected:
-   void run() override {
-      for (int i = 0 ; i < THREAD_LOOPS ; i++ ) {
-         mutexCout.lock();
-         std::cout << getName() + " is running" << std::endl;
-         mutexCout.unlock();
-         sleep(1);
-      }
-      mutexCout.lock();
-      std::cout << getName() + " is finished" << std::endl;
-      mutexCout.unlock();
-   }
+  protected:
+    void run() override
+    {
+        for (int i = 0; i < THREAD_LOOPS; i++)
+        {
+            mutexCout.lock();
+            std::cout << getName() + " is running" << std::endl;
+            mutexCout.unlock();
+            sleep(1);
+        }
+        mutexCout.lock();
+        std::cout << getName() + " is finished" << std::endl;
+        mutexCout.unlock();
+    }
 
-public:
-   DemoThread(std::string name) : Thread(name) {};
+  public:
+    DemoThread(std::string name) : Thread(name) {};
 };
 
-
-int main (int, char**)
+int main(int, char **)
 {
-   DemoThread *threads[MAX_THREADS];
-   for (int i = 0 ; i < MAX_THREADS ; i++ ) {
-      threads[i] = new DemoThread( "Thread " + itos(i+1) );
-      threads[i]->start();
-   }
-   for (int j = 0; j < MAX_THREADS; j++ ) {
-      threads[j]->join();
-   }
+    DemoThread *threads[MAX_THREADS];
+    for (int i = 0; i < MAX_THREADS; i++)
+    {
+        threads[i] = new DemoThread("Thread " + itos(i + 1));
+        threads[i]->start();
+    }
+    for (int j = 0; j < MAX_THREADS; j++)
+    {
+        threads[j]->join();
+    }
 }
