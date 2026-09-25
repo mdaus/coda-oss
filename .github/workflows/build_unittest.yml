@@ -87,3 +87,25 @@ jobs:
         export USER=github
         mkdir .git
         ctest --test-dir target --output-on-failure
+
+  build-sanitizers:
+    strategy:
+      matrix:
+        sanitizer: [thread, address]
+    name: ubuntu-24.04-${{ matrix.sanitizer }}-sanitizer
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v5.3.1
+    - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
+    - name: configure
+      run: cmake -B target \
+            -DCMAKE_CXX_FLAGS="-fsanitize=${{ matrix.sanitizer }}" \
+            -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=${{ matrix.sanitizer }}"
+    - name: build
+      run: cmake --build target -j
+    - name: test
+    # ThreadGroupTest has a data race by design
+      run: |
+        echo "race:ThreadGroupTest.cpp" > tsan.supp
+        TSAN_OPTIONS="suppressions=${PWD}/tsan.supp" ctest --test-dir target --output-on-failure
