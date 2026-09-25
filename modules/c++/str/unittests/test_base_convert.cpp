@@ -33,7 +33,6 @@
 #include <config/compiler_extensions.h>
 #include <import/str.h>
 #include <str/Encoding.h>
-// #include <gsl/narrow.h>
 #include <sys/OS.h>
 
 #include "TestCase.h"
