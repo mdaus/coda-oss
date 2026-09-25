@@ -29,6 +29,7 @@
 
 namespace coda_oss
 {
+    // GSL byte will fall back to alias std::byte if available
 	using gsl::byte;
 }
 static_assert(!std::is_same<coda_oss::byte, uint8_t>::value, "'coda_oss::byte' should be a unique type.");
