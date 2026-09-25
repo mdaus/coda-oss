@@ -29,7 +29,6 @@
 #include <limits>
 #include <array>
 
-#include "gsl/gsl.h"
 
 namespace types
 {
