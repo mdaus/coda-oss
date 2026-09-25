@@ -42,7 +42,7 @@ namespace sys
 struct ReadWriteMutex
 {
     //!  Constructor
-        ReadWriteMutex(int maxReaders) : mSem(static_cast<unsigned int>(maxReaders))
+        ReadWriteMutex(int maxReaders) : mSem(gsl::narrow_cast<unsigned int>(maxReaders))
     {
         mMaxReaders = maxReaders;
         dbg_printf("Creating a read/write mutex\n");
