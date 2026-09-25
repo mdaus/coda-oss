@@ -33,7 +33,6 @@
 #include <cstdint>
 
 #include "sys/CPlusPlus.h"
-#include "coda_oss/namespace_.h" // get something in the "coda_oss" namespace
 #include "config/Exports.h"
 
 namespace sys // should be in coda_oss/, but implementation needs sys::Path

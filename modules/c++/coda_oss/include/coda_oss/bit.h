@@ -29,7 +29,6 @@
 
 #include <type_traits>
 
-#include "coda_oss/namespace_.h"
 namespace coda_oss
 {
     // https://en.cppreference.com/w/cpp/types/endian
