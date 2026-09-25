@@ -60,7 +60,7 @@ static const std::u8string& text8()
 
 static const auto& iso88591Text1252()
 {
-    static const auto retval = str::make_string<str::W1252string>("T\xc9XT");  // ISO8859-1, "TÃXT"
+    static const auto retval = str::make_string<str::W1252string>("T\xc9XT");  // ISO8859-1, "TÃÉXT"
     return retval;
 }
 static auto pIso88591Text_()
@@ -71,7 +71,7 @@ static auto pIso88591Text_()
 
 static const auto& utf8Text8()
 {
-    static const auto retval = str::make_string<coda_oss::u8string>("T\xc3\x89XT"); // UTF-8,  "TÃXT"
+    static const auto retval = str::make_string<coda_oss::u8string>("T\xc3\x89XT"); // UTF-8,  "TÃÉXT"
     return retval;
 } 
 static const auto pUtf8Text_()

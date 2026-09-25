@@ -120,19 +120,19 @@ TEST_CASE(test_string_to_u8string_windows_1252)
 {
     // Windows-1252 only characters must be mapped to UTF-8
     {
-        const std::string input = "|\x80|";  // Windows-1252, "||"
+        const std::string input = "|\x80|";  // Windows-1252, "|euro sign|"
         const auto actual = str::to_u8string<str::W1252string>(input);
-        const std::u8string expected8{cast8('|'), cast8('\xE2'), cast8('\x82'), cast8('\xAC'), cast8('|')};  // UTF-8,  "||"
+        const std::u8string expected8{cast8('|'), cast8('\xE2'), cast8('\x82'), cast8('\xAC'), cast8('|')};  // UTF-8
         TEST_ASSERT_EQ(actual, expected8);
-        const std::u32string expected{U"|\u20AC|"};  // UTF-32,  "||"
+        const std::u32string expected{U"|\u20AC|"};  // UTF-32
         test_assert_eq(testName, actual, expected);
     }
     {
-        const std::string input = "|\x9F|";  // Windows-1252, "||"
+        const std::string input = "|\x9F|";  // Windows-1252, "|Y with diaeresis|"
         const auto actual = str::to_u8string<str::W1252string>(input);
-        const std::u8string expected8{cast8('|'), cast8('\xC5'), cast8('\xB8'), cast8('|')};  // UTF-8,  "||"
+        const std::u8string expected8{cast8('|'), cast8('\xC5'), cast8('\xB8'), cast8('|')};  // UTF-8
         TEST_ASSERT_EQ(actual, expected8);
-        const std::u32string expected{U"|\u0178|"};  // UTF-32,  "||"
+        const std::u32string expected{U"|\u0178|"};  // UTF-32
         test_assert_eq(testName, actual, expected);
     }
     {
@@ -458,6 +458,7 @@ TEST_CASE(test_Windows1252_WIN32)
     constexpr auto u16_w1252_a1_ff = u"\u00a1\u00a2\u00fe\u00ff";
     test_Windows1252_(testName, w1252_a1_ff, u16_w1252_a1_ff);
 
+    // "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ"
     constexpr auto w1252 = L""; // these values must be mapped
     //constexpr auto w1252 = "\x80\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8e" // these values must be mapped
     //    "\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9e\x9f";
