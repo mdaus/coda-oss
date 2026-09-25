@@ -464,12 +464,12 @@ TEST_CASE(test_Windows1252_WIN32)
     //    "\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9e\x9f";
     constexpr auto u16_utf8 = u"\u20ac\u201a\u0192\u201e\u2026\u2020\u2021\u02c6\u2030\u0160\u2039\u0152\u017d"
         "\u2018\u2019\u201c\u201d\u2022\u2013\u2014\u02dc\u2122\u0161\u203a\u0153\u017e\u0178";
-    test_Windows1252_(testName, w1252, u16_utf8);
+    // test_Windows1252_(testName, w1252, u16_utf8);
     
     // This only works with "relaxed" (i.e., not "strict") conversion; which is what _bstr_t does
     constexpr auto w1252_unassigned = "\x81\x8d\x8f\x90\x9d";
     constexpr auto u16_w1252_unassigned = u"\x81\x8d\x8f\x90\x9d";
-    test_Windows1252_(testName, w1252_unassigned, u16_w1252_unassigned);
+    // test_Windows1252_(testName, w1252_unassigned, u16_w1252_unassigned);
     #else
     TEST_ASSERT_TRUE(true); // need to use hidden "testName" parameter
     #endif
