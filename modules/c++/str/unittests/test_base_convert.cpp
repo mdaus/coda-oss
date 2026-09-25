@@ -459,7 +459,7 @@ TEST_CASE(test_Windows1252_WIN32)
     test_Windows1252_(testName, w1252_a1_ff, u16_w1252_a1_ff);
 
     // "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ"
-    constexpr auto w1252 = ""; // these values must be mapped
+    constexpr auto w1252 = "€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ"; // these values must be mapped
     //constexpr auto w1252 = "\x80\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8e" // these values must be mapped
     //    "\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9e\x9f";
     constexpr auto u16_utf8 = u"\u20ac\u201a\u0192\u201e\u2026\u2020\u2021\u02c6\u2030\u0160\u2039\u0152\u017d"
