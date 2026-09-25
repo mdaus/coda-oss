@@ -437,7 +437,7 @@ inline static auto toString(const std::wstring& s)
 static void test_Windows1252_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16)
 {
     const auto u16 = str::to_u16string(str::to_u8string<str::W1252string>(pStr));
-    TEST_ASSERT_EQ(u16, pUtf16);
+    TEST_ASSERT(u16 == pUtf16);
     auto wstring = toWString(str::to_u8string<str::W1252string>(pStr));
     auto s = toString(str::to_u8string<str::W1252string>(pStr));
     auto w1252 = str::make_string<str::W1252string>(pStr);
