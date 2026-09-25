@@ -165,7 +165,7 @@ macro(coda_initialize_build)
 
         # catch exceptions that bubble through a C-linkage layer
         string(REGEX REPLACE "/EHsc" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-        add_compile_options(/EHs /bigobj)
+        add_compile_options(/EHs /bigobj /Zc:__cplusplus)
 
         add_definitions(
             -DWIN32_LEAN_AND_MEAN
