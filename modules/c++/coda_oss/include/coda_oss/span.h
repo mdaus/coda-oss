@@ -19,7 +19,6 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once 
 #ifndef CODA_OSS_coda_oss_span_h_INCLUDED_
 #define CODA_OSS_coda_oss_span_h_INCLUDED_
 
@@ -31,7 +30,6 @@
 #include <type_traits>
 
 #include "coda_oss/CPlusPlus.h"
-#include "coda_oss/namespace_.h"
 #include "coda_oss/span_.h"
 #include "coda_oss/cstddef.h" // byte
 

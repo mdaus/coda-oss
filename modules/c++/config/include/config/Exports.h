@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CODA_OSS_config_exports_h_INCLUDED_
+#define CODA_OSS_config_exports_h_INCLUDED_
 
 #include "config/compiler_extensions.h"
 
@@ -57,4 +58,5 @@
 
 #if defined(_MSC_VER)
 #pragma warning(disable: 4251) // '...' : class '...' needs to have dll-interface to be used by clients of struct '...'
+#endif
 #endif
