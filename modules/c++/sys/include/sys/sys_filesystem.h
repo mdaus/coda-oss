@@ -20,7 +20,6 @@
  */
 #ifndef CODA_OSS_sys_sys_filesystem_h_INCLUDED_
 #define CODA_OSS_sys_sys_filesystem_h_INCLUDED_
-#pragma once
 
 //
 // For now, these are just some wrappers around the CODA-OSS routines ...

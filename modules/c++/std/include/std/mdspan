@@ -2,7 +2,7 @@
  * This file is part of std-c++
  * =========================================================================
  *
- * © Copyright 2023, Maxar Technologies, Inc.
+ * ï¿½ Copyright 2023, Maxar Technologies, Inc.
  *
  * std-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,7 +18,8 @@
  * License along with this program; If not, http://www.gnu.org/licenses/.
  *
  */
-#pragma once
+#ifndef CODA_OSS_std_mdspan_INCLUDED_
+#define CODA_OSS_std_mdspan_INCLUDED_
 
 #include "coda_oss/mdspan.h"
 #include "coda_oss/CPlusPlus.h"
@@ -44,3 +45,4 @@ namespace std // This is slightly uncouth: we're not supposed to augment "std".
 #endif
 
 #endif  // CODA_OSS_NO_std_mdspan
+#endif
