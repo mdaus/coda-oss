@@ -33,8 +33,8 @@
 #include <string>
 #include <cctype>
 #include <array>
+#include <gsl/narrow>
 
-#include "gsl/gsl.h"
 
 #include "str/Convert.h"
 #include "str/Encoding.h"
@@ -341,9 +341,9 @@ inline char to_w1252_upper_(char ch)
     // See chart at: https://en.wikipedia.org/wiki/Windows-1252
     const auto u8 = static_cast<uint8_t>(ch);
 
-    constexpr uint8_t s_with_caron = 0x9a /*  */;
-    constexpr uint8_t oe = 0x9c /*  */;
-    constexpr uint8_t z_with_caron = 0x9e /*  */;
+    constexpr uint8_t s_with_caron = 0x9a /* š */;
+    constexpr uint8_t oe = 0x9c /* œ */;
+    constexpr uint8_t z_with_caron = 0x9e /* ž */;
     if ((u8 == s_with_caron) || (u8 == oe) || (u8 == z_with_caron))
     {
         return ch ^ 0x10;    
@@ -366,7 +366,7 @@ inline char to_w1252_upper_(char ch)
     constexpr uint8_t y_with_diaeresis = 0xff /* ÿ */;
     if (u8 == y_with_diaeresis)
     {
-        constexpr uint8_t Y_with_diaeresis = 0x9f /*  */;
+        constexpr uint8_t Y_with_diaeresis = 0x9f /* Ÿ */;
         return Y_with_diaeresis;
     }
 
@@ -388,15 +388,15 @@ inline char to_w1252_lower_(char ch)
     // See chart at: https://en.wikipedia.org/wiki/Windows-1252
     const auto u8 = static_cast<uint8_t>(ch);
 
-    constexpr uint8_t S_with_caron = 0x8a /*  */;
-    constexpr uint8_t OE = 0x8c /* */;
-    constexpr uint8_t Z_with_caron = 0x8e /*  */;
+    constexpr uint8_t S_with_caron = 0x8a /* Š */;
+    constexpr uint8_t OE = 0x8c /* Œ */;
+    constexpr uint8_t Z_with_caron = 0x8e /* Ž */;
     if ((u8 == S_with_caron) || (u8 == OE) || (u8 == Z_with_caron))
     {
         return ch | 0x10;
     }
 
-    constexpr uint8_t Y_with_diaeresis = 0x9f /*  */;
+    constexpr uint8_t Y_with_diaeresis = 0x9f /* Ÿ */;
     if (u8 == Y_with_diaeresis)
     {
         constexpr uint8_t y_with_diaeresis = 0xff /* ÿ */;

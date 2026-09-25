@@ -25,13 +25,13 @@
 
 #include <string>
 #include <vector>
+#include <gsl/narrow>
 
 #include <config/Exports.h>
 
 #include "sys/Conf.h"
 #include "except/Exception.h"
 #include "str/Convert.h"
-#include "gsl/gsl.h"
 
 #include "xml/lite/QName.h"
 /*!

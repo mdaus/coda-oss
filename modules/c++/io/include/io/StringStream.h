@@ -33,8 +33,8 @@
  */
 
 #include <sstream>
+#include <gsl/narrow>
 
-#include "gsl/gsl.h"
 #include "io/BidirectionalStream.h"
 #include "sys/Conf.h"
 #include "io/SeekableStreams.h"
