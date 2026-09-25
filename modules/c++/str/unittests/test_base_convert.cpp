@@ -33,7 +33,7 @@
 #include <config/compiler_extensions.h>
 #include <import/str.h>
 #include <str/Encoding.h>
-#include <gsl/gsl.h>
+// #include <gsl/narrow.h>
 #include <sys/OS.h>
 
 #include "TestCase.h"
@@ -120,7 +120,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
 {
     // Windows-1252 only characters must be mapped to UTF-8
     {
-        const std::string input = "|\x80|";  // Windows-1252, "|euro sign|"
+        const std::string input = "|\x80|";  // Windows-1252, "|€|"
         const auto actual = str::to_u8string<str::W1252string>(input);
         const std::u8string expected8{cast8('|'), cast8('\xE2'), cast8('\x82'), cast8('\xAC'), cast8('|')};  // UTF-8
         TEST_ASSERT_EQ(actual, expected8);
@@ -128,7 +128,7 @@ TEST_CASE(test_string_to_u8string_windows_1252)
         test_assert_eq(testName, actual, expected);
     }
     {
-        const std::string input = "|\x9F|";  // Windows-1252, "|Y with diaeresis|"
+        const std::string input = "|\x9F|";  // Windows-1252, "|Ÿ|"
         const auto actual = str::to_u8string<str::W1252string>(input);
         const std::u8string expected8{cast8('|'), cast8('\xC5'), cast8('\xB8'), cast8('|')};  // UTF-8
         TEST_ASSERT_EQ(actual, expected8);

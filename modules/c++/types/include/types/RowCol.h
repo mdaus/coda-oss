@@ -28,6 +28,7 @@
 #include <utility>
 #include <limits>
 #include <array>
+#include <gsl/narrow>
 
 
 namespace types

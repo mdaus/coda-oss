@@ -33,6 +33,7 @@
 #include <sstream>
 #include <string>
 #include <typeinfo>
+#include <gsl/narrow>
 
 #include "config/Exports.h"
 #include "coda_oss/string.h"
@@ -40,7 +41,6 @@
 #include "coda_oss/cstddef.h"
 #include "types/Complex.h"
 #include "import/except.h"
-#include "gsl/gsl.h"
 #include "str/Encoding.h"
 
 namespace str

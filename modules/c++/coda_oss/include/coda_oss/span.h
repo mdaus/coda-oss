@@ -22,20 +22,15 @@
 #ifndef CODA_OSS_coda_oss_span_h_INCLUDED_
 #define CODA_OSS_coda_oss_span_h_INCLUDED_
 
-#include <stdint.h>
-#include <stdlib.h>
-#include<stddef.h>
-
+#include <cstdint>
+#include <cstdlib>
 #include <cstddef>
 #include <type_traits>
+#include <gsl/narrow>
 
 #include "coda_oss/CPlusPlus.h"
 #include "coda_oss/span_.h"
 #include "coda_oss/cstddef.h" // byte
-
-// Need a fairly decent C++ compiler to use the real GSL.  This brings in more than 
-// we really need for span (e.g., gsl::narrow()), but it keeps things simple.
-#include "gsl/gsl.h"  // not gsl/span; need #pragma here to turn off warnings
 
 // This logic needs to be here rather than <std/span> so that `coda_oss::span` will
 // be the same as `std::span`.
