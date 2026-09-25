@@ -453,7 +453,7 @@ TEST_CASE(test_Windows1252_WIN32)
     // https://en.wikipedia.org/wiki/Windows-1252
     #if _WIN32
     // can convert with bit-twiddling
-    constexpr auto w1252_a1_ff = L"¡¢þÿ"; // <INVERTED EXCLAMATION MARK><CENT SIGN><LATIN SMALL LETTER THORN><LATIN SMALL LETTER Y WITH DIAERESIS>
+    constexpr auto w1252_a1_ff = "¡¢þÿ"; // <INVERTED EXCLAMATION MARK><CENT SIGN><LATIN SMALL LETTER THORN><LATIN SMALL LETTER Y WITH DIAERESIS>
     //constexpr auto w1252_a1_ff = "\xa1\xa2\xfe\xff"; 
     constexpr auto u16_w1252_a1_ff = u"\u00a1\u00a2\u00fe\u00ff";
     test_Windows1252_(testName, w1252_a1_ff, u16_w1252_a1_ff);
