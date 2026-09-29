@@ -22,7 +22,7 @@ if(NOT CONAN_PACKAGE_NAME)
     endif()
 endif()
 
-#add_subdirectory("gsl") # nothing to do
+add_subdirectory("gsl")
 
 set(ENABLE_J2K ON CACHE BOOL "enable J2K library")
 if(NOT CONAN_PACKAGE_NAME)

@@ -27,12 +27,12 @@
 #include <vector>
 #include <mutex>
 #include <stdexcept>
+#include <gsl/narrow>
 
 #include "except/Exception.h"
 #include "sys/Conf.h"
 #include "str/Convert.h"
 #include "str/Manip.h"
-#include "gsl/gsl.h"
 
 #if CODA_OSS_POSIX_SOURCE
 #include <sys/time.h>

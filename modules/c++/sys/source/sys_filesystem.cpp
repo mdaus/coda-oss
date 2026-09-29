@@ -13,9 +13,9 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <gsl/narrow>
 
 #include "sys/Path.h"
-#include "gsl/gsl.h"
 
 namespace fs = sys::filesystem;
 

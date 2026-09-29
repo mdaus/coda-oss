@@ -28,8 +28,8 @@
 #include <utility>
 #include <limits>
 #include <array>
+#include <gsl/narrow>
 
-#include "gsl/gsl.h"
 
 namespace types
 {

@@ -25,10 +25,10 @@
 #include <algorithm>
 #include <iterator>
 #include <std/span>
+#include <gsl/narrow>
 
 #include <import/str.h>
 #include <import/mem.h>
-#include <gsl/gsl.h>
 
 namespace
 {

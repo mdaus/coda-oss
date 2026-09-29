@@ -33,8 +33,8 @@
 #include <vector>
 #include <iterator>
 #include <string>
+#include <gsl/narrow>
 
-#include "gsl/gsl.h"
 #include "config/compiler_extensions.h"
 
 #include "str/Manip.h"
