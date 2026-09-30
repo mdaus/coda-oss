@@ -2,8 +2,8 @@
  * This file is part of except-c++
  * =========================================================================
  *
- * (C) Copyright 2004 - 2016, MDA Information Systems LLC
-  * (C) Copyright 2021, Maxar Technologies, Inc.
+ * © 2004 - 2016, MDA Information Systems LLC
+  * © 2021, Maxar Technologies, Inc.
  *
  * sys-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by

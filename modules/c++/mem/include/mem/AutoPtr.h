@@ -2,8 +2,8 @@
  * This file is part of mem-c++
  * =========================================================================
  *
- * (C) Copyright 2004 - 2018, MDA Information Systems LLC
- * (C) Copyright 2022, Maxar Technologies, Inc.
+ * © 2004 - 2018, MDA Information Systems LLC
+ * © 2022, Maxar Technologies, Inc.
  *
  * mem-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by

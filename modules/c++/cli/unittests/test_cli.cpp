@@ -2,7 +2,7 @@
  * This file is part of cli-c++
  * =========================================================================
  *
- * (C) Copyright 2004 - 2014, MDA Information Systems LLC
+ * © 2004 - 2014, MDA Information Systems LLC
  *
  * cli-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -76,7 +76,7 @@ TEST_CASE(testChoices)
             "type1")->addChoice("type2")->addChoice("type3");
     parser.addArgument("images", "Input images", cli::STORE);
     parser.setDescription("This program is kind of pointless, but have fun!");
-    parser.setProlog("========= (c) COPYRIGHT BANNER ========= ");
+    parser.setProlog("========= © BANNER ========= ");
     parser.setEpilog("And that's the usage of the program!");
     std::ostringstream buf;
     parser.printHelp(buf);

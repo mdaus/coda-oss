@@ -2,7 +2,7 @@
  * This file is part of io-c++
  * =========================================================================
  *
- * (C) Copyright 2025, Arka Group, L.P.
+ * © 2025, Arka Group, L.P.
  *
  * io-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by

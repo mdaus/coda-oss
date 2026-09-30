@@ -2,8 +2,8 @@
  * This file is part of xml.lite-c++ 
  * =========================================================================
  * 
- * (C) Copyright 2004 - 2014, MDA Information Systems LLC
- * (C) Copyright 2022, Maxar Technologies, Inc.
+ * © 2004 - 2014, MDA Information Systems LLC
+ * © 2022, Maxar Technologies, Inc.
  *
  * xml.lite-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by

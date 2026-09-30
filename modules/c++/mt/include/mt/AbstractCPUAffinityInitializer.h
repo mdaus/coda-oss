@@ -2,7 +2,7 @@
  * This file is part of mt-c++
  * =========================================================================
  *
- * (C) Copyright 2004 - 2019, MDA Information Systems LLC
+ * © 2004 - 2019, MDA Information Systems LLC
  *
  * mt-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by

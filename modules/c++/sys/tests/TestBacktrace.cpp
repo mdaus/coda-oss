@@ -2,7 +2,7 @@
  * This file is part of sys-c++
  * =========================================================================
  * 
- * (C) Copyright 2004 - 2016, MDA Information Systems LLC
+ * © 2004 - 2016, MDA Information Systems LLC
  *
  * sys-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
