@@ -49,7 +49,6 @@
 #endif  // CODA_OSS_cplusplus
 
 // Define a few macros as that's less verbose than testing against a version number
-#define CODA_OSS_cpp11 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus11)
 #define CODA_OSS_cpp14 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus14)
 #define CODA_OSS_cpp17 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus17)
 #define CODA_OSS_cpp20 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus20)

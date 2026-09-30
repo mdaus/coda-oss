@@ -28,7 +28,6 @@
 
 #include <mt/AbstractCPUAffinityInitializer.h>
 #include <mt/CPUAffinityThreadInitializerWin32.h>
-#include <mem/SharedPtr.h>
 
 namespace mt
 {

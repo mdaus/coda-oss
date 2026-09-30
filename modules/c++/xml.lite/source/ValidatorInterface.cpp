@@ -25,7 +25,6 @@
 #include <algorithm>
 #include <iterator>
 #include <std/filesystem>
-#include <std/memory>
 
 #include <xml/lite/xml_lite_config.h>
 

@@ -24,7 +24,6 @@
 #define __MT_BASIC_THREAD_POOL_H__
 
 #include <vector>
-#include <std/memory>
 
 #include "except/Exception.h"
 #include "sys/Mutex.h"
@@ -32,7 +31,6 @@
 #include "mt/RequestQueue.h"
 #include "mt/GenericRequestHandler.h"
 #include "mt/ThreadPoolException.h"
-#include "mem/SharedPtr.h"
 
 namespace mt
 {

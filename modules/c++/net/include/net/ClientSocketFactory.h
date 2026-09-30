@@ -24,7 +24,6 @@
 #define __NET_CLIENT_SOCKET_FACTORY_H__
 
 #include "net/Socket.h"
-#include "mem/SharedPtr.h"
 
 /*!
  *  \file

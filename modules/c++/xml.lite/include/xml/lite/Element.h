@@ -34,7 +34,6 @@
 #include <io/OutputStream.h>
 #include <str/Convert.h>
 #include "sys/Conf.h"
-#include "mem/SharedPtr.h"
 
 #include "xml/lite/XMLException.h"
 #include "xml/lite/Attributes.h"

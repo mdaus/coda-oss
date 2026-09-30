@@ -28,7 +28,6 @@
 #include "net/ServerSocketFactory.h"
 #include "sys/SystemException.h"
 #include "net/SingleThreadedAllocStrategy.h"
-#include "mem/SharedPtr.h"
 
 
 /*! \file

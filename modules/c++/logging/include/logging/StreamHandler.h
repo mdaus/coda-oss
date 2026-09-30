@@ -32,7 +32,6 @@
 #include "logging/LogRecord.h"
 #include "logging/Handler.h"
 #include <import/io.h>
-#include <mem/SharedPtr.h>
 
 namespace logging
 {

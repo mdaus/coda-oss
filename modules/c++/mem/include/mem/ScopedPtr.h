@@ -27,11 +27,10 @@
 #include <assert.h>
 
 #include <cstddef>
-#include <std/memory>
+#include <memory>
 #include <type_traits>
 
 #include "sys/Conf.h"
-#include "mem/SharedPtr.h"
 
 namespace mem
 {

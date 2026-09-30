@@ -25,13 +25,12 @@
 #include <cmath>
 #include <algorithm>
 #include <functional>
-#include <std/memory>
+#include <memory>
 #include <cstddef>
 #include <gsl/narrow>
 
 #include <import/sys.h>
 #include <mem/ScopedArray.h>
-#include <mem/SharedPtr.h>
 #include <math/linear/MatrixMxN.h>
 
 namespace math

@@ -32,7 +32,7 @@
 #include <ostream>
 #include <cstdint>
 
-#include "sys/CPlusPlus.h"
+#include <coda_oss/CPlusPlus.h>
 #include "config/Exports.h"
 
 namespace sys // should be in coda_oss/, but implementation needs sys::Path

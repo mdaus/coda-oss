@@ -27,7 +27,6 @@
 #include "mt/AbstractThreadPool.h"
 #include "mt/TiedWorkerThread.h"
 #include "mt/CPUAffinityInitializer.h"
-#include "mem/SharedPtr.h"
 
 namespace mt
 {

@@ -26,7 +26,6 @@
 #include <sys/SystemException.h>
 #include <except/Exception.h>
 #include <str/Manip.h>
-#include <mem/SharedPtr.h>
 
 #include "net/Sockets.h"
 #include "net/SocketAddress.h"

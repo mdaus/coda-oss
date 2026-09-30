@@ -23,8 +23,7 @@
 
 // always implement sys::filesystem::path
 #include "sys/sys_filesystem.h"
-
-#include "sys/CPlusPlus.h"
+#include <coda_oss/CPlusPlus.h>
 #if CODA_OSS_cpp17
 	// Some versions of G++ say they're C++17 but don't have <filesystem>
 	#if __has_include(<filesystem>)  // __has_include is C++17

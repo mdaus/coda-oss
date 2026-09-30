@@ -27,7 +27,6 @@
 #include "io/InputStream.h"
 #include "io/OutputStream.h"
 #include "io/NullStreams.h"
-#include "mem/SharedPtr.h"
 
 namespace io
 {

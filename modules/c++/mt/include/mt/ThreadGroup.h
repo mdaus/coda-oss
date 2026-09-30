@@ -32,7 +32,6 @@
 #include <sys/Runnable.h>
 #include <sys/Thread.h>
 #include <sys/Mutex.h>
-#include <mem/SharedPtr.h>
 #include <config/Exports.h>
 
 #if !defined(MT_DEFAULT_PINNING)
