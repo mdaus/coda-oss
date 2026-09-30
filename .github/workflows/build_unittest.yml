@@ -123,7 +123,6 @@ jobs:
     - name: install g++-16
       run: sudo apt update && sudo apt install g++-16
     - name: configure
-      run: cmake -B target -DCMAKE_CXX_STANDARD=${{ matrix.standard }} \
-            -DCMAKE_C_COMPILER=gcc-16 -DCMAKE_CXX_COMPILER=g++-16 
+      run: cmake -B target -DCMAKE_CXX_STANDARD=${{ matrix.standard }} -DCMAKE_C_COMPILER=gcc-16 -DCMAKE_CXX_COMPILER=g++-16 
     - name: build
       run: cmake --build target -j
