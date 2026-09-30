@@ -31,7 +31,6 @@
 #include <type_traits>
 
 #include "sys/Conf.h"
-#include "mem/SharedPtr.h"
 
 namespace mem
 {

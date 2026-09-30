@@ -26,7 +26,6 @@
 #include <memory>
 
 #include "io/OutputStream.h"
-#include "mem/SharedPtr.h"
 
 
 /*!

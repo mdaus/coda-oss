@@ -29,7 +29,6 @@
 
 #include <import/sys.h>
 #include <config/compiler_extensions.h>
-#include <mem/SharedPtr.h>
 #include "mt/CriticalSection.h"
 
 namespace mt

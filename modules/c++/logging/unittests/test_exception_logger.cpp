@@ -27,7 +27,6 @@
 #include "TestCase.h"
 
 #include <sys/Mutex.h>
-#include <mem/SharedPtr.h>
 #include <mt/GenerationThreadPool.h>
 #include <logging/ExceptionLogger.h>
 

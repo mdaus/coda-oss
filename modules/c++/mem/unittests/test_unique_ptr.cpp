@@ -22,7 +22,6 @@
 
 #include <memory>
 
-#include <mem/SharedPtr.h>
 #include <mem/AutoPtr.h>
 
 #include "TestCase.h"

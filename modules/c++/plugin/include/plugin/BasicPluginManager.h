@@ -31,7 +31,6 @@
 #include <import/str.h>
 #include <import/except.h>
 
-#include <mem/SharedPtr.h>
 
 #include "plugin/PluginDefines.h"
 #include "plugin/ErrorHandler.h"

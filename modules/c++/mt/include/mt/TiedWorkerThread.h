@@ -25,7 +25,6 @@
 #define __MT_TIED_WORKER_THREAD_H__
 
 #include "mt/CPUAffinityThreadInitializer.h"
-#include "mem/SharedPtr.h"
 
 
 namespace mt

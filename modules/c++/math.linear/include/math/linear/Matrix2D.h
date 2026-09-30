@@ -31,7 +31,6 @@
 
 #include <import/sys.h>
 #include <mem/ScopedArray.h>
-#include <mem/SharedPtr.h>
 #include <math/linear/MatrixMxN.h>
 
 namespace math

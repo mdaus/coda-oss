@@ -25,7 +25,6 @@
 #define __PLUGIN_DEFINES_H__
 
 #include <memory>
-#include <mem/SharedPtr.h>
 
 /* #define PLUGIN_CONSTRUCTOR_NAME "SpawnPlugin" */
 /* #define PLUGIN_DESTRUCTOR_NAME "DestroyPlugin" */

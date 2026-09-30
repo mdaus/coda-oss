@@ -32,7 +32,6 @@
 #include <mutex>
 
 #include <mt/Singleton.h>
-#include <mem/SharedPtr.h>
 #include "logging/DefaultLogger.h"
 
 namespace logging
