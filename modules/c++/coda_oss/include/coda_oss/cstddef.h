@@ -25,16 +25,24 @@
 
 #include <cstddef>
 #include <type_traits>
-#if ! CODA_OSS_cpp17
-#include <gsl/byte>
+#define _CODA_OSS_USE_GSL_BYTE 0
+
+// Copy from GSL check to make sure we don't get all the deprecation warnings
+#if defined(__cplusplus) && (__cplusplus >= 201703L) &&                                            \
+    (defined(__cpp_lib_byte) && (__cpp_lib_byte >= 201603) ||                                      \
+     defined(_LIBCPP_VERSION) && (_LIBCPP_VERSION >= 5000))
+
+    #include <gsl/byte>
+    #undef _CODA_OSS_USE_GSL_BYTE
+    #undef _CODA_OSS_USE_GSL_BYTE 1
 #endif
 
 namespace coda_oss
 {
-#if CODA_OSS_cpp17
-    using std::byte;
+#if _CODA_OSS_USE_GSL_BYTE
+using gsl::byte;
 #else
-	using gsl::byte;
+using std::byte;
 #endif
 }
 static_assert(!std::is_same<coda_oss::byte, uint8_t>::value, "'coda_oss::byte' should be a unique type.");
