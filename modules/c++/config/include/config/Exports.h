@@ -2,7 +2,7 @@
  * This file is part of config-c++
  * =========================================================================
  *
- * © 2023, Maxar Technologies, Inc.
+ * © 2022, Maxar Technologies, Inc.
  *
  * config-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
