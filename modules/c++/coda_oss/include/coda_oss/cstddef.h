@@ -25,13 +25,13 @@
 
 #include <cstddef>
 #include <type_traits>
-#if ! CODA_OSS_cpp20
+#if ! CODA_OSS_cpp17
 #include <gsl/byte>
 #endif
 
 namespace coda_oss
 {
-#if CODA_OSS_cpp20
+#if CODA_OSS_cpp17
     using std::byte;
 #else
 	using gsl::byte;
