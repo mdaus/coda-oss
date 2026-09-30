@@ -29,16 +29,19 @@
 #include <gsl/narrow>
 
 #include "coda_oss/CPlusPlus.h"
-#include "coda_oss/span_.h"
 #include "coda_oss/cstddef.h" // byte
 
+#if ! CODA_OSS_cpp20
+#include <gsl/span>
+#endif
+
 // This logic needs to be here rather than <std/span> so that `coda_oss::span` will
-// be the same as `std::span`.
+// be the same as `coda_oss::span`.
 #ifndef CODA_OSS_HAVE_std_span_
     #define CODA_OSS_HAVE_std_span_ 0  // assume no <span>
 #endif
 #if CODA_OSS_cpp17 // C++17 for `__has_include()`
-    #if __has_include(<span>) && __cpp_lib_span // Some versions of G++ say they're C++20 but don't have <span>
+    #if __has_include(<span>) && __cpp_lib_span && CODA_OSS_cpp20 // Some versions of G++ say they're C++20 but don't have <span>
         #include <span>
         #undef CODA_OSS_HAVE_std_span_
         #define CODA_OSS_HAVE_std_span_ 1  // provided by the implementation, probably C++20
@@ -47,16 +50,14 @@
 
 namespace coda_oss
 {
-    #if CODA_OSS_HAVE_std_span_
-        using std::span; // coda_oss::span == std::span
-    #elif defined(GSL_SPAN_H) // the above #include'd gsl/span
-	    using gsl::span;
+    #if CODA_OSS_cpp20
+        using std::span;
     #else
-	    using details::span; // no std::span or gsl::span, use our own
-    #endif 
+        using gsl::span;
+    #endif
 
 
-// Even if `span` is `std::span`, these are still in the `coda_oss` namespace.
+// Even if `span` is `coda_oss::span`, these are still in the `coda_oss` namespace.
 
 // https://en.cppreference.com/w/cpp/container/span/as_bytes
 template <typename T>

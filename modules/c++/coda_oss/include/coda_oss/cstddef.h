@@ -27,6 +27,8 @@
 
 #include <gsl/byte>
 
+#include "coda_oss/CPlusPlus.h"
+
 namespace coda_oss
 {
 #if GSL_USE_STD_BYTE
