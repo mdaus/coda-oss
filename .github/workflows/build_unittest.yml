@@ -113,7 +113,7 @@ jobs:
   build-other-cpp:
     strategy:
       matrix:
-        standard: [17, 20, 23]  # 26 breaks because of our mdspan impl
+        standard: [17, 20, 23, 26]
     name: ubuntu-26.04-CXX${{ matrix.standard }}
     runs-on: ubuntu-26.04
     steps:
