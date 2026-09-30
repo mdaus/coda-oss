@@ -38,6 +38,7 @@
 #define CODA_OSS_cplusplus17 201703L
 #define CODA_OSS_cplusplus20 202002L
 #define CODA_OSS_cplusplus23 202302L
+#define CODA_OSS_cplusplus26 202603L
 
 #if CODA_OSS_cplusplus < CODA_OSS_cplusplus20
     #if defined(__GNUC__) && (__cplusplus >= 201709L)  // note > C++ 17 of 201703L
@@ -49,11 +50,11 @@
 #endif  // CODA_OSS_cplusplus
 
 // Define a few macros as that's less verbose than testing against a version number
-#define CODA_OSS_cpp11 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus11)
 #define CODA_OSS_cpp14 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus14)
 #define CODA_OSS_cpp17 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus17)
 #define CODA_OSS_cpp20 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus20)
 #define CODA_OSS_cpp23 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus23)
+#define CODA_OSS_cpp26 (CODA_OSS_cplusplus >= CODA_OSS_cplusplus26)
 
 #if !CODA_OSS_cpp14
 #error "Must compile with C++14 or greater."

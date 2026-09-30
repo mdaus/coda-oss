@@ -35,8 +35,8 @@
 #ifndef CODA_OSS_HAVE_experimental_mdspan_
     #define CODA_OSS_HAVE_experimental_mdspan_ 0  // assume no std::experimental::mdspan
 #endif
-#if CODA_OSS_cpp23
-    #if __has_include(<mdspan>) // <mdspan> not until C++23
+#if CODA_OSS_cpp17
+    #if __has_include(<mdspan>) && CODA_OSS_cpp23 // <mdspan> not until C++23
         #include <mdspan>
         #undef CODA_OSS_HAVE_std_mdspan_
         #define CODA_OSS_HAVE_std_mdspan_ 1  // provided by the implementation, probably C++23
