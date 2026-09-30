@@ -1,4 +1,9 @@
 set(DRIVER_NAME kokkos-mdspan)
+
+if (MSVC)
+    add_compile_options(/wd3546)
+    add_compile_options(/wd3520)
+endif()
 FetchContent_Declare(${DRIVER_NAME}
 URL "${CMAKE_CURRENT_SOURCE_DIR}/mdspan-mdspan-0.6.0.tar.gz"
 URL_HASH "SHA256=79f94d7f692cbabfbaff6cd0d3434704435c853ee5087b182965fa929a48a592"
