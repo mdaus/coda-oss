@@ -83,3 +83,5 @@ option(ENABLE_NLOHMANN "enable nlohmann" ON)
 if(ENABLE_NLOHMANN)
     add_subdirectory(nlohmann)
 endif()
+
+add_subdirectory(mdspan)
