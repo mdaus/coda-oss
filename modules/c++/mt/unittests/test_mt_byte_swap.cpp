@@ -26,7 +26,7 @@
 
 #include <array>
 #include <std/cstddef> // std::byte
-#include <std/span>
+#include <coda_oss/span.h>
 
 #include <sys/ByteSwap.h>
 
