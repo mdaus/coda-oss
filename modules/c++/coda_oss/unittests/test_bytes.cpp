@@ -20,7 +20,7 @@
  *
  */
 
-#include "coda_oss_TestCase.h"
+#include "TestCase.h"
 
 #include <array>
 
@@ -35,7 +35,7 @@ TEST_CASE(testEndianness)
     else if (native == coda_oss::endian::little) { }
     else
     {
-        TEST_FAIL("Mixed-endian not supported!");
+        TEST_FAIL_MSG("Mixed-endian not supported!");
     }
 }
 
@@ -54,7 +54,7 @@ static void testEndianness_std_(const std::string& testName)
     }
     else
     {
-        TEST_FAIL("Mixed-endian not supported!");
+        TEST_FAIL_MSG("Mixed-endian not supported!");
     }
 }
 TEST_CASE(testEndianness_std)

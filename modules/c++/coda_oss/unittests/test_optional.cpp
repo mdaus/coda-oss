@@ -20,21 +20,12 @@
  *
  */
 
-#include "coda_oss_TestCase.h"
+#include "TestCase.h"
 
 #include <array>
 #include <ostream>
 
 #include "coda_oss/optional.h"
-
-namespace str
-{
-template <typename T>
-std::string toString(const coda_oss::optional<T>& value)
-{
-    return std::to_string(value.value());
-}
-}
 
 namespace
 {
