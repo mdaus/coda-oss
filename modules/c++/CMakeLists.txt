@@ -29,12 +29,6 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 
     add_compile_options(-Wno-array-bounds) # TODO: fix the code!
 
-    # TODO: Since we have the shimmed in versions of things like std::byte and std::span, using different
-    #       C++ standards will produce a myriad of deprecation warnings that are outside of our control.
-    #       These are known to exist, and requires dependent projects having high enough C++ std to 
-    #       allow removal of the shim code.
-    add_compile_options(-Wno-deprecated-declarations)
-
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         add_compile_options(-Wduplicated-branches -Wduplicated-cond)
         add_compile_options(-Wtrampolines)
