@@ -28,13 +28,10 @@
 #define _CODA_OSS_USE_GSL_BYTE 0
 
 // Copy from GSL check to make sure we don't get all the deprecation warnings
-#if defined(__cplusplus) && (__cplusplus >= 201703L) &&                                            \
-    (defined(__cpp_lib_byte) && (__cpp_lib_byte >= 201603) ||                                      \
-     defined(_LIBCPP_VERSION) && (_LIBCPP_VERSION >= 5000))
-
+#if ! (CODA_OSS_cpp17 && defined(__cpp_lib_byte))
     #include <gsl/byte>
     #undef _CODA_OSS_USE_GSL_BYTE
-    #undef _CODA_OSS_USE_GSL_BYTE 1
+    #define _CODA_OSS_USE_GSL_BYTE 1
 #endif
 
 namespace coda_oss
