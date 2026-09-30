@@ -23,7 +23,12 @@
 #ifndef CODA_OSS_hdf5_lite_SpanRC_h_INCLUDED_
 #define CODA_OSS_hdf5_lite_SpanRC_h_INCLUDED_
 
-#include "coda_oss/mdspan.h"
+#if CODA_OSS_cpp23
+#include <mdspan>
+#else
+// From kokkos mdspan driver
+#include <experimental/mdspan>
+#endif
 
 namespace hdf5
 {
@@ -31,7 +36,7 @@ namespace lite
 {
 
 template<typename T>
-using SpanRC = coda_oss::mdspan<T, coda_oss::dextents<size_t, 2>>;
+using SpanRC = std::experimental::mdspan<T, std::experimental::dextents<size_t, 2>>;
 
 }
 }
