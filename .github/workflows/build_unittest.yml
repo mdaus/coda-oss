@@ -124,6 +124,8 @@ jobs:
     - name: Skip Duplicate Actions
       uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
+    - name: setup system
+      run: apt update && apt install cmake -y
     - name: configure
       run: cmake -B target -DCMAKE_CXX_STANDARD=${{ matrix.standard }}
     - name: build
