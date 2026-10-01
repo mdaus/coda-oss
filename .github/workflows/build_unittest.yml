@@ -13,6 +13,10 @@ on:
     - cron: '0 9 * * 6'
   workflow_dispatch: # Optional: allows manual triggering for testing
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   build-windows:
     name: windows-latest-Release
@@ -38,9 +42,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, ubuntu-26.04]
-        configuration: [Debug, Release]
         avx: [AVX512F]
-    name: ${{ matrix.os }}-${{ matrix.configuration }}-${{ matrix.avx }}
+    name: ${{ matrix.os }}-Release-${{ matrix.avx }}
     runs-on: ${{ matrix.os }}
     steps:
     - name: Skip Duplicate Actions
@@ -48,7 +51,7 @@ jobs:
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
       run: |
-        cmake -B out -DENABLE_${{ matrix.avx }}=ON
+        cmake -B out -DENABLE_${{ matrix.avx }}=ON -DCMAKE_BUILD_TYPE=Release
     - name: build
       run: |
         cmake --build out -j
@@ -61,8 +64,7 @@ jobs:
     strategy:
       matrix:
         version: [8, 9, 10]
-        config: [Release, Debug]
-    name: rockylinux-${{ matrix.version }}-${{ matrix.config }}
+    name: rockylinux-${{ matrix.version }}-Release
     runs-on: ubuntu-24.04
     container:
       image: rockylinux/rockylinux:${{ matrix.version }}-minimal
@@ -75,7 +77,7 @@ jobs:
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
       run: |
-        cmake -B target -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+        cmake -B target -DCMAKE_BUILD_TYPE=Release
     - name: build
       run: |
         cmake --build target -j
@@ -99,7 +101,7 @@ jobs:
       uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
-      run: cmake -B target \
+      run: cmake -B target -DCMAKE_BUILD_TYPE=Debug
             -DCMAKE_CXX_FLAGS="-fsanitize=${{ matrix.sanitizer }}" \
             -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=${{ matrix.sanitizer }}"
     - name: build
@@ -116,13 +118,22 @@ jobs:
         standard: [17, 20, 23, 26]
     name: ubuntu-26.04-CXX${{ matrix.standard }}
     runs-on: ubuntu-26.04
+    container:
+      image: gcc:latest
     steps:
     - name: Skip Duplicate Actions
       uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
-    - name: install g++-16
-      run: sudo apt update && sudo apt install g++-16
+    - name: setup system
+      run: apt update && apt install cmake -y
     - name: configure
-      run: cmake -B target -DCMAKE_CXX_STANDARD=${{ matrix.standard }} -DCMAKE_C_COMPILER=gcc-16 -DCMAKE_CXX_COMPILER=g++-16 
+      run: cmake -B target -DCMAKE_CXX_STANDARD=${{ matrix.standard }}
     - name: build
       run: cmake --build target -j
+    - name: test
+      run: |
+        # Setup test variables and files
+        touch ~/.bashrc 
+        export USER=github
+        mkdir .git
+        ctest --test-dir target
