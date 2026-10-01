@@ -21,16 +21,19 @@
 #ifndef CODA_OSS_coda_oss_cstddef_h_INCLUDED_
 #define CODA_OSS_coda_oss_cstddef_h_INCLUDED_
 
-#include <stdint.h>
-
+#include <cstdint>
 #include <cstddef>
 #include <type_traits>
+
 #include <gsl/byte>
 
 namespace coda_oss
 {
-    // GSL byte will fall back to alias std::byte if available
-	using gsl::byte;
+#if GSL_USE_STD_BYTE
+using std::byte;
+#else
+using gsl::byte;
+#endif
 }
 static_assert(!std::is_same<coda_oss::byte, uint8_t>::value, "'coda_oss::byte' should be a unique type.");
 

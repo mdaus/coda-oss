@@ -109,3 +109,20 @@ jobs:
       run: |
         echo "race:ThreadGroupTest.cpp" > tsan.supp
         TSAN_OPTIONS="suppressions=${PWD}/tsan.supp" ctest --test-dir target --output-on-failure
+
+  build-other-cpp:
+    strategy:
+      matrix:
+        standard: [17, 20, 23, 26]
+    name: ubuntu-26.04-CXX${{ matrix.standard }}
+    runs-on: ubuntu-26.04
+    steps:
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v5.3.1
+    - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
+    - name: install g++-16
+      run: sudo apt update && sudo apt install g++-16
+    - name: configure
+      run: cmake -B target -DCMAKE_CXX_STANDARD=${{ matrix.standard }} -DCMAKE_C_COMPILER=gcc-16 -DCMAKE_CXX_COMPILER=g++-16 
+    - name: build
+      run: cmake --build target -j
