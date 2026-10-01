@@ -118,13 +118,20 @@ jobs:
         standard: [17, 20, 23, 26]
     name: ubuntu-26.04-CXX${{ matrix.standard }}
     runs-on: ubuntu-26.04
+    container:
+      image: gcc:latest
     steps:
     - name: Skip Duplicate Actions
       uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
-    - name: install g++-16
-      run: sudo apt update && sudo apt install g++-16
     - name: configure
-      run: cmake -B target -DCMAKE_CXX_STANDARD=${{ matrix.standard }} -DCMAKE_C_COMPILER=gcc-16 -DCMAKE_CXX_COMPILER=g++-16 
+      run: cmake -B target -DCMAKE_CXX_STANDARD=${{ matrix.standard }}
     - name: build
       run: cmake --build target -j
+    - name: test
+      run: |
+        # Setup test variables and files
+        touch ~/.bashrc 
+        export USER=github
+        mkdir .git
+        ctest --test-dir target
