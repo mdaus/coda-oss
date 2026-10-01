@@ -35,6 +35,6 @@ using std::byte;
 using gsl::byte;
 #endif
 }
-static_assert(!std::is_same_v<coda_oss::byte, uint8_t>, "'coda_oss::byte' should be a unique type.");
+static_assert(!std::is_same<coda_oss::byte, uint8_t>::value, "'coda_oss::byte' should be a unique type.");
 
 #endif  // CODA_OSS_coda_oss_cstddef_h_INCLUDED_
