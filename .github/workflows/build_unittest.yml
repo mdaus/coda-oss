@@ -19,7 +19,10 @@ concurrency:
 
 jobs:
   build-windows:
-    name: windows-latest-Release
+    strategy:
+      matrix:
+        config: [Release]
+    name: windows-latest-${{ matrix.config }}
     runs-on: windows-latest
     steps:
     - name: Skip Duplicate Actions
@@ -31,10 +34,10 @@ jobs:
         cmake -B target
     - name: build
       run: |
-        cmake --build target -j --config Release
+        cmake --build target -j --config ${{ matrix.config }}
     - name: test # should run w/o install
       run: |
-        ctest --test-dir target -C Release --output-on-failure --timeout $env:CTEST_TIMEOUT
+        ctest --test-dir target -C ${{ matrix.config }} --output-on-failure --timeout $env:CTEST_TIMEOUT
 
 # Since MSBUILD solutions can be generated from CMake within VS, no point testing in build.
 
@@ -43,7 +46,8 @@ jobs:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, ubuntu-26.04]
         avx: [AVX512F]
-    name: ${{ matrix.os }}-Release-${{ matrix.avx }}
+        config: [Release]
+    name: ${{ matrix.os }}-${{ matrix.config }}-${{ matrix.avx }}
     runs-on: ${{ matrix.os }}
     steps:
     - name: Skip Duplicate Actions
@@ -51,7 +55,7 @@ jobs:
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
       run: |
-        cmake -B out -DENABLE_${{ matrix.avx }}=ON -DCMAKE_BUILD_TYPE=Release
+        cmake -B out -DENABLE_${{ matrix.avx }}=ON -DCMAKE_BUILD_TYPE=${{ matrix.config }}
     - name: build
       run: |
         cmake --build out -j
@@ -64,7 +68,8 @@ jobs:
     strategy:
       matrix:
         version: [8, 9, 10]
-    name: rockylinux-${{ matrix.version }}-Release
+        config: [Release]
+    name: rockylinux-${{ matrix.version }}-${{ matrix.config }}
     runs-on: ubuntu-24.04
     container:
       image: rockylinux/rockylinux:${{ matrix.version }}-minimal
@@ -77,7 +82,7 @@ jobs:
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
       run: |
-        cmake -B target -DCMAKE_BUILD_TYPE=Release
+        cmake -B target -DCMAKE_BUILD_TYPE=${{ matrix.config }}
     - name: build
       run: |
         cmake --build target -j
@@ -116,6 +121,7 @@ jobs:
     strategy:
       matrix:
         standard: [17, 20, 23, 26]
+        config: [Release]
     name: ubuntu-26.04-CXX${{ matrix.standard }}
     runs-on: ubuntu-26.04
     container:
@@ -127,7 +133,7 @@ jobs:
     - name: setup system
       run: apt update && apt install cmake -y
     - name: configure
-      run: cmake -B target -DCMAKE_CXX_STANDARD=${{ matrix.standard }}
+      run: cmake -B target -DCMAKE_CXX_STANDARD=${{ matrix.standard }} -DCMAKE_BUILD_TYPE=${{ matrix.config }}
     - name: build
       run: cmake --build target -j
     - name: test
