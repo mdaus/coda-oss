@@ -9,7 +9,7 @@ if(CODA_ENABLE_HDF5)
     
     FetchContent_MakeAvailable(highfive)
 
-    add_compile_options($<$<CXX_COMPILER_ID:GNU,Clang>:-Wno-uninitialized>)
+    add_compile_options($<$<CXX_COMPILER_ID:GNU,Clang>:-Wno-error=uninitialized>)
 
     coda_add_module(
         ${MODULE_NAME}
