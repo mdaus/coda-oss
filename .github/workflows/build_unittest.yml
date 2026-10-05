@@ -131,4 +131,8 @@ jobs:
     - name: build
       run: cmake --build target -j
     - name: test
-      run: ctest --test-dir target
+      run: |
+        # Setup test variable and files
+        touch ~/.bashrc 
+        export USER=github
+        ctest --test-dir target --output-on-failure
