@@ -86,7 +86,7 @@ inline SpanRC<T> readDataSet(const HighFive::DataSet& dataSet, std::vector<T>& r
     const types::RowCol<size_t> dims(dimensions[0], col);
 
     result.resize(dims.area());
-    dataSet.read(result.data());
+    dataSet.read_raw(result.data());
 
     return SpanRC<T>(result.data(), std::array<size_t, 2>{dims.row, dims.col});
 }
