@@ -59,6 +59,8 @@ TEST_CASE(DoThreadGroupTest)
     
     threads->createThread(tasks[0]);
     threads->createThread(tasks[1]);
+    // This makes tsan upset, but it's by design
+    // Probably should make a test that doesn't create a data race
     state = 2;
     threads->joinAll();
     
@@ -104,4 +106,4 @@ TEST_CASE(PinToCPUTest)
 TEST_MAIN(
     TEST_CHECK(DoThreadGroupTest);
     TEST_CHECK(PinToCPUTest);
-    )
+)

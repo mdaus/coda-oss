@@ -412,7 +412,11 @@ TEST_CASE(test_highfive_write)
     {
         for (size_t c = 0; c < data.extent(1); c++)
         {
+#if CODA_OSS_cpp23
+            data[r, c] = d++;
+#else
             data(r, c) = d++;
+#endif
         }    
     }    
     {
@@ -436,7 +440,11 @@ TEST_CASE(test_highfive_write)
         {
             for (size_t c = 0; c < DS1[r].size(); c++)
             {
+#if CODA_OSS_cpp23
+                const auto expected = data[r, c];
+#else
                 const auto expected = data(r, c);
+#endif
                 const auto actual = DS1[r][c];
                 TEST_ASSERT_EQ(actual, expected);
             }

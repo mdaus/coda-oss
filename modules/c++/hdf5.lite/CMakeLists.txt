@@ -13,6 +13,12 @@ if(CODA_ENABLE_HDF5)
         MODULE_NAME ${MODULE_NAME}
         DIRECTORY "unittests"
         UNITTEST)
+    
+    file(COPY 
+            unittests/123_barfoo_catdog_cx.h5
+            unittests/example.h5
+            unittests/nested_complex_float32_data_small.h5
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/unittests)
 else()
     message("${MODULE_NAME} will not be built since HDF5 is not enabled")
 endif()

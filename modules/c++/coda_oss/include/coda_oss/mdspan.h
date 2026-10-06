@@ -3,7 +3,7 @@
  * =========================================================================
  *
  * (C) Copyright 2004 - 2014, MDA Information Systems LLC
- * © Copyright 2023, Maxar Technologies, Inc.
+ * (C) Copyright 2023, Maxar Technologies, Inc.
  *
  * coda_oss-c++ is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,8 +20,8 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
-
+#ifndef CODA_OSS_coda_oss_mdspan_h_INCLUDED_
+#define CODA_OSS_coda_oss_mdspan_h_INCLUDED_
 #include "coda_oss/CPlusPlus.h"
 
 // This should always work ... it's in a `details` namespace
@@ -35,8 +35,8 @@
 #ifndef CODA_OSS_HAVE_experimental_mdspan_
     #define CODA_OSS_HAVE_experimental_mdspan_ 0  // assume no std::experimental::mdspan
 #endif
-#if CODA_OSS_cpp17 // __has_include
-    #if __has_include(<mdspan>) // <mdspan> not until C++23
+#if CODA_OSS_cpp17
+    #if __has_include(<mdspan>) && CODA_OSS_cpp23 // <mdspan> not until C++23
         #include <mdspan>
         #undef CODA_OSS_HAVE_std_mdspan_
         #define CODA_OSS_HAVE_std_mdspan_ 1  // provided by the implementation, probably C++23
@@ -70,4 +70,4 @@ namespace coda_oss
         using details::dextents;
     #endif 
 }
-
+#endif

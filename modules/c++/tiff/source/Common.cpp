@@ -32,10 +32,11 @@ short tiff::Const::mTypeSizes[tiff::Const::Type::MAX] =
 std::string tiff::RationalPrintStrategy::toString(const sys::Uint64_T data)
 {
     std::ostringstream tempStream;
-    sys::Uint32_T numerator = *((sys::Uint32_T *)(&data));
-    sys::Uint32_T denominator = *((sys::Uint32_T *)(&data + sizeof(sys::Uint32_T)));
+    uint32_t numerator, denominator;
+    // memcpy to avoid aliasing warnings
+    memcpy(&numerator, &data, sizeof(uint32_t));
+    memcpy(&denominator, reinterpret_cast<const uint8_t*>(&data) + sizeof(uint32_t), sizeof(uint32_t));
     tempStream << numerator << "/" << denominator;
-
     return tempStream.str();
 }
 

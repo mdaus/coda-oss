@@ -64,9 +64,9 @@ TEST_CASE(testUpper)
     TEST_ASSERT_EQ(s, "TEST-SOMETHING1");
 
     //#if _WIN32
-    //s = "<×àa`öo\"øo/þb÷>";
+    //s = "<Ã—Ã a`Ã¶o\"Ã¸o/Ã¾bÃ·>";
     //str::w1252_upper(s);
-    //TEST_ASSERT_EQ(s, "<×ÀA`ÖO\"ØO/ÞB÷>");
+    //TEST_ASSERT_EQ(s, "<Ã—Ã€A`Ã–O\"Ã˜O/ÃžBÃ·>");
     //#endif
 }
 
@@ -102,9 +102,9 @@ TEST_CASE(testLower)
     TEST_ASSERT_EQ(s, "test1");
 
     //#if _WIN32
-    //s = "[×ÀÖØÞ÷]";
+    //s = "[Ã—Ã€Ã–Ã˜ÃžÃ·]";
     //str::w1252_lower(s);
-    //TEST_ASSERT_EQ(s, "[×àöøþ÷]");
+    //TEST_ASSERT_EQ(s, "[Ã—Ã Ã¶Ã¸Ã¾Ã·]");
     //#endif
 }
 

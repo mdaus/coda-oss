@@ -20,8 +20,8 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
-
+#ifndef CODA_OSS_coda_oss_mdspan__h_INCLUDED_
+#define CODA_OSS_coda_oss_mdspan__h_INCLUDED_
 #include <assert.h>
 
 #include <array>
@@ -148,4 +148,4 @@ public:
 };
 }
 }
-
+#endif
