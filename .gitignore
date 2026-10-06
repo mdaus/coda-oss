@@ -53,5 +53,8 @@ project.sln
 **/x64/
 *.vcxproj.user
 
+# VSCode
+.vscode/
+
 # Unit-tests
 TEST_*_TMP*.*
