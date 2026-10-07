@@ -9,7 +9,6 @@ if(CODA_ENABLE_HDF5)
     
     FetchContent_MakeAvailable(highfive)
 
-    
     coda_add_module(
         ${MODULE_NAME}
         VERSION 3.3.0

@@ -13,6 +13,11 @@ if(CODA_ENABLE_HDF5)
         MODULE_NAME ${MODULE_NAME}
         DIRECTORY "unittests"
         UNITTEST)
+
+    # Something with GCC16 and release optimizations causes highfive to emit an unintialized variable warning.
+    # Since this is only used in a unittest (and external code) just ignore it.
+    target_compile_options(${MODULE_NAME}_test_highfive PRIVATE
+        "$<$<AND:$<CXX_COMPILER_ID:GNU>,$<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,16.0>>:-Wno-uninitialized>")
     
     file(COPY 
             unittests/123_barfoo_catdog_cx.h5
