@@ -31,10 +31,6 @@
 #include "coda_oss/CPlusPlus.h"
 #include "coda_oss/cstddef.h" // byte
 
-#if ! CODA_OSS_cpp20
-#include <gsl/span>
-#endif
-
 // This logic needs to be here rather than <std/span> so that `coda_oss::span` will
 // be the same as `coda_oss::span`.
 #ifndef CODA_OSS_HAVE_std_span_
@@ -48,9 +44,13 @@
     #endif
 #endif // CODA_OSS_cpp17
 
+
+#if ! CODA_OSS_HAVE_std_span_
+#include <gsl/span>
+#endif
 namespace coda_oss
 {
-    #if CODA_OSS_cpp20
+    #if CODA_OSS_HAVE_std_span_
         using std::span;
     #else
         using gsl::span;

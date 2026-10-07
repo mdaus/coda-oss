@@ -29,7 +29,7 @@
 // only available in later releases.  Adding these names to "std" is technically
 // forbidden, but it makes for fewer (eventual) changes in client code.
 //
-// You can bring these into your code by #include'ng the file from "std"; e.g.,
-//    #include <std/span> // coda_oss::span
+// You can bring these into your code by #include'ng the file from coda_oss; e.g.,
+//    #include <coda_oss/span.h> // coda_oss::span
 
 #endif // CODA_OSS_sys_CPlusPlus_h_INCLUDED_
