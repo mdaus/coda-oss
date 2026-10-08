@@ -428,10 +428,6 @@ static auto to_w1252string(const std::u16string& s)
 {
     return str::to_w1252string(str::to_u8string(s));
 }
-inline static auto toString(const std::wstring& s)
-{
-    return str::details::to_string(s);
-}
 
 static void test_Windows1252_(const std::string& testName, const char* pStr, std::u16string::const_pointer pUtf16)
 {
