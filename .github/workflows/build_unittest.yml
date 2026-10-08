@@ -112,10 +112,7 @@ jobs:
     - name: build
       run: cmake --build target -j
     - name: test
-    # ThreadGroupTest has a data race by design
-      run: |
-        echo "race:ThreadGroupTest.cpp" > tsan.supp
-        TSAN_OPTIONS="suppressions=${PWD}/tsan.supp" ctest --test-dir target --output-on-failure
+      run: ctest --test-dir target --output-on-failure
 
   build-other-cpp:
     strategy:
@@ -157,10 +154,7 @@ jobs:
       uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
-      run: |
-            cmake -B target -DCMAKE_BUILD_TYPE=${{ matrix.config }} \
-              -DCMAKE_CXX_COMPILER=clang++ \
-              -DCMAKE_C_COMPILER=clang
+      run: cmake -B target -DCMAKE_BUILD_TYPE=${{ matrix.config }}
     - name: build
       run: cmake --build target -j
     - name: test
