@@ -90,7 +90,7 @@ jobs:
     # should run w/o install
       run: |
         # Setup test variables and files
-        touch ~/.bashrc 
+        touch ~/.bashrc
         export USER=github
         mkdir .git
         ctest --test-dir target --output-on-failure
@@ -139,6 +139,33 @@ jobs:
     - name: test
       run: |
         # Setup test variable and files
-        touch ~/.bashrc 
+        touch ~/.bashrc
+        export USER=github
+        ctest --test-dir target --output-on-failure
+
+  build-clang:
+    strategy:
+      matrix:
+        config: [Release]
+        version: [21, 22]
+    name: ubuntu-26.04-clang-${{ matrix.version }}
+    runs-on: ubuntu-26.04
+    container:
+      image: silkeh/clang:${{ matrix.version }}
+    steps:
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v5.3.1
+    - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
+    - name: configure
+      run: |
+            cmake -B target -DCMAKE_BUILD_TYPE=${{ matrix.config }} \
+              -DCMAKE_CXX_COMPILER=clang++ \
+              -DCMAKE_C_COMPILER=clang
+    - name: build
+      run: cmake --build target -j
+    - name: test
+      run: |
+        # Setup test variable and files
+        touch ~/.bashrc
         export USER=github
         ctest --test-dir target --output-on-failure
