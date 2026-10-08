@@ -168,4 +168,5 @@ jobs:
         # Setup test variable and files
         touch ~/.bashrc
         export USER=github
+        mkdir .git
         ctest --test-dir target --output-on-failure
