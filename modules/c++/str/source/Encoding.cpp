@@ -360,11 +360,13 @@ static inline void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, st
     result = convert(p, sz);
 }
 
+#if _WIN32
 static inline void utf16to1252(std::u16string::const_pointer p, size_t sz, std::string& result)
 {
     static const Utf_to_Windows1252<std::string::value_type> convert;
     result = convert(p, sz);
 }
+#endif
 
 struct back_inserter final
 { 
