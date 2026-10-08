@@ -58,3 +58,6 @@ project.sln
 
 # Unit-tests
 TEST_*_TMP*.*
+
+.cache/
+.zed/
