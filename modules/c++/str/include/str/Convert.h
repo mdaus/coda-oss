@@ -178,7 +178,7 @@ T toType(const std::string& s)
                                 std::string(""),
                                 std::string("Empty string")));
 
-    T value;
+    T value{};
 
     std::stringstream buf(s);
     buf.precision(str::getPrecision(value));

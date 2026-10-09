@@ -63,9 +63,6 @@ class ZipFile
     sys::ubyte* mCompressed;
     sys::Size_T mCompressedLength;
 
-    sys::Uint16_T mDiskNum;
-    sys::Uint16_T mDiskWithCentralDir;
-
     sys::Uint32_T mCentralDirSize;
     sys::Uint32_T mCentralDirOffset;
 

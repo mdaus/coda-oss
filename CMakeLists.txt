@@ -30,9 +30,9 @@ if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
         include(CheckCompilerFlag)
         check_compiler_flag(CXX "-Wc++2a-compat" HAS_CPP20_FLAG)
         if (HAS_CPP20_FLAG)
-            add_compile_options(-Wno-error=c++2a-compat)
+            add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wno-error=c++2a-compat>")
         endif()
-    
+
     endif()
 
     list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -50,7 +50,7 @@ if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
     include(CMakePackageConfigHelpers)
     write_basic_package_version_file(${version_file} VERSION ${CMAKE_PROJECT_VERSION} COMPATIBILITY SameMajorVersion)
     install(FILES ${version_file} DESTINATION "lib/cmake")
-    
+
 endif()
 
 add_subdirectory("modules")
