@@ -145,7 +145,7 @@ macro(coda_initialize_build)
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_EXTENSIONS OFF)
-    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
     # Turn on AVX2 by default ... it's from 2013.
     # Well, no :-( ... it seems to cause crashes w/older
     # compilers on build servers. :-(
