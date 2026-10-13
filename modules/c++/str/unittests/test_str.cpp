@@ -21,7 +21,7 @@
  */
 
 #include <tuple> // std::ignore
-#include <std/span>
+#include <coda_oss/span.h>
 
 #include <types/Complex.h>
 #include <config/compiler_extensions.h>
@@ -188,9 +188,9 @@ TEST_CASE(testSplit)
 {
     std::string s = "space delimited values are the best!";
     std::vector<std::string> parts = str::split(s, " ");
-    TEST_ASSERT_EQ(std::ssize(parts), 6);
+    TEST_ASSERT_EQ(coda_oss::ssize(parts), 6);
     parts = str::split(s, " ", 3);
-    TEST_ASSERT_EQ(std::ssize(parts), 3);
+    TEST_ASSERT_EQ(coda_oss::ssize(parts), 3);
     TEST_ASSERT_EQ(parts[2], "values are the best!");
 }
 

@@ -513,7 +513,7 @@ class ci_char_traits final : public std::char_traits<char>
         return toupperCheck(ch);
     }
 
-    static int compare(const char* s1, const char* s2, std::size_t n) noexcept
+    static int compare(const char* s1, const char* s2, size_t n) noexcept
     {
         while (n-- != 0)
         {

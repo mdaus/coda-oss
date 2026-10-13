@@ -24,7 +24,7 @@
 
 #include <algorithm>
 #include <iterator>
-#include <std/span>
+#include <coda_oss/span.h>
 #include <gsl/narrow>
 
 #include <import/str.h>
@@ -548,7 +548,7 @@ std::unique_ptr<cli::Results> cli::ArgumentParser::parse(const std::string& prog
                             break;
                         }
                     }
-                    if (maxArgs >= 0 && std::ssize(*v) >= maxArgs)
+                    if (maxArgs >= 0 && coda_oss::ssize(*v) >= maxArgs)
                     {
                         // it's another positional argument, so we break out
                         break;

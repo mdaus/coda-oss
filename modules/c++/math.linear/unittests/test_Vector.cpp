@@ -19,7 +19,7 @@
  * see <http://www.gnu.org/licenses/>.
  *
  */
-#include <std/span>
+#include <coda_oss/span.h>
 #include <cstdlib>
 #include "TestCase.h"
 #include "math/linear/Vector.h"
@@ -278,8 +278,8 @@ TEST_CASE(testOperatorMinusEquals)
     Vector<double> v2(5, -5);
 
     v2 -= v1;
-    TEST_ASSERT_EQ(std::ssize(v1), 5);
-    TEST_ASSERT_EQ(std::ssize(v2), 5);
+    TEST_ASSERT_EQ(coda_oss::ssize(v1), 5);
+    TEST_ASSERT_EQ(coda_oss::ssize(v2), 5);
     for (int i = 0; i < 5; i++)
         TEST_ASSERT_EQ(v2[i], -18);
     for (int i = 0; i < 5; i++)
@@ -369,9 +369,9 @@ TEST_CASE(testOperatorMinus)
     Vector<double> v3(v2 - v1);
     // TODO: Test what happens if v1 & v2 are of different lengths.
 
-    TEST_ASSERT_EQ(std::ssize(v1), 4);
-    TEST_ASSERT_EQ(std::ssize(v2), 4);
-    TEST_ASSERT_EQ(std::ssize(v3), 4);
+    TEST_ASSERT_EQ(coda_oss::ssize(v1), 4);
+    TEST_ASSERT_EQ(coda_oss::ssize(v2), 4);
+    TEST_ASSERT_EQ(coda_oss::ssize(v3), 4);
 
     for (int i = 0; i < 4; i++)
     {

@@ -13,9 +13,16 @@ on:
     - cron: '0 9 * * 6'
   workflow_dispatch: # Optional: allows manual triggering for testing
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   build-windows:
-    name: windows-latest-Release
+    strategy:
+      matrix:
+        config: [Release]
+    name: windows-latest-${{ matrix.config }}
     runs-on: windows-latest
     steps:
     - name: Skip Duplicate Actions
@@ -27,10 +34,10 @@ jobs:
         cmake -B target
     - name: build
       run: |
-        cmake --build target -j --config Release
+        cmake --build target -j --config ${{ matrix.config }}
     - name: test # should run w/o install
       run: |
-        ctest --test-dir target -C Release --output-on-failure --timeout $env:CTEST_TIMEOUT
+        ctest --test-dir target -C ${{ matrix.config }} --output-on-failure --timeout $env:CTEST_TIMEOUT
 
 # Since MSBUILD solutions can be generated from CMake within VS, no point testing in build.
 
@@ -38,9 +45,9 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, ubuntu-26.04]
-        configuration: [Debug, Release]
         avx: [AVX512F]
-    name: ${{ matrix.os }}-${{ matrix.configuration }}-${{ matrix.avx }}
+        config: [Release]
+    name: ${{ matrix.os }}-${{ matrix.config }}-${{ matrix.avx }}
     runs-on: ${{ matrix.os }}
     steps:
     - name: Skip Duplicate Actions
@@ -48,7 +55,7 @@ jobs:
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
       run: |
-        cmake -B out -DENABLE_${{ matrix.avx }}=ON
+        cmake -B out -DENABLE_${{ matrix.avx }}=ON -DCMAKE_BUILD_TYPE=${{ matrix.config }}
     - name: build
       run: |
         cmake --build out -j
@@ -61,7 +68,7 @@ jobs:
     strategy:
       matrix:
         version: [8, 9, 10]
-        config: [Release, Debug]
+        config: [Release]
     name: rockylinux-${{ matrix.version }}-${{ matrix.config }}
     runs-on: ubuntu-24.04
     container:
@@ -99,7 +106,7 @@ jobs:
       uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
     - name: configure
-      run: cmake -B target \
+      run: cmake -B target -DCMAKE_BUILD_TYPE=Debug
             -DCMAKE_CXX_FLAGS="-fsanitize=${{ matrix.sanitizer }}" \
             -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=${{ matrix.sanitizer }}"
     - name: build
@@ -114,15 +121,24 @@ jobs:
     strategy:
       matrix:
         standard: [17, 20, 23, 26]
+        config: [Release]
     name: ubuntu-26.04-CXX${{ matrix.standard }}
     runs-on: ubuntu-26.04
+    container:
+      image: gcc:latest
     steps:
     - name: Skip Duplicate Actions
       uses: fkirc/skip-duplicate-actions@v5.3.1
     - uses: actions/checkout@v4 # https://github.com/marketplace/actions/checkout
-    - name: install g++-16
-      run: sudo apt update && sudo apt install g++-16
+    - name: setup system
+      run: apt update && apt install cmake -y
     - name: configure
-      run: cmake -B target -DCMAKE_CXX_STANDARD=${{ matrix.standard }} -DCMAKE_C_COMPILER=gcc-16 -DCMAKE_CXX_COMPILER=g++-16 
+      run: cmake -B target -DCMAKE_CXX_STANDARD=${{ matrix.standard }} -DCMAKE_BUILD_TYPE=${{ matrix.config }}
     - name: build
       run: cmake --build target -j
+    - name: test
+      run: |
+        # Setup test variable and files
+        touch ~/.bashrc 
+        export USER=github
+        ctest --test-dir target --output-on-failure

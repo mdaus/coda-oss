@@ -24,11 +24,11 @@
 
 #include <array>
 #include <vector>
-#include <std/bit> // std::endian
-#include <std/cstddef>
-#include <std/span>
 #include <type_traits>
 
+#include <std/bit> // std::endian
+#include <std/cstddef>
+#include <coda_oss/span.h>
 #include <sys/Conf.h>
 #include <sys/Span.h>
 
@@ -143,7 +143,7 @@ TEST_CASE(testByteSwapCxV)
 }
 
 template<typename T>
-inline std::span<const T> as_span(const std::vector<std::byte>& bytes)
+inline coda_oss::span<const T> as_span(const std::vector<std::byte>& bytes)
 {
     const void* const pBytes_ = bytes.data();
     auto const p = static_cast<const T*>(pBytes_);
