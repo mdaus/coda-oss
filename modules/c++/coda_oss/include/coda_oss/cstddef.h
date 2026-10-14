@@ -39,4 +39,11 @@ using gsl::byte;
 }
 static_assert(!std::is_same<coda_oss::byte, uint8_t>::value, "'coda_oss::byte' should be a unique type.");
 
+// Downstream projects use this alias even when std does not support various features. 
+// Preserve this until relevant projects are upgraded to high enough C++ version.
+namespace std
+{
+using coda_oss::byte;
+}
+
 #endif  // CODA_OSS_coda_oss_cstddef_h_INCLUDED_
