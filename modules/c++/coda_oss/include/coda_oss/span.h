@@ -52,42 +52,16 @@ namespace coda_oss
 {
     #if CODA_OSS_HAVE_std_span_
         using std::span;
+        using std::as_bytes;
+        using std::as_writable_bytes;
+        using std::dynamic_extent;
     #else
         using gsl::span;
+        using gsl::as_bytes;
+        using gsl::as_writable_bytes;
+        using gsl::dynamic_extent;
     #endif
 
-
-// Even if `span` is `coda_oss::span`, these are still in the `coda_oss` namespace.
-
-// https://en.cppreference.com/w/cpp/container/span/as_bytes
-template <typename T>
-inline auto as_bytes(span<const T> s) noexcept
-{
-    // https://en.cppreference.com/w/cpp/types/is_trivially_copyable "... serialized to/from binary files ..."
-    static_assert(std::is_trivially_copyable<T>::value, "must be 'trivially' copyable.");
-
-    const void* const p_ = s.data();
-    auto const p = static_cast<const byte*>(p_);
-    return span<const byte>(p, s.size_bytes());
-}
-template <typename T>
-inline auto as_bytes(span<T> s) noexcept
-{
-    const span<const T> s_(s.data(), s.size());
-    return as_bytes(s_);
-}
-template <typename T>
-inline span<byte> as_writable_bytes(span<T> s) noexcept
-{
-    // https://en.cppreference.com/w/cpp/types/is_trivially_copyable "... serialized to/from binary files ..."
-    static_assert(std::is_trivially_copyable<T>::value, "must be 'trivially' copyable.");
-
-    static_assert(!std::is_const<T>::value, "T cannot be 'const'");
-
-    void* const p_ = s.data();
-    auto const p = static_cast<byte*>(p_);
-    return span<byte>(p, s.size_bytes());
-}
 
 // https://en.cppreference.com/w/cpp/iterator/size
 template <typename C>
@@ -112,6 +86,16 @@ constexpr ptrdiff_t ssize(const T (&)[N]) noexcept
     return N;
 }
 
+}
+
+// Downstream projects use this alias even when std does not support various features. 
+// Preserve this until relevant projects are upgraded to high enough C++ version.
+namespace std
+{
+using coda_oss::span;
+using coda_oss::as_bytes;
+using coda_oss::as_writable_bytes;
+using coda_oss::dynamic_extent;
 }
 
 #endif  // CODA_OSS_coda_oss_span_h_INCLUDED_
