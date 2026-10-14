@@ -361,6 +361,7 @@ static inline void utf8to1252(coda_oss::u8string::const_pointer p, size_t sz, st
 }
 
 #if _WIN32
+// This function is only called in to_string if we are on windows, otherwise it is dead code.
 static inline void utf16to1252(std::u16string::const_pointer p, size_t sz, std::string& result)
 {
     static const Utf_to_Windows1252<std::string::value_type> convert;

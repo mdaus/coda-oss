@@ -4,8 +4,7 @@
 __pycache__/
 
 # Build artifacts
-install/
-install-*/
+install*/
 target/
 build*/
 
