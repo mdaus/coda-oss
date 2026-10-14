@@ -74,7 +74,7 @@ static const auto& utf8Text8()
     static const auto retval = str::make_string<coda_oss::u8string>("T\xc3\x89XT"); // UTF-8,  "TÉXT"
     return retval;
 } 
-static const auto pUtf8Text_()
+static auto pUtf8Text_()
 {
     static const auto retval = str::c_str<std::string>(utf8Text8());
     return retval;

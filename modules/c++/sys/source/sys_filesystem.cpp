@@ -56,10 +56,6 @@ static inline std::string make_what(const char* curfile, const int lineNum, cons
     what << "ERROR: " << curfile << ", Line " << lineNum << ": " << msg;
     return what.str();
 }
-static inline std::string make_what(const char* curfile, const int lineNum, const std::ostringstream& msg)
-{
-    return make_what(curfile, lineNum, msg.str());
-}
 // A macro for conveniently throwing errors.
 // Need "throw" to be visible, not hidden inside of a function, so that code-analysis tools can see it.
 #define CODA_OSS_sys_filesystem_THROW_ERR(MSG) throw std::runtime_error(make_what(__FILE__, __LINE__, MSG)) // TODO: std::filesystem_error

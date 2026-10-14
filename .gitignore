@@ -4,8 +4,7 @@
 __pycache__/
 
 # Build artifacts
-install/
-install-*/
+install*/
 target/
 build*/
 
@@ -58,3 +57,6 @@ project.sln
 
 # Unit-tests
 TEST_*_TMP*.*
+
+.cache/
+.zed/
