@@ -96,6 +96,7 @@ using coda_oss::span;
 using coda_oss::as_bytes;
 using coda_oss::as_writable_bytes;
 using coda_oss::dynamic_extent;
+using coda_oss::ssize;
 }
 
 #endif  // CODA_OSS_coda_oss_span_h_INCLUDED_
