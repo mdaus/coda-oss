@@ -52,65 +52,66 @@ namespace coda_oss
 {
     #if CODA_OSS_HAVE_std_span_
         using std::span;
+        using std::as_bytes;
+        using std::as_writable_bytes;
+        using std::dynamic_extent;
     #else
         using gsl::span;
+        using gsl::as_bytes;
+        using gsl::as_writable_bytes;
+        using gsl::dynamic_extent;
     #endif
 
+    // https://en.cppreference.com/cpp/feature_test#cpp_lib_nonmember_container_access
+    #if !__cpp_lib_nonmember_container_access
+    // https://en.cppreference.com/w/cpp/iterator/size
+    template <typename C>
+    constexpr size_t size(const C& c)
+    {
+        return c.size();
+    }
+    template <typename T, size_t N>
+    constexpr size_t size(const T (&)[N]) noexcept
+    {
+        return N;
+    }
+    #else
+    using std::size;
+    #endif
 
-// Even if `span` is `coda_oss::span`, these are still in the `coda_oss` namespace.
-
-// https://en.cppreference.com/w/cpp/container/span/as_bytes
-template <typename T>
-inline auto as_bytes(span<const T> s) noexcept
-{
-    // https://en.cppreference.com/w/cpp/types/is_trivially_copyable "... serialized to/from binary files ..."
-    static_assert(std::is_trivially_copyable<T>::value, "must be 'trivially' copyable.");
-
-    const void* const p_ = s.data();
-    auto const p = static_cast<const byte*>(p_);
-    return span<const byte>(p, s.size_bytes());
-}
-template <typename T>
-inline auto as_bytes(span<T> s) noexcept
-{
-    const span<const T> s_(s.data(), s.size());
-    return as_bytes(s_);
-}
-template <typename T>
-inline span<byte> as_writable_bytes(span<T> s) noexcept
-{
-    // https://en.cppreference.com/w/cpp/types/is_trivially_copyable "... serialized to/from binary files ..."
-    static_assert(std::is_trivially_copyable<T>::value, "must be 'trivially' copyable.");
-
-    static_assert(!std::is_const<T>::value, "T cannot be 'const'");
-
-    void* const p_ = s.data();
-    auto const p = static_cast<byte*>(p_);
-    return span<byte>(p, s.size_bytes());
-}
-
-// https://en.cppreference.com/w/cpp/iterator/size
-template <typename C>
-constexpr size_t size(const C& c)
-{
-    return c.size();
-}
-template <typename C>
-constexpr ptrdiff_t ssize(const C& c)
-{
-    return gsl::narrow<ptrdiff_t>(c.size());
+    //https://en.cppreference.com/cpp/feature_test#cpp_lib_ssize
+    #if !__cpp_lib_ssize
+    template <typename C>
+    constexpr ptrdiff_t ssize(const C& c)
+    {
+        return gsl::narrow<ptrdiff_t>(c.size());
+    }
+    template <typename T, ptrdiff_t N>
+    constexpr ptrdiff_t ssize(const T (&)[N]) noexcept
+    {
+        return N;
+    }
+    #else
+    using std::ssize;
+    #endif
 }
 
-template <typename T, size_t N>
-constexpr size_t size(const T (&)[N]) noexcept
+// Downstream projects use this alias even when std does not support various features.
+// Preserve this until relevant projects are upgraded to high enough C++ version.
+namespace std
 {
-    return N;
-}
-template <typename T, ptrdiff_t N>
-constexpr ptrdiff_t ssize(const T (&)[N]) noexcept
-{
-    return N;
-}
+using coda_oss::span;
+using coda_oss::as_bytes;
+using coda_oss::as_writable_bytes;
+using coda_oss::dynamic_extent;
+
+#if !__cpp_lib_nonmember_container_access
+using coda_oss::size;
+#endif
+
+#if !__cpp_lib_ssize
+using coda_oss::ssize;
+#endif
 
 }
 
