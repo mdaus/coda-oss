@@ -35,7 +35,7 @@ TEST_CASE(testNaNsAreNotEqual)
     TEST_ASSERT_NOT_EQ(std::numeric_limits<float>::quiet_NaN(),
         std::numeric_limits<float>::quiet_NaN());
 
-    TEST_ASSERT_NOT_EQ(std::numeric_limits<float>::quiet_NaN(), 3.4);
+    TEST_ASSERT_NOT_EQ(std::numeric_limits<float>::quiet_NaN(), 3.4f);
 
 }
 

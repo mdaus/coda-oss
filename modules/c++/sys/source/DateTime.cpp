@@ -119,8 +119,7 @@ char* strptime(const char *buf, const char *fmt, struct tm& tm, double& millis)
         case '%':              // "%%" is converted to "%".
             bc = *bp++;
             if (bc != '%')
-                throw except::Exception(Ctxt(
-                        "Value does not match format (%%):  " + bc));
+                throw except::Exception(Ctxt("Value does not match format (%%):  " + str::toString(bc)));
             break;
 
         /*
@@ -338,7 +337,7 @@ char* strptime(const char *buf, const char *fmt, struct tm& tm, double& millis)
 
         default:               // Unknown/unsupported conversion.
             throw except::Exception(Ctxt(
-                    "Unknown/unsupported format type:  %" + fc));
+                    "Unknown/unsupported format type:  %" + str::toString(fc)));
         }
     }
 
