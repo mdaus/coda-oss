@@ -75,6 +75,8 @@ namespace coda_oss
     {
         return N;
     }
+    #else
+    using std::size;
     #endif
 
     //https://en.cppreference.com/cpp/feature_test#cpp_lib_ssize
@@ -89,6 +91,8 @@ namespace coda_oss
     {
         return N;
     }
+    #else
+    using std::ssize;
     #endif
 }
 
