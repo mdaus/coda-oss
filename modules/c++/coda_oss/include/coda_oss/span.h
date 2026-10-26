@@ -61,6 +61,35 @@ namespace coda_oss
         using gsl::as_writable_bytes;
         using gsl::dynamic_extent;
     #endif
+
+    // https://en.cppreference.com/cpp/feature_test#cpp_lib_nonmember_container_access
+    #if !__cpp_lib_nonmember_container_access
+    // https://en.cppreference.com/w/cpp/iterator/size
+    template <typename C>
+    constexpr size_t size(const C& c)
+    {
+        return c.size();
+    }
+    template <typename T, size_t N>
+    constexpr size_t size(const T (&)[N]) noexcept
+    {
+        return N;
+    }
+    #endif
+
+    //https://en.cppreference.com/cpp/feature_test#cpp_lib_ssize
+    #if !__cpp_lib_ssize
+    template <typename C>
+    constexpr ptrdiff_t ssize(const C& c)
+    {
+        return gsl::narrow<ptrdiff_t>(c.size());
+    }
+    template <typename T, ptrdiff_t N>
+    constexpr ptrdiff_t ssize(const T (&)[N]) noexcept
+    {
+        return N;
+    }
+    #endif
 }
 
 // Downstream projects use this alias even when std does not support various features.
@@ -72,34 +101,14 @@ using coda_oss::as_bytes;
 using coda_oss::as_writable_bytes;
 using coda_oss::dynamic_extent;
 
-// https://en.cppreference.com/cpp/feature_test#cpp_lib_nonmember_container_access
 #if !__cpp_lib_nonmember_container_access
-// https://en.cppreference.com/w/cpp/iterator/size
-template <typename C>
-constexpr size_t size(const C& c)
-{
-    return c.size();
-}
-template <typename T, size_t N>
-constexpr size_t size(const T (&)[N]) noexcept
-{
-    return N;
-}
+using coda_oss::size;
 #endif
 
-//https://en.cppreference.com/cpp/feature_test#cpp_lib_ssize
 #if !__cpp_lib_ssize
-template <typename C>
-constexpr ptrdiff_t ssize(const C& c)
-{
-    return gsl::narrow<ptrdiff_t>(c.size());
-}
-template <typename T, ptrdiff_t N>
-constexpr ptrdiff_t ssize(const T (&)[N]) noexcept
-{
-    return N;
-}
+using coda_oss::ssize;
 #endif
+
 }
 
 #endif  // CODA_OSS_coda_oss_span_h_INCLUDED_
