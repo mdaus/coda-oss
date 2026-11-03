@@ -362,18 +362,33 @@ template<size_t _ND, typename _T> VectorN<_ND, _T>
     return v;
 }
 
+/*! @brief Perform matrix-vector product
+ *  @tparam _T element dtype
+ *  @tparam _MD matrix row dimension
+ *  @tparam _ND matrix column dimension
+ *  @param m _MD x _ND matrix
+ *  @param v _ND column vector
+ *  @return _MD row vector
+ */
 template<size_t _MD, size_t _ND, typename _T> 
-    math::linear::VectorN<_MD, _T>
-    operator*(const math::linear::MatrixMxN<_MD, _ND, _T>& m, 
-              const math::linear::VectorN<_ND, _T>& v)
+VectorN<_MD, _T> operator*(const MatrixMxN<_MD, _ND, _T>& m, const VectorN<_ND, _T>& v)
 {
-    return math::linear::VectorN<_MD, _T>(m * v.matrix());
+    return VectorN<_MD, _T>(m * v.matrix());
 }
 
+/*! @brief Perform vector-matrix product
+ *  @tparam _T element dtype
+ *  @tparam _MD matrix row dimension
+ *  @tparam _ND matrix column dimension
+ *  @param m _MD x _ND matrix
+ *  @param v _MD row vector
+ *  @return _ND column vector
+ */
 template<size_t _MD, size_t _ND, typename _T> 
-math::linear::VectorN<_ND, _T> operator*(const math::linear::VectorN<_MD, _T>& v, const math::linear::MatrixMxN<_MD, _ND, _T>& m)
+VectorN<_ND, _T> operator*(const VectorN<_MD, _T>& v, const MatrixMxN<_MD, _ND, _T>& m)
 {
-    return math::linear::VectorN<_ND, _T>(v.matrix().transpose() * m);
+    // Need transpose on result since vector ctor expects column matrix
+    return VectorN<_ND, _T>((v.matrix().transpose() * m).transpose());
 }
 
 template<size_t _ND, typename _T> math::linear::VectorN<_ND, _T>

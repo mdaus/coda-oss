@@ -24,10 +24,10 @@
 #include "TestCase.h"
 #include "math/linear/VectorN.h"
 
+using namespace math::linear;
+
 TEST_CASE(testDefaultConstructor)
 {
-    using namespace math::linear;
-
     // Solaris doesn't like arrays of zero size unless you use -features=zla,
     // so I've omitted this test.
     //VectorN<0, double> v0;
@@ -43,8 +43,6 @@ TEST_CASE(testDefaultConstructor)
 
 TEST_CASE(testScalarConstructor)
 {
-    using namespace math::linear;
-
     VectorN<3,double> v(42);
     TEST_ASSERT_EQ(v.size(), static_cast<size_t>(3));
     TEST_ASSERT_EQ(v[0], 42);
@@ -55,8 +53,6 @@ TEST_CASE(testScalarConstructor)
 
 TEST_CASE(testRawConstructor)
 {
-    using namespace math::linear;
-
     double raw[] = {1,2,3};
     VectorN<3,double> v(raw);
     TEST_ASSERT_EQ(v.size(), static_cast<size_t>(3));
@@ -68,8 +64,6 @@ TEST_CASE(testRawConstructor)
 
 TEST_CASE(testCopyConstructor)
 {
-    using namespace math::linear;
-
     VectorN<3,double> vsrc;
     vsrc[0] = 1;
     vsrc[1] = 2;
@@ -88,8 +82,6 @@ TEST_CASE(testCopyConstructor)
 
 TEST_CASE(testStdVectorConstructor)
 {
-    using namespace math::linear;
-
     std::vector<double> stdvec{10, 11, 12};
 
     VectorN<3,double> v(stdvec);
@@ -110,8 +102,6 @@ TEST_CASE(testStdVectorConstructor)
 
 TEST_CASE(testAssignmentOperator)
 {
-    using namespace math::linear;
-
     VectorN<2,double> vsrc;
     vsrc[0] = 42;
     vsrc[1] = 99;
@@ -125,8 +115,6 @@ TEST_CASE(testAssignmentOperator)
 
 TEST_CASE(testScalarAssignment)
 {
-    using namespace math::linear;
-
     VectorN<5,double> v(123.456);
     TEST_ASSERT_EQ(v.size(), static_cast<size_t>(5));
     for (int i = 0; i < 5; i++)
@@ -144,8 +132,6 @@ TEST_CASE(testScalarAssignment)
 
 TEST_CASE(testStdVectorAssignment)
 {
-    using namespace math::linear;
-
     const std::vector<double> stdvec{10, 11, 12};
 
     VectorN<3,double> v(-1);
@@ -159,8 +145,6 @@ TEST_CASE(testStdVectorAssignment)
 
 TEST_CASE(testDotProduct)
 {
-    using namespace math::linear;
-
     VectorN<5,double> vd1(2);
     VectorN<5,double> vd2(3);
     const double dotprod(vd1.dot(vd2));
@@ -170,8 +154,6 @@ TEST_CASE(testDotProduct)
 
 TEST_CASE(testNorm)
 {
-    using namespace math::linear;
-
     const std::vector<double> stdvec{10, 11, 12};
 
     VectorN<3,double> vnorm1(stdvec);
@@ -184,8 +166,6 @@ TEST_CASE(testNorm)
 
 TEST_CASE(testNormalize)
 {
-    using namespace math::linear;
-
     VectorN<4,double> vnorm(4.0);
     vnorm.normalize();
     TEST_ASSERT_EQ(vnorm[0], 0.5);
@@ -197,8 +177,6 @@ TEST_CASE(testNormalize)
 
 TEST_CASE(testScale)
 {
-    using namespace math::linear;
-
     VectorN<2,double> vscale(4.0);
     vscale.scale(1.0 / 4.0);
     TEST_ASSERT_EQ(vscale[0], 1.0);
@@ -207,8 +185,6 @@ TEST_CASE(testScale)
 
 TEST_CASE(testUnit)
 {
-    using namespace math::linear;
-
     VectorN<4,double> v(4.0);
     VectorN<4,double> vunit = v.unit();
     TEST_ASSERT_EQ(v[0], 4.0);
@@ -223,8 +199,6 @@ TEST_CASE(testUnit)
 
 TEST_CASE(testOperatorPlusEquals)
 {
-    using namespace math::linear;
-
     VectorN<3,double> v1(1);
     VectorN<3,double> v2(-1);
 
@@ -245,8 +219,6 @@ TEST_CASE(testOperatorPlusEquals)
 
 TEST_CASE(testOperatorPlus)
 {
-    using namespace math::linear;
-
     VectorN<3,double> v1(42);
     VectorN<3,double> v2(11);
     VectorN<3,double> v3;
@@ -273,8 +245,6 @@ TEST_CASE(testOperatorPlus)
 
 TEST_CASE(testOperatorMinusEquals)
 {
-    using namespace math::linear;
-
     VectorN<5,double> v1(13);
     VectorN<5,double> v2(-5);
 
@@ -290,8 +260,6 @@ TEST_CASE(testOperatorMinusEquals)
 
 TEST_CASE(testNegate)
 {
-    using namespace math::linear;
-
     VectorN<3,double> X;
     VectorN<3,double> Y;
     X[0] = Y[2] =  1.;
@@ -303,8 +271,6 @@ TEST_CASE(testNegate)
 
 TEST_CASE(testAdd)
 {
-    using namespace math::linear;
-
     VectorN<3,double> v1(2.4);
     VectorN<3,double> v2(1.4);
 
@@ -330,8 +296,6 @@ TEST_CASE(testAdd)
 
 TEST_CASE(testSubtract)
 {
-    using namespace math::linear;
-
     VectorN<3,double> v1(2.4);
     VectorN<3,double> v2(1.4);
 
@@ -357,8 +321,6 @@ TEST_CASE(testSubtract)
 
 TEST_CASE(testOperatorMinus)
 {
-    using namespace math::linear;
-
     VectorN<4,double> v1;
     VectorN<4,double> v2;
     for (int i = 0; i < 4; i++)
@@ -385,8 +347,6 @@ TEST_CASE(testOperatorMinus)
 
 TEST_CASE(testOperatorTimesEquals)
 {
-    using namespace math::linear;
-
     VectorN<4,double> v1;
     for (int i = 0; i < 4; i++)
         v1[i] = i;
@@ -405,8 +365,6 @@ TEST_CASE(testOperatorTimesEquals)
 
 TEST_CASE(testOperatorTimesEqualsScalar)
 {
-    using namespace math::linear;
-
     VectorN<5,double> v1;
     for (int i = 0; i < 5; i++)
         v1[i] = i;
@@ -420,8 +378,6 @@ TEST_CASE(testOperatorTimesEqualsScalar)
 
 TEST_CASE(testOperatorTimesScalar)
 {
-    using namespace math::linear;
-
     VectorN<5,double> v1;
     for (int i = 0; i < 5; i++)
         v1[i] = i;
@@ -436,17 +392,8 @@ TEST_CASE(testOperatorTimesScalar)
 
 TEST_CASE(testElementDivision)
 {
-    using namespace math::linear;
-
-    VectorN<3,double> numerator;
-    numerator[0] = 0;
-    numerator[1] = 1;
-    numerator[2] = 2;
-
-    VectorN<3,double> denominator;
-    denominator[0] = 1;
-    denominator[1] = 2;
-    denominator[2] = 3;
+    VectorN<3,double> numerator({0, 1, 2});
+    VectorN<3,double> denominator({1, 2, 3});
 
     VectorN<3,double> quotient(numerator / denominator);
     TEST_ASSERT_EQ(quotient[0], 0);
@@ -456,8 +403,6 @@ TEST_CASE(testElementDivision)
 
 TEST_CASE(testOperatorTimes)
 {
-    using namespace math::linear;
-
     VectorN<3,double> v1, v2;
     for (int i = 0; i < 3; i++)
     {
@@ -470,11 +415,8 @@ TEST_CASE(testOperatorTimes)
         TEST_ASSERT_EQ(v3[i], i * (i + 2));
 }
 
-
 TEST_CASE(testOperatorDivide)
 {
-    using namespace math::linear;
-
     VectorN<3,double> v1, v2;
     for (int i = 0; i < 3; i++)
     {
@@ -485,6 +427,20 @@ TEST_CASE(testOperatorDivide)
     VectorN<3, double> v3(v1 / v2);
     for (int i = 0; i < 3; i++)
         TEST_ASSERT_EQ(v3[i], (i + 1.) / (i + 2.));
+}
+
+TEST_CASE(testMatVecProds)
+{
+    MatrixMxN<3, 3, double> matrix({1, 0, 1,
+                                    0, 2, 0,
+                                    3, 0, 3});
+    VectorN<3, double> vec({1, 1, 1});
+
+    VectorN<3, double> r_vm({4, 2, 4});
+    VectorN<3, double> r_mv({2, 2, 6});
+
+    TEST_ASSERT_EQ(vec * matrix, r_vm);
+    TEST_ASSERT_EQ(matrix * vec, r_mv);
 }
 
 TEST_MAIN(
@@ -513,4 +469,5 @@ TEST_MAIN(
     TEST_CHECK(testElementDivision);
     TEST_CHECK(testOperatorTimes);
     TEST_CHECK(testOperatorDivide);
-    )
+    TEST_CHECK(testMatVecProds);
+)
