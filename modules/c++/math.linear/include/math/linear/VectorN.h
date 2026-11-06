@@ -362,13 +362,13 @@ template<size_t _ND, typename _T> VectorN<_ND, _T>
     return v;
 }
 
-/*! @brief Perform matrix-vector product
- *  @tparam _T element dtype
- *  @tparam _MD matrix row dimension
- *  @tparam _ND matrix column dimension
- *  @param m _MD x _ND matrix
- *  @param v _ND column vector
- *  @return _MD row vector
+/*! \brief Perform matrix-vector product
+ *  \tparam _T element dtype
+ *  \tparam _MD matrix row dimension
+ *  \tparam _ND matrix column dimension
+ *  \param m _MD x _ND matrix
+ *  \param v _ND column vector
+ *  \return _MD row vector
  */
 template<size_t _MD, size_t _ND, typename _T> 
 VectorN<_MD, _T> operator*(const MatrixMxN<_MD, _ND, _T>& m, const VectorN<_ND, _T>& v)
@@ -376,13 +376,13 @@ VectorN<_MD, _T> operator*(const MatrixMxN<_MD, _ND, _T>& m, const VectorN<_ND, 
     return VectorN<_MD, _T>(m * v.matrix());
 }
 
-/*! @brief Perform vector-matrix product
- *  @tparam _T element dtype
- *  @tparam _MD matrix row dimension
- *  @tparam _ND matrix column dimension
- *  @param m _MD x _ND matrix
- *  @param v _MD row vector
- *  @return _ND column vector
+/*! \brief Perform vector-matrix product
+ *  \tparam _T element dtype
+ *  \tparam _MD matrix row dimension
+ *  \tparam _ND matrix column dimension
+ *  \param m _MD x _ND matrix
+ *  \param v _MD row vector
+ *  \return _ND column vector
  */
 template<size_t _MD, size_t _ND, typename _T> 
 VectorN<_ND, _T> operator*(const VectorN<_MD, _T>& v, const MatrixMxN<_MD, _ND, _T>& m)
