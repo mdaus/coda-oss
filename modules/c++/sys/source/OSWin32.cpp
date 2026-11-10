@@ -222,41 +222,6 @@ std::string sys::OSWin32::operator[](const std::string& s) const
 {
     return getEnv(s);
 }
-/*
-static std::string getEnv(const std::string& s)
-{
-    const DWORD size = GetEnvironmentVariable(s.c_str(), nullptr, 0);
-    if (size == 0)
-    {
-        throw sys::SystemException(Ctxt(
-            "Unable to get windows environment variable " + s));
-    }
-    std::vector<char> buffer(size + 1);
-    const DWORD retVal = GetEnvironmentVariable(s.c_str(), &buffer[0], size);
-    // Win32 API weirdness -- see https://msdn.microsoft.com/en-us/libary/windows/desktop/ms683188%28v=vs.85%29.aspx
-    // When less then the size of the buffer is allocated, it returns the required size, including the null character
-    // Otherwise, it returns the size of the variable, not including the null character
-    if (retVal + 1 != size)
-    {
-        throw sys::SystemException(Ctxt(
-           "Environment variable size does not match allocated size for " + s));
-    }
-    if (retVal == 0)
-    {
-        throw sys::SystemException(Ctxt(
-               "Environment variable size changed unexpectedly to zero \
-                following buffer allocation " + s));
-    }
-    return buffer.data();
-}
-*/
-static const char* getenv_(const std::string& s)
-{
-    #pragma warning(push)
-    #pragma warning(disable: 4996) // '...': This function or variable may be unsafe. Consider using _dupenv_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-    return getenv(s.c_str());
-    #pragma warning(pop)
-}
 
 static void setEnv(const std::string& var,
                           const std::string& val)
