@@ -32,7 +32,7 @@ typedef math::linear::MatrixMxN<5, 5> Matrix5x5;
    for (unsigned int i = 0; i < M; ++i) \
         for (unsigned int j = 0; j < N; ++j)
 
-TEST_CASE(testIdentityMxN)
+TEST_CASE("testIdentityMxN")
 {
     using namespace math::linear;
 
@@ -65,7 +65,7 @@ TEST_CASE(testIdentityMxN)
 
 }
 
-TEST_CASE(testScaleMultiplyMxN)
+TEST_CASE("testScaleMultiplyMxN")
 {
     using namespace math::linear;
 
@@ -83,7 +83,7 @@ TEST_CASE(testScaleMultiplyMxN)
     TEST_ASSERT_EQ(B, C);
 }
 
-TEST_CASE(testNegateMxN)
+TEST_CASE("testNegateMxN")
 {
     using namespace math::linear;
 
@@ -100,7 +100,7 @@ TEST_CASE(testNegateMxN)
     TEST_ASSERT_EQ(B, C);
 }
 
-TEST_CASE(testNegate)
+TEST_CASE("testNegate")
 {
     using namespace math::linear;
 
@@ -117,7 +117,7 @@ TEST_CASE(testNegate)
     TEST_ASSERT_EQ(B, C);
 }
 
-TEST_CASE(testInvert2x2Complex)
+TEST_CASE("testInvert2x2Complex")
 {
     using namespace math::linear;
 
@@ -147,7 +147,7 @@ TEST_CASE(testInvert2x2Complex)
         TEST_ASSERT_ALMOST_EQ_EPS(std::abs(Qinv(i, j)), std::abs(C(i, j)), .0001);
     }
 }
-TEST_CASE(testInvert2x2)
+TEST_CASE("testInvert2x2")
 {
     using namespace math::linear;
 
@@ -172,7 +172,7 @@ TEST_CASE(testInvert2x2)
         TEST_ASSERT_ALMOST_EQ_EPS(Qinv(i, j), C(i, j), .0001);
     }
 }
-TEST_CASE(testInvert3x3)
+TEST_CASE("testInvert3x3")
 {
     using namespace math::linear;
 
@@ -203,7 +203,7 @@ TEST_CASE(testInvert3x3)
   
 }
 
-TEST_CASE(testInvert4x4)
+TEST_CASE("testInvert4x4")
 {
     using namespace math::linear;
 
@@ -263,7 +263,7 @@ TEST_CASE(testInvert4x4)
 
 }
 
-TEST_CASE(testOrthoTranspose5x5)
+TEST_CASE("testOrthoTranspose5x5")
 {
     using namespace math::linear;
 
@@ -298,7 +298,7 @@ TEST_CASE(testOrthoTranspose5x5)
 
 }
 
-TEST_CASE(testInvert5x5)
+TEST_CASE("testInvert5x5")
 {
     using namespace math::linear;
 
@@ -346,7 +346,7 @@ TEST_CASE(testInvert5x5)
     }
 }
 
-TEST_CASE(testSTLVectorAssign)
+TEST_CASE("testSTLVectorAssign")
 {
     using namespace math::linear;
 
@@ -387,7 +387,7 @@ TEST_CASE(testSTLVectorAssign)
     }
 }
 
-TEST_CASE(testPtrAssign)
+TEST_CASE("testPtrAssign")
 {
     using namespace math::linear;
 
@@ -425,7 +425,7 @@ TEST_CASE(testPtrAssign)
   
 }
 
-TEST_CASE(testPermuteInvert2x2)
+TEST_CASE("testPermuteInvert2x2")
 {
     using namespace math::linear;
 
@@ -458,7 +458,7 @@ TEST_CASE(testPermuteInvert2x2)
 
 }
 
-TEST_CASE(testSetCols)
+TEST_CASE("testSetCols")
 {
     using namespace math::linear;
 
@@ -481,7 +481,7 @@ TEST_CASE(testSetCols)
     }
 }
 
-TEST_CASE(testSetRows)
+TEST_CASE("testSetRows")
 {
     using namespace math::linear;
 
@@ -508,7 +508,7 @@ TEST_CASE(testSetRows)
     }
     //std::cout << A << std::endl;
 }
-TEST_CASE(testGrabCols)
+TEST_CASE("testGrabCols")
 {
     using namespace math::linear;
 
@@ -532,7 +532,7 @@ TEST_CASE(testGrabCols)
     }
 }
 
-TEST_CASE(testGrabRows)
+TEST_CASE("testGrabRows")
 {
     using namespace math::linear;
 
@@ -559,7 +559,7 @@ TEST_CASE(testGrabRows)
 
 
 
-TEST_CASE(testArithmeticMxN)
+TEST_CASE("testArithmeticMxN")
 {
     using namespace math::linear;
 
@@ -602,24 +602,3 @@ TEST_CASE(testArithmeticMxN)
     
     
 }
-
-TEST_MAIN(
-    TEST_CHECK(testIdentityMxN);
-    TEST_CHECK(testScaleMultiplyMxN);
-    TEST_CHECK(testSetRows);
-    TEST_CHECK(testGrabRows);
-    TEST_CHECK(testSetCols);
-    TEST_CHECK(testGrabCols);
-    TEST_CHECK(testArithmeticMxN);
-    TEST_CHECK(testPermuteInvert2x2);
-    TEST_CHECK(testInvert2x2Complex);
-    TEST_CHECK(testInvert2x2);
-    TEST_CHECK(testInvert3x3);
-    TEST_CHECK(testInvert4x4);
-    TEST_CHECK(testInvert5x5);
-    TEST_CHECK(testPtrAssign);
-    TEST_CHECK(testSTLVectorAssign);
-    TEST_CHECK(testOrthoTranspose5x5);
-    TEST_CHECK(testNegateMxN);
-    TEST_CHECK(testNegate);
-    )

@@ -26,7 +26,7 @@
 
 namespace
 {
-TEST_CASE(testGetNumElements)
+TEST_CASE("testGetNumElements")
 {
     // NOTE: This test leaks memory.
     // The Python C API naturally assume you're running in a Python extension,
@@ -42,12 +42,4 @@ TEST_CASE(testGetNumElements)
     PyObject* nonArrayObject = PyLong_FromLong(123L);
     TEST_THROWS(numpyutils::getNumElements(nonArrayObject));
 }
-}
-
-int main(int /*argc*/, char** /*argv*/)
-{
-    TEST_CHECK(testGetNumElements);
-    // wreaks havoc from the bowels of <numpy/arrayobject.h>
-    CODA_OSS_mark_symbol_unused(_import_array);
-    return 0;
 }

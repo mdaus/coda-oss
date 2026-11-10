@@ -48,7 +48,7 @@ namespace
  * Tests priority enqueue and dequeue via the OrderedRequestQueues
  * standard numerical ordering and a custom even first comparator
  */
-TEST_CASE(PriorityEnqueue)
+TEST_CASE("PriorityEnqueue")
 {
     mt::OrderedRequestQueue<int> testSubject;
     testSubject.enqueue(1);
@@ -102,11 +102,4 @@ TEST_CASE(PriorityEnqueue)
 
 }
 
-}
-
-int main(int, char**)
-{
-    TEST_CHECK(PriorityEnqueue);
-
-    return 0;
 }

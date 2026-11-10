@@ -20,14 +20,14 @@
  *
  */
 
-#include "coda_oss_TestCase.h"
+#include "TestCase.h"
 
 #include <array>
 
 #include "coda_oss/bit.h" // std::endian
 #include "coda_oss/cstddef.h"
 
-TEST_CASE(testEndianness)
+TEST_CASE("testEndianness")
 {
     /*const*/ auto native = coda_oss::endian::native; // "const" causes "conditional expression is constant."
 
@@ -35,12 +35,12 @@ TEST_CASE(testEndianness)
     else if (native == coda_oss::endian::little) { }
     else
     {
-        TEST_FAIL("Mixed-endian not supported!");
+        TEST_FAIL_MSG("Mixed-endian not supported!");
     }
 }
 
 template<typename TEndian>
-static void testEndianness_std_(const std::string& testName)
+static void testEndianness_std_()
 {
     /*const*/ auto native = TEndian::native; // "const" causes "conditional expression is constant."
     auto endianness = coda_oss::endian::native;  // "conditional expression is constant"
@@ -54,17 +54,16 @@ static void testEndianness_std_(const std::string& testName)
     }
     else
     {
-        TEST_FAIL("Mixed-endian not supported!");
+        TEST_FAIL_MSG("Mixed-endian not supported!");
     }
 }
-TEST_CASE(testEndianness_std)
+TEST_CASE("testEndianness_std")
 {
-    testEndianness_std_<coda_oss::endian>(testName);
-    //testEndianness_std_<std::endian>(testName);
+    testEndianness_std_<coda_oss::endian>();
 }
 
 template <typename TByte>
-static void test_byte_(const std::string& testName)
+static void test_byte_()
 {
     std::array<TByte, 256> bytes;
     for (size_t i = 0; i < bytes.size(); i++)
@@ -81,19 +80,10 @@ static void test_byte_(const std::string& testName)
         TEST_ASSERT_EQ(i, actual);
     }
 }
-TEST_CASE(testByte)
+TEST_CASE("testByte")
 {
-    test_byte_<coda_oss::byte>(testName);
+    test_byte_<coda_oss::byte>();
     #if defined(__cpp_lib_byte) && (__cpp_lib_byte >= 201603L) // https://en.cppreference.com/w/cpp/utility/feature_test
-    test_byte_<std::byte>(testName);
+    test_byte_<std::byte>();
     #endif
-}
-
-int main(int /*argc*/, char** /*argv*/)
-{
-    TEST_CHECK(testEndianness);
-    TEST_CHECK(testEndianness_std);
-    TEST_CHECK(testByte);
-
-    return EXIT_SUCCESS;
 }

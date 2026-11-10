@@ -29,7 +29,7 @@
 #include <avx/extractf.h>
 #include <config/compiler_extensions.h>
 
-TEST_CASE(extractf)
+TEST_CASE("extractf")
 {
   /*
     #if defined(__GNUC__)
@@ -52,7 +52,7 @@ TEST_CASE(extractf)
     TEST_SUCCESS;
 }
 
-TEST_CASE(test_getSIMDInstructionSet)
+TEST_CASE("test_getSIMDInstructionSet")
 {
     // This is the reverse of getSIMDInstructionSet(): it uses the macros to generate a value.
     constexpr auto simdInstructionSet = sys::getSIMDInstructionSet();
@@ -107,8 +107,3 @@ TEST_CASE(test_getSIMDInstructionSet)
     }
     CODA_OSS_disable_warning_pop
 }
-
-TEST_MAIN(
-    TEST_CHECK(extractf);
-    TEST_CHECK(test_getSIMDInstructionSet);
-)

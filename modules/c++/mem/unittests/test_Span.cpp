@@ -31,10 +31,8 @@
 #include "TestCase.h"
 
  template<typename TContainer, typename TSpan>
- static void testSpanBuffer_(const std::string& testName,
-     const TContainer& ints, const TSpan& span)
+ static void testSpanBuffer_(const TContainer& ints, const TSpan& span)
 {
-     (void)testName;
     TEST_ASSERT_EQ(ints.size(), span.size());
     TEST_ASSERT_EQ(ints.data(), span.data());
 
@@ -48,21 +46,19 @@
     span[0] = span[4];
     TEST_ASSERT_EQ(5, span[0]);
 }
-TEST_CASE(testSpanBuffer)
+TEST_CASE("testSpanBuffer")
 {
     {
         std::vector<int> ints{1, 2, 3, 4, 5};
         const coda_oss::span<int> span(ints.data(), ints.size());
-        testSpanBuffer_(testName, ints, span);
+        testSpanBuffer_(ints, span);
     }
 }
 
  template <typename TContainer, typename TSpan>
-static void testSpanVector_(const std::string& testName,
-                            const TContainer& ints,
+static void testSpanVector_(const TContainer& ints,
                             const TSpan& span)
 {
-     (void)testName;
     TEST_ASSERT_EQ(ints.size(), span.size());
     TEST_ASSERT_EQ(ints.data(), span.data());
 
@@ -73,16 +69,16 @@ static void testSpanVector_(const std::string& testName,
     TEST_ASSERT_EQ(1, *(span.begin()));
     TEST_ASSERT_EQ(5, span[4]);
 }
-TEST_CASE(testSpanVector)
+TEST_CASE("testSpanVector")
 {
     {
         std::vector<int> ints{1, 2, 3, 4, 5};
         const coda_oss::span<int> span(ints.data(), ints.size());
-        testSpanVector_(testName, ints, span);
+        testSpanVector_(ints, span);
     }
 }
 
-TEST_CASE(testGslNarrow)
+TEST_CASE("testGslNarrow")
 {
     constexpr int i = INT16_MAX;
     static /*constexpr*/ auto s = gsl::narrow<int16_t>(i); // avoid "conditional expression is constant"
@@ -95,7 +91,7 @@ TEST_CASE(testGslNarrow)
     TEST_THROWS(gsl::narrow<int>(d));
 }
 
-TEST_CASE(test_sys_make_span)
+TEST_CASE("test_sys_make_span")
 {
     int i = 314;
     int* const p = &i;
@@ -128,10 +124,3 @@ TEST_CASE(test_sys_make_span)
     // cs[0] = 123; // cs = span<const>
     TEST_ASSERT_EQ(u[0], 314);
 }
-
-TEST_MAIN(
-    TEST_CHECK(testSpanBuffer);
-    TEST_CHECK(testSpanVector);
-    TEST_CHECK(testGslNarrow);
-    TEST_CHECK(test_sys_make_span);
-    )

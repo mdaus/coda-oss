@@ -135,16 +135,6 @@ struct OSUnix final : public AbstractOS
     virtual std::string operator[](const std::string& s) const override;
 
     /*!
-     *  Get an environment variable
-     */
-    virtual std::string getEnv(const std::string& s) const override;
-
-    /*!
-     * Returns true if environment variable is set, false otherwise
-     */
-    virtual bool isEnvSet(const std::string& s) const override;
-
-    /*!
      *  Set an environment variable
      */
     virtual void setEnv(const std::string& var,

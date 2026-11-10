@@ -28,7 +28,7 @@
 #define TEST_ASSERT_FALSE(X) testName, Microsoft::VisualStudio::CppUnitTestFramework::Assert::IsFalse(X)
 #define TEST_ASSERT(X) TEST_ASSERT_TRUE(X)
 #define CODA_OSS_testMethod_(X)  testMethod ## _ ## X
-#define TEST_CASE(X) TEST_METHOD(X) { CODA_OSS_testMethod_(X)(#X); } void CODA_OSS_testMethod_(X)(std::string testName)
+#define TEST_CASE("X) TEST_METHOD(X) { CODA_OSS_testMethod_(X)(#X); } void CODA_OSS_testMethod_(X)(std::string testName")
 
 namespace test
 {
@@ -137,6 +137,6 @@ inline void assert_almost_eq(const std::string& testName, long double X1, long d
 #undef TEST_EXCEPTION
 #undef TEST_THROWS
 #undef TEST_SPECIFIC_EXCEPTION
-#define TEST_EXCEPTION(X) (void)testName; try{ (X); TEST_FAIL(#X " should have thrown."); } CODA_OSS_TEST_EXCEPTION_catch_
-#define TEST_THROWS(X) (void)testName; try{ (X); TEST_FAIL(#X " should have thrown."); } catch (...){ TEST_ASSERT_TRUE(true); }
+#define TEST_EXCEPTION(X) (void)testName; try{ (X); TEST_FAIL_MSG(#X " should have thrown."); } CODA_OSS_TEST_EXCEPTION_catch_
+#define TEST_THROWS(X) (void)testName; try{ (X); TEST_FAIL_MSG(#X " should have thrown."); } catch (...){ TEST_ASSERT_TRUE(true); }
 #define TEST_SPECIFIC_EXCEPTION(X, Y) testName, Microsoft::VisualStudio::CppUnitTestFramework::Assert::ExpectException<Y>([&](){(X);})

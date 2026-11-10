@@ -83,7 +83,7 @@ struct test_MinidomParser final
     }
 };
 
-TEST_CASE(test_getRootElement)
+TEST_CASE("test_getRootElement")
 {
     io::StringStream ss;
     ss.stream() << strXml();
@@ -95,7 +95,7 @@ TEST_CASE(test_getRootElement)
     TEST_ASSERT(pRoot != nullptr);
 }
 
-TEST_CASE(test_getElementsByTagName)
+TEST_CASE("test_getElementsByTagName")
 {
     test_MinidomParser xmlParser;
     const auto& root = xmlParser.getRootElement();
@@ -122,7 +122,7 @@ TEST_CASE(test_getElementsByTagName)
     }
 }
 
-TEST_CASE(test_getElementsByTagName_duplicate)
+TEST_CASE("test_getElementsByTagName_duplicate")
 {
     test_MinidomParser xmlParser;
     const auto& root = xmlParser.getRootElement();
@@ -149,7 +149,7 @@ TEST_CASE(test_getElementsByTagName_duplicate)
     }
 }
 
-TEST_CASE(test_getElementByTagName)
+TEST_CASE("test_getElementByTagName")
 {
     test_MinidomParser xmlParser;
     const auto& root = xmlParser.getRootElement();
@@ -168,7 +168,7 @@ TEST_CASE(test_getElementByTagName)
     }
 }
 
-TEST_CASE(test_getElementByTagName_nothrow)
+TEST_CASE("test_getElementByTagName_nothrow")
 {
     test_MinidomParser xmlParser;
     const auto& root = xmlParser.getRootElement();
@@ -189,7 +189,7 @@ TEST_CASE(test_getElementByTagName_nothrow)
     }
 }
 
-TEST_CASE(test_getElementByTagName_throw)
+TEST_CASE("test_getElementByTagName_throw")
 {
     test_MinidomParser xmlParser;
     const auto& root = xmlParser.getRootElement();
@@ -202,7 +202,7 @@ TEST_CASE(test_getElementByTagName_throw)
     TEST_SPECIFIC_EXCEPTION(doc.getElementByTagName("duplicate"), xml::lite::XMLException);
 }
 
-TEST_CASE(test_getValue)
+TEST_CASE("test_getValue")
 {
     test_MinidomParser xmlParser;
     const auto& root = xmlParser.getRootElement();
@@ -267,7 +267,7 @@ TEST_CASE(test_getValue)
 }
 
 
-TEST_CASE(test_getValueFailure)
+TEST_CASE("test_getValueFailure")
 {
     test_MinidomParser xmlParser;
     const auto& root = xmlParser.getRootElement();
@@ -292,7 +292,7 @@ TEST_CASE(test_getValueFailure)
     }
 }
 
-TEST_CASE(test_getValueThrows)
+TEST_CASE("test_getValueThrows")
 {
     test_MinidomParser xmlParser;
     const auto& root = xmlParser.getRootElement();
@@ -308,7 +308,7 @@ TEST_CASE(test_getValueThrows)
     }
 }
 
-TEST_CASE(test_setValue)
+TEST_CASE("test_setValue")
 {
     test_MinidomParser xmlParser;
     auto& root = xmlParser.getRootElement();
@@ -353,19 +353,4 @@ TEST_CASE(test_setValue)
         TEST_ASSERT_TRUE(result);
         TEST_ASSERT_EQ("yes", strValue);
     }
-}
-
-int main(int, char**)
-{
-    TEST_CHECK(test_getRootElement);
-    TEST_CHECK(test_getElementsByTagName);
-    TEST_CHECK(test_getElementsByTagName_duplicate);
-    TEST_CHECK(test_getElementByTagName);
-    TEST_CHECK(test_getElementByTagName_nothrow);    
-    TEST_CHECK(test_getElementByTagName_throw);
-
-    TEST_CHECK(test_getValue);
-    TEST_CHECK(test_getValueFailure);
-    TEST_CHECK(test_getValueThrows);
-    TEST_CHECK(test_setValue);
 }

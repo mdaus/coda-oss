@@ -31,7 +31,7 @@
 
 #include "TestCase.h"
 
-TEST_CASE(testValue)
+TEST_CASE("testValue")
 {
     cli::Value v("data");
     TEST_ASSERT_EQ("data", v.get<std::string>());
@@ -65,7 +65,7 @@ TEST_CASE(testValue)
     TEST_ASSERT_EQ(coda_oss::ssize(v), 10);
 }
 
-TEST_CASE(testChoices)
+TEST_CASE("testChoices")
 {
     cli::ArgumentParser parser;
     parser.setProgram("tester");
@@ -104,7 +104,7 @@ TEST_CASE(testChoices)
     results.reset(parser.parse(str::split("-m type2 --many type1 -m type3", " ")));
 }
 
-TEST_CASE(testMultiple)
+TEST_CASE("testMultiple")
 {
     cli::ArgumentParser parser;
     parser.setProgram("tester");
@@ -122,7 +122,7 @@ TEST_CASE(testMultiple)
     TEST_ASSERT_FALSE(results->get<bool>("verbose"));
 }
 
-TEST_CASE(testSubOptions)
+TEST_CASE("testSubOptions")
 {
     cli::ArgumentParser parser;
     parser.setProgram("tester");
@@ -150,7 +150,7 @@ TEST_CASE(testSubOptions)
     TEST_ASSERT_FALSE(results->getSubResults("config")->get<bool>("flag3"));
 }
 
-TEST_CASE(testIterate)
+TEST_CASE("testIterate")
 {
     cli::ArgumentParser parser;
     parser.setProgram("tester");
@@ -168,30 +168,30 @@ TEST_CASE(testIterate)
     TEST_ASSERT_EQ(keys[1], "verbose");
 }
 
-TEST_CASE(testRequired)
+TEST_CASE("testRequired")
 {
     cli::ArgumentParser parser;
     parser.setProgram("tester");
     parser.addArgument("-c --config", "Specify a config file", cli::STORE)->setRequired(true);
 
-    const std::string program(testName);
+    const std::string program("testName");
     const auto results = parser.parse(program, str::split("-c configFile"));
     TEST_ASSERT_EQ(results->get<std::string>("config"), "configFile");
 }
 
-TEST_CASE(testRequiredThrows)
+TEST_CASE("testRequiredThrows")
 {
     cli::ArgumentParser parser;
     parser.setProgram("tester");
     parser.addArgument("-c --config", "Specify a config file", cli::STORE)
             ->setRequired(true);
 
-    const std::string program(testName);
+    const std::string program("testName");
     TEST_EXCEPTION(parser.parse(program, str::split("")));
     TEST_EXCEPTION(parser.parse(program, str::split("-c")));
 }
 
-TEST_CASE(testUnknownArgumentsOptions)
+TEST_CASE("testUnknownArgumentsOptions")
 {
     std::ostringstream outStream;
     cli::ArgumentParser parser(true, &outStream);
@@ -259,15 +259,3 @@ TEST_CASE(testUnknownArgumentsOptions)
     TEST_ASSERT_FALSE(results->get<bool>("type"));
     TEST_ASSERT_EQ(results->get<std::string>("config"), "config.txt");
 }
-
-TEST_MAIN(
-    TEST_CHECK( testValue);
-    TEST_CHECK( testChoices);
-    TEST_CHECK( testMultiple);
-    TEST_CHECK( testSubOptions);
-    TEST_CHECK( testIterate);
-    TEST_CHECK( testRequired);
-    TEST_CHECK( testRequiredThrows);
-    TEST_CHECK( testUnknownArgumentsOptions);
-)
-

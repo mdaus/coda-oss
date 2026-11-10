@@ -29,7 +29,7 @@
 namespace
 {
 
-TEST_CASE(testMatrix2DDoubleSerializeSquare)
+TEST_CASE("testMatrix2DDoubleSerializeSquare")
 {
     //! create the input object
     math::linear::Matrix2D<double> in(6, 6);
@@ -62,7 +62,7 @@ TEST_CASE(testMatrix2DDoubleSerializeSquare)
     }
 }
 
-TEST_CASE(testMatrix2DDoubleSerializeRect)
+TEST_CASE("testMatrix2DDoubleSerializeRect")
 {
     //! create the input object
     math::linear::Matrix2D<double> in(2, 12);
@@ -95,7 +95,7 @@ TEST_CASE(testMatrix2DDoubleSerializeRect)
     }
 }
 
-TEST_CASE(testMatrix2DIntSerializeSquare)
+TEST_CASE("testMatrix2DIntSerializeSquare")
 {
     //! create the input object
     math::linear::Matrix2D<int> in(5, 5);
@@ -128,7 +128,7 @@ TEST_CASE(testMatrix2DIntSerializeSquare)
 }
 
 
-TEST_CASE(testMatrix2DIntSerializeRect)
+TEST_CASE("testMatrix2DIntSerializeRect")
 {
     //! create the input object
     math::linear::Matrix2D<int> in(21, 3);
@@ -160,13 +160,4 @@ TEST_CASE(testMatrix2DIntSerializeRect)
     }
 }
 
-}
-
-int main(int argc, char** argv)
-{
-    srand(176);
-    TEST_CHECK(testMatrix2DDoubleSerializeSquare);
-    TEST_CHECK(testMatrix2DDoubleSerializeRect);
-    TEST_CHECK(testMatrix2DIntSerializeSquare);
-    TEST_CHECK(testMatrix2DIntSerializeRect);
 }

@@ -30,7 +30,7 @@
 
 #include "TestCase.h"
 
-TEST_CASE(testVecOfRawPointers)
+TEST_CASE("testVecOfRawPointers")
 {
     mem::VectorOfPointers<int> myVec;
 
@@ -74,7 +74,7 @@ static std::vector<std::shared_ptr<int>> std_vector_shared_ptr_int()
     return retval;
 }
 
-TEST_CASE(testVecOfSharedPointers)
+TEST_CASE("testVecOfSharedPointers")
 {
     mem::VectorOfSharedPointers<int> myVec;
 
@@ -121,7 +121,7 @@ TEST_CASE(testVecOfSharedPointers)
 }
 
 template<typename TView>
-static void test_cx_view(const std::string& testName, const TView& view)
+static void test_cx_view(const TView& view)
 {
     TEST_ASSERT_EQ(4, view.size());
     TEST_ASSERT_EQ(view[0].real(), 1.0f);
@@ -134,9 +134,9 @@ static void test_cx_view(const std::string& testName, const TView& view)
     TEST_ASSERT_EQ(view[3].imag(), 8.0f);
 }
 template <typename TView>
-static void test_mem_ComplexParallelView(const std::string& testName, const TView& view)
+static void test_mem_ComplexParallelView(const TView& view)
 {
-    test_cx_view(testName, view);
+    test_cx_view(view);
 
     TEST_ASSERT_EQ(view.real(0), 1.0f);
     TEST_ASSERT_EQ(view.imag(0), 2.0f);
@@ -168,20 +168,20 @@ static const std::vector<cx_float>& cx_data()
     return retval;
 }
 
-TEST_CASE(testSpanCxFloat)
+TEST_CASE("testSpanCxFloat")
 {
     const coda_oss::span<const cx_float> view(cx_data().data(), cx_data().size());
     TEST_ASSERT_EQ(cx_data().size(), view.size());
-    test_cx_view(testName, view);
+    test_cx_view(view);
 }
 
-TEST_CASE(testComplexParallelViewFloat)
+TEST_CASE("testComplexParallelViewFloat")
 {
     {
         const auto view = mem::make_ComplexInterleavedView(cx_data());
         TEST_ASSERT_EQ(cx_data().size(), view.size());
-        test_mem_ComplexParallelView(testName, view);
-        test_cx_view(testName, view.values());
+        test_mem_ComplexParallelView(view);
+        test_cx_view(view.values());
     }
 
     const std::vector<float> reals{1, 3, 5, 7};
@@ -190,12 +190,12 @@ TEST_CASE(testComplexParallelViewFloat)
     {
         const auto view = mem::make_ComplexParallelView(reals, imags);
         TEST_ASSERT_EQ(reals.size(), view.size());
-        test_mem_ComplexParallelView(testName, view);
-        test_cx_view(testName, view.values());
+        test_mem_ComplexParallelView(view);
+        test_cx_view(view.values());
     }
 }
 
-static void test_mem_ComplexViewConstIterator(const std::string& testName,
+static void test_mem_ComplexViewConstIterator(
     mem::ComplexViewConstIterator<float> begin, mem::ComplexViewConstIterator<float> end)
 {
     TEST_ASSERT(begin != end);
@@ -220,9 +220,9 @@ static void test_mem_ComplexViewConstIterator(const std::string& testName,
     TEST_ASSERT_EQ(it->imag(), 8.0f);
 }
 template <typename TView>
-static void test_mem_ComplexViewConstIterator(const std::string& testName, TView view)
+static void test_mem_ComplexViewConstIterator(TView view)
 {
-    test_mem_ComplexViewConstIterator(testName, view.begin(), view.end());
+    test_mem_ComplexViewConstIterator(view.begin(), view.end());
 
     using cxvalue_t = typename decltype(view.begin())::value_type; // i.e., std::complex<float>
     cxvalue_t cx{1.0f, 2.0f};
@@ -235,11 +235,11 @@ static void test_mem_ComplexViewConstIterator(const std::string& testName, TView
     }
 }
 
-TEST_CASE(testComplexParallelViewFloatIterator)
+TEST_CASE("testComplexParallelViewFloatIterator")
 {
     {
         const auto view = mem::make_ComplexInterleavedView(cx_data());
-        test_mem_ComplexViewConstIterator(testName, view);
+        test_mem_ComplexViewConstIterator(view);
     }
 
     const std::vector<float> reals{1, 3, 5, 7};
@@ -247,15 +247,6 @@ TEST_CASE(testComplexParallelViewFloatIterator)
     TEST_ASSERT_EQ(imags.size(), reals.size());
     {
         const auto view = mem::make_ComplexParallelView(reals, imags);
-        test_mem_ComplexViewConstIterator(testName, view);
+        test_mem_ComplexViewConstIterator(view);
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testVecOfRawPointers);
-    TEST_CHECK(testVecOfSharedPointers);
-
-    TEST_CHECK(testSpanCxFloat);
-    TEST_CHECK(testComplexParallelViewFloat);
-    TEST_CHECK(testComplexParallelViewFloatIterator);
-    )

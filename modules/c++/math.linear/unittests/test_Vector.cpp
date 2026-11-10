@@ -25,7 +25,7 @@
 #include "math/linear/Vector.h"
 
 
-TEST_CASE(testDefaultConstructor)
+TEST_CASE("testDefaultConstructor")
 {
     using namespace math::linear;
 
@@ -34,7 +34,7 @@ TEST_CASE(testDefaultConstructor)
 }
 
 
-TEST_CASE(testScalarConstructor)
+TEST_CASE("testScalarConstructor")
 {
     using namespace math::linear;
 
@@ -47,7 +47,7 @@ TEST_CASE(testScalarConstructor)
 }
 
 
-TEST_CASE(testRawConstructor)
+TEST_CASE("testRawConstructor")
 {
     using namespace math::linear;
 
@@ -60,7 +60,7 @@ TEST_CASE(testRawConstructor)
 }
 
 
-TEST_CASE(testCopyConstructor)
+TEST_CASE("testCopyConstructor")
 {
     using namespace math::linear;
 
@@ -80,7 +80,7 @@ TEST_CASE(testCopyConstructor)
 }
 
 
-TEST_CASE(testStdVectorConstructor)
+TEST_CASE("testStdVectorConstructor")
 {
     using namespace math::linear;
 
@@ -102,7 +102,7 @@ TEST_CASE(testStdVectorConstructor)
 }
 
 
-TEST_CASE(testAssignmentOperator)
+TEST_CASE("testAssignmentOperator")
 {
     using namespace math::linear;
 
@@ -118,7 +118,7 @@ TEST_CASE(testAssignmentOperator)
 }
 
 
-TEST_CASE(testScalarAssignment)
+TEST_CASE("testScalarAssignment")
 {
     using namespace math::linear;
 
@@ -133,7 +133,7 @@ TEST_CASE(testScalarAssignment)
 }
 
 
-TEST_CASE(testStdVectorAssignment)
+TEST_CASE("testStdVectorAssignment")
 {
     using namespace math::linear;
 
@@ -148,7 +148,7 @@ TEST_CASE(testStdVectorAssignment)
 }
 
 
-TEST_CASE(testDotProduct)
+TEST_CASE("testDotProduct")
 {
     using namespace math::linear;
 
@@ -171,7 +171,7 @@ TEST_CASE(testDotProduct)
 }
 
 
-TEST_CASE(testNorm)
+TEST_CASE("testNorm")
 {
     using namespace math::linear;
 
@@ -184,7 +184,7 @@ TEST_CASE(testNorm)
 }
 
 
-TEST_CASE(testNormalize)
+TEST_CASE("testNormalize")
 {
     using namespace math::linear;
 
@@ -197,7 +197,7 @@ TEST_CASE(testNormalize)
 }
 
 
-TEST_CASE(testScale)
+TEST_CASE("testScale")
 {
     using namespace math::linear;
 
@@ -207,7 +207,7 @@ TEST_CASE(testScale)
     TEST_ASSERT_EQ(vscale[1], 1.0);
 }
 
-TEST_CASE(testUnit)
+TEST_CASE("testUnit")
 {
     using namespace math::linear;
 
@@ -219,7 +219,7 @@ TEST_CASE(testUnit)
     TEST_ASSERT_EQ(vunit[3], 0.5);
 }
 
-TEST_CASE(testOperatorPlusEquals)
+TEST_CASE("testOperatorPlusEquals")
 {
     using namespace math::linear;
 
@@ -241,7 +241,7 @@ TEST_CASE(testOperatorPlusEquals)
 }
 
 
-TEST_CASE(testOperatorPlus)
+TEST_CASE("testOperatorPlus")
 {
     using namespace math::linear;
 
@@ -269,7 +269,7 @@ TEST_CASE(testOperatorPlus)
 }
 
 
-TEST_CASE(testOperatorMinusEquals)
+TEST_CASE("testOperatorMinusEquals")
 {
     using namespace math::linear;
 
@@ -287,7 +287,7 @@ TEST_CASE(testOperatorMinusEquals)
 }
 
 
-TEST_CASE(testNegate)
+TEST_CASE("testNegate")
 {
     using namespace math::linear;
 
@@ -300,7 +300,7 @@ TEST_CASE(testNegate)
 }
 
 
-TEST_CASE(testAdd)
+TEST_CASE("testAdd")
 {
     using namespace math::linear;
 
@@ -328,7 +328,7 @@ TEST_CASE(testAdd)
 }
 
 
-TEST_CASE(testSubtract)
+TEST_CASE("testSubtract")
 {
     using namespace math::linear;
 
@@ -356,7 +356,7 @@ TEST_CASE(testSubtract)
 }
 
 
-TEST_CASE(testOperatorMinus)
+TEST_CASE("testOperatorMinus")
 {
     using namespace math::linear;
 
@@ -384,7 +384,7 @@ TEST_CASE(testOperatorMinus)
 }
 
 
-TEST_CASE(testOperatorTimesEquals)
+TEST_CASE("testOperatorTimesEquals")
 {
     using namespace math::linear;
 
@@ -406,7 +406,7 @@ TEST_CASE(testOperatorTimesEquals)
 }
 
 
-TEST_CASE(testOperatorTimesEqualsScalar)
+TEST_CASE("testOperatorTimesEqualsScalar")
 {
     using namespace math::linear;
 
@@ -421,7 +421,7 @@ TEST_CASE(testOperatorTimesEqualsScalar)
 }
 
 
-TEST_CASE(testOperatorTimesScalar)
+TEST_CASE("testOperatorTimesScalar")
 {
     using namespace math::linear;
 
@@ -437,7 +437,7 @@ TEST_CASE(testOperatorTimesScalar)
         TEST_ASSERT_EQ(v2[i], 2 * i);
 }
 
-TEST_CASE(testElementDivision)
+TEST_CASE("testElementDivision")
 {
     using namespace math::linear;
 
@@ -458,7 +458,7 @@ TEST_CASE(testElementDivision)
 }
 
 
-TEST_CASE(testOperatorTimes)
+TEST_CASE("testOperatorTimes")
 {
     using namespace math::linear;
 
@@ -475,7 +475,7 @@ TEST_CASE(testOperatorTimes)
         TEST_ASSERT_EQ(v3[i], i * i * 2.);
 }
 
-TEST_CASE(testOperatorDivide)
+TEST_CASE("testOperatorDivide")
 {
     using namespace math::linear;
 
@@ -491,46 +491,3 @@ TEST_CASE(testOperatorDivide)
     for (int i = 0; i < 4; i++)
         TEST_ASSERT_EQ(v3[i], i / (i + 2.));
 }
-
-TEST_MAIN(
-    TEST_CHECK(testDefaultConstructor);
-    TEST_CHECK(testScalarConstructor);
-    TEST_CHECK(testRawConstructor);
-    TEST_CHECK(testCopyConstructor);
-    TEST_CHECK(testStdVectorConstructor);
-    TEST_CHECK(testAssignmentOperator);
-    TEST_CHECK(testScalarAssignment);
-    TEST_CHECK(testStdVectorAssignment);
-    TEST_CHECK(testDotProduct);
-    TEST_CHECK(testNorm);
-    TEST_CHECK(testNormalize);
-    TEST_CHECK(testUnit);
-    TEST_CHECK(testOperatorPlusEquals);
-    TEST_CHECK(testOperatorPlus);
-    TEST_CHECK(testOperatorMinus);
-    TEST_CHECK(testNegate);
-    TEST_CHECK(testAdd);
-    TEST_CHECK(testSubtract);
-    TEST_CHECK(testOperatorMinus);
-    TEST_CHECK(testOperatorTimesEquals);
-    TEST_CHECK(testOperatorTimesEqualsScalar);
-    TEST_CHECK(testOperatorTimesScalar);
-    TEST_CHECK(testElementDivision);
-    TEST_CHECK(testOperatorTimes);
-    TEST_CHECK(testOperatorDivide);
-
-    // Methods not (yet) tested:
-
-    //TODO: Vector<double>(Matrix2D) constructor.
-    //TODO: Vector<double>& operator=(const Matrix2D<_T>& mx)
-    //TODO: Matrix2D<_T>& matrix()
-    //TODO: const Matrix2D<_T>& matrix() const
-    //TODO: const std::vector<_T>& vec() const
-    //TODO: template<typename Vector<double>_T> bool operator==(const Vector<double>_T& v) const
-    //TODO: template<typename Vector<double>_T> bool operator!=(const Vector<double>_T& v) const
-    //TODO: template<typename _T> Vector<double><_T> cross(const Vector<double><_T>& u, const Vector<double><_T>& v)
-    //TODO: template<typename _T> Vector<double><_T> constantVector<double>(size_t sz, _T cv = 0)
-    //TODO: template<typename _T> math::linear::Vector<double><_T> operator*(const math::linear::Matrix2D<_T>& m, const math::linear::Vector<double><_T>& v)
-    //TODO: template<typename _T> math::linear::Vector<double><_T> operator*(_T scalar, const math::linear::Vector<double><_T>& v)
-    //TODO: template<typename _T> std::ostream& operator<<(std::ostream& os, const math::linear::Vector<double><_T>& v)
-)

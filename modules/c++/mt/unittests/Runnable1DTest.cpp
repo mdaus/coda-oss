@@ -63,7 +63,7 @@ private:
     mutable size_t mValue = 0;
 };
 
-TEST_CASE(DoRunnable1DTest)
+TEST_CASE("DoRunnable1DTest")
 {
     std::cout << "Running test case\n";
     const AddOp op;
@@ -72,7 +72,7 @@ TEST_CASE(DoRunnable1DTest)
     TEST_ASSERT_TRUE(true); // need to use hidden "testName" parameter
 }
 
-TEST_CASE(Runnable1DWithCopiesTest)
+TEST_CASE("Runnable1DWithCopiesTest")
 {
     // TODO: Have LocalStorage actually store its values off in a vector, then
     //       show we got all those values.
@@ -82,8 +82,3 @@ TEST_CASE(Runnable1DWithCopiesTest)
     mt::run1DWithCopies(47, 16, op);
     TEST_ASSERT_TRUE(true); // need to use hidden "testName" parameter
 }
-
-TEST_MAIN(
-    TEST_CHECK(DoRunnable1DTest);
-    TEST_CHECK(Runnable1DWithCopiesTest);
-    )

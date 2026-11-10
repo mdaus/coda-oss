@@ -299,21 +299,6 @@ std::string sys::OSUnix::operator[](const std::string& s) const
     return getEnv(s);
 }
 
-std::string sys::OSUnix::getEnv(const std::string& s) const
-{
-    const char* envVal = getenv(s.c_str());
-    if (envVal == nullptr)
-        throw sys::SystemException(
-            Ctxt("Unable to get unix environment variable " + s));
-    return std::string(envVal);
-}
-
-bool sys::OSUnix::isEnvSet(const std::string& s) const
-{
-    const char* envVal = getenv(s.c_str());
-    return envVal != nullptr;
-}
-
 void sys::OSUnix::setEnv(const std::string& var,
                          const std::string& val,
                          bool overwrite)

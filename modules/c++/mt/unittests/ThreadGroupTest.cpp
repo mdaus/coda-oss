@@ -49,7 +49,7 @@ struct MyRunTask final : public sys::Runnable
     }
 };
 
-TEST_CASE(DoThreadGroupTest)
+TEST_CASE("DoThreadGroupTest")
 {
     auto threads = new mt::ThreadGroup();
     std::atomic_int state(1);
@@ -78,7 +78,7 @@ TEST_CASE(DoThreadGroupTest)
     TEST_ASSERT_EQ(numDeleted, 3);
 }
 
-TEST_CASE(PinToCPUTest)
+TEST_CASE("PinToCPUTest")
 {
     bool defaultValue;
 #if defined(MT_DEFAULT_PINNING)
@@ -103,8 +103,3 @@ TEST_CASE(PinToCPUTest)
     mt::ThreadGroup threads3;
     TEST_ASSERT_EQ(threads3.isPinToCPUEnabled(), false);
 }
-
-TEST_MAIN(
-    TEST_CHECK(DoThreadGroupTest);
-    TEST_CHECK(PinToCPUTest);
-)

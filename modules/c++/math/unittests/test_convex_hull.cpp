@@ -24,7 +24,7 @@
 #include <sys/Conf.h>
 #include "TestCase.h"
 
-TEST_CASE(testConvexHull)
+TEST_CASE("testConvexHull")
 {
     // Add in all the points
     std::vector<types::RowCol<sys::Int64_T> > inputPoints;
@@ -74,7 +74,3 @@ TEST_CASE(testConvexHull)
         TEST_ASSERT_EQ(convexHull[ii].col, expectedConvexHull[ii].col);
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testConvexHull);
-)

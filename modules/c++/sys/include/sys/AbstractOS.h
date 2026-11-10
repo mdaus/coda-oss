@@ -106,6 +106,21 @@ constexpr auto getSIMDInstructionSet() {
     #endif // CODA_OSS_ENABLE_SIMD
 }
 
+/*! 
+ * \brief Standard library based method for retrieving env vars 
+ * \param s Environment variable to query
+ * \return Result of std::getenv(s) as string
+ * \throw sys::SystemException if variable is not set
+ */
+std::string getEnv(const std::string& name);
+
+/*! 
+ * \brief Standard library based method for checking env var existence
+ * \param s Environment variable to query
+ * \return boolean representing existence of environment variable
+ */
+bool isEnvSet(const std::string& name);
+
 /*!
  *  \class AbstractOS
  *  \brief Interface for system independent function calls
@@ -113,6 +128,7 @@ constexpr auto getSIMDInstructionSet() {
  *  The AbstractOS class defines the base for a system
  *  independent layer of function calls.
  */
+
 struct CODA_OSS_API AbstractOS
 {
     AbstractOS();
@@ -256,7 +272,10 @@ struct CODA_OSS_API AbstractOS
     /*!
      *  Get an environment variable
      */
-    virtual std::string getEnv(const std::string&) const = 0;
+    static std::string getEnv(const std::string& s)
+    {
+        return ::sys::getEnv(s);
+    }
 
     // Get a "speical" enviroment variable such as $0 or $PWD.
     // See https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
@@ -266,7 +285,10 @@ struct CODA_OSS_API AbstractOS
     /*!
      *  Returns true if environment variable is set, false otherwise
      */
-    virtual bool isEnvSet(const std::string&) const = 0;
+    static bool isEnvSet(const std::string& s)
+    {
+        return ::sys::isEnvSet(s);
+    }
     bool isSpecialEnv(const std::string&) const;
 
 

@@ -25,26 +25,26 @@
 #include <limits>
 #include <std/numbers>
 
-TEST_CASE(testZero)
+TEST_CASE("testZero")
 {
    TEST_ASSERT_EQ(math::sign(0), 0);
    TEST_ASSERT_EQ(math::sign(0.0), 0);
 }
 
-TEST_CASE(testPositive)
+TEST_CASE("testPositive")
 {
     TEST_ASSERT_EQ(math::sign(1), 1);
     TEST_ASSERT_EQ(math::sign(0.3), 1);
     TEST_ASSERT_EQ(math::sign(std::numeric_limits<double>::epsilon()), 1);
 }
 
-TEST_CASE(testNegative)
+TEST_CASE("testNegative")
 {
     TEST_ASSERT_EQ(math::sign(-std::numeric_limits<double>::epsilon()), -1);
     TEST_ASSERT_EQ(math::sign(-0.1), -1);
 }
 
-TEST_CASE(testConstants)
+TEST_CASE("testConstants")
 {
     static auto pi = std::numbers::pi; // "Conditional expression is constant"
     TEST_ASSERT_EQ(pi, M_PI);
@@ -52,11 +52,3 @@ TEST_CASE(testConstants)
     static auto e = std::numbers::e;  // "Conditional expression is constant"
     TEST_ASSERT_EQ(e, M_E);
 }
-
-TEST_MAIN(
-    TEST_CHECK(testZero);
-    TEST_CHECK(testPositive);
-    TEST_CHECK(testNegative);
-    TEST_CHECK(testConstants);
-    )
-

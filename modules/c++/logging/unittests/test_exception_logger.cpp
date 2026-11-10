@@ -63,7 +63,7 @@ public:
     }
 };
 
-TEST_CASE(testExceptionLogger)
+TEST_CASE("testExceptionLogger")
 {
     logging::Logger log("test");
 
@@ -92,7 +92,7 @@ TEST_CASE(testExceptionLogger)
 #pragma warning(push)
 #pragma warning(disable : 4702)  // unreachable code
 #endif
-TEST_CASE(testExceptionWithBacktrace)
+TEST_CASE("testExceptionWithBacktrace")
 {
     const std::string getBacktrace("***** getBacktrace() *****");
     std::string s, what;
@@ -139,8 +139,3 @@ TEST_CASE(testExceptionWithBacktrace)
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
-
-TEST_MAIN(
-    TEST_CHECK(testExceptionLogger);
-    TEST_CHECK(testExceptionWithBacktrace);
-)
