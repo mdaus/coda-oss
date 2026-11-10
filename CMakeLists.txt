@@ -30,7 +30,7 @@ if (${CMAKE_PROJECT_NAME} STREQUAL coda-oss)
         include(CheckCompilerFlag)
         check_compiler_flag(CXX "-Wc++2a-compat" HAS_CPP20_FLAG)
         if (HAS_CPP20_FLAG)
-            add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wno-error=c++2a-compat>")
+            add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-Wno-c++2a-compat>")
         endif()
 
     endif()
