@@ -362,6 +362,7 @@ endfunction()
 #                     the current source directory. All source files beneath
 #                     this directory will be used. Each source file is assumed
 #                     to create a separate executable.
+#   TEST_LIB        - Library which provides test features, default TestCase
 #
 # Multi value arguments:
 #   DEPS            - Modules that the tests are dependent upon.
@@ -381,7 +382,7 @@ function(coda_add_tests)
         cmake_parse_arguments(
             ARG                         # prefix
             "UNITTEST"                  # options
-            "MODULE_NAME;DIRECTORY"     # single args
+            "MODULE_NAME;DIRECTORY;TEST_LIB"     # single args
             "DEPS;SOURCES;ARGS;FILTER_LIST"  # multi args
             "${ARGN}"
         )
@@ -408,13 +409,18 @@ function(coda_add_tests)
         # Filter out ignored files
         filter_files(local_tests "${local_tests}" "${ARG_FILTER_LIST}")
 
+        set(test_lib TestCase)
+        if (ARG_TEST_LIB)
+            set(test_lib ${ARG_TEST_LIB})
+        endif()
+
         # make a group target to build all tests for the current module
         set(test_group_tgt "${ARG_MODULE_NAME}_tests")
         if (NOT TARGET ${test_group_tgt})
             add_custom_target(${test_group_tgt})
         endif()
 
-        list(APPEND ARG_DEPS ${ARG_MODULE_NAME}-${TARGET_LANGUAGE} TestCase)
+        list(APPEND ARG_DEPS ${ARG_MODULE_NAME}-${TARGET_LANGUAGE} ${test_lib})
 
         # get all interface libraries and include directories from the dependencies
         foreach(dep ${ARG_DEPS})
@@ -449,6 +455,15 @@ function(coda_add_tests)
             # add unit tests to automatic test suite
             if (${ARG_UNITTEST})
                 add_test(NAME ${test_target} COMMAND ${test_target} ${ARG_ARGS})
+                # This is whacky, but provides a simple way to get fixed paths that certain tests rely on as opposed to
+                # the current approach of searching for folders like .git that may not exist.
+                set(env_BINARY_DIR "TEST_CASE_BINARY_DIR=$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>")
+                set(env_THIS_BINARY_DIR "TEST_CASE_THIS_BINARY_DIR=$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+                set(env_SOURCE_DIR "TEST_CASE_SOURCE_DIR=$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>")
+                set(env_THIS_SOURCE_DIR "TEST_CASE_THIS_SOURCE_DIR=$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+                set_tests_properties(${test_target} PROPERTIES 
+                    ENVIRONMENT "${env_BINARY_DIR};${env_THIS_BINARY_DIR};${env_SOURCE_DIR};${env_THIS_SOURCE_DIR}")
+
             endif()
 
             if (CODA_INSTALL_TESTS)
