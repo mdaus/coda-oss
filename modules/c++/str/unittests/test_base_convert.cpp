@@ -41,7 +41,7 @@
 // static std::string toString(const std::u32string& str) { return str::details::to_string(str::to_u8string(str)); };
 namespace 
 {
-    std::string w1252toString(const str::W1252string& str) { return str::testing::to_string(str); };
+    std::string w1252toString(const str::W1252string& str) { return str::testing::to_string(str); }
 }
 
 inline static void test_assert_eq(const std::u8string& actual, const std::u32string& expected)
