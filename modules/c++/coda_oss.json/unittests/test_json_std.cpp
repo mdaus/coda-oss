@@ -29,7 +29,7 @@
 using json = nlohmann::json;
 using namespace std;
 
-TEST_CASE(TestStdComplex)
+TEST_CASE("TestStdComplex")
 {
     complex<float> startVal(-1, 1);
     json expected = {{"real", startVal.real()}, {"imag", startVal.imag()}};
@@ -38,7 +38,7 @@ TEST_CASE(TestStdComplex)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-TEST_CASE(TestStdSharedVal)
+TEST_CASE("TestStdSharedVal")
 {
     shared_ptr<complex<float>> startVal(new complex<float>(-1, 1));
     json expected = {{"real", startVal->real()}, {"imag", startVal->imag()}};
@@ -47,7 +47,7 @@ TEST_CASE(TestStdSharedVal)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(*startVal == *deserialized);
 }
-TEST_CASE(TestStdSharedNull)
+TEST_CASE("TestStdSharedNull")
 {
     shared_ptr<complex<float>> startVal;
     json expected = nullptr;
@@ -56,7 +56,7 @@ TEST_CASE(TestStdSharedNull)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-TEST_CASE(TestStdUniqueVal)
+TEST_CASE("TestStdUniqueVal")
 {
     unique_ptr<complex<double>> startVal(new complex<double>(-1, 1));
     json expected = {{"real", startVal->real()}, {"imag", startVal->imag()}};
@@ -65,7 +65,7 @@ TEST_CASE(TestStdUniqueVal)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(*startVal == *deserialized);
 }
-TEST_CASE(TestStdUniqueNull)
+TEST_CASE("TestStdUniqueNull")
 {
     unique_ptr<complex<double>> startVal;
     json expected = nullptr;
@@ -74,7 +74,7 @@ TEST_CASE(TestStdUniqueNull)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-TEST_CASE(TestStdOptionVal)
+TEST_CASE("TestStdOptionVal")
 {
     optional<int> startVal(0);
     json expected = 0;
@@ -83,7 +83,7 @@ TEST_CASE(TestStdOptionVal)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-TEST_CASE(TestStdOptionEmpty)
+TEST_CASE("TestStdOptionEmpty")
 {
     optional<int> startVal;
     json expected = nullptr;
@@ -92,13 +92,3 @@ TEST_CASE(TestStdOptionEmpty)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-
-TEST_MAIN(
-    TEST_CHECK(TestStdComplex);
-    TEST_CHECK(TestStdSharedVal);
-    TEST_CHECK(TestStdSharedNull);
-    TEST_CHECK(TestStdUniqueVal);
-    TEST_CHECK(TestStdUniqueNull);
-    TEST_CHECK(TestStdOptionVal);
-    TEST_CHECK(TestStdOptionEmpty);
-)

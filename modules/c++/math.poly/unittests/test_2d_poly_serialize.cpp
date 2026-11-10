@@ -29,7 +29,7 @@
 namespace
 {
 
-TEST_CASE(testTwoDDoubleSerializeSquare)
+TEST_CASE("testTwoDDoubleSerializeSquare")
 {
     //! create the input object
     math::poly::TwoD<double> in(6, 6);
@@ -62,7 +62,7 @@ TEST_CASE(testTwoDDoubleSerializeSquare)
     }
 }
 
-TEST_CASE(testTwoDDoubleSerializeRect)
+TEST_CASE("testTwoDDoubleSerializeRect")
 {
     //! create the input object
     math::poly::TwoD<double> in(2, 12);
@@ -95,7 +95,7 @@ TEST_CASE(testTwoDDoubleSerializeRect)
     }
 }
 
-TEST_CASE(testTwoDIntSerializeSquare)
+TEST_CASE("testTwoDIntSerializeSquare")
 {
     //! create the input object
     math::poly::TwoD<int> in(5, 5);
@@ -128,7 +128,7 @@ TEST_CASE(testTwoDIntSerializeSquare)
 }
 
 
-TEST_CASE(testTwoDIntSerializeRect)
+TEST_CASE("testTwoDIntSerializeRect")
 {
     //! create the input object
     math::poly::TwoD<int> in(21, 3);
@@ -160,13 +160,4 @@ TEST_CASE(testTwoDIntSerializeRect)
     }
 }
 
-}
-
-int main(int argc, char** argv)
-{
-    srand(176);
-    TEST_CHECK(testTwoDDoubleSerializeSquare);
-    TEST_CHECK(testTwoDDoubleSerializeRect);
-    TEST_CHECK(testTwoDIntSerializeSquare);
-    TEST_CHECK(testTwoDIntSerializeRect);
 }

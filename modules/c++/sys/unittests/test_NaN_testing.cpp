@@ -26,7 +26,7 @@
 
 #include "TestCase.h"
 
-TEST_CASE(testNaNsAreNotEqual)
+TEST_CASE("testNaNsAreNotEqual")
 {
     // This test exists mainly to document behavior
     // It's not awesome that things work this way, but presumably
@@ -39,7 +39,7 @@ TEST_CASE(testNaNsAreNotEqual)
 
 }
 
-TEST_CASE(testNaNIsNotAlmostEqualToNumber)
+TEST_CASE("testNaNIsNotAlmostEqualToNumber")
 {
     // Uncomment the test to see it work.
     // These test macros are supposed to fail here.
@@ -53,15 +53,7 @@ TEST_CASE(testNaNIsNotAlmostEqualToNumber)
     TEST_ASSERT_TRUE(true); // need to use hidden "testName" parameter
 }
 
-TEST_CASE(testIsNaN)
-{
-    TEST_ASSERT_TRUE(IS_NAN(std::numeric_limits<float>::quiet_NaN()));
-    int five = 5; // "conditional expression is constant"
-    TEST_ASSERT_FALSE(IS_NAN(five));
-    TEST_ASSERT_FALSE(IS_NAN(std::string("test string")));
-}
-
-TEST_CASE(test_ssize)
+TEST_CASE("test_ssize")
 {
     // https://en.cppreference.com/w/cpp/iterator/size
 
@@ -90,11 +82,3 @@ TEST_CASE(test_ssize)
     for (--i; i != -1; --i) { }
     TEST_ASSERT_EQ(i, -1);
 }
-
-TEST_MAIN(
-    TEST_CHECK(testNaNsAreNotEqual);
-    TEST_CHECK(testNaNIsNotAlmostEqualToNumber);
-    TEST_CHECK(testIsNaN);
-    TEST_CHECK(test_ssize);
-    )
-

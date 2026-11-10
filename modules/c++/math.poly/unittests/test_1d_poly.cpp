@@ -55,7 +55,7 @@ void getRandValues(std::vector<double>& values)
     }
 }
 
-TEST_CASE(testScaleVariable)
+TEST_CASE("testScaleVariable")
 {
     std::vector<double> values;
     getRandValues(values);
@@ -78,7 +78,7 @@ TEST_CASE(testScaleVariable)
     }
 }
 
-TEST_CASE(testTruncateTo)
+TEST_CASE("testTruncateTo")
 {
     math::poly::OneD<double> poly(5);
     for (size_t ii = 0, coeff = 10; ii <= poly.order(); ++ii, coeff += 10)
@@ -93,7 +93,7 @@ TEST_CASE(testTruncateTo)
     TEST_ASSERT_EQ(truncatedPoly[2], 30.0);
 }
 
-TEST_CASE(testTruncateToNonZeros)
+TEST_CASE("testTruncateToNonZeros")
 {
     math::poly::OneD<double> poly(5);
     for (size_t ii = 0, coeff = 10; ii <= poly.order(); ++ii, coeff += 10)
@@ -124,7 +124,7 @@ TEST_CASE(testTruncateToNonZeros)
     }
 }
 
-TEST_CASE(testTransformInput)
+TEST_CASE("testTransformInput")
 {
     std::vector<double> values;
     getRandValues(values);
@@ -146,7 +146,7 @@ TEST_CASE(testTransformInput)
     }
 }
 
-TEST_CASE(testVelocity)
+TEST_CASE("testVelocity")
 {
     std::vector<double> values;
     getRandValues(values);
@@ -179,7 +179,7 @@ TEST_CASE(testVelocity)
     }
 }
 
-TEST_CASE(testAcceleration)
+TEST_CASE("testAcceleration")
 {
     std::vector<double> values;
     getRandValues(values);
@@ -217,12 +217,3 @@ TEST_CASE(testAcceleration)
         TEST_ASSERT_EQ(poly.acceleration(val), poly.derivative().derivative()(val));
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testScaleVariable);
-    TEST_CHECK(testTruncateTo);
-    TEST_CHECK(testTruncateToNonZeros);
-    TEST_CHECK(testTransformInput);
-    TEST_CHECK(testVelocity);
-    TEST_CHECK(testAcceleration);
-)

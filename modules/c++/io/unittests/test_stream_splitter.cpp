@@ -126,7 +126,7 @@ bool streamSplitterTestRunner(size_t numLines,
     return compareStringSequence(inputLines, outputLines);
 }
 
-TEST_CASE(testStreamSplitter)
+TEST_CASE("testStreamSplitter")
 {
     std::vector<size_t> lineCounts;
     lineCounts.push_back(1);
@@ -196,7 +196,7 @@ TEST_CASE(testStreamSplitter)
 
 }
 
-TEST_CASE(testStreamSplitterEmpty)
+TEST_CASE("testStreamSplitterEmpty")
 {
     // empty stream should return 1 empty token
     std::string substring;
@@ -216,7 +216,7 @@ TEST_CASE(testStreamSplitterEmpty)
     TEST_ASSERT(splitter.getNumBytesProcessed() == 0);
 }
 
-TEST_CASE(testStreamSplitterInputValidation)
+TEST_CASE("testStreamSplitterInputValidation")
 {
     // delimiter must be nonempty string
     TEST_EXCEPTION(streamSplitterTestRunner(10, 10, "", 2));
@@ -230,11 +230,4 @@ TEST_CASE(testStreamSplitterInputValidation)
 
     TEST_EXCEPTION(streamSplitterTestRunner(10, 10, "abc", 6));
     TEST_ASSERT(streamSplitterTestRunner(10, 10, "abc", 7));
-}
-
-int main(int, char**)
-{
-    TEST_CHECK(testStreamSplitterEmpty);
-    TEST_CHECK(testStreamSplitter);
-    TEST_CHECK(testStreamSplitterInputValidation);
 }

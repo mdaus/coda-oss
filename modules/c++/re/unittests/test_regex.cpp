@@ -24,7 +24,7 @@
 #include "TestCase.h"
 #include <map>
 
-TEST_CASE(testCompile)
+TEST_CASE("testCompile")
 {
     re::Regex rx;
     // test that an invalid regexp throws an exception
@@ -41,7 +41,7 @@ TEST_CASE(testCompile)
     }
 }
 
-TEST_CASE(testMatches)
+TEST_CASE("testMatches")
 {
     re::RegexMatch matches;
 
@@ -59,7 +59,7 @@ TEST_CASE(testMatches)
     TEST_ASSERT_EQ(matches[3], "");
 }
 
-TEST_CASE(testMatchOptional)
+TEST_CASE("testMatchOptional")
 {
     re::RegexMatch matches;
     re::Regex rx("([A-Za-z]+)://([^/?#:]+)(?::(\\d+))?(/[^?#:]+)?(?:[?]([^&#/]+(?:[&;][^&;#/]+)*)?)?(?:[#](.*))?");
@@ -88,14 +88,14 @@ TEST_CASE(testMatchOptional)
     TEST_ASSERT_EQ(matches[6], "");
 }
 
-TEST_CASE(testSearch)
+TEST_CASE("testSearch")
 {
     re::Regex rx("ju.");
     std::string result = rx.search("arabsdsarbjudarc34ardnjfsdveqvare3arfarg");
     TEST_ASSERT_EQ(result, "jud");
 }
 
-TEST_CASE(testSearchAll)
+TEST_CASE("testSearchAll")
 {
     re::RegexMatch matches;
     re::Regex rx("ar");
@@ -125,7 +125,7 @@ TEST_CASE(testSearchAll)
     TEST_ASSERT_EQ(matches[0], "bar");
 }
 
-TEST_CASE(testSearchAllWithOverlap)
+TEST_CASE("testSearchAllWithOverlap")
 {
     re::RegexMatch matches;
     re::Regex rx("[aA]b[aA]");
@@ -142,7 +142,7 @@ TEST_CASE(testSearchAllWithOverlap)
     TEST_ASSERT_EQ(matches[6], "aba");
 }
 
-TEST_CASE(testSearchAllJokersWild)
+TEST_CASE("testSearchAllJokersWild")
 {
     re::RegexMatch matches;
     re::Regex rx1("....");
@@ -178,7 +178,7 @@ TEST_CASE(testSearchAllJokersWild)
     TEST_ASSERT_EQ(matches[8], "xxXX");
 }
 
-TEST_CASE(testDotAllFlag)
+TEST_CASE("testDotAllFlag")
 {
     // This should match "3.3", "3 4", and "4\n2"
     re::RegexMatch matches;
@@ -198,7 +198,7 @@ TEST_CASE(testDotAllFlag)
     TEST_ASSERT_EQ(matches[0], "3.3");
 }
 
-TEST_CASE(testMultilineBehavior)
+TEST_CASE("testMultilineBehavior")
 {
     // These tests were put in b/c std::regex treats ^/$ differently
     // in gcc and VS2015, and we want to make sure we've eliminated
@@ -240,7 +240,7 @@ TEST_CASE(testMultilineBehavior)
 #endif
 }
 
-TEST_CASE(testSub)
+TEST_CASE("testSub")
 {
     // Part of the intent here is to make sure we can handle strings
     // substituted that are longer or shorter than what they're
@@ -274,7 +274,7 @@ TEST_CASE(testSub)
     TEST_ASSERT_EQ(subst2, "foobar");
 }
 
-TEST_CASE(testSplit)
+TEST_CASE("testSplit")
 {
     re::Regex rx1("ar");
     std::vector<std::string> vec;
@@ -339,7 +339,7 @@ TEST_CASE(testSplit)
 }
 
 // This was copied out of re/tests/RegexTest3.cpp
-TEST_CASE(testHttpResponse)
+TEST_CASE("testHttpResponse")
 {
     const char
         *request =
@@ -494,18 +494,3 @@ TEST_CASE(testHttpResponse)
     TEST_ASSERT_EQ(p.getContentType(), "application/x-www-form-urlencoded");
     TEST_ASSERT_EQ(p.getContentLength(), "96");
 }
-
-TEST_MAIN(
-    TEST_CHECK(testCompile);
-    TEST_CHECK(testMatches);
-    TEST_CHECK(testMatchOptional);
-    TEST_CHECK(testSearch);
-    TEST_CHECK(testSearchAll);
-    TEST_CHECK(testSearchAllWithOverlap);
-    TEST_CHECK(testSearchAllJokersWild);
-    TEST_CHECK(testDotAllFlag);
-    TEST_CHECK(testMultilineBehavior);
-    TEST_CHECK(testSub);
-    TEST_CHECK(testSplit);
-    TEST_CHECK(testHttpResponse);
-    )

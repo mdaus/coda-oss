@@ -29,7 +29,7 @@
 namespace
 {
 
-TEST_CASE(testVectorDoubleSerialize)
+TEST_CASE("testVectorDoubleSerialize")
 {
     //! create the input object
     math::linear::Vector<double> in(5, 1.);
@@ -56,7 +56,7 @@ TEST_CASE(testVectorDoubleSerialize)
     }
 }
 
-TEST_CASE(testVectorFloatSerialize)
+TEST_CASE("testVectorFloatSerialize")
 {
     //! create the input object
     math::linear::Vector<float> in(4, 1.f);
@@ -83,7 +83,7 @@ TEST_CASE(testVectorFloatSerialize)
     }
 }
 
-TEST_CASE(testVectorIntSerialize)
+TEST_CASE("testVectorIntSerialize")
 {
     //! create the input object
     math::linear::Vector<int> in(15, 1);
@@ -109,12 +109,4 @@ TEST_CASE(testVectorIntSerialize)
     }
 }
 
-}
-
-int main(int argc, char** argv)
-{
-    srand(176);
-    TEST_CHECK(testVectorDoubleSerialize);
-    TEST_CHECK(testVectorFloatSerialize);
-    TEST_CHECK(testVectorIntSerialize);
 }

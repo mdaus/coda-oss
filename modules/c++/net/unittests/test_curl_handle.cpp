@@ -40,7 +40,7 @@ static bool headerExists(const std::vector<std::string>& headers, const std::str
 }
 }
 
-TEST_CASE(testSetHttpHeaders)
+TEST_CASE("testSetHttpHeaders")
 {
     net::CurlHandle handle;
     
@@ -83,7 +83,7 @@ TEST_CASE(testSetHttpHeaders)
 }
 
 // Test that setPutRequest doesn't throw
-TEST_CASE(testSetPutRequest)
+TEST_CASE("testSetPutRequest")
 {
     net::CurlHandle handle;
     handle.setPutRequest();
@@ -92,7 +92,7 @@ TEST_CASE(testSetPutRequest)
 }
 
 // Test combining setPutRequest with setHttpHeaders
-TEST_CASE(testSetPutRequestWithHeaders)
+TEST_CASE("testSetPutRequestWithHeaders")
 {
     net::CurlHandle handle;
     std::vector<std::string> headers{
@@ -114,7 +114,7 @@ TEST_CASE(testSetPutRequestWithHeaders)
 }
 
 // Test that multiple handles can be configured independently
-TEST_CASE(testMultipleHandlesIndependent)
+TEST_CASE("testMultipleHandlesIndependent")
 {
     net::CurlHandle handle1;
     net::CurlHandle handle2;
@@ -140,7 +140,7 @@ TEST_CASE(testMultipleHandlesIndependent)
 }
 
 // Test that calling setHttpHeaders multiple times properly replaces headers
-TEST_CASE(testSetHeadersMultipleTimes)
+TEST_CASE("testSetHeadersMultipleTimes")
 {
     net::CurlHandle handle;
     
@@ -166,12 +166,4 @@ TEST_CASE(testSetHeadersMultipleTimes)
     TEST_ASSERT_FALSE(headerExists(headers, "X-Second: 2"));
     TEST_ASSERT_FALSE(headerExists(headers, "X-First: 1"));
 }
-
-TEST_MAIN(
-    TEST_CHECK(testSetHttpHeaders);
-    TEST_CHECK(testSetPutRequest);
-    TEST_CHECK(testSetPutRequestWithHeaders);
-    TEST_CHECK(testMultipleHandlesIndependent);
-    TEST_CHECK(testSetHeadersMultipleTimes);
-)
 #endif

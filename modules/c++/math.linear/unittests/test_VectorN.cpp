@@ -26,7 +26,7 @@
 
 using namespace math::linear;
 
-TEST_CASE(testDefaultConstructor)
+TEST_CASE("testDefaultConstructor")
 {
     // Solaris doesn't like arrays of zero size unless you use -features=zla,
     // so I've omitted this test.
@@ -41,7 +41,7 @@ TEST_CASE(testDefaultConstructor)
 }
 
 
-TEST_CASE(testScalarConstructor)
+TEST_CASE("testScalarConstructor")
 {
     VectorN<3,double> v(42);
     TEST_ASSERT_EQ(v.size(), static_cast<size_t>(3));
@@ -51,7 +51,7 @@ TEST_CASE(testScalarConstructor)
 }
 
 
-TEST_CASE(testRawConstructor)
+TEST_CASE("testRawConstructor")
 {
     double raw[] = {1,2,3};
     VectorN<3,double> v(raw);
@@ -62,7 +62,7 @@ TEST_CASE(testRawConstructor)
 }
 
 
-TEST_CASE(testCopyConstructor)
+TEST_CASE("testCopyConstructor")
 {
     VectorN<3,double> vsrc;
     vsrc[0] = 1;
@@ -80,7 +80,7 @@ TEST_CASE(testCopyConstructor)
 }
 
 
-TEST_CASE(testStdVectorConstructor)
+TEST_CASE("testStdVectorConstructor")
 {
     std::vector<double> stdvec{10, 11, 12};
 
@@ -100,7 +100,7 @@ TEST_CASE(testStdVectorConstructor)
 }
 
 
-TEST_CASE(testAssignmentOperator)
+TEST_CASE("testAssignmentOperator")
 {
     VectorN<2,double> vsrc;
     vsrc[0] = 42;
@@ -113,7 +113,7 @@ TEST_CASE(testAssignmentOperator)
 }
 
 
-TEST_CASE(testScalarAssignment)
+TEST_CASE("testScalarAssignment")
 {
     VectorN<5,double> v(123.456);
     TEST_ASSERT_EQ(v.size(), static_cast<size_t>(5));
@@ -130,7 +130,7 @@ TEST_CASE(testScalarAssignment)
 }
 
 
-TEST_CASE(testStdVectorAssignment)
+TEST_CASE("testStdVectorAssignment")
 {
     const std::vector<double> stdvec{10, 11, 12};
 
@@ -143,7 +143,7 @@ TEST_CASE(testStdVectorAssignment)
 }
 
 
-TEST_CASE(testDotProduct)
+TEST_CASE("testDotProduct")
 {
     VectorN<5,double> vd1(2);
     VectorN<5,double> vd2(3);
@@ -152,7 +152,7 @@ TEST_CASE(testDotProduct)
 }
 
 
-TEST_CASE(testNorm)
+TEST_CASE("testNorm")
 {
     const std::vector<double> stdvec{10, 11, 12};
 
@@ -164,7 +164,7 @@ TEST_CASE(testNorm)
 }
 
 
-TEST_CASE(testNormalize)
+TEST_CASE("testNormalize")
 {
     VectorN<4,double> vnorm(4.0);
     vnorm.normalize();
@@ -175,7 +175,7 @@ TEST_CASE(testNormalize)
 }
 
 
-TEST_CASE(testScale)
+TEST_CASE("testScale")
 {
     VectorN<2,double> vscale(4.0);
     vscale.scale(1.0 / 4.0);
@@ -183,7 +183,7 @@ TEST_CASE(testScale)
     TEST_ASSERT_EQ(vscale[1], 1.0);
 }
 
-TEST_CASE(testUnit)
+TEST_CASE("testUnit")
 {
     VectorN<4,double> v(4.0);
     VectorN<4,double> vunit = v.unit();
@@ -197,7 +197,7 @@ TEST_CASE(testUnit)
     TEST_ASSERT_EQ(vunit[3], 0.5);
 }
 
-TEST_CASE(testOperatorPlusEquals)
+TEST_CASE("testOperatorPlusEquals")
 {
     VectorN<3,double> v1(1);
     VectorN<3,double> v2(-1);
@@ -217,7 +217,7 @@ TEST_CASE(testOperatorPlusEquals)
 }
 
 
-TEST_CASE(testOperatorPlus)
+TEST_CASE("testOperatorPlus")
 {
     VectorN<3,double> v1(42);
     VectorN<3,double> v2(11);
@@ -243,7 +243,7 @@ TEST_CASE(testOperatorPlus)
 }
 
 
-TEST_CASE(testOperatorMinusEquals)
+TEST_CASE("testOperatorMinusEquals")
 {
     VectorN<5,double> v1(13);
     VectorN<5,double> v2(-5);
@@ -258,7 +258,7 @@ TEST_CASE(testOperatorMinusEquals)
 }
 
 
-TEST_CASE(testNegate)
+TEST_CASE("testNegate")
 {
     VectorN<3,double> X;
     VectorN<3,double> Y;
@@ -269,7 +269,7 @@ TEST_CASE(testNegate)
 }
 
 
-TEST_CASE(testAdd)
+TEST_CASE("testAdd")
 {
     VectorN<3,double> v1(2.4);
     VectorN<3,double> v2(1.4);
@@ -294,7 +294,7 @@ TEST_CASE(testAdd)
 }
 
 
-TEST_CASE(testSubtract)
+TEST_CASE("testSubtract")
 {
     VectorN<3,double> v1(2.4);
     VectorN<3,double> v2(1.4);
@@ -319,7 +319,7 @@ TEST_CASE(testSubtract)
 }
 
 
-TEST_CASE(testOperatorMinus)
+TEST_CASE("testOperatorMinus")
 {
     VectorN<4,double> v1;
     VectorN<4,double> v2;
@@ -345,7 +345,7 @@ TEST_CASE(testOperatorMinus)
 }
 
 
-TEST_CASE(testOperatorTimesEquals)
+TEST_CASE("testOperatorTimesEquals")
 {
     VectorN<4,double> v1;
     for (int i = 0; i < 4; i++)
@@ -363,7 +363,7 @@ TEST_CASE(testOperatorTimesEquals)
 }
 
 
-TEST_CASE(testOperatorTimesEqualsScalar)
+TEST_CASE("testOperatorTimesEqualsScalar")
 {
     VectorN<5,double> v1;
     for (int i = 0; i < 5; i++)
@@ -376,7 +376,7 @@ TEST_CASE(testOperatorTimesEqualsScalar)
 }
 
 
-TEST_CASE(testOperatorTimesScalar)
+TEST_CASE("testOperatorTimesScalar")
 {
     VectorN<5,double> v1;
     for (int i = 0; i < 5; i++)
@@ -390,7 +390,7 @@ TEST_CASE(testOperatorTimesScalar)
         TEST_ASSERT_EQ(v2[i], 2 * i);
 }
 
-TEST_CASE(testElementDivision)
+TEST_CASE("testElementDivision")
 {
     VectorN<3,double> numerator({0, 1, 2});
     VectorN<3,double> denominator({1, 2, 3});
@@ -401,7 +401,7 @@ TEST_CASE(testElementDivision)
     TEST_ASSERT_EQ(quotient[2], 2./3.);
 }
 
-TEST_CASE(testOperatorTimes)
+TEST_CASE("testOperatorTimes")
 {
     VectorN<3,double> v1, v2;
     for (int i = 0; i < 3; i++)
@@ -415,7 +415,7 @@ TEST_CASE(testOperatorTimes)
         TEST_ASSERT_EQ(v3[i], i * (i + 2));
 }
 
-TEST_CASE(testOperatorDivide)
+TEST_CASE("testOperatorDivide")
 {
     VectorN<3,double> v1, v2;
     for (int i = 0; i < 3; i++)
@@ -429,7 +429,7 @@ TEST_CASE(testOperatorDivide)
         TEST_ASSERT_EQ(v3[i], (i + 1.) / (i + 2.));
 }
 
-TEST_CASE(testMatVecProds)
+TEST_CASE("testMatVecProds")
 {
     MatrixMxN<3, 3, double> matrix({1, 0, 1,
                                     0, 2, 0,
@@ -442,32 +442,3 @@ TEST_CASE(testMatVecProds)
     TEST_ASSERT_EQ(vec * matrix, r_vm);
     TEST_ASSERT_EQ(matrix * vec, r_mv);
 }
-
-TEST_MAIN(
-    TEST_CHECK(testDefaultConstructor);
-    TEST_CHECK(testScalarConstructor);
-    TEST_CHECK(testRawConstructor);
-    TEST_CHECK(testCopyConstructor);
-    TEST_CHECK(testStdVectorConstructor);
-    TEST_CHECK(testAssignmentOperator);
-    TEST_CHECK(testScalarAssignment);
-    TEST_CHECK(testStdVectorAssignment);
-    TEST_CHECK(testDotProduct);
-    TEST_CHECK(testNorm);
-    TEST_CHECK(testNormalize);
-    TEST_CHECK(testUnit);
-    TEST_CHECK(testOperatorPlusEquals);
-    TEST_CHECK(testOperatorPlus);
-    TEST_CHECK(testOperatorMinus);
-    TEST_CHECK(testNegate);
-    TEST_CHECK(testAdd);
-    TEST_CHECK(testSubtract);
-    TEST_CHECK(testOperatorMinus);
-    TEST_CHECK(testOperatorTimesEquals);
-    TEST_CHECK(testOperatorTimesEqualsScalar);
-    TEST_CHECK(testOperatorTimesScalar);
-    TEST_CHECK(testElementDivision);
-    TEST_CHECK(testOperatorTimes);
-    TEST_CHECK(testOperatorDivide);
-    TEST_CHECK(testMatVecProds);
-)

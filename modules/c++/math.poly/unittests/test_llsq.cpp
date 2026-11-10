@@ -32,7 +32,7 @@ double diffSq(double lhs, double rhs)
     return (diff * diff);
 }
 
-TEST_CASE(test1DPolyfit)
+TEST_CASE("test1DPolyfit")
 {
     using namespace math::linear;
     using namespace math::poly;
@@ -69,7 +69,7 @@ TEST_CASE(test1DPolyfit)
     TEST_ASSERT_EQ(polyFromSTL, truth);
 }
 
-TEST_CASE(test1DPolyfitLarge)
+TEST_CASE("test1DPolyfitLarge")
 {
     using namespace math::linear;
     using namespace math::poly;
@@ -130,7 +130,7 @@ TEST_CASE(test1DPolyfitLarge)
     TEST_ASSERT_ALMOST_EQ_EPS(meanResidualErrorShifted, 0.0, 2.5e-7);
 }
 
-TEST_CASE(test2DPolyfit)
+TEST_CASE("test2DPolyfit")
 {
     using namespace math::linear;
     using namespace math::poly;
@@ -166,7 +166,7 @@ TEST_CASE(test2DPolyfit)
     TEST_ASSERT_EQ(poly, truth);
 }
 
-TEST_CASE(test2DPolyfitLarge)
+TEST_CASE("test2DPolyfitLarge")
 {
     using namespace math::linear;
     using namespace math::poly;
@@ -240,7 +240,7 @@ TEST_CASE(test2DPolyfitLarge)
     TEST_ASSERT_ALMOST_EQ(meanResidualError, 0.0);
 }
 
-TEST_CASE(testVectorValuedOrderChange)
+TEST_CASE("testVectorValuedOrderChange")
 {
     using namespace math::linear;
     using namespace math::poly;
@@ -348,11 +348,3 @@ TEST_CASE(testVectorValuedOrderChange)
         TEST_ASSERT_ALMOST_EQ(poly[2][2], 0.0);
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(test1DPolyfit);
-    TEST_CHECK(test1DPolyfitLarge);
-    TEST_CHECK(test2DPolyfit);
-    TEST_CHECK(test2DPolyfitLarge);
-    TEST_CHECK(testVectorValuedOrderChange);
-    )

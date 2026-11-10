@@ -26,7 +26,7 @@
 #include <types/RowCol.h>
 #include <types/PageRowCol.h>
 
-TEST_CASE(TestPageRowColSizeT)
+TEST_CASE("TestPageRowColSizeT")
 {
     // default constructor should initialize all to 0
     const types::PageRowCol<size_t> pageRowColDefault;
@@ -72,7 +72,7 @@ TEST_CASE(TestPageRowColSizeT)
     TEST_ASSERT(div == types::PageRowCol<size_t>(3, 2, 3));
 }
 
-TEST_CASE(TestPageRowColDouble)
+TEST_CASE("TestPageRowColDouble")
 {
     const types::PageRowCol<double> pageRowColA(3.1, 5.2, 11.3);
     const types::PageRowCol<double> pageRowColB(1.1, 2.2, 3.3);
@@ -113,8 +113,3 @@ TEST_CASE(TestPageRowColDouble)
     const types::PageRowCol<double> div = pageRowColA / pageRowColB;
     TEST_ASSERT(div == types::PageRowCol<double>(3.1 / 1.1, 5.2 / 2.2, 11.3 / 3.3));
 }
-
-TEST_MAIN(
-    TEST_CHECK(TestPageRowColSizeT);
-    TEST_CHECK(TestPageRowColDouble);
-    )

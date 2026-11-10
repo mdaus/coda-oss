@@ -57,7 +57,7 @@ static const std::vector<uint64_t>& make_origValues()
     return retval;
 }
 
-TEST_CASE(testThreadedByteSwap)
+TEST_CASE("testThreadedByteSwap")
 {
     const auto& origValues = make_origValues();
 
@@ -77,7 +77,7 @@ TEST_CASE(testThreadedByteSwap)
     }
 }
 
-TEST_CASE(test_transform_ByteSwap)
+TEST_CASE("test_transform_ByteSwap")
 {
     const auto& origValues = make_origValues();
 
@@ -103,7 +103,7 @@ TEST_CASE(test_transform_ByteSwap)
     }
 }
 
-TEST_CASE(test_Transform_par_ByteSwap)
+TEST_CASE("test_Transform_par_ByteSwap")
 {
     const auto& origValues = make_origValues();
 
@@ -131,10 +131,3 @@ TEST_CASE(test_Transform_par_ByteSwap)
         TEST_ASSERT_EQ(expected[ii], actual[ii]);
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testThreadedByteSwap);
-    TEST_CHECK(test_transform_ByteSwap);
-    TEST_CHECK(test_Transform_par_ByteSwap);
-    )
-     

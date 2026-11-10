@@ -23,7 +23,7 @@
 #include <mt/ThreadPlanner.h>
 #include "TestCase.h"
 
-TEST_CASE(GetThreadInfoTest)
+TEST_CASE("GetThreadInfoTest")
 {
     const size_t numThreads(16);
     const mt::ThreadPlanner planner(500, numThreads);
@@ -43,7 +43,7 @@ TEST_CASE(GetThreadInfoTest)
     }
 }
 
-TEST_CASE(GetNumThreadsThatWillBeUsedTest)
+TEST_CASE("GetNumThreadsThatWillBeUsedTest")
 {
     static const size_t NUM_ELEMENTS = 100;
 
@@ -77,8 +77,3 @@ TEST_CASE(GetNumThreadsThatWillBeUsedTest)
     const mt::ThreadPlanner planner7(NUM_ELEMENTS, 9999);
     TEST_ASSERT_EQ(planner7.getNumThreadsThatWillBeUsed(), static_cast<size_t>(100));
 }
-
-TEST_MAIN(
-    TEST_CHECK(GetThreadInfoTest);
-    TEST_CHECK(GetNumThreadsThatWillBeUsedTest);
-)

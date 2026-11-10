@@ -41,7 +41,7 @@ typedef math::linear::MatrixMxN<4, 4> Matrix4x4;
 typedef math::linear::VectorN<3> Vector3;
 typedef math::linear::VectorN<2> Vector2;
 
-TEST_CASE(testEquality)
+TEST_CASE("testEquality")
 {
     std::vector<double> v1(3, 3);
     math::linear::Vector<> v2(3, 3);
@@ -56,7 +56,7 @@ TEST_CASE(testEquality)
     TEST_ASSERT_EQ(v3, v2);
 }
 
-TEST_CASE(testPtrAssign)
+TEST_CASE("testPtrAssign")
 {
     std::vector<double> v1(3, 42);
     math::linear::Vector<> v2(v1.size(), &v1[0]);
@@ -67,7 +67,7 @@ TEST_CASE(testPtrAssign)
     TEST_ASSERT_EQ(v2, v3);
 }
 
-TEST_CASE(testSTLVectorAssign)
+TEST_CASE("testSTLVectorAssign")
 {
     std::vector<double> v1(3, 42);
     math::linear::Vector<> v2(v1);
@@ -78,13 +78,13 @@ TEST_CASE(testSTLVectorAssign)
     TEST_ASSERT_EQ(v2, v3);
 }
 
-TEST_CASE(testEmptyDim)
+TEST_CASE("testEmptyDim")
 {
     math::linear::Matrix2D<double> AScale(3, 0);
     TEST_ASSERT_TRUE(true); // need to use hidden "testName" parameter
 }
 
-TEST_CASE(testPtrDecorator)
+TEST_CASE("testPtrDecorator")
 {
     std::vector<double> v1(9, 1);
     math::linear::Matrix2D<double> AScale(3, 3, &v1[0], false);
@@ -97,14 +97,14 @@ TEST_CASE(testPtrDecorator)
         TEST_ASSERT_EQ(v1[i], v5[i]);
 }
 
-TEST_CASE(testPtrAdopt)
+TEST_CASE("testPtrAdopt")
 {
     // valgrind to ensure that we don't have a leak
     math::linear::Matrix2D<double> AScale(3, 3, new double[9], true);
     TEST_ASSERT_TRUE(true); // need to use hidden "testName" parameter
 }
 
-TEST_CASE(testArithmetic)
+TEST_CASE("testArithmetic")
 {
     auto A = math::linear::identityMatrix<double>(3);
     Matrix3x3 A2( &(A.get())[0] );
@@ -122,7 +122,7 @@ TEST_CASE(testArithmetic)
     TEST_ASSERT_EQ(b, x);
 }
 
-TEST_CASE(testLinear)
+TEST_CASE("testLinear")
 {
     double q[] = 
     {
@@ -160,7 +160,7 @@ TEST_CASE(testLinear)
     TEST_ASSERT_EQ(w3, zeros);
 }
 
-TEST_CASE(testNormalize)
+TEST_CASE("testNormalize")
 {
     double d[]  = {0.276922984960890, 0.046171390631154, 0.097131781235848};
     double n[]  = {0.932169641471869, 0.155420716185689, 0.326962016904922};
@@ -181,41 +181,3 @@ TEST_CASE(testNormalize)
     TEST_ASSERT_ALMOST_EQ(v1[1], truth[1]);
     TEST_ASSERT_ALMOST_EQ(v1[2], truth[2]);
 }
-
-TEST_MAIN(
-    TEST_CHECK(testEquality);
-    TEST_CHECK(testNormalize);
-    TEST_CHECK(testPtrAssign);
-    TEST_CHECK(testSTLVectorAssign);
-    TEST_CHECK(testEmptyDim);
-    TEST_CHECK(testPtrDecorator);
-    TEST_CHECK(testPtrAdopt);
-    TEST_CHECK(testArithmetic);
-    TEST_CHECK(testLinear);
-    /*
-    Matrix3x3 A = mx::identityMatrix<3, double>();
-    
-    Vector3 v3 = mx::constantVector<3, double>(1.2);
-
-    v3[2] = 2;
-    
-    std::cout << A * v3 << std::endl;
-
-
-    std::cout << v3 + v3 << std::endl;
-
-    v3.normalize();
-    std::cout << v3 << std::endl;
-    std::cout << v3.norm() << std::endl;
-
-    std::cout << v3 * 4.0 << std::endl;
-    
-    v3 = mx::constantVector<3, double>(0);
-    v3[0] = 1;
-
-    _V3 y = mx::constantVector<3, double>(0);
-    y[1] = 1;
-
-    std::cout << cross(v3, y) << std::endl;
-*/
-)

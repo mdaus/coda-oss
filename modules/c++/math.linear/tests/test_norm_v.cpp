@@ -26,7 +26,7 @@
 
 namespace
 {
-TEST_CASE(VaryingDimension)
+TEST_CASE("VaryingDimension")
 {
     // Test case1: Control variable--components values
     //               Varying the dimensions
@@ -73,7 +73,7 @@ double manualNormSq(const math::linear::Vector<double>& v)
 {
     return (v[0] * v[0]) + (v[1] * v[1]) + (v[2] * v[2]);
 }
-TEST_CASE(VaryingComponentVal)
+TEST_CASE("VaryingComponentVal")
 {
     // Test case: Control variable--dimension
     //             Varying each components value
@@ -120,10 +120,3 @@ TEST_CASE(VaryingComponentVal)
     TEST_ASSERT_ALMOST_EQ(expectedNorm4, actualNorm4);
 }
 }
-int main ()
-{
-    TEST_CHECK(VaryingDimension);
-    TEST_CHECK(VaryingComponentVal);
-    return 0;
-}
-

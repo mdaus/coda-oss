@@ -30,7 +30,7 @@
 
 using json = nlohmann::json;
 
-TEST_CASE(TestCloneablePtr)
+TEST_CASE("TestCloneablePtr")
 {
     using RC = types::RowCol<int>;
     RC val(-1, 1);
@@ -42,7 +42,7 @@ TEST_CASE(TestCloneablePtr)
     TEST_ASSERT(startVal == deserialized);
 }
 
-TEST_CASE(TestCopyablePtr)
+TEST_CASE("TestCopyablePtr")
 {
     int val = 42;
     mem::ScopedCopyablePtr<int> startVal(new int(val));
@@ -52,7 +52,7 @@ TEST_CASE(TestCopyablePtr)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-TEST_CASE(TestNullPtr)
+TEST_CASE("TestNullPtr")
 {
     mem::ScopedCopyablePtr<size_t> startVal;
     json expected = nullptr;
@@ -61,9 +61,3 @@ TEST_CASE(TestNullPtr)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-
-TEST_MAIN(
-    TEST_CHECK(TestCloneablePtr);
-    TEST_CHECK(TestCopyablePtr);
-    TEST_CHECK(TestNullPtr);
-)

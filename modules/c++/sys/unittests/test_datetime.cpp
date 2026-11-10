@@ -26,7 +26,7 @@
 
 #include "TestCase.h"
 
-TEST_CASE(testDefaultConstructor)
+TEST_CASE("testDefaultConstructor")
 {
     sys::OS os;
 
@@ -38,37 +38,37 @@ TEST_CASE(testDefaultConstructor)
     sys::LocalDateTime l2;
     sys::UTCDateTime u2;
 
-    TEST_ASSERT(l1.getMonth() >= 1 && l1.getMonth() <= 12);
-    TEST_ASSERT(l1.getDayOfMonth() >= 1 && l1.getDayOfMonth() <= 31);
-    TEST_ASSERT(l1.getDayOfWeek() >= 1 && l1.getDayOfWeek() <= 7);
-    TEST_ASSERT(l1.getDayOfYear() >= 1 && l1.getDayOfYear() <= 366);
-    TEST_ASSERT(l1.getHour() >= 0 && l1.getHour() <= 23);
-    TEST_ASSERT(l1.getMinute() >= 0 && l1.getMinute() <= 59);
-    TEST_ASSERT(l1.getSecond() >= 0 && l1.getSecond() < 60);
+    TEST_ASSERT((l1.getMonth() >= 1 && l1.getMonth() <= 12));
+    TEST_ASSERT((l1.getDayOfMonth() >= 1 && l1.getDayOfMonth() <= 31));
+    TEST_ASSERT((l1.getDayOfWeek() >= 1 && l1.getDayOfWeek() <= 7));
+    TEST_ASSERT((l1.getDayOfYear() >= 1 && l1.getDayOfYear() <= 366));
+    TEST_ASSERT((l1.getHour() >= 0 && l1.getHour() <= 23));
+    TEST_ASSERT((l1.getMinute() >= 0 && l1.getMinute() <= 59));
+    TEST_ASSERT((l1.getSecond() >= 0 && l1.getSecond() < 60));
 
-    TEST_ASSERT(u1.getMonth() >= 1 && u1.getMonth() <= 12);
-    TEST_ASSERT(u1.getDayOfMonth() >= 1 && u1.getDayOfMonth() <= 31);
-    TEST_ASSERT(u1.getDayOfWeek() >= 1 && u1.getDayOfWeek() <= 7);
-    TEST_ASSERT(u1.getDayOfYear() >= 1 && u1.getDayOfYear() <= 366);
-    TEST_ASSERT(u1.getHour() >= 0 && u1.getHour() <= 23);
-    TEST_ASSERT(u1.getMinute() >= 0 && u1.getMinute() <= 59);
-    TEST_ASSERT(u1.getSecond() >= 0 && u1.getSecond() < 60);
+    TEST_ASSERT((u1.getMonth() >= 1 && u1.getMonth() <= 12));
+    TEST_ASSERT((u1.getDayOfMonth() >= 1 && u1.getDayOfMonth() <= 31));
+    TEST_ASSERT((u1.getDayOfWeek() >= 1 && u1.getDayOfWeek() <= 7));
+    TEST_ASSERT((u1.getDayOfYear() >= 1 && u1.getDayOfYear() <= 366));
+    TEST_ASSERT((u1.getHour() >= 0 && u1.getHour() <= 23));
+    TEST_ASSERT((u1.getMinute() >= 0 && u1.getMinute() <= 59));
+    TEST_ASSERT((u1.getSecond() >= 0 && u1.getSecond() < 60));
 
-    TEST_ASSERT(l2.getMonth() >= 1 && l2.getMonth() <= 12);
-    TEST_ASSERT(l2.getDayOfMonth() >= 1 && l2.getDayOfMonth() <= 31);
-    TEST_ASSERT(l2.getDayOfWeek() >= 1 && l2.getDayOfWeek() <= 7);
-    TEST_ASSERT(l2.getDayOfYear() >= 1 && l2.getDayOfYear() <= 366);
-    TEST_ASSERT(l2.getHour() >= 0 && l2.getHour() <= 23);
-    TEST_ASSERT(l2.getMinute() >= 0 && l2.getMinute() <= 59);
-    TEST_ASSERT(l2.getSecond() >= 0 && l2.getSecond() < 60);
+    TEST_ASSERT((l2.getMonth() >= 1 && l2.getMonth() <= 12));
+    TEST_ASSERT((l2.getDayOfMonth() >= 1 && l2.getDayOfMonth() <= 31));
+    TEST_ASSERT((l2.getDayOfWeek() >= 1 && l2.getDayOfWeek() <= 7));
+    TEST_ASSERT((l2.getDayOfYear() >= 1 && l2.getDayOfYear() <= 366));
+    TEST_ASSERT((l2.getHour() >= 0 && l2.getHour() <= 23));
+    TEST_ASSERT((l2.getMinute() >= 0 && l2.getMinute() <= 59));
+    TEST_ASSERT((l2.getSecond() >= 0 && l2.getSecond() < 60));
 
-    TEST_ASSERT(u2.getMonth() >= 1 && u2.getMonth() <= 12);
-    TEST_ASSERT(u2.getDayOfMonth() >= 1 && u2.getDayOfMonth() <= 31);
-    TEST_ASSERT(u2.getDayOfWeek() >= 1 && u2.getDayOfWeek() <= 7);
-    TEST_ASSERT(u2.getDayOfYear() >= 1 && u2.getDayOfYear() <= 366);
-    TEST_ASSERT(u2.getHour() >= 0 && u2.getHour() <= 23);
-    TEST_ASSERT(u2.getMinute() >= 0 && u2.getMinute() <= 59);
-    TEST_ASSERT(u2.getSecond() >= 0 && u2.getSecond() < 60);
+    TEST_ASSERT((u2.getMonth() >= 1 && u2.getMonth() <= 12));
+    TEST_ASSERT((u2.getDayOfMonth() >= 1 && u2.getDayOfMonth() <= 31));
+    TEST_ASSERT((u2.getDayOfWeek() >= 1 && u2.getDayOfWeek() <= 7));
+    TEST_ASSERT((u2.getDayOfYear() >= 1 && u2.getDayOfYear() <= 366));
+    TEST_ASSERT((u2.getHour() >= 0 && u2.getHour() <= 23));
+    TEST_ASSERT((u2.getMinute() >= 0 && u2.getMinute() <= 59));
+    TEST_ASSERT((u2.getSecond() >= 0 && u2.getSecond() < 60));
 
     TEST_ASSERT(l1 == l1);
     TEST_ASSERT(l1 != l2);
@@ -76,7 +76,7 @@ TEST_CASE(testDefaultConstructor)
     TEST_ASSERT(l2 > l1);
 }
 
-TEST_CASE(testParameterizedConstructor)
+TEST_CASE("testParameterizedConstructor")
 {
     sys::UTCDateTime u1(0);
 
@@ -154,7 +154,7 @@ TEST_CASE(testParameterizedConstructor)
     TEST_ASSERT_EQ(u5.getSecond(), u4.getSecond());
 }
 
-static void testDateTimeDetails_(const std::string& testName, const tm& result, const sys::DateTime& dt)
+static void testDateTimeDetails_(const tm& result, const sys::DateTime& dt)
 {
     const auto ad = result.tm_year + 1900;  // "years since 1900"
     // this might break in 2038: https://en.wikipedia.org/wiki/Year_2038_problem
@@ -166,22 +166,22 @@ static void testDateTimeDetails_(const std::string& testName, const tm& result, 
     TEST_ASSERT_EQ(ad, dt.getYear());
     TEST_ASSERT_EQ(result.tm_yday + 1, dt.getDayOfYear());
 }
-TEST_CASE(testDateTimeDetails)
+TEST_CASE("testDateTimeDetails")
 {
     const time_t now = time(nullptr);
     {
         tm local;
         sys::DateTime::localtime(now, local);
-        testDateTimeDetails_(testName, local, sys::LocalDateTime());
+        testDateTimeDetails_(local, sys::LocalDateTime());
     }
     {
         tm global;
         sys::DateTime::gmtime(now, global);
-        testDateTimeDetails_(testName, global, sys::UTCDateTime());
+        testDateTimeDetails_(global, sys::UTCDateTime());
     }
 }
 
-TEST_CASE(testGetTimeInMillis)
+TEST_CASE("testGetTimeInMillis")
 {
     const sys::LocalDateTime lt;
     const auto result = lt.getTimeInMillis();
@@ -195,10 +195,3 @@ TEST_CASE(testGetTimeInMillis)
     constexpr auto far_into_the_future = February_02_2021 * 100.0;
     TEST_ASSERT_LESSER_EQ(result, far_into_the_future);
 }
-
-TEST_MAIN(
-    TEST_CHECK(testDefaultConstructor);
-    TEST_CHECK(testParameterizedConstructor);
-    TEST_CHECK(testDateTimeDetails);
-    TEST_CHECK(testGetTimeInMillis);
-)

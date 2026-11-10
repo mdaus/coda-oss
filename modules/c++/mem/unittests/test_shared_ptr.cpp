@@ -66,7 +66,7 @@ size_t cpp11Function(std::shared_ptr<Foo> foo)
     return foo->mVal;
 }
 
-TEST_CASE(testNullCopying)
+TEST_CASE("testNullCopying")
 {
     mem::SharedPtr<int> ptr1;
     TEST_ASSERT_EQ(ptr1.get(), static_cast<int *>(nullptr));
@@ -84,7 +84,7 @@ TEST_CASE(testNullCopying)
     TEST_ASSERT_EQ(ptr1.get(), static_cast<int *>(nullptr));
 }
 
-TEST_CASE(testAutoPtrConstructor)
+TEST_CASE("testAutoPtrConstructor")
 {
     int * const rawPtr(new int(89));
     std::unique_ptr<int> autoPtr(rawPtr);
@@ -96,7 +96,7 @@ TEST_CASE(testAutoPtrConstructor)
     TEST_ASSERT_EQ(getCount(ptr), 1);
 }
 
-TEST_CASE(testAutoPtrReset)
+TEST_CASE("testAutoPtrReset")
 {
     // Similar to the construction test,
     // except using the reset() that takes an auto_ptr
@@ -117,7 +117,7 @@ TEST_CASE(testAutoPtrReset)
     TEST_ASSERT_EQ(getCount(sharedPtr), 1);
 }
 
-TEST_CASE(testCopying)
+TEST_CASE("testCopying")
 {
     int * const rawPtr(new int(89));
     std::unique_ptr<mem::SharedPtr<int>> ptr3;
@@ -178,7 +178,7 @@ static std::shared_ptr<int> getIntSP()
     return std::make_shared<int>(314);
 }
 
-TEST_CASE(testAssigning)
+TEST_CASE("testAssigning")
 {
     int * const rawPtr(new int(89));
     mem::SharedPtr<int> ptr3;
@@ -259,7 +259,7 @@ TEST_CASE(testAssigning)
     }
 }
 
-TEST_CASE(testSyntax)
+TEST_CASE("testSyntax")
 {
     Foo* const rawPtr(new Foo(123));
     const mem::SharedPtr<Foo> ptr(rawPtr);
@@ -269,7 +269,7 @@ TEST_CASE(testSyntax)
     TEST_ASSERT_EQ(&(ptr->mVal), &(rawPtr->mVal));
 }
 
-TEST_CASE(testCasting)
+TEST_CASE("testCasting")
 {
     {
         // Test creating SharedPtr of base class from raw pointer of derived
@@ -335,7 +335,7 @@ TEST_CASE(testCasting)
     }
 }
 
-TEST_CASE(testStdSharedPtr)
+TEST_CASE("testStdSharedPtr")
 {
     const mem::SharedPtr<Foo> fooLegacy(new Foo(123));
     std::shared_ptr<Foo> fooCtor(fooLegacy);
@@ -346,14 +346,3 @@ TEST_CASE(testStdSharedPtr)
 
     TEST_ASSERT_EQ(cpp11Function(fooLegacy), static_cast<size_t>(123));
 }
-
-TEST_MAIN(
-   TEST_CHECK(testNullCopying);
-   TEST_CHECK(testAutoPtrConstructor);
-   TEST_CHECK(testAutoPtrReset);
-   TEST_CHECK(testCopying);
-   TEST_CHECK(testAssigning);
-   TEST_CHECK(testSyntax);
-   TEST_CHECK(testCasting);
-   TEST_CHECK(testStdSharedPtr);
-   )

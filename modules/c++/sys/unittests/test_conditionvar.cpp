@@ -27,7 +27,7 @@
 
 typedef mt::CriticalSection<sys::Mutex> CriticalSection;
 
-TEST_CASE(testDefaultConstructor)
+TEST_CASE("testDefaultConstructor")
 {
     sys::ConditionVar cond;
     TEST_SUCCESS;
@@ -39,7 +39,7 @@ TEST_CASE(testDefaultConstructor)
     TEST_SUCCESS;
 }
 
-TEST_CASE(testParameterizedConstructor)
+TEST_CASE("testParameterizedConstructor")
 {
     sys::Mutex mutex;
     TEST_SUCCESS;
@@ -54,7 +54,7 @@ TEST_CASE(testParameterizedConstructor)
     TEST_SUCCESS;
 }
 
-TEST_CASE(testMultipleTimeouts)
+TEST_CASE("testMultipleTimeouts")
 {
     sys::Mutex mutex;
     TEST_SUCCESS;
@@ -82,10 +82,3 @@ TEST_CASE(testMultipleTimeouts)
         TEST_SUCCESS;
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testDefaultConstructor);
-    TEST_CHECK(testParameterizedConstructor);
-    TEST_CHECK(testMultipleTimeouts);
-    )
-

@@ -26,7 +26,7 @@
 
 using json = nlohmann::json;
 
-TEST_CASE(TestVectorN)
+TEST_CASE("TestVectorN")
 {
     using VecI = math::linear::VectorN<2, int>;
     using VecD = math::linear::VectorN<3, double>;
@@ -49,7 +49,7 @@ TEST_CASE(TestVectorN)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal1 == deserialized1);
 }
-TEST_CASE(TestMatrixMxN)
+TEST_CASE("TestMatrixMxN")
 {
     using TwoXTwo = math::linear::MatrixMxN<2, 2, int>;
     using ThreeXTwo = math::linear::MatrixMxN<3, 2, int>;
@@ -76,7 +76,7 @@ TEST_CASE(TestMatrixMxN)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal2 == deserialized2);
 }
-TEST_CASE(TestPolyOneD)
+TEST_CASE("TestPolyOneD")
 {
     using OneD = math::poly::OneD<int>;
     std::vector<int> coeffs{0, 1, 2, 3};
@@ -87,7 +87,7 @@ TEST_CASE(TestPolyOneD)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-TEST_CASE(TestPolyTwoD)
+TEST_CASE("TestPolyTwoD")
 {
     using OneD = math::poly::OneD<double>;
     using TwoD = math::poly::TwoD<double>;
@@ -102,7 +102,7 @@ TEST_CASE(TestPolyTwoD)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-TEST_CASE(TestPolyXYZ)
+TEST_CASE("TestPolyXYZ")
 {
     using XYZ = math::linear::VectorN<3>;
     using OneDXYZ = math::poly::OneD<XYZ>;
@@ -115,7 +115,7 @@ TEST_CASE(TestPolyXYZ)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-TEST_CASE(TestPolyFixed1D)
+TEST_CASE("TestPolyFixed1D")
 {
     using Fixed1D = math::poly::Fixed1D<3, int>;
     std::vector<int> coeffs{0, 1, 2, 3};
@@ -126,7 +126,7 @@ TEST_CASE(TestPolyFixed1D)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-TEST_CASE(TestPolyFixed2D)
+TEST_CASE("TestPolyFixed2D")
 {
     using Fixed1D = math::poly::Fixed1D<2, double>;
     using Fixed2D = math::poly::Fixed2D<1, 2, double>;
@@ -141,12 +141,3 @@ TEST_CASE(TestPolyFixed2D)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-
-
-TEST_MAIN(
-    TEST_CHECK(TestVectorN);
-    TEST_CHECK(TestMatrixMxN);
-    TEST_CHECK(TestPolyOneD);
-    TEST_CHECK(TestPolyTwoD);
-    TEST_CHECK(TestPolyXYZ);
-)

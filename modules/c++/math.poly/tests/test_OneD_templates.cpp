@@ -27,7 +27,7 @@
 
 namespace
 {
-TEST_CASE(testInt)
+TEST_CASE("testInt")
 {
     math::poly::OneD<int> poly(2);
     poly[0] = 3;
@@ -47,7 +47,7 @@ TEST_CASE(testInt)
     TEST_ASSERT_EQ(order, static_cast<size_t>(1));
 }
 
-TEST_CASE(testDouble)
+TEST_CASE("testDouble")
 {
     math::poly::OneD<double> poly(2);
     poly[0] = 3.1;
@@ -67,7 +67,7 @@ TEST_CASE(testDouble)
     TEST_ASSERT_EQ(order, static_cast<size_t>(1));
 }
 
-TEST_CASE(testVector3)
+TEST_CASE("testVector3")
 {
     math::poly::OneD< math::linear::VectorN< 3, double > > poly(2);
     math::linear::VectorN< 3, double >& polyCoeffs0 = poly[0];
@@ -105,12 +105,4 @@ TEST_CASE(testVector3)
     const auto order = poly.order();
     TEST_ASSERT_EQ(order, static_cast<size_t>(1));
 }
-}
-
-int main()
-{
-    TEST_CHECK(testInt);
-    TEST_CHECK(testDouble);
-    TEST_CHECK(testVector3);
-    return 0;
 }

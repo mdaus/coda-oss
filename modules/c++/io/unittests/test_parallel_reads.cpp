@@ -27,11 +27,10 @@
 #include <iostream>
 #include <string>
 
-std::string thisExecutable;
-
-TEST_CASE(testParallelReads)
+TEST_CASE("testParallelReads")
 {
     // using self is easier than carting around extra files in the repo
+    auto thisExecutable = TestCase::get_this_binary_dir() / "test_parallel_reads";
     std::cout << "thisExecutable: " << thisExecutable << std::endl;
 
     // standard library read as a reference
@@ -75,11 +74,4 @@ TEST_CASE(testParallelReads)
     wasRead = fis.read(&multiThreadRead[0], avail);
     TEST_ASSERT_EQ(wasRead, avail);
     TEST_ASSERT_TRUE(referenceRead == multiThreadRead);
-}
-
-int main(int, char* argv[])
-{
-    thisExecutable = std::string(argv[0]);
-    TEST_CHECK(testParallelReads);
-    return 0;
 }

@@ -24,7 +24,7 @@
 #include <TestCase.h>
 #include <math/Utilities.h>
 
-TEST_CASE(testIsNaNOnWeirdNumbers)
+TEST_CASE("testIsNaNOnWeirdNumbers")
 {
     TEST_ASSERT(!math::isNaN(std::numeric_limits<double>::infinity()));
     TEST_ASSERT(!math::isNaN(std::numeric_limits<double>::epsilon()));
@@ -32,15 +32,8 @@ TEST_CASE(testIsNaNOnWeirdNumbers)
     TEST_ASSERT(!math::isNaN(std::numeric_limits<double>::min()));
 }
 
-TEST_CASE(testNaNs)
+TEST_CASE("testNaNs")
 {
     TEST_ASSERT(math::isNaN(std::numeric_limits<double>::quiet_NaN()));
     TEST_ASSERT(math::isNaN(std::numeric_limits<double>::signaling_NaN()));
 }
-
-
-TEST_MAIN(
-    TEST_CHECK(testIsNaNOnWeirdNumbers);
-    TEST_CHECK(testNaNs);
-    )
-

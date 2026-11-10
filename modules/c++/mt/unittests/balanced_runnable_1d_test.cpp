@@ -41,7 +41,7 @@ private:
     std::vector<size_t>& mGlobalWorkDone;
 };
 
-TEST_CASE(BalancedRunnable1DTestWorkDone)
+TEST_CASE("BalancedRunnable1DTestWorkDone")
 {
     const size_t numElements = 100000;
     const size_t initValue = 0;
@@ -63,7 +63,3 @@ TEST_CASE(BalancedRunnable1DTestWorkDone)
         }
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(BalancedRunnable1DTestWorkDone);
-)

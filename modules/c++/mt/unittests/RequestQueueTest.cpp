@@ -26,7 +26,7 @@
 
 namespace
 {
-TEST_CASE(PriorityEnqueue)
+TEST_CASE("PriorityEnqueue")
 {
     mt::RequestQueue<int> testSubject;
     testSubject.enqueue(1);
@@ -53,11 +53,4 @@ TEST_CASE(PriorityEnqueue)
     TEST_ASSERT_EQ(request, 3);
 }
 
-}
-
-int main(int, char**)
-{
-    TEST_CHECK(PriorityEnqueue);
-
-    return 0;
 }

@@ -29,7 +29,7 @@
 #include <TestCase.h>
 #include <string.h>
 
-TEST_CASE(testStringStream)
+TEST_CASE("testStringStream")
 {
     io::StringStream stream;
     stream.writeln("test");
@@ -56,7 +56,7 @@ TEST_CASE(testStringStream)
     TEST_ASSERT_EQ(std::string(buf), "test");
 }
 
-TEST_CASE(testByteStream)
+TEST_CASE("testByteStream")
 {
     io::ByteStream stream;
     stream.writeln("test");
@@ -112,7 +112,7 @@ TEST_CASE(testByteStream)
     }
 }
 
-TEST_CASE(testProxyOutputStream)
+TEST_CASE("testProxyOutputStream")
 {
     io::StringStream stream;
     io::ProxyOutputStream proxy(&stream);
@@ -123,7 +123,7 @@ TEST_CASE(testProxyOutputStream)
     TEST_ASSERT_EQ(std::string(buf), "test1");
 }
 
-TEST_CASE(testCountingOutputStream)
+TEST_CASE("testCountingOutputStream")
 {
     io::ByteStream stream;
     io::CountingOutputStream counter(&stream);
@@ -131,7 +131,7 @@ TEST_CASE(testCountingOutputStream)
     TEST_ASSERT_EQ(counter.getCount(), 5);
 }
 
-TEST_CASE(testBufferViewStream)
+TEST_CASE("testBufferViewStream")
 {
     {
         mem::BufferView<sys::ubyte> bufferView(nullptr, 0);
@@ -179,7 +179,7 @@ TEST_CASE(testBufferViewStream)
     }
 }
 
-TEST_CASE(testBufferViewIntStream)
+TEST_CASE("testBufferViewIntStream")
 {
     // Test for datatype with size > 1 to make sure copies are done correctly
     std::vector<int> data(4);
@@ -238,7 +238,7 @@ void cleanupFiles(std::string base)
         os.remove(base);
 }
 
-TEST_CASE(testRotate)
+TEST_CASE("testRotate")
 {
     std::string outFile = "test_rotate.txt";
     size_t maxFiles = 5;
@@ -273,7 +273,7 @@ TEST_CASE(testRotate)
     cleanupFiles( outFile);
 }
 
-TEST_CASE(testNeverRotate)
+TEST_CASE("testNeverRotate")
 {
     std::string outFile = "test_rotate.txt";
     cleanupFiles( outFile);
@@ -290,7 +290,7 @@ TEST_CASE(testNeverRotate)
     cleanupFiles( outFile);
 }
 
-TEST_CASE(testRotateReset)
+TEST_CASE("testRotateReset")
 {
     std::string outFile = "test_rotate.txt";
     cleanupFiles( outFile);
@@ -319,15 +319,3 @@ TEST_CASE(testRotateReset)
 
     cleanupFiles( outFile);
 }
-
-TEST_MAIN(
-    TEST_CHECK(testStringStream);
-    TEST_CHECK(testByteStream);
-    TEST_CHECK(testProxyOutputStream);
-    TEST_CHECK(testCountingOutputStream);
-    TEST_CHECK(testBufferViewStream);
-    TEST_CHECK(testBufferViewIntStream);
-    TEST_CHECK(testRotate);
-    TEST_CHECK(testNeverRotate);
-    TEST_CHECK(testRotateReset);
-    )

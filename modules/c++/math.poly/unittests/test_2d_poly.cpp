@@ -60,7 +60,7 @@ void getRandValues(std::vector<double>& xValues,
     }
 }
 
-TEST_CASE(testScaleVariable)
+TEST_CASE("testScaleVariable")
 {
     std::vector<double> xValues;
     std::vector<double> yValues;
@@ -100,7 +100,7 @@ TEST_CASE(testScaleVariable)
     }
 }
 
-TEST_CASE(testTruncateTo)
+TEST_CASE("testTruncateTo")
 {
     math::poly::TwoD<double> poly(4, 5);
     for (size_t ii = 0, coeff = 10; ii <= poly.orderX(); ++ii)
@@ -122,7 +122,7 @@ TEST_CASE(testTruncateTo)
     TEST_ASSERT_EQ(truncatedPoly[1][3], 100.0);
 }
 
-TEST_CASE(testTruncateToNonZeros)
+TEST_CASE("testTruncateToNonZeros")
 {
     math::poly::TwoD<double> poly(4, 5);
     for (size_t ii = 0, coeff = 10; ii <= poly.orderX(); ++ii)
@@ -212,7 +212,7 @@ TEST_CASE(testTruncateToNonZeros)
     TEST_ASSERT_EQ(truncatedPoly[0][0], 0.0);
 }
 
-TEST_CASE(testTransformInput)
+TEST_CASE("testTransformInput")
 {
     std::vector<double> xValues;
     std::vector<double> yValues;
@@ -250,7 +250,7 @@ TEST_CASE(testTransformInput)
     }
 }
 
-TEST_CASE(testOperators)
+TEST_CASE("testOperators")
 {
     math::poly::TwoD<double> p1(2, 2);
     math::poly::TwoD<double> p2(1, 3);
@@ -422,7 +422,7 @@ TEST_CASE(testOperators)
     TEST_ASSERT_FALSE(op != opEquals);
 }
 
-TEST_CASE(testIsScalar)
+TEST_CASE("testIsScalar")
 {
     math::poly::TwoD<double> p1(2, 2);
 
@@ -445,7 +445,7 @@ TEST_CASE(testIsScalar)
     TEST_ASSERT(p2.isScalar());
 }
 
-TEST_CASE(testAtY)
+TEST_CASE("testAtY")
 {
     math::poly::TwoD<double> p1(2, 2);
     // x^0*(1*y^0 2*y^1 3*y^2 )
@@ -488,14 +488,3 @@ TEST_CASE(testAtY)
     TEST_ASSERT_EQ(p4.atY(3)(2), p4(2, 3));
     TEST_ASSERT_EQ(p4.flipXY().atY(4)(5), p4(4, 5));
 }
-
-TEST_MAIN(
-    TEST_CHECK(testScaleVariable);
-    TEST_CHECK(testTruncateTo);
-    TEST_CHECK(testTruncateToNonZeros);
-    TEST_CHECK(testTransformInput);
-    TEST_CHECK(testOperators);
-    TEST_CHECK(testIsScalar);
-    TEST_CHECK(testAtY);
-    )
-

@@ -29,7 +29,7 @@
 namespace
 {
 
-TEST_CASE(testOneDDoubleSerialize)
+TEST_CASE("testOneDDoubleSerialize")
 {
     //! create the input object
     math::poly::OneD<double> in(6);
@@ -56,7 +56,7 @@ TEST_CASE(testOneDDoubleSerialize)
     }
 }
 
-TEST_CASE(testOneDFloatSerialize)
+TEST_CASE("testOneDFloatSerialize")
 {
     //! create the input object
     math::poly::OneD<float> in(13);
@@ -83,7 +83,7 @@ TEST_CASE(testOneDFloatSerialize)
     }
 }
 
-TEST_CASE(testOneDIntSerialize)
+TEST_CASE("testOneDIntSerialize")
 {
     //! create the input object
     math::poly::OneD<int> in(21);
@@ -109,12 +109,4 @@ TEST_CASE(testOneDIntSerialize)
     }
 }
 
-}
-
-int main(int argc, char** argv)
-{
-    srand(176);
-    TEST_CHECK(testOneDDoubleSerialize);
-    TEST_CHECK(testOneDFloatSerialize);
-    TEST_CHECK(testOneDIntSerialize);
 }

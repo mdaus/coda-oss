@@ -20,24 +20,13 @@
  *
  */
 
-#include "coda_oss_TestCase.h"
+#include "TestCase.h"
 
 #include <array>
 #include <ostream>
 
 #include "coda_oss/optional.h"
 
-namespace str
-{
-template <typename T>
-std::string toString(const coda_oss::optional<T>& value)
-{
-    return std::to_string(value.value());
-}
-}
-
-namespace
-{
 template <typename T>
 std::ostream& operator<<(std::ostream& s, const coda_oss::optional<T>& opt)
 {
@@ -53,7 +42,7 @@ std::ostream& operator<<(std::ostream& s, const coda_oss::optional<T>& opt)
 }
 
 template<typename TOptional>
-static void testOptional_(const std::string& testName, const TOptional& opt)
+static void testOptional_(const TOptional& opt)
 {
     const coda_oss::optional<int> null;
     TEST_ASSERT_FALSE(null.has_value());
@@ -87,7 +76,7 @@ static void testOptional_(const std::string& testName, const TOptional& opt)
     TEST_ASSERT_EQ(314, another);
 }
 
-TEST_CASE(test_sys_Optional)
+TEST_CASE("test_sys_Optional")
 {
     const coda_oss::optional<int> null;
     TEST_ASSERT_FALSE(null.has_value());
@@ -97,22 +86,20 @@ TEST_CASE(test_sys_Optional)
         TEST_ASSERT_FALSE(opt.has_value());
         TEST_ASSERT_EQ(null, opt);
         opt = 314;
-        testOptional_(testName, opt);
+        testOptional_(opt);
     }
     {
         coda_oss::optional<int> opt = 314;
-        testOptional_(testName, opt);
+        testOptional_(opt);
     }
     {
         auto opt = coda_oss::make_optional<int>(314);
-        testOptional_(testName, opt);
+        testOptional_(opt);
     }
 }
 
-TEST_CASE(test_coda_oss_optional)
+TEST_CASE("test_coda_oss_optional")
 {
-    TEST_ASSERT(!testName.empty());
-
     const coda_oss::optional<int> null;
     TEST_ASSERT_FALSE(null.has_value());
 
@@ -121,22 +108,14 @@ TEST_CASE(test_coda_oss_optional)
         TEST_ASSERT_FALSE(opt.has_value());
         TEST_ASSERT_EQ(null, opt);
         opt = 314;
-        testOptional_(testName, opt);
+        testOptional_(opt);
     }
     {
         coda_oss::optional<int> opt = 314;
-        testOptional_(testName, opt);
+        testOptional_(opt);
     }
     {
         auto opt = coda_oss::make_optional<int>(314);
-        testOptional_(testName, opt);
+        testOptional_(opt);
     }
-}
-}
-
-int main(int /*argc*/, char** /*argv*/)
-{
-    TEST_CHECK(test_sys_Optional);
-    TEST_CHECK(test_coda_oss_optional);
-    return 0;
 }

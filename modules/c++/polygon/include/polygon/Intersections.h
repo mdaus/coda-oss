@@ -26,7 +26,7 @@
 #include <algorithm>
 #include <cmath>
 #include <gsl/narrow>
-
+#include <sys/Conf.h>
 #include <types/RowCol.h>
 
 namespace polygon
