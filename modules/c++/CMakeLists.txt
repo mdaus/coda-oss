@@ -41,7 +41,7 @@ endif()
 
 # add an interface library for unittests
 add_library(TestCase INTERFACE)
-target_link_libraries(TestCase INTERFACE sys-c++ str-c++)
+target_link_libraries(TestCase INTERFACE std-c++)
 target_include_directories(TestCase INTERFACE
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:include>")
