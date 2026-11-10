@@ -18,3 +18,7 @@ coda_add_tests(
     DIRECTORY "unittests"
     DEPS mt-c++ std-c++
     UNITTEST)
+
+if (MSVC)
+    target_compile_options(sys-c++ PRIVATE /wd4996)
+endif()
