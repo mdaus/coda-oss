@@ -37,10 +37,11 @@
 
 #include "TestCase.h"
 
-
-// static std::string toString(const std::u32string& str) { return str::details::to_string(str::to_u8string(str)); };
 namespace 
 {
+    /* Doctest comparison calls toString, but in Convert.h that is deleted for W1252string.
+     *  Adding toString back in this file results in a definition conflict, so instead use this method
+     *  to convert a w1252string to std::string when we need to check results. */
     std::string w1252toString(const str::W1252string& str) { return str::testing::to_string(str); }
 }
 
