@@ -22,22 +22,18 @@
 
 #include <TestCase.h>
 #include <io/FileInputStreamOS.h>
-#include <io/TempFile.h>
 
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <random>
 
 TEST_CASE("testParallelReads")
 {
     io::TempFile tmpfile;
     std::ofstream ofs(tmpfile.pathname());
-    std::mt19937 generator(0);
-    std::uniform_int_distribution<size_t> dist(0, 9);
     for (size_t ii = 0; ii < 1000; ii++)
     {
-        ofs << dist(generator);
+        ofs << std::rand();
     }
     ofs.close();
     // standard library read as a reference

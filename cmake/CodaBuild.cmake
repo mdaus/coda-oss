@@ -457,12 +457,12 @@ function(coda_add_tests)
                 add_test(NAME ${test_target} COMMAND ${test_target} ${ARG_ARGS})
                 # This is whacky, but provides a simple way to get fixed paths that certain tests rely on as opposed to
                 # the current approach of searching for folders like .git that may not exist.
-                set(env_BINARY_DIR "TEST_CASE_BINARY_DIR=$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>")
-                set(env_THIS_BINARY_DIR "TEST_CASE_THIS_BINARY_DIR=$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
-                set(env_SOURCE_DIR "TEST_CASE_SOURCE_DIR=$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>")
-                set(env_THIS_SOURCE_DIR "TEST_CASE_THIS_SOURCE_DIR=$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+                cmake_path(NATIVE_PATH CMAKE_BINARY_DIR env_BINARY_DIR)
+                cmake_path(NATIVE_PATH CMAKE_CURRENT_BINARY_DIR env_THIS_BINARY_DIR)
+                cmake_path(NATIVE_PATH CMAKE_SOURCE_DIR env_SOURCE_DIR)
+                cmake_path(NATIVE_PATH CMAKE_CURRENT_SOURCE_DIR env_THIS_SOURCE_DIR)
                 set_tests_properties(${test_target} PROPERTIES 
-                    ENVIRONMENT "${env_BINARY_DIR};${env_THIS_BINARY_DIR};${env_SOURCE_DIR};${env_THIS_SOURCE_DIR}")
+                    ENVIRONMENT "TEST_CASE_BINARY_DIR=${env_BINARY_DIR};TEST_CASE_THIS_BINARY_DIR=${env_THIS_BINARY_DIR};TEST_CASE_SOURCE_DIR=${env_SOURCE_DIR};TEST_CASE_THIS_SOURCE_DIR=${env_THIS_SOURCE_DIR}")
 
             endif()
 
