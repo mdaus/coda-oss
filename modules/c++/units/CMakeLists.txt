@@ -9,3 +9,7 @@ coda_add_tests(
     DIRECTORY "unittests"
     DEPS sys-c++
     UNITTEST)
+
+if (MSVC)
+    target_compile_options(${MODULE_NAME}_tests PRIVATE /wd4244)
+endif()
