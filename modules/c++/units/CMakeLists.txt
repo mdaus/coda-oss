@@ -11,5 +11,5 @@ coda_add_tests(
     UNITTEST)
 
 if (MSVC)
-    target_compile_options(${MODULE_NAME}_tests PRIVATE /wd4244)
+    target_compile_options(${MODULE_NAME}_test_units PRIVATE /wd4244)
 endif()
