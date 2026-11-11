@@ -22,6 +22,7 @@
 
 #include <TestCase.h>
 #include <io/FileInputStreamOS.h>
+#include <io/TempFile.h>
 
 #include <fstream>
 #include <iostream>
