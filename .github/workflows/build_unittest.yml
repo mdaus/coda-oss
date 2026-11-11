@@ -5,6 +5,11 @@ name: build_unittest
 
 on:
   push:
+    branches:
+      - main
+      - 'develop/**'
+      - 'feature/**'
+      - 'release/**'
   pull_request:
     branches:
       - main
