@@ -22,19 +22,26 @@
 
 #include <TestCase.h>
 #include <io/FileInputStreamOS.h>
+#include <io/TempFile.h>
 
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <random>
 
 TEST_CASE("testParallelReads")
 {
-    // using self is easier than carting around extra files in the repo
-    auto thisExecutable = TestCase::get_this_binary_dir() / "test_parallel_reads";
-    std::cout << "thisExecutable: " << thisExecutable << std::endl;
-
+    io::TempFile tmpfile;
+    std::ofstream ofs(tmpfile.pathname());
+    std::mt19937 generator(0);
+    std::uniform_int_distribution<size_t> dist(0, 9);
+    for (size_t ii = 0; ii < 1000; ii++)
+    {
+        ofs << dist(generator);
+    }
+    ofs.close();
     // standard library read as a reference
-    std::ifstream from(thisExecutable, std::ios::binary);
+    std::ifstream from(tmpfile.pathname(), std::ios::binary);
     from.seekg(0, std::ios::end);
     size_t trueLen = from.tellg();
     from.seekg(0);
@@ -44,7 +51,7 @@ TEST_CASE("testParallelReads")
     from.close();
 
     // test FileInputStreamOS different ways
-    io::FileInputStreamOS fis(thisExecutable);
+    io::FileInputStreamOS fis(tmpfile.pathname());
 
     // ensure threading is disabled by default
     TEST_ASSERT_EQ(fis.getMaxReadThreads(), 1);
