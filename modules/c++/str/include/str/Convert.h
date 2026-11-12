@@ -128,11 +128,11 @@ inline std::string toString(const std::string& value)
     return value;
 }
 // Prevent the template above from getting used; instead, use routines from **Encoding.h**.
-std::string toString(const std::wstring&) = delete;
-std::string toString(const std::u16string&) = delete;
-std::string toString(const std::u32string&) = delete;
-std::string toString(const coda_oss::u8string&) = delete;
-std::string toString(const str::W1252string&) = delete;
+std::string toString(const std::wstring& str) = delete;
+std::string toString(const std::u16string& str) = delete;
+std::string toString(const std::u32string& str) = delete;
+std::string toString(const coda_oss::u8string& str) = delete;
+std::string toString(const str::W1252string& str) = delete;
 
 inline std::string toString(std::string::const_pointer pStr)
 {

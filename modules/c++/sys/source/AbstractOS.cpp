@@ -43,6 +43,22 @@ namespace fs = coda_oss::filesystem;
 
 namespace sys
 {
+
+std::string getEnv(const std::string& name)
+{
+    auto env = std::getenv(name.c_str());
+    if (env == nullptr)
+    {
+        throw sys::SystemException(Ctxt("Unable to get environment variable " + static_cast<std::string>(name)));
+    }
+    return std::string(env);
+}
+
+bool isEnvSet(const std::string& name)
+{
+    return (std::getenv(name.c_str()) != nullptr);
+}
+
 AbstractOS::AbstractOS() = default;
 
 AbstractOS::~AbstractOS() noexcept = default;

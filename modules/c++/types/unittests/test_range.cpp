@@ -25,7 +25,7 @@
 
 #include <types/Range.h>
 
-TEST_CASE(TestGetNumSharedElements)
+TEST_CASE("TestGetNumSharedElements")
 {
     const types::Range range(100, 50);
 
@@ -54,7 +54,7 @@ TEST_CASE(TestGetNumSharedElements)
     TEST_ASSERT_EQ(range.getNumSharedElements(100, 50), static_cast<size_t>(50));
 }
 
-TEST_CASE(TestTouches)
+TEST_CASE("TestTouches")
 {
     // Ranges do not overlap or touch -- touches(...) returns false
     {
@@ -97,7 +97,7 @@ TEST_CASE(TestTouches)
     }
 }
 
-TEST_CASE(TestSplit)
+TEST_CASE("TestSplit")
 {
     // Test splitting all elements
     {
@@ -141,9 +141,3 @@ TEST_CASE(TestSplit)
                        std::numeric_limits<size_t>::max());
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(TestGetNumSharedElements);
-    TEST_CHECK(TestTouches);
-    TEST_CHECK(TestSplit);
-    )

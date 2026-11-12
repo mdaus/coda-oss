@@ -40,7 +40,7 @@ private:
     std::vector<size_t>& mGlobalWorkDone;
 };
 
-TEST_CASE(WorkSharingBalancedRunnable1DTestWorkDone)
+TEST_CASE("WorkSharingBalancedRunnable1DTestWorkDone")
 {
     const size_t numElements = 100000;
     const size_t initValue = 0;
@@ -62,7 +62,7 @@ TEST_CASE(WorkSharingBalancedRunnable1DTestWorkDone)
     }
 }
 
-TEST_CASE(WorkSharingBalancedRunnable1DTestWorkDoneLessWorkThanThreads)
+TEST_CASE("WorkSharingBalancedRunnable1DTestWorkDoneLessWorkThanThreads")
 {
     const size_t numElements = 6;
     const size_t initValue = 0;
@@ -83,8 +83,3 @@ TEST_CASE(WorkSharingBalancedRunnable1DTestWorkDoneLessWorkThanThreads)
         }
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(WorkSharingBalancedRunnable1DTestWorkDone);
-    TEST_CHECK(WorkSharingBalancedRunnable1DTestWorkDoneLessWorkThanThreads);
-)

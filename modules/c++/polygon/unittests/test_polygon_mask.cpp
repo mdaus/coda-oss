@@ -29,7 +29,7 @@
 #include <polygon/DrawPolygon.h>
 #include <polygon/PolygonMask.h>
 
-TEST_CASE(testMarkAllTrue)
+TEST_CASE("testMarkAllTrue")
 {
     const polygon::PolygonMask mask(polygon::PolygonMask::MARK_ALL_TRUE,
                                     types::RowCol<size_t>(100, 200));
@@ -49,7 +49,7 @@ TEST_CASE(testMarkAllTrue)
     TEST_ASSERT(!mask.isInPolygon(100, 200));
 }
 
-TEST_CASE(testMarkAllFalse)
+TEST_CASE("testMarkAllFalse")
 {
     const polygon::PolygonMask mask(polygon::PolygonMask::MARK_ALL_FALSE,
                                     types::RowCol<size_t>(100, 200));
@@ -69,7 +69,7 @@ TEST_CASE(testMarkAllFalse)
     TEST_ASSERT(!mask.isInPolygon(100, 200));
 }
 
-TEST_CASE(testWithPoints)
+TEST_CASE("testWithPoints")
 {
     std::vector<types::RowCol<double> > points;
     points.push_back(types::RowCol<double>(400, 100));
@@ -99,7 +99,7 @@ TEST_CASE(testWithPoints)
     }
 }
 
-TEST_CASE(testWithMask)
+TEST_CASE("testWithMask")
 {
     std::vector<types::RowCol<double> > points;
     points.push_back(types::RowCol<double>(400, 100));
@@ -129,7 +129,7 @@ TEST_CASE(testWithMask)
     }
 }
 
-TEST_CASE(testWithAllFullRanges)
+TEST_CASE("testWithAllFullRanges")
 {
     std::vector<types::RowCol<double> > points;
     points.push_back(types::RowCol<double>(-100, -100));
@@ -144,7 +144,7 @@ TEST_CASE(testWithAllFullRanges)
     TEST_ASSERT_EQ(mask.getMarkMode(), polygon::PolygonMask::MARK_ALL_TRUE);
 }
 
-TEST_CASE(testWithAllEmptyRanges)
+TEST_CASE("testWithAllEmptyRanges")
 {
     // Test for a polygon that is fully outside of the chip,
     // but shares rows with the chip
@@ -161,7 +161,7 @@ TEST_CASE(testWithAllEmptyRanges)
     TEST_ASSERT_EQ(mask.getMarkMode(), polygon::PolygonMask::MARK_ALL_FALSE);
 }
 
-TEST_CASE(testWithPartialCutBotomLeft)
+TEST_CASE("testWithPartialCutBotomLeft")
 {
     // Test for a polygon that is partially outside of the chip, clipping
     // through only some rows/cols in the bottom-left.
@@ -194,7 +194,7 @@ TEST_CASE(testWithPartialCutBotomLeft)
     TEST_ASSERT_EQ(mask.getRange(5).mNumElements, static_cast<size_t>(4));
 }
 
-TEST_CASE(testWithPartialCutTopRight)
+TEST_CASE("testWithPartialCutTopRight")
 {
     // Test for a polygon that is partially outside of the chip, clipping
     // through only some rows/cols in the bottom-left.
@@ -227,7 +227,7 @@ TEST_CASE(testWithPartialCutTopRight)
     TEST_ASSERT_TRUE(mask.getRange(5).empty());
 }
 
-TEST_CASE(testWithNarrowPassthrough)
+TEST_CASE("testWithNarrowPassthrough")
 {
     // Test for a polygon that passes through the chip, leaving some rows
     // unmasked
@@ -268,15 +268,3 @@ TEST_CASE(testWithNarrowPassthrough)
     TEST_ASSERT_TRUE(mask.getRange(4).empty());
     TEST_ASSERT_TRUE(mask.getRange(5).empty());
 }
-
-TEST_MAIN(
-    TEST_CHECK(testMarkAllTrue);
-    TEST_CHECK(testMarkAllFalse);
-    TEST_CHECK(testWithPoints);
-    TEST_CHECK(testWithMask);
-    TEST_CHECK(testWithAllFullRanges);
-    TEST_CHECK(testWithAllEmptyRanges);
-    TEST_CHECK(testWithPartialCutBotomLeft);
-    TEST_CHECK(testWithPartialCutTopRight);
-    TEST_CHECK(testWithNarrowPassthrough);
-)

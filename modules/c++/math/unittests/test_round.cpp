@@ -27,7 +27,7 @@
 #include <TestCase.h>
 #include <math/Round.h>
 
-TEST_CASE(testFix)
+TEST_CASE("testFix")
 {
     float v1 = 12.3f;
     float expected1 = 12.0f;
@@ -70,7 +70,7 @@ TEST_CASE(testFix)
     TEST_ASSERT_ALMOST_EQ(actual8, expected8);
 }
 
-TEST_CASE(testRound)
+TEST_CASE("testRound")
 {
     float v1 = 12.49999f;
     float expected1 = 12.0f;
@@ -113,7 +113,7 @@ TEST_CASE(testRound)
     TEST_ASSERT_ALMOST_EQ(actual8, expected8);
 }
 
-TEST_CASE(testRoundDigits)
+TEST_CASE("testRoundDigits")
 {
     float v1 = 12.499994f;
     float expected1 = 12.49999f;
@@ -156,7 +156,7 @@ TEST_CASE(testRoundDigits)
     TEST_ASSERT_ALMOST_EQ(actual8, expected8);
 }
 
-TEST_CASE(testCeilingDivide)
+TEST_CASE("testCeilingDivide")
 {
     size_t n0 = 0;
     size_t d0 = 1;
@@ -174,10 +174,3 @@ TEST_CASE(testCeilingDivide)
     size_t d3 = 0;
     TEST_THROWS(math::ceilingDivide(n3, d3));
 }
-
-TEST_MAIN(
-    TEST_CHECK(testFix);
-    TEST_CHECK(testRound);
-    TEST_CHECK(testRoundDigits);
-    TEST_CHECK(testCeilingDivide);
-    )

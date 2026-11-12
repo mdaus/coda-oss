@@ -64,7 +64,7 @@ void getRandValues(std::vector<double>& xValues,
     }
 }
 
-TEST_CASE(testScaleVariable)
+TEST_CASE("testScaleVariable")
 {
     std::vector<double> xValues;
     std::vector<double> yValues;
@@ -103,7 +103,3 @@ TEST_CASE(testScaleVariable)
                                   std::abs(.01 * expectedValue));
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testScaleVariable);
-)

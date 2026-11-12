@@ -42,7 +42,7 @@ void cleanupFiles(std::string base)
         os.remove(base);
 }
 
-TEST_CASE(testRotate)
+TEST_CASE("testRotate")
 {
     std::string outFile = "test_rotate.txt";
     int maxFiles = 1;
@@ -70,7 +70,7 @@ TEST_CASE(testRotate)
     cleanupFiles( outFile);
 }
 
-TEST_CASE(testNeverRotate)
+TEST_CASE("testNeverRotate")
 {
     std::string outFile = "test_rotate.txt";
     cleanupFiles( outFile);
@@ -91,7 +91,7 @@ TEST_CASE(testNeverRotate)
     cleanupFiles( outFile);
 }
 
-TEST_CASE(testRotateReset)
+TEST_CASE("testRotateReset")
 {
     std::string outFile = "test_rotate.txt";
     cleanupFiles( outFile);
@@ -111,9 +111,3 @@ TEST_CASE(testRotateReset)
 
     cleanupFiles( outFile);
 }
-
-TEST_MAIN(
-    TEST_CHECK( testNeverRotate);
-    TEST_CHECK( testRotateReset);
-    TEST_CHECK( testRotate);
-    )

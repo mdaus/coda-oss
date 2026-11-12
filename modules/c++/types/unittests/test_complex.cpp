@@ -24,7 +24,7 @@
 
 #include <types/Complex.h>
 
-TEST_CASE(TestCxShort_abs)
+TEST_CASE("TestCxShort_abs")
 {
     constexpr auto real = 123;
     constexpr auto imag = -321;
@@ -53,7 +53,3 @@ TEST_CASE(TestCxShort_abs)
     // This intentionally doesn't compile.
     //const auto types::ComplexReal<short> ComplexReal_short;
 }
-
-TEST_MAIN(
-    TEST_CHECK(TestCxShort_abs);
-    )

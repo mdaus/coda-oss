@@ -58,7 +58,7 @@ void getRandValues(std::vector<double>& value)
     }
 }
 
-TEST_CASE(testScaleVariable)
+TEST_CASE("testScaleVariable")
 {
     std::vector<double> value;
     getRandValues(value);
@@ -81,7 +81,7 @@ TEST_CASE(testScaleVariable)
     }
 }
 
-TEST_CASE(testVelocity)
+TEST_CASE("testVelocity")
 {
     std::vector<double> values;
     getRandValues(values);
@@ -114,7 +114,7 @@ TEST_CASE(testVelocity)
     }
 }
 
-TEST_CASE(testAcceleration)
+TEST_CASE("testAcceleration")
 {
     std::vector<double> values;
     getRandValues(values);
@@ -152,9 +152,3 @@ TEST_CASE(testAcceleration)
         TEST_ASSERT_EQ(quarticPoly.acceleration(val), quarticPoly.derivative().derivative()(val));
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testScaleVariable);
-    TEST_CHECK(testVelocity);
-    TEST_CHECK(testAcceleration);
-)

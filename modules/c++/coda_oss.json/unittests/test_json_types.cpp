@@ -25,7 +25,7 @@
 
 using json = nlohmann::json;
 
-TEST_CASE(TestComplex)
+TEST_CASE("TestComplex")
 {
     types::Complex<int32_t> startVal(1, 2);
     json expected = {{"real", startVal.real()}, {"imag", startVal.imag()}};
@@ -34,7 +34,7 @@ TEST_CASE(TestComplex)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-TEST_CASE(TestRange)
+TEST_CASE("TestRange")
 {
     types::Range startVal(0, 10);
     json expected = {
@@ -45,7 +45,7 @@ TEST_CASE(TestRange)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-TEST_CASE(TestRangeList)
+TEST_CASE("TestRangeList")
 {
     types::RangeList startVal;
     types::Range r0(0, 10);
@@ -68,7 +68,7 @@ TEST_CASE(TestRangeList)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-TEST_CASE(TestRgAz)
+TEST_CASE("TestRgAz")
 {
     types::RgAz<double> startVal(0.0, 1.0);
     json expected = {{"rg", startVal.rg}, {"az", startVal.az}};
@@ -77,7 +77,7 @@ TEST_CASE(TestRgAz)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-TEST_CASE(TestRowCol)
+TEST_CASE("TestRowCol")
 {
     types::RowCol<float> startVal(0.0, 1.0);
     json expected = {{"row", startVal.row}, {"col", startVal.col}};
@@ -86,7 +86,7 @@ TEST_CASE(TestRowCol)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-TEST_CASE(TestPageRowCol)
+TEST_CASE("TestPageRowCol")
 {
     types::PageRowCol<uint32_t> startVal(0, 1, 2);
     json expected = {
@@ -99,12 +99,3 @@ TEST_CASE(TestPageRowCol)
     TEST_ASSERT(serialized == expected);
     TEST_ASSERT(startVal == deserialized);
 }
-
-TEST_MAIN(
-    TEST_CHECK(TestComplex);
-    TEST_CHECK(TestRange);
-    TEST_CHECK(TestRangeList);
-    TEST_CHECK(TestRgAz);
-    TEST_CHECK(TestRowCol);
-    TEST_CHECK(TestPageRowCol);
-)

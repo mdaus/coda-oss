@@ -28,7 +28,7 @@
 namespace
 {
 //Vector3D norm()--> normSq()
-TEST_CASE(VaryingDimension)
+TEST_CASE("VaryingDimension")
 {
     // Test case1: Control variable--components values
     //               Varying the dimensions
@@ -75,7 +75,7 @@ double manualNormSq(const math::linear::VectorN<3> v)
 {
     return (v[0] * v[0]) + (v[1] * v[1]) + (v[2] * v[2]);
 }
-TEST_CASE(VaryingComponentVal)
+TEST_CASE("VaryingComponentVal")
 {
     // Test case2: Control variable--dimension
     //             Varying each components value
@@ -122,11 +122,3 @@ TEST_CASE(VaryingComponentVal)
     TEST_ASSERT_ALMOST_EQ(expectedNorm8, actualNorm8);
 }
 }
-
-int main ()
-{
-    TEST_CHECK(VaryingDimension);
-    TEST_CHECK(VaryingComponentVal);
-    return 0;
-}
-

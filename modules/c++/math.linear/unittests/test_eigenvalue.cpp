@@ -27,7 +27,7 @@ typedef math::linear::Matrix2D<double> Matrix;
 typedef math::linear::Vector<double> Vector;
 typedef math::linear::Eigenvalue<double> Eigenvalue;
 
-TEST_CASE(testNonSymmetric)
+TEST_CASE("testNonSymmetric")
 {
     Matrix A(4, 4);
     A[0][0] = 28;  A[0][1] = 69;  A[0][2] = 44;  A[0][3] = 19;
@@ -57,7 +57,7 @@ TEST_CASE(testNonSymmetric)
     }
 }
 
-TEST_CASE(testSymmetric)
+TEST_CASE("testSymmetric")
 {
     Matrix A(4, 4);
     A[0][0] = 28;  A[0][1] = 69;  A[0][2] = 44;  A[0][3] = 82;
@@ -86,8 +86,3 @@ TEST_CASE(testSymmetric)
         }
     }
 }
-
-TEST_MAIN(
-    TEST_CHECK(testNonSymmetric);
-    TEST_CHECK(testSymmetric);
-    )

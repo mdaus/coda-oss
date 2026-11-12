@@ -22,20 +22,23 @@
 
 #include <TestCase.h>
 #include <io/FileInputStreamOS.h>
+#include <io/TempFile.h>
 
 #include <fstream>
 #include <iostream>
 #include <string>
 
-std::string thisExecutable;
-
-TEST_CASE(testParallelReads)
+TEST_CASE("testParallelReads")
 {
-    // using self is easier than carting around extra files in the repo
-    std::cout << "thisExecutable: " << thisExecutable << std::endl;
-
+    io::TempFile tmpfile;
+    std::ofstream ofs(tmpfile.pathname());
+    for (size_t ii = 0; ii < 1000; ii++)
+    {
+        ofs << std::rand();
+    }
+    ofs.close();
     // standard library read as a reference
-    std::ifstream from(thisExecutable, std::ios::binary);
+    std::ifstream from(tmpfile.pathname(), std::ios::binary);
     from.seekg(0, std::ios::end);
     size_t trueLen = from.tellg();
     from.seekg(0);
@@ -45,7 +48,7 @@ TEST_CASE(testParallelReads)
     from.close();
 
     // test FileInputStreamOS different ways
-    io::FileInputStreamOS fis(thisExecutable);
+    io::FileInputStreamOS fis(tmpfile.pathname());
 
     // ensure threading is disabled by default
     TEST_ASSERT_EQ(fis.getMaxReadThreads(), 1);
@@ -75,11 +78,4 @@ TEST_CASE(testParallelReads)
     wasRead = fis.read(&multiThreadRead[0], avail);
     TEST_ASSERT_EQ(wasRead, avail);
     TEST_ASSERT_TRUE(referenceRead == multiThreadRead);
-}
-
-int main(int, char* argv[])
-{
-    thisExecutable = std::string(argv[0]);
-    TEST_CHECK(testParallelReads);
-    return 0;
 }

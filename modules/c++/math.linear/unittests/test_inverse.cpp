@@ -23,7 +23,7 @@
 #include <math/linear/Matrix2D.h>
 #include "TestCase.h"
 
-TEST_CASE(testLeftRealProperties)
+TEST_CASE("testLeftRealProperties")
 {
     math::linear::Matrix2D<double> matrix(4, 2);
     matrix(0, 0) = 2;
@@ -50,7 +50,7 @@ TEST_CASE(testLeftRealProperties)
     TEST_ASSERT_EQ(inverse * yy, xx);
 }
 
-TEST_CASE(testRightRealProperties)
+TEST_CASE("testRightRealProperties")
 {
     math::linear::Matrix2D<double> matrix(4, 2);
     matrix(0, 0) = 2;
@@ -79,9 +79,3 @@ TEST_CASE(testRightRealProperties)
     const auto yy = xx * matrix;
     TEST_ASSERT_EQ(yy * inverse, xx);
 }
-
-TEST_MAIN(
-    TEST_CHECK(testLeftRealProperties);
-    TEST_CHECK(testRightRealProperties);
-    )
-

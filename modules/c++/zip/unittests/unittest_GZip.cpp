@@ -47,7 +47,7 @@ static std::string gz_to_txt(const std::filesystem::path& gz_path)
     return gz_path.stem().string() + pid + gz_path.extension().string() + ".txt";
 }
 
-TEST_CASE(gzip)
+TEST_CASE("gzip")
 {
     static const auto inputPath = find_unittest_file("text.txt");
 
@@ -86,7 +86,7 @@ TEST_CASE(gzip)
     remove(outputPath);
 }
 
-TEST_CASE(gunzip)
+TEST_CASE("gunzip")
 {
     static const auto inputPath = find_unittest_file("test.gz");
 
@@ -106,8 +106,3 @@ TEST_CASE(gunzip)
     
     remove(outputPath);
 }
-
-TEST_MAIN(
-    TEST_CHECK(gzip);
-    TEST_CHECK(gunzip);
-)

@@ -42,7 +42,7 @@ void createFile(const std::string& pathname)
     oss.close();
 }
 
-TEST_CASE(testRecursiveRemove)
+TEST_CASE("testRecursiveRemove")
 {
     // This assumes the user has write permissions in their current directory
     const sys::OS os;
@@ -72,7 +72,7 @@ TEST_CASE(testRecursiveRemove)
     TEST_ASSERT( !os.exists(subdir1) );
 }
 
-TEST_CASE(testForcefulMove)
+TEST_CASE("testForcefulMove")
 {
     // This assumes the user has write permissions in their current directory
     const sys::OS os;
@@ -109,7 +109,7 @@ TEST_CASE(testForcefulMove)
     TEST_ASSERT( !os.exists(subdir1) );
 }
 
-TEST_CASE(testEnvVariables)
+TEST_CASE("testEnvVariables")
 {
     sys::OS os;
     const std::string testvar = "TESTVARIABLE";
@@ -154,7 +154,7 @@ TEST_CASE(testEnvVariables)
     TEST_ASSERT_FALSE(os.isEnvSet(testvar));
 }
 
-TEST_CASE(testSplitEnv)
+TEST_CASE("testSplitEnv")
 {
     sys::OS os;
 
@@ -198,7 +198,7 @@ TEST_CASE(testSplitEnv)
 }
 
 template <typename TPath>
-static void testFsExtension_(const std::string& testName)
+static void testFsExtension_()
 {
     using fs_path = TPath;
 
@@ -236,17 +236,17 @@ static void testFsExtension_(const std::string& testName)
     filedottext = "/path.to/file";
     TEST_ASSERT_EQ("", filedottext.extension());
 }
-TEST_CASE(testFsExtension)
+TEST_CASE("testFsExtension")
 {
-    testFsExtension_<std::filesystem::path>(testName);
-    testFsExtension_<std::filesystem::path>(testName);
+    testFsExtension_<std::filesystem::path>();
+    testFsExtension_<std::filesystem::path>();
     #if CODA_OSS_lib_filesystem
-    testFsExtension_<std::filesystem::path>(testName);
+    testFsExtension_<std::filesystem::path>();
     #endif
 }
 
 template <typename TPath>
-static void testFsOutput_(const std::string& testName)
+static void testFsOutput_()
 {
     using fs_path = TPath;
 
@@ -258,12 +258,12 @@ static void testFsOutput_(const std::string& testName)
     const auto actual = ss.str();
     TEST_ASSERT_EQ(expected, actual);
 }
-TEST_CASE(testFsOutput)
+TEST_CASE("testFsOutput")
 {
-    testFsOutput_<std::filesystem::path>(testName);
-    testFsOutput_<std::filesystem::path>(testName);
+    testFsOutput_<std::filesystem::path>();
+    testFsOutput_<std::filesystem::path>();
     #if CODA_OSS_lib_filesystem
-    testFsOutput_<std::filesystem::path>(testName);
+    testFsOutput_<std::filesystem::path>();
     #endif
 }
 
@@ -279,7 +279,7 @@ static std::string h(bool& supported, std::vector<std::string>& frames)
 {
     return g(supported, frames);
 }
-TEST_CASE(testBacktrace)
+TEST_CASE("testBacktrace")
 {
     // These don't **have** to be the same; but it would be unusual for build scripts pass
     // different flags to these pieces ... and likely cause all kinds of weird problems.
@@ -333,7 +333,7 @@ TEST_CASE(testBacktrace)
     }
 }
 
-TEST_CASE(testSpecialEnvVars)
+TEST_CASE("testSpecialEnvVars")
 {
     const sys::OS os;
     const auto argv0 = os.getSpecialEnv("ARGV0");
@@ -385,7 +385,7 @@ TEST_CASE(testSpecialEnvVars)
     TEST_ASSERT_FALSE(result.empty());
 }
 
-TEST_CASE(testFsFileSize)
+TEST_CASE("testFsFileSize")
 {
     const sys::OS os;
     {
@@ -420,7 +420,7 @@ static sys::File makeFile_()
     return sys::make_File("$HOME" / dot_bashrc);
 #endif
 }
-TEST_CASE(test_makeFile)
+TEST_CASE("test_makeFile")
 {
   auto file = makeFile_();
   TEST_ASSERT_TRUE(file.isOpen());
@@ -446,14 +446,14 @@ static FILE* sys_fopen()
     return sys::fopen("$HOME" / dot_bashrc, mode);
 #endif
 }
-TEST_CASE(test_sys_fopen)
+TEST_CASE("test_sys_fopen")
 {
     auto fp = sys_fopen();
     TEST_ASSERT_NOT_NULL(fp);
     fclose(fp);
 }
 
-TEST_CASE(test_sys_fopen_failure)
+TEST_CASE("test_sys_fopen_failure")
 {
     static const std::string mode("r");
     static const std::filesystem::path name("does not exist . txt");
@@ -481,7 +481,7 @@ static int sys_open()
     return sys::open("$HOME" / dot_bashrc, flags);
 #endif
 }
-TEST_CASE(test_sys_open)
+TEST_CASE("test_sys_open")
 {
     auto fd = sys_open();
     TEST_ASSERT(fd > -1);
@@ -506,13 +506,13 @@ static std::ifstream make_ifstream_()
     return sys::make_ifstream("$HOME" / dot_bashrc);
 #endif
 }
-TEST_CASE(test_make_ifstream)
+TEST_CASE("test_make_ifstream")
 {
     const auto ifs = make_ifstream_();
     TEST_ASSERT_TRUE(ifs.is_open());
 }
 
-TEST_CASE(test_SIMD_Instructions)
+TEST_CASE("test_SIMD_Instructions")
 {
     const sys::OS os;
     const auto simdInstructionSet = os.getSIMDInstructionSet();
@@ -520,24 +520,5 @@ TEST_CASE(test_SIMD_Instructions)
     const auto isSSE2 = simdInstructionSet == sys::SIMDInstructionSet::SSE2;
     const auto isAVX2 = simdInstructionSet == sys::SIMDInstructionSet::AVX2;
     const auto isAVX512F = simdInstructionSet == sys::SIMDInstructionSet::AVX512F;
-    TEST_ASSERT(isSSE2 || isAVX2 || isAVX512F);
+    TEST_ASSERT((isSSE2 || isAVX2 || isAVX512F));
 }
-
-TEST_MAIN(
-    //sys::AbstractOS::setArgvPathname(argv[0]);
-    TEST_CHECK(testRecursiveRemove);
-    TEST_CHECK(testForcefulMove);
-    TEST_CHECK(testEnvVariables);
-    TEST_CHECK(testSplitEnv);
-    TEST_CHECK(testFsExtension);
-    TEST_CHECK(testFsOutput);
-    TEST_CHECK(testBacktrace);
-    TEST_CHECK(testSpecialEnvVars);
-    TEST_CHECK(testFsFileSize);
-    TEST_CHECK(test_makeFile);
-    TEST_CHECK(test_sys_fopen);
-    TEST_CHECK(test_sys_fopen_failure);
-    TEST_CHECK(test_sys_open);
-    TEST_CHECK(test_make_ifstream);
-    TEST_CHECK(test_SIMD_Instructions);
-    )

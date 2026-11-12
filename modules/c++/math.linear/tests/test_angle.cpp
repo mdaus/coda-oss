@@ -30,7 +30,7 @@
 
 namespace
 {
-TEST_CASE(testAngleVN)
+TEST_CASE("testAngleVN")
 {
     math::linear::VectorN<3> v1;
     v1[0] = 383; v1[1] = 886; v1[2] = 777;
@@ -112,7 +112,7 @@ TEST_CASE(testAngleVN)
     double actual10 = v19.angle(v20);
     TEST_ASSERT_ALMOST_EQ(actual10, expected10);
 }
-TEST_CASE(testAngleV)
+TEST_CASE("testAngleV")
 {
     math::linear::Vector<double> v1(3);
     v1[0] = 383; v1[1] = 886; v1[2] = 777;
@@ -194,10 +194,4 @@ TEST_CASE(testAngleV)
     double actual10 = v19.angle(v20);
     TEST_ASSERT_ALMOST_EQ(actual10, expected10);
 }
-}
-int main()
-{
-    TEST_CHECK(testAngleVN);
-    TEST_CHECK(testAngleV);
-    return 0;
 }

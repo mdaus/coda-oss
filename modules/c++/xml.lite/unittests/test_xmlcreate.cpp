@@ -38,7 +38,7 @@ static std::string print(const xml::lite::Element& element)
     return output.stream().str();
 }
 
-TEST_CASE(testXmlCreateRoot)
+TEST_CASE("testXmlCreateRoot")
 {
     using namespace xml::lite::literals;  // _q and _u for QName and Uri
 
@@ -56,7 +56,7 @@ TEST_CASE(testXmlCreateRoot)
     TEST_ASSERT_EQ("<documents>test</documents>", actual);
 }
 
-TEST_CASE(testXmlCreateNested)
+TEST_CASE("testXmlCreateNested")
 {  
     using namespace xml::lite::literals; // _q and _u for QName and Uri
 
@@ -95,7 +95,7 @@ TEST_CASE(testXmlCreateNested)
     TEST_ASSERT_EQ(expected1, actual);
 }
 
-TEST_CASE(testXmlCreateEmpty)
+TEST_CASE("testXmlCreateEmpty")
 {
     using namespace xml::lite::literals;  // _q and _u for QName and Uri
 
@@ -108,7 +108,7 @@ TEST_CASE(testXmlCreateEmpty)
     TEST_ASSERT_EQ("<empty/>", actual);
 }
 
-TEST_CASE(testXmlCreateWhitespace)
+TEST_CASE("testXmlCreateWhitespace")
 {
     using namespace xml::lite::literals;  // _q and _u for QName and Uri
 
@@ -143,12 +143,4 @@ TEST_CASE(testXmlCreateWhitespace)
         root.getCharacterData(actual);
         TEST_ASSERT(actual == text); // preserveCharacterData == true
     }
-}
-
-int main(int, char**)
-{
-    TEST_CHECK(testXmlCreateRoot);
-    TEST_CHECK(testXmlCreateNested);
-    TEST_CHECK(testXmlCreateEmpty);
-    TEST_CHECK(testXmlCreateWhitespace);
 }

@@ -64,7 +64,7 @@ private:
     const int mFinalVal;
 };
 
-TEST_CASE(testCopyConstructor)
+TEST_CASE("testCopyConstructor")
 {
     // Initialize the values
     Bar bar1;
@@ -88,7 +88,7 @@ TEST_CASE(testCopyConstructor)
     TEST_ASSERT_EQ(bar1.val3, 30);
 }
 
-TEST_CASE(testSharedCopyConstructor)
+TEST_CASE("testSharedCopyConstructor")
 {
     // Initialize the values
     Baz b1;
@@ -107,7 +107,7 @@ TEST_CASE(testSharedCopyConstructor)
     TEST_ASSERT_EQ(b1.val3, 30);
 }
 
-TEST_CASE(testAssignmentOperator)
+TEST_CASE("testAssignmentOperator")
 {
     // Initialize the values
     Bar bar1;
@@ -132,7 +132,7 @@ TEST_CASE(testAssignmentOperator)
     TEST_ASSERT_EQ(bar1.val3, 30);
 }
 
-TEST_CASE(testSharedAssignmentOperator)
+TEST_CASE("testSharedAssignmentOperator")
 {
     // Initialize the values
     Baz b1;
@@ -153,7 +153,7 @@ TEST_CASE(testSharedAssignmentOperator)
     TEST_ASSERT_EQ(b1.val3, 30);
 }
 
-TEST_CASE(testDestructor)
+TEST_CASE("testDestructor")
 {
     // When the ScopedCopyablePtr goes out of scope, it should delete the
     // pointer which will cause the AssignOnDestruct destructor to assign
@@ -168,7 +168,7 @@ TEST_CASE(testDestructor)
     TEST_ASSERT_EQ(val, 334);
 }
 
-TEST_CASE(testSyntax)
+TEST_CASE("testSyntax")
 {
     Foo* const rawPtr(new Foo());
     const mem::ScopedCopyablePtr<Foo> ptr(rawPtr);
@@ -178,7 +178,7 @@ TEST_CASE(testSyntax)
     TEST_ASSERT_EQ(&(ptr->val1), &(rawPtr->val1));
 }
 
-TEST_CASE(testEqualityOperator)
+TEST_CASE("testEqualityOperator")
 {
     mem::ScopedCopyablePtr<int> ptr1;
     mem::ScopedCopyablePtr<int> ptr2;
@@ -198,13 +198,3 @@ TEST_CASE(testEqualityOperator)
 
     TEST_ASSERT_FALSE(ptr1 != ptr2);
 }
-
-TEST_MAIN(
-    TEST_CHECK(testCopyConstructor);
-    TEST_CHECK(testSharedCopyConstructor);
-    TEST_CHECK(testAssignmentOperator);
-    TEST_CHECK(testSharedAssignmentOperator);    
-    TEST_CHECK(testDestructor);
-    TEST_CHECK(testSyntax);
-    TEST_CHECK(testEqualityOperator);
-    )

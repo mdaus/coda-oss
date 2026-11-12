@@ -309,6 +309,11 @@ std::uintmax_t fs::file_size(const fs::path& p)
     return gsl::narrow <std::uintmax_t>(path.length());
 }
 
+bool fs::is_empty(const fs::path& p)
+{
+    return p.string().empty();
+}
+
 bool fs::details::Equals(const path& lhs, const path& rhs) noexcept
 {
     return sys::Path::normalizePath(lhs.string()) == sys::Path::normalizePath(rhs.string());

@@ -23,8 +23,6 @@
 #include <math/linear/Line2D.h>
 #include <TestCase.h>
 
-namespace
-{
 double expectedDistToPt(const math::linear::Line2D& L,
         math::linear::Line2D::Point P)
 {
@@ -39,7 +37,7 @@ math::linear::Line2D::Point expectedOffSet(const math::linear::Line2D& L,
     P.col += distance * std::sin(theta);
     return P;
 }
-TEST_CASE(testVertical)
+TEST_CASE("testVertical")
 {
     math::linear::Line2D::Point P1(5,5);
     math::linear::Line2D::Point P2(5, 75);
@@ -239,7 +237,7 @@ TEST_CASE(testVertical)
     TEST_ASSERT_EQ(o2Actual6.row, o2Expected6.row);
     TEST_ASSERT_EQ(o2Actual6.col, o2Expected6.col);
 }
-TEST_CASE(testHorizontal)
+TEST_CASE("testHorizontal")
 {
     math::linear::Line2D::Point P1(6, 7.5);
     math::linear::Line2D::Point P2(2, 7.5);
@@ -402,7 +400,7 @@ TEST_CASE(testHorizontal)
     TEST_ASSERT_EQ(oActual6.col, oExpected6.col);
 }
 
-TEST_CASE(testNormal)
+TEST_CASE("testNormal")
 {
     math::linear::Line2D::Point P1(2.7, 6);
     math::linear::Line2D::Point P2(4, 1);
@@ -542,13 +540,4 @@ TEST_CASE(testNormal)
         TEST_ASSERT_EQ(actualO.row, expectedO.row);
         TEST_ASSERT_EQ(actualO.col, expectedO.col);
     }
-}
-}
-
-int main()
-{
-    TEST_CHECK(testVertical);
-    TEST_CHECK(testHorizontal);
-    TEST_CHECK(testNormal);
-    return 0;
 }

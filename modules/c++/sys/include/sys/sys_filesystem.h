@@ -143,6 +143,7 @@ CODA_OSS_API bool is_regular_file(const path& p);  // https://en.cppreference.co
 CODA_OSS_API bool is_directory(const path& p);  // https://en.cppreference.com/w/cpp/filesystem/is_directory
 CODA_OSS_API bool exists(const path& p);  // https://en.cppreference.com/w/cpp/filesystem/exists
 CODA_OSS_API std::uintmax_t file_size(const path& p); // https://en.cppreference.com/w/cpp/filesystem/file_size
+CODA_OSS_API bool is_empty(const path& p);  // https://en.cppreference.com/cpp/filesystem/is_empty
 
 }
 }

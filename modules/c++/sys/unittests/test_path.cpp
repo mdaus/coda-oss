@@ -48,7 +48,7 @@ static std::string find_directory(const std::vector<std::string>& paths)
     return "";
 }
 
-TEST_CASE(testPathMerge)
+TEST_CASE("testPathMerge")
 {
     const sys::OS os;
 
@@ -84,7 +84,7 @@ TEST_CASE(testPathMerge)
     TEST_ASSERT_EQ(result, path);
 }
 
-TEST_CASE(test_std_filesystem_is_absolute)
+TEST_CASE("test_std_filesystem_is_absolute")
 {
     std::filesystem::path path
 #ifdef _WIN32
@@ -140,7 +140,7 @@ TEST_CASE(test_std_filesystem_is_absolute)
     TEST_ASSERT_TRUE(url.is_relative());  // Should this be false?
 }
 
-TEST_CASE(testExpandEnvTilde)
+TEST_CASE("testExpandEnvTilde")
 {
     auto path = sys::Path::expandEnvironmentVariables("~");
     TEST_ASSERT_TRUE(coda_oss::filesystem::is_directory(path));
@@ -152,7 +152,7 @@ TEST_CASE(testExpandEnvTilde)
     TEST_ASSERT_TRUE(path.empty());
 }
 
-TEST_CASE(testExpandEnvTildePath)
+TEST_CASE("testExpandEnvTildePath")
 {
     sys::OS os;
     const std::vector<std::string> exts{"NTUSER.DAT", ".login", ".cshrc", ".bashrc"};
@@ -162,7 +162,7 @@ TEST_CASE(testExpandEnvTildePath)
     TEST_ASSERT_TRUE(coda_oss::filesystem::is_regular_file(path));
 }
 
-TEST_CASE(testExpandEnv)
+TEST_CASE("testExpandEnv")
 {
     sys::OS os;
     os.setEnv("CODA_OSS_test", "CODA_OSS_test", true /*overwrite*/);
@@ -213,13 +213,13 @@ TEST_CASE(testExpandEnv)
     TEST_ASSERT_EQ(result, "foo" + test + "-bar" + test + "BAR)");
 }
 
-TEST_CASE(testExpandEnvPathExists)
+TEST_CASE("testExpandEnvPathExists")
 {
     sys::OS os;
     #ifdef _WIN32
     const std::string does_not_exist(R"(Q:\Does\Not\Exist)");
     #else
-    const std::string does_not_exist(R"(/does/not/existt)");
+    const std::string does_not_exist(R"(/does/not/exist)");
     #endif
     std::vector<std::string> values{does_not_exist};
     os.prependEnv("PATH", values, true /*overwrite*/);
@@ -239,7 +239,7 @@ TEST_CASE(testExpandEnvPathExists)
     TEST_ASSERT_EQ(path3, path);
 }
 
-TEST_CASE(testExpandEnvPathMultiple)
+TEST_CASE("testExpandEnvPathMultiple")
 {
     sys::OS os;
 
@@ -284,7 +284,7 @@ TEST_CASE(testExpandEnvPathMultiple)
 }
 
 
-TEST_CASE(testModifyVar)
+TEST_CASE("testModifyVar")
 {
     const sys::OS os;
 
@@ -304,7 +304,7 @@ static std::string modifyEnv(const std::string& envVar, char op)
   const auto strExpand = "${" + envVar + "@" + op + "}";
   return sys::Path::expandEnvironmentVariables(strExpand, false /*checkIfExists*/);
 }
-TEST_CASE(testModifyVar2)
+TEST_CASE("testModifyVar2")
 {
     sys::OS os;
 
@@ -379,15 +379,18 @@ TEST_CASE(testModifyVar2)
     TEST_ASSERT_EQ(s, "file");
 }
 
-TEST_MAIN(
-    TEST_CHECK(testPathMerge);
-    TEST_CHECK(test_std_filesystem_is_absolute);
-    TEST_CHECK(testExpandEnvTilde);
-    TEST_CHECK(testExpandEnv);
-    TEST_CHECK(testExpandEnvTildePath);
-    TEST_CHECK(testExpandEnvPathExists);
-    TEST_CHECK(testExpandEnvPathMultiple);
-    TEST_CHECK(testModifyVar);
-    TEST_CHECK(testModifyVar2);
- )
+TEST_CASE("Check CMake environment vars")
+{
+    REQUIRE(sys::isEnvSet("TEST_CASE_BINARY_DIR"));
+    REQUIRE(sys::isEnvSet("TEST_CASE_THIS_BINARY_DIR"));
+    REQUIRE(sys::isEnvSet("TEST_CASE_SOURCE_DIR"));
+    REQUIRE(sys::isEnvSet("TEST_CASE_THIS_SOURCE_DIR"));
+}
 
+TEST_CASE("Check CMake environment functions")
+{
+    REQUIRE_FALSE(std::filesystem::is_empty(TestCase::get_top_binary_dir()));
+    REQUIRE_FALSE(std::filesystem::is_empty(TestCase::get_this_binary_dir()));
+    REQUIRE_FALSE(std::filesystem::is_empty(TestCase::get_top_source_dir()));
+    REQUIRE_FALSE(std::filesystem::is_empty(TestCase::get_this_source_dir()));
+}

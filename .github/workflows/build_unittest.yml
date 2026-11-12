@@ -1,10 +1,16 @@
 env:
   CTEST_TIMEOUT: 120
+  CMAKE_BUILD_PARALLEL_LEVEL: 8
 
 name: build_unittest
 
 on:
   push:
+    branches:
+      - main
+      - 'develop/**'
+      - 'feature/**'
+      - 'release/**'
   pull_request:
     branches:
       - main
@@ -34,7 +40,7 @@ jobs:
         cmake -B target
     - name: build
       run: |
-        cmake --build target -j --config ${{ matrix.config }}
+        cmake --build target --config ${{ matrix.config }}
     - name: test # should run w/o install
       run: |
         ctest --test-dir target -C ${{ matrix.config }} --output-on-failure --timeout $env:CTEST_TIMEOUT
@@ -58,7 +64,7 @@ jobs:
         cmake -B out -DENABLE_${{ matrix.avx }}=ON -DCMAKE_BUILD_TYPE=${{ matrix.config }}
     - name: build
       run: |
-        cmake --build out -j
+        cmake --build out
     - name: test
     # should run w/o install
       run: |
@@ -85,7 +91,7 @@ jobs:
         cmake -B target -DCMAKE_BUILD_TYPE=${{ matrix.config }}
     - name: build
       run: |
-        cmake --build target -j
+        cmake --build target
     - name: test
     # should run w/o install
       run: |
@@ -110,7 +116,7 @@ jobs:
             -DCMAKE_CXX_FLAGS="-fsanitize=${{ matrix.sanitizer }}" \
             -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=${{ matrix.sanitizer }}"
     - name: build
-      run: cmake --build target -j
+      run: cmake --build target
     - name: test
       run: ctest --test-dir target --output-on-failure
 
@@ -132,7 +138,7 @@ jobs:
     - name: configure
       run: cmake -B target -DCMAKE_CXX_STANDARD=${{ matrix.standard }} -DCMAKE_BUILD_TYPE=${{ matrix.config }}
     - name: build
-      run: cmake --build target -j
+      run: cmake --build target
     - name: test
       run: |
         # Setup test variable and files
@@ -156,7 +162,7 @@ jobs:
     - name: configure
       run: cmake -B target -DCMAKE_BUILD_TYPE=${{ matrix.config }}
     - name: build
-      run: cmake --build target -j
+      run: cmake --build target
     - name: test
       run: |
         # Setup test variable and files

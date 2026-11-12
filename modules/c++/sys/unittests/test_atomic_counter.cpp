@@ -31,7 +31,7 @@
 #include "TestCase.h"
 
 template <typename TAtomicCounter>
-static void testConstructor_(const std::string& testName)
+static void testConstructor_()
 {
     using ValueType = typename TAtomicCounter::ValueType;
 
@@ -42,15 +42,15 @@ static void testConstructor_(const std::string& testName)
         TAtomicCounter(std::numeric_limits<ValueType>::max()).get(),
         std::numeric_limits<ValueType>::max());
 }
-TEST_CASE(testConstructor)
+TEST_CASE("testConstructor")
 {
-    testConstructor_<sys::AtomicCounterOS>(testName);
-    testConstructor_<sys::AtomicCounterCpp11>(testName);
-    testConstructor_<sys::AtomicCounter>(testName);
+    testConstructor_<sys::AtomicCounterOS>();
+    testConstructor_<sys::AtomicCounterCpp11>();
+    testConstructor_<sys::AtomicCounter>();
 }
 
 template <typename TAtomicCounter>
-static void testIncrement_(const std::string& testName)
+static void testIncrement_()
 {
     using ValueType = typename TAtomicCounter::ValueType;
 
@@ -73,15 +73,15 @@ static void testIncrement_(const std::string& testName)
     TEST_ASSERT_EQ(value, static_cast<ValueType>(105));
     TEST_ASSERT_EQ(ctr.get(), static_cast<ValueType>(105));
 }
-TEST_CASE(testIncrement)
+TEST_CASE("testIncrement")
 {
-    testIncrement_<sys::AtomicCounterOS>(testName);
-    testIncrement_<sys::AtomicCounterCpp11>(testName);
-    testIncrement_<sys::AtomicCounter>(testName);
+    testIncrement_<sys::AtomicCounterOS>();
+    testIncrement_<sys::AtomicCounterCpp11>();
+    testIncrement_<sys::AtomicCounter>();
 }
 
 template <typename TAtomicCounter>
-static void testDecrement_(const std::string& testName)
+static void testDecrement_()
 {
     using ValueType = typename TAtomicCounter::ValueType;
 
@@ -104,11 +104,11 @@ static void testDecrement_(const std::string& testName)
     TEST_ASSERT_EQ(value, static_cast<ValueType>(95));
     TEST_ASSERT_EQ(ctr.get(), static_cast<ValueType>(95));
 }
-TEST_CASE(testDecrement)
+TEST_CASE("testDecrement")
 {
-    testDecrement_<sys::AtomicCounterOS>(testName);
-    testDecrement_<sys::AtomicCounterCpp11>(testName);
-    testDecrement_<sys::AtomicCounter>(testName);
+    testDecrement_<sys::AtomicCounterOS>();
+    testDecrement_<sys::AtomicCounterCpp11>();
+    testDecrement_<sys::AtomicCounter>();
 }
 
 template <typename TAtomicCounter, typename ValueType = typename TAtomicCounter::ValueType>
@@ -138,7 +138,7 @@ private:
 };
 
 template <typename TAtomicCounter>
-static void testThreadedIncrement_(const std::string& testName)
+static void testThreadedIncrement_()
 {
     using ValueType = typename TAtomicCounter::ValueType;
     using IncrementAtomicCounter = IncrementAtomicCounterT<TAtomicCounter>;
@@ -191,11 +191,11 @@ static void testThreadedIncrement_(const std::string& testName)
         TEST_ASSERT_EQ(static_cast<int64_t>(values[ii]), static_cast<int64_t>(ii));
     }
 }
-TEST_CASE(testThreadedIncrement)
+TEST_CASE("testThreadedIncrement")
 {
-    testThreadedIncrement_<sys::AtomicCounterOS>(testName);
-    testThreadedIncrement_<sys::AtomicCounterCpp11>(testName);
-    testThreadedIncrement_<sys::AtomicCounter>(testName);
+    testThreadedIncrement_<sys::AtomicCounterOS>();
+    testThreadedIncrement_<sys::AtomicCounterCpp11>();
+    testThreadedIncrement_<sys::AtomicCounter>();
 }
 
 template <typename TAtomicCounter, typename ValueType = typename TAtomicCounter::ValueType>
@@ -225,7 +225,7 @@ private:
 };
 
 template <typename TAtomicCounter>
-static void testThreadedDecrement_(const std::string& testName)
+static void testThreadedDecrement_()
 {
     using ValueType = typename TAtomicCounter::ValueType;
     using DecrementAtomicCounter = DecrementAtomicCounterT<TAtomicCounter>;
@@ -278,17 +278,9 @@ static void testThreadedDecrement_(const std::string& testName)
         TEST_ASSERT_EQ(static_cast<int64_t>(values[ii]), static_cast<int64_t>(ii));
     }
 }
-TEST_CASE(testThreadedDecrement)
+TEST_CASE("testThreadedDecrement")
 {
-    testThreadedDecrement_<sys::AtomicCounterOS>(testName);
-    testThreadedDecrement_<sys::AtomicCounterCpp11>(testName);
-    testThreadedDecrement_<sys::AtomicCounter>(testName);
+    testThreadedDecrement_<sys::AtomicCounterOS>();
+    testThreadedDecrement_<sys::AtomicCounterCpp11>();
+    testThreadedDecrement_<sys::AtomicCounter>();
 }
-
-TEST_MAIN(
-    TEST_CHECK(testConstructor);
-    TEST_CHECK(testIncrement);
-    TEST_CHECK(testDecrement);
-    TEST_CHECK(testThreadedIncrement);
-    TEST_CHECK(testThreadedDecrement);
-    )

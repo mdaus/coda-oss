@@ -67,7 +67,7 @@ struct test_MinidomParser final
     }
 };
 
-TEST_CASE(test_getAttribute)
+TEST_CASE("test_getAttribute")
 {
     using namespace xml::lite::literals;  // _q and _u for QName and Uri
 
@@ -90,7 +90,7 @@ TEST_CASE(test_getAttribute)
     TEST_ASSERT_EQ("a", value);
 }
 
-TEST_CASE(test_getAttributeByNS)
+TEST_CASE("test_getAttributeByNS")
 {
     test_MinidomParser xmlParser;
     const auto root = xmlParser.getRootElement();
@@ -123,7 +123,7 @@ TEST_CASE(test_getAttributeByNS)
     TEST_ASSERT_EQ(314, value);
 }
 
-TEST_CASE(test_getAttributeByIndex)
+TEST_CASE("test_getAttributeByIndex")
 {
     test_MinidomParser xmlParser;
     const auto root = xmlParser.getRootElement();
@@ -140,7 +140,7 @@ TEST_CASE(test_getAttributeByIndex)
     TEST_ASSERT_EQ("a", value);
 }
 
-TEST_CASE(test_getAttributeNotFound)
+TEST_CASE("test_getAttributeNotFound")
 {
     test_MinidomParser xmlParser;
     const auto root = xmlParser.getRootElement();
@@ -158,7 +158,7 @@ TEST_CASE(test_getAttributeNotFound)
     TEST_THROWS(attributes.getValue(999));
 }
 
-TEST_CASE(test_getAttributeValue)
+TEST_CASE("test_getAttributeValue")
 {
     test_MinidomParser xmlParser;
     const auto root = xmlParser.getRootElement();
@@ -224,7 +224,7 @@ TEST_CASE(test_getAttributeValue)
     }
 }
 
-TEST_CASE(test_getAttributeValueFailure)
+TEST_CASE("test_getAttributeValueFailure")
 {
     test_MinidomParser xmlParser;
     const auto root = xmlParser.getRootElement();
@@ -251,7 +251,7 @@ TEST_CASE(test_getAttributeValueFailure)
     }
 }
 
-TEST_CASE(test_getAttributeValueThrows)
+TEST_CASE("test_getAttributeValueThrows")
 {
     test_MinidomParser xmlParser;
     const auto root = xmlParser.getRootElement();
@@ -267,7 +267,7 @@ TEST_CASE(test_getAttributeValueThrows)
     TEST_SPECIFIC_EXCEPTION(getValue<std::string>(attributes, "not_found"), except::NoSuchKeyException);
 }
 
-TEST_CASE(test_getAttributeValueByIndex)
+TEST_CASE("test_getAttributeValueByIndex")
 {
     test_MinidomParser xmlParser;
     const auto root = xmlParser.getRootElement();
@@ -315,7 +315,7 @@ TEST_CASE(test_getAttributeValueByIndex)
     }
 }
 
-TEST_CASE(test_setAttributeValue)
+TEST_CASE("test_setAttributeValue")
 {
     test_MinidomParser xmlParser;
     auto root = xmlParser.getRootElement();
@@ -378,7 +378,7 @@ TEST_CASE(test_setAttributeValue)
     }
 }
 
-TEST_CASE(test_setAttributeValueByIndex)
+TEST_CASE("test_setAttributeValueByIndex")
 {
     test_MinidomParser xmlParser;
     auto root = xmlParser.getRootElement();
@@ -416,18 +416,4 @@ TEST_CASE(test_setAttributeValueByIndex)
         result = setValue(attributes, 999, 999);
         TEST_ASSERT_FALSE(result);
     }
-}
-
-int main(int, char**)
-{
-    TEST_CHECK(test_getAttribute);
-    TEST_CHECK(test_getAttributeByIndex);
-    TEST_CHECK(test_getAttributeByNS);
-    TEST_CHECK(test_getAttributeNotFound);
-    TEST_CHECK(test_getAttributeValue);
-    TEST_CHECK(test_getAttributeValueFailure);
-    TEST_CHECK(test_getAttributeValueThrows);
-    TEST_CHECK(test_getAttributeValueByIndex);
-    TEST_CHECK(test_setAttributeValue);
-    TEST_CHECK(test_setAttributeValueByIndex);
 }
