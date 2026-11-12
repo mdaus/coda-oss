@@ -80,7 +80,6 @@ These options may be passed in the cmake configure step as `-DOPTION_NAME="optio
 |ENABLE_BOOST|OFF|build modules dependent on Boost if enabled|
 |ENABLE_PYTHON|ON|build Python modules if enabled|
 |ENABLE_SWIG|OFF|enable SWIG bindings generation if enabled, otherwise use previously-generated files|
-|ENABLE_JARS|ON|include jars with the install|
 |ENABLE_JPEG|ON|build libjpeg driver and modules depending on it|
 |ENABLE_J2K|ON|build openjpeg (jpeg2000) driver and modules depending on it|
 |ENABLE_PCRE|ON|build PCRE (PERL Compatible Regular Expressions) library and modules dependent on it|
